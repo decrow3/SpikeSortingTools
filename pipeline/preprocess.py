@@ -161,7 +161,7 @@ def condition_signal(seg, cache_dir, recalc=False, uV_per_bit=.195, uV_thresh=.5
     
     seg_hp = filter(seg_interp, band=[300.0, 9000.0],btype='bandpass',filter_order=12, ftype= 'butter' ,direction='forward-backward')
     # Note on filter, forward-backward doubles the effective filter order
-    seg_out = common_reference(seg_hp, reference = 'local', operator = 'median', local_radius = (40, 140)) 
+    seg_out = common_reference(seg_hp, reference = 'local', operator = 'median', local_radius = (30, 55)) #(40, 140)) 
 
     fig, axs = plt.subplots(1,2, figsize=(8,6), sharey=True)
     axs[0].plot(similarity, np.arange(n_channels))

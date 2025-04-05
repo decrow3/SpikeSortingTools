@@ -13,18 +13,18 @@ stream_id = "imec1.ap" #usually imec0 is first inserted probe (often V2/MT), ime
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
 
 #%% Run on a snippet to check params
-# start_time = 0 #lots of motion around 10000s in, but time didn't start at 0?
-# stop_time  = start_time + 1000 
-# seg=seg.frame_slice(start_time * 30000, stop_time * 30000) #100 seconds snippet, if really low will need to change n_batches down from 50 to 5 in condition_signal ln137
+start_time = 0 #lots of motion around 10000s in, but time didn't start at 0?
+stop_time  = start_time + 1000 
+seg=seg.frame_slice(start_time * 30000, stop_time * 30000) #100 seconds snippet, if really low will need to change n_batches down from 50 to 5 in condition_signal ln137
 
 #%%
 # run pipelines
-pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_Rocky20240704_V1V2_g0_imec1')
+pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_Rocky20240704_V1V2_g0_imec1_test2')
 pipeline_dir.mkdir(parents=True, exist_ok=True)
 
 #%%
 # condition signal runs 1) bad channel detection 2) 
-noise_thresh = 0.2 # higher for spikeGLX, 
+noise_thresh = 0.3 #uV^2/Hz # higher for spikeGLX, 
 seg_pre = condition_signal(seg, cache_dir=pipeline_dir / 'conditioning', noise_thresh=noise_thresh, recalc=False)
 
 #%% DEBUG: quick saving out of the preprocessed recording before motion correction
