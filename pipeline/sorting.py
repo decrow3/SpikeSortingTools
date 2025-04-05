@@ -44,6 +44,10 @@ class KilosortResults:
         self.spike_templates_file = directory / 'spike_templates.npy'
         assert self.spike_templates_file.exists(), f'{self.spike_templates_file} does not exist'
         self._spike_templates = None
+        
+        self.spike_positions_file = directory / 'spike_positions.npy'
+        assert self.spike_positions_file.exists(), f'{self.spike_positions_file} does not exist'
+        self._spike_positions = None
 
         self.cluster_labels_file = directory / 'cluster_KSLabel.tsv'
         assert self.cluster_labels_file.exists(), f'{self.cluster_labels_file} does not exist'
@@ -80,6 +84,12 @@ class KilosortResults:
         if self._spike_templates is None:
             self._spike_templates = np.load(self.spike_templates_file)
         return self._spike_templates
+
+    @property
+    def spike_positions(self):
+        if self._spike_positions is None:
+            self._spike_positions = np.load(self.spike_positions_file)
+        return self._spike_positions
 
     @property
     def cluster_labels(self):

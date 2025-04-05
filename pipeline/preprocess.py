@@ -11,6 +11,7 @@ from scipy.signal import medfilt, welch
 from spikeinterface.preprocessing import highpass_filter
 from spikeinterface.preprocessing import common_reference
 from spikeinterface.preprocessing import filter
+from spikeinterface.preprocessing import highpass_spatial_filter
 
 from probeinterface import Probe
 from probeinterface.plotting import plot_probe
@@ -130,9 +131,17 @@ def condition_signal(seg, cache_dir, recalc=False, uV_per_bit=.195, uV_thresh=.5
         seg_shift = phase_shift(seg)
     else:
         seg_shift = seg
+
+    if uV_per_bit==2.34375: #spikeGLX NPX1
+        uV_thresh=1200 #uV
+    print(f'Threshold value is {uV_thresh} uV')
+
     seg_sat = blank_staturation(seg_shift, uV_thresh / uV_per_bit, direction='both') #remove blanks before the phase shift? Shouldn't matter but kind of weird
-    
-     
+    #seg_sat = blank_staturation(seg_shift, 500, direction='both') # 350 and 500 good (but look identical), removing completely looks better? in NP! should be 1.2mV or 1200uV
+    seg_sat=seg_shift
+    #Destriping
+    #seg_sat = highpass_spatial_filter(seg_sat)#(40, 140)) 
+
     f_cm = cache_dir / 'channel_metrics.npy'
     if not f_cm.exists() or recalc:
         batchn=min([seg.get_num_samples()/seg.get_sampling_frequency()/2, 50]) # 50 batches unless the recording is shorter than 10s
@@ -160,8 +169,9 @@ def condition_signal(seg, cache_dir, recalc=False, uV_per_bit=.195, uV_thresh=.5
     # seg_out = highpass_filter(seg_cr, freq_min=300., direction='forward-backward')
     
     seg_hp = filter(seg_interp, band=[300.0, 9000.0],btype='bandpass',filter_order=12, ftype= 'butter' ,direction='forward-backward')
-    # Note on filter, forward-backward doubles the effective filter order
-    seg_out = common_reference(seg_hp, reference = 'local', operator = 'median', local_radius = (40, 140)) 
+
+   # Note on filter, forward-backward doubles the effective filter order
+    seg_out = common_reference(seg_hp, reference = 'local', operator = 'median', local_radius = (30, 55))#(40, 140)) 
 
     fig, axs = plt.subplots(1,2, figsize=(8,6), sharey=True)
     axs[0].plot(similarity, np.arange(n_channels))
