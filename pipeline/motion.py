@@ -372,7 +372,7 @@ def plot_motion_output(seg, cache_dir, save_dir=None, plot_stride=30, uV_per_bit
         )
         plot = _plot_neural_activity(axes[2], peak_times, peak_depth_med, colors)
         axes[2].set_title("MEDiCINe")
-        fig.colorbar(plot, ax=axes[2]) 
+        #fig.colorbar(plot, ax=axes[2]) 
     plt.tight_layout()
     plt.savefig(save_dir / 'amplitude_depth_comparison.png')
 

@@ -167,7 +167,7 @@ def sort_ks4(seg, cache_dir, sorter_params = {}, recalc=False):
     if cache_dir.exists():
         try:
             ks4_sorting = KilosortResults(cache_dir / 'sorter_output')
-            ks4_sorter = load_extractor(cache_dir / 'sorter')
+            #ks4_sorter = load_extractor(cache_dir / 'sorter')
         except Exception as e:
             print(f'Failed to load kilosort4 sorting: {e}')
             shutil.rmtree(cache_dir)
@@ -179,7 +179,7 @@ def sort_ks4(seg, cache_dir, sorter_params = {}, recalc=False):
         ks4_sorter.save_to_folder(folder=cache_dir / 'sorter')
         ks4_sorting = KilosortResults(cache_dir / 'sorter_output') # Pull from output directory
 
-    return ks4_sorting, ks4_sorter
+    return ks4_sorting, load_extractor(cache_dir / 'sorter')
 
 
 
