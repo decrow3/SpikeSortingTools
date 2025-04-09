@@ -186,6 +186,9 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
     # analyzer.compute(["waveforms", "templates"]) #phy needs waveforms to be computed
     # export_to_phy(analyzer, cache_dir / 'clean_sorting_analyzer_phy',copy_binary=False, compute_pc_features=False)
     
+    # clear some memory before continuing
+    analyzer=[]
+    seg=[]
 
     # Prepare curation dictionary
     label_definitions={
@@ -199,17 +202,31 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
             "exclusive": "true"
         }
     }
-    
+
     ks_labels = ks4_sorter.get_property('KSLabel')
     ks_ids=ks4_sorter.unit_ids
 
+    #Remove overlapping units
+    flat_list= [item for sublist in merge_unit_groups for item in sublist]
+    setmerge=set(flat_list)
+    setrem=set(remove_unit_ids)
+    keeprem=list(setrem-setmerge)
+
+    #Make dict of unit_ids and labels for curation_dict
+    manual_labels_dict = {"unit_id": [], "quality": []}#define this as a dictionary outside of the loop
+    unit_ids_list = []
+    manual_labels_list=[]
+    for i in range(len(ks_ids)):
+        unit_ids_list.append((ks_ids[i]))
+        manual_labels_list.append({"unit_id": (ks_ids[i]), "quality": [ks_labels[i]]})
+
     curation_dict = {
         "format_version": "1",
-        "unit_ids": ks_ids,
+        "unit_ids": unit_ids_list,
         "label_definitions": label_definitions,
-        "manual_labels": ks_labels, #need to add unit_ids to this, or change curation_dict behavior
+        "manual_labels": manual_labels_list, #curation_dict is trying to use lbl.get() but numpy.str object has no attribute get #need to add unit_ids to this, or change curation_dict behavior
         "merge_unit_groups": merge_unit_groups,
-        "removed_units":remove_unit_ids,
+        "removed_units":keeprem,
         "merging_mode": "hard",
         "censor_ms": 0.25
     }
@@ -245,12 +262,19 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
     ops1=ops0
     st1=np.delete(st0, duped_spikes, axis=0)
     clu1=np.delete(clu0, duped_spikes, axis=0)
+    # tF00=tF0[kept]
+    # tF1=np.delete(tF00, duped_spikes, axis=0)
+    # tF11=np.squeeze(tF1)
+    # import torch
+    # tF1_=torch.from_numpy(tF11)
+
+    import torch
+    tF0=torch.from_numpy(tF0)
     tF00=tF0[kept]
     tF1=np.delete(tF00, duped_spikes, axis=0)
-    tF11=np.squeeze(tF1)
-    import torch
-    tF1_=torch.from_numpy(tF11)
-
+    tF1_=np.squeeze(tF1)
+    
+    #tF1_=torch.from_numpy(tF11)
     n_clu0=len(set(clu0))
 
 

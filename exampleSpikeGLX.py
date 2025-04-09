@@ -3,23 +3,25 @@ from pipeline import condition_signal, correct_motion, plot_motion_output, sort_
 from spikeinterface.sorters import get_default_sorter_params
 from pathlib import Path
 import shutil
+import gc
 # I'm using a pinned version of spikeinterface, so if something doesn't work with the latest version, ask about it
 import spikeinterface.full as si
 
 #%% Change this code to load your data
-data_dir=   r"/mnt/NPX/Rocky/20240822/Ephys/Rocky20240822_V2MT_g0/"
+data_dir=   r"/mnt/NPX/Rocky/20240826/Ephys/Rocky20240826_V2MT_g0/"
 
+stream_id = "imec1.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 stream_id = "imec1.ap" #usually imec1, imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
 
 #%% Run on a snippet to check params
-# start_time = 000 #lots of motion around 10000s in, but time didn't start at 0?
-# stop_time  = 785
+# start_time = 0 #lots of motion around 10000s in, but time didn't start at 0?
+# stop_time  = start_time + 100
 # seg=seg.frame_slice(start_time * 30000, stop_time * 30000) #100 seconds snippet, if really low will need to change n_batches down from 50 to 5 in condition_signal ln137
 
 #%%
 # run pipelines
-pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_Rocky20240822_V2MT_g0_imec1')
+pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_Rocky20240826_V1V2_g0_imec1_locar_40_75')
 pipeline_dir.mkdir(parents=True, exist_ok=True)
 
 #%%
@@ -29,12 +31,8 @@ seg_pre = condition_signal(seg, cache_dir=pipeline_dir / 'conditioning', noise_t
 
 # #%% DEBUG: quick saving out of the preprocessed recording before motion correction
 # save_binary_recording(seg_pre, pipeline_dir / 'preprocessed_recording_premotion', recalc=False)
-#%%
-# Motion issue on SpikeGLX, this may have had more to do with the conditioning failing, kilosort4 is actually more robust??
-seg_motion = correct_motion(seg_pre, cache_dir=pipeline_dir / 'motion', recalc=False, method='med')
-plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
 
-#%% Test data curation step
+# %% Test data curation step
 # from spikeinterface.core import load_extractor
 # #pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results')
 # seg_saved = load_extractor(pipeline_dir / 'preprocessed_recording')
@@ -44,20 +42,30 @@ plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
 # #shutil.rmtree(pipeline_dir / 'cur')
 # cur_results = run_cur(seg_saved, ks4_sorter, ks4_results, pipeline_dir / 'cur', recalc=False) # this should save out some merges
 
+#%% Motion issue on SpikeGLX, this may have had more to do with the conditioning failing, kilosort4 is actually more robust??
+seg_motion = correct_motion(seg_pre, cache_dir=pipeline_dir / 'motion', recalc=False, method='med')
+plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
+
 
 #%% Kilosort4 parameters
 # OpenEphys
 sorter_params = get_default_sorter_params('kilosort4')
 sorter_params['do_correction'] = False # Turns off drift correction
 sorter_params['save_extra_vars'] = True # required for truncation qc
-sorter_params['Th_universal'] = 12
-sorter_params['Th_learned'] = 10
-sorter_params['duplicate_spike_ms'] = 0.5
-sorter_params['ccg_threshold'] = 0.4 #increased from 0.25, to account for long recordings where similar/same units trade off but have shared spikes
+sorter_params['Th_universal'] = 9
+sorter_params['Th_learned'] = 8
+sorter_params['duplicate_spike_ms'] = 0.25 #ccgs shouldn't use less than 1ms anyway
+sorter_params['ccg_threshold'] = 0.8 #increased from 0.25, to account for long recordings where similar/same units trade off but have shared spikes
+sorter_params['nearest_chans']=20 #up from 10
+sorter_params['nearest_templates']=200 #up from 100
+sorter_params['max_channel_distance']=64 #up from 32
 sorter_params['clear_cache'] = True # Necessary on some larger files to prevent CUDA out of memory errors
 sorter_params = dict(sorter_params, **sorter_params)
 
-#%%
+#%% Clear seg, this shouldn't help since files are memory mapped. For memory problems try uhang and enable zswap, also set ulimit -v for oom messages
+del seg
+del seg_pre
+#%% Run Pipeline
 try:
     ks4_results = KilosortResults(pipeline_dir / 'kilosort4')
     if (pipeline_dir / 'qc').exists():
@@ -67,6 +75,9 @@ try:
 except Exception as e:
     print(f'Failed to load sorter or qc with error:\n{e}\nRunning the pipeline again')
     seg_saved = save_binary_recording(seg_motion, pipeline_dir / 'preprocessed_recording', recalc=False)
+    del seg_motion
+    gc.collect()
+    # Run Kilosort4
     [ks4_results,ks4_sorter] = sort_ks4(seg_saved, pipeline_dir / 'kilosort4', sorter_params=sorter_params, recalc=False)
     cur_results = run_cur(seg_saved, ks4_sorter, ks4_results, pipeline_dir / 'cur', recalc=False) # this should save out some merges
     qc_results = run_qc(seg_saved, cur_results, pipeline_dir / 'qc', recalc=True)

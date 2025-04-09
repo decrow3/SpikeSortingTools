@@ -139,7 +139,7 @@ def correct_motion(seg, cache_dir, detect_peak_args={}, localize_peak_args={}, k
     if method == 'med' or method == 'all':
         print('Estimating MEDiCINe motion...')
 
-        default_med_motion_args = dict(time_bin_size = 2.0, num_depth_bins = 2, time_kernel_width = 50, amplitude_threshold_quantile = 0.2)
+        default_med_motion_args = dict(time_bin_size = 1.0, num_depth_bins = 2, time_kernel_width = 50, amplitude_threshold_quantile = 0.2)
         med_motion_args = dict(default_med_motion_args, **med_motion_args)
 
         # Create directory to store MEDiCINe outputs for this recording
@@ -372,7 +372,7 @@ def plot_motion_output(seg, cache_dir, save_dir=None, plot_stride=30, uV_per_bit
         )
         plot = _plot_neural_activity(axes[2], peak_times, peak_depth_med, colors)
         axes[2].set_title("MEDiCINe")
-        fig.colorbar(plot, ax=axes[2]) 
+        #fig.colorbar(plot, ax=axes[2]) 
     plt.tight_layout()
     plt.savefig(save_dir / 'amplitude_depth_comparison.png')
 
