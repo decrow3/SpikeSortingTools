@@ -7,27 +7,27 @@ import shutil
 import spikeinterface.full as si
 
 #%% Change this code to load your data
-data_dir=   r"/mnt/NPX/Rocky/20240704/Rocky20240704_V1V2_g0/"
+data_dir=   r"/mnt/NPX/Rocky/20240822/Ephys/Rocky20240822_V2MT_g0/"
 
-stream_id = "imec0.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
+stream_id = "imec1.ap" #usually imec1, imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
 
 #%% Run on a snippet to check params
-start_time = 000 #lots of motion around 10000s in, but time didn't start at 0?
-stop_time  = 785
-seg=seg.frame_slice(start_time * 30000, stop_time * 30000) #100 seconds snippet, if really low will need to change n_batches down from 50 to 5 in condition_signal ln137
+# start_time = 000 #lots of motion around 10000s in, but time didn't start at 0?
+# stop_time  = 785
+# seg=seg.frame_slice(start_time * 30000, stop_time * 30000) #100 seconds snippet, if really low will need to change n_batches down from 50 to 5 in condition_signal ln137
 
 #%%
 # run pipelines
-pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_Rocky20240704_V1V2_g0_imec0_785s_sat_slice')
+pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_Rocky20240822_V2MT_g0_imec1')
 pipeline_dir.mkdir(parents=True, exist_ok=True)
 
 #%%
 # condition signal runs 1) bad channel detection 2) . Can we also get a noise over time measure over all channels, may need to censor some completely
-noise_thresh = 0.8 # higher for spikeGLX, around 0.3
+noise_thresh = 0.3 # higher for spikeGLX, around 0.3
 seg_pre = condition_signal(seg, cache_dir=pipeline_dir / 'conditioning', noise_thresh=noise_thresh, recalc=False)
 
-#%% DEBUG: quick saving out of the preprocessed recording before motion correction
+# #%% DEBUG: quick saving out of the preprocessed recording before motion correction
 # save_binary_recording(seg_pre, pipeline_dir / 'preprocessed_recording_premotion', recalc=False)
 #%%
 # Motion issue on SpikeGLX, this may have had more to do with the conditioning failing, kilosort4 is actually more robust??
@@ -50,8 +50,8 @@ plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
 sorter_params = get_default_sorter_params('kilosort4')
 sorter_params['do_correction'] = False # Turns off drift correction
 sorter_params['save_extra_vars'] = True # required for truncation qc
-sorter_params['Th_universal'] = 13
-sorter_params['Th_learned'] = 11
+sorter_params['Th_universal'] = 12
+sorter_params['Th_learned'] = 10
 sorter_params['duplicate_spike_ms'] = 0.5
 sorter_params['ccg_threshold'] = 0.4 #increased from 0.25, to account for long recordings where similar/same units trade off but have shared spikes
 sorter_params['clear_cache'] = True # Necessary on some larger files to prevent CUDA out of memory errors
