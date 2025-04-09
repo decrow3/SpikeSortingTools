@@ -167,7 +167,7 @@ def condition_signal(seg, cache_dir, recalc=False, uV_per_bit=.195, uV_thresh=.5
     
     # seg_cr = common_reference(seg_interp, reference = 'global', operator = 'median') 
     # seg_out = highpass_filter(seg_cr, freq_min=300., direction='forward-backward')
-    seg_cr = common_reference(seg_interp, reference = 'local', operator = 'median', local_radius = (40, 140)) 
+    seg_cr = common_reference(seg_interp, reference = 'local', operator = 'median', local_radius = (40, 75)) 
     seg_out = filter(seg_cr, band=[300.0, 9000.0], btype='bandpass', filter_order=12, ftype='butter' , direction='forward-backward')
 
    # Note on filter, forward-backward doubles the effective filter order

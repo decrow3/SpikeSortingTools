@@ -186,6 +186,9 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
     # analyzer.compute(["waveforms", "templates"]) #phy needs waveforms to be computed
     # export_to_phy(analyzer, cache_dir / 'clean_sorting_analyzer_phy',copy_binary=False, compute_pc_features=False)
     
+    # clear some memory before continuing
+    analyzer=[]
+    seg=[]
 
     # Prepare curation dictionary
     label_definitions={
@@ -259,12 +262,19 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
     ops1=ops0
     st1=np.delete(st0, duped_spikes, axis=0)
     clu1=np.delete(clu0, duped_spikes, axis=0)
+    # tF00=tF0[kept]
+    # tF1=np.delete(tF00, duped_spikes, axis=0)
+    # tF11=np.squeeze(tF1)
+    # import torch
+    # tF1_=torch.from_numpy(tF11)
+
+    import torch
+    tF0=torch.from_numpy(tF0)
     tF00=tF0[kept]
     tF1=np.delete(tF00, duped_spikes, axis=0)
-    tF11=np.squeeze(tF1)
-    import torch
-    tF1_=torch.from_numpy(tF11)
-
+    tF1_=np.squeeze(tF1)
+    
+    #tF1_=torch.from_numpy(tF11)
     n_clu0=len(set(clu0))
 
 
