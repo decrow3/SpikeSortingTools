@@ -275,7 +275,7 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
     tF1_=np.squeeze(tF1)
     
     #tF1_=torch.from_numpy(tF11)
-    n_clu0=len(set(clu0))
+
 
 
     n_groups=len(merge_unit_groups) # number of groups to merge 
@@ -304,9 +304,15 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
         #Wall1[n_clu0+ii]=Wall0[best_unit_idx[0][0],:,:] #copy waveforms into the next slot
         appendthis=np.reshape(Wall0[best_unit_idx[0][0],:,:],newshape=[1,nchan,ntp])
         Wall1=np.append(Wall1,appendthis,0)
-
     
-    Wall_remove_idx=[]
+    n_clu0=len(set(clu0))
+    n_clu1=len(set(clu1))
+    if n_clu0==n_clu1:
+        Wall_remove_idx=[]
+    else:
+        Wall_remove_idx=list(set(clu0)^set(clu1))
+        print(' Need to remove', len(set(Wall_remove_idx)),' clusters')
+
     for ii in range(n_groups):
         n_clu=len(merge_unit_groups[ii])
         for jj in range(n_clu):
