@@ -54,10 +54,10 @@ sorter_params['save_extra_vars'] = True # required for truncation qc
 sorter_params['Th_universal'] = 9
 sorter_params['Th_learned'] = 8
 sorter_params['duplicate_spike_ms'] = 0.25 #ccgs shouldn't use less than 1ms anyway
-sorter_params['ccg_threshold'] = 0.8 #increased from 0.25, to account for long recordings where similar/same units trade off but have shared spikes
-sorter_params['nearest_chans']=20 #up from 10
-sorter_params['nearest_templates']=200 #up from 100
-sorter_params['max_channel_distance']=64 #up from 32
+sorter_params['ccg_threshold'] = 0.75 #increased from 0.25, to account for long recordings where similar/same units trade off but have shared spikes
+sorter_params['nearest_chans'] = 20 #up from 10
+sorter_params['nearest_templates'] = 200 #up from 100
+sorter_params['max_channel_distance'] = 64 #up from 32
 sorter_params['clear_cache'] = True # Necessary on some larger files to prevent CUDA out of memory errors
 sorter_params = dict(sorter_params, **sorter_params)
 
