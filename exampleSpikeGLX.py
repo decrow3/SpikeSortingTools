@@ -8,9 +8,8 @@ import gc
 import spikeinterface.full as si
 
 #%% Change this code to load your data
-data_dir=   r"/mnt/NPX/Rocky/20240826/Ephys/Rocky20240826_V2MT_g0/"
+data_dir=   r"/mnt/NPX/Rocky/20231209/Rocky20231209_V1V2_g0/"
 
-stream_id = "imec1.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 stream_id = "imec1.ap" #usually imec1, imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
 
@@ -21,7 +20,7 @@ seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=
 
 #%%
 # run pipelines
-pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_Rocky20240826_V1V2_g0_imec1_locar_40_75')
+pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_Rocky20231209_V1V2_g0_imec1_locar_2nd_40_140')
 pipeline_dir.mkdir(parents=True, exist_ok=True)
 
 #%%

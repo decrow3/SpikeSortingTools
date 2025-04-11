@@ -79,5 +79,14 @@ After more experimentation.
 		Need to check if catgt CAR version is correct (one we had previously tested), or if we can pick a better ground
 		Need to do curation merges and removals earlier
 		
-		Need to   
-  
+
+4-09-2025
+Memory problems. Enable zswap
+ /sys/module/zswap/parameters/enabled, set to 1
+Limit virtual memory to RAM+Swap to prevent OOM crashes, check with: free -m
+ 192909+262143= 455052MB = 465973248KB
+ ulimit -v 465973248
+Install nohang to prevent crashes without error messages
+ sudo apt install nohang
+
+ Disabling systemd-oomd really helps
