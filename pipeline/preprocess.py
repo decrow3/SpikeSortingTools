@@ -132,8 +132,7 @@ def condition_signal(seg, cache_dir, recalc=False, uV_per_bit=.195, uV_thresh=.5
     else:
         seg_shift = seg
 
-    if uV_per_bit==2.34375: #spikeGLX NPX1
-        uV_thresh=1200 #uV
+
     print(f'Threshold value is {uV_thresh} uV')
 
     seg_sat = blank_staturation(seg_shift, uV_thresh / uV_per_bit, direction='both') #remove blanks before the phase shift? Shouldn't matter but kind of weird

@@ -1,44 +1,18 @@
 #%%
-from pipeline import condition_signal, correct_motion, plot_motion_output, sort_ks4, save_binary_recording, run_qc, run_cur, KilosortResults, load_qc,  load_cur
+from pipeline import condition_signal, correct_motion, plot_motion_output, sort_ks4, save_binary_recording, run_qc, KilosortResults, load_qc, run_cur, load_cur
 from spikeinterface.sorters import get_default_sorter_params
 from pathlib import Path
 import shutil
 import gc
 # I'm using a pinned version of spikeinterface, so if something doesn't work with the latest version, ask about it
 import spikeinterface.full as si
-#%% Load a single file
-# data_dir = Path('/mnt/NPX/Gru/20220323/2022-03-23_15-36-56/')#Path('/media/huklab/Data/NPX/Spikesorting/Combining/Gru_2022-0412_Probe1/') #Path('/home/ryanress/code/DataHorwitzLGN/data/raw/2024-12-10_Chihiro/2024-12-10_15-40-46')
-# stream_name = "Record Node 101#Neuropix-PXI-100.0"
-# seg = si.read_openephys(data_dir, load_sync_timestamps=False, stream_name=stream_name, experiment_names="experiment1")# experiment_names="experiment1")
 
+#%% Change this code to load your data
+data_dir=   r"/mnt/NPX/Rocky/20240704/Rocky20240704_V1V2_g0/"
 
-#%% Load and concatenate data
-data_dir = Path('/mnt/NPX/Gru/20220412/')#Path('/media/huklab/Data/NPX/Spikesorting/Combining/Gru_2022-0412_Probe1/') #Path('/home/ryanress/code/DataHorwitzLGN/data/raw/2024-12-10_Chihiro/2024-12-10_15-40-46')
-stream_name = "Record Node 101#Neuropix-PXI-100.0"
+stream_id = "imec1.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
+seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
 
-subfolders=[f for f in Path(data_dir).iterdir() if f.is_dir()]
-
-# Try to load all experiments
-print(f'Loading {subfolders[0]}')
-seg_all = si.read_openephys(subfolders[0], load_sync_timestamps=False, stream_name=stream_name, experiment_names="experiment1")# experiment_names="experiment1")
-
-if len(subfolders) > 1:
-    for subfolder in subfolders[1:]:
-        print(f'Loading {subfolder}')
-        seg = si.read_openephys(subfolder, load_sync_timestamps=False, stream_name=stream_name, experiment_names="experiment1")# experiment_names="experiment1")
-        seg_all=si.concatenate_recordings([seg_all, seg])#seg_all.add_recording_segment(seg)
-
-#%% Todo, add in probe data manually by seg.set_probe
-import probeinterface 
-record_node = "Record Node 101"
-exp_id = 1
-settings_file= seg.neo_reader.folder_structure[record_node]["experiments"][exp_id]["settings_file"]
-if Path(settings_file).is_file():
-                probe = probeinterface.read_openephys(
-                    settings_file=settings_file, stream_name=stream_name, raise_error=False
-                )
-seg_all=seg_all.set_probe(probe, in_place=False)
-#%%
 #%% Run on a snippet to check params
 # start_time = 0 #lots of motion around 10000s in, but time didn't start at 0?
 # stop_time  = start_time + 100
@@ -46,13 +20,15 @@ seg_all=seg_all.set_probe(probe, in_place=False)
 
 #%%
 # run pipelines
-pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_Gru_20220412_combined')
+pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_Rocky20240704_V1V2_g0_imec1')
 pipeline_dir.mkdir(parents=True, exist_ok=True)
 
 #%%
 # condition signal runs 1) bad channel detection 2) . Can we also get a noise over time measure over all channels, may need to censor some completely
-noise_thresh = 0.1 # higher for spikeGLX, around 0.3
-seg_pre = condition_signal(seg_all, cache_dir=pipeline_dir / 'conditioning', noise_thresh=noise_thresh, recalc=False)
+noise_thresh = 0.3 # higher for spikeGLX, around 0.3
+
+uV_thresh=1200 #uV, #spikeGLX, tip reference, 1.2mV 
+seg_pre = condition_signal(seg, cache_dir=pipeline_dir / 'conditioning', noise_thresh=noise_thresh, uV_thresh=uV_thresh, recalc=False)
 
 # #%% DEBUG: quick saving out of the preprocessed recording before motion correction
 # save_binary_recording(seg_pre, pipeline_dir / 'preprocessed_recording_premotion', recalc=False)
@@ -68,15 +44,14 @@ seg_pre = condition_signal(seg_all, cache_dir=pipeline_dir / 'conditioning', noi
 # cur_results = run_cur(seg_saved, ks4_sorter, ks4_results, pipeline_dir / 'cur', recalc=False) # this should save out some merges
 
 #%% Motion issue on SpikeGLX, this may have had more to do with the conditioning failing, kilosort4 is actually more robust??
-#seg_motion = correct_motion(seg_pre, cache_dir=pipeline_dir / 'motion', recalc=False, method='med')
-#plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
-# skipping motion correction, just running it in kilosort
-seg_motion= seg_pre
+seg_motion = correct_motion(seg_pre, cache_dir=pipeline_dir / 'motion', recalc=False, method='med')
+plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
+
 
 #%% Kilosort4 parameters
 # OpenEphys
 sorter_params = get_default_sorter_params('kilosort4')
-sorter_params['do_correction'] = True # Turns off drift correction
+sorter_params['do_correction'] = False # Turns off drift correction
 sorter_params['save_extra_vars'] = True # required for truncation qc
 sorter_params['Th_universal'] = 9
 sorter_params['Th_learned'] = 8
@@ -89,11 +64,8 @@ sorter_params['clear_cache'] = True # Necessary on some larger files to prevent 
 sorter_params = dict(sorter_params, **sorter_params)
 
 #%% Clear seg, this shouldn't help since files are memory mapped. For memory problems try uhang and enable zswap, also set ulimit -v for oom messages
-del seg_all
+del seg
 del seg_pre
-
-gc.collect()
-#
 #%% Run Pipeline
 try:
     ks4_results = KilosortResults(pipeline_dir / 'kilosort4')

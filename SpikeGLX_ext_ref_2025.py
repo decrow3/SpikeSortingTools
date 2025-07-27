@@ -8,9 +8,9 @@ import gc
 import spikeinterface.full as si
 
 #%% Change this code to load your data
-data_dir=   r"/mnt/NPX/Rocky/20240826/Ephys/Rocky20240826_V2MT_g0/"
+data_dir=   r"/mnt/NPX/Luke/LukeV1-20240717/Luke0717_V1_g0/"
 
-stream_id = "imec1.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
+stream_id = "imec0.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
 
 #%% Run on a snippet to check params
@@ -20,13 +20,17 @@ seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=
 
 #%%
 # run pipelines
-pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_Rocky20240826_V1V2_g0_imec1_locar_40_75')
+pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_Luke0717_V1_g0_imec0_thresh1_tst')
 pipeline_dir.mkdir(parents=True, exist_ok=True)
 
 #%%
 # condition signal runs 1) bad channel detection 2) . Can we also get a noise over time measure over all channels, may need to censor some completely
 noise_thresh = 0.3 # higher for spikeGLX, around 0.3
-seg_pre = condition_signal(seg, cache_dir=pipeline_dir / 'conditioning', noise_thresh=noise_thresh, recalc=False)
+
+# if uV_per_bit==2.34375: #spikeGLX, tip reference, 1.2mV 
+#     uV_thresh=1200 #uV
+uV_thresh = .5e3 #uV, 500uV, this is the default for spikeGLX for external reference, but can be changed to 350 or 400uV if you want to remove more saturation
+seg_pre = condition_signal(seg, cache_dir=pipeline_dir / 'conditioning', noise_thresh=noise_thresh, uV_thresh=.5e3, recalc=False)
 
 # #%% DEBUG: quick saving out of the preprocessed recording before motion correction
 # save_binary_recording(seg_pre, pipeline_dir / 'preprocessed_recording_premotion', recalc=False)
