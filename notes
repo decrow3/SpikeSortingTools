@@ -90,3 +90,9 @@ Install nohang to prevent crashes without error messages
  sudo apt install nohang
 
  Disabling systemd-oomd really helps
+
+sudo mkswap /swapfile
+sudo swapon /swapfile
+
+swapon --show
+free -h

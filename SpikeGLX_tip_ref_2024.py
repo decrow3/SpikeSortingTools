@@ -8,19 +8,20 @@ import gc
 import spikeinterface.full as si
 
 #%% Change this code to load your data
-data_dir=   r"/mnt/NPX/Rocky/20240704/Rocky20240704_V1V2_g0/"
+data_dir=   r"/mnt/NPX/Rocky/20231027/Rocky20231027_V1V2_g0/"
 
 stream_id = "imec1.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
 
-#%% Run on a snippet to check params
+#%% Run on a snippet to check params    
 # start_time = 0 #lots of motion around 10000s in, but time didn't start at 0?
 # stop_time  = start_time + 100
 # seg=seg.frame_slice(start_time * 30000, stop_time * 30000) #100 seconds snippet, if really low will need to change n_batches down from 50 to 5 in condition_signal ln137
 
 #%%
 # run pipelines
-pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_Rocky20240704_V1V2_g0_imec1')
+# changing to relative path, from this directory it should be relative
+pipeline_dir = Path('./pipeline_results_Rocky20231027_V1V2_g0_imec1')
 pipeline_dir.mkdir(parents=True, exist_ok=True)
 
 #%%
@@ -44,17 +45,17 @@ seg_pre = condition_signal(seg, cache_dir=pipeline_dir / 'conditioning', noise_t
 # cur_results = run_cur(seg_saved, ks4_sorter, ks4_results, pipeline_dir / 'cur', recalc=False) # this should save out some merges
 
 #%% Motion issue on SpikeGLX, this may have had more to do with the conditioning failing, kilosort4 is actually more robust??
-seg_motion = correct_motion(seg_pre, cache_dir=pipeline_dir / 'motion', recalc=False, method='med')
-plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
+# seg_motion = correct_motion(seg_pre, cache_dir=pipeline_dir / 'motion', recalc=False, method='med')
+# plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
 
-
+seg_motion = seg_pre #skipping motion correction, just running it in kilosort
 #%% Kilosort4 parameters
 # OpenEphys
 sorter_params = get_default_sorter_params('kilosort4')
-sorter_params['do_correction'] = False # Turns off drift correction
+sorter_params['do_correction'] = True # Turns off drift correction
 sorter_params['save_extra_vars'] = True # required for truncation qc
-sorter_params['Th_universal'] = 9
-sorter_params['Th_learned'] = 8
+sorter_params['Th_universal'] = 12#9
+sorter_params['Th_learned'] = 10#8
 sorter_params['duplicate_spike_ms'] = 0.25 #ccgs shouldn't use less than 1ms anyway
 sorter_params['ccg_threshold'] = 0.75 #increased from 0.25, to account for long recordings where similar/same units trade off but have shared spikes
 sorter_params['nearest_chans'] = 20 #up from 10

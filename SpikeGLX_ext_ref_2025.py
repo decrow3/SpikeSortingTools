@@ -1,5 +1,5 @@
 #%%
-from pipeline import condition_signal, correct_motion, plot_motion_output, sort_ks4, save_binary_recording, run_qc, KilosortResults, load_qc, run_cur, load_cur
+from pipeline import condition_signal, correct_lfp_motion, correct_motion, plot_motion_output, sort_ks4, save_binary_recording, run_qc, KilosortResults, load_qc, run_cur, load_cur
 from spikeinterface.sorters import get_default_sorter_params
 from pathlib import Path
 import shutil
@@ -8,9 +8,9 @@ import gc
 import spikeinterface.full as si
 
 #%% Change this code to load your data
-data_dir=   r"/mnt/NPX/Luke/20250805/Luke0805_V2V1_g0/"
-
-stream_id = "imec0.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
+data_dir=   r"/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0/" # "imec1.ap"
+#data_dir=   r"/media/huklaban5/Extreme Pro/Luke 2026-01-05/Luke01012026_V1_RH_g0/" #mislabeled, actually 2026-01-05
+stream_id = "imec1.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
 
 #%% Run on a snippet to check params
@@ -23,7 +23,9 @@ seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=
 # last part of data_dir = data_dir.split('/')[-2] # get the last part of the data_dir, this is the experiment name
 sess_name = data_dir.split('/')[-2]  # get the last part of the data_dir, this is the experiment name
 stream_name = stream_id.split('.')[0] # get the stream id without the extension
-pipeline_dir = Path(f'/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_{sess_name}_{stream_name}')
+# pipeline_dir = Path(f'/home/huklaban5/Documents/SpikeSortingTools/pipeline_results_{sess_name}_{stream_name}')
+#pipeline_dir = Path(f'/media/huklaban5/Extreme Pro/Luke 2025-12-05/pipeline_results_Luke12052025_V1_RH_g0_imec1/')
+pipeline_dir = Path(f'/mnt/NPX/Luke/20250804/dredgetest_pipeline_results_{sess_name}_{stream_name}')
 pipeline_dir.mkdir(parents=True, exist_ok=True)
 
 #%%
@@ -35,8 +37,12 @@ noise_thresh = 0.3 # higher for spikeGLX, around 0.3
 uV_thresh = .5e3 #uV, 500uV, this is the default for spikeGLX for external reference, but can be changed to 350 or 400uV if you want to remove more saturation
 seg_pre = condition_signal(seg, cache_dir=pipeline_dir / 'conditioning', noise_thresh=noise_thresh, uV_thresh=.5e3, recalc=False)
 
-# #%% DEBUG: quick saving out of the preprocessed recording before motion correction
-# save_binary_recording(seg_pre, pipeline_dir / 'preprocessed_recording_premotion', recalc=False)
+# # #%% DEBUG: quick saving out of the preprocessed recording before motion correction
+# premotion_cache_dir = Path(pipeline_dir / 'preprocessed_recording_premotion4')
+# #if folder doesn't exist, create it
+# if not premotion_cache_dir.exists():
+#     premotion_cache_dir.mkdir(parents=True, exist_ok=True)
+# save_binary_recording(seg_pre, pipeline_dir / 'preprocessed_recording_premotion4', recalc=True)
 
 # %% Test data curation step
 # from spikeinterface.core import load_extractor
@@ -48,20 +54,19 @@ seg_pre = condition_signal(seg, cache_dir=pipeline_dir / 'conditioning', noise_t
 # #shutil.rmtree(pipeline_dir / 'cur')
 # cur_results = run_cur(seg_saved, ks4_sorter, ks4_results, pipeline_dir / 'cur', recalc=False) # this should save out some merges
 
-#%% Motion issue on SpikeGLX, this may have had more to do with the conditioning failing, kilosort4 is actually more robust??
-#seg_motion = correct_motion(seg_pre, cache_dir=pipeline_dir / 'motion', recalc=False, method='med')
-#plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
 
-# skipping motion correction, just running it in kilosort
-seg_motion = seg_pre
+#%% Motion issue on SpikeGLX, this may have had more to do with the conditioning failing, kilosort4 is actually more robust??
+seg_motion = correct_motion(seg_pre, cache_dir=pipeline_dir / 'motion', recalc=False, method='dredge')
+plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
+
 
 #%% Kilosort4 parameters
 # OpenEphys
 sorter_params = get_default_sorter_params('kilosort4')
-sorter_params['do_correction'] = True # Turns off drift correction
+sorter_params['do_correction'] = False # Turns off drift correction
 sorter_params['save_extra_vars'] = True # required for truncation qc
-sorter_params['Th_universal'] = 9
-sorter_params['Th_learned'] = 8
+sorter_params['Th_universal'] = 14
+sorter_params['Th_learned'] = 10
 sorter_params['duplicate_spike_ms'] = 0.25 #ccgs shouldn't use less than 1ms anyway
 sorter_params['ccg_threshold'] = 0.75 #increased from 0.25, to account for long recordings where similar/same units trade off but have shared spikes
 sorter_params['nearest_chans'] = 20 #up from 10

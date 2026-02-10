@@ -1627,3 +1627,5 @@ if A.size and B.size:
 else:
     print("Template similarity skipped: could not build template vectors")
 
+
+# %%

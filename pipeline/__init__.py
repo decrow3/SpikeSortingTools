@@ -1,5 +1,6 @@
 from .preprocess import *
 from .motion import *
+from .lfp_motion import *
 from .sorting import *
 from .refractory import *
 from .truncation import *
