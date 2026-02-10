@@ -14,9 +14,9 @@ stream_id = "imec1.ap" #usually imec0 is first inserted probe (often V2/MT), ime
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
 
 #%% Run on a snippet to check params
-start_time = 0 #lots of motion around 10000s in, but time didn't start at 0?
-stop_time  = start_time + 100
-seg=seg.frame_slice(start_time * 30000, stop_time * 30000) #100 seconds snippet, if really low will need to change n_batches down from 50 to 5 in condition_signal ln137
+# start_time = 0 #lots of motion around 10000s in, but time didn't start at 0?
+# stop_time  = start_time + 100
+# seg=seg.frame_slice(start_time * 30000, stop_time * 30000) #100 seconds snippet, if really low will need to change n_batches down from 50 to 5 in condition_signal ln137
 
 #%%
 # run pipelines
@@ -28,7 +28,7 @@ stream_name = stream_id.split('.')[0] # get the stream id without the extension
 data_root = data_dir.split('/')[0:5] #
 print(f'Using data root {"/".join(data_root)}, pipeline results will be saved in this directory')
 #%%
-pipeline_dir = Path(f'{"/".join(data_root)}/branchingtest1_pipeline_results_{sess_name}_{stream_name}')
+pipeline_dir = Path(f'{"/".join(data_root)}/dredge_pipeline_results_{sess_name}_{stream_name}')
 pipeline_dir.mkdir(parents=True, exist_ok=True)
 
 #%%
@@ -53,8 +53,10 @@ seg_pre_motion_est, seg_pre_sorting = condition_signal(seg, cache_dir=pipeline_d
 # #shutil.rmtree(pipeline_dir / 'cur')
 # cur_results = run_cur(seg_saved, ks4_sorter, ks4_results, pipeline_dir / 'cur', recalc=False) # this should save out some merges
 
-#%% Motion issue on SpikeGLX, this may have had more to do with the conditioning failing, kilosort4 is actually more robust??
-seg_motion = correct_motion(seg_pre_motion_est, cache_dir=pipeline_dir / 'motion', recalc=False, method='med', rec_for_sorting=seg_pre_sorting)
+#%% Motion issue on SpikeGLX, this may have had more to do with the conditioning failing
+# 'all' setting estimates motion using all algorithms but uses to dredge for motion correction. 
+# Uses seg_pre_sorting for seg_motion
+seg_motion = correct_motion(seg_pre_motion_est, rec_for_sorting=seg_pre_sorting, cache_dir=pipeline_dir / 'motion', recalc=False, method='all')
 plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
 
 # skipping motion correction, just running it in kilosort
