@@ -7,13 +7,15 @@ import medicine
 from medicine.plotting import _correct_motion_on_peaks, plot_motion_correction
 from spikeinterface.sortingcomponents.peak_detection import detect_peaks
 from spikeinterface.sortingcomponents.peak_localization import localize_peaks
+from spikeinterface.sortingcomponents.peak_selection import select_peaks
 from spikeinterface.sortingcomponents.motion import estimate_motion, motion_utils, interpolate_motion
 from spikeinterface.preprocessing import astype
 from scipy.signal import medfilt
 
+
 from spikeinterface.core.motion import Motion
 
-def correct_motion(seg, cache_dir, detect_peak_args={}, localize_peak_args={}, ks_motion_args={}, dc_motion_args={}, med_motion_args={}, job_kwargs={}, recalc=False, method='med', median_filter_size=1):
+def correct_motion(seg, cache_dir, detect_peak_args={}, localize_peak_args={}, ks_motion_args={}, dredge_motion_args={},  dc_motion_args={}, med_motion_args={}, job_kwargs={}, recalc=False, method='med', median_filter_size=1):
 
     print('Starting motion correction...')
 
@@ -55,6 +57,9 @@ def correct_motion(seg, cache_dir, detect_peak_args={}, localize_peak_args={}, k
         np.save(cache_dir / 'peak_locations.npy', peak_locations)
     else:
         peak_locations = np.load(f_peak_locations)
+
+    # somepeaks,some_peak_indices = select_peaks(peaks=peaks, method='smart_sampling_locations_and_time', return_indices=True, peaks_locations=peak_locations, n_peaks=10000, random_state=0)
+    # some_peak_locations = peak_locations[some_peak_indices]
 
     ###
     # Kilosort motion
@@ -128,6 +133,42 @@ def correct_motion(seg, cache_dir, detect_peak_args={}, localize_peak_args={}, k
         if method != 'all':
             motion = dc_motion
 
+    ### DREDGE method
+    if method == 'dredge'or method == 'all':
+        print('Estimating DREDGE motion...')
+
+        default_dredge_motion_args = dict(method = 'dredge', direction = 'y', rigid = False, win_shape = 'gaussian', win_step_um = 100.0, win_scale_um = 150.0, win_margin_um = 50.0, extra_outputs = True, progress_bar = True, verbose = True)
+        dredge_motion_args = dict(default_dredge_motion_args, **dredge_motion_args)
+        dredge_motion_args['method'] = 'dredge_ap'
+
+        dredge_motion_dir = cache_dir / 'dredge-motion'
+        dredge_motion_dir.mkdir(parents=True, exist_ok=True)
+        if not (dredge_motion_dir / "motion.npy").exists() or recalc:
+                # With extra_outputs=True, estimate_motion returns (motion, extra), where extra is a dict containing intermediate variables that can be useful for plotting and debugging
+                dredge_motion, extra = estimate_motion(
+                    recording = seg, 
+                    peaks = peaks,
+                    peak_locations = peak_locations,
+                    **dredge_motion_args
+                )
+                dredge_displacement = dredge_motion.displacement[0]
+                if median_filter_size > 1:
+                    dredge_displacement = medfilt(dredge_displacement, kernel_size=(median_filter_size, 1))
+                np.save(dredge_motion_dir / "motion.npy", dredge_displacement)
+                np.save(dredge_motion_dir / "time_bins.npy", dredge_motion.temporal_bins_s[0])
+                np.save(dredge_motion_dir / "depth_bins.npy", dredge_motion.spatial_bins_um)
+
+        
+        # load dredge motion
+        dredge_motion = Motion(
+            displacement=np.load(dredge_motion_dir / "motion.npy"),
+            temporal_bins_s=np.load(dredge_motion_dir / "time_bins.npy"),
+            spatial_bins_um=np.load(dredge_motion_dir / "depth_bins.npy"),
+        )
+        if method != 'all':
+            motion = dredge_motion
+        
+    
     ###
     # MEDiCINe motion
     ###
@@ -188,11 +229,14 @@ def correct_motion(seg, cache_dir, detect_peak_args={}, localize_peak_args={}, k
             motion = med_motion
 
     # Interpolate motion using MEDiCINe
-    motion = med_motion
+    if method == 'med' or method == 'all':
+        motion = med_motion
     if method == 'ks':
        motion = ks_motion
     if method == 'dc':
        motion = dc_motion
+    if method == 'dredge':
+       motion = dredge_motion
 
     seg_sort = astype(interpolate_motion(astype(seg, "float"), motion, border_mode='force_zeros'), "int16")
 
@@ -289,8 +333,24 @@ def plot_motion_output(seg, cache_dir, save_dir=None, plot_stride=30, uV_per_bit
     # Plot motion estimate comparison
     #
 
-    depth = med_motion.spatial_bins_um[0]
-    times = med_motion.temporal_bins_s[0]
+    # Use the motion object that was actually computed
+    if method == 'ks':
+        motion_ref = ks_motion
+    elif method == 'dc':
+        motion_ref = dc_motion
+    elif method == 'dredge':
+        dredge_loc = (cache_dir / 'dredge-motion')
+        dredge_motion = Motion(
+            displacement=np.load(dredge_loc / "motion.npy"),
+            temporal_bins_s=np.load(dredge_loc / "time_bins.npy"),
+            spatial_bins_um=np.load(dredge_loc / "depth_bins.npy"),
+        )
+        motion_ref = dredge_motion
+    else:
+        motion_ref = med_motion
+
+    depth = motion_ref.spatial_bins_um[0]
+    times = motion_ref.temporal_bins_s[0]
 
     probe = seg.get_probe()
     d_min = np.min(probe.contact_positions[:, 1])

@@ -127,7 +127,7 @@ def condition_signal(seg, cache_dir, recalc=False, uV_per_bit=.195, uV_thresh=.5
     n_channels = seg.get_num_channels()
 
     check_sample_shift=seg.get_property('inter_sample_shift')
-    if  check_sample_shift.any() != None:    
+    if check_sample_shift is not None and check_sample_shift.any():
         seg_shift = phase_shift(seg)
     else:
         seg_shift = seg
@@ -168,8 +168,11 @@ def condition_signal(seg, cache_dir, recalc=False, uV_per_bit=.195, uV_thresh=.5
     # seg_out = highpass_filter(seg_cr, freq_min=300., direction='forward-backward')
     
     
-    # Note on filter, forward-backward doubles the effective filter order
-    seg_hp = filter(seg_interp, band=[300.0, 9000.0],btype='bandpass',filter_order=12, ftype= 'butter', direction='forward-backward')
+    # Note on filter, forward-backward doubles the effective filter order.
+    # For best used of DREDGE, we remove some of the high frequency noise before motion estimation,
+    seg_hp = filter(seg_interp, band=[300.0, 3000.0],btype='bandpass',filter_order=12, ftype= 'butter', direction='forward-backward')
+    
+    
     seg_out = common_reference(seg_hp, reference = 'local', operator = 'median', local_radius = (40, 140)) 
     #seg_hp = filter(seg_interp, band=[300.0, 9000.0],btype='bandpass',filter_order=6, ftype= 'butter', direction='forward-backward')
    
