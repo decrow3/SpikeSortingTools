@@ -127,7 +127,8 @@ def condition_signal(seg, cache_dir, recalc=False, uV_per_bit=.195, uV_thresh=.5
     n_channels = seg.get_num_channels()
 
     check_sample_shift=seg.get_property('inter_sample_shift')
-    if  check_sample_shift.any() != None:    
+    # skip if check_sample_shift is None or all values are 0, otherwise do phase shift
+    if check_sample_shift is not None and check_sample_shift.any():  
         seg_shift = phase_shift(seg)
     else:
         seg_shift = seg
@@ -164,16 +165,23 @@ def condition_signal(seg, cache_dir, recalc=False, uV_per_bit=.195, uV_thresh=.5
     #global car for the not as stable as we'd like npx grounds over multiple areas
     #local_radius : tuple(int, int), default: (30, 55) loccar_um=40,140. In CatGT we also did butterworth filtering for AP
     
+    # # Old filtering approach, temporarily reimplemented for testing
     # seg_cr = common_reference(seg_interp, reference = 'global', operator = 'median') 
     # seg_out = highpass_filter(seg_cr, freq_min=300., direction='forward-backward')
     
     
-    # Note on filter, forward-backward doubles the effective filter order
-    seg_hp = filter(seg_interp, band=[300.0, 9000.0],btype='bandpass',filter_order=12, ftype= 'butter', direction='forward-backward')
-    seg_out = common_reference(seg_hp, reference = 'local', operator = 'median', local_radius = (40, 140)) 
-    #seg_hp = filter(seg_interp, band=[300.0, 9000.0],btype='bandpass',filter_order=6, ftype= 'butter', direction='forward-backward')
-   
+    # Branch 1: Wideband for Sorting (300-6000 Hz)
+    seg_hp_wide = filter(seg_interp, band=[300.0, 6000.0], btype='bandpass', filter_order=12, ftype='butter', direction='forward-backward')
+    seg_out_sorting = common_reference(seg_hp_wide, reference='local', operator='median', local_radius=(40, 140))
+
+    # Branch 2: Narrowband for Motion Estimation (300-3000 Hz)
+    # Filter directly from source (seg_interp) to avoid double high-passing
+    seg_hp_narrow = filter(seg_interp, band=[300.0, 3000.0], btype='bandpass', filter_order=12, ftype='butter', direction='forward-backward')
     
+    # Apply same reference logic (or slightly tweaked if desired)
+    # Using the same referencing ensures the spatial structure is comparable
+    seg_out_motion = common_reference(seg_hp_narrow, reference='local', operator='median', local_radius=(40, 140))
+
 
     fig, axs = plt.subplots(1,2, figsize=(8,6), sharey=True)
     axs[0].plot(similarity, np.arange(n_channels))
@@ -191,6 +199,6 @@ def condition_signal(seg, cache_dir, recalc=False, uV_per_bit=.195, uV_thresh=.5
     fig.savefig(cache_dir / 'channel_metrics.png')
     plt.close('all')
 
-    return seg_out
+    return seg_out_motion, seg_out_sorting
 
 
