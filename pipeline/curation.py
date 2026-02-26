@@ -117,7 +117,7 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
         sp_z= ks4_results.spike_positions[:,1]
         sp_t=ks4_results.spike_times
     
-        thr_z=10 #10 microns on zaxis
+        thr_z=150 #150 microns on zaxis
         thr_t=1 #0.000033*30000 # .033ms
         delta_sp_t=np.diff(sp_t)
         delta_sp_z=np.diff(sp_z)
@@ -135,8 +135,58 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
         analyzer.compute(["random_spikes", "templates", "template_similarity", "correlograms"])
         analyzer.compute("unit_locations", method="monopolar_triangulation")
 
-        merge_unit_groups = compute_merge_unit_groups(analyzer,preset="temporal_splits", presence_distance=100)
+        #Merge units that are likely to be the same based on trade off in time
+        #* | "temporal_splits": focused on finding temporal splits using presence distance.
+        #  | It uses the following steps: "num_spikes", "remove_contaminated", "unit_locations",
+        #  | "template_similarity", "presence_distance", "quality_score"
+        #merge_unit_groups = compute_merge_unit_groups(analyzer,preset="temporal_splits", presence_distance=100)
         
+        # 20-9-2025. Note I'm worried that might miss other types of merges, like similarity_correlograms
+        #       * | "similarity_correlograms": mainly focused on template similarity and correlograms.
+        #   | It uses the following steps: "num_spikes", "remove_contaminated", "unit_locations",
+        #   | "template_similarity", "correlogram", "quality_score"
+
+
+        #setting ccg threshould be 0.75, not 0.16, to account for long recordings where similar/same units trade off but have shared spikes
+        #merge_unit_groups = compute_merge_unit_groups(analyzer,preset="similarity_correlograms", correlogram={"corr_diff_thresh": 0.75})
+
+        #for ccg a higher value threshold means more merges, so 0.75 is more permissive than 0.16??
+        # I may have this backwards, 1 is identical, 0 is uncorrelated so higher threshold means they have to be more similar, so fewer merges??
+        # * "correlogram": the cross-correlograms of the two units are similar to each auto-corrleogram (`corr_diff_thresh`)
+        # but merges happen if  (correlogram_diff < params["corr_diff_thresh"]) so higher threshold means more merges??
+        # is it possibly 1-ccg that is used?? so that 0 is identical, 1 is uncorrelated
+        # So low threshold means they have to be more similar, so fewer merges?? trying 0.25
+        merge_unit_groups = compute_merge_unit_groups(analyzer,preset="similarity_correlograms", correlogram={"corr_diff_thresh": 0.25})
+
+
+        #merges happen if  (correlogram_diff < params["corr_diff_thresh"]) so
+
+
+        #default params:
+        #         _default_step_params = {
+        #     "num_spikes": {"min_spikes": 100},
+        #     "snr": {"min_snr": 2},
+        #     "remove_contaminated": {"contamination_thresh": 0.2, "refractory_period_ms": 1.0, "censored_period_ms": 0.3},
+        #     "unit_locations": {"max_distance_um": 150},
+        #     "correlogram": {
+        #         "corr_diff_thresh": 0.16,
+        #         "censor_correlograms_ms": 0.15,
+        #         "sigma_smooth_ms": 0.6,
+        #         "adaptative_window_thresh": 0.5,
+        #     },
+        #     "template_similarity": {"template_diff_thresh": 0.25},
+        #     "presence_distance": {"presence_distance_thresh": 100},
+        #     "knn": {"k_nn": 10},
+        #     "cross_contamination": {
+        #         "cc_thresh": 0.1,
+        #         "p_value": 0.2,
+        #         "refractory_period_ms": 1.0,
+        #         "censored_period_ms": 0.3,
+        #     },
+        #     "quality_score": {"firing_contamination_balance": 1.5, "refractory_period_ms": 1.0, "censored_period_ms": 0.3},
+        # }
+
+
 
         #redundant, bad units
         remove_unit_ids = []
@@ -279,6 +329,7 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
 
 
     n_groups=len(merge_unit_groups) # number of groups to merge 
+    print('Need to merge', n_groups,' groups of clusters')
     newids=np.max(clu0)+range(n_groups)+1 #append new ids, This breaks KS
 
     Wall1=Wall0
@@ -323,7 +374,11 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
             Wall_remove_idx=np.append(Wall_remove_idx,cluster_change_idx)
 
     print('removing', len(set(Wall_remove_idx)),' clusters')
-    Wall1=np.delete(Wall1,Wall_remove_idx.astype(int),axis=0)
+    #print type of Wall and Wall_remove_idx to make sure they are compatible
+    print(type(Wall1), type(Wall_remove_idx))
+    #<class 'numpy.ndarray'> <class 'list'>
+    # Wall1=np.delete(Wall1,Wall_remove_idx.astype(int),axis=0)
+    Wall1 = np.delete(Wall1, np.array(Wall_remove_idx).astype(int), axis=0)
     Wall1_=torch.from_numpy(Wall1)
 
 

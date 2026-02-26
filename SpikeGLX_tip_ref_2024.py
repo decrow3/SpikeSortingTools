@@ -8,9 +8,9 @@ import gc
 import spikeinterface.full as si
 
 #%% Change this code to load your data
-data_dir=   r"/mnt/NPX/Rocky/20240704/Rocky20240704_V1V2_g0/"
+data_dir=   r"/mnt/NPX/Rocky/20230823/Rocky_set0V1medial_g0/"
 
-stream_id = "imec1.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
+stream_id = "imec0.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
 
 #%% Run on a snippet to check params
@@ -20,7 +20,7 @@ seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=
 
 #%%
 # run pipelines
-pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_Rocky20240704_V1V2_g0_imec1')
+pipeline_dir = Path('/mnt/NPX/Rocky/20230823/Sorted/pipeline_results_Rocky_set0V1medial_g0_imec0')
 pipeline_dir.mkdir(parents=True, exist_ok=True)
 
 #%%
@@ -53,8 +53,8 @@ plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
 sorter_params = get_default_sorter_params('kilosort4')
 sorter_params['do_correction'] = False # Turns off drift correction
 sorter_params['save_extra_vars'] = True # required for truncation qc
-sorter_params['Th_universal'] = 9
-sorter_params['Th_learned'] = 8
+sorter_params['Th_universal'] = 12
+sorter_params['Th_learned'] = 9
 sorter_params['duplicate_spike_ms'] = 0.25 #ccgs shouldn't use less than 1ms anyway
 sorter_params['ccg_threshold'] = 0.75 #increased from 0.25, to account for long recordings where similar/same units trade off but have shared spikes
 sorter_params['nearest_chans'] = 20 #up from 10
@@ -92,5 +92,70 @@ except Exception as e:
 print(f'Finished processing')
 
 #%%
+
+#%% Saving out to matlab files
+import numpy as np
+import os
+
+qc_outdir       = pipeline_dir / 'qc'
+waveformsfile   ='waveforms/waveforms.npz'
+refractoryfile  ='refractory/refractory_qc.npz'
+truncation      ='amp_truncation/truncation_qc.npz'
+
+presencefile    ='amp_truncation/present_qc.npz'
+
+
+def load_qc_data(qc_outdir, filename):
+    filepath = Path(qc_outdir) / filename
+    if not filepath.exists():
+        raise FileNotFoundError(f"File {filepath} does not exist.")
+    
+    try:
+        data = np.load(filepath, allow_pickle=True)
+        return data
+    except Exception as e:
+        raise RuntimeError(f"Failed to load {filepath}: {e}")
+
+# Load the data
+waveforms_data = load_qc_data(qc_outdir, waveformsfile)
+refractory_data = load_qc_data(qc_outdir, refractoryfile)
+truncation_data = load_qc_data(qc_outdir, truncation)
+presence_data = load_qc_data(qc_outdir, presencefile)
+
+#Saving out the data to matlab compatible mat files
+import scipy.io as sio
+def save_to_mat(data, filename):
+    """Save numpy data to a .mat file."""
+    try:
+        sio.savemat(filename, data)
+        print(f"Data saved to {filename}")
+    except Exception as e:
+        raise RuntimeError(f"Failed to save data to {filename}: {e}")
+# Define output filenames
+output_waveforms_file = os.path.join(qc_outdir, 'waveforms_data.mat')
+output_refractory_file = os.path.join(qc_outdir, 'refractory_data.mat')
+output_truncation_file = os.path.join(qc_outdir, 'truncation_data.mat')
+output_presence_file = os.path.join(qc_outdir, 'presence_data.mat')
+# Save the data to .mat files
+save_to_mat(waveforms_data, output_waveforms_file)
+save_to_mat(refractory_data, output_refractory_file)
+save_to_mat(truncation_data, output_truncation_file)
+save_to_mat(presence_data, output_presence_file)
+
+
+import glob
+npzFiles = glob.glob("pipeline_dir / 'cur' /cur_sorter_output/ops.npy")
+
+for f in npzFiles:
+    fm = os.path.splitext(f)[0]+'.mat'
+    d = np.load(f,allow_pickle=True)
+    xc=d.item()['xc']
+    yc=d.item()['yc']
+    matout={"xc":xc,"yc":yc}
+    save_to_mat(fm, matout)
+    print('generated ', fm, 'from', f)
+
+# Print confirmation of saved files
+print("All data has been saved successfully.")
 
 

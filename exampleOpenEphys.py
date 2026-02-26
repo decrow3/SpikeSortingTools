@@ -13,14 +13,18 @@ import spikeinterface.full as si
 
 
 #%% Load and concatenate data
-data_dir = Path('/mnt/NPX/Gru/20220412/')#Path('/media/huklab/Data/NPX/Spikesorting/Combining/Gru_2022-0412_Probe1/') #Path('/home/ryanress/code/DataHorwitzLGN/data/raw/2024-12-10_Chihiro/2024-12-10_15-40-46')
-stream_name = "Record Node 101#Neuropix-PXI-100.0"
+data_dir = Path('/mnt/NPX/Brie/2022-06-23/')#Path('/media/huklab/Data/NPX/Spikesorting/Combining/Gru_2022-0412_Probe1/') #Path('/home/ryanress/code/DataHorwitzLGN/data/raw/2024-12-10_Chihiro/2024-12-10_15-40-46')
+stream_name = "Record Node 103#Neuropix-PXI-101.2"
 
 subfolders=[f for f in Path(data_dir).iterdir() if f.is_dir()]
+#keep folders that follow the naming convention of year-month-day_hour-minute-second, just filter out any that don't start with year 202x
+subfolders=[f for f in subfolders if f.name.startswith('202')]
+subfolders=sorted(subfolders) #sort by name, should be chronological order
 
 # Try to load all experiments
 print(f'Loading {subfolders[0]}')
 seg_all = si.read_openephys(subfolders[0], load_sync_timestamps=False, stream_name=stream_name, experiment_names="experiment1")# experiment_names="experiment1")
+
 
 if len(subfolders) > 1:
     for subfolder in subfolders[1:]:
@@ -30,14 +34,31 @@ if len(subfolders) > 1:
 
 #%% Todo, add in probe data manually by seg.set_probe
 import probeinterface 
-record_node = "Record Node 101"
+record_node = "Record Node 103"
+ #Neuropix-PXI-101.0 is first probe, 101.1 is second probe on the PXI, usually V1. I think this is confused with the 101.2 stream for ap data
+stream_name = "Record Node 103#Neuropix-PXI-101.1" #might not match the stream name above, but should match the record node
 exp_id = 1
 settings_file= seg.neo_reader.folder_structure[record_node]["experiments"][exp_id]["settings_file"]
 if Path(settings_file).is_file():
                 probe = probeinterface.read_openephys(
-                    settings_file=settings_file, stream_name=stream_name, raise_error=False
+                    settings_file=settings_file, stream_name=stream_name, raise_error=True
                 )
-seg_all=seg_all.set_probe(probe, in_place=False)
+                print(f'Loaded probe from {settings_file} for stream {stream_name}')
+                #print(probe) for debugging
+                print(probe) #for debugging
+else:
+    probe=None
+    print(f'Could not find settings file {settings_file}, proceeding without probe')
+
+
+
+# check probe is loaded
+if probe is None:
+#    raise ValueError(f'Could not load probe from {settings_file} for stream {stream_name}')
+    print(f'Could not find settings file {settings_file}, proceeding without probe')
+else:
+    # set the probe
+    seg_all=seg_all.set_probe(probe, in_place=False)
 #%%
 #%% Run on a snippet to check params
 # start_time = 0 #lots of motion around 10000s in, but time didn't start at 0?
@@ -46,7 +67,7 @@ seg_all=seg_all.set_probe(probe, in_place=False)
 
 #%%
 # run pipelines
-pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_Gru_20220412_combined')
+pipeline_dir = Path('/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_Brie_20220623_V2V1prb2_combined')
 pipeline_dir.mkdir(parents=True, exist_ok=True)
 
 #%%
@@ -119,6 +140,70 @@ except Exception as e:
 
 print(f'Finished processing')
 
-#%%
+
+#%% Saving out to matlab files
+import numpy as np
+import os
+
+qc_outdir       = pipeline_dir / 'qc'
+waveformsfile   ='waveforms/waveforms.npz'
+refractoryfile  ='refractory/refractory_qc.npz'
+truncation      ='amp_truncation/truncation_qc.npz'
+
+presencefile    ='amp_truncation/present_qc.npz'
+
+
+def load_qc_data(qc_outdir, filename):
+    filepath = Path(qc_outdir) / filename
+    if not filepath.exists():
+        raise FileNotFoundError(f"File {filepath} does not exist.")
+    
+    try:
+        data = np.load(filepath, allow_pickle=True)
+        return data
+    except Exception as e:
+        raise RuntimeError(f"Failed to load {filepath}: {e}")
+
+# Load the data
+waveforms_data = load_qc_data(qc_outdir, waveformsfile)
+refractory_data = load_qc_data(qc_outdir, refractoryfile)
+truncation_data = load_qc_data(qc_outdir, truncation)
+presence_data = load_qc_data(qc_outdir, presencefile)
+
+#Saving out the data to matlab compatible mat files
+import scipy.io as sio
+def save_to_mat(data, filename):
+    """Save numpy data to a .mat file."""
+    try:
+        sio.savemat(filename, data)
+        print(f"Data saved to {filename}")
+    except Exception as e:
+        raise RuntimeError(f"Failed to save data to {filename}: {e}")
+# Define output filenames
+output_waveforms_file = os.path.join(qc_outdir, 'waveforms_data.mat')
+output_refractory_file = os.path.join(qc_outdir, 'refractory_data.mat')
+output_truncation_file = os.path.join(qc_outdir, 'truncation_data.mat')
+output_presence_file = os.path.join(qc_outdir, 'presence_data.mat')
+# Save the data to .mat files
+save_to_mat(waveforms_data, output_waveforms_file)
+save_to_mat(refractory_data, output_refractory_file)
+save_to_mat(truncation_data, output_truncation_file)
+save_to_mat(presence_data, output_presence_file)
+
+
+import glob
+npzFiles = glob.glob("pipeline_dir / 'cur' /cur_sorter_output/ops.npy")
+
+for f in npzFiles:
+    fm = os.path.splitext(f)[0]+'.mat'
+    d = np.load(f,allow_pickle=True)
+    xc=d.item()['xc']
+    yc=d.item()['yc']
+    matout={"xc":xc,"yc":yc}
+    save_to_mat(fm, matout)
+    print('generated ', fm, 'from', f)
+
+# Print confirmation of saved files
+print("All data has been saved successfully.")
 
 
