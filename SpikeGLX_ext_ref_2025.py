@@ -8,9 +8,9 @@ import gc
 import spikeinterface.full as si
 
 #%% Change this code to load your data
-data_dir=   r"/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0/"
+data_dir=   r"/mnt/NPX/Rocky/20240704/Rocky20240704_V1V2_g0/"
 
-stream_id = "imec1.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
+stream_id = "imec0.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
 
 #%% Run on a snippet to check params
@@ -56,7 +56,7 @@ seg_pre_motion_est, seg_pre_sorting = condition_signal(seg, cache_dir=pipeline_d
 #%% Motion issue on SpikeGLX, this may have had more to do with the conditioning failing
 # 'all' setting estimates motion using all algorithms but uses to dredge for motion correction. 
 # Uses seg_pre_sorting for seg_motion
-seg_motion = correct_motion(seg_pre_motion_est, rec_for_sorting=seg_pre_sorting, cache_dir=pipeline_dir / 'motion', recalc=False, method='all')
+seg_motion = correct_motion(seg_pre_motion_est, rec_for_sorting=seg_pre_sorting, cache_dir=pipeline_dir / 'motion', recalc=False, method='dredge')
 plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
 
 # skipping motion correction, just running it in kilosort
@@ -75,6 +75,15 @@ sorter_params['nearest_chans'] = 20 #up from 10
 sorter_params['nearest_templates'] = 200 #up from 100
 sorter_params['max_channel_distance'] = 64 #up from 32
 sorter_params['clear_cache'] = True # Necessary on some larger files to prevent CUDA out of memory errors
+
+# reduce memory pressure:  needed for Rocky 0704 imec0
+sorter_params['nearest_chans'] = 10        # was 20
+sorter_params['nearest_templates'] = 100   # was 200
+sorter_params['max_channel_distance'] = 32 # was 64
+sorter_params['clear_cache'] = True
+sorter_params = dict(sorter_params, **sorter_params)
+
+
 sorter_params = dict(sorter_params, **sorter_params)
 
 #%% Clear seg, this shouldn't help since files are memory mapped. For memory problems try uhang and enable zswap, also set ulimit -v for oom messages

@@ -303,6 +303,7 @@ def plot_motion_output(seg, cache_dir, save_dir=None, plot_stride=30, uV_per_bit
             temporal_bins_s=np.load(dredge_loc / "time_bins.npy"),
             spatial_bins_um=np.load(dredge_loc / "depth_bins.npy"),
         )
+        method = 'dredge'
     if ks_loc.exists() and dc_loc.exists() and med_loc.exists() and dredge_loc.exists():
         method = 'all'
     
