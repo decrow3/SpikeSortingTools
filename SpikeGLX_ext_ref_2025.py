@@ -8,7 +8,7 @@ import gc
 import spikeinterface.full as si
 
 #%% Change this code to load your data
-data_dir=   r"/mnt/NPX/Rocky/20240704/Rocky20240704_V1V2_g0/"
+data_dir=   r"/mnt/NPX/Luke/20260224/Luke02242026_V1V2_RH_g0/"
 
 stream_id = "imec0.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
@@ -36,8 +36,8 @@ pipeline_dir.mkdir(parents=True, exist_ok=True)
 noise_thresh = 0.3 # higher for spikeGLX, around 0.3
 
 # if uV_per_bit==2.34375: #spikeGLX, tip reference, 1.2mV 
-#     uV_thresh=1200 #uV
-uV_thresh = .5e3 #uV, 500uV, this is the default for spikeGLX for external reference, but can be changed to 350 or 400uV if you want to remove more saturation
+uV_thresh=1200 #uV
+#uV_thresh = .5e3 #uV, 500uV, this is the default for spikeGLX for external reference, but can be changed to 350 or 400uV if you want to remove more saturation
 seg_pre_motion_est, seg_pre_sorting = condition_signal(seg, cache_dir=pipeline_dir / 'conditioning', noise_thresh=noise_thresh, uV_thresh=.5e3, recalc=False)
 
 # #%% DEBUG: quick saving out of the preprocessed recording before motion correction
@@ -65,8 +65,8 @@ plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
 sorter_params = get_default_sorter_params('kilosort4')
 sorter_params['do_correction'] = False # Turns off drift correction
 sorter_params['save_extra_vars'] = True # required for truncation qc
-sorter_params['Th_universal'] = 9
-sorter_params['Th_learned'] = 8
+sorter_params['Th_universal'] = 12
+sorter_params['Th_learned'] = 9
 sorter_params['duplicate_spike_ms'] = 0.25 #ccgs shouldn't use less than 1ms anyway
 sorter_params['ccg_threshold'] = 0.75 #increased from 0.25, to account for long recordings where similar/same units trade off but have shared spikes
 sorter_params['nearest_chans'] = 20 #up from 10
@@ -93,8 +93,25 @@ except Exception as e:
     gc.collect()
     # Run Kilosort4
     [ks4_results,ks4_sorter] = sort_ks4(seg_saved, pipeline_dir / 'kilosort4', sorter_params=sorter_params, recalc=False)
-    cur_results = run_cur(seg_saved, ks4_sorter, ks4_results, pipeline_dir / 'cur', recalc=False) # this should save out some merges
-    qc_results = run_qc(seg_saved, cur_results, pipeline_dir / 'qc', recalc=True)
+    #cur_results = run_cur(seg_saved, ks4_sorter, ks4_results, pipeline_dir / 'cur', recalc=True) # this should save out some merges
+    cur_results = run_cur(
+        seg_saved,
+        ks4_sorter,
+        ks4_results,
+        pipeline_dir / 'cur',
+        recalc=True,
+        split_depth_export=False,   # only needed for files that are too big to save
+        depth_overlap_um=75.0,     # boundary overlap
+        depth_split_um=None,       # median unit depth
+    )
+
+    if isinstance(cur_results, dict):
+        if cur_results.get("top") is not None:
+            run_qc(seg_saved, cur_results["top"], pipeline_dir / 'qc_top', recalc=True)
+        if cur_results.get("bot") is not None:
+            run_qc(seg_saved, cur_results["bot"], pipeline_dir / 'qc_bot', recalc=True)
+    else:
+        qc_results = run_qc(seg_saved, cur_results, pipeline_dir / 'qc', recalc=True)
     
 
 # Remove the processed binary

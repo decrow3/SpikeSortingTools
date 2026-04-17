@@ -1,18 +1,17 @@
 #%%
 #Curation with the SortingAnalyzer, to clean up the sorting results
 
+import shutil
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from pathlib import Path
 from tqdm import tqdm
-from spikeinterface import create_sorting_analyzer
 from spikeinterface.curation import remove_duplicated_spikes
 from spikeinterface.curation import remove_redundant_units
 from spikeinterface.curation import curation_tools
 from spikeinterface import create_sorting_analyzer
 from spikeinterface.curation import compute_merge_unit_groups
-from spikeinterface.curation import auto_merge_units
 from spikeinterface.curation import apply_curation
 from spikeinterface.curation import find_redundant_units
 from spikeinterface.core.template_tools import get_template_extremum_channel_peak_shift, get_template_amplitudes
@@ -22,66 +21,35 @@ from spikeinterface.extractors import read_phy
 from spikeinterface.sorters import KilosortSorter
 from kilosort.run_kilosort import save_sorting
 from kilosort.io import load_ops
-
-
-def automerge(analyzer):
-    #Biggest issue is temporal shifts temporal_splits
-
-    # some extensions are required
-    # analyzer.compute(["random_spikes", "templates", "template_similarity", "correlograms"])
-    # analyzer.compute("unit_locations", method="monopolar_triangulation")
-
-    # presence_distance_thresh = [100]
-    # presets = ["temporal_splits"] * len(presence_distance_thresh)
-    # steps_params = [
-    #     {"presence_distance": {"presence_distance_thresh": i}}
-    #     for i in presence_distance_thresh
-    # ]
-    
-
-    # # template_diff_thresh = [0.05, 0.15, 0.25]
-    # # presets += ["x_contaminations"] * len(template_diff_thresh)
-    # # steps_params += [
-    # #     {"template_similarity": {"template_diff_thresh": i}}
-    # #     for i in template_diff_thresh
-    # # ]
-
-    # compute_merge_args={
-    #     "preset": presets,
-    #     "steps_params": steps_params,
-    #     "recursive": True
-    # }
-    compute_merge_args={
-        "preset": "temporal_splits"
-    }#    "recursive": True
-    #} #     "presence_distance_thresh": [100],
-    analyzer_merged = auto_merge_units(
-        sorting_analyzer=analyzer,
-        compute_merge_kwargs=compute_merge_args
-    )
-
-    # merge_unit_groups = get_potential_auto_merge(
-    # analyzer=analyzer,
-    # preset="similarity_correlograms",
-    # resolve_graph=True
-    # )
-
-    # # here we apply the merges
-    # analyzer_merged = analyzer.merge_units(merge_unit_groups=merge_unit_groups)
-    return analyzer_merged
+import copy
 
 
 def remove_duped_spikes(sorter, duped_spikes):
     # I believe it may be this simple
-    cleaned_sorter=sorter #Does this actually make a copy, or just another pointer to the sorter object
+    #cleaned_sorter=sorter #Does this actually make a copy, or just another pointer to the sorter object
+    cleaned_sorter = copy.deepcopy(sorter)
+
+    duped_spikes = np.asarray(duped_spikes, dtype=int)
     len0=len(cleaned_sorter.spikes)
-    cleaned_sorter.spikes=np.delete(cleaned_sorter.spikes,duped_spikes)
+
+    # Ensure we delete along the spike axis (not flatten)
+    cleaned_sorter.spikes = np.delete(cleaned_sorter.spikes, duped_spikes, axis=0)
+
     print(len(cleaned_sorter.spikes), "remaining of ", len0, "total spikes")
 
     return cleaned_sorter
 
 
-def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
+def run_cur(
+    seg,
+    ks4_sorter,
+    ks4_results,
+    cache_dir,
+    recalc=False,
+    split_depth_export=False,
+    depth_overlap_um=75.0,
+    depth_split_um=None,
+):
     '''
     Run the curation pipeline on the given sorted data.
     
@@ -122,9 +90,12 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
         delta_sp_t=np.diff(sp_t)
         delta_sp_z=np.diff(sp_z)
         delta_clu=np.diff(clu)!=0 # not in same cluster
+
         #np.sum((delta_sp_t<thr_t)/len(sp_t))
-        duped_spikes=np.nonzero((delta_sp_t<thr_t)&(delta_sp_z<thr_z)&delta_clu)
-        print(100*len(duped_spikes[0])/len(sp_t),"%  are duped spikes")
+        #duped_spikes=np.nonzero((delta_sp_t<thr_t)&(delta_sp_z<thr_z)&delta_clu)
+        # np.nonzero returns a tuple; use flatnonzero to get a 1D index array
+        duped_spikes = np.flatnonzero((delta_sp_t < thr_t) & (delta_sp_z < thr_z) & delta_clu)
+        print(100*len(duped_spikes)/len(sp_t),"%  are duped spikes")
 
         #Search for spikes that might be duplicated across different units, that are unlikely to be actually different spikes, but may prevent merges
         #duped_spikes=curation_tools.find_duplicated_spikes(ks4_results.spike_times,(0.0001)*30000,"first") #.1ms
@@ -156,8 +127,59 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
         # but merges happen if  (correlogram_diff < params["corr_diff_thresh"]) so higher threshold means more merges??
         # is it possibly 1-ccg that is used?? so that 0 is identical, 1 is uncorrelated
         # So low threshold means they have to be more similar, so fewer merges?? trying 0.25
-        merge_unit_groups = compute_merge_unit_groups(analyzer,preset="similarity_correlograms", correlogram={"corr_diff_thresh": 0.25})
+        #merge_unit_groups = compute_merge_unit_groups(analyzer,preset="similarity_correlograms", correlogram={"corr_diff_thresh": 0.25})
 
+        # NEW WAY 2026-02-24
+        # Running multiple analyses that target different artifacts:
+
+        # "similarity_correlograms": Catches units that coexist in time (e.g., amplitude splits, bursting) by verifying their cross-correlation looks like a single-unit auto-correlation.
+        # "temporal_splits": Catches units that drift in/out of existence (e.g., drift loops) by verifying they are distinct in time but similar in shape/location.
+        # Since these issues are largely orthogonal (one implies temporal overlap, the other implies temporal disjointness), you can run them sequentially or combine their results.
+        
+        # 1. Detect Temporal Splits
+        # High threshold (100) ensures they are very clearly separated in time
+        merges_temporal = compute_merge_unit_groups(
+            analyzer, 
+            preset="temporal_splits", 
+            presence_distance={"presence_distance_thresh": 100}
+        )
+        print(f"Found {len(merges_temporal)} temporal merges.")
+
+        # 2. Detect Similarity/CCG Splits
+        merges_ccg = compute_merge_unit_groups(
+            analyzer,
+            preset="similarity_correlograms", 
+            correlogram={"corr_diff_thresh": 0.25}
+        )
+        print(f"Found {len(merges_ccg)} CCG/Similarity merges.")
+
+        # 3. Consolidate Merges
+        # We need to combine these two lists. 
+        # Since 'compute_merge_unit_groups' returns a list of lists (e.g. [[1, 2], [3, 4, 5]]),
+        # we can just concatenate them and use a graph tool to resolve chaining.
+        
+        raw_merge_list = merges_temporal + merges_ccg
+        
+        # Use simple NetworkX or internal tool to resolve "A-B" and "B-C" -> "A-B-C"
+        # Since 'resolve_merging_graph' is imported from 'curation_tools' (check imports), use it if available.
+        # Otherwise, a simple connected components implementation works:
+        
+        import networkx as nx
+        g = nx.Graph()
+        # Add all unit IDs as nodes (optional, but good for completeness)
+        # Add edges for every merge group
+        for group in raw_merge_list:
+            if len(group) > 1:
+                # Add edges between the first element and all others (implies full connectivity in component)
+                for u in group[1:]:
+                    g.add_edge(group[0], u)
+        
+        # Extract the connected components (these are the final merged groups)
+        final_merge_groups = [list(c) for c in nx.connected_components(g) if len(c) > 1]
+        
+        print(f"Final resolved merge groups: {len(final_merge_groups)}")
+        
+        merge_unit_groups = final_merge_groups
 
         #merges happen if  (correlogram_diff < params["corr_diff_thresh"]) so
 
@@ -199,6 +221,11 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
         sorting_aligned = align_sorting(sorting=ks4_sorter_clean, unit_peak_shifts=unit_peak_shifts)
         redundant_unit_pairs= find_redundant_units(sorting=sorting_aligned, delta_time = 0.4, agreement_threshold=0.2, duplicate_threshold=0.8)
             #Just the main sorter data 'spikes.npy'
+
+        #Always remove existing folder to avoid confusion, but this should be empty if recalc=False
+        if (cache_dir / 'cur_sorter_output').exists():
+            shutil.rmtree(cache_dir / 'cur_sorter_output')
+
         ks4_sorter_clean.save_to_folder(cache_dir / 'cur_sorter_output')
 
         if remove_strategy in ("minimum_shift", "highest_amplitude"):
@@ -237,8 +264,10 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
     # export_to_phy(analyzer, cache_dir / 'clean_sorting_analyzer_phy',copy_binary=False, compute_pc_features=False)
     
     # clear some memory before continuing
-    analyzer=[]
-    seg=[]
+    if "analyzer" in locals():
+        del analyzer
+    if "seg" in locals():
+        del seg
 
     # Prepare curation dictionary
     label_definitions={
@@ -332,7 +361,7 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
     print('Need to merge', n_groups,' groups of clusters')
     newids=np.max(clu0)+range(n_groups)+1 #append new ids, This breaks KS
 
-    Wall1=Wall0
+    Wall1=Wall0.copy() #was Wall1=Wall0, but this is just a pointer, so changes to Wall1 will change Wall0, which we don't want. We want to start with a copy of Wall0 and then remove entries from it, not change the entries in place
     nchan=np.size(Wall0,axis=1)
     ntp=np.size(Wall0,axis=2)
     best_unit_clu=[0]*(n_groups)
@@ -376,6 +405,18 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
     print('removing', len(set(Wall_remove_idx)),' clusters')
     #print type of Wall and Wall_remove_idx to make sure they are compatible
     print(type(Wall1), type(Wall_remove_idx))
+
+    # ADDED SAFETY CHECK for Unit ID vs Index
+    # Verify that unit IDs map 1:1 to indices [0..N-1]
+    # If this fails, deleting by ID will corrupt the Wall matrix.
+    max_id = np.max(ks4_sorter.unit_ids)
+    if max_id >= len(ks4_sorter.unit_ids) or not np.array_equal(np.sort(ks4_sorter.unit_ids), np.arange(len(ks4_sorter.unit_ids))):
+         raise ValueError(
+             f"CRITICAL ERROR: Unit IDs are not consecutive 0..N-1 (Max ID: {max_id}, Count: {len(ks4_sorter.unit_ids)}). "
+             "Direct deletion from Wall matrix using Unit IDs as indices will fail. "
+             "Please remap IDs to row indices before proceeding."
+         )
+
     #<class 'numpy.ndarray'> <class 'list'>
     # Wall1=np.delete(Wall1,Wall_remove_idx.astype(int),axis=0)
     Wall1 = np.delete(Wall1, np.array(Wall_remove_idx).astype(int), axis=0)
@@ -418,7 +459,70 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
     
     import time
     
-    #Saving to Phy    
+    ## NEED TO SPLIT SOMETIMES
+    spike_z0 = ks4_results.spike_positions[:, 1]
+    spike_z1 = np.delete(spike_z0, duped_spikes, axis=0)  # aligns with st1/clu1
+
+    import time
+    import torch
+
+    def _save_subset(out_dir, unit_ids_global):
+        unit_ids_global = np.asarray(unit_ids_global, dtype=np.int64)
+        if unit_ids_global.size == 0:
+            return None
+
+        spike_mask = np.isin(clu_new, unit_ids_global)
+        spk_idx = np.flatnonzero(spike_mask)
+
+        st_sub = st1[spk_idx]
+        tF_sub = np.asarray(tF1_)[spk_idx]
+
+        # remap cluster ids to contiguous [0..n_units_sub-1]
+        u_sub, clu_sub = np.unique(clu_new[spk_idx], return_inverse=True)
+        Wall_sub = Wall1[np.asarray(u_sub, dtype=np.int64), :, :]
+
+        out_dir.mkdir(parents=True, exist_ok=True)
+        save_sorting(
+            ops=ops1,
+            results_dir=out_dir,
+            st=st_sub,
+            clu=clu_sub.astype("int32"),
+            tF=torch.as_tensor(tF_sub),
+            Wall=torch.as_tensor(Wall_sub),
+            imin=0,
+            tic0=time.time(),
+            save_extra_vars=True,  # keep your full_st/full vars behavior
+        )
+
+        np.savez(
+            out_dir / "depth_split_meta.npz",
+            global_unit_ids=u_sub,
+            n_spikes=st_sub.shape[0],
+        )
+        return out_dir
+
+    if split_depth_export:
+        unit_ids = np.unique(clu_new)
+        unit_depth = np.array([np.median(spike_z1[clu_new == u]) for u in unit_ids])
+
+        if depth_split_um is None:
+            depth_split_um = float(np.median(unit_depth))
+
+        top_units = unit_ids[unit_depth >= (depth_split_um - depth_overlap_um)]
+        bot_units = unit_ids[unit_depth <= (depth_split_um + depth_overlap_um)]
+
+        top_dir = _save_subset(newphypath / "depth_top", top_units)
+        bot_dir = _save_subset(newphypath / "depth_bot", bot_units)
+
+        from pipeline import KilosortResults
+        return {
+            "top": KilosortResults(top_dir) if top_dir is not None else None,
+            "bot": KilosortResults(bot_dir) if bot_dir is not None else None,
+        }
+
+    ##
+
+    #Saving to Phy (original single export, no depth splits)
     save_sorting(ops=ops1,results_dir=newphypath,st=st1,clu=clu_new.astype('int32'),tF=tF1_,Wall=Wall1_,imin=0,tic0=time.time(),save_extra_vars=True)
 
     #but phy errors:

@@ -8,8 +8,9 @@ from pathlib import Path
 import spikeinterface.extractors as se
 
 # Set pipeline directories
-pipe0 = Path("/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0")
-pipe1 = Path("/mnt/NPX/Luke/20250804/dredge_pipeline_results_Luke0804_V2V1_g0_imec0")
+#pipe0 = Path("/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0")
+pipe0 = Path("/mnt/NPX/Luke/20251205/pipeline_results_Luke12052025_V1_RH_g0_imec0")
+pipe1 = Path("/mnt/NPX/Luke/20251205/dredge_pipeline_results_Luke12052025_V1_RH_g0_imec0")
 
 # Phy/curated output paths
 phy0_path = pipe0 / "cur" / "cur_sorter_output"

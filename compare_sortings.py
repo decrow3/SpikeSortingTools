@@ -75,16 +75,19 @@ def _show_or_close_figure(fig):
 # pipe0 = Path("/mnt/NPX/Luke/20250804/branchingtest1_pipeline_results_Luke0804_V2V1_g0_imec1")
 # pipe1 = Path("/mnt/NPX/Luke/20250804/branchingtest0_pipeline_results_Luke0804_V2V1_g0_imec1")
 
-pipe0 = Path("/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0")
-pipe1 = Path("/mnt/NPX/Luke/20250804/dredge_pipeline_results_Luke0804_V2V1_g0_imec0")
+#pipe0 = Path("/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0")
+#pipe1 = Path("/mnt/NPX/Luke/20250804/dredge_pipeline_results_Luke0804_V2V1_g0_imec0")
 
 
 # pipe0 = Path("/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec1")
 # pipe1 = Path("/mnt/NPX/Luke/20250804/dredgetest_pipeline_results_Luke0804_V2V1_g0_imec1/")
+pipe0 = Path("/mnt/NPX/Luke/20251205/pipeline_results_Luke12052025_V1_RH_g0_imec0")
+pipe1 = Path("/mnt/NPX/Luke/20251205/dredge_pipeline_results_Luke12052025_V1_RH_g0_imec0")
 
 # Specific Phy/Sorter output paths
 phy0_path = pipe0 / "cur" / "cur_sorter_output"
 phy1_path = pipe1 / "cur" / "cur_sorter_output"
+
 
 # Output directory for comparison results
 out_dir = Path("/mnt/NPX/Luke/20250804/compare_results_ksmotion9000_vs_dregemotion3000")
@@ -100,10 +103,10 @@ min_agreement = 0.5   # Threshold for "well-matched" units
 
 # %%
 print(f"Loading Sorting 0: {phy0_path}")
-sorting0 = se.read_phy(folder_path=str(phy0_path), load_all_cluster_properties=True)
+sorting0 = si.load(phy0_path)
 
 print(f"Loading Sorting 1: {phy1_path}")
-sorting1 = se.read_phy(folder_path=str(phy1_path), load_all_cluster_properties=True)
+sorting1 = si.load(phy1_path)
 
 # Optional: Filter for 'good' units only (comment out to compare all)
 # sorting0 = sorting0.select_units([u for u in sorting0.unit_ids if sorting0.get_property('group')[sorting0.id_to_index(u)] == 'good'])
@@ -950,8 +953,12 @@ plt.figure(figsize=(10, 10))
 try:
     sw.plot_agreement_matrix(cmp, ordered=True, count_text=False, unit_ticks=False)
     plt.title("Ordered Agreement Matrix")
-    plt.show()
-except Exception: pass
+    _show_or_close_figure(plt.gcf())
+except Exception:
+    try:
+        plt.close(plt.gcf())
+    except Exception:
+        pass
 
 # %%
 WE1_DIR = outdir / "we_sorting1"
