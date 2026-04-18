@@ -172,25 +172,8 @@ base_params.update(
 # = fewer but more certain units (directly targets the oversplitting concern).
 param_sweeps = [
     {"run_name": "default"},
-    # Universal threshold (first-pass detection) — Th_learned held at default 9
-    {"run_name": "Thu_lo",  "Th_universal": 9},
-    {"run_name": "Thu_hi",  "Th_universal": 15},
-    # Learned threshold (second-pass template matching) — Th_universal held at default 12
-    {"run_name": "Thl_lo",  "Th_learned": 6},
-    {"run_name": "Thl_hi",  "Th_learned": 12},
-    # Peeling sensitivity test — if duplicate fitting is causal, fewer residual
-    # passes should progressively reduce daughter units created by later peels.
-    {"run_name": "peel1",   "max_peels": 1},
-    {"run_name": "peel2",   "max_peels": 2},
-    {"run_name": "peel3",   "max_peels": 3},
-    # Cross-peel claim-mask tests — evaluate whether duplicate suppression can
-    # recover peel1-like behavior without disabling later peels entirely.
     {"run_name": "claim_tonly",   "cross_peel_claim_ms": 0.25, "cross_peel_claim_um": 0.0},
     {"run_name": "claim_spatial", "cross_peel_claim_ms": 0.25, "cross_peel_claim_um": 75.0},
-    # CCG merge threshold — lower = more aggressive merging of similar units
-    {"run_name": "ccg_lo",  "ccg_threshold": 0.40},
-    {"run_name": "ccg_mid", "ccg_threshold": 0.60},
-    {"run_name": "ccg_hi",  "ccg_threshold": 0.90},
 ]
 
 #%%

@@ -1,6 +1,7 @@
 #%%
 from pathlib import Path
 import json
+import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -50,14 +51,33 @@ PALETTE = ['#2B6CB0', '#C05621', '#276749', '#6B46C1', '#97266D', '#285E61', '#7
 # Configuration
 # =============================================================================
 
-sweep_dir = Path("/mnt/NPX/Luke/20260316/dredge_pipeline_results_Luke03162026_V2V1_RH_g0_imec1/shallow_sweep")
+#_DEFAULT_SWEEP_DIR = "/mnt/NPX/Luke/20260316/dredge_pipeline_results_Luke03162026_V2V1_RH_g0_imec1/shallow_sweep"
+_DEFAULT_SWEEP_DIR = "/mnt/NPX/Luke/20260302/dredge_pipeline_results_Luke03022026_V2V1_RH_g0_imec1/shallow_sweep"
+sweep_dir = Path(os.environ.get('COMPARE_SWEEP_DIR', _DEFAULT_SWEEP_DIR).strip())
 
 FS               = 30_000.0   # Hz
-REF_RUN          = 'default'  # run used as reference for unit matching
+REF_RUN          = os.environ.get('COMPARE_REF_RUN', 'default').strip() or 'default'
+ANALYSIS_STAGE   = os.environ.get('COMPARE_STAGE', 'postcuration').strip().lower() or 'postcuration'
 COINC_TOLERANCE  = 0.5e-3     # seconds — spike coincidence window for matching
 COINC_THRESH     = 0.30       # min fraction of ref spikes that must coincide
 MPCT_THRESH      = 20.0       # max mean missing% to be "well-detected"
 PRESENCE_THRESH  = 0.50       # min presence fraction
+
+STAGE_SUFFIX = '' if ANALYSIS_STAGE == 'postcuration' else f'_{ANALYSIS_STAGE}'
+REF_SUFFIX = '' if REF_RUN == 'default' else f'_ref-{REF_RUN}'
+
+
+def out_name(base_name):
+    """Return an output filename with a reference-run suffix when needed."""
+    p = Path(base_name)
+    return f"{p.stem}{STAGE_SUFFIX}{REF_SUFFIX}{p.suffix}"
+
+
+def get_stage_paths(run_dir):
+    """Return sorter-output and QC paths for the configured analysis stage."""
+    if ANALYSIS_STAGE in ('precuration', 'pre', 'ks4', 'sorter'):
+        return run_dir / 'kilosort4' / 'sorter_output', run_dir / 'qc_pre' / 'amp_truncation'
+    return run_dir / 'cur' / 'cur_sorter_output', run_dir / 'qc' / 'amp_truncation'
 
 # =============================================================================
 # Stimulus-locked split diagnostics (experimental)
@@ -73,19 +93,35 @@ SPLIT_MIN_SPIKES = 300        # skip low-spike units to reduce noise
 
 # Heuristic thresholds for flagging candidates (tune as needed)
 SPLIT_SCORE_THRESH   = 0.55   # (frac1 + frac2) must exceed this
+SPLIT_CHILD2_MIN_FRAC = 0.10  # second child must explain at least this fraction
 SEGREGATION_THRESH   = 0.55   # mean |c1-c2|/(c1+c2) across bins
 ANTICORR_THRESH      = -0.20  # corr(c1, c2) across bins; more negative = stronger handoff
 CONSERVATION_THRESH  = 0.60   # mean (c1+c2)/ref_count across bins with ref_count>0
 MAX_SPLIT_PAGES_PDF  = 60     # cap pages in split diagnostics PDF
+FINE_CCG_WINDOW_S    = 5e-3   # +/- window for pairwise fine-timescale CCG
+FINE_CCG_BIN_S       = 0.2e-3 # seconds per fine CCG bin
+FINE_CCG_NEAR_ZERO_S = 0.5e-3 # summarize near-zero-lag coincidence within +/- this window
+DUPLICATE_NEAR_ZERO_FRAC_THRESH = 0.05   # heuristic: excess near-zero-lag fraction
+DUPLICATE_ZERO_PEAK_RATIO_THRESH = 1.25  # heuristic: near-zero bin exceeds baseline
+
+# Within-run duplicate screen (tests peeling duplication hypothesis directly)
+WITHIN_RUN_NEARBY_DEPTH_UM  = 100.0   # max template-depth separation between candidate pairs
+WITHIN_RUN_MUA_ONLY         = True    # skip good×good pairs — focus on mua-involved pairs
+WITHIN_RUN_MIN_SPIKES       = 200     # min spikes per unit to include in screen
+WITHIN_RUN_TOP_PAIRS_PDF    = 40      # max CCG trace panels per run in fig4
+WITHIN_RUN_RUNS             = ['default', 'claim_tonly', 'claim_spatial', 'peel3', 'peel2', 'peel1']  # runs to compare
 
 # Sorter params to read from each run's spikeinterface_params.json
 TRACKED_SORTER_PARAMS = [
     'Th_universal',
     'Th_learned',
+    'max_peels',
     'ccg_threshold',
     'nearest_chans',
     'max_channel_distance',
     'nearest_templates',
+    'cross_peel_claim_ms',
+    'cross_peel_claim_um',
 ]
 
 # Parameter families to plot in Figure 2. Runs are selected dynamically:
@@ -93,6 +129,7 @@ TRACKED_SORTER_PARAMS = [
 SWEEP_FAMILY_SPECS = [
     ('Detection threshold\n(Th_universal)', 'Th_universal'),
     ('Template threshold\n(Th_learned)', 'Th_learned'),
+    ('Peeling passes\n(max_peels)', 'max_peels'),
     ('CCG merge threshold\n(ccg_threshold)', 'ccg_threshold'),
 ]
 
@@ -100,18 +137,92 @@ SWEEP_FAMILY_SPECS = [
 #%% Data loading helpers
 # =============================================================================
 
-def load_run_data(run_dir):
-    """Load all spike sorting outputs needed for comparison."""
-    cur  = run_dir / 'cur' / 'cur_sorter_output'
-    qc   = run_dir / 'qc' / 'amp_truncation'
-    if not cur.exists():
+def load_unit_depths_from_templates(sorter_out_dir):
+    """Per-unit depth estimated from the peak-RMS channel of each template."""
+    tmpl   = np.load(sorter_out_dir / 'templates.npy')           # (n_units, n_t, n_ch)
+    ch_pos = np.load(sorter_out_dir / 'channel_positions.npy')   # (n_ch, 2)
+    rms    = np.sqrt(np.mean(tmpl ** 2, axis=1))                  # (n_units, n_ch)
+    peak_ch = np.argmax(rms, axis=1)                              # (n_units,)
+    return ch_pos[peak_ch, 1]                                     # y-depth per unit
+
+
+def within_run_duplicate_screen(run_dir, fs=FS):
+    """
+    Cross-CCG screen between nearby units within a single KS4 run.
+    Uses raw KS4 sorter_output (pre-curation) — peeling artifacts are expected
+    to exist before any post-hoc merging or labelling.
+
+    For each pair of units separated by <= WITHIN_RUN_NEARBY_DEPTH_UM, computes
+    a fine-timescale cross-CCG and returns metrics including near-zero-lag excess.
+    A strong near-zero-lag peak between nearby mua units is the direct signature
+    of duplicate-peel detections of the same event.
+
+    Returns list of dicts (one per qualifying pair), or None if data missing.
+    """
+    sorter_out = run_dir / 'kilosort4' / 'sorter_output'
+    if not sorter_out.exists():
         return None
 
-    spike_times    = np.load(cur / 'spike_times.npy')      # samples
-    spike_clusters = np.load(cur / 'spike_clusters.npy')
-    spike_amps     = np.load(cur / 'amplitudes.npy') if (cur / 'amplitudes.npy').exists() else None
+    spike_times    = np.load(sorter_out / 'spike_times.npy').astype(float) / fs
+    spike_clusters = np.load(sorter_out / 'spike_clusters.npy')
+    labels_df      = pd.read_csv(sorter_out / 'cluster_KSLabel.tsv', sep='\t')
+    labels_df.columns = [c.strip() for c in labels_df.columns]
+    label_map      = dict(zip(labels_df.iloc[:, 0].astype(int), labels_df.iloc[:, 1]))
 
-    labels_df = pd.read_csv(cur / 'cluster_KSLabel.tsv', sep='\t')
+    unit_depths = load_unit_depths_from_templates(sorter_out)  # (n_units,)
+
+    by_unit = {}
+    for uid in np.unique(spike_clusters):
+        t = np.sort(spike_times[spike_clusters == uid])
+        if len(t) >= WITHIN_RUN_MIN_SPIKES:
+            by_unit[int(uid)] = t
+
+    uid_list = sorted(by_unit.keys())
+    rows = []
+    for i, ua in enumerate(uid_list):
+        for ub in uid_list[i + 1:]:
+            if ua >= len(unit_depths) or ub >= len(unit_depths):
+                continue
+            depth_diff = abs(float(unit_depths[ua]) - float(unit_depths[ub]))
+            if depth_diff > WITHIN_RUN_NEARBY_DEPTH_UM:
+                continue
+            la = label_map.get(ua, 'unknown')
+            lb = label_map.get(ub, 'unknown')
+            if WITHIN_RUN_MUA_ONLY and (la == 'good' and lb == 'good'):
+                continue
+
+            ccg = fine_ccg_for_pair(by_unit[ua], by_unit[ub])
+            rows.append(dict(
+                unit_a=ua, unit_b=ub,
+                label_a=la, label_b=lb,
+                depth_a=float(unit_depths[ua]),
+                depth_b=float(unit_depths[ub]),
+                depth_diff=depth_diff,
+                n_spikes_a=len(by_unit[ua]),
+                n_spikes_b=len(by_unit[ub]),
+                near_zero_frac=float(ccg['near_zero_frac'])
+                               if np.isfinite(ccg['near_zero_frac']) else np.nan,
+                zero_peak_ratio=float(ccg['zero_peak_ratio'])
+                                if np.isfinite(ccg['zero_peak_ratio']) else np.nan,
+                total_pairs=int(ccg['total_pairs']),
+                near_zero_pairs=int(ccg['near_zero_pairs']),
+                _counts=np.asarray(ccg['counts']).copy(),
+                _bin_centers_s=np.asarray(ccg['bin_centers_s']).copy(),
+            ))
+    return rows
+
+
+def load_run_data(run_dir):
+    """Load all spike sorting outputs needed for comparison."""
+    sorter_out, qc = get_stage_paths(run_dir)
+    if not sorter_out.exists():
+        return None
+
+    spike_times    = np.load(sorter_out / 'spike_times.npy')      # samples
+    spike_clusters = np.load(sorter_out / 'spike_clusters.npy')
+    spike_amps     = np.load(sorter_out / 'amplitudes.npy') if (sorter_out / 'amplitudes.npy').exists() else None
+
+    labels_df = pd.read_csv(sorter_out / 'cluster_KSLabel.tsv', sep='\t')
     labels_df.columns = [c.strip() for c in labels_df.columns]
 
     trunc = np.load(qc / 'truncation_qc.npz') if (qc / 'truncation_qc.npz').exists() else None
@@ -393,6 +504,63 @@ def split_diagnostics_for_pair(ref_times_s, child1_times_s, child2_times_s, bins
     )
 
 
+def fine_ccg_for_pair(times_a_s, times_b_s, window_s=FINE_CCG_WINDOW_S,
+                      bin_s=FINE_CCG_BIN_S, near_zero_s=FINE_CCG_NEAR_ZERO_S):
+    """Compute a fine-timescale cross-correlogram and summary metrics for a pair."""
+    ta = np.sort(np.asarray(times_a_s, float))
+    tb = np.sort(np.asarray(times_b_s, float))
+    edges = np.arange(-window_s, window_s + bin_s, bin_s)
+    centers = (edges[:-1] + edges[1:]) / 2
+
+    if len(ta) == 0 or len(tb) == 0:
+        return dict(
+            bin_centers_s=centers,
+            counts=np.zeros(len(centers), dtype=int),
+            total_pairs=0,
+            near_zero_pairs=0,
+            near_zero_frac=np.nan,
+            zero_peak_ratio=np.nan,
+        )
+
+    dts = []
+    left = 0
+    right = 0
+    for t in ta:
+        while left < len(tb) and tb[left] < (t - window_s):
+            left += 1
+        if right < left:
+            right = left
+        while right < len(tb) and tb[right] <= (t + window_s):
+            right += 1
+        if right > left:
+            dts.append(tb[left:right] - t)
+
+    if dts:
+        all_dt = np.concatenate(dts)
+        counts, _ = np.histogram(all_dt, bins=edges)
+    else:
+        counts = np.zeros(len(centers), dtype=int)
+
+    total_pairs = int(counts.sum())
+    near_zero_mask = np.abs(centers) <= near_zero_s
+    near_zero_pairs = int(counts[near_zero_mask].sum()) if np.any(near_zero_mask) else 0
+    near_zero_frac = (near_zero_pairs / total_pairs) if total_pairs else np.nan
+
+    outer_mask = np.abs(centers) >= (window_s * 0.6)
+    baseline = float(np.median(counts[outer_mask])) if np.any(outer_mask) else 0.0
+    zero_peak = float(counts[near_zero_mask].max()) if np.any(near_zero_mask) else 0.0
+    zero_peak_ratio = (zero_peak / max(baseline, 1.0)) if total_pairs else np.nan
+
+    return dict(
+        bin_centers_s=centers,
+        counts=counts,
+        total_pairs=total_pairs,
+        near_zero_pairs=near_zero_pairs,
+        near_zero_frac=near_zero_frac,
+        zero_peak_ratio=zero_peak_ratio,
+    )
+
+
 # =============================================================================
 #%% Load all run data
 # =============================================================================
@@ -449,7 +617,7 @@ for name, stats in all_stats.items():
     tracked = {k: rp.get(k, np.nan) for k in TRACKED_SORTER_PARAMS}
     summ_rows.append(dict(run=name, **s, **tracked))
 summary_df = pd.DataFrame(summ_rows).set_index('run')
-summary_df.to_csv(sweep_dir / 'sweep_summary.csv')
+summary_df.to_csv(sweep_dir / out_name('sweep_summary.csv'))
 print("\n--- Summary ---")
 print(summary_df[['n_units','n_good','n_well','efficiency','median_mpct']].to_string())
 
@@ -516,23 +684,64 @@ for run_name in [n for n in run_names if n != REF_RUN]:
 
 split_df = pd.DataFrame(split_rows)
 if len(split_df):
+    split_df['fine_ccg_total_pairs'] = np.nan
+    split_df['fine_ccg_near_zero_pairs'] = np.nan
+    split_df['fine_ccg_near_zero_frac'] = np.nan
+    split_df['fine_ccg_zero_peak_ratio'] = np.nan
+    split_df['duplicate_fit_candidate'] = False
+
+    for idx, row in split_df[split_df['flagged']].iterrows():
+        run_name = row['run']
+        u1 = int(row['child1_unit'])
+        u2 = int(row['child2_unit'])
+        oth_by_unit = oth_by_unit_cache.get(run_name, {})
+        ot1 = oth_by_unit.get(u1, np.array([]))
+        ot2 = oth_by_unit.get(u2, np.array([]))
+        ccg = fine_ccg_for_pair(ot1, ot2)
+        split_df.at[idx, 'fine_ccg_total_pairs'] = int(ccg['total_pairs'])
+        split_df.at[idx, 'fine_ccg_near_zero_pairs'] = int(ccg['near_zero_pairs'])
+        split_df.at[idx, 'fine_ccg_near_zero_frac'] = float(ccg['near_zero_frac'])
+        split_df.at[idx, 'fine_ccg_zero_peak_ratio'] = float(ccg['zero_peak_ratio'])
+
+    # Tighten the generic split flag: require a real second child, not just a tiny residue.
+    split_df['flagged'] = (
+        split_df['flagged'].astype(bool) &
+        (split_df['child2_frac'] >= SPLIT_CHILD2_MIN_FRAC)
+    )
+
+    split_df['duplicate_fit_candidate'] = (
+        split_df['flagged'].astype(bool) &
+        np.isfinite(split_df['fine_ccg_near_zero_frac']) &
+        np.isfinite(split_df['fine_ccg_zero_peak_ratio']) &
+        (split_df['fine_ccg_near_zero_frac'] >= DUPLICATE_NEAR_ZERO_FRAC_THRESH) &
+        (split_df['fine_ccg_zero_peak_ratio'] >= DUPLICATE_ZERO_PEAK_RATIO_THRESH)
+    )
+
     split_df = split_df.sort_values(['flagged', 'split_score', 'segregation'], ascending=[False, False, False])
-    split_df.to_csv(sweep_dir / 'split_diagnostics.csv', index=False)
-    print(f"Wrote split diagnostics CSV → {sweep_dir / 'split_diagnostics.csv'}")
+    split_df.to_csv(sweep_dir / out_name('split_diagnostics.csv'), index=False)
+    print(f"Wrote split diagnostics CSV → {sweep_dir / out_name('split_diagnostics.csv')}")
     print("Top flagged candidates:")
     print(split_df[split_df['flagged']].head(12).to_string(index=False))
 
+    if split_df['duplicate_fit_candidate'].any():
+        print("\nTop duplicate-fit candidates:")
+        print(split_df[split_df['duplicate_fit_candidate']].head(12).to_string(index=False))
+
     flagged_counts = split_df[split_df['flagged']].groupby('run').size()
     summary_df['n_flagged_splits_vs_ref'] = [int(flagged_counts.get(r, 0)) for r in summary_df.index]
-    summary_df.to_csv(sweep_dir / 'sweep_summary.csv')
+    duplicate_counts = split_df[split_df['duplicate_fit_candidate']].groupby('run').size()
+    summary_df['n_duplicate_fit_candidates_vs_ref'] = [int(duplicate_counts.get(r, 0)) for r in summary_df.index]
+    summary_df.to_csv(sweep_dir / out_name('sweep_summary.csv'))
     print("\nFlagged split candidates vs reference (by run):")
     print(summary_df[['n_flagged_splits_vs_ref']].to_string())
+    print("\nDuplicate-fit candidates vs reference (by run):")
+    print(summary_df[['n_duplicate_fit_candidates_vs_ref']].to_string())
 else:
     print("No split diagnostics computed (no runs or no eligible units).")
 
 
 if len(split_df) and split_df['flagged'].any():
-    out_pdf = sweep_dir / 'fig_split_diagnostics.pdf'
+    out_pdf = sweep_dir / out_name('fig_split_diagnostics.pdf')
     flagged_df = split_df[split_df['flagged']].head(MAX_SPLIT_PAGES_PDF)
     print(f"Writing split diagnostics PDF ({len(flagged_df)} pages) → {out_pdf}")
 
@@ -566,11 +775,14 @@ if len(split_df) and split_df['flagged'].any():
             t_mid_min = (bins_s[:-1] + bins_s[1:]) / 2 / 60
             frac1 = c1 / np.maximum(s, 1)
 
-            fig, axes = plt.subplots(2, 1, figsize=(7.2, 3.6), sharex=True,
+            ccg = fine_ccg_for_pair(ot1, ot2)
+
+            fig, axes = plt.subplots(3, 1, figsize=(7.2, 5.1), sharex=False,
                                      squeeze=False,
-                                     gridspec_kw=dict(hspace=0.18))
+                                     gridspec_kw=dict(hspace=0.28, height_ratios=[1.2, 1.0, 0.9]))
             ax0 = axes[0, 0]
             ax1 = axes[1, 0]
+            ax2 = axes[2, 0]
 
             ax0.plot(t_mid_min, ref_counts, color='#333', lw=1.1, label='ref spikes/bin')
             ax0.plot(t_mid_min, s,         color='#111', lw=1.4, ls='--', label='coincident (child1∪child2)')
@@ -585,11 +797,23 @@ if len(split_df) and split_df['flagged'].any():
             ax1.set_ylabel('child1 fraction')
             ax1.set_xlabel('Time (min)')
 
+            ax2.bar(ccg['bin_centers_s'] * 1e3, ccg['counts'], width=FINE_CCG_BIN_S * 1e3,
+                    color='#666', edgecolor='none')
+            ax2.axvline(0, color='#aa0000', lw=0.8, ls=':')
+            ax2.set_xlim(-FINE_CCG_WINDOW_S * 1e3, FINE_CCG_WINDOW_S * 1e3)
+            ax2.set_xlabel('Child-child lag (ms)')
+            ax2.set_ylabel('Pair count')
+            ax2.set_title(
+                f"Fine CCG: near-zero frac={ccg['near_zero_frac']:.3f}, peak/base={ccg['zero_peak_ratio']:.2f}",
+                fontsize=7,
+            )
+
             fig.suptitle(
                 f"Split candidate: ref {ref_uid}  vs run '{run_name}'\n"
                 f"top matches: {u1} ({row['child1_frac']*100:.0f}%), {u2} ({row['child2_frac']*100:.0f}%)  "
                 f"score={row['split_score']:.2f}  seg={row['segregation']:.2f}  "
-                f"anticorr={row['anticorr']:.2f}  cons={row['conservation_mean']:.2f}",
+                f"anticorr={row['anticorr']:.2f}  cons={row['conservation_mean']:.2f}  "
+                f"dupCand={bool(row.get('duplicate_fit_candidate', False))}",
                 fontsize=8, y=1.02
             )
 
@@ -664,8 +888,8 @@ ax_cp.set_ylabel('CDF')
 ax_cp.set_title('Unit stability across recording')
 ax_cp.set_xlim(0, 1)
 
-fig1.savefig(sweep_dir / 'fig1_run_overview.pdf')
-fig1.savefig(sweep_dir / 'fig1_run_overview.png')
+fig1.savefig(sweep_dir / out_name('fig1_run_overview.pdf'))
+fig1.savefig(sweep_dir / out_name('fig1_run_overview.png'))
 print("Saved Fig 1")
 
 
@@ -721,10 +945,10 @@ for col, (fam_label, param_key) in enumerate(SWEEP_FAMILY_SPECS):
         if row == n_met - 1:
             ax.set_xlabel(param_key.replace('_', '\n'), fontsize=7)
 
-fig2.suptitle('Quality metrics vs swept Kilosort4 parameters\n(filled circle = reference/default)',
+fig2.suptitle(f'Quality metrics vs swept Kilosort4 parameters\n(filled circle = reference/{REF_RUN})',
               fontsize=8, y=1.01)
-fig2.savefig(sweep_dir / 'fig2_param_sweep.pdf')
-fig2.savefig(sweep_dir / 'fig2_param_sweep.png')
+fig2.savefig(sweep_dir / out_name('fig2_param_sweep.pdf'))
+fig2.savefig(sweep_dir / out_name('fig2_param_sweep.png'))
 print("Saved Fig 2")
 
 
@@ -804,14 +1028,20 @@ pdf_units = [uid for uid in ref_uid_order
              if any(mu is not None for mu, _ in match_table[uid].values())]
 print(f"\n{len(pdf_units)} reference units matched to ≥1 other run → writing per-unit PDF...")
 
-# Sort by depth if spike_positions available, otherwise by spike count
-ref_cur = sweep_dir / f'run_{REF_RUN}' / 'cur' / 'cur_sorter_output'
-pos_file = ref_cur / 'spike_positions.npy'
+# Sort by depth if stage-matched spike_positions are available, otherwise by spike count
+ref_sorter_out, _ = get_stage_paths(sweep_dir / f'run_{REF_RUN}')
+pos_file = ref_sorter_out / 'spike_positions.npy'
 if pos_file.exists():
     sp = np.load(pos_file)
     sc = all_data[REF_RUN]['spike_clusters']
-    unit_depths = {uid: float(np.median(sp[sc == uid, 1])) for uid in pdf_units}
-    pdf_units = sorted(pdf_units, key=lambda u: -unit_depths.get(u, 0))
+    if len(sp) == len(sc):
+        unit_depths = {uid: float(np.median(sp[sc == uid, 1])) for uid in pdf_units}
+        pdf_units = sorted(pdf_units, key=lambda u: -unit_depths.get(u, 0))
+    else:
+        unit_depths = {}
+        ref_stats = all_stats[REF_RUN].set_index('unit_id')
+        pdf_units = sorted(pdf_units,
+                           key=lambda u: -ref_stats.loc[u, 'n_spikes'] if u in ref_stats.index else 0)
 else:
     unit_depths = {}
     ref_stats = all_stats[REF_RUN].set_index('unit_id')
@@ -820,7 +1050,7 @@ else:
 
 non_ref_runs = [n for n in run_names if n != REF_RUN]
 
-with PdfPages(sweep_dir / 'fig3_per_unit.pdf') as pdf:
+with PdfPages(sweep_dir / out_name('fig3_per_unit.pdf')) as pdf:
     for ref_uid in tqdm(pdf_units, desc='Per-unit PDF'):
         matches = match_table[ref_uid]  # {run_name: (uid_or_None, frac)}
         # rows: reference + each other run that has a match
@@ -875,7 +1105,178 @@ with PdfPages(sweep_dir / 'fig3_per_unit.pdf') as pdf:
         pdf.savefig(fig, bbox_inches='tight')
         plt.close(fig)
 
-print(f"Saved per-unit PDF → {sweep_dir / 'fig3_per_unit.pdf'}")
+print(f"Saved per-unit PDF → {sweep_dir / out_name('fig3_per_unit.pdf')}")
+
+
+# =============================================================================
+#%% Figure 4 — Within-run duplicate screen (peeling hypothesis test)
+# =============================================================================
+# Tests the peeling duplication hypothesis directly: if extra peeling passes
+# create near-zero-lag duplicate detections assigned to different templates,
+# nearby mua-unit pairs in default (max_peels=100) should show a strong
+# near-zero-lag cross-CCG peak that is absent in peel1 (max_peels=1).
+# =============================================================================
+
+print("\nRunning within-run duplicate screen...")
+screen_results = {}
+for rn in WITHIN_RUN_RUNS:
+    rd = run_dir_map.get(rn)
+    if rd is None:
+        print(f"  {rn}: run directory not found, skipping")
+        continue
+    rows = within_run_duplicate_screen(rd)
+    if rows is None:
+        print(f"  {rn}: sorter_output not found, skipping")
+        continue
+    screen_results[rn] = rows
+    nz_fracs = [r['near_zero_frac'] for r in rows if np.isfinite(r['near_zero_frac'])]
+    n_flag = sum(1 for r in rows
+                 if np.isfinite(r['near_zero_frac'])
+                 and r['near_zero_frac'] >= DUPLICATE_NEAR_ZERO_FRAC_THRESH
+                 and np.isfinite(r['zero_peak_ratio'])
+                 and r['zero_peak_ratio'] >= DUPLICATE_ZERO_PEAK_RATIO_THRESH)
+    print(f"  {rn}: {len(rows)} nearby pairs, "
+          f"median near_zero_frac={np.nanmedian(nz_fracs):.3f}, "
+          f"{n_flag} pairs exceed duplicate thresholds")
+
+if len(screen_results) >= 1:
+    out_pdf_4 = sweep_dir / out_name('fig4_within_run_ccg.pdf')
+    print(f"Writing within-run CCG figure → {out_pdf_4}")
+
+    with PdfPages(out_pdf_4) as pdf:
+        # --- Page 1: Summary distributions ---
+        n_panels = len(screen_results)
+        fig, axes = plt.subplots(2, n_panels,
+                                 figsize=(3.5 * n_panels, 5.0),
+                                 squeeze=False)
+        fig.suptitle('Within-run nearby-pair CCG summary\n'
+                     '(pre-curation KS4 output; pairs within '
+                     f'{WITHIN_RUN_NEARBY_DEPTH_UM:.0f} µm depth)',
+                     fontsize=8)
+
+        for col_i, (rn, rows) in enumerate(screen_results.items()):
+            nzf   = np.array([r['near_zero_frac']  for r in rows], float)
+            zpr   = np.array([r['zero_peak_ratio'] for r in rows], float)
+            valid = np.isfinite(nzf) & np.isfinite(zpr)
+            color = colors.get(rn, PALETTE[col_i % len(PALETTE)])
+
+            ax0 = axes[0, col_i]
+            bins_nzf = np.linspace(0, min(0.5, np.nanmax(nzf[valid]) + 0.01), 30) if valid.any() else 30
+            ax0.hist(nzf[valid], bins=bins_nzf, color=color, alpha=0.8, edgecolor='none')
+            ax0.axvline(DUPLICATE_NEAR_ZERO_FRAC_THRESH, color='red', lw=0.8, ls='--',
+                        label=f'thresh {DUPLICATE_NEAR_ZERO_FRAC_THRESH}')
+            ax0.set_xlabel('Near-zero-lag fraction', fontsize=7)
+            ax0.set_ylabel('Pair count', fontsize=7)
+            ax0.set_title(rn, fontsize=8)
+            ax0.legend(fontsize=6)
+
+            ax1 = axes[1, col_i]
+            bins_zpr = np.linspace(0, min(10, np.nanmax(zpr[valid]) + 0.5), 30) if valid.any() else 30
+            ax1.hist(zpr[valid], bins=bins_zpr, color=color, alpha=0.8, edgecolor='none')
+            ax1.axvline(DUPLICATE_ZERO_PEAK_RATIO_THRESH, color='red', lw=0.8, ls='--',
+                        label=f'thresh {DUPLICATE_ZERO_PEAK_RATIO_THRESH}')
+            ax1.set_xlabel('Zero-lag peak / baseline ratio', fontsize=7)
+            ax1.set_ylabel('Pair count', fontsize=7)
+            ax1.legend(fontsize=6)
+
+        plt.tight_layout(rect=(0, 0, 1, 0.92))
+        pdf.savefig(fig, bbox_inches='tight')
+        plt.close(fig)
+
+        # --- Page 2+: Scatter near_zero_frac vs zero_peak_ratio with pair labels ---
+        for col_i, (rn, rows) in enumerate(screen_results.items()):
+            nzf = np.array([r['near_zero_frac']  for r in rows], float)
+            zpr = np.array([r['zero_peak_ratio'] for r in rows], float)
+            la  = [r['label_a'] for r in rows]
+            lb  = [r['label_b'] for r in rows]
+            valid = np.isfinite(nzf) & np.isfinite(zpr)
+            color = colors.get(rn, PALETTE[col_i % len(PALETTE)])
+
+            fig, ax = plt.subplots(figsize=(5.5, 4.5))
+            # colour by pair type
+            for pair_type, marker, fc in [('mua×mua', 'o', color),
+                                           ('good×mua', 's', '#aaa'),
+                                           ('good×good', '^', '#ddd')]:
+                if pair_type == 'mua×mua':
+                    mask = valid & np.array([a != 'good' and b != 'good' for a, b in zip(la, lb)], dtype=bool)
+                elif pair_type == 'good×mua':
+                    mask = valid & np.array([(a == 'good') != (b == 'good') for a, b in zip(la, lb)], dtype=bool)
+                else:
+                    mask = valid & np.array([a == 'good' and b == 'good' for a, b in zip(la, lb)], dtype=bool)
+                if mask.any():
+                    ax.scatter(nzf[mask], zpr[mask], s=18, marker=marker,
+                               color=fc, alpha=0.7, label=f'{pair_type} (n={mask.sum()})',
+                               linewidths=0)
+
+            ax.axvline(DUPLICATE_NEAR_ZERO_FRAC_THRESH, color='red', lw=0.8, ls='--')
+            ax.axhline(DUPLICATE_ZERO_PEAK_RATIO_THRESH, color='red', lw=0.8, ls='--')
+            ax.set_xlabel('Near-zero-lag fraction', fontsize=8)
+            ax.set_ylabel('Zero-lag peak / baseline', fontsize=8)
+            ax.set_title(f'{rn} — within-run nearby-pair CCG', fontsize=8)
+            ax.legend(fontsize=7)
+            plt.tight_layout()
+            pdf.savefig(fig, bbox_inches='tight')
+            plt.close(fig)
+
+        # --- CCG trace pages for top pairs (highest near_zero_frac) per run ---
+        for rn, rows in screen_results.items():
+            valid_rows = [r for r in rows
+                          if np.isfinite(r['near_zero_frac']) and r['total_pairs'] > 0]
+            top_rows = sorted(valid_rows, key=lambda r: r['near_zero_frac'], reverse=True)
+            top_rows = top_rows[:WITHIN_RUN_TOP_PAIRS_PDF]
+            if not top_rows:
+                continue
+
+            cols_per_page = 4
+            rows_per_page = 5
+            pairs_per_page = cols_per_page * rows_per_page
+            n_pages = int(np.ceil(len(top_rows) / pairs_per_page))
+
+            for page_i in range(n_pages):
+                batch = top_rows[page_i * pairs_per_page: (page_i + 1) * pairs_per_page]
+                fig, axes_grid = plt.subplots(rows_per_page, cols_per_page,
+                                              figsize=(10.0, 8.5),
+                                              squeeze=False)
+                fig.suptitle(
+                    f'{rn} — top nearby-pair CCGs ranked by near-zero-lag fraction '
+                    f'(page {page_i+1}/{n_pages})',
+                    fontsize=8)
+                color = colors.get(rn, PALETTE[0])
+
+                for panel_i, row in enumerate(batch):
+                    ax = axes_grid[panel_i // cols_per_page][panel_i % cols_per_page]
+                    bc  = row['_bin_centers_s'] * 1e3  # ms
+                    cnt = row['_counts']
+                    ax.bar(bc, cnt, width=(bc[1] - bc[0]) if len(bc) > 1 else 0.2,
+                           color=color, alpha=0.8, edgecolor='none')
+                    ax.axvline(0, color='red', lw=0.6, ls='--')
+                    nzf_v = row['near_zero_frac']
+                    zpr_v = row['zero_peak_ratio']
+                    ax.set_title(
+                        f"u{row['unit_a']}({row['label_a']})×u{row['unit_b']}({row['label_b']})\n"
+                        f"Δdepth={row['depth_diff']:.0f}µm  "
+                        f"nzf={nzf_v:.3f}  zpr={zpr_v:.2f}",
+                        fontsize=5.5)
+                    ax.set_xlabel('Lag (ms)', fontsize=5)
+                    ax.tick_params(labelsize=5)
+
+                # blank unused panels
+                for panel_i in range(len(batch), rows_per_page * cols_per_page):
+                    axes_grid[panel_i // cols_per_page][panel_i % cols_per_page].set_visible(False)
+
+                plt.tight_layout(rect=(0, 0, 1, 0.95))
+                pdf.savefig(fig, bbox_inches='tight')
+                plt.close(fig)
+
+    # Save pair-level CSV for default and peel1
+    for rn, rows in screen_results.items():
+        csv_rows = [{k: v for k, v in r.items() if not k.startswith('_')} for r in rows]
+        csv_df = pd.DataFrame(csv_rows)
+        csv_path = sweep_dir / out_name(f'within_run_screen_{rn}.csv')
+        csv_df.to_csv(csv_path, index=False)
+        print(f"  Wrote {csv_path}")
+
 print("\nDone. Outputs:")
-for f in ['fig1_run_overview.pdf', 'fig2_param_sweep.pdf', 'fig3_per_unit.pdf', 'sweep_summary.csv']:
-    print(f"  {sweep_dir / f}")
+for f in ['fig1_run_overview.pdf', 'fig2_param_sweep.pdf', 'fig3_per_unit.pdf',
+          'fig4_within_run_ccg.pdf', 'sweep_summary.csv']:
+    print(f"  {sweep_dir / out_name(f)}")

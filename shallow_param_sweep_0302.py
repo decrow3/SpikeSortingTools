@@ -14,16 +14,16 @@ import spikeinterface.full as si
 # =============================================================================
 
 #%% Data + pipeline paths
-data_dir     = r"/mnt/NPX/Luke/20260316/Luke03162026_V2V1_RH_g0/"
+data_dir     = r"/mnt/NPX/Luke/20260302/Luke03022026_V2V1_RH_g0/"
 stream_id    = "imec1.ap"
 
-pipeline_dir = Path("/mnt/NPX/Luke/20260316/dredge_pipeline_results_Luke03162026_V2V1_RH_g0_imec1/")
+pipeline_dir = Path("/mnt/NPX/Luke/20260302/dredge_pipeline_results_Luke03022026_V2V1_RH_g0_imec1/")
 _DEFAULT_SWEEP_DIRNAME = "shallow_sweep_claimmask"
 sweep_dir    = pipeline_dir / os.environ.get("SHALLOW_SWEEP_DIRNAME", _DEFAULT_SWEEP_DIRNAME).strip()
 sweep_dir.mkdir(parents=True, exist_ok=True)
 print(f"Sweep outputs will be written to {sweep_dir}")
 
-# Channel selection settings
+# Channel selection settings — same as 0316 for direct comparability
 MARGIN_UM       = 175    # µm either side of dense zone to include
 SURFACE_EXCL_UM = 200    # µm to exclude from surface end (high-y end of probe)
 DENSITY_BIN_UM  = 40     # histogram bin width for density search (2× row pitch)
@@ -32,8 +32,6 @@ TOP_FRACTION    = 1 / 3  # search within top fraction of probe depth range
 # =============================================================================
 #%% Step 1: Load motion-corrected recording
 # =============================================================================
-# Try to reuse the binary from the main dredge pipeline run.
-# If it doesn't exist yet, re-run conditioning + motion correction and save.
 
 motion_corrected_path = pipeline_dir / "preprocessed_recording"
 
@@ -66,9 +64,6 @@ else:
 # =============================================================================
 #%% Step 2: Find peak spike density in the top third of the probe
 # =============================================================================
-# peak_locations were estimated on the pre-motion signal but depth offsets are
-# small enough (<< MARGIN_UM) that they don't affect the density search.
-# Depth convention: y=0 is probe tip (deepest), y increases toward brain surface.
 
 peak_locs = np.load(pipeline_dir / "motion" / "peak_locations.npy")
 peak_y    = peak_locs["y"]
@@ -79,7 +74,6 @@ depth_min  = float(ch_depths.min())
 depth_max  = float(ch_depths.max())
 depth_range = depth_max - depth_min
 
-# Top third of probe, stepping back SURFACE_EXCL_UM from the surface edge
 search_lo = depth_min + depth_range * (1 - TOP_FRACTION)
 search_hi = depth_max - SURFACE_EXCL_UM
 
@@ -98,7 +92,6 @@ hist, edges = np.histogram(search_peaks, bins=bins)
 dense_depth  = float(edges[np.argmax(hist)]) + DENSITY_BIN_UM / 2
 print(f"Peak spike density at {dense_depth:.0f} µm — selecting ±{MARGIN_UM} µm window")
 
-# --- Diagnostic plot: peak density vs depth, marked selection window ----------
 fig, ax = plt.subplots(figsize=(4, 6))
 ax.barh(edges[:-1], hist, height=DENSITY_BIN_UM * 0.9, align='edge', color='steelblue', alpha=0.7)
 ax.axhline(dense_depth, color='red', lw=1.5, label=f'dense centre {dense_depth:.0f} µm')
@@ -137,7 +130,6 @@ np.savez(
     search_hi=search_hi,
 )
 
-# Save once; every sweep run reuses this binary
 shallow_binary_path = sweep_dir / "preprocessed_recording_shallow"
 seg_shallow_saved   = save_binary_recording(seg_shallow, shallow_binary_path, recalc=False)
 del seg_shallow
@@ -146,9 +138,12 @@ gc.collect()
 # =============================================================================
 #%% Step 4: Parameter sweep
 # =============================================================================
-# Base Kilosort4 parameters — same as the main dredge pipeline
-# Claim-mask runs require launching this script from the spikeinterface-claimmask
-# environment so SpikeInterface imports the patched editable Kilosort 4.0.27 package.
+# Focused sweep: default vs the max_peels dose-response (primary question from
+# 0316 dataset) plus the threshold perturbations that produced split candidates
+# there. Claim-mask runs require launching this script from the
+# spikeinterface-claimmask environment so SpikeInterface imports the patched
+# editable Kilosort 4.0.27 package.
+
 base_params = get_default_sorter_params("kilosort4")
 base_params.update(
     do_correction=False,
@@ -166,31 +161,21 @@ base_params.update(
     clear_cache=True,
 )
 
-# Each entry: "run_name" labels the subfolder; remaining keys override base_params.
-# Th_universal and Th_learned are swept independently so their effects are separable.
-# ccg_threshold controls how aggressively similar units are merged — lower = more merging
-# = fewer but more certain units (directly targets the oversplitting concern).
 param_sweeps = [
     {"run_name": "default"},
-    # Universal threshold (first-pass detection) — Th_learned held at default 9
-    {"run_name": "Thu_lo",  "Th_universal": 9},
-    {"run_name": "Thu_hi",  "Th_universal": 15},
-    # Learned threshold (second-pass template matching) — Th_universal held at default 12
-    {"run_name": "Thl_lo",  "Th_learned": 6},
-    {"run_name": "Thl_hi",  "Th_learned": 12},
-    # Peeling sensitivity test — if duplicate fitting is causal, fewer residual
-    # passes should progressively reduce daughter units created by later peels.
-    {"run_name": "peel1",   "max_peels": 1},
-    {"run_name": "peel2",   "max_peels": 2},
-    {"run_name": "peel3",   "max_peels": 3},
+    # max_peels dose-response — primary replication target from 0316
+    {"run_name": "peel1",  "max_peels": 1},
+    {"run_name": "peel2",  "max_peels": 2},
+    {"run_name": "peel3",  "max_peels": 3},
     # Cross-peel claim-mask tests — evaluate whether duplicate suppression can
     # recover peel1-like behavior without disabling later peels entirely.
     {"run_name": "claim_tonly",   "cross_peel_claim_ms": 0.25, "cross_peel_claim_um": 0.0},
     {"run_name": "claim_spatial", "cross_peel_claim_ms": 0.25, "cross_peel_claim_um": 75.0},
-    # CCG merge threshold — lower = more aggressive merging of similar units
-    {"run_name": "ccg_lo",  "ccg_threshold": 0.40},
-    {"run_name": "ccg_mid", "ccg_threshold": 0.60},
-    {"run_name": "ccg_hi",  "ccg_threshold": 0.90},
+    # Threshold perturbations that produced split candidates in 0316
+    {"run_name": "Thu_lo", "Th_universal": 9},
+    {"run_name": "Thu_hi", "Th_universal": 15},
+    {"run_name": "Thl_lo", "Th_learned": 6},
+    {"run_name": "Thl_hi", "Th_learned": 12},
 ]
 
 #%%
