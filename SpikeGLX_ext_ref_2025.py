@@ -8,10 +8,14 @@ import gc
 import spikeinterface.full as si
 
 #%% Change this code to load your data
-data_dir=   r"/mnt/NPX/Rocky/20240704/Rocky20240704_V1V2_g0/"
+data_dir=   r"/mnt/NPX/Luke/20260225/Luke02252026_V1_RH_g0/"
 
 stream_id = "imec0.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
+
+uV_thresh = .5e3 #uV, 500uV, this is the default for spikeGLX for external reference,
+#uV_thresh = 1.2e3 #uV, 1200uV, this is the default for spikeGLX for tip reference, use for pre 2025 data
+
 
 #%% Run on a snippet to check params
 # start_time = 0 #lots of motion around 10000s in, but time didn't start at 0?
@@ -37,8 +41,8 @@ noise_thresh = 0.3 # higher for spikeGLX, around 0.3
 
 # if uV_per_bit==2.34375: #spikeGLX, tip reference, 1.2mV 
 #     uV_thresh=1200 #uV
-uV_thresh = .5e3 #uV, 500uV, this is the default for spikeGLX for external reference, but can be changed to 350 or 400uV if you want to remove more saturation
-seg_pre_motion_est, seg_pre_sorting = condition_signal(seg, cache_dir=pipeline_dir / 'conditioning', noise_thresh=noise_thresh, uV_thresh=.5e3, recalc=False)
+# uV_thresh = .5e3 #uV, 500uV, this is the default for spikeGLX for external reference, but can be changed to 350 or 400uV if you want to remove more saturation
+seg_pre_motion_est, seg_pre_sorting = condition_signal(seg, cache_dir=pipeline_dir / 'conditioning', noise_thresh=noise_thresh, uV_thresh=uV_thresh, recalc=False)
 
 # #%% DEBUG: quick saving out of the preprocessed recording before motion correction
 # save_binary_recording(seg_pre, pipeline_dir / 'preprocessed_recording_premotion', recalc=False)
@@ -67,8 +71,8 @@ plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
 sorter_params = get_default_sorter_params('kilosort4')
 sorter_params['do_correction'] = False # Turns off drift correction
 sorter_params['save_extra_vars'] = True # required for truncation qc
-sorter_params['Th_universal'] = 9
-sorter_params['Th_learned'] = 8
+sorter_params['Th_universal'] = 12#14#9#14#
+sorter_params['Th_learned'] = 9#13#8#12#
 sorter_params['duplicate_spike_ms'] = 0.25 #ccgs shouldn't use less than 1ms anyway
 sorter_params['ccg_threshold'] = 0.75 #increased from 0.25, to account for long recordings where similar/same units trade off but have shared spikes
 sorter_params['nearest_chans'] = 20 #up from 10
@@ -76,12 +80,11 @@ sorter_params['nearest_templates'] = 200 #up from 100
 sorter_params['max_channel_distance'] = 64 #up from 32
 sorter_params['clear_cache'] = True # Necessary on some larger files to prevent CUDA out of memory errors
 
-# reduce memory pressure:  needed for Rocky 0704 imec0
-sorter_params['nearest_chans'] = 10        # was 20
-sorter_params['nearest_templates'] = 100   # was 200
-sorter_params['max_channel_distance'] = 32 # was 64
-sorter_params['clear_cache'] = True
-sorter_params = dict(sorter_params, **sorter_params)
+# somehow this increases the memory load and causes OOMs, I don't know why less chans/templates would cause more memory usage, but it does, so leaving it at the default for now 
+# sorter_params['nearest_chans'] = 40 #up from 10
+# sorter_params['nearest_templates'] = 400 #up from 100
+# sorter_params['max_channel_distance'] = 112 #up from 32
+# sorter_params['clear_cache'] = True # Necessary on some larger files to prevent CUDA out of memory errors
 
 
 sorter_params = dict(sorter_params, **sorter_params)
@@ -101,6 +104,11 @@ except Exception as e:
     print(f'Failed to load sorter or qc with error:\n{e}\nRunning the pipeline again')
     seg_saved = save_binary_recording(seg_motion, pipeline_dir / 'preprocessed_recording', recalc=False)
     del seg_motion
+    try:
+        import torch
+        torch.cuda.empty_cache()
+    except Exception:
+        pass
     gc.collect()
     # Run Kilosort4
     [ks4_results,ks4_sorter] = sort_ks4(seg_saved, pipeline_dir / 'kilosort4', sorter_params=sorter_params, recalc=False)

@@ -9,9 +9,14 @@ import spikeinterface.full as si
 
 #%% Change this code to load your data
 data_dir=   r"/mnt/NPX/Rocky/20230823/Rocky_set0V1medial_g0/"
+#data_dir=   r"/mnt/NPX/Rocky/20240229/Rocky20240229_V1V2_g0/"
 
 stream_id = "imec0.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
+
+uV_thresh = .5e3 #uV, 500uV, this is the default for spikeGLX for external reference,
+uV_thresh = 1.2e3 #uV, 1200uV, this is the default for spikeGLX for tip reference, use for pre 2025 data
+
 
 #%% Run on a snippet to check params
 # start_time = 0 #lots of motion around 10000s in, but time didn't start at 0?
@@ -20,15 +25,25 @@ seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=
 
 #%%
 # run pipelines
-pipeline_dir = Path('/mnt/NPX/Rocky/20230823/Sorted/pipeline_results_Rocky_set0V1medial_g0_imec0')
+#pipeline_dir = Path('/mnt/NPX/Rocky/20230823/Sorted/pipeline_results_Rocky_set0V1medial_g0_imec0')
+# run pipelines
+# last part of data_dir = data_dir.split('/')[-2] # get the last part of the data_dir, this is the experiment name
+sess_name = data_dir.split('/')[-2]  # get the last part of the data_dir, this is the experiment name
+stream_name = stream_id.split('.')[0] # get the stream id without the extension
+#pipeline_dir = Path(f'/home/huklab/Documents/RyanSorting/SpikeSortingTools/pipeline_results_{sess_name}_{stream_name}')
+
+data_root = data_dir.split('/')[0:5] #
+print(f'Using data root {"/".join(data_root)}, pipeline results will be saved in this directory')
+#%%
+pipeline_dir = Path(f'{"/".join(data_root)}/dredge_pipeline_results_{sess_name}_{stream_name}')
+
 pipeline_dir.mkdir(parents=True, exist_ok=True)
 
 #%%
 # condition signal runs 1) bad channel detection 2) . Can we also get a noise over time measure over all channels, may need to censor some completely
 noise_thresh = 0.3 # higher for spikeGLX, around 0.3
 
-uV_thresh=1200 #uV, #spikeGLX, tip reference, 1.2mV 
-seg_pre = condition_signal(seg, cache_dir=pipeline_dir / 'conditioning', noise_thresh=noise_thresh, uV_thresh=uV_thresh, recalc=False)
+seg_pre_motion_est, seg_pre_sorting = condition_signal(seg, cache_dir=pipeline_dir / 'conditioning', noise_thresh=noise_thresh, uV_thresh=uV_thresh, recalc=False)
 
 # #%% DEBUG: quick saving out of the preprocessed recording before motion correction
 # save_binary_recording(seg_pre, pipeline_dir / 'preprocessed_recording_premotion', recalc=False)
@@ -43,8 +58,9 @@ seg_pre = condition_signal(seg, cache_dir=pipeline_dir / 'conditioning', noise_t
 # #shutil.rmtree(pipeline_dir / 'cur')
 # cur_results = run_cur(seg_saved, ks4_sorter, ks4_results, pipeline_dir / 'cur', recalc=False) # this should save out some merges
 
-#%% Motion issue on SpikeGLX, this may have had more to do with the conditioning failing, kilosort4 is actually more robust??
-seg_motion = correct_motion(seg_pre, cache_dir=pipeline_dir / 'motion', recalc=False, method='med')
+#%% Motion issue on SpikeGLX, this may have had more to do with the conditioning failing, kilosort4 is actually more robust??# 'all' setting estimates motion using all algorithms but uses to dredge for motion correction. 
+# Uses seg_pre_sorting for seg_motion
+seg_motion = correct_motion(seg_pre_motion_est, rec_for_sorting=seg_pre_sorting, cache_dir=pipeline_dir / 'motion', recalc=False, method='dredge')
 plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
 
 
@@ -61,11 +77,20 @@ sorter_params['nearest_chans'] = 20 #up from 10
 sorter_params['nearest_templates'] = 200 #up from 100
 sorter_params['max_channel_distance'] = 64 #up from 32
 sorter_params['clear_cache'] = True # Necessary on some larger files to prevent CUDA out of memory errors
+
+# # somehow this increases the memory load and causes OOMs, I don't know why less chans/templates would cause more memory usage, but it does, so leaving it at the default for now 
+# sorter_params['nearest_chans'] = 40 #up from 10
+# sorter_params['nearest_templates'] = 400 #up from 100
+# sorter_params['max_channel_distance'] = 112 #up from 32
+# sorter_params['clear_cache'] = True # Necessary on some larger files to prevent CUDA out of memory errors
+
+
 sorter_params = dict(sorter_params, **sorter_params)
 
 #%% Clear seg, this shouldn't help since files are memory mapped. For memory problems try uhang and enable zswap, also set ulimit -v for oom messages
 del seg
-del seg_pre
+del seg_pre_motion_est
+del seg_pre_sorting
 #%% Run Pipeline
 try:
     ks4_results = KilosortResults(pipeline_dir / 'kilosort4')
@@ -77,6 +102,11 @@ except Exception as e:
     print(f'Failed to load sorter or qc with error:\n{e}\nRunning the pipeline again')
     seg_saved = save_binary_recording(seg_motion, pipeline_dir / 'preprocessed_recording', recalc=False)
     del seg_motion
+    try:
+        import torch
+        torch.cuda.empty_cache()
+    except Exception:
+        pass
     gc.collect()
     # Run Kilosort4
     [ks4_results,ks4_sorter] = sort_ks4(seg_saved, pipeline_dir / 'kilosort4', sorter_params=sorter_params, recalc=False)

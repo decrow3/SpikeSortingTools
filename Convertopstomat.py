@@ -3,7 +3,7 @@ import numpy as np
 import glob
 import os
 from pathlib import Path
-pipeline_dir = Path('/mnt/NPX/Luke/20250724/pipeline_results_Luke0724_V2V1_g0_imec1/') #Path to your pipeline directory
+pipeline_dir = Path('/mnt/NPX/Luke/20260316/dredge_pipeline_results_Luke03162026_V2V1_RH_g0_imec1') #Path to your pipeline directory
 #pipeline_dir = Path('/media/huklab/Data/NPX/Ryansorting/Luke/pipeline_results_Luke0717_V1_g0_imec0_thresh1/')
 
 
