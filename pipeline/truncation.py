@@ -18,7 +18,11 @@ def fit_truncated_sigmoid(x, y, x_min = 8):
     k0 = 1 # slope
     p0 = [x0, k0, A0]
     bounds = ([x_min, 0, 0], [np.inf, np.inf, np.inf])
-    popt, _ = curve_fit(f, x, y, p0=p0, bounds=bounds)
+    try:
+        popt, _ = curve_fit(f, x, y, p0=p0, bounds=bounds)
+    except Exception as e:
+        print(f'Error fitting truncated sigmoid: {e}')
+        popt = [x0, k0, A0]
 
     return popt
 

@@ -72,15 +72,22 @@ def _show_or_close_figure(fig):
 
 # %%
 # Pipeline root directories
-pipe0 = Path("/mnt/NPX/Luke/20250804/branchingtest1_pipeline_results_Luke0804_V2V1_g0_imec1")
-pipe1 = Path("/mnt/NPX/Luke/20250804/branchingtest0_pipeline_results_Luke0804_V2V1_g0_imec1")
+# pipe0 = Path("/mnt/NPX/Luke/20250804/branchingtest1_pipeline_results_Luke0804_V2V1_g0_imec1")
+# pipe1 = Path("/mnt/NPX/Luke/20250804/branchingtest0_pipeline_results_Luke0804_V2V1_g0_imec1")
+
+#pipe0 = Path("/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0")
+#pipe1 = Path("/mnt/NPX/Luke/20250804/dredge_pipeline_results_Luke0804_V2V1_g0_imec0")
+
 
 # pipe0 = Path("/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec1")
 # pipe1 = Path("/mnt/NPX/Luke/20250804/dredgetest_pipeline_results_Luke0804_V2V1_g0_imec1/")
+pipe0 = Path("/mnt/NPX/Luke/20251205/pipeline_results_Luke12052025_V1_RH_g0_imec0")
+pipe1 = Path("/mnt/NPX/Luke/20251205/dredge_pipeline_results_Luke12052025_V1_RH_g0_imec0")
 
 # Specific Phy/Sorter output paths
 phy0_path = pipe0 / "cur" / "cur_sorter_output"
 phy1_path = pipe1 / "cur" / "cur_sorter_output"
+
 
 # Output directory for comparison results
 out_dir = Path("/mnt/NPX/Luke/20250804/compare_results_ksmotion9000_vs_dregemotion3000")
@@ -96,10 +103,10 @@ min_agreement = 0.5   # Threshold for "well-matched" units
 
 # %%
 print(f"Loading Sorting 0: {phy0_path}")
-sorting0 = se.read_phy(folder_path=str(phy0_path), load_all_cluster_properties=True)
+sorting0 = si.load(phy0_path)
 
 print(f"Loading Sorting 1: {phy1_path}")
-sorting1 = se.read_phy(folder_path=str(phy1_path), load_all_cluster_properties=True)
+sorting1 = si.load(phy1_path)
 
 # Optional: Filter for 'good' units only (comment out to compare all)
 # sorting0 = sorting0.select_units([u for u in sorting0.unit_ids if sorting0.get_property('group')[sorting0.id_to_index(u)] == 'good'])
@@ -459,6 +466,275 @@ if len(rows):
     df_match = pd.DataFrame(rows)
     df_match.to_csv(out_dir / "matched_units.csv", index=False)
 
+# --- Quick/simple metrics (units, spikes, duration, matching) ---
+def _iter_matching(matching, unit_ids):
+    """Iterate (unit_id, matched_unit_id) pairs for a matching that might be dict- or array-like."""
+    if hasattr(matching, "items"):
+        yield from matching.items()
+    else:
+        arr = np.asarray(matching)
+        yield from zip(unit_ids, arr)
+
+
+def _safe_agreement(agreement_df: pd.DataFrame, u1: int, u2: int) -> float:
+    try:
+        return float(agreement_df.loc[int(u1), int(u2)])
+    except Exception:
+        try:
+            return float(agreement_df.loc[str(int(u1)), str(int(u2))])
+        except Exception:
+            return float("nan")
+
+
+def _get_good_unit_ids(sorting):
+    """Return unit_ids labeled 'good' if a Phy/Kilosort label property exists, else []."""
+    try:
+        props = sorting.get_property_keys()
+    except Exception:
+        return []
+    label_key = None
+    for k in ["group", "KSLabel", "quality", "cluster_group"]:
+        if k in props:
+            label_key = k
+            break
+    if label_key is None:
+        return []
+    labels = sorting.get_property(label_key)
+    if labels is None:
+        return []
+    labels_norm = [str(x).strip().lower() for x in labels]
+    return [int(uid) for uid, lab in zip(sorting.unit_ids, labels_norm) if lab == "good"]
+
+
+def _load_phy_spike_arrays(phy_folder: Path):
+    """Best-effort load of spike_times (samples) + spike_clusters (cluster id per spike) as memmaps."""
+    phy_folder = Path(phy_folder)
+    st_f = phy_folder / "spike_times.npy"
+    sc_f = phy_folder / "spike_clusters.npy"
+    if not st_f.exists() or not sc_f.exists():
+        return None, None
+    try:
+        st = np.load(st_f, mmap_mode="r", allow_pickle=False)
+        sc = np.load(sc_f, mmap_mode="r", allow_pickle=False)
+        return st, sc
+    except Exception:
+        return None, None
+
+
+def _estimate_duration_s(sorting, phy_folder: Path | None):
+    """Estimate duration in seconds from Phy spike_times if present; fallback to per-unit spike trains."""
+    fs = float(sorting.get_sampling_frequency() or 30000.0)
+    if phy_folder is not None:
+        st, _ = _load_phy_spike_arrays(phy_folder)
+        if st is not None and st.size:
+            try:
+                smin = float(np.min(st))
+                smax = float(np.max(st))
+                return max(0.0, (smax - smin) / fs)
+            except Exception:
+                pass
+    # Fallback (can be slower)
+    max_sample = 0
+    min_sample = None
+    try:
+        for u in sorting.unit_ids:
+            st_u = sorting.get_unit_spike_train(u)
+            if st_u is None or len(st_u) == 0:
+                continue
+            umin = int(np.min(st_u))
+            umax = int(np.max(st_u))
+            max_sample = max(max_sample, umax)
+            min_sample = umin if min_sample is None else min(min_sample, umin)
+        if min_sample is None:
+            return 0.0
+        return max(0.0, (max_sample - min_sample) / fs)
+    except Exception:
+        return 0.0
+
+
+def _get_spike_counts_per_unit(sorting, phy_folder: Path | None):
+    """Return (unit_ids_array, spike_counts_array_aligned)."""
+    unit_ids = np.asarray(sorting.unit_ids, dtype=int)
+    # fast path
+    try:
+        counts = sorting.count_num_spikes_per_unit()
+        if isinstance(counts, dict):
+            arr = np.asarray([int(counts.get(int(u), 0)) for u in unit_ids], dtype=np.int64)
+            return unit_ids, arr
+    except Exception:
+        pass
+    # phy fallback
+    if phy_folder is not None:
+        _, sc = _load_phy_spike_arrays(phy_folder)
+        if sc is not None and sc.size:
+            try:
+                u, c = np.unique(np.asarray(sc, dtype=np.int64), return_counts=True)
+                count_map = dict(zip(u.tolist(), c.tolist()))
+                arr = np.asarray([int(count_map.get(int(uid), 0)) for uid in unit_ids], dtype=np.int64)
+                return unit_ids, arr
+            except Exception:
+                pass
+    # slow fallback
+    arr = []
+    for u in unit_ids:
+        try:
+            arr.append(int(len(sorting.get_unit_spike_train(int(u)))))
+        except Exception:
+            arr.append(0)
+    return unit_ids, np.asarray(arr, dtype=np.int64)
+
+
+def _spike_dominance_topk(spike_counts: np.ndarray, k: int = 10) -> float:
+    spike_counts = np.asarray(spike_counts, dtype=np.int64)
+    total = int(spike_counts.sum())
+    if total <= 0:
+        return 0.0
+    k = int(min(k, spike_counts.size))
+    if k <= 0:
+        return 0.0
+    topk = np.partition(spike_counts, -k)[-k:]
+    return float(int(topk.sum()) / total)
+
+
+def _orphan_fraction_first_last(sorting, phy_folder: Path | None, duration_s: float, window_s: float = 600.0):
+    """Fraction of units with zero spikes in first/last window_s (uses Phy arrays if available)."""
+    unit_ids = np.asarray(sorting.unit_ids, dtype=int)
+    if unit_ids.size == 0 or duration_s <= 0:
+        return 0.0, 0.0, float(window_s)
+
+    window_s = float(min(window_s, max(1.0, duration_s / 4.0)))
+    fs = float(sorting.get_sampling_frequency() or 30000.0)
+    if phy_folder is not None:
+        st, sc = _load_phy_spike_arrays(phy_folder)
+        if st is not None and sc is not None and st.size and sc.size and st.shape[0] == sc.shape[0]:
+            try:
+                # spike_times are typically sorted; use searchsorted to slice windows
+                first_end = int(np.searchsorted(st, window_s * fs, side="right"))
+                last_start = int(np.searchsorted(st, max(0.0, duration_s - window_s) * fs, side="left"))
+                sc_first = np.asarray(sc[:first_end], dtype=np.int64)
+                sc_last = np.asarray(sc[last_start:], dtype=np.int64)
+                first_present = set(np.unique(sc_first).tolist()) if sc_first.size else set()
+                last_present = set(np.unique(sc_last).tolist()) if sc_last.size else set()
+                n = unit_ids.size
+                frac_first = float(sum(int(uid) not in first_present for uid in unit_ids) / n)
+                frac_last = float(sum(int(uid) not in last_present for uid in unit_ids) / n)
+                return frac_first, frac_last, window_s
+            except Exception:
+                pass
+
+    # fallback using per-unit spike trains (slower)
+    n = unit_ids.size
+    no_first = 0
+    no_last = 0
+    for uid in unit_ids:
+        try:
+            st_u = sorting.get_unit_spike_train(int(uid)).astype(np.float64) / fs
+        except Exception:
+            st_u = np.asarray([], dtype=float)
+        if st_u.size == 0:
+            no_first += 1
+            no_last += 1
+            continue
+        if not np.any(st_u <= window_s):
+            no_first += 1
+        if not np.any(st_u >= (duration_s - window_s)):
+            no_last += 1
+    return float(no_first / n), float(no_last / n), window_s
+
+
+def _iqr(x: np.ndarray):
+    x = np.asarray(x, dtype=float)
+    x = x[np.isfinite(x)]
+    if x.size == 0:
+        return float("nan"), float("nan"), float("nan")
+    q25, q50, q75 = np.percentile(x, [25, 50, 75])
+    return float(q25), float(q50), float(q75)
+
+
+def _threshold_counts(spike_counts: np.ndarray, thresholds=(50, 100, 500, 1000)):
+    spike_counts = np.asarray(spike_counts, dtype=np.int64)
+    return {f"n_units_spikes_ge_{int(t)}": int(np.sum(spike_counts >= int(t))) for t in thresholds}
+
+
+# Per-sorting unit+spike summaries
+dur0_s = _estimate_duration_s(sorting0, phy0_path)
+dur1_s = _estimate_duration_s(sorting1, phy1_path)
+
+u0, scount0 = _get_spike_counts_per_unit(sorting0, phy0_path)
+u1, scount1 = _get_spike_counts_per_unit(sorting1, phy1_path)
+
+fr0 = scount0.astype(float) / max(1.0, float(dur0_s))
+fr1 = scount1.astype(float) / max(1.0, float(dur1_s))
+
+spk_q25_0, spk_med_0, spk_q75_0 = _iqr(scount0)
+spk_q25_1, spk_med_1, spk_q75_1 = _iqr(scount1)
+fr_q25_0, fr_med_0, fr_q75_0 = _iqr(fr0)
+fr_q25_1, fr_med_1, fr_q75_1 = _iqr(fr1)
+
+dom_top10_0 = _spike_dominance_topk(scount0, k=10)
+dom_top10_1 = _spike_dominance_topk(scount1, k=10)
+
+orf_first_0, orf_last_0, orf_win_0 = _orphan_fraction_first_last(sorting0, phy0_path, dur0_s, window_s=600.0)
+orf_first_1, orf_last_1, orf_win_1 = _orphan_fraction_first_last(sorting1, phy1_path, dur1_s, window_s=600.0)
+
+good0 = _get_good_unit_ids(sorting0)
+good1 = _get_good_unit_ids(sorting1)
+good0_set = set(good0)
+good1_set = set(good1)
+
+spikes_good_0 = int(np.sum([int(scount0[np.where(u0 == int(uid))[0][0]]) for uid in good0 if int(uid) in set(u0.tolist())])) if len(good0) else 0
+spikes_good_1 = int(np.sum([int(scount1[np.where(u1 == int(uid))[0][0]]) for uid in good1 if int(uid) in set(u1.tolist())])) if len(good1) else 0
+
+# Matching/unmatched rates and agreement distribution for best matches
+unmatched_0 = 0
+matched_agreements = []
+for uu, vv in _iter_matching(m1_to_2, sorting0.unit_ids):
+    if int(vv) == -1:
+        unmatched_0 += 1
+    else:
+        matched_agreements.append(_safe_agreement(agreement_scores, int(uu), int(vv)))
+
+unmatched_1 = 0
+for uu, vv in _iter_matching(m2_to_1, sorting1.unit_ids):
+    if int(vv) == -1:
+        unmatched_1 += 1
+
+matched_agreements = np.asarray(matched_agreements, dtype=float)
+agree_mean = float(np.nanmean(matched_agreements)) if matched_agreements.size else float("nan")
+agree_median = float(np.nanmedian(matched_agreements)) if matched_agreements.size else float("nan")
+agree_max = float(np.nanmax(matched_agreements)) if matched_agreements.size else float("nan")
+
+def _frac_ge(x, thr):
+    x = np.asarray(x, dtype=float)
+    x = x[np.isfinite(x)]
+    if x.size == 0:
+        return float("nan")
+    return float(np.mean(x >= float(thr)))
+
+agree_frac_ge_02 = _frac_ge(matched_agreements, 0.2)
+agree_frac_ge_05 = _frac_ge(matched_agreements, 0.5)
+agree_frac_ge_08 = _frac_ge(matched_agreements, 0.8)
+
+# Good-unit retention: fraction of good units with any match in the other sorting
+good0_with_match = 0
+for uu, vv in _iter_matching(m1_to_2, sorting0.unit_ids):
+    if int(uu) in good0_set and int(vv) != -1:
+        good0_with_match += 1
+good1_with_match = 0
+for uu, vv in _iter_matching(m2_to_1, sorting1.unit_ids):
+    if int(uu) in good1_set and int(vv) != -1:
+        good1_with_match += 1
+
+print(f"[quick metrics] duration_s: motion0={dur0_s:.1f}, motion1={dur1_s:.1f}")
+print(f"[quick metrics] spikes/unit median[IQR]: motion0={spk_med_0:.0f}[{spk_q25_0:.0f},{spk_q75_0:.0f}] motion1={spk_med_1:.0f}[{spk_q25_1:.0f},{spk_q75_1:.0f}]")
+print(f"[quick metrics] firing_rate(Hz) median[IQR]: motion0={fr_med_0:.3g}[{fr_q25_0:.3g},{fr_q75_0:.3g}] motion1={fr_med_1:.3g}[{fr_q25_1:.3g},{fr_q75_1:.3g}]")
+print(f"[quick metrics] frac FR<0.1Hz: motion0={float(np.mean(fr0 < 0.1)):.3f} motion1={float(np.mean(fr1 < 0.1)):.3f}")
+print(f"[quick metrics] frac FR>10Hz:  motion0={float(np.mean(fr0 > 10.0)):.3f} motion1={float(np.mean(fr1 > 10.0)):.3f}")
+print(f"[quick metrics] top10 spike dominance: motion0={dom_top10_0:.3f} motion1={dom_top10_1:.3f}")
+print(f"[quick metrics] orphan frac (no spikes) first/last {orf_win_0/60.0:.1f}min: motion0={orf_first_0:.3f}/{orf_last_0:.3f} motion1={orf_first_1:.3f}/{orf_last_1:.3f}")
+print(f"[quick metrics] unmatched rate: motion0={unmatched_0}/{len(sorting0.unit_ids)} motion1={unmatched_1}/{len(sorting1.unit_ids)}")
+print(f"[quick metrics] agreement(best-match) mean/median/max: {agree_mean:.3f}/{agree_median:.3f}/{agree_max:.3f}")
+
 # Summary JSON
 summary = {
     "pipe0": str(pipe0),
@@ -467,7 +743,53 @@ summary = {
     "n_units_0": int(len(sorting0.unit_ids)),
     "n_units_1": int(len(sorting1.unit_ids)),
     "n_matched": int(n_matched),
+    "duration_s_0": float(dur0_s),
+    "duration_s_1": float(dur1_s),
+    "spike_count_total_0": int(np.sum(scount0)),
+    "spike_count_total_1": int(np.sum(scount1)),
+    "spikes_per_unit_q25_0": float(spk_q25_0),
+    "spikes_per_unit_median_0": float(spk_med_0),
+    "spikes_per_unit_q75_0": float(spk_q75_0),
+    "spikes_per_unit_q25_1": float(spk_q25_1),
+    "spikes_per_unit_median_1": float(spk_med_1),
+    "spikes_per_unit_q75_1": float(spk_q75_1),
+    "firing_rate_hz_q25_0": float(fr_q25_0),
+    "firing_rate_hz_median_0": float(fr_med_0),
+    "firing_rate_hz_q75_0": float(fr_q75_0),
+    "firing_rate_hz_q25_1": float(fr_q25_1),
+    "firing_rate_hz_median_1": float(fr_med_1),
+    "firing_rate_hz_q75_1": float(fr_q75_1),
+    "frac_units_fr_lt_0p1hz_0": float(np.mean(fr0 < 0.1)) if fr0.size else float("nan"),
+    "frac_units_fr_lt_0p1hz_1": float(np.mean(fr1 < 0.1)) if fr1.size else float("nan"),
+    "frac_units_fr_gt_10hz_0": float(np.mean(fr0 > 10.0)) if fr0.size else float("nan"),
+    "frac_units_fr_gt_10hz_1": float(np.mean(fr1 > 10.0)) if fr1.size else float("nan"),
+    "spike_dominance_top10_0": float(dom_top10_0),
+    "spike_dominance_top10_1": float(dom_top10_1),
+    "orphan_frac_first_window_0": float(orf_first_0),
+    "orphan_frac_last_window_0": float(orf_last_0),
+    "orphan_frac_first_window_1": float(orf_first_1),
+    "orphan_frac_last_window_1": float(orf_last_1),
+    "orphan_window_s": float(orf_win_0),
+    "n_unmatched_0": int(unmatched_0),
+    "n_unmatched_1": int(unmatched_1),
+    "agreement_best_match_mean": float(agree_mean),
+    "agreement_best_match_median": float(agree_median),
+    "agreement_best_match_max": float(agree_max),
+    "agreement_best_match_frac_ge_0p2": float(agree_frac_ge_02),
+    "agreement_best_match_frac_ge_0p5": float(agree_frac_ge_05),
+    "agreement_best_match_frac_ge_0p8": float(agree_frac_ge_08),
+    "n_good_units_0": int(len(good0)),
+    "n_good_units_1": int(len(good1)),
+    "n_spikes_good_units_0": int(spikes_good_0),
+    "n_spikes_good_units_1": int(spikes_good_1),
+    "good_unit_retention_0": (float(good0_with_match) / float(len(good0))) if len(good0) else float("nan"),
+    "good_unit_retention_1": (float(good1_with_match) / float(len(good1))) if len(good1) else float("nan"),
 }
+
+# Add threshold-count metrics (units with >= N spikes)
+summary.update({f"motion0_{k}": v for k, v in _threshold_counts(scount0).items()})
+summary.update({f"motion1_{k}": v for k, v in _threshold_counts(scount1).items()})
+
 try:
     (out_dir / "summary.json").write_text(json.dumps(summary, indent=2))
 except Exception:
@@ -631,8 +953,12 @@ plt.figure(figsize=(10, 10))
 try:
     sw.plot_agreement_matrix(cmp, ordered=True, count_text=False, unit_ticks=False)
     plt.title("Ordered Agreement Matrix")
-    plt.show()
-except Exception: pass
+    _show_or_close_figure(plt.gcf())
+except Exception:
+    try:
+        plt.close(plt.gcf())
+    except Exception:
+        pass
 
 # %%
 WE1_DIR = outdir / "we_sorting1"

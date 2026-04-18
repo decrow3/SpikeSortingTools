@@ -15,7 +15,7 @@ from scipy.signal import medfilt
 
 from spikeinterface.core.motion import Motion
 
-def correct_motion(seg, cache_dir, detect_peak_args={}, localize_peak_args={}, ks_motion_args={}, dredge_motion_args={},  dc_motion_args={}, med_motion_args={}, job_kwargs={}, recalc=False, method='med', median_filter_size=1, rec_for_sorting=None):
+def correct_motion(seg, cache_dir, detect_peak_args={}, localize_peak_args={}, ks_motion_args={}, dredge_motion_args={},  dc_motion_args={}, med_motion_args={}, job_kwargs={}, recalc=False, method='all', median_filter_size=1, rec_for_sorting=None):
 
     print('Starting motion correction...')
 

@@ -1,6 +1,7 @@
 #%%
 #Curation with the SortingAnalyzer, to clean up the sorting results
 
+import shutil
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
@@ -20,19 +21,35 @@ from spikeinterface.extractors import read_phy
 from spikeinterface.sorters import KilosortSorter
 from kilosort.run_kilosort import save_sorting
 from kilosort.io import load_ops
+import copy
 
 
 def remove_duped_spikes(sorter, duped_spikes):
     # I believe it may be this simple
-    cleaned_sorter=sorter #Does this actually make a copy, or just another pointer to the sorter object
+    #cleaned_sorter=sorter #Does this actually make a copy, or just another pointer to the sorter object
+    cleaned_sorter = copy.deepcopy(sorter)
+
+    duped_spikes = np.asarray(duped_spikes, dtype=int)
     len0=len(cleaned_sorter.spikes)
-    cleaned_sorter.spikes=np.delete(cleaned_sorter.spikes,duped_spikes)
+
+    # Ensure we delete along the spike axis (not flatten)
+    cleaned_sorter.spikes = np.delete(cleaned_sorter.spikes, duped_spikes, axis=0)
+
     print(len(cleaned_sorter.spikes), "remaining of ", len0, "total spikes")
 
     return cleaned_sorter
 
 
-def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
+def run_cur(
+    seg,
+    ks4_sorter,
+    ks4_results,
+    cache_dir,
+    recalc=False,
+    split_depth_export=False,
+    depth_overlap_um=75.0,
+    depth_split_um=None,
+):
     '''
     Run the curation pipeline on the given sorted data.
     
@@ -73,9 +90,12 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
         delta_sp_t=np.diff(sp_t)
         delta_sp_z=np.diff(sp_z)
         delta_clu=np.diff(clu)!=0 # not in same cluster
+
         #np.sum((delta_sp_t<thr_t)/len(sp_t))
-        duped_spikes=np.nonzero((delta_sp_t<thr_t)&(delta_sp_z<thr_z)&delta_clu)
-        print(100*len(duped_spikes[0])/len(sp_t),"%  are duped spikes")
+        #duped_spikes=np.nonzero((delta_sp_t<thr_t)&(delta_sp_z<thr_z)&delta_clu)
+        # np.nonzero returns a tuple; use flatnonzero to get a 1D index array
+        duped_spikes = np.flatnonzero((delta_sp_t < thr_t) & (delta_sp_z < thr_z) & delta_clu)
+        print(100*len(duped_spikes)/len(sp_t),"%  are duped spikes")
 
         #Search for spikes that might be duplicated across different units, that are unlikely to be actually different spikes, but may prevent merges
         #duped_spikes=curation_tools.find_duplicated_spikes(ks4_results.spike_times,(0.0001)*30000,"first") #.1ms
@@ -201,6 +221,11 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
         sorting_aligned = align_sorting(sorting=ks4_sorter_clean, unit_peak_shifts=unit_peak_shifts)
         redundant_unit_pairs= find_redundant_units(sorting=sorting_aligned, delta_time = 0.4, agreement_threshold=0.2, duplicate_threshold=0.8)
             #Just the main sorter data 'spikes.npy'
+
+        #Always remove existing folder to avoid confusion, but this should be empty if recalc=False
+        if (cache_dir / 'cur_sorter_output').exists():
+            shutil.rmtree(cache_dir / 'cur_sorter_output')
+
         ks4_sorter_clean.save_to_folder(cache_dir / 'cur_sorter_output')
 
         if remove_strategy in ("minimum_shift", "highest_amplitude"):
@@ -239,8 +264,10 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
     # export_to_phy(analyzer, cache_dir / 'clean_sorting_analyzer_phy',copy_binary=False, compute_pc_features=False)
     
     # clear some memory before continuing
-    analyzer=[]
-    seg=[]
+    if "analyzer" in locals():
+        del analyzer
+    if "seg" in locals():
+        del seg
 
     # Prepare curation dictionary
     label_definitions={
@@ -432,7 +459,70 @@ def run_cur(seg, ks4_sorter, ks4_results, cache_dir, recalc=False):
     
     import time
     
-    #Saving to Phy    
+    ## NEED TO SPLIT SOMETIMES
+    spike_z0 = ks4_results.spike_positions[:, 1]
+    spike_z1 = np.delete(spike_z0, duped_spikes, axis=0)  # aligns with st1/clu1
+
+    import time
+    import torch
+
+    def _save_subset(out_dir, unit_ids_global):
+        unit_ids_global = np.asarray(unit_ids_global, dtype=np.int64)
+        if unit_ids_global.size == 0:
+            return None
+
+        spike_mask = np.isin(clu_new, unit_ids_global)
+        spk_idx = np.flatnonzero(spike_mask)
+
+        st_sub = st1[spk_idx]
+        tF_sub = np.asarray(tF1_)[spk_idx]
+
+        # remap cluster ids to contiguous [0..n_units_sub-1]
+        u_sub, clu_sub = np.unique(clu_new[spk_idx], return_inverse=True)
+        Wall_sub = Wall1[np.asarray(u_sub, dtype=np.int64), :, :]
+
+        out_dir.mkdir(parents=True, exist_ok=True)
+        save_sorting(
+            ops=ops1,
+            results_dir=out_dir,
+            st=st_sub,
+            clu=clu_sub.astype("int32"),
+            tF=torch.as_tensor(tF_sub),
+            Wall=torch.as_tensor(Wall_sub),
+            imin=0,
+            tic0=time.time(),
+            save_extra_vars=True,  # keep your full_st/full vars behavior
+        )
+
+        np.savez(
+            out_dir / "depth_split_meta.npz",
+            global_unit_ids=u_sub,
+            n_spikes=st_sub.shape[0],
+        )
+        return out_dir
+
+    if split_depth_export:
+        unit_ids = np.unique(clu_new)
+        unit_depth = np.array([np.median(spike_z1[clu_new == u]) for u in unit_ids])
+
+        if depth_split_um is None:
+            depth_split_um = float(np.median(unit_depth))
+
+        top_units = unit_ids[unit_depth >= (depth_split_um - depth_overlap_um)]
+        bot_units = unit_ids[unit_depth <= (depth_split_um + depth_overlap_um)]
+
+        top_dir = _save_subset(newphypath / "depth_top", top_units)
+        bot_dir = _save_subset(newphypath / "depth_bot", bot_units)
+
+        from pipeline import KilosortResults
+        return {
+            "top": KilosortResults(top_dir) if top_dir is not None else None,
+            "bot": KilosortResults(bot_dir) if bot_dir is not None else None,
+        }
+
+    ##
+
+    #Saving to Phy (original single export, no depth splits)
     save_sorting(ops=ops1,results_dir=newphypath,st=st1,clu=clu_new.astype('int32'),tF=tF1_,Wall=Wall1_,imin=0,tic0=time.time(),save_extra_vars=True)
 
     #but phy errors:
