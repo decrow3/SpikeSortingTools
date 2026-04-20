@@ -81,8 +81,8 @@ def _show_or_close_figure(fig):
 
 # pipe0 = Path("/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec1")
 # pipe1 = Path("/mnt/NPX/Luke/20250804/dredgetest_pipeline_results_Luke0804_V2V1_g0_imec1/")
-pipe0 = Path("/mnt/NPX/Luke/20251205/pipeline_results_Luke12052025_V1_RH_g0_imec0")
-pipe1 = Path("/mnt/NPX/Luke/20251205/dredge_pipeline_results_Luke12052025_V1_RH_g0_imec0")
+pipe1= Path("/mnt/NPX/Luke/20260316/patched_pipeline_results_Luke03162026_V2V1_RH_g0_imec1")
+pipe0= Path("/mnt/NPX/Luke/20260316/dredge_pipeline_results_Luke03162026_V2V1_RH_g0_imec1")
 
 # Specific Phy/Sorter output paths
 phy0_path = pipe0 / "cur" / "cur_sorter_output"
@@ -90,7 +90,7 @@ phy1_path = pipe1 / "cur" / "cur_sorter_output"
 
 
 # Output directory for comparison results
-out_dir = Path("/mnt/NPX/Luke/20250804/compare_results_ksmotion9000_vs_dregemotion3000")
+out_dir = Path("/mnt/NPX/Luke/20260316/compare_results_dredge_vs_patched_Luke03162026_V2V1_RH_g0_imec1")
 out_dir.mkdir(parents=True, exist_ok=True)
 
 # Comparison Params
