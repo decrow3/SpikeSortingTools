@@ -51,8 +51,8 @@ PALETTE = ['#2B6CB0', '#C05621', '#276749', '#6B46C1', '#97266D', '#285E61', '#7
 # Configuration
 # =============================================================================
 
-#_DEFAULT_SWEEP_DIR = "/mnt/NPX/Luke/20260316/dredge_pipeline_results_Luke03162026_V2V1_RH_g0_imec1/shallow_sweep"
-_DEFAULT_SWEEP_DIR = "/mnt/NPX/Luke/20260302/dredge_pipeline_results_Luke03022026_V2V1_RH_g0_imec1/shallow_sweep"
+_DEFAULT_SWEEP_DIR = "/mnt/NPX/Luke/20260316/dredge_pipeline_results_Luke03162026_V2V1_RH_g0_imec1/shallow_sweep"
+#_DEFAULT_SWEEP_DIR = "/mnt/NPX/Luke/20260302/dredge_pipeline_results_Luke03022026_V2V1_RH_g0_imec1/shallow_sweep"
 sweep_dir = Path(os.environ.get('COMPARE_SWEEP_DIR', _DEFAULT_SWEEP_DIR).strip())
 
 FS               = 30_000.0   # Hz
@@ -333,9 +333,12 @@ def unit_stats(data, fs=FS):
         match = labels_df[labels_df.iloc[:, 0] == uid]
         label = match.iloc[0, 1] if len(match) > 0 else 'unknown'
 
+        n_spikes = int((spike_clusters == uid).sum())
+        fr_hz = (float(n_spikes) / rec_dur) if (rec_dur and np.isfinite(rec_dur) and rec_dur > 0) else np.nan
+
         rows.append(dict(unit_id=uid, mean_mpct=mean_mpct, n_windows=n_windows,
-                         presence_frac=presence_frac,
-                         n_spikes=int((spike_clusters == uid).sum()), label=label))
+                 presence_frac=presence_frac,
+                 n_spikes=n_spikes, firing_rate_hz=fr_hz, label=label))
     return pd.DataFrame(rows)
 
 
@@ -344,11 +347,30 @@ def run_summary(stats_df):
     n_units = len(stats_df)
     n_good  = int((stats_df['label'] == 'good').sum())
     well    = (stats_df['mean_mpct'] < MPCT_THRESH) & (stats_df['presence_frac'] > PRESENCE_THRESH)
-    return dict(n_units=n_units, n_good=n_good,
-                n_well=int(well.sum()),
-                efficiency=round(well.sum() / n_units, 3) if n_units else 0,
-                median_mpct=float(np.nanmedian(stats_df['mean_mpct'])),
-                med_presence=float(np.nanmedian(stats_df['presence_frac'])))
+
+    n_spikes_by_unit = stats_df['n_spikes'].to_numpy(dtype=float) if len(stats_df) else np.array([])
+    total_spikes = int(np.nansum(n_spikes_by_unit)) if n_spikes_by_unit.size else 0
+    if n_spikes_by_unit.size:
+        q25, q50, q75 = np.nanpercentile(n_spikes_by_unit, [25, 50, 75])
+    else:
+        q25 = q50 = q75 = np.nan
+
+    fr_by_unit = stats_df['firing_rate_hz'].to_numpy(dtype=float) if ('firing_rate_hz' in stats_df.columns and len(stats_df)) else np.array([])
+    fr_med = float(np.nanmedian(fr_by_unit)) if fr_by_unit.size else np.nan
+
+    return dict(
+        n_units=n_units,
+        n_good=n_good,
+        n_well=int(well.sum()),
+        efficiency=round(well.sum() / n_units, 3) if n_units else 0,
+        median_mpct=float(np.nanmedian(stats_df['mean_mpct'])),
+        med_presence=float(np.nanmedian(stats_df['presence_frac'])),
+        total_spikes=total_spikes,
+        spikes_per_unit_q25=float(q25) if np.isfinite(q25) else np.nan,
+        spikes_per_unit_median=float(q50) if np.isfinite(q50) else np.nan,
+        spikes_per_unit_q75=float(q75) if np.isfinite(q75) else np.nan,
+        firing_rate_hz_median=fr_med if np.isfinite(fr_med) else np.nan,
+    )
 
 
 # =============================================================================
@@ -620,6 +642,143 @@ summary_df = pd.DataFrame(summ_rows).set_index('run')
 summary_df.to_csv(sweep_dir / out_name('sweep_summary.csv'))
 print("\n--- Summary ---")
 print(summary_df[['n_units','n_good','n_well','efficiency','median_mpct']].to_string())
+
+
+# =============================================================================
+#%% Claim-mask sweep summary (spike totals + per-unit spike distributions)
+# =============================================================================
+
+def _get_claim_params_for_run(run_name: str) -> tuple[float, float]:
+    rp = sorter_params_by_run.get(run_name, {})
+    ms = rp.get('cross_peel_claim_ms', np.nan)
+    um = rp.get('cross_peel_claim_um', np.nan)
+    try:
+        ms = float(ms)
+    except Exception:
+        ms = np.nan
+    try:
+        um = float(um)
+    except Exception:
+        um = np.nan
+    return ms, um
+
+
+claim_rows = []
+for rn in run_names:
+    ms, um = _get_claim_params_for_run(rn)
+    if not (np.isfinite(ms) or np.isfinite(um)):
+        continue
+    claim_rows.append({
+        'run': rn,
+        'cross_peel_claim_ms': ms,
+        'cross_peel_claim_um': um,
+        'n_units': float(summary_df.loc[rn, 'n_units']) if rn in summary_df.index else np.nan,
+        'total_spikes': float(summary_df.loc[rn, 'total_spikes']) if rn in summary_df.index else np.nan,
+        'spikes_per_unit_q25': float(summary_df.loc[rn, 'spikes_per_unit_q25']) if rn in summary_df.index else np.nan,
+        'spikes_per_unit_median': float(summary_df.loc[rn, 'spikes_per_unit_median']) if rn in summary_df.index else np.nan,
+        'spikes_per_unit_q75': float(summary_df.loc[rn, 'spikes_per_unit_q75']) if rn in summary_df.index else np.nan,
+        'firing_rate_hz_median': float(summary_df.loc[rn, 'firing_rate_hz_median']) if rn in summary_df.index else np.nan,
+    })
+
+if claim_rows:
+    claim_df = pd.DataFrame(claim_rows)
+    claim_df = claim_df.sort_values(['cross_peel_claim_ms', 'cross_peel_claim_um', 'run'])
+    claim_df.to_csv(sweep_dir / out_name('claim_sweep_spike_summary.csv'), index=False)
+    print(f"Wrote claim sweep summary CSV → {sweep_dir / out_name('claim_sweep_spike_summary.csv')}")
+
+    # Figure: total spikes (bars) + per-unit n_spikes (boxplots)
+    fig = plt.figure(figsize=(7.2, 4.2))
+    gs = gridspec.GridSpec(1, 2, figure=fig, wspace=0.35)
+    ax0 = fig.add_subplot(gs[0, 0])
+    ax1 = fig.add_subplot(gs[0, 1])
+
+    x = np.arange(len(claim_df))
+    labels = [f"{r['run']}\n{r['cross_peel_claim_ms']:.3g}ms,{r['cross_peel_claim_um']:.0f}µm" for _, r in claim_df.iterrows()]
+    colors_claim = [colors.get(rn, '#666') for rn in claim_df['run'].tolist()]
+    ax0.bar(x, claim_df['total_spikes'].to_numpy(dtype=float), color=colors_claim, width=0.75, edgecolor='none')
+    ax0.set_xticks(x)
+    ax0.set_xticklabels(labels, rotation=60, ha='right', fontsize=6)
+    ax0.set_ylabel('Total spikes')
+    ax0.set_title('Total detected spikes vs claim mask')
+
+    # boxplot per-unit spike counts
+    box_data = []
+    for rn in claim_df['run'].tolist():
+        s = all_stats.get(rn)
+        if s is None or not len(s):
+            box_data.append(np.array([]))
+        else:
+            box_data.append(s['n_spikes'].to_numpy(dtype=float))
+
+    bp = ax1.boxplot(
+        box_data,
+        positions=x,
+        widths=0.6,
+        patch_artist=True,
+        showfliers=False,
+        medianprops=dict(color='#111', linewidth=1.0),
+        boxprops=dict(linewidth=0.8),
+        whiskerprops=dict(linewidth=0.8),
+        capprops=dict(linewidth=0.8),
+    )
+    for patch, c in zip(bp['boxes'], colors_claim):
+        patch.set_facecolor(c)
+        patch.set_alpha(0.6)
+        patch.set_edgecolor('none')
+
+    ax1.set_yscale('log')
+    ax1.set_xticks(x)
+    ax1.set_xticklabels(labels, rotation=60, ha='right', fontsize=6)
+    ax1.set_ylabel('Spikes per unit (log)')
+    ax1.set_title('Per-unit spike-count distribution')
+
+    fig.tight_layout()
+    fig.savefig(sweep_dir / out_name('fig_claim_sweep_spike_counts.pdf'))
+    fig.savefig(sweep_dir / out_name('fig_claim_sweep_spike_counts.png'))
+    plt.close(fig)
+    print(f"Saved claim sweep spike-count figure → {sweep_dir / out_name('fig_claim_sweep_spike_counts.pdf')}")
+
+    # Optional heatmaps if we have a grid of ms×um
+    if claim_df['cross_peel_claim_ms'].nunique() > 1 or claim_df['cross_peel_claim_um'].nunique() > 1:
+        try:
+            # average in case multiple runs share the same param pair
+            piv_total = claim_df.pivot_table(
+                index='cross_peel_claim_um',
+                columns='cross_peel_claim_ms',
+                values='total_spikes',
+                aggfunc='mean',
+            ).sort_index(ascending=True)
+
+            piv_med = claim_df.pivot_table(
+                index='cross_peel_claim_um',
+                columns='cross_peel_claim_ms',
+                values='spikes_per_unit_median',
+                aggfunc='mean',
+            ).sort_index(ascending=True)
+
+            def _heatmap(piv: pd.DataFrame, title: str, out_base: str, cmap: str = 'viridis'):
+                fig, ax = plt.subplots(figsize=(5.4, 4.2))
+                mat = piv.to_numpy(dtype=float)
+                im = ax.imshow(mat, aspect='auto', origin='lower', cmap=cmap)
+                ax.set_title(title)
+                ax.set_xlabel('cross_peel_claim_ms')
+                ax.set_ylabel('cross_peel_claim_um')
+                ax.set_xticks(np.arange(piv.shape[1]))
+                ax.set_xticklabels([f"{v:g}" for v in piv.columns.to_numpy(dtype=float)], rotation=45, ha='right')
+                ax.set_yticks(np.arange(piv.shape[0]))
+                ax.set_yticklabels([f"{v:g}" for v in piv.index.to_numpy(dtype=float)])
+                fig.colorbar(im, ax=ax, shrink=0.85)
+                fig.tight_layout()
+                fig.savefig(sweep_dir / out_name(out_base + '.pdf'))
+                fig.savefig(sweep_dir / out_name(out_base + '.png'))
+                plt.close(fig)
+
+            _heatmap(piv_total, 'Mean total spikes', 'fig_claim_heatmap_total_spikes')
+            _heatmap(piv_med, 'Mean median spikes/unit', 'fig_claim_heatmap_median_spikes_per_unit')
+            print(f"Saved claim heatmaps → {sweep_dir / out_name('fig_claim_heatmap_total_spikes.pdf')}")
+        except Exception as e:
+            print(f"[warn] could not generate claim heatmaps: {e}")
+
 
 
 # =============================================================================
