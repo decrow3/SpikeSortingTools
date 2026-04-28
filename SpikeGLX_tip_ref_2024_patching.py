@@ -1,6 +1,5 @@
 #%%
-from pipeline import condition_signal, correct_motion, plot_motion_output, sort_ks4, save_binary_recording, run_qc, KilosortResults, load_qc
-from pipeline.curation_postpatch import load_cur, run_cur
+from pipeline import condition_signal, correct_motion, plot_motion_output, sort_ks4, save_binary_recording, run_qc, KilosortResults, load_qc, run_cur, load_cur
 from spikeinterface.sorters import get_default_sorter_params
 from pathlib import Path
 import shutil
@@ -9,9 +8,9 @@ import gc
 import spikeinterface.full as si
 
 #%% Change this code to load your data
-data_dir =   r"/mnt/NPX/Luke/20250724/Luke0724_V2V1_g0/"
+data_dir=   r"/mnt/NPX/Rocky/20240704/Rocky20240704_V1V2_g0/"
 out_dir  =  r"/media/huklaban5/Data/Patched/"
-stream_id = "imec1.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
+stream_id = "imec0.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
 
 #%% Run on a snippet to check params
@@ -30,18 +29,19 @@ data_root = data_dir.split('/')[0:5] #
 print(f'Using data root {"/".join(data_root)}, pipeline results will be saved in this directory')
 #%%
 previous_dir = Path(f'{"/".join(data_root)}/dredge_pipeline_results_{sess_name}_{stream_name}')
-#pipeline_dir = Path(f'{"/".join(data_root)}/patched_pipeline_results_{sess_name}_{stream_name}')
 pipeline_dir = Path(out_dir) / f'patched_pipeline_results_{sess_name}_{stream_name}'
 pipeline_dir.mkdir(parents=True, exist_ok=True)
+
+print(f'Previous pipeline dir: {previous_dir}')
+print(f'Current pipeline dir: {pipeline_dir}')
 
 #%%
 # condition signal runs 1) bad channel detection 2) . Can we also get a noise over time measure over all channels, may need to censor some completely
 noise_thresh = 0.3 # higher for spikeGLX, around 0.3
 
 # if uV_per_bit==2.34375: #spikeGLX, tip reference, 1.2mV 
-# uV_thresh=1200 #uV
-uV_thresh = .5e3 #uV, 500uV, this is the default for spikeGLX for external reference, but can be changed to 350 or 400uV if you want to remove more saturation
-seg_pre_motion_est, seg_pre_sorting = condition_signal(seg, cache_dir=previous_dir / 'conditioning', noise_thresh=noise_thresh, uV_thresh=uV_thresh, recalc=False)
+uV_thresh=1200 #uV, #spikeGLX, tip reference, 1.2mV 
+seg_pre_motion_est, seg_pre_sorting = condition_signal(seg, cache_dir=previous_dir / 'conditioning', noise_thresh=noise_thresh, uV_thresh=.5e3, recalc=False)
 
 # #%% DEBUG: quick saving out of the preprocessed recording before motion correction
 # save_binary_recording(seg_pre, pipeline_dir / 'preprocessed_recording_premotion', recalc=False)
@@ -76,8 +76,6 @@ sorter_params['nearest_chans'] = 20 #up from 10
 sorter_params['nearest_templates'] = 200 #up from 100
 sorter_params['max_channel_distance'] = 64 #up from 32
 sorter_params['clear_cache'] = True # Necessary on some larger files to prevent CUDA out of memory errors
-sorter_params['cross_peel_claim_ms'] = 0.25
-sorter_params['cross_peel_claim_um'] = 75.0   # claim_spatial variant
 sorter_params = dict(sorter_params, **sorter_params)
 
 #%% Clear seg, this shouldn't help since files are memory mapped. For memory problems try uhang and enable zswap, also set ulimit -v for oom messages
@@ -98,25 +96,8 @@ except Exception as e:
     gc.collect()
     # Run Kilosort4
     [ks4_results,ks4_sorter] = sort_ks4(seg_saved, pipeline_dir / 'kilosort4', sorter_params=sorter_params, recalc=False)
-    #cur_results = run_cur(seg_saved, ks4_sorter, ks4_results, pipeline_dir / 'cur', recalc=True) # this should save out some merges
-    cur_results = run_cur(
-        seg_saved,
-        ks4_sorter,
-        ks4_results,
-        pipeline_dir / 'cur',
-        recalc=True,
-        split_depth_export=False,   # only needed for files that are too big to save
-        depth_overlap_um=75.0,     # boundary overlap
-        depth_split_um=None,       # median unit depth
-    )
-
-    if isinstance(cur_results, dict):
-        if cur_results.get("top") is not None:
-            run_qc(seg_saved, cur_results["top"], pipeline_dir / 'qc_top', recalc=True)
-        if cur_results.get("bot") is not None:
-            run_qc(seg_saved, cur_results["bot"], pipeline_dir / 'qc_bot', recalc=True)
-    else:
-        qc_results = run_qc(seg_saved, cur_results, pipeline_dir / 'qc', recalc=True)
+    cur_results = run_cur(seg_saved, ks4_sorter, ks4_results, pipeline_dir / 'cur', recalc=True) # this should save out some merges
+    qc_results = run_qc(seg_saved, cur_results, pipeline_dir / 'qc', recalc=True)
     
 
 # Remove the processed binary
@@ -190,3 +171,5 @@ for f in npzFiles:
 
 # Print confirmation of saved files
 print("All data has been saved successfully.")
+
+

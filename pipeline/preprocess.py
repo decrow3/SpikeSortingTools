@@ -196,7 +196,7 @@ def condition_signal(seg, cache_dir, recalc=False, uV_per_bit=.195, uV_thresh=.5
     axs[1].set_title('Noise Power (>.8 Nyquist)')
     axs[1].set_xlabel('Power (uV^2/Hz)')
     plt.tight_layout()
-    fig.savefig(cache_dir / 'channel_metrics.png')
+    #fig.savefig(cache_dir / 'channel_metrics.png') #out of space so not saving for now
     plt.close('all')
 
     return seg_out_motion, seg_out_sorting

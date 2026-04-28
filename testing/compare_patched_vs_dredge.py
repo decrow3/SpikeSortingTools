@@ -308,8 +308,9 @@ plt.rcParams.update({
 # =============================================================================
 
 # Defaults aimed at your 20260316 imec0 example; override via env vars.
-_DEFAULT_DREDGE_PIPE = "/mnt/NPX/Luke/20260316/dredge_pipeline_results_Luke03162026_V2V1_RH_g0_imec0"
-_DEFAULT_PATCH_PIPE = "/mnt/NPX/Luke/20260316/patched_pipeline_results_Luke03162026_V2V1_RH_g0_imec0"
+_DEFAULT_DREDGE_PIPE = "/mnt/NPX/Luke/20260316/dredge_pipeline_results_Luke03162026_V2V1_RH_g0_imec1"
+_DEFAULT_PATCH_PIPE = "/mnt/NPX/Luke/20260316/patched_pipeline_results_Luke03162026_V2V1_RH_g0_imec1"
+COMPARE_OUTDIR = '/mnt/NPX/Luke/20260316/compare_patched_vs_dredge_Luke03162026_V2V1_RH_g0_imec1'
 
 DREDGE_PIPE = Path(os.environ.get("DREDGE_PIPE", _DEFAULT_DREDGE_PIPE)).expanduser()
 PATCH_PIPE = Path(os.environ.get("PATCH_PIPE", _DEFAULT_PATCH_PIPE)).expanduser()

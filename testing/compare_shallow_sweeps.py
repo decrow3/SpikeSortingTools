@@ -109,7 +109,16 @@ WITHIN_RUN_NEARBY_DEPTH_UM  = 100.0   # max template-depth separation between ca
 WITHIN_RUN_MUA_ONLY         = True    # skip good×good pairs — focus on mua-involved pairs
 WITHIN_RUN_MIN_SPIKES       = 200     # min spikes per unit to include in screen
 WITHIN_RUN_TOP_PAIRS_PDF    = 40      # max CCG trace panels per run in fig4
-WITHIN_RUN_RUNS             = ['default', 'claim_tonly', 'claim_spatial', 'peel3', 'peel2', 'peel1']  # runs to compare
+
+# Runs to compare in within-run duplicate screen.
+# Override with env var, e.g.
+#   WITHIN_RUN_RUNS="default,claim_ms0p25_um0,claim_ms0p25_um25,claim_ms0p25_um75"
+_WITHIN_RUN_RUNS_ENV = os.environ.get('WITHIN_RUN_RUNS', '').strip()
+WITHIN_RUN_RUNS = (
+    [s.strip() for s in _WITHIN_RUN_RUNS_ENV.split(',') if s.strip()]
+    if _WITHIN_RUN_RUNS_ENV
+    else ['default', 'claim_tonly', 'claim_spatial', 'peel3', 'peel2', 'peel1']
+)
 
 # Sorter params to read from each run's spikeinterface_params.json
 TRACKED_SORTER_PARAMS = [
@@ -587,8 +596,26 @@ def fine_ccg_for_pair(times_a_s, times_b_s, window_s=FINE_CCG_WINDOW_S,
 #%% Load all run data
 # =============================================================================
 
-run_dirs = sorted(d for d in sweep_dir.iterdir() if d.is_dir() and d.name.startswith('run_'))
+_allow = os.environ.get('COMPARE_RUNS', '').strip()
+_exclude = os.environ.get('COMPARE_EXCLUDE_RUNS', '').strip()
+allow_set = {s.strip() for s in _allow.split(',') if s.strip()} if _allow else None
+exclude_set = {s.strip() for s in _exclude.split(',') if s.strip()} if _exclude else set()
+
+run_dirs_all = sorted(d for d in sweep_dir.iterdir() if d.is_dir() and d.name.startswith('run_'))
+run_dirs = []
+for d in run_dirs_all:
+    name = d.name.replace('run_', '')
+    if allow_set is not None and name not in allow_set:
+        continue
+    if name in exclude_set:
+        continue
+    run_dirs.append(d)
+
 print(f"Found {len(run_dirs)} runs")
+if allow_set is not None:
+    print(f"  (filtered by COMPARE_RUNS={sorted(allow_set)})")
+if exclude_set:
+    print(f"  (excluding COMPARE_EXCLUDE_RUNS={sorted(exclude_set)})")
 
 all_data  = {}   # run_name -> raw data dict
 all_stats = {}   # run_name -> per-unit DataFrame
@@ -732,7 +759,8 @@ if claim_rows:
     ax1.set_ylabel('Spikes per unit (log)')
     ax1.set_title('Per-unit spike-count distribution')
 
-    fig.tight_layout()
+    # Avoid tight_layout warnings with long rotated x tick labels
+    fig.subplots_adjust(bottom=0.38, wspace=0.35)
     fig.savefig(sweep_dir / out_name('fig_claim_sweep_spike_counts.pdf'))
     fig.savefig(sweep_dir / out_name('fig_claim_sweep_spike_counts.png'))
     plt.close(fig)
