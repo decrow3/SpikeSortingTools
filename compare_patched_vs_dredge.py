@@ -62,12 +62,209 @@ import spikeinterface.comparison as scmp
 from spikeinterface.core import BaseSorting
 
 
+def _load_si_params(pipe_dir: Path) -> dict | None:
+    p = pipe_dir / "kilosort4" / "spikeinterface_params.json"
+    if not p.exists():
+        return None
+    try:
+        obj = json.loads(p.read_text())
+        return obj if isinstance(obj, dict) else None
+    except Exception:
+        return None
+
+
+def _load_ops(sort_folder: Path) -> dict | None:
+    p = sort_folder / "ops.npy"
+    if not p.exists():
+        return None
+    try:
+        obj = np.load(p, allow_pickle=True).item()
+        return obj if isinstance(obj, dict) else None
+    except Exception:
+        return None
+
+
+def _diff_dict(a: dict, b: dict, *, prefix: str = "") -> list[tuple[str, object, object]]:
+    out: list[tuple[str, object, object]] = []
+    keys = set(a) | set(b)
+    for k in sorted(keys):
+        va = a.get(k, "<MISSING>")
+        vb = b.get(k, "<MISSING>")
+        if isinstance(va, dict) and isinstance(vb, dict):
+            out.extend(_diff_dict(va, vb, prefix=prefix + str(k) + "."))
+        else:
+            if va != vb:
+                out.append((prefix + str(k), va, vb))
+    return out
+
+
+def _check_claim_mask_applied(*, dredge_pipe: Path, patch_pipe: Path) -> dict:
+    """Best-effort confirmation that cross-peel claim params made it into the run."""
+
+    result: dict[str, object] = {
+        "dredge_pipe": str(dredge_pipe),
+        "patch_pipe": str(patch_pipe),
+        "param_diffs": [],
+        "patched_has_claim_params": False,
+        "dredge_has_claim_params": False,
+        "patched_ops_claim_ms": None,
+        "patched_ops_claim_um": None,
+        "dredge_ops_claim_ms": None,
+        "dredge_ops_claim_um": None,
+    }
+
+    params_d = _load_si_params(dredge_pipe) or {}
+    params_p = _load_si_params(patch_pipe) or {}
+    diffs = _diff_dict(params_d, params_p)
+    result["param_diffs"] = [(k, str(va), str(vb)) for (k, va, vb) in diffs]
+
+    def _get_claim_params(params: dict) -> tuple[object, object]:
+        sp = params.get("sorter_params") if isinstance(params, dict) else None
+        if not isinstance(sp, dict):
+            return None, None
+        return sp.get("cross_peel_claim_ms"), sp.get("cross_peel_claim_um")
+
+    d_ms, d_um = _get_claim_params(params_d)
+    p_ms, p_um = _get_claim_params(params_p)
+    result["patched_has_claim_params"] = (p_ms is not None) or (p_um is not None)
+    result["dredge_has_claim_params"] = (d_ms is not None) or (d_um is not None)
+
+    ops_p = _load_ops(patch_pipe / "kilosort4" / "sorter_output") or {}
+    ops_d = _load_ops(dredge_pipe / "kilosort4" / "sorter_output") or {}
+    result["patched_ops_claim_ms"] = ops_p.get("cross_peel_claim_ms")
+    result["patched_ops_claim_um"] = ops_p.get("cross_peel_claim_um")
+    result["dredge_ops_claim_ms"] = ops_d.get("cross_peel_claim_ms")
+    result["dredge_ops_claim_um"] = ops_d.get("cross_peel_claim_um")
+    return result
+
+
+def _firing_rates_by_unit_hz(
+    *,
+    sort_folder: Path,
+    unit_ids: np.ndarray,
+    fs: float = 30_000.0,
+) -> tuple[np.ndarray, float]:
+    """Return firing rates (Hz) aligned to unit_ids, plus duration_s."""
+
+    unit_ids = np.asarray(unit_ids, dtype=int)
+
+    spikes, mapped_unit_ids = _load_spikes_npy(sort_folder)
+    if spikes is not None and spikes.size:
+        fs_folder = _folder_fs(sort_folder, default=fs)
+        sample_index = np.asarray(spikes["sample_index"], dtype=np.int64)
+        unit_index = np.asarray(spikes["unit_index"], dtype=np.int64)
+        duration_s = float(sample_index.max()) / float(fs_folder) if sample_index.size else 0.0
+
+        if mapped_unit_ids is None:
+            # unit_index is already the unit_id space
+            spike_unit_ids = unit_index.astype(int)
+        else:
+            # unit_index indexes into mapped_unit_ids
+            spike_unit_ids = mapped_unit_ids[unit_index.astype(int)].astype(int)
+
+        u, c = np.unique(spike_unit_ids, return_counts=True)
+        counts = np.zeros(unit_ids.size, dtype=np.int64)
+        idx = pd.Index(unit_ids)
+        pos = idx.get_indexer(u.astype(int))
+        ok = pos >= 0
+        counts[pos[ok]] = c[ok]
+        rates = counts.astype(float) / duration_s if duration_s > 0 else np.full(unit_ids.size, np.nan)
+        return rates, duration_s
+
+    st_path = sort_folder / "spike_times.npy"
+    sc_path = sort_folder / "spike_clusters.npy"
+    if not st_path.exists() or not sc_path.exists():
+        return np.full(unit_ids.size, np.nan), np.nan
+
+    st = np.load(st_path, mmap_mode="r")
+    sc = np.load(sc_path, mmap_mode="r")
+    if st.size == 0 or sc.size == 0:
+        return np.zeros(unit_ids.size, dtype=float), 0.0
+
+    duration_s = float(np.max(st)) / float(fs)
+    u, c = np.unique(np.asarray(sc, dtype=np.int64), return_counts=True)
+    counts = np.zeros(unit_ids.size, dtype=np.int64)
+    idx = pd.Index(unit_ids)
+    pos = idx.get_indexer(u.astype(int))
+    ok = pos >= 0
+    counts[pos[ok]] = c[ok]
+    rates = counts.astype(float) / duration_s if duration_s > 0 else np.full(unit_ids.size, np.nan)
+    return rates, duration_s
+
+
+def _plot_rate_distribution(
+    *,
+    out_prefix: Path,
+    rates_by_label: dict[str, np.ndarray],
+) -> None:
+    """Save a simple distribution plot of average firing rates per unit."""
+
+    fig, ax = plt.subplots(1, 1, figsize=(6.8, 3.6))
+    bins = np.logspace(-3, 2, 70)  # 1 mHz .. 100 Hz
+
+    for label, rates in rates_by_label.items():
+        r = np.asarray(rates, float)
+        r = r[np.isfinite(r) & (r >= 0)]
+        if r.size == 0:
+            continue
+        ax.hist(r, bins=bins, histtype="step", lw=1.4, label=label, alpha=0.95)
+
+    ax.set_xscale("log")
+    ax.set_xlabel("Average firing rate per unit (Hz)")
+    ax.set_ylabel("Unit count")
+    ax.set_title("Firing-rate distribution")
+    ax.legend(fontsize=7)
+    fig.tight_layout()
+    fig.savefig(out_prefix.with_suffix(".pdf"))
+    fig.savefig(out_prefix.with_suffix(".png"))
+    plt.close(fig)
+
+
+def _folder_fs(sort_folder: Path, *, default: float = 30_000.0) -> float:
+    """Best-effort sampling frequency for a sorting folder.
+
+    - Kilosort sorter_output is typically 30 kHz.
+    - SpikeInterface NumpyFolderSorting stores the true sampling frequency in numpysorting_info.json.
+    """
+
+    info_path = sort_folder / "numpysorting_info.json"
+    if info_path.exists():
+        try:
+            obj = json.loads(info_path.read_text())
+            fs = obj.get("sampling_frequency")
+            if fs is not None:
+                return float(fs)
+        except Exception:
+            pass
+    return float(default)
+
+
+def _load_spikes_npy(sort_folder: Path):
+    """Load SpikeInterface NumpyFolderSorting spikes.npy + unit_ids mapping if available."""
+
+    spikes_path = sort_folder / "spikes.npy"
+    if not spikes_path.exists():
+        return None, None
+
+    spikes = np.load(spikes_path, mmap_mode="r")
+    unit_ids = None
+    info_path = sort_folder / "numpysorting_info.json"
+    if info_path.exists():
+        try:
+            obj = json.loads(info_path.read_text())
+            if isinstance(obj, dict) and isinstance(obj.get("unit_ids"), list):
+                unit_ids = np.asarray(obj["unit_ids"], dtype=int)
+        except Exception:
+            unit_ids = None
+    return spikes, unit_ids
+
+
 # =============================================================================
 # Optional split diagnostics (compare_shallow_sweeps-style)
 # =============================================================================
 
 SPLIT_DIAGNOSTICS = (os.environ.get("COMPARE_SPLIT_DIAGNOSTICS", "1").strip().lower() in {"1", "true", "yes", "y"})
-REF_CONDITION = (os.environ.get("COMPARE_REF_CONDITION", "dredge_pre") or "dredge_pre").strip().lower()
+REF_CONDITION = (os.environ.get("COMPARE_REF_CONDITION", "patched_pre") or "patched_pre").strip().lower()
 SPLIT_BIN_S = float(os.environ.get("COMPARE_SPLIT_BIN_S", "10.0"))
 SPLIT_MIN_SPIKES = int(os.environ.get("COMPARE_SPLIT_MIN_SPIKES", "300"))
 SPLIT_MAX_PAGES_PDF = int(os.environ.get("COMPARE_SPLIT_MAX_PAGES_PDF", "60"))
@@ -110,9 +307,9 @@ plt.rcParams.update({
 # Configuration
 # =============================================================================
 
-# Defaults aimed at your 20260316 imec1 example; override via env vars.
-_DEFAULT_DREDGE_PIPE = "/mnt/NPX/Luke/20260316/dredge_pipeline_results_Luke03162026_V2V1_RH_g0_imec1"
-_DEFAULT_PATCH_PIPE = "/mnt/NPX/Luke/20260316/patched_pipeline_results_Luke03162026_V2V1_RH_g0_imec1"
+# Defaults aimed at your 20260316 imec0 example; override via env vars.
+_DEFAULT_DREDGE_PIPE = "/mnt/NPX/Luke/20250805/dredge_pipeline_results_Luke0805_V2V1_g0_imec1"
+_DEFAULT_PATCH_PIPE = "/mnt/NPX/Luke/20250805/patched_pipeline_results_Luke0805_V2V1_g0_imec1"
 
 DREDGE_PIPE = Path(os.environ.get("DREDGE_PIPE", _DEFAULT_DREDGE_PIPE)).expanduser()
 PATCH_PIPE = Path(os.environ.get("PATCH_PIPE", _DEFAULT_PATCH_PIPE)).expanduser()
@@ -132,6 +329,14 @@ GOOD_ONLY = (os.environ.get("COMPARE_GOOD_ONLY", "0").strip().lower() in {"1", "
 
 LABEL_LEFT = "dredge"
 LABEL_RIGHT = "patched"
+
+
+patch_check = _check_claim_mask_applied(dredge_pipe=DREDGE_PIPE, patch_pipe=PATCH_PIPE)
+(OUT_DIR / "patch_check.json").write_text(json.dumps(patch_check, indent=2))
+if not bool(patch_check.get("patched_has_claim_params")):
+    print("[warn] patched spikeinterface_params.json missing cross_peel_claim_* keys")
+if (patch_check.get("patched_ops_claim_ms") is None) and (patch_check.get("patched_ops_claim_um") is None):
+    print("[warn] patched ops.npy missing cross_peel_claim_* keys")
 
 
 def _stages_to_run(stage_raw: str) -> list[str]:
@@ -278,6 +483,17 @@ def _load_unit_qc_stats(pipe_dir: Path, *, stage: str, fs: float = 30_000.0) -> 
 def _spike_count_summary(sort_folder: Path) -> dict:
     """Fast spike-count summary from Kilosort-style arrays (if present)."""
 
+    # Prefer SpikeInterface NumpyFolderSorting spikes.npy if present (post-curation)
+    spikes, _unit_ids = _load_spikes_npy(sort_folder)
+    if spikes is not None and getattr(spikes, "dtype", None) is not None and spikes.size:
+        try:
+            unit_index = np.asarray(spikes["unit_index"], dtype=np.int64)
+            _, counts = np.unique(unit_index, return_counts=True)
+            return {"total_spikes": int(spikes.shape[0]), "median_spikes_per_unit": float(np.median(counts)) if counts.size else np.nan}
+        except Exception:
+            # fall back to Kilosort arrays below
+            pass
+
     spike_clusters_path = sort_folder / "spike_clusters.npy"
     if not spike_clusters_path.exists():
         return {"total_spikes": np.nan, "median_spikes_per_unit": np.nan}
@@ -296,6 +512,63 @@ def _spike_array_summary(sort_folder: Path, *, fs: float = 30_000.0) -> dict:
     Intended to be fast and robust for both precuration (KS4 sorter_output)
     and postcuration (SI folder) when they contain spike_times.npy/spike_clusters.npy.
     """
+
+    # Prefer SpikeInterface NumpyFolderSorting spikes.npy if present
+    spikes, unit_ids = _load_spikes_npy(sort_folder)
+    if spikes is not None and spikes.size:
+        fs_folder = _folder_fs(sort_folder, default=fs)
+        try:
+            st = np.asarray(spikes["sample_index"], dtype=np.int64)
+            ui = np.asarray(spikes["unit_index"], dtype=np.int64)
+            duration_s = float(np.max(st)) / float(fs_folder) if st.size else 0.0
+            if unit_ids is None:
+                # unit_index is already a compact 0..n_units-1 index
+                _, counts = np.unique(ui, return_counts=True)
+            else:
+                # still count by unit_index (index space)
+                _, counts = np.unique(ui, return_counts=True)
+
+            total = int(spikes.shape[0])
+            counts = counts.astype(np.int64)
+
+            if counts.size:
+                q25, q50, q75 = np.percentile(counts.astype(float), [25, 50, 75])
+            else:
+                q25 = q50 = q75 = np.nan
+
+            if duration_s > 0 and counts.size:
+                fr = counts.astype(float) / float(duration_s)
+                fr_q25, fr_q50, fr_q75 = np.percentile(fr, [25, 50, 75])
+                frac_lt_0p1 = float(np.mean(fr < 0.1))
+                frac_gt_10 = float(np.mean(fr > 10.0))
+            else:
+                fr_q25 = fr_q50 = fr_q75 = np.nan
+                frac_lt_0p1 = np.nan
+                frac_gt_10 = np.nan
+
+            if total > 0 and counts.size:
+                k = int(min(10, counts.size))
+                topk = np.partition(counts, -k)[-k:]
+                dominance = float(int(topk.sum()) / total)
+            else:
+                dominance = np.nan
+
+            return {
+                "duration_s": float(duration_s) if np.isfinite(duration_s) else np.nan,
+                "total_spikes": total,
+                "spikes_per_unit_q25": float(q25) if np.isfinite(q25) else np.nan,
+                "spikes_per_unit_median": float(q50) if np.isfinite(q50) else np.nan,
+                "spikes_per_unit_q75": float(q75) if np.isfinite(q75) else np.nan,
+                "firing_rate_hz_q25": float(fr_q25) if np.isfinite(fr_q25) else np.nan,
+                "firing_rate_hz_median": float(fr_q50) if np.isfinite(fr_q50) else np.nan,
+                "firing_rate_hz_q75": float(fr_q75) if np.isfinite(fr_q75) else np.nan,
+                "frac_units_fr_lt_0p1hz": float(frac_lt_0p1) if np.isfinite(frac_lt_0p1) else np.nan,
+                "frac_units_fr_gt_10hz": float(frac_gt_10) if np.isfinite(frac_gt_10) else np.nan,
+                "spike_dominance_top10": float(dominance) if np.isfinite(dominance) else np.nan,
+            }
+        except Exception:
+            # fall back to Kilosort arrays below
+            pass
 
     st_path = sort_folder / "spike_times.npy"
     sc_path = sort_folder / "spike_clusters.npy"
@@ -535,7 +808,42 @@ def _safe_corrcoef(x: np.ndarray, y: np.ndarray) -> float:
 
 
 def _load_times_by_unit(sort_folder: Path, *, fs: float = 30_000.0) -> tuple[dict[int, np.ndarray], float]:
-    """Load sorted spike times (seconds) per unit from Kilosort-style arrays."""
+    """Load sorted spike times (seconds) per unit.
+
+    - If this is a SpikeInterface NumpyFolderSorting folder, prefer spikes.npy.
+    - Otherwise fall back to Kilosort-style spike_times.npy/spike_clusters.npy.
+    """
+
+    spikes, unit_ids = _load_spikes_npy(sort_folder)
+    if spikes is not None and spikes.size:
+        fs_folder = _folder_fs(sort_folder, default=fs)
+        try:
+            sample_index = np.asarray(spikes["sample_index"], dtype=np.int64)
+            unit_index = np.asarray(spikes["unit_index"], dtype=np.int64)
+            times_s = sample_index.astype(float) / float(fs_folder)
+
+            order = np.argsort(unit_index, kind="stable")
+            unit_sorted = unit_index[order]
+            times_sorted = times_s[order]
+            uidx_vals, start_idx, counts = np.unique(unit_sorted, return_index=True, return_counts=True)
+
+            if unit_ids is None:
+                uid_vals = uidx_vals.astype(int)
+            else:
+                # unit_index is index into unit_ids array
+                uid_vals = unit_ids[uidx_vals.astype(int)].astype(int)
+
+            by_unit: dict[int, np.ndarray] = {}
+            for uid, s0, n in zip(uid_vals.tolist(), start_idx.tolist(), counts.tolist()):
+                uid = int(uid)
+                s0 = int(s0)
+                n = int(n)
+                by_unit[uid] = times_sorted[s0 : s0 + n]
+
+            return by_unit, float(times_s.max()) if times_s.size else 0.0
+        except Exception:
+            # fall back to Kilosort arrays below
+            pass
 
     st_path = sort_folder / "spike_times.npy"
     sc_path = sort_folder / "spike_clusters.npy"
@@ -859,6 +1167,19 @@ for stage in stages:
 
     print(f"Saved overview figure → {stage_out / 'fig_overview.pdf'}")
 
+    # =============================================================================
+    # Figure: firing-rate distribution (per stage)
+    # =============================================================================
+
+    fs_left = _folder_fs(left_folder, default=30_000.0)
+    fs_right = _folder_fs(right_folder, default=30_000.0)
+    fr_left, _dur_left = _firing_rates_by_unit_hz(sort_folder=left_folder, unit_ids=np.asarray(sorting_left.unit_ids), fs=fs_left)
+    fr_right, _dur_right = _firing_rates_by_unit_hz(sort_folder=right_folder, unit_ids=np.asarray(sorting_right.unit_ids), fs=fs_right)
+    _plot_rate_distribution(
+        out_prefix=stage_out / "fig_rate_distribution",
+        rates_by_label={LABEL_LEFT: fr_left, LABEL_RIGHT: fr_right},
+    )
+
 
 # If we ran both stages, also compare pre vs post within each pipeline.
 if {"dredge_pre", "dredge_post"}.issubset(set(conditions.keys())):
@@ -994,6 +1315,16 @@ if {"dredge_pre", "patched_pre", "dredge_post", "patched_post"}.issubset(set(con
     fig.savefig(OUT_DIR / "fig_overview.pdf")
     fig.savefig(OUT_DIR / "fig_overview.png")
     plt.close(fig)
+
+    # 4-way firing-rate distribution
+    rates_by_label: dict[str, np.ndarray] = {}
+    for k in order:
+        s = conditions[k]["sorting"]
+        folder = Path(conditions[k]["folder"])
+        fs_folder = _folder_fs(folder, default=30_000.0)
+        fr, _dur = _firing_rates_by_unit_hz(sort_folder=folder, unit_ids=np.asarray(s.unit_ids), fs=fs_folder)
+        rates_by_label[k] = fr
+    _plot_rate_distribution(out_prefix=OUT_DIR / "fig_rate_distribution_4way", rates_by_label=rates_by_label)
 
 
 # Optional: split diagnostics PDF/CSV (default vs each other condition)

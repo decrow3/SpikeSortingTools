@@ -1,5 +1,7 @@
 #%%
-from pipeline import condition_signal, correct_motion, plot_motion_output, sort_ks4, save_binary_recording, run_qc, KilosortResults, load_qc, run_cur, load_cur
+from pipeline import condition_signal, correct_motion, plot_motion_output, sort_ks4, save_binary_recording, run_qc, KilosortResults, load_qc
+from pipeline.curation_postpatch import run_cur, load_cur
+
 from spikeinterface.sorters import get_default_sorter_params
 from pathlib import Path
 import shutil
@@ -8,7 +10,8 @@ import gc
 import spikeinterface.full as si
 
 #%% Change this code to load your data
-data_dir=   r"/mnt/NPX/Luke/20260316/Luke03162026_V2V1_RH_g0/"
+data_dir=   r"/mnt/NPX/Luke/20251205/Luke12052025_V1_RH_g0/"
+out_dir = r"/media/huklab/Data/NPX/Spikesorting/Patching/"
 
 stream_id = "imec1.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
@@ -33,8 +36,15 @@ data_root = data_dir.split('/')[0:5] #
 print(f'Using data root {"/".join(data_root)}, pipeline results will be saved in this directory')
 #%%
 previous_dir = Path(f'{"/".join(data_root)}/dredge_pipeline_results_{sess_name}_{stream_name}')
-pipeline_dir = Path(f'{"/".join(data_root)}/patched_pipeline_results_{sess_name}_{stream_name}')
+pipeline_dir = Path(out_dir) / f'patched_pipeline_results_{sess_name}_{stream_name}'
+print(f'out_dir is {out_dir}')
 pipeline_dir.mkdir(parents=True, exist_ok=True)
+if previous_dir.exists():
+    print(f'Using previous pipeline directory {previous_dir} for caching conditioning and motion correction results')
+    print(f'Pipeline results will be saved in {pipeline_dir}')
+else:
+    print(f'Previous pipeline directory {previous_dir} does not exist')
+    print(f'Pipeline results will be saved in {pipeline_dir}')
 
 #%%
 # condition signal runs 1) bad channel detection 2) . Can we also get a noise over time measure over all channels, may need to censor some completely

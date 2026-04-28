@@ -9,6 +9,31 @@ import matplotlib.pyplot as plt
 import gc
 import spikeinterface.full as si
 
+
+def _parse_float_list_env(var_name: str, default: list[float]) -> list[float]:
+    """Parse comma-separated float list from env var; fallback to default."""
+    raw = os.environ.get(var_name, '').strip()
+    if not raw:
+        return list(default)
+    out: list[float] = []
+    for part in raw.split(','):
+        part = part.strip()
+        if not part:
+            continue
+        out.append(float(part))
+    return out
+
+
+def _run_name_for_claim(ms: float, um: float) -> str:
+    def _fmt(x: float) -> str:
+        if abs(x - round(x)) < 1e-12:
+            s = str(int(round(x)))
+        else:
+            s = f"{x:g}"
+        return s.replace('-', 'm').replace('.', 'p')
+
+    return f"claim_ms{_fmt(ms)}_um{_fmt(um)}"
+
 # =============================================================================
 # Configuration
 # =============================================================================
@@ -172,9 +197,35 @@ base_params.update(
 # = fewer but more certain units (directly targets the oversplitting concern).
 param_sweeps = [
     {"run_name": "default"},
+    # Legacy names used by downstream analysis scripts
     {"run_name": "claim_tonly",   "cross_peel_claim_ms": 0.25, "cross_peel_claim_um": 0.0},
     {"run_name": "claim_spatial", "cross_peel_claim_ms": 0.25, "cross_peel_claim_um": 75.0},
 ]
+
+# Claim-mask parameter grid.
+# Override with e.g.
+#   SHALLOW_CLAIM_MS_LIST="0,0.1,0.25,0.5"  SHALLOW_CLAIM_UM_LIST="0,25,50,75,100"
+# or set SHALLOW_INCLUDE_DEFAULT_ONLY=1 to skip claim sweeps.
+_include_claim = os.environ.get('SHALLOW_INCLUDE_DEFAULT_ONLY', '').strip() not in ('1', 'true', 'True')
+if _include_claim:
+    claim_ms_values = _parse_float_list_env('SHALLOW_CLAIM_MS_LIST', default=[0.0, 0.10, 0.25, 0.50])
+    claim_um_values = _parse_float_list_env('SHALLOW_CLAIM_UM_LIST', default=[0.0, 25.0, 50.0, 75.0, 100.0])
+
+    # Build ms×um grid, but skip the (0,0) combo since that's identical to default.
+    existing_names = {d['run_name'] for d in param_sweeps if 'run_name' in d}
+    for ms in claim_ms_values:
+        for um in claim_um_values:
+            if abs(ms) < 1e-12 and abs(um) < 1e-12:
+                continue
+            run_name = _run_name_for_claim(ms, um)
+            if run_name in existing_names:
+                continue
+            existing_names.add(run_name)
+            param_sweeps.append({
+                'run_name': run_name,
+                'cross_peel_claim_ms': float(ms),
+                'cross_peel_claim_um': float(um),
+            })
 
 #%%
 for sweep_config in param_sweeps:

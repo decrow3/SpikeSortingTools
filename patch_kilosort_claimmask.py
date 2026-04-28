@@ -54,7 +54,8 @@ RUN_MATCHING_PATCH = '''    claim_ms = float(ops.get('cross_peel_claim_ms', 0.0)
     claim_enabled = claim_ms > 0
     claim_bins = int(np.ceil(claim_ms * ops['fs'] / 1000.0)) if claim_enabled else 0
     if claim_enabled:
-        template_main_chan = torch.argmax((U**2).sum(-1), dim=1)
+        # U has shape (n_templates, n_pcs, n_channels). We want the *channel* with most energy.
+        template_main_chan = torch.argmax((U**2).sum(1), dim=1)
         xc = torch.as_tensor(ops['xc'], device=device, dtype=torch.float32)
         yc = torch.as_tensor(ops['yc'], device=device, dtype=torch.float32)
         template_x = xc[template_main_chan]
@@ -169,9 +170,30 @@ def patch_template_matching_py(path, dry_run, reverse):
     insert_idx = idx+1
     while insert_idx < len(lines) and (lines[insert_idx].strip().startswith('"""') or lines[insert_idx].strip() == ''):
         insert_idx += 1
-    # Check if already patched
-    if any('cross_peel_claim_ms' in l for l in lines):
-        print(f"Already patched: {file}")
+    already_patched = any('cross_peel_claim_ms' in l for l in lines)
+    if already_patched:
+        # Upgrade path: early versions of the patch computed template_main_chan incorrectly
+        # (picked a PC index instead of a channel index), which effectively breaks claim_um gating.
+        old = "template_main_chan = torch.argmax((U**2).sum(-1), dim=1)"
+        new = "template_main_chan = torch.argmax((U**2).sum(1), dim=1)"
+        txt = "".join(lines)
+        if old not in txt:
+            print(f"Already patched: {file} (no upgrade needed)")
+            return
+
+        if not bak.exists():
+            shutil.copy2(file, bak)
+
+        new_txt = txt.replace(old, new, 1)
+        new_lines = new_txt.splitlines(keepends=True)
+        if dry_run:
+            print(f"--- {file} (dry-run diff: upgrade claim_um channel indexing) ---")
+            for l in difflib.unified_diff(lines, new_lines, fromfile=str(file), tofile=str(file) + '.upgraded'):
+                print(l, end='')
+        else:
+            with open(file, 'w') as f:
+                f.writelines(new_lines)
+            print(f"Upgraded patch in {file} (fixed template_main_chan)")
         return
     new_lines = lines[:insert_idx] + [RUN_MATCHING_PATCH] + lines[insert_idx:]
     # Insert claim mask filter inside peel loop (look for 'for t in range(max_peels):')
