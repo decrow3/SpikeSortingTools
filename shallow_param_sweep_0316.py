@@ -40,9 +40,9 @@ def _run_name_for_claim(ms: float, um: float) -> str:
 
 #%% Data + pipeline paths
 data_dir     = r"/mnt/NPX/Luke/20260316/Luke03162026_V2V1_RH_g0/"
-stream_id    = "imec1.ap"
+stream_id    = "imec0.ap"
 
-pipeline_dir = Path("/mnt/NPX/Luke/20260316/dredge_pipeline_results_Luke03162026_V2V1_RH_g0_imec1/")
+pipeline_dir = Path("/mnt/NPX/Luke/20260316/dredge_pipeline_results_Luke03162026_V2V1_RH_g0_imec0/")
 _DEFAULT_SWEEP_DIRNAME = "shallow_sweep_claimmask"
 sweep_dir    = pipeline_dir / os.environ.get("SHALLOW_SWEEP_DIRNAME", _DEFAULT_SWEEP_DIRNAME).strip()
 sweep_dir.mkdir(parents=True, exist_ok=True)
@@ -163,7 +163,14 @@ np.savez(
 )
 
 # Save once; every sweep run reuses this binary
-shallow_binary_path = sweep_dir / "preprocessed_recording_shallow"
+# Allow overriding directory name to avoid clobbering an in-use cache.
+# If SHALLOW_BINARY_SUFFIX is set, use that; otherwise use a timestamp suffix.
+_suffix = os.environ.get('SHALLOW_BINARY_SUFFIX', '').strip()
+if not _suffix:
+    from datetime import datetime
+    _suffix = datetime.now().strftime('%Y%m%d%H%M%S')
+shallow_binary_path = sweep_dir / f"preprocessed_recording_shallow{('_' + _suffix) if _suffix else ''}"
+print(f"Using shallow binary cache directory: {shallow_binary_path}")
 seg_shallow_saved   = save_binary_recording(seg_shallow, shallow_binary_path, recalc=False)
 del seg_shallow
 gc.collect()
@@ -198,7 +205,7 @@ base_params.update(
 param_sweeps = [
     {"run_name": "default"},
     # Legacy names used by downstream analysis scripts
-    {"run_name": "claim_tonly",   "cross_peel_claim_ms": 0.25, "cross_peel_claim_um": 0.0},
+    #{"run_name": "claim_tonly",   "cross_peel_claim_ms": 0.25, "cross_peel_claim_um": 0.0},
     {"run_name": "claim_spatial", "cross_peel_claim_ms": 0.25, "cross_peel_claim_um": 75.0},
 ]
 

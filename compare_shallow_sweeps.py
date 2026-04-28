@@ -2,6 +2,7 @@
 from pathlib import Path
 import json
 import os
+import argparse
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -53,7 +54,10 @@ PALETTE = ['#2B6CB0', '#C05621', '#276749', '#6B46C1', '#97266D', '#285E61', '#7
 
 _DEFAULT_SWEEP_DIR = "/mnt/NPX/Luke/20260316/dredge_pipeline_results_Luke03162026_V2V1_RH_g0_imec1/shallow_sweep"
 #_DEFAULT_SWEEP_DIR = "/mnt/NPX/Luke/20260302/dredge_pipeline_results_Luke03022026_V2V1_RH_g0_imec1/shallow_sweep"
+# Allow overriding default via env var COMPARE_SWEEP_DIR or CLI --sweep-dir
 sweep_dir = Path(os.environ.get('COMPARE_SWEEP_DIR', _DEFAULT_SWEEP_DIR).strip())
+
+
 
 FS               = 30_000.0   # Hz
 REF_RUN          = os.environ.get('COMPARE_REF_RUN', 'default').strip() or 'default'
@@ -63,6 +67,26 @@ COINC_THRESH     = 0.30       # min fraction of ref spikes that must coincide
 MPCT_THRESH      = 20.0       # max mean missing% to be "well-detected"
 PRESENCE_THRESH  = 0.50       # min presence fraction
 
+STAGE_SUFFIX = '' if ANALYSIS_STAGE == 'postcuration' else f'_{ANALYSIS_STAGE}'
+REF_SUFFIX = '' if REF_RUN == 'default' else f'_ref-{REF_RUN}'
+
+# Parse light CLI overrides (use parse_known_args so importing won't break)
+parser = argparse.ArgumentParser(add_help=False)
+parser.add_argument('--sweep-dir', dest='sweep_dir', default=None,
+                    help='Path to shallow-sweep directory (overrides COMPARE_SWEEP_DIR env)')
+parser.add_argument('--ref-run', dest='ref_run', default=None,
+                    help='Reference run name to compare against (overrides COMPARE_REF_RUN env)')
+parser.add_argument('--stage', dest='stage', default=None,
+                    help='Analysis stage (overrides COMPARE_STAGE env)')
+args, _ = parser.parse_known_args()
+if args.sweep_dir:
+    sweep_dir = Path(args.sweep_dir)
+if args.ref_run:
+    REF_RUN = args.ref_run.strip() or REF_RUN
+if args.stage:
+    ANALYSIS_STAGE = args.stage.strip().lower() or ANALYSIS_STAGE
+
+# recompute suffixes in case ref/stage were overridden
 STAGE_SUFFIX = '' if ANALYSIS_STAGE == 'postcuration' else f'_{ANALYSIS_STAGE}'
 REF_SUFFIX = '' if REF_RUN == 'default' else f'_ref-{REF_RUN}'
 
