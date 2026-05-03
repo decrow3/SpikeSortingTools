@@ -75,8 +75,21 @@ def truncation_qc(spike_times, spike_clusters, spike_amplitudes, cache_dir, reca
 
     pdf.close()
 
-    trunc_qc = {k: np.concatenate(v, axis=0) for k, v in trunc_qc.items()}
-    pres_qc = {k: np.concatenate(v, axis=0) for k, v in pres_qc.items()}
+    def _concat_or_empty(chunks, empty_shape, dtype=float):
+        if len(chunks) == 0:
+            return np.empty(empty_shape, dtype=dtype)
+        return np.concatenate(chunks, axis=0)
+
+    trunc_qc = {
+        'cid': _concat_or_empty(trunc_qc['cid'], (0,), dtype=float),
+        'window_blocks': _concat_or_empty(trunc_qc['window_blocks'], (0, 2), dtype=int),
+        'popts': _concat_or_empty(trunc_qc['popts'], (0, 3), dtype=float),
+        'mpcts': _concat_or_empty(trunc_qc['mpcts'], (0,), dtype=float),
+    }
+    pres_qc = {
+        'cid': _concat_or_empty(pres_qc['cid'], (0,), dtype=float),
+        'valid_blocks': _concat_or_empty(pres_qc['valid_blocks'], (0, 2), dtype=int),
+    }
 
     np.savez(truncation_path, **trunc_qc)
     np.savez(present_path, **pres_qc)
@@ -223,6 +236,58 @@ def run_qc(seg, results, cache_dir, recalc=False):
     qc_results['refractory'] = refractory    
 
     return qc_results
+
+def contamination_rate_from_rvl(
+    qc_results,
+    target_refractory_ms: float = 1.5,
+    significance: float = 0.05,
+) -> dict:
+    """
+    Extract a per-unit contamination estimate from a cached refractory_qc result.
+
+    For each unit finds the minimum contamination proportion whose likelihood
+    exceeds `significance` at the closest available refractory period to
+    `target_refractory_ms`.
+
+    Parameters
+    ----------
+    qc_results           : dict returned by refractory_qc (keys: rvl_tensor,
+                           refractory_periods, contamination_test_proportions)
+    target_refractory_ms : desired refractory period in ms
+    significance         : likelihood threshold above which contamination is
+                           considered plausible
+
+    Returns
+    -------
+    dict with keys:
+        cids            : unit ID array
+        contamination   : estimated contamination fraction per unit (nan = indeterminate)
+        refractory_ms   : actual refractory period used (closest to target)
+    """
+    rvl        = np.asarray(qc_results['rvl_tensor'])
+    ref_periods= np.asarray(qc_results['refractory_periods'])
+    cont_props = np.asarray(qc_results['contamination_test_proportions'])
+
+    # Find closest available refractory period
+    ref_idx = int(np.argmin(np.abs(ref_periods - target_refractory_ms * 1e-3)))
+    actual_ms = float(ref_periods[ref_idx] * 1e3)
+
+    n_units = rvl.shape[0]
+    contamination = np.full(n_units, np.nan)
+
+    for i in range(n_units):
+        likelihoods = rvl[i, ref_idx, :]     # (n_cont_props,)
+        passing = np.where(likelihoods > significance)[0]
+        if len(passing):
+            contamination[i] = float(cont_props[passing[0]])
+        else:
+            contamination[i] = 0.0
+
+    return dict(
+        contamination=contamination,
+        refractory_ms=actual_ms,
+    )
+
 
 def load_qc(cache_dir):
     '''

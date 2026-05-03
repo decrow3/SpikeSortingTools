@@ -5,3 +5,6 @@ from .refractory import *
 from .truncation import *
 from .qc import *
 from .curation import *
+from . import curation_evidence
+from . import curation_split
+from . import curation_temporal_diag
