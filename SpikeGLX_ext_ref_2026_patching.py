@@ -10,7 +10,7 @@ import spikeinterface.full as si
 #%% Change this code to load your data
 data_dir =   r"/mnt/NPX/Luke/20260313/Luke03132026_V2V1_RH_g0/"
 out_dir  =  r"/media/huklaban5/Data/Patched/"
-stream_id = "imec1.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
+stream_id = "imec0.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)
 
 #%% Run on a snippet to check params
