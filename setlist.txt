@@ -1,0 +1,30 @@
+External reference
+# new_cur = cosine-merge curation (run_cur_final), output in /media/huklaban5/Data/Patched/patched_pipeline_results_*/cur/cur_output/
+# old_cur = prior curation scheme, output on server only
+
+session              	data_dir                                                    	sorted (KS4)                                          	new_cur
+luke2026-03-16       	/mnt/NPX/Luke/20260316/Luke03162026_V2V1_RH_g0/            	✓ (V1: imec1), ✓ (V2: imec0)                         	✓ (V1: imec1), ✓ (V2: imec0)
+luke2026-03-13       	/mnt/NPX/Luke/20260313/Luke03132026_V2V1_RH_g0/            	✓ (V1: imec1), ✓ (V2: imec0)  (WARNING: recording stopped mid-capture, using g0 only)
+luke2026-03-11       	/mnt/NPX/Luke/20260311/Luke03112026_V2V1_RH_g0/            	✓ (V1: imec1), ✓ (V2: imec0)
+luke2026-03-09       	/mnt/NPX/Luke/20260309/Luke03092026_V1_RH_g0/              	✓ (V1: imec1), ✓ (V2: imec0)
+luke2026-03-08       	/mnt/NPX/Luke/20260308/Luke03082026_V1_RH_g0/              	✓ (V1: imec0)
+luke2026-03-02       	/mnt/NPX/Luke/20260302/Luke03022026_V2V1_RH_g0/            	✓ (V1: imec1), ✓ (V2: imec0)                         	✓ (V1: imec1), ✓ (V2: imec0)
+luke2026-03-01       	/mnt/NPX/Luke/20260301/Luke03012026_V2V1_RH_g0/            	✓ (V1: imec1), ✓ (V2: imec0)                         	✓ (V1: imec1), ✓ (V2: imec0)
+luke2025-12-05       	/mnt/NPX/Luke/20251205/Luke12052025_V1_RH_g0/              	✓ (V1: imec1), ✓ (V2: imec0)
+luke2025-11-20       	/mnt/NPX/Luke/20251120/Luke1120_V1_RH_g0/                  	✓ (V1: imec0)
+luke2025-11-11       	/mnt/NPX/Luke/20251111/Luke1111_V1_RH_g0_g0/               	✓ (V1: imec0)
+luke2025-08-05       	/mnt/NPX/Luke/20250805/Luke0805_V2V1_g0/                   	✓ (V1: imec1), ✓ (V2: imec0)
+luke2025-08-04       	/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0/                   	✓ (V1: imec1), ✓ (V2: imec0)
+luke2025-07-30       	/mnt/NPX/Luke/20250730/Luke0730_V2V1_g0/                   	✓ (V1: imec1), ✓ (V2: imec0)
+luke2025-07-24       	/mnt/NPX/Luke/20250724/Luke0724_V2V1_g0/                   	✓ (V1: imec1), ✓ (V2: imec0)
+luke2025-07-17       	/mnt/NPX/Luke/20250717/Luke0717_V1_g0/                     	✓ (V1: imec0)
+
+Tip reference
+session              	data_dir                                                    	sorted (KS4)                                          	new_cur
+rocky2024-07-04      	/mnt/NPX/Rocky/20240704/Rocky20240704_V1V2_g0/             	✓ (V1: imec1), ✓ (V2: imec0)
+rocky2024-04-27      	/mnt/NPX/Rocky/20240427/Rocky20240427_V1V2_g0/             	✓ (V1: imec1), X (V2: imec0)
+rocky2024-04-14      	/mnt/NPX/Rocky/20240414/Rocky20240414_V1V2_g0/             	✓ (V1: imec1), X (V2: imec0)
+rocky2024-02-29      	/mnt/NPX/Rocky/20240229/Rocky20240229_V1V2_g0/             	✓ (V1: imec1), X (V2: imec0)
+rocky2023-12-09      	/mnt/NPX/Rocky/20231209/Rocky20231209_V1V2_g0/             	✓ (V1: imec1), X (V2: imec0)
+rocky2023-10-27      	/mnt/NPX/Rocky/20231027/Rocky20231027_V1V2_g0/             	✓ (V1: imec1), X (V2: imec0)
+rocky2023-08-23      	/mnt/NPX/Rocky/20230823/Rocky_set0V1medial_g0/             	✓ (V1: imec0)

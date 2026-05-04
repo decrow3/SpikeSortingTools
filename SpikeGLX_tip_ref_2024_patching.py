@@ -54,7 +54,7 @@ seg_motion = correct_motion(
     seg_pre_motion_est, rec_for_sorting=seg_pre_sorting,
     cache_dir=dredge_dir / 'motion', recalc=False, method='dredge',
 )
-plot_motion_output(seg_motion, cache_dir=dredge_dir / 'motion')
+plot_motion_output(seg_motion, cache_dir=dredge_dir / 'motion', save_dir=pipeline_dir / 'motion')
 
 #%% Kilosort4 parameters
 import json

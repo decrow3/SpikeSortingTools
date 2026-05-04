@@ -8,9 +8,9 @@ import gc
 import spikeinterface.full as si
 
 #%% Change this code to load your data
-data_dir =   r"/mnt/NPX/Luke/20260316/Luke03162026_V2V1_RH_g0/"
+data_dir =   r"/mnt/NPX/Luke/20260313/Luke03132026_V2V1_RH_g0/"
 out_dir  =  r"/media/huklaban5/Data/Patched/"
-stream_id = "imec0.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
+stream_id = "imec1.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)
 
 #%% Run on a snippet to check params
@@ -54,7 +54,7 @@ seg_motion = correct_motion(
     seg_pre_motion_est, rec_for_sorting=seg_pre_sorting,
     cache_dir=dredge_dir / 'motion', recalc=False, method='dredge',
 )
-plot_motion_output(seg_motion, cache_dir=dredge_dir / 'motion')
+plot_motion_output(seg_motion, cache_dir=dredge_dir / 'motion', save_dir=pipeline_dir / 'motion')
 
 #%% Kilosort4 parameters
 import json

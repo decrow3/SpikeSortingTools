@@ -257,6 +257,7 @@ def plot_motion_output(seg, cache_dir, save_dir=None, plot_stride=30, uV_per_bit
         save_dir = Path(save_dir)
     if save_dir is None:
         save_dir = cache_dir
+    save_dir.mkdir(parents=True, exist_ok=True)
 
     save_files = [
         'depth_raster.png',
