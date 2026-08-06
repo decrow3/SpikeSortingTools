@@ -1,223 +1,171 @@
+#!/usr/bin/env python3
 """
-Batch runner for SpikeGLX external-reference patching pipeline.
+compare_sortings_after_qc.py
 
-Edit SESSIONS below to add/remove datasets. Each entry is:
-    (data_dir, stream_id)
+:contentReference[oaicite:9]{index=9}ls pipeline outputs (post-curation) using
+spikeinterface.comparison.compare_two_sorters().
 
-The script logs successes and failures and continues on error so a single
-bad session does not abort the batch.
+Typical usage:
+  python compare_sortings_after:contentReference[oaicite:10]{index=10}/pipeline_run_A \
+    --pipe2 /path/to/pipeline_run_B \
+    --outdir /path/to/compare_out \
+    --delta-ms 0.4 \
+    --min-agreement 0.5
+
+By default it loads:
+  <pipeX>/cur/cur_sorter_output   (Phy fold:contentReference[oaicite:11]{index=11}od
+will attempt to keep only units labeled "good" in cluster info (if present).
+QC-based filtering is intentionally left as a hook because your QC code
+computes QC artifacts but does not define a single "good unit" threshold.
 """
 
-# ---------------------------------------------------------------------------
-# Sessions to process — edit this list
-# ---------------------------------------------------------------------------
-SESSIONS = [
-    # (data_dir,                                                  stream_id)
-    # ── 2026 ──────────────────────────────────────────────────────────────
-    # ("/mnt/NPX/Luke/20260316/Luke03162026_V2V1_RH_g0/",        "imec1.ap"),  # done
-    # ("/mnt/NPX/Luke/20260316/Luke03162026_V2V1_RH_g0/",        "imec0.ap"),  # done
-    # ("/mnt/NPX/Luke/20260313/Luke03132026_V2V1_RH_g0/",        "imec1.ap"),
-    # ("/mnt/NPX/Luke/20260313/Luke03132026_V2V1_RH_g0/",        "imec0.ap"),
-    # ("/mnt/NPX/Luke/20260311/Luke03112026_V2V1_RH_g0/",        "imec1.ap"),
-    # ("/mnt/NPX/Luke/20260311/Luke03112026_V2V1_RH_g0/",        "imec0.ap"),
-    # ("/mnt/NPX/Luke/20260309/Luke03092026_V1_RH_g0/",          "imec1.ap"),
-    # ("/mnt/NPX/Luke/20260309/Luke03092026_V1_RH_g0/",          "imec0.ap"),
-    # ("/mnt/NPX/Luke/20260308/Luke03082026_V1_RH_g0/",          "imec0.ap"),
-    # ("/mnt/NPX/Luke/20260302/Luke03022026_V2V1_RH_g0/",        "imec1.ap"),  # done
-    # ("/mnt/NPX/Luke/20260302/Luke03022026_V2V1_RH_g0/",        "imec0.ap"),  # done
-    # ("/mnt/NPX/Luke/20260301/Luke03012026_V2V1_RH_g0/",        "imec1.ap"),  # done
-    # ("/mnt/NPX/Luke/20260301/Luke03012026_V2V1_RH_g0/",        "imec0.ap"),  # done
-    # ── 2025 ──────────────────────────────────────────────────────────────
-    # ("/mnt/NPX/Luke/20251205/Luke12052025_V1_RH_g0/",          "imec1.ap"),
-    # ("/mnt/NPX/Luke/20251205/Luke12052025_V1_RH_g0/",          "imec0.ap"),
-    # ("/mnt/NPX/Luke/20251120/Luke1120_V1_RH_g0/",              "imec0.ap"),
-    # ("/mnt/NPX/Luke/20251111/Luke1111_V1_RH_g0_g0/",           "imec0.ap"),
-    # ("/mnt/NPX/Luke/20250805/Luke0805_V2V1_g0/",               "imec1.ap"),
-    # ("/mnt/NPX/Luke/20250805/Luke0805_V2V1_g0/",               "imec0.ap"),
-    # ("/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0/",               "imec1.ap"),
-    # ("/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0/",               "imec0.ap"),
-    # ("/mnt/NPX/Luke/20250730/Luke0730_V2V1_g0/",               "imec1.ap"),
-    # ("/mnt/NPX/Luke/20250730/Luke0730_V2V1_g0/",               "imec0.ap"),
-    # ("/mnt/NPX/Luke/20250724/Luke0724_V2V1_g0/",               "imec1.ap"),
-    # ("/mnt/NPX/Luke/20250724/Luke0724_V2V1_g0/",               "imec0.ap"),
-    # ("/mnt/NPX/Luke/20250717/Luke0717_V1_g0/",                 "imec0.ap"),
-]
+from __future__ import annotations
 
-OUT_DIR = r"/media/huklaban5/Data/Patched/"
-
-# ---------------------------------------------------------------------------
-# Pipeline (do not edit below unless changing the processing steps)
-# ---------------------------------------------------------------------------
-import gc
-import glob
-import json
-import os
-import traceback
+import argparse
 from pathlib import Path
+import json
+import pandas as pd
 
-import numpy as np
-import scipy.io as sio
-import spikeinterface.full as si
-from spikeinterface.sorters import get_default_sorter_params
-
-from pipeline import condition_signal, correct_motion, plot_motion_output, run_qc, save_binary_recording, sort_ks4
-from pipeline.curation_postpatch import run_cur_final
+import spikeinterface.extractors as se
+import spikeinterface.comparison as scmp
+import spikeinterface.widgets as sw
 
 
-def _run_session(data_dir, stream_id, out_dir):
-    data_dir  = data_dir.rstrip('/')
-    sess_name = data_dir.split('/')[-1]
-    stream_name = stream_id.split('.')[0]
-    data_root   = '/'.join(data_dir.split('/')[:-1])  # parent of session folder
+def read_phy_sorting(phy_folder: Path):
+    if not phy_folder.exists():
+        raise FileNotFoundError(f"Phy folder not found: {phy_folder}")
+    # spikeinterface.extractors.read_phy is imported/used in your repo curation code
+    # so this matches your existing workflow. :contentReference[oaicite:12]{index=12}
+    return se.read_phy(folder_path=str(phy_folder), load_all_cluster_properties=True)
 
-    print(f'\n{"="*70}')
-    print(f'SESSION: {sess_name}  stream: {stream_id}')
-    print(f'{"="*70}')
 
-    dredge_dir   = Path(data_root) / f'dredge_pipeline_results_{sess_name}_{stream_name}'
-    pipeline_dir = Path(out_dir) / f'patched_pipeline_results_{sess_name}_{stream_name}'
+def maybe_filter_good_units_from_phy(sorting):
+    """
+    If Phy cluster labels exist, keep units labeled 'good'.
 
-    if not dredge_dir.exists():
-        raise FileNotFoundError(
-            f'Motion correction results not found: {dredge_dir}\n'
-            'Run the pre-patch dredge pipeline first, or check the server is mounted.'
-        )
+    This is conservative: if no labels/properties are found, it returns sorting unchanged.
+    """
+    props = sorting.get_property_keys()
+    label_key = None
+    for k in ["KSLabel", "group", "quality", "cluster_group"]:
+        if k in props:
+            label_key = k
+            break
 
-    pipeline_dir.mkdir(parents=True, exist_ok=True)
-    print(f'Dredge dir   : {dredge_dir}')
-    print(f'Pipeline dir : {pipeline_dir}')
+    if la:contentReference[oaicite:13]{index=13}rn sorting
 
-    # Load recording
-    seg = si.read_spikeglx(folder_path=data_dir + '/', load_sync_channel=False, stream_id=stream_id)
+    labels = sorting.get_property(label_key)
+    if labels is None:
+        return sorting
 
-    # Signal conditioning — load from server cache
-    seg_pre_motion_est, seg_pre_sorting = condition_signal(
-        seg, cache_dir=dredge_dir / 'conditioning',
-        noise_thresh=0.3, uV_thresh=.5e3, recalc=False,
-    )
+    # normalize to lowercase strings
+    labels_norm = [str(x).strip().lower() for x in labels]
+    unit_ids = sorting.unit_ids
+    good_ids = [uid for uid, lab in zip(unit_ids, labels_norm) if lab == "good"]
 
-    # Motion correction — load from server cache
-    seg_motion = correct_motion(
-        seg_pre_motion_est, rec_for_sorting=seg_pre_sorting,
-        cache_dir=dredge_dir / 'motion', recalc=False, method='dredge',
-    )
-    plot_motion_output(seg_motion, cache_dir=dredge_dir / 'motion', save_dir=pipeline_dir / 'motion')
+    if len(good_ids) == 0:
+        return sorting
 
-    # KS4 parameters
-    sorter_params = get_default_sorter_params('kilosort4')
-    sorter_params['do_correction']        = False
-    sorter_params['save_extra_vars']      = True
-    sorter_params['Th_universal']         = 9
-    sorter_params['Th_learned']           = 8
-    sorter_params['duplicate_spike_ms']   = 0.25
-    sorter_params['ccg_threshold']        = 0.75
-    sorter_params['nearest_chans']        = 20
-    sorter_params['nearest_templates']    = 200
-    sorter_params['max_channel_distance'] = 64
-    sorter_params['clear_cache']          = True
-    sorter_params['cross_peel_claim_ms']  = 0.25
-    sorter_params['cross_peel_claim_um']  = 75.0
+    return sorting.select_units(good_ids)
 
-    _dredge_ks4_params = dredge_dir / 'kilosort4' / 'spikeinterface_params.json'
-    if _dredge_ks4_params.exists():
-        with open(_dredge_ks4_params) as _f:
-            _prev = json.load(_f).get('sorter_params', {})
-        for _key in ('Th_universal', 'Th_learned'):
-            if _key in _prev:
-                sorter_params[_key] = _prev[_key]
-                print(f'Loaded {_key}={_prev[_key]} from dredge params')
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--pipe1", type=str, required=True, help="Pipeline directory A")
+    ap.add_argument("--pipe2", type=str, required=True, help="Pipeline directory B")
+    ap.add_argument("--stage", type=str, default="cur", choices=["cur", "sorter_output"],
+                    help="Which folder to compare: curated output or raw sorter output.")
+    ap.add_argument("--outdir", type=str, required=True, help="Output directory for reports")
+    ap.add_argument("--delta-ms", type=float, default=0.4, help="Spike matching tolerance in ms")
+    ap.add_argument("--min-agreement", type=float, default=0.5, help="Threshold for 'matched' summary table")
+    ap.add_argument("--units", type=str, default="all", choices=["all", "good"],
+                    help="If 'good', filters by Phy cluster labels when available.")
+    args = ap.parse_args()
+
+    pipe1 = Path(args.pipe1)
+    pipe2 = Path(args.pipe2)
+    outdir = Path(args.outdir)
+    outdir.mkdir(parents=True, exist_ok=True)
+
+    if args.stage == "cur":
+        phy1 = pipe1 / "cur" / "cur_sorter_output"
+        phy2 = pipe2 / "cur" / "cur_sorter_output"
     else:
-        print(f'No dredge KS4 params — using defaults Th_universal={sorter_params["Th_universal"]}, Th_learned={sorter_params["Th_learned"]}')
+        phy1 = pipe1 / "sorting" / "sorter_output"
+        phy2 = pipe2 / "sorting" / "sorter_output"
 
-    del seg, seg_pre_motion_est, seg_pre_sorting
+    sorting1 = read_phy_sorting(phy1)
+    sorting2 = read_phy_sorting(phy2)
 
-    # Load preprocessed recording from server
-    seg_saved = save_binary_recording(seg_motion, dredge_dir / 'preprocessed_recording', recalc=False)
-    del seg_motion
-    gc.collect()
+    if args.units == "good":
+        sorting1 = maybe_filter_good_units_from_phy(sorting1)
+        sorting2 = maybe_filter_good_units_from_phy(sorting2)
 
-    # KS4 fallback: harddrive → server old patched dir → run fresh
-    _ks4_hd     = pipeline_dir / 'kilosort4'
-    _ks4_server = Path(data_root) / f'patched_pipeline_results_{sess_name}_{stream_name}' / 'kilosort4'
-
-    if _ks4_hd.exists():
-        ks4_dir = _ks4_hd
-        print(f'KS4: loading from harddrive: {ks4_dir}')
-    elif _ks4_server.exists():
-        ks4_dir = _ks4_server
-        print(f'KS4: loading from server: {ks4_dir}')
-    else:
-        ks4_dir = _ks4_hd
-        print(f'KS4: no existing results — running fresh to harddrive: {ks4_dir}')
-
-    ks4_results, ks4_sorter = sort_ks4(seg_saved, ks4_dir, sorter_params=sorter_params, recalc=False)
-
-    # Curation and QC — always rerun
-    cur_results = run_cur_final(
-        ks4_sorter, ks4_results,
-        pipeline_dir / 'cur',
-        recalc=True,
-        ks4_out_path=ks4_dir / 'sorter_output',
+    # Compare two sorters (symmetric comparison). :contentReference[oaicite:14]{index=14}
+    cmp = scmp.compare_two_sorters(
+        sorting1=sorting1,
+        sorting2=sorting2,
+        sorting1_name=pipe1.name,
+        sorting2_name=pipe2.name,
+        delta_time=args.delta_ms / 1000.0,
     )
-    qc_results = run_qc(seg_saved, cur_results, pipeline_dir / 'qc', recalc=True)
 
-    # Export to .mat
-    qc_outdir = pipeline_dir / 'qc'
-    _qc_files = {
-        'waveforms':  'waveforms/waveforms.npz',
-        'refractory': 'refractory/refractory_qc.npz',
-        'truncation': 'amp_truncation/truncation_qc.npz',
-        'presence':   'amp_truncation/present_qc.npz',
+    # Export key matrices
+    match_event_count = cmp.match_event_count.copy()
+    agreement_scores = cmp.agreement_scores.copy()
+
+    # Convert to CSV
+    match_event_count.to_csv(outdir / "match_event_count.csv")
+    agreement_scores.to_csv(outdir / "agreement_scores.csv")
+
+    # Matching (Hungarian; unmatched show as -1). :contentReference[oaicite:15]{index=15}
+    m1_to_2, m2_to_1 = cmp.get_matching()
+
+    # Build a tidy table of matched pairs with their agreement
+    rows = []
+    for u1, u2 in m1_to_2.items():
+        if u2 == -1:
+            rows.append({"unit_1": u1, "unit_2": -1, "agreement": 0.0})
+        else:
+            # agreement_scores is a dataframe indexed by unit ids
+            agr = float(agreement_scores.loc[u1, u2])
+            rows.append({"unit_1": u1, "unit_2": u2, "agreement": agr})
+    df_match = pd.DataFrame(rows)
+    df_match.to_csv(outdir / "matched_units.csv", index=False)
+
+    # Summary JSON
+    summary = {
+        "pipe1": str(pipe1),
+        "pipe2": str(pipe2),
+        "stage": args.stage,
+        "delta_ms": args.delta_ms,
+        "units_filter": args.units,
+        "n_units_1": int(len(sorting1.unit_ids)),
+        "n_units_2": int(len(sorting2.unit_ids)),
+        "n_matched": int((df_match["unit_2"] != -1).sum()),
+        "n_unmatched_1": int((df_match["unit_2"] == -1).sum()),
+        "matched_ge_min_agreement": int(((df_match["unit_2"] != -1) & (df_match["agreement"] >= args.min_agreement)).sum()),
+        "min_agreement_threshold": args.min_agreement,
     }
-    _mat_names = {
-        'waveforms':  'waveforms_data.mat',
-        'refractory': 'refractory_data.mat',
-        'truncation': 'truncation_data.mat',
-        'presence':   'presence_data.mat',
-    }
-    for key, relpath in _qc_files.items():
-        filepath = qc_outdir / relpath
-        if not filepath.exists():
-            raise FileNotFoundError(f'QC output missing: {filepath}')
-        data = np.load(filepath, allow_pickle=True)
-        sio.savemat(str(qc_outdir / _mat_names[key]), data)
-        print(f'Saved {_mat_names[key]}')
+    (outdir / "summary.json").write_text(json.dumps(summary, indent=2))
 
-    ops_npy = glob.glob(str(pipeline_dir / 'cur' / 'cur_output' / 'ops.npy'))
-    for f in ops_npy:
-        fm = os.path.splitext(f)[0] + '.mat'
-        d  = np.load(f, allow_pickle=True)
-        sio.savemat(fm, {"xc": d.item()['xc'], "yc": d.item()['yc']})
-        print(f'Generated {fm}')
+    # Plots
+    # Agreement matrix visualization is the canonical first look. :contentReference[oaicite:16]{index=16}
+    fig1 = sw.plot_agreement_matrix(cmp, ordered=True)
+    fig1.figure.savefig(outdir / "agreement_matrix_ordered.png", dpi=200, bbox_inches="tight")
 
-    print(f'Done: {sess_name} {stream_id}')
+    fig2 = sw.plot_agreement_matrix(cmp, ordered=False)
+    fig2.figure.savefig(outdir / "agreement_matrix.png", dpi=200, bbox_inches="tight")
+
+    # Also save the "high agreement" subset for quick eyeballing
+    df_high = df_match[(df_match["unit_2"] != -1) & (df_match["agreement"] >= args.min_agreement)].sort_values("agreement", ascending=False)
+    df_high.to_csv(outdir / f"matched_units_agreement_ge_{args.min_agreement:.2f}.csv", index=False)
+
+    print("Wrote outputs to:", outdir)
+    print(json.dumps(summary, indent=2))
 
 
-# ---------------------------------------------------------------------------
-# Batch loop
-# ---------------------------------------------------------------------------
-if __name__ == '__main__':
-    results = []
+if __name__ == "__main__":
+    main()
 
-    for data_dir, stream_id in SESSIONS:
-        label = f'{data_dir.rstrip("/").split("/")[-1]}  {stream_id}'
-        try:
-            _run_session(data_dir, stream_id, OUT_DIR)
-            results.append(('OK', label))
-        except Exception as e:
-            print(f'\n[ERROR] {label}:\n{traceback.format_exc()}')
-            results.append(('FAIL', label, str(e)))
 
-    print(f'\n{"="*70}')
-    print('BATCH SUMMARY')
-    print(f'{"="*70}')
-    for r in results:
-        status = r[0]
-        label  = r[1]
-        msg    = f'  → {r[2]}' if status == 'FAIL' else ''
-        print(f'  [{status}]  {label}{msg}')
-    print(f'{"="*70}')
-
-    n_ok   = sum(1 for r in results if r[0] == 'OK')
-    n_fail = sum(1 for r in results if r[0] == 'FAIL')
-    print(f'{n_ok} succeeded, {n_fail} failed')

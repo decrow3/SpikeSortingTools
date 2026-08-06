@@ -7,6 +7,37 @@ import gc
 # I'm using a pinned version of spikeinterface, so if something doesn't work with the latest version, ask about it
 import spikeinterface.full as si
 
+
+def _load_threshold_overrides(data_root, sess_name, stream_name, preferred_params=None):
+    data_root = Path(data_root)
+    candidate_paths = []
+    if preferred_params is not None:
+        candidate_paths.append(Path(preferred_params))
+
+    candidate_paths.append(
+        data_root / f'pipeline_results_{sess_name}_{stream_name}' / 'kilosort4' / 'spikeinterface_params.json'
+    )
+    for run_dir in sorted(data_root.glob(f'pipeline_*{sess_name}_{stream_name}*')):
+        candidate_paths.append(run_dir / 'kilosort4' / 'spikeinterface_params.json')
+
+    seen = set()
+    for params_path in candidate_paths:
+        params_path = Path(params_path)
+        if params_path in seen or not params_path.exists():
+            continue
+        seen.add(params_path)
+        with open(params_path) as f:
+            sorter_params = json.load(f).get('sorter_params', {})
+        overrides = {
+            key: sorter_params[key]
+            for key in ('Th_universal', 'Th_learned')
+            if key in sorter_params
+        }
+        if overrides:
+            return overrides, params_path
+
+    return {}, None
+
 #%% Change this code to load your data
 data_dir =   r"/mnt/NPX/Luke/20260313/Luke03132026_V2V1_RH_g0/"
 out_dir  =  r"/media/huklaban5/Data/Patched/"
@@ -25,36 +56,35 @@ data_root   = '/'.join(data_dir.split('/')[0:5])
 print(f'Using data root {data_root}, pipeline results will be saved to harddrive')
 
 #%% Directory layout
-# dredge_dir  — server, motion correction results (NEVER rerun)
+# dredge_dir  — server motion cache; reused when present, computed fresh when absent
 # pipeline_dir — harddrive, KS4 / curation / QC outputs
 dredge_dir   = Path(f'{data_root}/dredge_pipeline_results_{sess_name}_{stream_name}')
 pipeline_dir = Path(out_dir) / f'patched_pipeline_results_{sess_name}_{stream_name}'
-
-# Guard: motion correction must already exist on server
-if not dredge_dir.exists():
-    raise FileNotFoundError(
-        f'Motion correction results not found: {dredge_dir}\n'
-        'Run the pre-patch dredge pipeline first, or check the server is mounted.'
-    )
+local_dredge_dir = pipeline_dir / 'dredge_cache'
 
 pipeline_dir.mkdir(parents=True, exist_ok=True)
-print(f'Dredge dir (server): {dredge_dir}')
+if dredge_dir.exists():
+    print(f'Dredge dir (server): {dredge_dir} (reusing existing cache)')
+    cache_root = dredge_dir
+else:
+    print(f'Dredge dir (server): {dredge_dir} (missing; will compute fresh motion cache locally at {local_dredge_dir})')
+    cache_root = local_dredge_dir
 print(f'Pipeline dir (harddrive): {pipeline_dir}')
 
 #%% Signal conditioning — load from server cache, never rerun
 noise_thresh = 0.3
 uV_thresh    = .5e3  # 500 µV for external reference
 seg_pre_motion_est, seg_pre_sorting = condition_signal(
-    seg, cache_dir=dredge_dir / 'conditioning',
+    seg, cache_dir=cache_root / 'conditioning',
     noise_thresh=noise_thresh, uV_thresh=uV_thresh, recalc=False,
 )
 
 #%% Motion correction — load from server cache, never rerun
 seg_motion = correct_motion(
     seg_pre_motion_est, rec_for_sorting=seg_pre_sorting,
-    cache_dir=dredge_dir / 'motion', recalc=False, method='dredge',
+    cache_dir=cache_root / 'motion', recalc=False, method='dredge',
 )
-plot_motion_output(seg_motion, cache_dir=dredge_dir / 'motion', save_dir=pipeline_dir / 'motion')
+plot_motion_output(seg_motion, cache_dir=cache_root / 'motion', save_dir=pipeline_dir / 'motion')
 
 #%% Kilosort4 parameters
 import json
@@ -72,25 +102,27 @@ sorter_params['clear_cache']          = True
 sorter_params['cross_peel_claim_ms']  = 0.25
 sorter_params['cross_peel_claim_um']  = 75.0
 
-# Override Th_universal / Th_learned from previous dredge run if available
-_dredge_ks4_params = dredge_dir / 'kilosort4' / 'spikeinterface_params.json'
-if _dredge_ks4_params.exists():
-    with open(_dredge_ks4_params) as _f:
-        _prev = json.load(_f).get('sorter_params', {})
-    for _key in ('Th_universal', 'Th_learned'):
-        if _key in _prev:
-            sorter_params[_key] = _prev[_key]
-            print(f'Loaded {_key}={_prev[_key]} from dredge params')
+# Override Th_universal / Th_learned from prior server runs if available
+threshold_overrides, threshold_source = _load_threshold_overrides(
+    data_root,
+    sess_name,
+    stream_name,
+    preferred_params=cache_root / 'kilosort4' / 'spikeinterface_params.json',
+)
+if threshold_overrides:
+    for _key, _value in threshold_overrides.items():
+        sorter_params[_key] = _value
+        print(f'Loaded {_key}={_value} from {threshold_source}')
 else:
-    print(f'No dredge KS4 params found, using defaults: Th_universal={sorter_params["Th_universal"]}, Th_learned={sorter_params["Th_learned"]}')
+    print(f'No prior KS4 params found, using defaults: Th_universal={sorter_params["Th_universal"]}, Th_learned={sorter_params["Th_learned"]}')
 
 #%% Free memory before heavy steps
 del seg
 del seg_pre_motion_est
 del seg_pre_sorting
 
-#%% Load preprocessed recording from server
-seg_saved = save_binary_recording(seg_motion, dredge_dir / 'preprocessed_recording', recalc=False)
+#%% Load preprocessed recording from cache root
+seg_saved = save_binary_recording(seg_motion, cache_root / 'preprocessed_recording', recalc=False)
 del seg_motion
 gc.collect()
 

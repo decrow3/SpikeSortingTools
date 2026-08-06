@@ -1334,7 +1334,9 @@ def run_cur_final(
     ks4_out_path : override path to kilosort4/sorter_output/ — use when KS4
                    lives on a different drive from cache_dir (see pipeline scripts).
     """
-    return run_cur_cosine(
+    import datetime, json as _json
+    cache_dir = Path(cache_dir)
+    result = run_cur_cosine(
         ks4_sorter, ks4_results, cache_dir,
         recalc=recalc,
         split_depth_export=split_depth_export,
@@ -1349,6 +1351,20 @@ def run_cur_final(
         ks4_out_path=ks4_out_path,
         _out_subdir='cur_output',
     )
+    info = {
+        'strategy':                'cosine',
+        'pipeline_version':        'run_cur_final',
+        'timestamp':               datetime.datetime.now().isoformat(timespec='seconds'),
+        'cosine_thresh':           cosine_thresh,
+        'ccg_thresh':              ccg_thresh,
+        'min_spikes_seed':         min_spikes_seed,
+        'min_spikes_pair':         min_spikes_pair,
+        'enable_redundant_removal': enable_redundant_removal,
+        'output_dir':              'cur_output',
+    }
+    with open(cache_dir / 'cur_output' / 'curation_info.json', 'w') as _f:
+        _json.dump(info, _f, indent=2)
+    return result
 
 
 def load_cur(cache_dir):
