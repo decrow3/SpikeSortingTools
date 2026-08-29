@@ -2,6 +2,7 @@
 #Curation with the SortingAnalyzer, to clean up the sorting results
 
 import shutil
+import gc
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
@@ -20,8 +21,134 @@ from spikeinterface.exporters.to_phy import export_to_phy
 from spikeinterface.extractors import read_phy
 from spikeinterface.sorters import KilosortSorter
 from kilosort.run_kilosort import save_sorting
-from kilosort.io import load_ops
+from kilosort.io import load_ops, save_ops
+from kilosort.postprocessing import remove_duplicates, compute_spike_positions, make_pc_features
+from kilosort.clustering_qr import xy_templates
+from kilosort import CCG
+import time
+import torch
 import copy
+
+
+def _rss_gb():
+    '''Current process resident memory, in GB. Cheap, no dependencies.'''
+    try:
+        with open('/proc/self/status') as f:
+            for line in f:
+                if line.startswith('VmRSS:'):
+                    return int(line.split()[1]) / 1024 / 1024
+    except Exception:
+        pass
+    return -1.0
+
+
+def _memlog(tag):
+    # flush=True is essential here: plain print() is block-buffered when
+    # stdout is redirected to a file, so without an explicit flush these
+    # checkpoints can be silently lost if the process is OOM-killed before
+    # the buffer would otherwise have been written out.
+    print(f'[MEM] {tag}: {_rss_gb():.2f} GB', flush=True)
+
+
+def _make_pc_features_lowmem(ops, spike_templates, spike_clusters, tF, max_dd_elements=100_000_000):
+    '''
+    Memory-bounded reimplementation of kilosort.postprocessing.make_pc_features.
+
+    The vendor implementation builds one dense (nspikes, nchan, nfeatures)
+    tensor per cluster, where nchan is the number of unique channels spanned
+    by the UNION of all templates belonging to that cluster (via
+    `torch.unique(iC[:, ix])`). Before merging, clusters map ~1:1 to
+    templates so nchan stays near `ops['nearest_chans']` (small). After
+    curation.py's merges, a single cluster can span many original templates
+    at different probe locations, pushing nchan up toward the full channel
+    count -- and for a cluster with many spikes, that one dense allocation
+    can reach tens of GB. This is what has been causing OOM kills on
+    heavily-merged sessions even after fixing the save_to_phy redundant
+    copy (see _save_to_phy_lowmem).
+
+    This keeps the vendor's exact per-cluster algorithm (same dd
+    construction, same mean/norm/argsort selection, same tF/feature_ind
+    writes) for typical clusters. Only for a cluster whose dense tensor
+    would exceed `max_dd_elements` does it fall back to processing that
+    cluster's spikes in bounded-size chunks along the spike axis -- same
+    math, same result, just computed piece by piece so peak memory for that
+    cluster is bounded by max_dd_elements regardless of its total spike
+    count. Verified to produce bit-identical output to the vendor function
+    on real data (both the direct and chunked code paths).
+    '''
+    xy, iC = xy_templates(ops)
+    n_templates = iC.shape[1]
+    n_clusters = np.unique(spike_clusters).size
+    n_chans = ops['nearest_chans']
+    feature_ind = np.zeros((n_clusters, n_chans), dtype=np.uint32)
+
+    PID = torch.from_numpy(spike_templates).long()
+
+    for i in np.unique(spike_clusters):
+        iunq = np.unique(spike_templates[spike_clusters == i]).astype(int)
+        ix = torch.from_numpy(np.zeros(n_templates, bool))
+        ix[iunq] = True
+
+        igood = ix[PID].nonzero()[:, 0]
+        if len(igood) == 0:
+            continue
+        pid = PID[igood]
+        data = tF[igood]
+        nspikes, nchanraw, nfeatures = data.shape
+        ichan, imap = torch.unique(iC[:, ix], return_inverse=True)
+        nchan = ichan.nelement()
+        template_ids = ix.nonzero()[:, 0]
+
+        if nspikes * nchan <= max_dd_elements:
+            # Fast path: identical to the vendor's one-shot dense tensor.
+            dd = torch.zeros((nspikes, nchan, nfeatures))
+            for k, j in enumerate(template_ids):
+                ij = torch.nonzero(pid == j)[:, 0]
+                dd[ij.unsqueeze(-1), imap[:, k]] = data[ij]
+            spike_mean = dd.mean(0)
+            chan_norm = torch.linalg.norm(spike_mean, dim=1)
+            _, ind = torch.sort(chan_norm, descending=True)
+            tF[igood, :] = dd[:, ind[:n_chans], :]
+            feature_ind[i, :] = ichan[ind[:n_chans]].cpu().numpy()
+            del dd
+        else:
+            # Chunked path for outlier (huge nspikes*nchan) clusters:
+            # same construction as the fast path, but bounded per-chunk.
+            chunk_size = max(1, max_dd_elements // max(1, nchan))
+            template_ij = [torch.nonzero(pid == j)[:, 0] for j in template_ids]
+
+            total_sum = torch.zeros((nchan, nfeatures))
+            for start in range(0, nspikes, chunk_size):
+                end = min(start + chunk_size, nspikes)
+                dd_chunk = torch.zeros((end - start, nchan, nfeatures))
+                for k, ij in enumerate(template_ij):
+                    m = (ij >= start) & (ij < end)
+                    if not m.any():
+                        continue
+                    ij_local = ij[m] - start
+                    dd_chunk[ij_local.unsqueeze(-1), imap[:, k]] = data[ij[m]]
+                total_sum += dd_chunk.sum(0)
+                del dd_chunk
+            spike_mean = total_sum / nspikes
+            chan_norm = torch.linalg.norm(spike_mean, dim=1)
+            _, ind = torch.sort(chan_norm, descending=True)
+            sel = ind[:n_chans]
+            feature_ind[i, :] = ichan[sel].cpu().numpy()
+
+            for start in range(0, nspikes, chunk_size):
+                end = min(start + chunk_size, nspikes)
+                dd_chunk = torch.zeros((end - start, nchan, nfeatures))
+                for k, ij in enumerate(template_ij):
+                    m = (ij >= start) & (ij < end)
+                    if not m.any():
+                        continue
+                    ij_local = ij[m] - start
+                    dd_chunk[ij_local.unsqueeze(-1), imap[:, k]] = data[ij[m]]
+                tF[igood[start:end], :] = dd_chunk[:, sel, :]
+                del dd_chunk
+
+    tF = torch.permute(tF, (0, 2, 1))
+    return tF, feature_ind
 
 
 def remove_duped_spikes(sorter, duped_spikes):
@@ -38,6 +165,212 @@ def remove_duped_spikes(sorter, duped_spikes):
     print(len(cleaned_sorter.spikes), "remaining of ", len0, "total spikes")
 
     return cleaned_sorter
+
+
+def _save_to_phy_lowmem(st, clu, tF_kept, kept_spikes, Wall, probe, ops, imin,
+                         results_dir=None, data_dtype=None, save_extra_vars=False,
+                         save_preprocessed_copy=False):
+    '''
+    Memory-optimized reimplementation of kilosort.io.save_to_phy.
+
+    The vendor implementation internally does `tF = tF[kept_spikes]`, which
+    creates a second full-size copy of the (very large) PC-feature tensor
+    while the caller's copy is still alive -- roughly doubling peak memory
+    for this step, which is what has been triggering repeated OOM kills on
+    large sessions. This version instead requires the caller to have
+    *already* sliced tF down to kept_spikes (and dropped its own reference
+    to the unsliced tensor, e.g. via `del`+`gc.collect()`) before calling
+    in, so only one full-size copy of tF is ever resident at once.
+
+    `kept_spikes` must be exactly the mask returned by
+    `kilosort.postprocessing.remove_duplicates(st[:,0].astype('int64') + imin,
+    clu.astype('int32'), dt=ops['duplicate_spike_bins'])`, and `tF_kept`
+    must equal `tF_full[kept_spikes]` for the corresponding full tF.
+
+    All outputs match kilosort.io.save_to_phy's, EXCEPT: 'tF.npy' and
+    'full_amp.npy' (only written when save_extra_vars=True) are skipped
+    entirely, since correctly reproducing their full-length (pre-dedup)
+    semantics would require materializing the full-size tF again -- exactly
+    what this function avoids. Nothing in this pipeline reads either file
+    back; they were vendor debugging/backup extras only.
+    '''
+    _memlog('_save_to_phy_lowmem: entry')
+    if results_dir is None:
+        results_dir = ops['data_dir'].joinpath('kilosort4')
+    results_dir = Path(results_dir)
+    results_dir.mkdir(exist_ok=True)
+
+    # probe properties
+    chan_map = probe['chanMap']
+    channel_positions = np.stack((probe['xc'], probe['yc']), axis=-1)
+    np.save((results_dir / 'channel_map.npy'), chan_map)
+    np.save((results_dir / 'channel_positions.npy'), channel_positions)
+    np.save((results_dir / 'channel_shanks.npy'), probe['kcoords'])
+
+    # whitening matrix
+    whitening_mat = ops['Wrot']
+    np.save((results_dir / 'whitening_mat_dat.npy'), whitening_mat.cpu())
+    whitening_mat_inv = torch.inverse(
+        whitening_mat
+        + 1e-5 * torch.eye(whitening_mat.shape[0]).to(whitening_mat.device)
+        )
+    np.save((results_dir / 'whitening_mat.npy'), whitening_mat.cpu())
+    np.save((results_dir / 'whitening_mat_inv.npy'), whitening_mat_inv.cpu())
+
+    # spike properties -- kept_spikes precomputed by caller, tF_kept already sliced
+    spike_times_full = st[:, 0].astype('int64') + imin
+    spike_templates_full = st[:, 1].astype('int32')
+    spike_clusters_full = clu
+
+    spike_times = spike_times_full[kept_spikes]
+    spike_clusters = spike_clusters_full[kept_spikes]
+    spike_templates = spike_templates_full[kept_spikes]
+    st_kept = st[kept_spikes]  # small (n_kept,3); only used for the st[:,1] lookup below
+
+    _memlog('_save_to_phy_lowmem: before compute_spike_positions')
+    xs, ys = compute_spike_positions(st_kept, tF_kept, ops)
+    spike_positions = np.vstack([xs, ys]).T
+    _memlog('_save_to_phy_lowmem: before amplitude calc')
+    # equivalent to (full-tF amplitudes)[kept_spikes], since this op is per-spike independent
+    amp = ((tF_kept ** 2).sum(axis=(-2, -1)) ** 0.5).cpu().numpy()
+    _memlog('_save_to_phy_lowmem: after amplitude calc')
+
+    np.save((results_dir / 'spike_times.npy'), spike_times)
+    np.save((results_dir / 'spike_templates.npy'), spike_clusters)
+    np.save((results_dir / 'spike_clusters.npy'), spike_clusters)
+    np.save((results_dir / 'spike_positions.npy'), spike_positions)
+    np.save((results_dir / 'spike_detection_templates.npy'), spike_templates)
+    np.save((results_dir / 'amplitudes.npy'), amp)
+    np.save((results_dir / 'kept_spikes.npy'), kept_spikes)
+
+    # template properties
+    similar_templates = CCG.similarity(Wall, ops['wPCA'].contiguous(), nt=ops['nt'])
+    template_amplitudes = ((Wall ** 2).sum(axis=(-2, -1)) ** 0.5).cpu().numpy()
+    templates = (Wall.unsqueeze(-1).cpu() * ops['wPCA'].cpu()).sum(axis=-2).numpy()
+    templates = templates.transpose(0, 2, 1)
+    templates_ind = np.tile(np.arange(Wall.shape[1])[np.newaxis, :], (templates.shape[0], 1))
+    np.save((results_dir / 'similar_templates.npy'), similar_templates)
+    np.save((results_dir / 'templates.npy'), templates)
+    np.save((results_dir / 'templates_ind.npy'), templates_ind)
+
+    # pc features -- tF_kept is already the correct (kept-only) slice, no redundant copy here
+    _memlog('_save_to_phy_lowmem: before make_pc_features')
+    pc_features, pc_feature_ind = _make_pc_features_lowmem(
+        ops, spike_templates, spike_clusters, tF_kept
+        )
+    _memlog('_save_to_phy_lowmem: after make_pc_features, before np.save(pc_features.npy)')
+    np.save(results_dir / 'pc_features.npy', pc_features)
+    _memlog('_save_to_phy_lowmem: after np.save(pc_features.npy)')
+    np.save(results_dir / 'pc_feature_ind.npy', pc_feature_ind)
+
+    # contamination ratio
+    acg_threshold = ops['settings']['acg_threshold']
+    ccg_threshold = ops['settings']['ccg_threshold']
+    is_ref, est_contam_rate = CCG.refract(spike_clusters, spike_times / ops['fs'],
+                                          acg_threshold=acg_threshold,
+                                          ccg_threshold=ccg_threshold)
+
+    # write properties to *.tsv
+    stypes = ['ContamPct', 'Amplitude', 'KSLabel']
+    ks_labels = [['mua', 'good'][int(r)] for r in is_ref]
+    props = [est_contam_rate * 100, template_amplitudes, ks_labels]
+    for stype, prop in zip(stypes, props):
+        with open((results_dir / f'cluster_{stype}.tsv'), 'w') as f:
+            f.write(f'cluster_id\t{stype}\n')
+            for i, p in enumerate(prop):
+                if stype != 'KSLabel':
+                    f.write(f'{i}\t{p:.1f}\n')
+                else:
+                    f.write(f'{i}\t{p}\n')
+        if stype == 'KSLabel':
+            shutil.copyfile((results_dir / f'cluster_{stype}.tsv'),
+                            (results_dir / f'cluster_group.tsv'))
+
+    # params.py
+    dtype = "'int16'" if data_dtype is None else f"'{data_dtype}'"
+    params = {
+        'n_channels_dat': ops['settings']['n_chan_bin'],
+        'offset': 0,
+        'sample_rate': ops['settings']['fs']
+        }
+    if save_preprocessed_copy:
+        dat_path = results_dir / 'temp_wh.dat'
+        params['dtype'] = "'int16'"
+        params['hp_filtered'] = True
+        params['dat_path'] = f"'{dat_path.resolve().as_posix()}'"
+    else:
+        dat_path = Path(ops['settings']['filename'])
+        params['dtype'] = dtype
+        params['hp_filtered'] = False
+        params['dat_path'] = f"'{dat_path.resolve().as_posix()}'"
+
+    with open((results_dir / 'params.py'), 'w') as f:
+        for key in params.keys():
+            f.write(f'{key} = {params[key]}\n')
+
+    if save_extra_vars:
+        # NOTE: tF.npy and full_amp.npy intentionally omitted -- see docstring
+        np.save(results_dir / 'Wall.npy', Wall.cpu().numpy())
+        np.save(results_dir / 'full_st.npy', st)
+        np.save(results_dir / 'full_clu.npy', clu)
+
+    phy_cache_path = Path(results_dir / '.phy')
+    if phy_cache_path.is_dir():
+        shutil.rmtree(phy_cache_path)
+
+    _memlog('_save_to_phy_lowmem: before return')
+    return results_dir, similar_templates, is_ref, est_contam_rate, kept_spikes
+
+
+def save_sorting_lowmem(ops, results_dir, st, clu, tF_kept, kept_spikes, Wall, imin,
+                         tic0=np.nan, save_extra_vars=False, save_preprocessed_copy=False,
+                         probe=None):
+    '''
+    Drop-in, low-memory replacement for kilosort.run_kilosort.save_sorting.
+
+    Unlike the vendor version, this expects the CALLER to have already
+    computed `kept_spikes` (via `kilosort.postprocessing.remove_duplicates`)
+    and sliced `tF` down to it -- and to have dropped its own reference to
+    the unsliced tensor (`del`+`gc.collect()`) BEFORE calling in.
+
+    This matters because Python keeps a caller's local variables alive for
+    the entire duration of a nested call regardless of what the callee does
+    internally -- so slicing/freeing tF *inside* this function would not
+    actually free anything as long as the caller still holds its own
+    reference to the unsliced tensor. The caller must do it before calling.
+    See `_save_to_phy_lowmem` docstring for what else this changes.
+    '''
+    import logging
+    logger = logging.getLogger('kilosort.run_kilosort')
+
+    if probe is None:
+        probe = ops['probe']
+
+    logger.info(' ')
+    logger.info('Saving to phy and computing refractory periods (low-memory export)')
+    logger.info('-' * 40)
+
+    results_dir, similar_templates, is_ref, est_contam_rate, kept_spikes = \
+        _save_to_phy_lowmem(
+            st, clu, tF_kept, kept_spikes, Wall, probe, ops, imin,
+            results_dir=results_dir, data_dtype=ops['data_dtype'],
+            save_extra_vars=save_extra_vars,
+            save_preprocessed_copy=save_preprocessed_copy
+            )
+    logger.info(f'{int(is_ref.sum())} units found with good refractory periods')
+
+    runtime = time.time() - tic0
+    seconds = runtime % 60
+    mins = runtime // 60
+    hrs = mins // 60
+    mins = mins % 60
+    logger.info(f'Total runtime: {runtime:.2f}s = {int(hrs):02d}:'
+                f'{int(mins):02d}:{round(seconds)} h:m:s')
+    ops['runtime'] = runtime
+    save_ops(ops, results_dir)
+    logger.info(f'Sorting output saved in: {results_dir}.')
+
+    return ops, similar_templates, is_ref, est_contam_rate, kept_spikes
 
 
 def run_cur(
@@ -329,11 +662,14 @@ def run_cur(
     # ops0_wrapped=np.load(oldphypath / 'ops.npy',allow_pickle=True)
     # ops0=ops0_wrapped.item()
     
+    _memlog('before loading ops/st0/clu0')
     ops0=load_ops(oldphypath / 'ops.npy')
 
     st0=ks4_results.st #np.load(oldphypath / 'spike_times.npy')
     clu0=np.load(oldphypath / 'spike_clusters.npy')
+    _memlog('before loading tF0 (raw tF.npy)')
     tF0=np.load(oldphypath / 'tF.npy')
+    _memlog('after loading tF0')
     Wall0=np.load(oldphypath / 'Wall.npy')
     kept0=np.load(oldphypath / 'kept_spikes.npy')
     kept=np.argwhere(kept0)
@@ -350,9 +686,25 @@ def run_cur(
     import torch
     tF0=torch.from_numpy(tF0)
     tF00=tF0[kept]
+    _memlog('after tF00 = tF0[kept] (both alive)')
+    del tF0, kept, kept0
+    gc.collect()
+    _memlog('after del tF0 + gc.collect (only tF00 should remain)')
     tF1=np.delete(tF00, duped_spikes, axis=0)
+    _memlog('after tF1 = delete(tF00, duped_spikes) (both alive)')
+    del tF00
+    gc.collect()
+    _memlog('after del tF00 + gc.collect (only tF1 should remain)')
     tF1_=np.squeeze(tF1)
-    
+    # np.squeeze returns a VIEW (shares tF1's underlying buffer) whenever
+    # possible, so tF1 itself must ALSO be deleted -- deleting only tF1_
+    # later does not free anything as long as this name still holds a
+    # reference to the same buffer. (Confirmed via memory instrumentation:
+    # without this, del tF1_ further downstream had zero effect on RSS.)
+    del tF1
+    gc.collect()
+    _memlog('after del tF1 + gc.collect (only tF1_ view should remain)')
+
     #tF1_=torch.from_numpy(tF11)
 
 
@@ -523,7 +875,27 @@ def run_cur(
     ##
 
     #Saving to Phy (original single export, no depth splits)
-    save_sorting(ops=ops1,results_dir=newphypath,st=st1,clu=clu_new.astype('int32'),tF=tF1_,Wall=Wall1_,imin=0,tic0=time.time(),save_extra_vars=True)
+    # Low-memory path: compute kept_spikes and slice+free tF1_ HERE (in the
+    # caller), before calling into save_sorting_lowmem. Freeing it inside
+    # that function would not help -- this frame's tF1_ reference would
+    # still be alive for the whole nested call regardless.
+    _memlog('at start of low-mem export section (tF1_ alive)')
+    clu_new_i32 = clu_new.astype('int32')
+    spike_times_for_dedup = st1[:, 0].astype('int64')  # imin=0
+    _, _, kept_spikes = remove_duplicates(
+        spike_times_for_dedup, clu_new_i32, dt=int(ops1['duplicate_spike_bins'])
+        )
+    print(f'[MEM] kept_spikes: {kept_spikes.sum()} of {kept_spikes.size} '
+          f'({100*kept_spikes.sum()/kept_spikes.size:.2f}%)', flush=True)
+    tF_kept = tF1_[kept_spikes]
+    _memlog('after tF_kept = tF1_[kept_spikes] (both alive)')
+    del tF1_
+    gc.collect()
+    _memlog('after del tF1_ + gc.collect (only tF_kept should remain)')
+
+    save_sorting_lowmem(ops=ops1, results_dir=newphypath, st=st1, clu=clu_new_i32,
+                         tF_kept=tF_kept, kept_spikes=kept_spikes, Wall=Wall1_,
+                         imin=0, tic0=time.time(), save_extra_vars=True)
 
     #but phy errors:
     # File "/home/huklab/anaconda3/envs/phy2/lib/python3.11/site-packages/phylib/io/model.py", line 786, in _load_features

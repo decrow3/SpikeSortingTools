@@ -1,0 +1,3 @@
+status,n_events,automatic_neural_like_fraction,median_peak_snr,median_local_energy_fraction,median_active_channels,median_common_mode_ratio
+matched,100,0.28,7.411150932312012,0.7669015293141555,23.0,0.5646414328650616
+unmatched,100,0.12,6.745067358016968,0.6425766145684635,25.5,0.9983389379047098

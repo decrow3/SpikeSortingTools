@@ -1,0 +1,1675 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Luke Motion Correction and Spike Recovery",
+    "description": "Technical validation of Luke motion estimation/application, geometry, Kilosort-input event recovery, and conditioning alternatives relative to Yates.",
+    "generatedAt": "2026-08-28T23:45:00-07:00",
+    "sources": [
+      {
+        "id": "spatial_source",
+        "label": "Luke motion spatial-scale evidence",
+        "path": "testing/outputs/luke_motion_candidate_results/spatial_scale_evidence.csv",
+        "query": {
+          "description": "Selected residual-field reproducibility and agreement metrics for the 300 and 600 micrometer spatial families.",
+          "language": "python",
+          "tables_used": [
+            "motion_scale_sweep_summary.csv",
+            "motion_scale_sweep_agreement.csv"
+          ],
+          "metric_definitions": [
+            "Residual field removes rigid and linear-with-depth components before correlation."
+          ]
+        }
+      },
+      {
+        "id": "sort_source",
+        "label": "Fixed-event and Kilosort outcome comparison",
+        "path": "testing/outputs/luke_motion_candidate_results/motion_candidate_sorter_metrics.csv",
+        "query": {
+          "description": "Compare identical 120-second claim-off Kilosort runs using no correction, identity interpolation, Kilosort internal rigid correction, scaled external rigid correction, and full non-rigid correction.",
+          "language": "python",
+          "tables_used": [
+            "upstream_sorter_ablation_scores.csv",
+            "zero_displacement_identity_scores.csv",
+            "kilosort_internal_rigid_scores.csv",
+            "dredge_rigid_gain_025_scores.csv",
+            "dredge_rigid_gain_050_scores.csv",
+            "dredge_rigid_gain_075_scores.csv",
+            "dredge_rigid_from_300_200_scores.csv",
+            "dredge_nr_200_300_split_scores.csv"
+          ],
+          "metric_definitions": [
+            "Recovery is a sorted spike within 0.5 ms and 100 um of a fixed reviewed raw event.",
+            "Cross-unit coincidence is the fraction of final spikes in a different-unit pair within 0.5 ms and 75 um."
+          ]
+        }
+      },
+      {
+        "id": "event_source",
+        "label": "Paired reviewed-event recovery and motion covariates",
+        "path": "testing/outputs/luke_motion_candidate_results/reviewed_event_recovery.csv",
+        "query": {
+          "description": "Score each prespecified reviewed neural miss and interpolate the selected field at its raw time and depth.",
+          "language": "python",
+          "tables_used": [
+            "event_stage_trace.csv",
+            "dredge_nr_200_300_split motion arrays"
+          ],
+          "metric_definitions": [
+            "Absolute spatial gradient is the absolute depth derivative of fitted displacement at the event location."
+          ]
+        }
+      },
+      {
+        "id": "geometry_source",
+        "label": "Luke imec1 channel and geometry mapping audit",
+        "path": "testing/outputs/luke_geometry_mapping_audit/imec1/channel_mapping_rows.csv",
+        "query": {
+          "description": "Compare all 384 raw, saved processed, and Kilosort channel rows and independently check the SpikeGLX saved-channel and geometry maps.",
+          "language": "python",
+          "tables_used": [
+            "channel_mapping_rows.csv",
+            "metadata_audit_summary.json",
+            "SpikeGLX imec1 AP meta",
+            "channel_positions.npy"
+          ],
+          "metric_definitions": [
+            "A row is exact only when both x and y coordinates agree without tolerance; channel-ID equality is evaluated in acquisition order."
+          ]
+        }
+      },
+      {
+        "id": "identity_source",
+        "label": "Zero-displacement byte-identity audit",
+        "path": "testing/outputs/luke_motion_candidate_results/identity_control_audit.json",
+        "query": {
+          "description": "Byte-compare the no-correction and zero-displacement trace binaries and six downstream Kilosort outputs.",
+          "language": "shell",
+          "tables_used": [
+            "identity_control_audit.json"
+          ],
+          "metric_definitions": [
+            "Byte-identical means cmp -s returned exit status 0 for the complete files."
+          ]
+        }
+      },
+      {
+        "id": "internal_trace_source",
+        "label": "Kilosort and DREDGE rigid trace comparison",
+        "path": "testing/outputs/luke_motion_candidate_results/internal_rigid_trace_comparison.csv",
+        "query": {
+          "description": "Compare Kilosort's stored dshift with the DREDGE depth mean on the same 2-second batch centers after sign alignment and median centering.",
+          "language": "python",
+          "tables_used": [
+            "internal_rigid_trace_comparison.csv",
+            "Kilosort ops.npy",
+            "DREDGE motion.npy"
+          ],
+          "metric_definitions": [
+            "A step is the absolute displacement change between adjacent 2-second Kilosort batches."
+          ]
+        }
+      },
+      {
+        "id": "kernel_source",
+        "label": "Luke and Yates interpolation-kernel audit",
+        "path": "testing/outputs/luke_motion_candidate_results/luke_yates_interpolation_kernel_metrics.csv",
+        "query": {
+          "description": "Evaluate SpikeInterface kriging matrices on the two probe geometries across displacement and bandwidth.",
+          "language": "python",
+          "tables_used": [
+            "luke_yates_interpolation_kernel_metrics.csv",
+            "luke_interpolation_sigma_event_metrics.csv"
+          ],
+          "metric_definitions": [
+            "Peak weight is the largest absolute source-channel coefficient for each target channel, summarized by its median."
+          ]
+        }
+      },
+      {
+        "id": "motion_comparison_source",
+        "label": "Luke and Yates matched-duration motion comparison",
+        "path": "testing/outputs/luke_motion_candidate_results/luke_yates_motion_120s_metrics.csv",
+        "query": {
+          "description": "Compare Luke's prespecified 120-second window with non-overlapping Yates windows under MEDiCINe and Kilosort-style estimators.",
+          "language": "python",
+          "tables_used": [
+            "luke_yates_motion_120s_metrics.csv"
+          ],
+          "metric_definitions": [
+            "Yates reference values are medians across non-overlapping 120-second windows."
+          ]
+        }
+      },
+      {
+        "id": "detection_source",
+        "label": "Matched Luke--Yates Kilosort-input audit",
+        "path": "testing/outputs/luke_motion_candidate_results/luke_yates_detection_stage_dataset_metrics.csv",
+        "query": {
+          "description": "Physically normalize Kilosort-input extrema and sorter outputs by sampled probe depth.",
+          "language": "python",
+          "tables_used": [
+            "testing/outputs/luke_motion_candidate_results/luke_yates_detection_stage_dataset_metrics.csv"
+          ]
+        }
+      },
+      {
+        "id": "conditioning_source",
+        "label": "Luke upstream conditioning ablations",
+        "path": "testing/outputs/luke_motion_candidate_results/conditioning_replication_summary.csv",
+        "query": {
+          "description": "Compare fixed-event and sorter guardrails under reference/CAR and single-pass conditioning changes.",
+          "language": "python",
+          "tables_used": [
+            "testing/outputs/luke_motion_candidate_results/conditioning_replication_summary.csv"
+          ]
+        }
+      },
+      {
+        "id": "unit_structure_source",
+        "label": "Luke preprocessing unit-structure audit",
+        "path": "testing/outputs/luke_motion_candidate_results/luke_preprocessing_unit_structure_summary.csv",
+        "query": {
+          "description": "Compare temporal stability and nearby-template similarity graphs for current and single-pass sorts.",
+          "language": "python",
+          "tables_used": [
+            "testing/outputs/luke_motion_candidate_results/luke_preprocessing_unit_structure_summary.csv"
+          ]
+        }
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# Luke Motion Correction and Spike Recovery"
+      },
+      {
+        "id": "summary",
+        "type": "markdown",
+        "body": "## Technical summary\n\nLuke genuinely moves more than Yates, but full non-rigid voltage warps from both DREDGE and MEDiCINe are causal failures: they more than double learned detections and coincidence while reducing recovery. Zero-displacement interpolation is byte-identical to no correction, localizing the catastrophe to applied depth-dependent displacement rather than a generic export path.\n\nThe original Luke--Yates per-channel deficit was also denominator-confounded because Luke has 3.41x more contacts per millimetre. Per physical depth, Luke's no-motion unit density and coincidence are similar to Yates and Kilosort recovers nearly all strong input events. Luke still has about half as many strong negative events per millimetre, an upstream density difference that remains unexplained.\n\nNo external voltage correction remains the production baseline. Single-pass Kilosort conditioning is the leading preprocessing candidate, but its higher unit yield is partly nearby-template redundancy and requires a matched full-session merge/continuity audit."
+      },
+      {
+        "id": "detection_audit_intro",
+        "type": "markdown",
+        "body": "## The original per-channel deficit was denominator-confounded\n\nLuke has 3.41x more contacts per millimetre than Yates. Per physical depth, Luke has similar unit density and near-identical coincidence, while Kilosort recovers 94--96% of strong negative input events versus 97% in Yates. Luke still has about half as many such events per millimetre; that is an upstream density difference, not a large sorter miss rate.",
+        "sourceId": "detection_source"
+      },
+      {
+        "id": "detection_density_chart_block",
+        "type": "chart",
+        "chartId": "detection_density_chart"
+      },
+      {
+        "id": "detection_audit_table_block",
+        "type": "table",
+        "tableId": "detection_audit_table"
+      },
+      {
+        "id": "conditioning_intro",
+        "type": "markdown",
+        "body": "## Reference changes are null; single-pass conditioning is promising\n\nRemoving local reference, substituting global reference, or disabling Kilosort CAR does not improve fixed-event recovery. In the independent 240 s window, a single Kilosort high-pass/CAR pass reduces learned detections by 10.9%, raises KS-good units from 130 to 168, and slightly improves reviewed recovery and coincidence.",
+        "sourceId": "conditioning_source"
+      },
+      {
+        "id": "conditioning_ablation_table_block",
+        "type": "table",
+        "tableId": "conditioning_ablation_table"
+      },
+      {
+        "id": "unit_structure_intro",
+        "type": "markdown",
+        "body": "## Much of the single-pass unit gain is redundant\n\nThe 101-unit raw increase includes 68 additional redundant nodes in a nearby-template similarity graph. Effective all-unit graph components rise only 14%, while good-unit components rise 23%. The condition may improve separation, but it also over-splits and must be compared after identical merging.",
+        "sourceId": "unit_structure_source"
+      },
+      {
+        "id": "unit_structure_table_block",
+        "type": "table",
+        "tableId": "unit_structure_table"
+      },
+      {
+        "id": "motion_comparison_intro",
+        "type": "markdown",
+        "sourceId": "motion_comparison_source",
+        "body": "## Luke has a real motion problem\n\nIn matched 120-second summaries, MEDiCINe gives Luke rigid excursions of 13.1 and 14.7 \u00b5m versus about 3 \u00b5m for Yates. Kilosort-style estimates give 5.8 and 10.1 \u00b5m for Luke versus 0.75--1.0 \u00b5m median Yates values. Luke's larger movement and speed reproduce across estimator families."
+      },
+      {
+        "id": "motion_comparison_table_block",
+        "type": "table",
+        "tableId": "motion_comparison_table",
+        "layout": "full"
+      },
+      {
+        "id": "kernel_intro",
+        "type": "markdown",
+        "sourceId": "kernel_source",
+        "body": "## The interpolation scale is probe-dependent\n\nAt a 2 \u00b5m shift, the default 20 \u00b5m kriging kernel leaves a median maximum weight of 0.914 on Luke versus 0.962 on Yates. A 10 \u00b5m kernel improves Luke event peak retention from 96.6% to 97.7% and restores 127 KS-good units versus 115 at sigma 20, but remains below the no-correction quality safeguard."
+      },
+      {
+        "id": "kernel_table_block",
+        "type": "table",
+        "tableId": "kernel_table",
+        "layout": "full"
+      },
+      {
+        "id": "spatial_intro",
+        "type": "markdown",
+        "body": "## The supported non-rigid scale is approximately 300--400 \u00b5m\n\nThe 300/200 residual field is reproducible across random peak halves, unchanged by denser 100 \u00b5m sampling, and supported by the decentralized estimator. The 600 \u00b5m family is internally stable but loses simultaneous-probe residual agreement, consistent with smoothing away supported local structure."
+      },
+      {
+        "id": "spatial_chart_block",
+        "type": "chart",
+        "chartId": "spatial_chart",
+        "layout": "full"
+      },
+      {
+        "id": "geometry_intro",
+        "type": "markdown",
+        "sourceId": "geometry_source",
+        "body": "## Channel-to-geometry mapping is exact across all representations\n\nRaw SpikeGLX, saved processed metadata, and Kilosort each contain 384 neural channels. Raw and processed channel IDs are identical in row order, every coordinate agrees with a maximum error of 0 \u00b5m, and the best geometry assignment is the identity for 384/384 rows. The acquisition metadata independently records AP0--AP383 sequentially and reproduces the same four-column lateral stagger. This substantially downgrades mapping error as the cause."
+      },
+      {
+        "id": "geometry_table_block",
+        "type": "table",
+        "tableId": "geometry_table",
+        "layout": "full"
+      },
+      {
+        "id": "geometry_caveat",
+        "type": "markdown",
+        "body": "## The raw-waveform alarm is a checksum failure, not a mapping result\n\nThe attached audit averages unconditioned raw voltage, causing row 216 to dominate multiple unrelated units. After filtering and local referencing, the dominant row becomes 191\u2014the single channel already classified as bad and interpolated upstream. Reproducing that interpolation still leaves several pathological-sort units noncompact, but the same recurring row-216 signal affects the no-correction control. KS-good labels from these problematic sorts are therefore not independent biological ground truth for mapping."
+      },
+      {
+        "id": "identity_intro",
+        "type": "markdown",
+        "sourceId": "identity_source",
+        "body": "## Zero-displacement interpolation is an exact identity\n\nThe 2.764 GB zero-motion trace binary is byte-for-byte identical to the no-correction input. Six checked Kilosort outputs are also exact byte matches: spike times, clusters, positions, learned detections, KS labels, and contamination. This rules out damage from the application/export machinery when displacement is exactly zero."
+      },
+      {
+        "id": "recovery_intro",
+        "type": "markdown",
+        "sourceId": "sort_source",
+        "body": "## Nonzero motion introduces two distinct failures\n\nNo correction and zero-motion identity recover 23/27 events. Kilosort internal rigid recovers 22/27 without collision inflation. Full external rigid recovers 20/27. DREDGE 300/200 recovers 18/27 and MEDiCINe recovers 19/27; both more than double learned detections and coincidence. Depth-dependent voltage warping, not one estimator, drives overdecomposition."
+      },
+      {
+        "id": "recovery_chart_block",
+        "type": "chart",
+        "chartId": "recovery_chart",
+        "layout": "full"
+      },
+      {
+        "id": "outcome_table_block",
+        "type": "table",
+        "tableId": "outcome_table",
+        "layout": "full"
+      },
+      {
+        "id": "gain_intro",
+        "type": "markdown",
+        "sourceId": "sort_source",
+        "body": "## Reduced rigid gain is mechanistically useful but not a production winner\n\nRigid gains 0.25 and 0.50 recover 24/27 events in the selection window, but the 0.25 benefit does not replicate on the strict automatic cohort in an independent 240-second window. A narrower 10 \u00b5m kernel reduces attenuation and restores most good-unit yield, yet contamination remains 9.9 points above baseline. No external correction remains the safest baseline."
+      },
+      {
+        "id": "gain_chart_block",
+        "type": "chart",
+        "chartId": "gain_chart",
+        "layout": "full"
+      },
+      {
+        "id": "gain_table_block",
+        "type": "table",
+        "tableId": "gain_table",
+        "layout": "full"
+      },
+      {
+        "id": "internal_intro",
+        "type": "markdown",
+        "sourceId": "internal_trace_source",
+        "body": "## Kilosort's internal rigid estimate is motion-like but discontinuous\n\nAfter sign alignment, its temporal shape correlates 0.80 with DREDGE. But Kilosort has 3.9\u00d7 the temporal variance, a 128.5 \u00b5m peak-to-peak range, and ten adjacent 2 s jumps above 50 \u00b5m; DREDGE has none. Local code inspection shows temporal smoothing is applied only after unsmoothed coarse alignment shifts have already accumulated, making coarse mode switches a plausible Luke-specific failure."
+      },
+      {
+        "id": "internal_table_block",
+        "type": "table",
+        "tableId": "internal_table",
+        "layout": "full"
+      },
+      {
+        "id": "gradient_intro",
+        "type": "markdown",
+        "body": "## Full-field misses occur at larger fitted motion and spatial gradient\n\nThe nine selected-correction misses have twice the median absolute spatial gradient of the 18 recovered events (0.016 versus 0.008 \u00b5m/\u00b5m). Absolute displacement is also larger. This descriptive, post hoc association is consistent with the rigid-only result: spatial gradients amplify failure, although rigid resampling still causes losses."
+      },
+      {
+        "id": "gradient_table_block",
+        "type": "table",
+        "tableId": "gradient_table",
+        "layout": "full"
+      },
+      {
+        "id": "scope",
+        "type": "markdown",
+        "body": "## Scope, data, and definitions\n\nThe cohort is 27 blinded-review neural events originally unmatched in Luke imec1 from 8,160--8,280 s. All downstream conditions use the same current-conditioned input, Kilosort settings, probe geometry, and disabled claim mask. Recovery requires a final spike within 0.5 ms and 100 \u00b5m."
+      },
+      {
+        "id": "methods",
+        "type": "markdown",
+        "body": "## Methodology\n\nMotion fields were placed on a common 2 s by 200 \u00b5m grid and decomposed into rigid, linear-depth, and residual components. External rigid conditions repeat the depth mean across all bins at gains 0, 0.25, 0.50, 0.75, and 1. Identity sets every displacement to zero. All externally processed conditions use float interpolation, `force_zeros`, int16 saving, and unchanged claim-off Kilosort. Internal rigid reads the untouched binary with `do_correction=True, nblocks=1`."
+      },
+      {
+        "id": "limits",
+        "type": "markdown",
+        "body": "## Limitations and robustness\n\nThe fixed-event cohorts are descriptive and Kilosort labels are not ground truth. Per-depth normalization removes the largest probe-density confound, but Luke and Yates still use different probe geometries and may sample different laminar populations. The exact legacy Yates preprocessing graph is unavailable. The template-similarity graph uses a declared 0.8 correlation and 100 micrometre neighborhood and does not replace matched merging."
+      },
+      {
+        "id": "next",
+        "type": "markdown",
+        "body": "## Recommended next steps\n\n1. Keep no external voltage correction as the Luke production baseline.\n2. Run a matched full-session current-versus-single-pass conditioning comparison with identical merging and unit-family continuity checks.\n3. Do not use full non-rigid DREDGE or MEDiCINe warps; both recreate overdecomposition.\n4. If interpolation is revisited, scale the kernel to probe geometry and require strict recovery, contamination, and collision safeguards.\n5. Replace per-channel Luke--Yates comparisons with physical-depth and matched-layer denominators; use a common raw detector to locate the remaining negative-event density difference.\n6. Prefer motion-aware coordinate/template tracking that avoids resampling raw voltage."
+      },
+      {
+        "id": "questions",
+        "type": "markdown",
+        "body": "## Further questions\n\n- Is Luke's lower strong-negative event density already present in matched raw AP voltage and comparable laminar bands?\n- Does single-pass conditioning retain its 23% increase in good similarity-graph components after identical merging over the full session?\n- What property of Luke's spike fingerprint makes Kilosort coarse registration switch between modes separated by 70--103 micrometres?"
+      }
+    ],
+    "charts": [
+      {
+        "id": "spatial_chart",
+        "title": "Residual-field validation correlations",
+        "description": "The 300/200 candidate is the only family supported by all four validation lanes.",
+        "type": "bar",
+        "dataset": "spatial_evidence",
+        "encodings": {
+          "x": {
+            "field": "criterion",
+            "type": "nominal",
+            "title": "Validation criterion"
+          },
+          "y": {
+            "field": "correlation",
+            "type": "quantitative",
+            "title": "Correlation (r)"
+          },
+          "color": {
+            "field": "candidate",
+            "type": "nominal",
+            "title": "Spatial family"
+          }
+        },
+        "options": {
+          "orientation": "vertical",
+          "grouping": "grouped",
+          "legend": true
+        },
+        "sourceId": "spatial_source",
+        "source": {
+          "id": "spatial_source",
+          "label": "Luke motion spatial-scale evidence",
+          "path": "testing/outputs/luke_motion_candidate_results/spatial_scale_evidence.csv",
+          "query": {
+            "description": "Select the candidate validation rows used in the grouped comparison.",
+            "engine": "DuckDB",
+            "language": "sql",
+            "sql": "SELECT candidate, criterion, correlation, probe_basis FROM read_csv_auto('testing/outputs/luke_motion_candidate_results/spatial_scale_evidence.csv') ORDER BY criterion, candidate",
+            "tables_used": [
+              "testing/outputs/luke_motion_candidate_results/spatial_scale_evidence.csv"
+            ]
+          }
+        }
+      },
+      {
+        "id": "recovery_chart",
+        "title": "Reviewed neural-event recovery",
+        "description": "Same 27 prespecified events and identical sorter settings across conditions.",
+        "type": "bar",
+        "dataset": "sorter_outcomes",
+        "encodings": {
+          "x": {
+            "field": "condition",
+            "type": "nominal",
+            "title": "Correction condition"
+          },
+          "y": {
+            "field": "recovery_fraction",
+            "type": "quantitative",
+            "title": "Fraction recovered",
+            "valueFormat": "percent"
+          }
+        },
+        "options": {
+          "orientation": "vertical",
+          "grouping": "grouped",
+          "legend": false
+        },
+        "sourceId": "sort_source",
+        "source": {
+          "id": "sort_source",
+          "label": "Fixed-event and Kilosort outcome comparison",
+          "path": "testing/outputs/luke_motion_candidate_results/motion_candidate_sorter_metrics.csv",
+          "query": {
+            "description": "Select all fixed correction conditions and their recovery values.",
+            "engine": "DuckDB",
+            "language": "sql",
+            "sql": "SELECT condition, observed_recovery AS recovery_fraction, learned_detection_count, cross_unit_near_coincident_fraction, median_contamination_pct, n_ks_good FROM read_csv_auto('testing/outputs/luke_motion_candidate_results/motion_candidate_sorter_metrics.csv') ORDER BY observed_recovery DESC",
+            "tables_used": [
+              "testing/outputs/luke_motion_candidate_results/motion_candidate_sorter_metrics.csv"
+            ]
+          }
+        }
+      },
+      {
+        "id": "gain_chart",
+        "title": "Reviewed event recovery across rigid gain",
+        "description": "Same DREDGE depth-mean trace scaled from zero to full amplitude; 27 fixed events.",
+        "type": "line",
+        "dataset": "rigid_gain",
+        "encodings": {
+          "x": {
+            "field": "gain",
+            "type": "quantitative",
+            "title": "Rigid displacement gain"
+          },
+          "y": {
+            "field": "recovery_fraction",
+            "type": "quantitative",
+            "title": "Fraction recovered",
+            "valueFormat": "percent"
+          }
+        },
+        "options": {
+          "legend": false,
+          "markers": true
+        },
+        "sourceId": "sort_source",
+        "source": {
+          "id": "sort_source",
+          "label": "Fixed-event and Kilosort outcome comparison",
+          "path": "testing/outputs/luke_motion_candidate_results/motion_candidate_sorter_metrics.csv",
+          "query": {
+            "description": "Select the five external rigid-gain conditions in gain order.",
+            "engine": "DuckDB",
+            "language": "sql",
+            "sql": "SELECT * FROM read_csv_auto('testing/outputs/luke_motion_candidate_results/motion_candidate_sorter_metrics.csv') WHERE condition IN ('No external correction','Rigid gain 0.25','Rigid gain 0.50','Rigid gain 0.75','Rigid from 300/200') ORDER BY CASE condition WHEN 'No external correction' THEN 0 WHEN 'Rigid gain 0.25' THEN 1 WHEN 'Rigid gain 0.50' THEN 2 WHEN 'Rigid gain 0.75' THEN 3 ELSE 4 END",
+            "tables_used": [
+              "testing/outputs/luke_motion_candidate_results/motion_candidate_sorter_metrics.csv"
+            ]
+          }
+        }
+      },
+      {
+        "id": "detection_density_chart",
+        "title": "Strong negative Kilosort-input events by physical depth",
+        "description": "Median physically deduplicated 6-sigma events per sampled millimetre and second; 60 two-second batches per condition.",
+        "type": "bar",
+        "dataset": "detection_audit",
+        "encodings": {
+          "x": {
+            "field": "condition",
+            "type": "nominal",
+            "title": "Recording / conditioning"
+          },
+          "y": {
+            "field": "negative_events_per_mm_s",
+            "type": "quantitative",
+            "title": "Events/mm/s"
+          }
+        },
+        "options": {
+          "orientation": "vertical",
+          "grouping": "grouped",
+          "legend": false
+        },
+        "sourceId": "detection_source",
+        "source": {
+          "id": "detection_source",
+          "label": "Matched Luke--Yates Kilosort-input audit",
+          "path": "testing/outputs/luke_motion_candidate_results/luke_yates_detection_stage_dataset_metrics.csv",
+          "query": {
+            "description": "Select the four reviewed condition summaries after physical-depth normalization.",
+            "engine": "DuckDB",
+            "language": "sql",
+            "sql": "SELECT dataset AS condition, negative_6sigma_events_per_depth_mm_s AS negative_events_per_mm_s, negative_6sigma_final_recovery, learned_per_depth_mm_s, final_per_depth_mm_s, units_per_depth_mm, cross_unit_near_coincident_fraction FROM read_csv_auto('testing/outputs/luke_motion_candidate_results/luke_yates_detection_stage_dataset_metrics.csv') ORDER BY dataset",
+            "tables_used": [
+              "testing/outputs/luke_motion_candidate_results/luke_yates_detection_stage_dataset_metrics.csv"
+            ],
+            "metric_definitions": [
+              "Negative events are physically deduplicated local minima exceeding six batch-specific MAD units per sampled millimetre and second."
+            ]
+          }
+        }
+      }
+    ],
+    "tables": [
+      {
+        "id": "motion_comparison_table",
+        "title": "Matched 120-second motion summaries",
+        "description": "Luke values are the prespecified pathological window; Yates values are medians across non-overlapping reference windows.",
+        "dataset": "motion_comparison",
+        "columns": [
+          {
+            "field": "estimator",
+            "label": "Estimator",
+            "type": "text"
+          },
+          {
+            "field": "recording",
+            "label": "Recording",
+            "type": "text"
+          },
+          {
+            "field": "rigid_excursion_um",
+            "label": "Rigid excursion (\u00b5m)",
+            "type": "number"
+          },
+          {
+            "field": "median_spread_um",
+            "label": "Median spread (\u00b5m)",
+            "type": "number"
+          },
+          {
+            "field": "p99_speed_um_s",
+            "label": "P99 speed (\u00b5m/s)",
+            "type": "number"
+          }
+        ],
+        "defaultSort": {
+          "field": "estimator",
+          "direction": "asc"
+        },
+        "sourceId": "motion_comparison_source",
+        "source": {
+          "id": "motion_comparison_source",
+          "label": "Luke and Yates matched-duration motion comparison",
+          "path": "testing/outputs/luke_motion_candidate_results/luke_yates_motion_120s_metrics.csv",
+          "query": {
+            "description": "Summarize Luke directly and Yates by the median of non-overlapping 120-second windows for each estimator and probe.",
+            "engine": "DuckDB",
+            "language": "sql",
+            "sql": "SELECT estimator, dataset || ' ' || probe AS recording, MEDIAN(rigid_excursion_p95_p5_um) AS rigid_excursion_um, MEDIAN(median_nonrigid_spread_um) AS median_spread_um, MEDIAN(p99_rigid_speed_um_per_s) AS p99_speed_um_s FROM read_csv_auto('testing/outputs/luke_motion_candidate_results/luke_yates_motion_120s_metrics.csv') GROUP BY estimator, dataset, probe ORDER BY estimator, dataset, probe",
+            "tables_used": [
+              "testing/outputs/luke_motion_candidate_results/luke_yates_motion_120s_metrics.csv"
+            ]
+          }
+        }
+      },
+      {
+        "id": "kernel_table",
+        "title": "Geometry-dependent interpolation weights",
+        "description": "Median maximum source-channel coefficient at selected displacements.",
+        "dataset": "kernel_comparison",
+        "columns": [
+          {
+            "field": "shift_um",
+            "label": "Shift (\u00b5m)",
+            "type": "number"
+          },
+          {
+            "field": "luke_sigma20",
+            "label": "Luke \u03c320",
+            "type": "number"
+          },
+          {
+            "field": "yates_sigma20",
+            "label": "Yates \u03c320",
+            "type": "number"
+          },
+          {
+            "field": "luke_sigma10",
+            "label": "Luke \u03c310",
+            "type": "number"
+          }
+        ],
+        "defaultSort": {
+          "field": "shift_um",
+          "direction": "asc"
+        },
+        "sourceId": "kernel_source",
+        "source": {
+          "id": "kernel_source",
+          "label": "Luke and Yates interpolation-kernel audit",
+          "path": "testing/outputs/luke_motion_candidate_results/luke_yates_interpolation_kernel_metrics.csv",
+          "query": {
+            "description": "Pivot selected displacement and bandwidth rows for the two probe geometries.",
+            "engine": "DuckDB",
+            "language": "sql",
+            "sql": "SELECT shift_um, MAX(CASE WHEN probe='Luke imec1' AND sigma_um=20 THEN median_peak_weight END) AS luke_sigma20, MAX(CASE WHEN probe='Yates shank' AND sigma_um=20 THEN median_peak_weight END) AS yates_sigma20, MAX(CASE WHEN probe='Luke imec1' AND sigma_um=10 THEN median_peak_weight END) AS luke_sigma10 FROM read_csv_auto('testing/outputs/luke_motion_candidate_results/luke_yates_interpolation_kernel_metrics.csv') WHERE shift_um IN (1,2,4,6) GROUP BY shift_um ORDER BY shift_um",
+            "tables_used": [
+              "testing/outputs/luke_motion_candidate_results/luke_yates_interpolation_kernel_metrics.csv"
+            ]
+          }
+        }
+      },
+      {
+        "id": "outcome_table",
+        "title": "Sorter outcomes and guardrails",
+        "description": "Fixed 120-second imec1 window; lower learned detections, coincidence, and contamination are safeguards rather than objectives alone.",
+        "dataset": "sorter_outcomes",
+        "columns": [
+          {
+            "field": "condition",
+            "label": "Condition",
+            "type": "text"
+          },
+          {
+            "field": "recovered",
+            "label": "Recovered",
+            "type": "number"
+          },
+          {
+            "field": "learned_detections",
+            "label": "Learned detections",
+            "type": "number"
+          },
+          {
+            "field": "coincidence_fraction",
+            "label": "Coincidence",
+            "type": "number"
+          },
+          {
+            "field": "median_contamination_pct",
+            "label": "Median contamination (%)",
+            "type": "number"
+          },
+          {
+            "field": "ks_good_units",
+            "label": "KS-good",
+            "type": "number"
+          }
+        ],
+        "defaultSort": {
+          "field": "recovered",
+          "direction": "desc"
+        },
+        "sourceId": "sort_source",
+        "source": {
+          "id": "sort_source",
+          "label": "Fixed-event and Kilosort outcome comparison",
+          "path": "testing/outputs/luke_motion_candidate_results/motion_candidate_sorter_metrics.csv",
+          "query": {
+            "description": "Select recovery and sorter guardrails for all correction conditions.",
+            "engine": "DuckDB",
+            "language": "sql",
+            "sql": "SELECT condition, CAST(ROUND(observed_recovery * n_events) AS INTEGER) AS recovered, learned_detection_count AS learned_detections, cross_unit_near_coincident_fraction AS coincidence_fraction, median_contamination_pct, n_ks_good AS ks_good_units FROM read_csv_auto('testing/outputs/luke_motion_candidate_results/motion_candidate_sorter_metrics.csv') ORDER BY recovered DESC",
+            "tables_used": [
+              "testing/outputs/luke_motion_candidate_results/motion_candidate_sorter_metrics.csv"
+            ]
+          }
+        }
+      },
+      {
+        "id": "gain_table",
+        "title": "Rigid gain response and safeguards",
+        "description": "Gain zero is no external correction; gain one is the full DREDGE depth mean.",
+        "dataset": "rigid_gain",
+        "columns": [
+          {
+            "field": "gain",
+            "label": "Gain",
+            "type": "number"
+          },
+          {
+            "field": "recovered",
+            "label": "Recovered",
+            "type": "number"
+          },
+          {
+            "field": "learned_detections",
+            "label": "Learned detections",
+            "type": "number"
+          },
+          {
+            "field": "coincidence_fraction",
+            "label": "Coincidence",
+            "type": "number"
+          },
+          {
+            "field": "median_contamination_pct",
+            "label": "Median contamination (%)",
+            "type": "number"
+          },
+          {
+            "field": "ks_good_units",
+            "label": "KS-good",
+            "type": "number"
+          }
+        ],
+        "defaultSort": {
+          "field": "gain",
+          "direction": "asc"
+        },
+        "sourceId": "sort_source",
+        "source": {
+          "id": "sort_source",
+          "label": "Fixed-event and Kilosort outcome comparison",
+          "path": "testing/outputs/luke_motion_candidate_results/motion_candidate_sorter_metrics.csv",
+          "query": {
+            "description": "Select the five external rigid-gain outcomes in gain order.",
+            "engine": "DuckDB",
+            "language": "sql",
+            "sql": "SELECT * FROM read_csv_auto('testing/outputs/luke_motion_candidate_results/motion_candidate_sorter_metrics.csv') WHERE condition IN ('No external correction','Rigid gain 0.25','Rigid gain 0.50','Rigid gain 0.75','Rigid from 300/200')",
+            "tables_used": [
+              "testing/outputs/luke_motion_candidate_results/motion_candidate_sorter_metrics.csv"
+            ]
+          }
+        }
+      },
+      {
+        "id": "internal_table",
+        "title": "Rigid-estimator temporal stability",
+        "description": "Both traces sampled at the same 60 Kilosort batch centers; Kilosort sign-aligned and each trace median-centered for shape statistics.",
+        "dataset": "internal_trace_summary",
+        "columns": [
+          {
+            "field": "estimator",
+            "label": "Estimator",
+            "type": "text"
+          },
+          {
+            "field": "std_um",
+            "label": "Temporal SD (\u00b5m)",
+            "type": "number"
+          },
+          {
+            "field": "peak_to_peak_um",
+            "label": "Peak-to-peak (\u00b5m)",
+            "type": "number"
+          },
+          {
+            "field": "max_step_um",
+            "label": "Max 2 s step (\u00b5m)",
+            "type": "number"
+          },
+          {
+            "field": "steps_over_50_um",
+            "label": "Steps >50 \u00b5m",
+            "type": "number"
+          }
+        ],
+        "defaultSort": {
+          "field": "estimator",
+          "direction": "asc"
+        },
+        "sourceId": "internal_trace_source",
+        "source": {
+          "id": "internal_trace_source",
+          "label": "Kilosort and DREDGE rigid trace comparison",
+          "path": "testing/outputs/luke_motion_candidate_results/internal_rigid_trace_comparison.csv",
+          "query": {
+            "description": "Aggregate temporal stability metrics for the two rigid estimators.",
+            "engine": "DuckDB",
+            "language": "sql",
+            "sql": "SELECT 'Kilosort internal rigid' AS estimator, STDDEV_SAMP(kilosort_sign_aligned_centered_um) AS std_um, MAX(kilosort_sign_aligned_centered_um)-MIN(kilosort_sign_aligned_centered_um) AS peak_to_peak_um, MAX(kilosort_abs_step_um) AS max_step_um, SUM(CASE WHEN kilosort_abs_step_um > 50 THEN 1 ELSE 0 END) AS steps_over_50_um FROM read_csv_auto('testing/outputs/luke_motion_candidate_results/internal_rigid_trace_comparison.csv') UNION ALL SELECT 'DREDGE rigid', STDDEV_SAMP(dredge_rigid_centered_um), MAX(dredge_rigid_centered_um)-MIN(dredge_rigid_centered_um), MAX(dredge_abs_step_um), SUM(CASE WHEN dredge_abs_step_um > 50 THEN 1 ELSE 0 END) FROM read_csv_auto('testing/outputs/luke_motion_candidate_results/internal_rigid_trace_comparison.csv')",
+            "tables_used": [
+              "testing/outputs/luke_motion_candidate_results/internal_rigid_trace_comparison.csv"
+            ]
+          }
+        }
+      },
+      {
+        "id": "gradient_table",
+        "title": "Selected-field motion at reviewed events",
+        "description": "Descriptive medians for the 27 fixed events, grouped by selected-correction outcome.",
+        "dataset": "gradient_summary",
+        "columns": [
+          {
+            "field": "outcome",
+            "label": "Outcome",
+            "type": "text"
+          },
+          {
+            "field": "n_events",
+            "label": "Events",
+            "type": "number"
+          },
+          {
+            "field": "median_abs_displacement_um",
+            "label": "Median |displacement| (\u00b5m)",
+            "type": "number"
+          },
+          {
+            "field": "median_abs_gradient",
+            "label": "Median |spatial gradient|",
+            "type": "number"
+          }
+        ],
+        "defaultSort": {
+          "field": "outcome",
+          "direction": "asc"
+        },
+        "sourceId": "event_source",
+        "source": {
+          "id": "event_source",
+          "label": "Paired reviewed-event recovery and motion covariates",
+          "path": "testing/outputs/luke_motion_candidate_results/reviewed_event_recovery.csv",
+          "query": {
+            "description": "Aggregate selected-correction event motion by recovery outcome.",
+            "engine": "DuckDB",
+            "language": "sql",
+            "sql": "SELECT CASE WHEN recovered THEN 'Recovered' ELSE 'Missed' END AS outcome, COUNT(*) AS n_events, MEDIAN(selected_abs_displacement_um) AS median_abs_displacement_um, MEDIAN(selected_abs_spatial_gradient_um_per_um) AS median_abs_gradient FROM read_csv_auto('testing/outputs/luke_motion_candidate_results/reviewed_event_recovery.csv') WHERE condition = 'Selected DREDGE 300/200' GROUP BY recovered ORDER BY outcome",
+            "tables_used": [
+              "testing/outputs/luke_motion_candidate_results/reviewed_event_recovery.csv"
+            ]
+          }
+        }
+      },
+      {
+        "id": "geometry_table",
+        "title": "Channel mapping reconciliation",
+        "description": "All 384 neural-channel rows; exact means zero coordinate difference without tolerance.",
+        "dataset": "geometry_checks",
+        "columns": [
+          {
+            "field": "comparison",
+            "label": "Comparison",
+            "type": "text"
+          },
+          {
+            "field": "rows_compared",
+            "label": "Rows",
+            "type": "number"
+          },
+          {
+            "field": "channel_ids_exact",
+            "label": "Channel IDs exact",
+            "type": "text"
+          },
+          {
+            "field": "geometry_rows_exact",
+            "label": "Exact geometry rows",
+            "type": "number"
+          },
+          {
+            "field": "max_coordinate_error_um",
+            "label": "Max error (\u00b5m)",
+            "type": "number"
+          }
+        ],
+        "defaultSort": {
+          "field": "comparison",
+          "direction": "asc"
+        },
+        "sourceId": "geometry_source",
+        "source": {
+          "id": "geometry_source",
+          "label": "Luke imec1 channel and geometry mapping audit",
+          "path": "testing/outputs/luke_geometry_mapping_audit/imec1/channel_mapping_rows.csv",
+          "query": {
+            "description": "Reconcile raw, processed, and Kilosort row geometry across all neural channels.",
+            "engine": "DuckDB",
+            "language": "sql",
+            "sql": "SELECT COUNT(*) AS rows_compared, SUM(CASE WHEN raw_channel_id = processed_channel_id THEN 1 ELSE 0 END) AS exact_channel_ids, SUM(CASE WHEN raw_x_um = processed_x_um AND raw_y_um = processed_y_um THEN 1 ELSE 0 END) AS raw_processed_exact_geometry_rows, SUM(CASE WHEN raw_x_um = kilosort_x_um AND raw_y_um = kilosort_y_um THEN 1 ELSE 0 END) AS raw_kilosort_exact_geometry_rows, MAX(GREATEST(ABS(raw_x_um - processed_x_um), ABS(raw_y_um - processed_y_um), ABS(raw_x_um - kilosort_x_um), ABS(raw_y_um - kilosort_y_um))) AS max_coordinate_error_um FROM read_csv_auto('testing/outputs/luke_geometry_mapping_audit/imec1/channel_mapping_rows.csv')",
+            "tables_used": [
+              "testing/outputs/luke_geometry_mapping_audit/imec1/channel_mapping_rows.csv"
+            ]
+          }
+        }
+      },
+      {
+        "id": "detection_audit_table",
+        "title": "Depth-normalized input and sorter comparison",
+        "description": "Same event detector and physical-depth denominator across conditions.",
+        "dataset": "detection_audit",
+        "columns": [
+          {
+            "field": "condition",
+            "label": "Condition",
+            "type": "text"
+          },
+          {
+            "field": "contacts_per_mm",
+            "label": "Contacts/mm",
+            "type": "number"
+          },
+          {
+            "field": "negative_events_per_mm_s",
+            "label": "Negative events/mm/s",
+            "type": "number"
+          },
+          {
+            "field": "strong_event_recovery",
+            "label": "Final recovery",
+            "type": "number"
+          },
+          {
+            "field": "learned_per_mm_s",
+            "label": "Learned/mm/s",
+            "type": "number"
+          },
+          {
+            "field": "final_per_mm_s",
+            "label": "Final/mm/s",
+            "type": "number"
+          },
+          {
+            "field": "units_per_mm",
+            "label": "Units/mm",
+            "type": "number"
+          },
+          {
+            "field": "coincidence",
+            "label": "Coincidence",
+            "type": "number"
+          }
+        ],
+        "defaultSort": {
+          "field": "condition",
+          "direction": "asc"
+        },
+        "sourceId": "detection_source",
+        "source": {
+          "id": "detection_source",
+          "label": "Matched Luke--Yates Kilosort-input audit",
+          "path": "testing/outputs/luke_motion_candidate_results/luke_yates_detection_stage_dataset_metrics.csv",
+          "query": {
+            "description": "Select the four reviewed condition summaries after physical-depth normalization.",
+            "engine": "DuckDB",
+            "language": "sql",
+            "sql": "SELECT dataset AS condition, negative_6sigma_events_per_depth_mm_s AS negative_events_per_mm_s, negative_6sigma_final_recovery, learned_per_depth_mm_s, final_per_depth_mm_s, units_per_depth_mm, cross_unit_near_coincident_fraction FROM read_csv_auto('testing/outputs/luke_motion_candidate_results/luke_yates_detection_stage_dataset_metrics.csv') ORDER BY dataset",
+            "tables_used": [
+              "testing/outputs/luke_motion_candidate_results/luke_yates_detection_stage_dataset_metrics.csv"
+            ],
+            "metric_definitions": [
+              "Negative events are physically deduplicated local minima exceeding six batch-specific MAD units per sampled millimetre and second."
+            ]
+          }
+        }
+      },
+      {
+        "id": "conditioning_ablation_table",
+        "title": "Reference and preprocessing ablations",
+        "description": "Fixed 120 s causal ablations plus independent 240 s single-pass replication.",
+        "dataset": "conditioning_ablation",
+        "columns": [
+          {
+            "field": "window",
+            "label": "Window",
+            "type": "text"
+          },
+          {
+            "field": "condition",
+            "label": "Condition",
+            "type": "text"
+          },
+          {
+            "field": "recovered",
+            "label": "Recovered",
+            "type": "text"
+          },
+          {
+            "field": "learned",
+            "label": "Learned",
+            "type": "number"
+          },
+          {
+            "field": "ks_good",
+            "label": "KS-good",
+            "type": "number"
+          },
+          {
+            "field": "coincidence",
+            "label": "Coincidence",
+            "type": "number"
+          },
+          {
+            "field": "contamination_pct",
+            "label": "Contamination (%)",
+            "type": "number"
+          }
+        ],
+        "defaultSort": {
+          "field": "window",
+          "direction": "asc"
+        },
+        "sourceId": "conditioning_source",
+        "source": {
+          "id": "conditioning_source",
+          "label": "Luke upstream conditioning ablations",
+          "path": "testing/outputs/luke_motion_candidate_results/conditioning_replication_summary.csv",
+          "query": {
+            "description": "Read the reviewed 120-second stage ablations and independent 240-second replication summary.",
+            "engine": "DuckDB",
+            "language": "sql",
+            "sql": "SELECT * FROM read_csv_auto('testing/outputs/luke_motion_candidate_results/conditioning_replication_summary.csv') ORDER BY window, condition",
+            "tables_used": [
+              "testing/outputs/luke_motion_candidate_results/conditioning_replication_summary.csv"
+            ]
+          }
+        }
+      },
+      {
+        "id": "unit_structure_table",
+        "title": "Unit yield versus nearby-template redundancy",
+        "description": "Similarity >=0.8 within 100 micrometres; graph components are a conservative effective-yield proxy.",
+        "dataset": "unit_structure",
+        "columns": [
+          {
+            "field": "unit_scope",
+            "label": "Scope",
+            "type": "text"
+          },
+          {
+            "field": "condition",
+            "label": "Condition",
+            "type": "text"
+          },
+          {
+            "field": "units",
+            "label": "Units",
+            "type": "number"
+          },
+          {
+            "field": "similar_pairs",
+            "label": "Similar pairs",
+            "type": "number"
+          },
+          {
+            "field": "graph_components",
+            "label": "Components",
+            "type": "number"
+          },
+          {
+            "field": "redundant_nodes",
+            "label": "Redundant nodes",
+            "type": "number"
+          },
+          {
+            "field": "median_presence",
+            "label": "Median presence",
+            "type": "number"
+          },
+          {
+            "field": "median_rate_cv",
+            "label": "Median rate CV",
+            "type": "number"
+          }
+        ],
+        "defaultSort": {
+          "field": "unit_scope",
+          "direction": "asc"
+        },
+        "sourceId": "unit_structure_source",
+        "source": {
+          "id": "unit_structure_source",
+          "label": "Luke preprocessing unit-structure audit",
+          "path": "testing/outputs/luke_motion_candidate_results/luke_preprocessing_unit_structure_summary.csv",
+          "query": {
+            "description": "Compare temporal stability and nearby-template similarity graph summaries for current and single-pass sorts.",
+            "engine": "DuckDB",
+            "language": "sql",
+            "sql": "SELECT * FROM read_csv_auto('testing/outputs/luke_motion_candidate_results/luke_preprocessing_unit_structure_summary.csv') ORDER BY unit_scope, condition",
+            "tables_used": [
+              "testing/outputs/luke_motion_candidate_results/luke_preprocessing_unit_structure_summary.csv"
+            ],
+            "metric_definitions": [
+              "Similar pairs have template correlation at least 0.8 and peak positions within 100 micrometres."
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "status": "ready",
+    "generatedAt": "2026-08-28T23:45:00-07:00",
+    "datasets": {
+      "spatial_evidence": [
+        {
+          "candidate": "300/200",
+          "criterion": "Split-half",
+          "correlation": 0.9403,
+          "probe_basis": "mean of imec0 and imec1"
+        },
+        {
+          "candidate": "300/200",
+          "criterion": "Adjacent sampling",
+          "correlation": 0.9922,
+          "probe_basis": "mean of imec0 and imec1"
+        },
+        {
+          "candidate": "300/200",
+          "criterion": "Independent method",
+          "correlation": 0.8418,
+          "probe_basis": "mean of imec0 and imec1"
+        },
+        {
+          "candidate": "300/200",
+          "criterion": "Cross-probe",
+          "correlation": 0.6091,
+          "probe_basis": "imec0 versus imec1"
+        },
+        {
+          "candidate": "600/200",
+          "criterion": "Split-half",
+          "correlation": 0.9464,
+          "probe_basis": "mean of imec0 and imec1"
+        },
+        {
+          "candidate": "600/200",
+          "criterion": "Adjacent sampling",
+          "correlation": 0.9861,
+          "probe_basis": "mean of imec0 and imec1"
+        },
+        {
+          "candidate": "600/200",
+          "criterion": "Cross-probe",
+          "correlation": -0.1288,
+          "probe_basis": "imec0 versus imec1"
+        }
+      ],
+      "sorter_outcomes": [
+        {
+          "condition": "No external correction",
+          "recovered": 23,
+          "n_events": 27,
+          "recovery_fraction": 0.851852,
+          "learned_detections": 562417,
+          "final_spikes": 544553,
+          "coincidence_fraction": 0.365294,
+          "median_contamination_pct": 38.65,
+          "ks_good_units": 95
+        },
+        {
+          "condition": "Zero-displacement identity",
+          "recovered": 23,
+          "n_events": 27,
+          "recovery_fraction": 0.851852,
+          "learned_detections": 562417,
+          "final_spikes": 544553,
+          "coincidence_fraction": 0.365294,
+          "median_contamination_pct": 38.65,
+          "ks_good_units": 95
+        },
+        {
+          "condition": "Kilosort internal rigid",
+          "recovered": 22,
+          "n_events": 27,
+          "recovery_fraction": 0.814815,
+          "learned_detections": 548693,
+          "final_spikes": 535103,
+          "coincidence_fraction": 0.368172,
+          "median_contamination_pct": 53.1,
+          "ks_good_units": 75
+        },
+        {
+          "condition": "Current DREDGE 150/100",
+          "recovered": 19,
+          "n_events": 27,
+          "recovery_fraction": 0.703704,
+          "learned_detections": 1298050,
+          "final_spikes": 905605,
+          "coincidence_fraction": 0.769711,
+          "median_contamination_pct": 51.55,
+          "ks_good_units": 74
+        },
+        {
+          "condition": "Rigid gain 0.25",
+          "recovered": 24,
+          "n_events": 27,
+          "recovery_fraction": 0.888889,
+          "learned_detections": 570501,
+          "final_spikes": 557201,
+          "coincidence_fraction": 0.36125,
+          "median_contamination_pct": 49.1,
+          "ks_good_units": 94
+        },
+        {
+          "condition": "Rigid gain 0.50",
+          "recovered": 24,
+          "n_events": 27,
+          "recovery_fraction": 0.888889,
+          "learned_detections": 560861,
+          "final_spikes": 548035,
+          "coincidence_fraction": 0.36305,
+          "median_contamination_pct": 63.7,
+          "ks_good_units": 75
+        },
+        {
+          "condition": "Rigid gain 0.75",
+          "recovered": 23,
+          "n_events": 27,
+          "recovery_fraction": 0.851852,
+          "learned_detections": 554208,
+          "final_spikes": 541387,
+          "coincidence_fraction": 0.358647,
+          "median_contamination_pct": 61.85,
+          "ks_good_units": 60
+        },
+        {
+          "condition": "Rigid from 300/200",
+          "recovered": 20,
+          "n_events": 27,
+          "recovery_fraction": 0.740741,
+          "learned_detections": 550252,
+          "final_spikes": 538563,
+          "coincidence_fraction": 0.365809,
+          "median_contamination_pct": 62.05,
+          "ks_good_units": 71
+        },
+        {
+          "condition": "Selected DREDGE 300/200",
+          "recovered": 18,
+          "n_events": 27,
+          "recovery_fraction": 0.666667,
+          "learned_detections": 1293487,
+          "final_spikes": 847162,
+          "coincidence_fraction": 0.732359,
+          "median_contamination_pct": 50.15,
+          "ks_good_units": 79
+        },
+        {
+          "condition": "MEDiCINe non-rigid sigma10",
+          "recovered": 19,
+          "n_events": 27,
+          "recovery_fraction": 0.703704,
+          "learned_detections": 1230786,
+          "final_spikes": 802094,
+          "coincidence_fraction": 0.720848,
+          "median_contamination_pct": 68.25,
+          "ks_good_units": 41
+        }
+      ],
+      "motion_comparison": [
+        {
+          "estimator": "MEDiCINe",
+          "recording": "Luke imec0",
+          "rigid_excursion_um": 13.074,
+          "median_spread_um": 3.4,
+          "p99_speed_um_s": 0.87
+        },
+        {
+          "estimator": "MEDiCINe",
+          "recording": "Luke imec1",
+          "rigid_excursion_um": 14.731,
+          "median_spread_um": 8.837,
+          "p99_speed_um_s": 1.298
+        },
+        {
+          "estimator": "MEDiCINe",
+          "recording": "Yates shank1 median",
+          "rigid_excursion_um": 2.961,
+          "median_spread_um": 2.773,
+          "p99_speed_um_s": 0.36
+        },
+        {
+          "estimator": "MEDiCINe",
+          "recording": "Yates shank2 median",
+          "rigid_excursion_um": 3.095,
+          "median_spread_um": 4.882,
+          "p99_speed_um_s": 0.396
+        },
+        {
+          "estimator": "Kilosort-style",
+          "recording": "Luke imec0",
+          "rigid_excursion_um": 5.747,
+          "median_spread_um": 4.0,
+          "p99_speed_um_s": 3.412
+        },
+        {
+          "estimator": "Kilosort-style",
+          "recording": "Luke imec1",
+          "rigid_excursion_um": 10.061,
+          "median_spread_um": 6.0,
+          "p99_speed_um_s": 3.525
+        },
+        {
+          "estimator": "Kilosort-style",
+          "recording": "Yates shank1 median",
+          "rigid_excursion_um": 0.75,
+          "median_spread_um": 0.0,
+          "p99_speed_um_s": 0.25
+        },
+        {
+          "estimator": "Kilosort-style",
+          "recording": "Yates shank2 median",
+          "rigid_excursion_um": 1.0,
+          "median_spread_um": 1.0,
+          "p99_speed_um_s": 0.25
+        }
+      ],
+      "kernel_comparison": [
+        {
+          "shift_um": 1,
+          "luke_sigma20": 0.95693,
+          "yates_sigma20": 0.98144,
+          "luke_sigma10": 0.97264
+        },
+        {
+          "shift_um": 2,
+          "luke_sigma20": 0.91375,
+          "yates_sigma20": 0.96159,
+          "luke_sigma10": 0.94359
+        },
+        {
+          "shift_um": 4,
+          "luke_sigma20": 0.82773,
+          "yates_sigma20": 0.91785,
+          "luke_sigma10": 0.87667
+        },
+        {
+          "shift_um": 6,
+          "luke_sigma20": 0.74346,
+          "yates_sigma20": 0.86867,
+          "luke_sigma10": 0.80085
+        }
+      ],
+      "rigid_gain": [
+        {
+          "gain": 0.0,
+          "condition": "No external correction",
+          "recovered": 23,
+          "recovery_fraction": 0.851852,
+          "learned_detections": 562417,
+          "coincidence_fraction": 0.365294,
+          "median_contamination_pct": 38.65,
+          "ks_good_units": 95
+        },
+        {
+          "gain": 0.25,
+          "condition": "Rigid gain 0.25",
+          "recovered": 24,
+          "recovery_fraction": 0.888889,
+          "learned_detections": 570501,
+          "coincidence_fraction": 0.36125,
+          "median_contamination_pct": 49.1,
+          "ks_good_units": 94
+        },
+        {
+          "gain": 0.5,
+          "condition": "Rigid gain 0.50",
+          "recovered": 24,
+          "recovery_fraction": 0.888889,
+          "learned_detections": 560861,
+          "coincidence_fraction": 0.36305,
+          "median_contamination_pct": 63.7,
+          "ks_good_units": 75
+        },
+        {
+          "gain": 0.75,
+          "condition": "Rigid gain 0.75",
+          "recovered": 23,
+          "recovery_fraction": 0.851852,
+          "learned_detections": 554208,
+          "coincidence_fraction": 0.358647,
+          "median_contamination_pct": 61.85,
+          "ks_good_units": 60
+        },
+        {
+          "gain": 1.0,
+          "condition": "Rigid from 300/200",
+          "recovered": 20,
+          "recovery_fraction": 0.740741,
+          "learned_detections": 550252,
+          "coincidence_fraction": 0.365809,
+          "median_contamination_pct": 62.05,
+          "ks_good_units": 71
+        }
+      ],
+      "internal_trace_summary": [
+        {
+          "estimator": "DREDGE rigid",
+          "std_um": 9.454,
+          "peak_to_peak_um": 41.578,
+          "max_step_um": 20.44,
+          "steps_over_50_um": 0,
+          "shape_correlation": 0.8003
+        },
+        {
+          "estimator": "Kilosort internal rigid",
+          "std_um": 37.02,
+          "peak_to_peak_um": 128.5,
+          "max_step_um": 102.5,
+          "steps_over_50_um": 10,
+          "shape_correlation": 0.8003
+        }
+      ],
+      "gradient_summary": [
+        {
+          "outcome": "Recovered",
+          "n_events": 18,
+          "median_abs_displacement_um": 4.2598,
+          "median_abs_gradient": 0.00805
+        },
+        {
+          "outcome": "Missed",
+          "n_events": 9,
+          "median_abs_displacement_um": 5.4533,
+          "median_abs_gradient": 0.01605
+        }
+      ],
+      "geometry_checks": [
+        {
+          "comparison": "Raw vs processed",
+          "rows_compared": 384,
+          "channel_ids_exact": "Yes",
+          "geometry_rows_exact": 384,
+          "max_coordinate_error_um": 0.0
+        },
+        {
+          "comparison": "Raw vs Kilosort",
+          "rows_compared": 384,
+          "channel_ids_exact": "Not exported by Kilosort",
+          "geometry_rows_exact": 384,
+          "max_coordinate_error_um": 0.0
+        },
+        {
+          "comparison": "Processed vs Kilosort",
+          "rows_compared": 384,
+          "channel_ids_exact": "Not exported by Kilosort",
+          "geometry_rows_exact": 384,
+          "max_coordinate_error_um": 0.0
+        }
+      ],
+      "detection_audit": [
+        {
+          "condition": "Luke pathological",
+          "contacts_per_mm": 100.52,
+          "negative_events_per_mm_s": 126.766,
+          "strong_event_recovery": 0.937393,
+          "learned_per_mm_s": 1192.857,
+          "final_per_mm_s": 1143.97,
+          "units_per_mm": 63.35,
+          "coincidence": 0.365293
+        },
+        {
+          "condition": "Luke current",
+          "contacts_per_mm": 100.52,
+          "negative_events_per_mm_s": 118.847,
+          "strong_event_recovery": 0.961432,
+          "learned_per_mm_s": 1647.696,
+          "final_per_mm_s": 1602.278,
+          "units_per_mm": 76.44,
+          "coincidence": 0.371589
+        },
+        {
+          "condition": "Luke single-pass",
+          "contacts_per_mm": 100.52,
+          "negative_events_per_mm_s": 99.672,
+          "strong_event_recovery": 0.932396,
+          "learned_per_mm_s": 1456.795,
+          "final_per_mm_s": 1434.871,
+          "units_per_mm": 102.88,
+          "coincidence": 0.351442
+        },
+        {
+          "condition": "Yates known-good",
+          "contacts_per_mm": 29.49,
+          "negative_events_per_mm_s": 238.018,
+          "strong_event_recovery": 0.969425,
+          "learned_per_mm_s": 667.627,
+          "final_per_mm_s": 666.129,
+          "units_per_mm": 66.36,
+          "coincidence": 0.359999
+        }
+      ],
+      "conditioning_ablation": [
+        {
+          "condition": "Current no motion",
+          "window": "120 s pathological",
+          "recovered": "23/27",
+          "learned": 562417,
+          "ks_good": 95,
+          "coincidence": 0.365294,
+          "contamination_pct": 38.65
+        },
+        {
+          "condition": "Bandpass, no reference",
+          "window": "120 s pathological",
+          "recovered": "23/27",
+          "learned": 579298,
+          "ks_good": 90,
+          "coincidence": 0.36428,
+          "contamination_pct": 44.1
+        },
+        {
+          "condition": "Global reference",
+          "window": "120 s pathological",
+          "recovered": "22/27",
+          "learned": 574693,
+          "ks_good": 91,
+          "coincidence": 0.363089,
+          "contamination_pct": 47.4
+        },
+        {
+          "condition": "Local reference, no KS CAR",
+          "window": "120 s pathological",
+          "recovered": "23/27",
+          "learned": 561947,
+          "ks_good": 96,
+          "coincidence": 0.362319,
+          "contamination_pct": 40.1
+        },
+        {
+          "condition": "Single KS preprocessing",
+          "window": "120 s pathological",
+          "recovered": "22/27",
+          "learned": 517187,
+          "ks_good": 114,
+          "coincidence": 0.350521,
+          "contamination_pct": 38.4
+        },
+        {
+          "condition": "Current conditioning",
+          "window": "240 s shared",
+          "recovered": "119/126",
+          "learned": 1408807,
+          "ks_good": 130,
+          "coincidence": 0.370683,
+          "contamination_pct": 26.4
+        },
+        {
+          "condition": "Single KS preprocessing",
+          "window": "240 s shared",
+          "recovered": "120/126",
+          "learned": 1255885,
+          "ks_good": 168,
+          "coincidence": 0.349972,
+          "contamination_pct": 29.9
+        }
+      ],
+      "unit_structure": [
+        {
+          "condition": "Current",
+          "unit_scope": "All",
+          "units": 292,
+          "similar_pairs": 62,
+          "pairs_per_unit": 0.212,
+          "graph_components": 240,
+          "redundant_nodes": 52,
+          "median_presence": 1.0,
+          "median_rate_cv": 0.879
+        },
+        {
+          "condition": "Single-pass",
+          "unit_scope": "All",
+          "units": 393,
+          "similar_pairs": 170,
+          "pairs_per_unit": 0.433,
+          "graph_components": 273,
+          "redundant_nodes": 120,
+          "median_presence": 1.0,
+          "median_rate_cv": 0.936
+        },
+        {
+          "condition": "Current",
+          "unit_scope": "KS-good",
+          "units": 130,
+          "similar_pairs": 17,
+          "pairs_per_unit": 0.131,
+          "graph_components": 113,
+          "redundant_nodes": 17,
+          "median_presence": 0.8542,
+          "median_rate_cv": 1.338
+        },
+        {
+          "condition": "Single-pass",
+          "unit_scope": "KS-good",
+          "units": 168,
+          "similar_pairs": 35,
+          "pairs_per_unit": 0.208,
+          "graph_components": 139,
+          "redundant_nodes": 29,
+          "median_presence": 0.8333,
+          "median_rate_cv": 1.322
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "spatial_source",
+      "label": "Luke motion spatial-scale evidence",
+      "path": "testing/outputs/luke_motion_candidate_results/spatial_scale_evidence.csv"
+    },
+    {
+      "id": "sort_source",
+      "label": "Fixed-event and Kilosort outcome comparison",
+      "path": "testing/outputs/luke_motion_candidate_results/motion_candidate_sorter_metrics.csv"
+    },
+    {
+      "id": "event_source",
+      "label": "Paired reviewed-event recovery and motion covariates",
+      "path": "testing/outputs/luke_motion_candidate_results/reviewed_event_recovery.csv"
+    },
+    {
+      "id": "geometry_source",
+      "label": "Luke imec1 channel and geometry mapping audit",
+      "path": "testing/outputs/luke_geometry_mapping_audit/imec1/channel_mapping_rows.csv"
+    },
+    {
+      "id": "identity_source",
+      "label": "Zero-displacement byte-identity audit",
+      "path": "testing/outputs/luke_motion_candidate_results/identity_control_audit.json"
+    },
+    {
+      "id": "internal_trace_source",
+      "label": "Kilosort and DREDGE rigid trace comparison",
+      "path": "testing/outputs/luke_motion_candidate_results/internal_rigid_trace_comparison.csv"
+    },
+    {
+      "id": "kernel_source",
+      "label": "Luke and Yates interpolation-kernel audit",
+      "path": "testing/outputs/luke_motion_candidate_results/luke_yates_interpolation_kernel_metrics.csv"
+    },
+    {
+      "id": "motion_comparison_source",
+      "label": "Luke and Yates matched-duration motion comparison",
+      "path": "testing/outputs/luke_motion_candidate_results/luke_yates_motion_120s_metrics.csv"
+    },
+    {
+      "id": "detection_source",
+      "label": "Matched Luke--Yates Kilosort-input audit",
+      "path": "testing/outputs/luke_motion_candidate_results/luke_yates_detection_stage_dataset_metrics.csv"
+    },
+    {
+      "id": "conditioning_source",
+      "label": "Luke upstream conditioning ablations",
+      "path": "testing/outputs/luke_motion_candidate_results/conditioning_replication_summary.csv"
+    },
+    {
+      "id": "unit_structure_source",
+      "label": "Luke preprocessing unit-structure audit",
+      "path": "testing/outputs/luke_motion_candidate_results/luke_preprocessing_unit_structure_summary.csv"
+    }
+  ]
+}

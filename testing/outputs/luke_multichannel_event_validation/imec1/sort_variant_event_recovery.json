@@ -1,0 +1,15 @@
+{
+  "same_recorded_input_path": true,
+  "input_path": "/mnt/NPX/Luke/20250804/dredge_pipeline_results_Luke0804_V2V1_g0_imec1/preprocessed_recording/traces_cached_seg0.raw",
+  "non_claim_setting_differences": {},
+  "patched_claim_parameters": {
+    "cross_peel_claim_ms": 0.25,
+    "cross_peel_claim_um": 75
+  },
+  "jitter_null": {
+    "iterations": 250,
+    "offset_ms": "uniform 20-500 ms with random sign",
+    "seed": 20250804
+  },
+  "interpretation_guardrail": "Higher event recovery is not sufficient; compare duplicate, contamination, refractory, and unit-continuity metrics before selecting a sort."
+}

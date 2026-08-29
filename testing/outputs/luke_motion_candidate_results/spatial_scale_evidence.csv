@@ -1,0 +1,8 @@
+candidate,criterion,correlation,probe_basis
+300 µm window / 200 µm step,Split-half reproducibility,0.9402333685073746,mean of imec0 and imec1
+300 µm window / 200 µm step,Adjacent sampling agreement,0.9921971407658573,mean of imec0 and imec1
+300 µm window / 200 µm step,Independent-method agreement,0.8417984447445213,mean of imec0 and imec1
+300 µm window / 200 µm step,Cross-probe agreement,0.609079788371362,imec0 versus imec1
+600 µm window / 200 µm step,Split-half reproducibility,0.9463184130941158,mean of imec0 and imec1
+600 µm window / 200 µm step,Adjacent sampling agreement,0.9861255396656956,mean of imec0 and imec1
+600 µm window / 200 µm step,Cross-probe agreement,-0.1288333313721971,imec0 versus imec1

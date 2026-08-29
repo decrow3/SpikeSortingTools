@@ -8,9 +8,9 @@ import gc
 import spikeinterface.full as si
 
 #%% Change this code to load your data
-data_dir  =  r"/mnt/NPX/Rocky/20240704/Rocky20240704_V1V2_g0/"
-out_dir   =  r"/media/huklaban5/Data/Patched/"
-stream_id = "imec0.ap"  # usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
+data_dir  =  r"/mnt/NPX/Rocky/20240229/Rocky20240229_V1V2_g0/"
+out_dir   =  r"/media/huklab/Data/NPX/Spikesorting/Patching/"
+stream_id = "imec1.ap"  # usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)
 
 #%% Run on a snippet to check params
@@ -30,12 +30,13 @@ print(f'Using data root {data_root}, pipeline results will be saved to harddrive
 dredge_dir   = Path(f'{data_root}/dredge_pipeline_results_{sess_name}_{stream_name}')
 pipeline_dir = Path(out_dir) / f'patched_pipeline_results_{sess_name}_{stream_name}'
 
-# Guard: motion correction must already exist on server
+# Warning: motion correction must already exist on server
 if not dredge_dir.exists():
-    raise FileNotFoundError(
+    print(
         f'Motion correction results not found: {dredge_dir}\n'
-        'Run the pre-patch dredge pipeline first, or check the server is mounted.'
+        'Running dredge motion correction and saving directly to patched_pipeline_results....'
     )
+    dredge_dir=pipeline_dir
 
 pipeline_dir.mkdir(parents=True, exist_ok=True)
 print(f'Dredge dir (server): {dredge_dir}')

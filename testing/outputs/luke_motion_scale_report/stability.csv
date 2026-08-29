@@ -1,0 +1,11 @@
+probe,comparison,correlation
+imec0,Split-half: current 150/100,0.9078
+imec0,Split-half: DREDGE 600/200,0.9401
+imec0,Split-half: decentralized 300/200,0.9658
+imec0,Cross-method: DREDGE vs decentralized 300/200,0.7902
+imec0,Cross-method: DREDGE vs iterative 300/200,0.2098
+imec1,Split-half: current 150/100,0.9249
+imec1,Split-half: DREDGE 600/200,0.9526
+imec1,Split-half: decentralized 300/200,0.9624
+imec1,Cross-method: DREDGE vs decentralized 300/200,0.8934
+imec1,Cross-method: DREDGE vs iterative 300/200,0.3643

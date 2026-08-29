@@ -1,0 +1,19 @@
+{
+  "population": "blinded-review neural events originally unmatched to curated spikes",
+  "n_events": 62,
+  "time_tolerance_ms": 0.5,
+  "depth_tolerance_um": 100.0,
+  "outcomes": {
+    "absent_from_uncurated_kilosort": 35,
+    "lost_during_curation": 17,
+    "present_curated": 10
+  },
+  "interpretation": {
+    "lost_during_curation": "detected by raw Kilosort output but absent after curation",
+    "absent_from_uncurated_kilosort": "failure occurred by Kilosort detection/template assignment or earlier"
+  },
+  "paths": {
+    "uncurated": "/mnt/NPX/Luke/20250804/patched_pipeline_results_Luke0804_V2V1_g0_imec1/kilosort4/sorter_output",
+    "curated": "/mnt/NPX/Luke/20250804/patched_pipeline_results_Luke0804_V2V1_g0_imec1/cur/cur_sorter_output"
+  }
+}

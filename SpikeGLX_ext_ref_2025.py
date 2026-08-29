@@ -8,7 +8,7 @@ import gc
 import spikeinterface.full as si
 
 #%% Change this code to load your data
-data_dir=   r"/mnt/NPX/Luke/20260224/Luke02242026_V1V2_RH_g0/"
+data_dir=   r"/mnt/NPX/Luke/20260719/Luke06192026_V1_RH_g0/"
 
 stream_id = "imec0.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
@@ -99,7 +99,7 @@ except Exception as e:
         ks4_sorter,
         ks4_results,
         pipeline_dir / 'cur',
-        recalc=True,
+        recalc=False,
         split_depth_export=False,   # only needed for files that are too big to save
         depth_overlap_um=75.0,     # boundary overlap
         depth_split_um=None,       # median unit depth

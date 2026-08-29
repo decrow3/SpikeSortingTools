@@ -1,0 +1,139 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Luke 2025-08-04 Failure Hypotheses and Test Plan",
+    "description": "Ranked, falsifiable hypotheses grounded in raw-event, motion, and sorting-sensitivity evidence.",
+    "generatedAt": "2026-08-27T00:00:00-07:00",
+    "sources": [
+      {
+        "id": "raw_recovery",
+        "label": "Luke imec1 high-amplitude raw-event recovery summary",
+        "path": "testing/outputs/luke_raw_high_amplitude_recovery/imec1/summary.csv",
+        "query": {
+          "description": "Select the six-sigma peak-detector rows plotted in the report.",
+          "engine": "DuckDB",
+          "language": "sql",
+          "sql": "SELECT CAST(unit_id AS VARCHAR) AS unit, CASE WHEN window = 'template' THEN 'Template' ELSE 'Registration outlier' END AS window, candidate_missed_fraction AS missed_fraction, n_missed AS missed_count, n_candidates AS candidate_count, n_missed / duration_seconds AS missed_rate_hz FROM read_csv_auto('testing/outputs/luke_raw_high_amplitude_recovery/imec1/summary.csv') WHERE window IN ('template', 'registration_outlier') ORDER BY unit_id, window",
+          "tables_used": ["testing/outputs/luke_raw_high_amplitude_recovery/imec1/summary.csv"],
+          "filters": ["probe = imec1", "detector = peak", "threshold = 6 robust noise sigma"],
+          "metric_definitions": [
+            "Missed fraction = candidates with no curated spike within 0.5 ms and 100 um / all raw candidates.",
+            "Candidates are single-channel negative peaks, not established unit identities."
+          ]
+        }
+      },
+      {
+        "id": "investigation_plan",
+        "label": "Luke leading hypotheses and decisive tests",
+        "path": "docs/luke_20250804_leading_hypotheses.md",
+        "query": {
+          "description": "Ranked hypothesis plan synthesized from reviewed evidence.",
+          "language": "markdown",
+          "tables_used": ["docs/luke_20250804_leading_hypotheses.md"],
+          "metric_definitions": []
+        }
+      }
+    ],
+    "blocks": [
+      {"id": "title", "type": "markdown", "body": "# Luke 2025-08-04 Failure Hypotheses and Test Plan"},
+      {"id": "summary", "type": "markdown", "body": "## Technical summary\n\nThe leading model is a **mixture**, not a single failure: real motion is present, but some large raw events may be artifacts, some genuine events may be rejected by Kilosort, and external nonrigid correction or repeated conditioning may further damage or fragment waveforms. The fastest discriminating step is to validate the unmatched raw-event population spatially and by waveform shape before any more full sorts."},
+      {"id": "evidence_intro", "type": "markdown", "body": "## Large raw events remain unaccounted for locally\n\nAcross three representative imec1 channels, many raw negative peaks above six robust noise standard deviations have no curated spike within 0.5 ms and 100 µm. This establishes an event-accounting gap, but it does **not** establish that every candidate is neural or belongs to the selected high-amplitude unit."},
+      {"id": "miss_chart_block", "type": "chart", "chartId": "miss_chart", "layout": "full"},
+      {"id": "scope", "type": "markdown", "body": "## Scope and definitions\n\nA **candidate** is a single-channel negative AP-band peak after per-sample global median subtraction and a 300 Hz high-pass. A candidate is **missed** when no curated spike occurs within 0.5 ms and 100 µm. The selected units only choose representative channels; Kilosort `cluster_Amplitude` is not raw SNR or unit identity."},
+      {"id": "hyp_intro", "type": "markdown", "body": "## Five hypotheses prioritized by information value\n\nThe ranking favors tests that can invalidate an explanation cheaply and identify the stage where events disappear. Hypothesis 1 is a measurement control; hypotheses 2–5 are candidate failure mechanisms."},
+      {"id": "hyp_table_block", "type": "table", "tableId": "hyp_table", "layout": "full"},
+      {"id": "methods", "type": "markdown", "body": "## Methodology and decision logic\n\nUse fixed raw-event indices across every variant. First classify unmatched events as neural-like or artifact-like using multichannel footprint and blinded review. Then propagate only reviewed events through conditioning, motion interpolation, Kilosort detection, and cluster assignment. Advance a mechanism only when its predicted failure appears at that stage and survives a nearby-parameter sensitivity check."},
+      {"id": "limits", "type": "markdown", "body": "## Limitations and robustness requirements\n\nThe current detector is intentionally simple and single-channel, so its miss fraction is not a neuronal recall estimate. Dense activity makes probe-wide temporal coincidence misleading, which is why matching is spatially local. Yates differs in geometry, coverage, acquisition scaling, and preparation."},
+      {"id": "next", "type": "markdown", "body": "## Recommended next steps\n\n1. Blind-label 100 locally matched and 100 unmatched six-sigma events using 3–5-channel waveforms.\n2. Recompute the gap using a conservative neural-like gate.\n3. Trace validated events through conditioning and motion interpolation.\n4. Trace survivors through Kilosort detection and assignment.\n5. Run short sweeps only after the failure stage is known; advance at most two variants to full sorting."},
+      {"id": "questions", "type": "markdown", "body": "## Further questions\n\n- Are unmatched events concentrated at particular depths, motion gradients, or blanking intervals?\n- Are they absent at detection, rejected during template matching, or assigned beyond 100 µm?\n- Does rigid correction preserve reviewed events better than current nonrigid correction?"}
+    ],
+    "charts": [
+      {
+        "id": "miss_chart",
+        "title": "Local raw-event miss fraction",
+        "description": "Six-sigma negative raw peaks; template versus registration-outlier windows on imec1.",
+        "type": "bar",
+        "dataset": "miss_fractions",
+        "encodings": {
+          "x": {"field": "unit", "type": "nominal", "title": "Representative unit channel"},
+          "y": {"field": "missed_fraction", "type": "quantitative", "title": "Fraction with no local sorted event", "valueFormat": "percent"},
+          "color": {"field": "window", "type": "nominal", "title": "Window"}
+        },
+        "options": {"orientation": "vertical", "grouping": "grouped", "legend": true},
+        "sourceId": "raw_recovery",
+        "source": {
+          "id": "raw_recovery",
+          "label": "Luke imec1 high-amplitude raw-event recovery summary",
+          "path": "testing/outputs/luke_raw_high_amplitude_recovery/imec1/summary.csv",
+          "query": {
+            "description": "Select the six-sigma peak-detector rows plotted in the report.",
+            "engine": "DuckDB",
+            "language": "sql",
+            "sql": "SELECT CAST(unit_id AS VARCHAR) AS unit, CASE WHEN window = 'template' THEN 'Template' ELSE 'Registration outlier' END AS window, candidate_missed_fraction AS missed_fraction, n_missed AS missed_count, n_candidates AS candidate_count, n_missed / duration_seconds AS missed_rate_hz FROM read_csv_auto('testing/outputs/luke_raw_high_amplitude_recovery/imec1/summary.csv') WHERE window IN ('template', 'registration_outlier') ORDER BY unit_id, window",
+            "tables_used": ["testing/outputs/luke_raw_high_amplitude_recovery/imec1/summary.csv"],
+            "filters": ["window IN ('template', 'registration_outlier')"],
+            "metric_definitions": ["Missed fraction = n_missed / n_candidates."]
+          }
+        }
+      }
+    ],
+    "tables": [
+      {
+        "id": "hyp_table",
+        "title": "Leading hypotheses and decisive tests",
+        "description": "Ordered by information value and current evidence.",
+        "dataset": "hypotheses",
+        "columns": [
+          {"field": "rank", "label": "Rank", "type": "number"},
+          {"field": "hypothesis", "label": "Hypothesis", "type": "text"},
+          {"field": "prediction", "label": "What should be true", "type": "text"},
+          {"field": "minimal_test", "label": "Minimal test", "type": "text"},
+          {"field": "support_rule", "label": "Support if", "type": "text"}
+        ],
+        "defaultSort": {"field": "rank", "direction": "asc"},
+        "sourceId": "investigation_plan",
+        "source": {
+          "id": "investigation_plan",
+          "label": "Luke leading hypotheses and decisive tests",
+          "path": "docs/luke_20250804_leading_hypotheses.md",
+          "query": {
+            "description": "Materialize the ranked hypothesis register documented in the investigation plan.",
+            "engine": "DuckDB",
+            "language": "sql",
+            "sql": "SELECT * FROM (VALUES (1, 'Raw candidates include artifacts'), (2, 'Kilosort rejects genuine spikes'), (3, 'Nonrigid correction damages spikes'), (4, 'Real motion fragments unit identity'), (5, 'Conditioning distorts waveforms')) AS hypotheses(rank, hypothesis) ORDER BY rank",
+            "tables_used": ["docs/luke_20250804_leading_hypotheses.md"],
+            "metric_definitions": ["Rank orders hypotheses by information value of the next test, not posterior probability."]
+          }
+        }
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "status": "ready",
+    "generatedAt": "2026-08-27T00:00:00-07:00",
+    "datasets": {
+      "miss_fractions": [
+        {"unit": "338", "window": "Template", "missed_fraction": 0.488506, "missed_count": 85, "candidate_count": 174, "missed_rate_hz": 0.7083},
+        {"unit": "338", "window": "Registration outlier", "missed_fraction": 0.731602, "missed_count": 169, "candidate_count": 231, "missed_rate_hz": 1.4083},
+        {"unit": "265", "window": "Template", "missed_fraction": 0.625, "missed_count": 295, "candidate_count": 472, "missed_rate_hz": 2.4583},
+        {"unit": "265", "window": "Registration outlier", "missed_fraction": 0.508073, "missed_count": 472, "candidate_count": 929, "missed_rate_hz": 3.9333},
+        {"unit": "294", "window": "Template", "missed_fraction": 0.666667, "missed_count": 56, "candidate_count": 84, "missed_rate_hz": 0.4667},
+        {"unit": "294", "window": "Registration outlier", "missed_fraction": 0.684932, "missed_count": 50, "candidate_count": 73, "missed_rate_hz": 0.4167}
+      ],
+      "hypotheses": [
+        {"rank": 1, "hypothesis": "Raw candidates include artifacts", "prediction": "Unmatched events have common-mode, broad, ringing, or implausible footprints.", "minimal_test": "Blind multichannel review of 100 matched and 100 unmatched events.", "support_rule": "<20% pass a conservative neural-like gate."},
+        {"rank": 2, "hypothesis": "Kilosort rejects genuine spikes", "prediction": "Reviewed spikes survive preprocessing but disappear at detection or template matching.", "minimal_test": "Trace events through Kilosort and run a fixed-window threshold sweep.", "support_rule": "A modest change recovers ≥25% more without a duplicate/contamination surge."},
+        {"rank": 3, "hypothesis": "Nonrigid correction damages spikes", "prediction": "Amplitude, spatial coherence, or detectability falls uniquely after nonrigid interpolation.", "minimal_test": "Propagate identical events through none, rigid, and nonrigid correction.", "support_rule": "Nonrigid correction causes ≥10% unique loss versus both controls."},
+        {"rank": 4, "hypothesis": "Real motion fragments unit identity", "prediction": "Continuous raw waveform tracks switch between complementary clusters across motion events.", "minimal_test": "Track 10 high raw-SNR waveform families through the 7,275 s and 8,220 s events.", "support_rule": "Merging complementary assignments restores continuity without refractory violations."},
+        {"rank": 5, "hypothesis": "Conditioning distorts waveforms", "prediction": "One preprocessing step reduces event amplitude or footprint stability.", "minimal_test": "One-factor conditioning contrasts on fixed windows and event indices.", "support_rule": "A repeatable retention penalty remains after accounting for artifact rejection."}
+      ]
+    }
+  },
+  "sources": [
+    {"id": "raw_recovery", "label": "Luke imec1 high-amplitude raw-event recovery summary", "path": "testing/outputs/luke_raw_high_amplitude_recovery/imec1/summary.csv"},
+    {"id": "investigation_plan", "label": "Luke leading hypotheses and decisive tests", "path": "docs/luke_20250804_leading_hypotheses.md"}
+  ]
+}

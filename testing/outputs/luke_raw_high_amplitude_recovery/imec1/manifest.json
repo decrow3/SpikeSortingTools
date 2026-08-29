@@ -1,0 +1,35 @@
+{
+  "probe": "imec1",
+  "units": [
+    338,
+    265,
+    294
+  ],
+  "raw_path": "/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0/Luke0730_V2V1_g0_imec1/Luke0730_V2V1_g0_t0.imec1.ap.bin",
+  "sorting_path": "/mnt/NPX/Luke/20250804/patched_pipeline_results_Luke0804_V2V1_g0_imec1/cur/cur_sorter_output",
+  "sample_rate_hz": 29999.759166666667,
+  "windows": [
+    [
+      "template",
+      7215.0,
+      120.0
+    ],
+    [
+      "pre_shared",
+      7095.0,
+      120.0
+    ],
+    [
+      "registration_outlier",
+      8160.0,
+      120.0
+    ]
+  ],
+  "conditioning": "raw counts; per-sample global median; 3rd-order 300 Hz zero-phase high-pass",
+  "channel_radius_um": 100.0,
+  "waveform_ms": 2.0,
+  "match_tolerance_ms": 0.5,
+  "threshold_sigma": 6.0,
+  "detector": "peak",
+  "interpretation_guardrail": "Do not interpret miss fraction unless target_spike_recovery is high."
+}

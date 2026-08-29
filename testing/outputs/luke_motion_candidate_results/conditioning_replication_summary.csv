@@ -1,0 +1,8 @@
+condition,window,recovered,learned,ks_good,coincidence,contamination_pct
+Current no motion,120 s pathological,23/27,562417,95,0.365294,38.65
+"Bandpass, no reference",120 s pathological,23/27,579298,90,0.364280,44.10
+Global reference,120 s pathological,22/27,574693,91,0.363089,47.40
+"Local reference, no KS CAR",120 s pathological,23/27,561947,96,0.362319,40.10
+Single KS preprocessing,120 s pathological,22/27,517187,114,0.350521,38.40
+Current conditioning,240 s shared,119/126,1408807,130,0.370683,26.40
+Single KS preprocessing,240 s shared,120/126,1255885,168,0.349972,29.90

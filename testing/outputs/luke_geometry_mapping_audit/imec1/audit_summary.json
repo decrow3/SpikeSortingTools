@@ -1,0 +1,49 @@
+{
+  "raw_n_channels": 384,
+  "processed_n_channels": 384,
+  "kilosort_n_channels": 384,
+  "raw_vs_processed_geometry": {
+    "kind": "exact"
+  },
+  "raw_vs_kilosort_geometry": {
+    "kind": "exact"
+  },
+  "processed_vs_kilosort_geometry": {
+    "kind": "exact"
+  },
+  "raw_vs_processed_channel_id_sequence_equal": true,
+  "raw_geometry_bounds_um": {
+    "x": [
+      0.0,
+      48.0
+    ],
+    "y": [
+      0.0,
+      3820.0
+    ]
+  },
+  "processed_geometry_bounds_um": {
+    "x": [
+      0.0,
+      48.0
+    ],
+    "y": [
+      0.0,
+      3820.0
+    ]
+  },
+  "kilosort_geometry_bounds_um": {
+    "x": [
+      0.0,
+      48.0
+    ],
+    "y": [
+      0.0,
+      3820.0
+    ]
+  },
+  "alarms": [
+    "RAW_TEMPLATE_PEAKS_SPATIALLY_DISAGREE",
+    "RAW_WAVEFORM_FOOTPRINTS_NOT_COMPACT"
+  ]
+}

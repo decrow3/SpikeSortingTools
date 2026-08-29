@@ -1,4 +1,7 @@
-#%%
+#%% This script is for (re)running the patched pipeline on a SpikeGLX recording with external reference. 
+# It assumes that the dredge pipeline has already been run on the server, and that the motion correction results are available. 
+# The script will load the preprocessed recording from the server, run Kilosort4, curation, and QC, and save the results to harddrive.
+
 from pipeline import condition_signal, correct_motion, plot_motion_output, sort_ks4, save_binary_recording, run_qc
 from pipeline.curation_postpatch import run_cur_final
 from spikeinterface.sorters import get_default_sorter_params
@@ -9,7 +12,7 @@ import spikeinterface.full as si
 
 #%% Change this code to load your data
 data_dir =   r"/mnt/NPX/Luke/20260313/Luke03132026_V2V1_RH_g0/"
-out_dir  =  r"/media/huklaban5/Data/Patched/"
+out_dir  =  r"/media/huklab/Data/NPX/Spikesorting/Patching/"
 stream_id = "imec0.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)
 

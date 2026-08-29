@@ -1,46 +1,38 @@
 """
-Batch runner for SpikeGLX external-reference patching pipeline.
+Batch runner for SpikeGLX tip-reference patching pipeline (Rocky 2023–2024).
 
 Edit SESSIONS below to add/remove datasets. Each entry is:
     (data_dir, stream_id)
 
-The script logs successes and failures and continues on error so a single
-bad session does not abort the batch.
+Only include streams that were successfully KS4-sorted (✓ in setlist).
+The script logs successes and failures and continues on error.
 """
 
 # ---------------------------------------------------------------------------
 # Sessions to process — edit this list
 # ---------------------------------------------------------------------------
 SESSIONS = [
-    # (data_dir,                                                  stream_id)
-    # ── 2026 ──────────────────────────────────────────────────────────────
-    # ("/mnt/NPX/Luke/20260316/Luke03162026_V2V1_RH_g0/",        "imec1.ap"),  # done
-    # ("/mnt/NPX/Luke/20260316/Luke03162026_V2V1_RH_g0/",        "imec0.ap"),  # done
-    # ("/mnt/NPX/Luke/20260313/Luke03132026_V2V1_RH_g0/",        "imec1.ap"),
-    # ("/mnt/NPX/Luke/20260313/Luke03132026_V2V1_RH_g0/",        "imec0.ap"),
-    # ("/mnt/NPX/Luke/20260311/Luke03112026_V2V1_RH_g0/",        "imec1.ap"),
-    # ("/mnt/NPX/Luke/20260311/Luke03112026_V2V1_RH_g0/",        "imec0.ap"),
-    # ("/mnt/NPX/Luke/20260309/Luke03092026_V1_RH_g0/",          "imec1.ap"),
-    # ("/mnt/NPX/Luke/20260309/Luke03092026_V1_RH_g0/",          "imec0.ap"),
-    # ("/mnt/NPX/Luke/20260308/Luke03082026_V1_RH_g0/",          "imec0.ap"),
-    # ("/mnt/NPX/Luke/20260302/Luke03022026_V2V1_RH_g0/",        "imec1.ap"),  # done
-    # ("/mnt/NPX/Luke/20260302/Luke03022026_V2V1_RH_g0/",        "imec0.ap"),  # done
-    # ("/mnt/NPX/Luke/20260301/Luke03012026_V2V1_RH_g0/",        "imec1.ap"),  # done
-    # ("/mnt/NPX/Luke/20260301/Luke03012026_V2V1_RH_g0/",        "imec0.ap"),  # done
-    # ── 2025 ──────────────────────────────────────────────────────────────
-    ("/mnt/NPX/Luke/20251205/Luke12052025_V1_RH_g0/",          "imec1.ap"),
-    # ("/mnt/NPX/Luke/20251205/Luke12052025_V1_RH_g0/",          "imec0.ap"),
-    # ("/mnt/NPX/Luke/20251120/Luke1120_V1_RH_g0/",              "imec0.ap"),
-    # ("/mnt/NPX/Luke/20251111/Luke1111_V1_RH_g0_g0/",           "imec0.ap"),
-    ("/mnt/NPX/Luke/20250805/Luke0805_V2V1_g0/",               "imec1.ap"),
-    # ("/mnt/NPX/Luke/20250805/Luke0805_V2V1_g0/",               "imec0.ap"),
-    # ("/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0/",               "imec1.ap"),
-    # ("/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0/",               "imec0.ap"),
-    # ("/mnt/NPX/Luke/20250730/Luke0730_V2V1_g0/",               "imec1.ap"),
-    # ("/mnt/NPX/Luke/20250730/Luke0730_V2V1_g0/",               "imec0.ap"),
-    # ("/mnt/NPX/Luke/20250724/Luke0724_V2V1_g0/",               "imec1.ap"),
-    # ("/mnt/NPX/Luke/20250724/Luke0724_V2V1_g0/",               "imec0.ap"),
-    # ("/mnt/NPX/Luke/20250717/Luke0717_V1_g0/",                 "imec0.ap"),
+    # (data_dir,                                                       stream_id)
+    # rocky2024-07-04  — ✓ V1: imec1,  ✓ V2: imec0
+    #("/mnt/NPX/Rocky/20240704/Rocky20240704_V1V2_g0/",               "imec1.ap"), # done
+    ("/mnt/NPX/Rocky/20240704/Rocky20240704_V1V2_g0/",               "imec0.ap"),
+    # rocky2024-04-27  — ✓ V1: imec1,  ✓ V2: imec0
+    #("/mnt/NPX/Rocky/20240427/Rocky20240427_V1V2_g0/",               "imec1.ap"), # done
+    ("/mnt/NPX/Rocky/20240427/Rocky20240427_V1V2_g0/",               "imec0.ap"),
+    # rocky2024-04-14  — ✓ V1: imec1,  ✓ V2: imec0
+    #("/mnt/NPX/Rocky/20240414/Rocky20240414_V1V2_g0/",               "imec1.ap"), # done
+    #("/mnt/NPX/Rocky/20240414/Rocky20240414_V1V2_g0/",               "imec0.ap"),
+    # rocky2024-02-29  — ✓ V1: imec1,  ✓ V2: imec0
+    #("/mnt/NPX/Rocky/20240229/Rocky20240229_V1V2_g0/",               "imec1.ap"), # done
+    #("/mnt/NPX/Rocky/20240229/Rocky20240229_V1V2_g0/",               "imec0.ap"),
+    # rocky2023-12-09  — ✓ V1: imec1,  ✓ V２: imec0
+    #("/mnt/NPX/Rocky/20231209/Rocky20231209_V1V2_g0/",               "imec1.ap"), # done
+    #("/mnt/NPX/Rocky/20231209/Rocky20231209_V1V2_g0/",               "imec0.ap"),
+    # rocky2023-10-27  — ✓ V1: imec1,  ✓ V2: imec0
+    #("/mnt/NPX/Rocky/20231027/Rocky20231027_V1V2_g0/",               "imec1.ap"), # done
+    #("/mnt/NPX/Rocky/20231027/Rocky20231027_V1V2_g0/",               "imec0.ap"),
+    # rocky2023-08-23  — ✓ V1: imec0 only
+    #("/mnt/NPX/Rocky/20230823/Rocky_set0V1medial_g0/",               "imec0.ap"), # done
 ]
 
 OUT_DIR = r"/media/huklab/Data/NPX/Spikesorting/Patching/"
@@ -65,10 +57,10 @@ from pipeline.curation_postpatch import run_cur_final
 
 
 def _run_session(data_dir, stream_id, out_dir):
-    data_dir  = data_dir.rstrip('/')
-    sess_name = data_dir.split('/')[-1]
+    data_dir    = data_dir.rstrip('/')
+    sess_name   = data_dir.split('/')[-1]
     stream_name = stream_id.split('.')[0]
-    data_root   = '/'.join(data_dir.split('/')[:-1])  # parent of session folder
+    data_root   = '/'.join(data_dir.split('/')[:-1])
 
     print(f'\n{"="*70}')
     print(f'SESSION: {sess_name}  stream: {stream_id}')
@@ -87,37 +79,13 @@ def _run_session(data_dir, stream_id, out_dir):
     print(f'Dredge dir   : {dredge_dir}')
     print(f'Pipeline dir : {pipeline_dir}')
 
-    # -------------------------------------------------------------------
-    # Helper: resolve an existing patched output folder (if naming changed)
-    # -------------------------------------------------------------------
-    def _find_existing_pipeline_dir(root: Path, sess: str, stream: str) -> Path | None:
-        """Find an existing patched_pipeline_results dir under root.
-
-        Prefers exact match. Falls back to any folder that starts with
-        `patched_pipeline_results_{sess}_` and ends with `_{stream}`.
-        """
-        exact = root / f'patched_pipeline_results_{sess}_{stream}'
-        if exact.exists():
-            return exact
-
-        # Fallback: allow minor naming differences in the middle.
-        # Example: Luke0805 sessions may exist as Luke0805_V2V1_g0_imec1
-        pattern = f'patched_pipeline_results_{sess}_*_{stream}'
-        matches = sorted(root.glob(pattern))
-        if len(matches) == 1:
-            return matches[0]
-        if len(matches) > 1:
-            print(f'Warning: multiple matches for {pattern} under {root}; using first: {matches[0]}')
-            return matches[0]
-        return None
-
     # Load recording
     seg = si.read_spikeglx(folder_path=data_dir + '/', load_sync_channel=False, stream_id=stream_id)
 
-    # Signal conditioning — load from server cache
+    # Signal conditioning — tip reference uses 1200 µV saturation threshold
     seg_pre_motion_est, seg_pre_sorting = condition_signal(
         seg, cache_dir=dredge_dir / 'conditioning',
-        noise_thresh=0.3, uV_thresh=.5e3, recalc=False,
+        noise_thresh=0.3, uV_thresh=1200, recalc=False,
     )
 
     # Motion correction — load from server cache
@@ -142,16 +110,55 @@ def _run_session(data_dir, stream_id, out_dir):
     sorter_params['cross_peel_claim_ms']  = 0.25
     sorter_params['cross_peel_claim_um']  = 75.0
 
-    _dredge_ks4_params = dredge_dir / 'kilosort4' / 'spikeinterface_params.json'
-    if _dredge_ks4_params.exists():
-        with open(_dredge_ks4_params) as _f:
-            _prev = json.load(_f).get('sorter_params', {})
+    def _try_load_prev_ks4_thresholds(params_json_path: Path, label: str) -> bool:
+        """Load Th_universal/Th_learned from a spikeinterface_params.json file if possible."""
+        try:
+            with open(params_json_path) as _f:
+                _prev = json.load(_f).get('sorter_params', {})
+        except Exception as e:
+            print(f'Warning: failed reading previous params from {params_json_path}: {e}')
+            return False
+
+        loaded_any = False
         for _key in ('Th_universal', 'Th_learned'):
             if _key in _prev:
                 sorter_params[_key] = _prev[_key]
-                print(f'Loaded {_key}={_prev[_key]} from dredge params')
-    else:
-        print(f'No dredge KS4 params — using defaults Th_universal={sorter_params["Th_universal"]}, Th_learned={sorter_params["Th_learned"]}')
+                print(f'Loaded {_key}={_prev[_key]} from {label}: {params_json_path}')
+                loaded_any = True
+        return loaded_any
+
+    # Prefer dredge params (most recent). If missing, fall back to older pipeline_results_* runs.
+    _dredge_ks4_params = dredge_dir / 'kilosort4' / 'spikeinterface_params.json'
+    _loaded = False
+    if _dredge_ks4_params.exists():
+        _loaded = _try_load_prev_ks4_thresholds(_dredge_ks4_params, 'dredge params')
+
+    if not _loaded:
+        # Legacy fallback(s): look for spikeinterface_params.json in older "pipeline_results_*" folders.
+        # Common locations include e.g.:
+        #   /mnt/NPX/Rocky/<date>/pipeline_results_<sess>_<stream>/kilosort4/spikeinterface_params.json
+        #   /mnt/NPX/Rocky/<date>/RedoneSorts/pipeline_results_<sess>_<stream>/kilosort4/spikeinterface_params.json
+        legacy_globs = [
+            Path(data_root).glob(f'pipeline_results_{sess_name}_{stream_name}/kilosort4/spikeinterface_params.json'),
+            Path(data_root).glob(f'**/pipeline_results_{sess_name}_{stream_name}/kilosort4/spikeinterface_params.json'),
+            Path(data_root).glob(f'**/pipeline_*{sess_name}_{stream_name}/kilosort4/spikeinterface_params.json'),
+        ]
+        legacy_candidates = []
+        for g in legacy_globs:
+            legacy_candidates.extend(list(g))
+
+        # de-dupe and pick the newest by mtime
+        legacy_unique = sorted({p.resolve() for p in legacy_candidates}, key=lambda p: p.stat().st_mtime, reverse=True)
+        if legacy_unique:
+            _loaded = _try_load_prev_ks4_thresholds(legacy_unique[0], 'legacy pipeline params')
+            if len(legacy_unique) > 1:
+                print(f'Note: found {len(legacy_unique)} legacy param files; using newest: {legacy_unique[0]}')
+
+    if not _loaded:
+        print(
+            'No previous KS4 params found (dredge or legacy). '
+            f'Using defaults: Th_universal={sorter_params["Th_universal"]}, Th_learned={sorter_params["Th_learned"]}'
+        )
 
     del seg, seg_pre_motion_est, seg_pre_sorting
 
@@ -160,19 +167,15 @@ def _run_session(data_dir, stream_id, out_dir):
     del seg_motion
     gc.collect()
 
-    # KS4 fallback: harddrive patched dir (OUT_DIR) → server patched dir (data_root) → run fresh to harddrive
-    # This makes sure existing Luke1205/Luke0805 patched outputs are picked up.
-    _pipe_hd = _find_existing_pipeline_dir(Path(out_dir), sess_name, stream_name)
-    _pipe_sv = _find_existing_pipeline_dir(Path(data_root), sess_name, stream_name)
-
-    _ks4_hd = (_pipe_hd or pipeline_dir) / 'kilosort4'
-    _ks4_sv = (_pipe_sv / 'kilosort4') if _pipe_sv else None
+    # KS4 fallback: harddrive → server old patched dir → run fresh
+    _ks4_hd     = pipeline_dir / 'kilosort4'
+    _ks4_server = Path(data_root) / f'patched_pipeline_results_{sess_name}_{stream_name}' / 'kilosort4'
 
     if _ks4_hd.exists():
         ks4_dir = _ks4_hd
         print(f'KS4: loading from harddrive: {ks4_dir}')
-    elif _ks4_sv and _ks4_sv.exists():
-        ks4_dir = _ks4_sv
+    elif _ks4_server.exists():
+        ks4_dir = _ks4_server
         print(f'KS4: loading from server: {ks4_dir}')
     else:
         ks4_dir = _ks4_hd

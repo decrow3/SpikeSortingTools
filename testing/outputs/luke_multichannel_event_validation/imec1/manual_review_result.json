@@ -1,0 +1,21 @@
+{
+  "primary_endpoint": "manual neural fraction among unmatched candidates, excluding uncertain labels",
+  "unmatched_neural_fraction": 0.6595744680851063,
+  "artifact_hypothesis_screen": {
+    "criterion": "unmatched neural fraction < 0.20",
+    "passes": false
+  },
+  "matched_vs_unmatched_fisher_exact": {
+    "table_order": [
+      "unmatched",
+      "matched"
+    ],
+    "column_order": [
+      "neural",
+      "artifact"
+    ],
+    "odds_ratio": 0.7926136363636364,
+    "two_sided_p_value": 0.5297636663768804
+  },
+  "caveat": "Coincidence-defined matched events are a positive-control population, not perfect neural ground truth."
+}
