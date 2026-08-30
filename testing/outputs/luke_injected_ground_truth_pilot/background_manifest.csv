@@ -1,0 +1,3 @@
+background,role,start_s,duration_s,start_frame,stop_frame,array_sha256,saturated_sample_count,saturated_time_count
+quiet_discovery,prior quiet negative control,3951.0,0.5,118529048,118544048,9249d8b6f8f4378d2cfddd5007ce86b20b7e8d322c82ee3dba5999cf45cd9a63,7,7
+pathological_discovery,prior registration-outlier window,8160.0,0.5,244798035,244813035,b476a4e726542691658d98e12a4fe514a971448ae873674ba6b987d3912aeebc,32,18

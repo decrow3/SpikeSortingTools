@@ -1,0 +1,19 @@
+dataset,window_kind,stage,polarity,total_events,total_event_rate_per_s,target_channel,target_event_count,target_event_fraction,target_count_percentile,within_100um_target_fraction,top_5pct_channel_fraction,effective_channel_count,channels_for_50pct_events
+Luke imec1 pathological,pathological,common_bandpass_equal_5_reference,negative,6633,331.65,216,0,0.0,0.7552083333333334,0.0,0.9124076586763153,6.20145777034259,1
+Luke imec1 pathological,pathological,common_bandpass_equal_5_reference,positive,25643,1282.15,216,0,0.0,0.6744791666666666,0.0,0.58019732480599,55.19306311159259,16
+Luke imec1 pathological,pathological,common_bandpass_local_reference,negative,8578,428.9,216,0,0.0,0.625,0.008276987642807182,0.8172068081137794,13.031152419583835,1
+Luke imec1 pathological,pathological,common_bandpass_local_reference,positive,37272,1863.6,216,0,0.0,0.5208333333333334,0.0,0.4939364670530157,72.83268291945564,21
+Luke imec1 pathological,pathological,common_bandpass_shank_median,negative,10898,544.9,216,0,0.0,0.5208333333333334,0.008350155991925123,0.7129748577720683,24.437609871109263,4
+Luke imec1 pathological,pathological,common_bandpass_shank_median,positive,46219,2310.95,216,0,0.0,0.4192708333333333,0.000713992081178736,0.45228152924122117,82.96378258426472,23
+Luke imec1 session,session-wide,common_bandpass_equal_5_reference,negative,6370,318.5,216,0,0.0,0.7161458333333334,0.002354788069073783,0.8858712715855573,6.388350385896272,1
+Luke imec1 session,session-wide,common_bandpass_equal_5_reference,positive,24415,1220.75,216,0,0.0,0.6380208333333334,0.0,0.5119393815277493,61.83270707241946,20
+Luke imec1 session,session-wide,common_bandpass_local_reference,negative,8231,411.55,216,0,0.0,0.640625,0.008382942534321468,0.7819220021868546,13.84756561293498,1
+Luke imec1 session,session-wide,common_bandpass_local_reference,positive,35420,1771.0,216,0,0.0,0.515625,2.8232636928289102e-05,0.4529079616036138,76.37203079224057,24
+Luke imec1 session,session-wide,common_bandpass_shank_median,negative,10212,510.6,216,0,0.0,0.4869791666666667,0.007050528789659225,0.6858597728162945,25.358945416746202,5
+Luke imec1 session,session-wide,common_bandpass_shank_median,positive,42947,2147.35,216,0,0.0,0.4322916666666667,0.0006053973502223671,0.423778145155657,85.30653350054047,26
+Luke imec1 shared,shared,common_bandpass_equal_5_reference,negative,7344,367.2,216,0,0.0,0.7473958333333334,0.0009531590413943355,0.892020697167756,9.165323145557606,1
+Luke imec1 shared,shared,common_bandpass_equal_5_reference,positive,37546,1877.3,216,0,0.0,0.65625,0.0,0.5435732168539924,62.67352619593387,18
+Luke imec1 shared,shared,common_bandpass_local_reference,negative,10138,506.9,216,0,0.0,0.6354166666666666,0.01795225882817124,0.7702702702702703,20.633838370110443,3
+Luke imec1 shared,shared,common_bandpass_local_reference,positive,53912,2695.6,216,0,0.0,0.4921875,9.274373052381659e-05,0.46707597566404513,79.83699075266397,23
+Luke imec1 shared,shared,common_bandpass_shank_median,negative,14068,703.4,216,0,0.0,0.46875,0.014003411998862667,0.6344185385271538,40.51168335949837,10
+Luke imec1 shared,shared,common_bandpass_shank_median,positive,64918,3245.9,216,0,0.0,0.3776041666666667,0.0013863643365476447,0.4323916325210265,88.85878474784349,25

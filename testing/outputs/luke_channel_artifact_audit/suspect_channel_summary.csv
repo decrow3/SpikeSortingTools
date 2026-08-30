@@ -1,0 +1,7 @@
+dataset,window_kind,channel,y_um,median_bandpass_sigma_uv,bandpass_sigma_percentile,median_fraction_abs_raw_over_500uv
+Luke imec1 pathological,pathological,191,1900.0,8.457229642187162,0.0026041666666666665,0.0
+Luke imec1 pathological,pathological,216,2160.0,30.80379504450311,0.4791666666666667,8.333472224537075e-05
+Luke imec1 session,session-wide,191,1900.0,8.489151706288574,0.0026041666666666665,0.0
+Luke imec1 session,session-wide,216,2160.0,31.02797483399715,0.46875,0.0
+Luke imec1 shared,shared,191,1900.0,8.396672877187413,0.0026041666666666665,0.0
+Luke imec1 shared,shared,216,2160.0,30.478430922578312,0.4375,0.0

@@ -1,0 +1,17 @@
+agreement_threshold,population,condition,n_units,effective_cross_condition_families,units_collapsed_by_family_rule,units_in_cross_condition_families,qualifying_cross_condition_edges
+0.1,all,current,242,183,59,224,321
+0.1,all,single_pass,289,196,93,258,321
+0.1,KS-good,current,95,82,13,86,321
+0.1,KS-good,single_pass,114,99,15,98,321
+0.2,all,current,242,222,20,206,247
+0.2,all,single_pass,289,248,41,227,247
+0.2,KS-good,current,95,87,8,80,247
+0.2,KS-good,single_pass,114,108,6,83,247
+0.3,all,current,242,231,11,193,216
+0.3,all,single_pass,289,266,23,205,216
+0.3,KS-good,current,95,90,5,72,216
+0.3,KS-good,single_pass,114,110,4,77,216
+0.5,all,current,242,242,0,124,124
+0.5,all,single_pass,289,289,0,124,124
+0.5,KS-good,current,95,95,0,58,124
+0.5,KS-good,single_pass,114,114,0,60,124

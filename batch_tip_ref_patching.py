@@ -52,8 +52,8 @@ import scipy.io as sio
 import spikeinterface.full as si
 from spikeinterface.sorters import get_default_sorter_params
 
-from pipeline import condition_signal, correct_motion, plot_motion_output, run_qc, save_binary_recording, sort_ks4
-from pipeline.curation_postpatch import run_cur_final
+from pipelineold import condition_signal, correct_motion, plot_motion_output, run_qc, save_binary_recording, sort_ks4
+from pipelineold.curation_postpatch import run_cur_final
 
 
 def _run_session(data_dir, stream_id, out_dir):

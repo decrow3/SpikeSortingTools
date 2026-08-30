@@ -1,5 +1,5 @@
 #%%
-from pipeline import condition_signal, correct_motion, plot_motion_output, sort_ks4, save_binary_recording, run_qc, run_cur, KilosortResults, load_qc,  load_cur
+from pipelineold import condition_signal, correct_motion, plot_motion_output, sort_ks4, save_binary_recording, run_qc, run_cur, KilosortResults, load_qc,  load_cur
 from spikeinterface.sorters import get_default_sorter_params
 from pathlib import Path
 import shutil

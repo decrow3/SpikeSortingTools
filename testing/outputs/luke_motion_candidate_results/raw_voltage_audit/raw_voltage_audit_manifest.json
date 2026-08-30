@@ -1,5 +1,5 @@
 {
-  "metric_definition": "Same 300--6000 Hz filter; optional 100 um local median reference; physical deduplication within 0.5 ms and 100 um.",
+  "metric_definition": "Same 300--6000 Hz filter; optional shank-wide, five-nearest-contact, or 100 um local median reference; physical deduplication within 0.5 ms and 100 um.",
   "n_batches": 10,
   "batch_duration_s": 2.0,
   "padding_s": 0.1,
@@ -13,7 +13,7 @@
     75.0,
     100.0
   ],
-  "footprint_sample_limit_per_batch_polarity": 150,
+  "footprint_sample_limit_per_batch_polarity": 250,
   "recordings": [
     {
       "name": "Luke imec0 pathological",

@@ -2,7 +2,7 @@
 
 This is deliberately isolated from production.  It reuses the already saved
 120 s current-conditioned/no-motion recording, applies the cache-safe DREDGE
-300/200 field with the same interpolation settings as production, runs the
+300/200 field with an explicitly named interpolation implementation, runs the
 same claim-off Kilosort diagnostic, and scores the prespecified reviewed raw
 events plus the existing collision/contamination safeguards.
 """
@@ -53,17 +53,31 @@ RIGID_GAINS = {
     "rigid_gain_050": 0.50,
     "rigid_gain_075": 0.75,
 }
+P2_RIGID_GAINS = {
+    "rigid_gain_025_p2_extrapolate": 0.25,
+    "rigid_gain_100_p2_extrapolate": 1.0,
+}
 CONDITIONS = {
     "nonrigid": SOURCE_CANDIDATE,
+    "nonrigid_p2_extrapolate": f"{SOURCE_CANDIDATE}_p2_extrapolate",
+    "nonrigid_p2_sigma28_extrapolate": f"{SOURCE_CANDIDATE}_p2_sigma28_extrapolate",
     "rigid": "dredge_rigid_from_300_200",
     "identity": "zero_displacement_identity",
     "ks_internal_rigid": "kilosort_internal_rigid",
     "medicine_sigma10": "medicine_default_sigma10",
     **{field: f"dredge_rigid_gain_{int(gain * 100):03d}" for field, gain in RIGID_GAINS.items()},
+    **{
+        field: f"dredge_rigid_gain_{int(gain * 100):03d}_p2_extrapolate"
+        for field, gain in P2_RIGID_GAINS.items()
+    },
 }
 SEED = 20250804
 SOURCE_RECORDING = OUTPUT_ROOT / "recordings/current_no_motion"
 CLAIM_OFF = ClaimSetting("claim_off", 0.0, 0.0)
+LOCAL_RIGID_100_ROOT = Path(
+    "/media/huklab/Data/NPX/Ryansorting/Luke/"
+    "Luke0804_rigid100_p2_pathological_imec1"
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -94,27 +108,53 @@ def motion_run_path(field: str = "nonrigid") -> Path:
 
 def condition_paths(field: str) -> tuple[str, Path, Path]:
     condition = CONDITIONS[field]
+    root = LOCAL_RIGID_100_ROOT if field == "rigid_gain_100_p2_extrapolate" else OUTPUT_ROOT
     recording = SOURCE_RECORDING if field == "ks_internal_rigid" else OUTPUT_ROOT / f"recordings/{condition}"
+    if field == "rigid_gain_100_p2_extrapolate":
+        recording = root / f"recordings/{condition}"
     return (
         condition,
         recording,
-        OUTPUT_ROOT / f"sorts/{condition}",
+        root / f"sorts/{condition}",
     )
 
 
 def field_displacement(displacement: np.ndarray, field: str) -> np.ndarray:
     """Return the native, depth-mean rigid, or zero-displacement field."""
-    if field in ("nonrigid", "medicine_sigma10"):
+    if field in (
+        "nonrigid",
+        "nonrigid_p2_extrapolate",
+        "nonrigid_p2_sigma28_extrapolate",
+        "medicine_sigma10",
+    ):
         return displacement
     if field == "rigid":
         rigid = np.mean(displacement, axis=1, keepdims=True)
         return np.repeat(rigid, displacement.shape[1], axis=1)
-    if field in RIGID_GAINS:
-        rigid = RIGID_GAINS[field] * np.mean(displacement, axis=1, keepdims=True)
+    if field in RIGID_GAINS or field in P2_RIGID_GAINS:
+        gain = RIGID_GAINS.get(field, P2_RIGID_GAINS.get(field))
+        rigid = gain * np.mean(displacement, axis=1, keepdims=True)
         return np.repeat(rigid, displacement.shape[1], axis=1)
     if field == "identity":
         return np.zeros_like(displacement)
     raise ValueError(f"Unknown field: {field}")
+
+
+def interpolation_spec(field: str) -> dict:
+    """Return explicit interpolation parameters for a diagnostic condition."""
+    if field == "nonrigid_p2_extrapolate" or field in P2_RIGID_GAINS:
+        return {"border_mode": "force_extrapolate", "sigma_um": 20.0, "p": 2}
+    if field == "nonrigid_p2_sigma28_extrapolate":
+        return {
+            "border_mode": "force_extrapolate",
+            "sigma_um": float(np.sqrt(2.0) * 20.0),
+            "p": 2,
+        }
+    return {
+        "border_mode": "force_zeros",
+        "sigma_um": 10.0 if field == "medicine_sigma10" else 20.0,
+        "p": 1,
+    }
 
 
 def prepare_recording(field: str) -> None:
@@ -147,13 +187,12 @@ def prepare_recording(field: str) -> None:
         temporal_bins_s=np.load(motion_path / "time_bins.npy"),
         spatial_bins_um=np.load(motion_path / "depth_bins.npy"),
     )
-    sigma_um = 10.0 if field == "medicine_sigma10" else 20.0
+    interpolation = interpolation_spec(field)
     corrected = interpolate_motion(
         recording.astype("float"),
         motion,
-        border_mode="force_zeros",
         spatial_interpolation_method="kriging",
-        sigma_um=sigma_um,
+        **interpolation,
     ).astype("int16")
     target_recording.parent.mkdir(parents=True, exist_ok=True)
     corrected.save(folder=target_recording, n_jobs=-1, chunk_duration="1s", progress_bar=True)
@@ -166,19 +205,26 @@ def prepare_recording(field: str) -> None:
                 "motion_spec_hash": motion_path.name.removeprefix("full_"),
                 "field_transform": {
                     "nonrigid": "native",
+                    "nonrigid_p2_extrapolate": "native",
+                    "nonrigid_p2_sigma28_extrapolate": "native",
                     "medicine_sigma10": "native_medicine",
                     "rigid": "depth_mean_repeated",
                     "identity": "all_zeros",
                 }.get(field, "scaled_depth_mean_repeated"),
-                "rigid_gain": RIGID_GAINS.get(field, 1.0 if field == "rigid" else None),
+                "rigid_gain": (
+                    RIGID_GAINS.get(field, P2_RIGID_GAINS.get(field))
+                    if field != "rigid"
+                    else 1.0
+                ),
                 "rigid_definition": (
                     "gain times arithmetic mean across native depth bins at each time bin"
-                    if field == "rigid" or field in RIGID_GAINS
+                    if field == "rigid" or field in RIGID_GAINS or field in P2_RIGID_GAINS
                     else None
                 ),
-                "interpolation_border_mode": "force_zeros",
+                "interpolation_border_mode": interpolation["border_mode"],
                 "spatial_interpolation_method": "kriging",
-                "spatial_interpolation_sigma_um": sigma_um,
+                "spatial_interpolation_sigma_um": interpolation["sigma_um"],
+                "spatial_interpolation_p": interpolation["p"],
                 "interpolation_input_dtype": "float",
                 "saved_dtype": "int16",
                 "window": WINDOW.name,

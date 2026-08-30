@@ -23,6 +23,9 @@ def test_replication_conditions_include_geometry_adapted_quarter_gain():
         "no_external_correction": None,
         "rigid_gain_025": 20.0,
         "rigid_gain_025_sigma10": 10.0,
+        "rigid_gain_025_p2": 20.0,
         "single_ks_preprocessing": None,
+        "single_ks_preprocessing_rigid_gain_025_p2": 20.0,
+        "single_ks_preprocessing_dredge_400_400_p2": 20.0,
     }
     assert replication.CONDITIONS == tuple(replication.CONDITION_SIGMA_UM)

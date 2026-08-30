@@ -1,0 +1,55 @@
+{
+  "status": "diagnostic_discovery_only_not_confirmatory",
+  "scope": "CPU stage-level only; no sorter; no motion estimation",
+  "donor_count": 10,
+  "background_count": 2,
+  "injection_count": 20,
+  "retention_row_count": 100,
+  "sampling_frequency_hz": 29999.759166666667,
+  "gain_uV_per_count": 2.34375,
+  "threshold_counts_500uV": 213.33333333333334,
+  "headline_diagnostics": {
+    "qualifier_raw_waveform_cosine_median": 0.04708595989467874,
+    "qualifier_raw_waveform_cosine_min": -0.2658891920291937,
+    "qualifier_raw_waveform_cosine_max": 0.7623570778558141,
+    "qualifiers_at_least_0_8": 0,
+    "final_stage_median_amplitude_retention": 0.6991151910072608,
+    "final_stage_median_cosine_to_reference": 0.6738501061209464,
+    "final_stage_median_abs_localization_error_channels": 4.0,
+    "final_stage_fraction_abs_localization_error_gt_2_channels": 0.55
+  },
+  "discovery_sources": {
+    "review_key": "testing/outputs/luke_multichannel_event_validation/imec1/review_key.csv",
+    "review_labels": "testing/outputs/luke_multichannel_event_validation/imec1/review_labels.csv",
+    "backgrounds": [
+      {
+        "name": "quiet_discovery",
+        "start_s": 3951.0,
+        "duration_s": 0.5,
+        "role": "prior quiet negative control"
+      },
+      {
+        "name": "pathological_discovery",
+        "start_s": 8160.0,
+        "duration_s": 0.5,
+        "role": "prior registration-outlier window"
+      }
+    ]
+  },
+  "limitations": [
+    "All donors and backgrounds were previously inspected discovery material.",
+    "The reviewed event detector was negative-peak selected; positive-dominant coverage is absent unless observed post hoc.",
+    "Manual labels are descriptive and not biological ground truth.",
+    "Qualification uses a distinct reviewed event from the same discovery unit/window, not an independently curated unit identity.",
+    "Short-array phase correction has finite-window boundary effects; injections are guarded from edges.",
+    "No sorter, unit recovery, duplicate rate, residual fit, or motion endpoint is measured."
+  ],
+  "files": [
+    "donor_manifest.csv",
+    "donor_templates.npz",
+    "injection_schedule.csv",
+    "background_manifest.csv",
+    "retention_metrics.csv",
+    "retention_summary.csv"
+  ]
+}

@@ -1,0 +1,134 @@
+import math
+from pathlib import Path
+
+import numpy as np
+import pytest
+
+from pipeline import (
+    RescueConfig,
+    build_kilosort4_params,
+    fingerprint,
+    validate_applied_settings,
+)
+from pipeline.artifacts import threshold_points
+from pipeline.preprocess import select_bad_channel_ids
+from SpikeGLX_ext_ref_rescue_testing import physical_channel_ids
+from SpikeGLX_ext_ref_rescue_testing import build_parser, plan_payload
+
+
+def sorter_defaults():
+    return {
+        "do_correction": True,
+        "do_CAR": True,
+        "artifact_threshold": 300,
+        "save_extra_vars": False,
+        "Th_universal": 9,
+        "Th_learned": 8,
+        "duplicate_spike_ms": 0.25,
+        "ccg_threshold": 0.25,
+        "nearest_chans": 10,
+        "nearest_templates": 100,
+        "max_channel_distance": 32,
+        "clear_cache": False,
+        "cross_peel_claim_ms": 0.25,
+        "cross_peel_claim_um": 75.0,
+    }
+
+
+def test_rescue_config_fingerprint_is_stable_and_sensitive():
+    first = RescueConfig()
+    second = RescueConfig()
+    changed = RescueConfig(noise_threshold=0.4)
+    assert first.digest == second.digest
+    assert first.digest != changed.digest
+    assert fingerprint({"b": 2, "a": 1}) == fingerprint({"a": 1, "b": 2})
+    assert first.materialize_chunk_duration == "10s"
+
+
+def test_sorter_params_explicitly_disable_rejected_features():
+    params = build_kilosort4_params(sorter_defaults())
+    assert params["do_correction"] is False
+    assert params["do_CAR"] is True
+    assert math.isinf(params["artifact_threshold"])
+    assert params["cross_peel_claim_ms"] == 0
+    assert params["cross_peel_claim_um"] == 0
+    assert params["bad_channels"] is None
+    assert params["save_extra_vars"] is True
+    assert params["Th_universal"] == 12
+    assert params["Th_learned"] == 9
+
+
+def test_sorter_params_refuse_an_unknown_kilosort_schema():
+    defaults = sorter_defaults()
+    defaults.pop("artifact_threshold")
+    with pytest.raises(RuntimeError, match="artifact_threshold"):
+        build_kilosort4_params(defaults)
+
+
+def test_saved_sorter_settings_are_verified():
+    requested = build_kilosort4_params(sorter_defaults())
+    receipt = validate_applied_settings(requested, requested)
+    assert receipt["artifact_threshold"] == "Infinity"
+    changed = dict(requested, do_correction=True)
+    with pytest.raises(RuntimeError, match="do_correction"):
+        validate_applied_settings(changed, requested)
+
+
+def test_select_bad_channels_uses_both_frozen_metrics():
+    selected = select_bad_channel_ids(
+        ["AP0", "AP1", "AP2"],
+        np.array([0.0, -0.6, 0.0]),
+        np.array([0.1, 0.1, 0.4]),
+        similarity_threshold=-0.5,
+        noise_threshold=0.3,
+    )
+    assert selected == ["AP1", "AP2"]
+
+
+def test_threshold_points_excludes_synthetic_channel_from_claim_samples():
+    traces = np.array([[0, 214, 0], [-214, 0, 0], [0, -213, 214]], dtype=np.int16)
+    samples, channels, values, claim_samples = threshold_points(
+        traces,
+        start_frame=100,
+        channel_ids=np.array([190, 191, 192]),
+        threshold_counts=213.33333333333334,
+        excluded_channel_ids=[191],
+    )
+    assert samples.tolist() == [100, 101, 102]
+    assert channels.tolist() == [191, 190, 192]
+    assert values.tolist() == [214, -214, 214]
+    assert claim_samples.tolist() == [101, 102]
+
+
+def test_threshold_points_rejects_mismatched_channel_ids():
+    with pytest.raises(ValueError, match="incompatible"):
+        threshold_points(np.zeros((3, 2)), 0, np.array([1, 2, 3]), 10)
+
+
+def test_physical_bad_channel_resolves_spikeglx_channel_name():
+    class Recording:
+        def get_channel_ids(self):
+            return np.array(["imec1.ap#AP190", "imec1.ap#AP191"])
+
+    assert physical_channel_ids(Recording(), [191]) == ["imec1.ap#AP191"]
+
+
+def test_stream_id_is_required():
+    with pytest.raises(SystemExit):
+        build_parser().parse_args(["--data-dir", "/tmp/example", "--plan"])
+
+
+def test_plan_uses_frozen_overrides_without_loading_sorter_defaults():
+    args = build_parser().parse_args(
+        [
+            "--data-dir",
+            "/tmp/example",
+            "--stream-id",
+            "imec1.ap",
+            "--plan",
+        ]
+    )
+    payload = plan_payload(args, Path("/tmp/output"), RescueConfig())
+    assert payload["stream_id"] == "imec1.ap"
+    assert payload["sorter_overrides"]["do_correction"] is False
+    assert payload["sorter_overrides"]["artifact_threshold"] == "Infinity"

@@ -1,0 +1,10 @@
+dataset,window_kind,stage,status,n_channels,n_banks,bank_partial_r2,permutation_count,permutation_p_value
+Luke imec1 pathological,pathological,common_bandpass_equal_5_reference,available,384,32,0.1212541497833156,999,0.026
+Luke imec1 pathological,pathological,common_bandpass_local_reference,available,384,32,0.20006216489948622,999,0.001
+Luke imec1 pathological,pathological,common_bandpass_shank_median,available,384,32,0.1857361889528328,999,0.001
+Luke imec1 session,session-wide,common_bandpass_equal_5_reference,available,384,32,0.11943437380425771,999,0.028
+Luke imec1 session,session-wide,common_bandpass_local_reference,available,384,32,0.19406839494528844,999,0.001
+Luke imec1 session,session-wide,common_bandpass_shank_median,available,384,32,0.16775704110459838,999,0.001
+Luke imec1 shared,shared,common_bandpass_equal_5_reference,available,384,32,0.07675743740477461,999,0.561
+Luke imec1 shared,shared,common_bandpass_local_reference,available,384,32,0.17492471912207339,999,0.002
+Luke imec1 shared,shared,common_bandpass_shank_median,available,384,32,0.16077132409454195,999,0.002

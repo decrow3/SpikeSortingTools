@@ -1,0 +1,66 @@
+{
+  "evidence_date": "2026-08-29",
+  "decision": "retain_no_motion_baseline; reject_rigid025_p2_for_current_kilosort4_pipeline_after_supported_inward_crop",
+  "scope_guardrail": "This rejects resampling an already cropped depth strip. It does not reject p=2 voltage registration on a full probe or a strip with real-voltage spatial support beyond the retained boundaries.",
+  "implementation_checks": {
+    "saved_strip_clock_s": 0.0,
+    "dredge_absolute_time_range_s": [3058.1775463558583, 13531.177546355859],
+    "inferred_acquisition_start_s": 3057.6775463558583,
+    "rebased_motion_time_range_s": [0.5, 10473.5],
+    "rigid025_displacement_range_um": [-8.194323989684884, 10.635524719763445],
+    "internal_kilosort_motion_disabled": true,
+    "interpolation": {"method": "kriging", "sigma_um": 20.0, "p": 2, "border_mode": "force_extrapolate", "input_dtype": "float32", "saved_dtype": "int16"},
+    "materialization_runtime_s": 372.379512231797,
+    "sort_runtime_s": 1357.7,
+    "structural_integrity_passed": true,
+    "sampled_target_to_source_std_ratio_range": [0.9907900094985962, 0.9996670484542847]
+  },
+  "whole_strip": {
+    "no_motion": {"neural_unmatched_recovery": 0.9090909090909091, "n_ks_good": 32, "median_contamination_pct": 14.4, "cross_unit_coincidence_excess": 0.09400274870066845, "median_refractory_violation_fraction": 0.006021306160259379, "edge_spike_fraction_within_40um": 0.09983203744301708},
+    "rigid025_p2_no_halo": {"neural_unmatched_recovery": 0.9318181818181818, "n_ks_good": 33, "median_contamination_pct": 12.5, "cross_unit_coincidence_excess": 0.08599723803518619, "median_refractory_violation_fraction": 0.005685856432125089, "edge_spike_fraction_within_40um": 0.2011477473557073},
+    "strict_nondominance_gates_passed": 5,
+    "strict_nondominance_gates_total": 6,
+    "failure": "edge spike fraction doubled"
+  },
+  "edge_localization": {
+    "rigid025_units_edge_dominated_gt50pct": 13,
+    "no_motion_units_edge_dominated_gt50pct": 9,
+    "rigid025_edge_spike_fraction_top_5_units": 0.9233038348082596,
+    "dominant_new_pattern": "three very large KS-good units anchored at the lower or upper retained strip boundary",
+    "edge_fraction_vs_rigid_excursion_spearman": 0.009243697478991597,
+    "interpretation": "The burden is consistent with spatial support/extrapolation at the artificial strip boundary, not a time-varying response to motion magnitude."
+  },
+  "interior_80um_sensitivity": {
+    "status": "sensitivity_only; cannot undo global template-learning effects",
+    "no_motion": {"neural_unmatched_recovery": 0.9090909090909091, "median_contamination_pct": 17.5, "cross_unit_coincidence_excess": 0.10843460368194831, "median_refractory_violation_fraction": 0.006154960173787111},
+    "rigid025_p2_no_halo": {"neural_unmatched_recovery": 0.9090909090909091, "median_contamination_pct": 26.4, "cross_unit_coincidence_excess": 0.11683737082130455, "median_refractory_violation_fraction": 0.009564293304994687},
+    "interpretation": "The favorable whole-strip summary does not persist away from the artificial edges."
+  },
+  "halo_replication": {
+    "design": "condition and resample with 16 real-voltage channels (160 um) on each side, then crop to the original 96 channels before sorting",
+    "status": "deferred_for_runtime",
+    "attempts": [
+      "direct 128-channel lazy conditioning plus motion projected about 50-60 minutes and was stopped at 4%",
+      "cached 96-channel core plus 32 lazy halo channels with 10-second chunks projected about 35-40 minutes and was stopped at 3%",
+      "same cache split with 60-second chunks completed no chunks in 3.8 minutes and was stopped"
+    ],
+    "partial_outputs": "moved to recoverable quarantine/recordings paths; no partial output is accepted by the pilot script",
+    "next_efficient_route": "materialize the 32 conditioned halo channels once with an optimized phase/blanking cache, then combine with the verified core for motion interpolation",
+    "advancement_allowed": false
+  },
+  "supported_inward_crop_followup": {
+    "design": "reuse the outer eight channels on each side of the corrected 96-channel cache as 80-um real-voltage support, crop to 80 channels before sorting, and run a matched no-motion crop",
+    "status": "completed",
+    "decision": "reject_rigid025_p2_for_current_kilosort4_pipeline",
+    "neural_unmatched_recovery": {"no_motion": 0.9090909090909091, "rigid025_p2": 0.9090909090909091},
+    "median_contamination_pct": {"no_motion": 16.7, "rigid025_p2": 23.25},
+    "median_refractory_violation_fraction": {"no_motion": 0.007023741685763222, "rigid025_p2": 0.011295125287606685},
+    "edge_spike_fraction_within_40um": {"no_motion": 0.09995812373368629, "rigid025_p2": 0.10314616465463174},
+    "median_first_last_pc_cosine": {"no_motion": 0.9541201599872369, "rigid025_p2": 0.9276991418754845},
+    "prespecified_gates_passed": "2/6",
+    "decision_record": "testing/outputs/luke_inward_crop_pair/decision.json"
+  },
+  "prior_snippet_clock_check": {"source_t_start_s": 11217.677553022579, "motion_first_bin_s": 11218.177553022579, "interpretation": "Earlier 120-second motion snippets retained the correct absolute clock and are not invalidated by the saved full-strip clock reset."},
+  "remaining_confirmatory_holdout_events_untouched": 648,
+  "automatic_curation_or_full_probe_promotion": false
+}

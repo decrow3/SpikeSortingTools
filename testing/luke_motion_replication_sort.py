@@ -37,14 +37,30 @@ from testing.luke_upstream_stage_ablation import DEFAULT_REVIEW, RAW_ROOT, STREA
 WINDOW = next(window for window in WINDOWS if window.name == "shared_template")
 OUTPUT_ROOT = PIPELINE_ROOT / "motion_candidate_replication/shared_template"
 MOTION_PARENT = PIPELINE_ROOT / "motion_scale_sweep/runs/imec1/dredge_nr_200_300"
+PRESET_SCALE_MOTION_PARENT = (
+    PIPELINE_ROOT / "motion_scale_sweep/runs/imec1/dredge_nr_400_400_preset_scale"
+)
 CLAIM_OFF = ClaimSetting("claim_off", 0.0, 0.0)
 CONDITION_SIGMA_UM = {
     "no_external_correction": None,
     "rigid_gain_025": 20.0,
     "rigid_gain_025_sigma10": 10.0,
+    "rigid_gain_025_p2": 20.0,
     "single_ks_preprocessing": None,
+    "single_ks_preprocessing_rigid_gain_025_p2": 20.0,
+    "single_ks_preprocessing_dredge_400_400_p2": 20.0,
 }
 CONDITIONS = tuple(CONDITION_SIGMA_UM)
+P2_CONDITIONS = {
+    "rigid_gain_025_p2",
+    "single_ks_preprocessing_rigid_gain_025_p2",
+    "single_ks_preprocessing_dredge_400_400_p2",
+}
+SINGLE_PASS_CONDITIONS = {
+    "single_ks_preprocessing",
+    "single_ks_preprocessing_rigid_gain_025_p2",
+    "single_ks_preprocessing_dredge_400_400_p2",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -58,9 +74,9 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def shared_motion_path() -> Path:
+def _shared_motion_path(parent: Path) -> Path:
     matches = []
-    for target in MOTION_PARENT.glob("full_*"):
+    for target in parent.glob("full_*"):
         manifest = target / "manifest.json"
         if not manifest.exists() or not (target / "motion.npy").exists():
             continue
@@ -70,6 +86,10 @@ def shared_motion_path() -> Path:
     if len(matches) != 1:
         raise RuntimeError(f"Expected one complete shared-window motion run, found {matches}")
     return matches[0]
+
+
+def shared_motion_path() -> Path:
+    return _shared_motion_path(MOTION_PARENT)
 
 
 def recording_path(condition: str) -> Path:
@@ -98,21 +118,39 @@ def prepare_recordings() -> None:
         temporal_bins_s=np.load(motion_path / "time_bins.npy"),
         spatial_bins_um=np.load(motion_path / "depth_bins.npy"),
     )
+    preset_scale_path = _shared_motion_path(PRESET_SCALE_MOTION_PARENT)
+    preset_scale_motion = Motion(
+        displacement=np.load(preset_scale_path / "motion.npy"),
+        temporal_bins_s=np.load(preset_scale_path / "time_bins.npy"),
+        spatial_bins_um=np.load(preset_scale_path / "depth_bins.npy"),
+    )
     recordings = {
         "no_external_correction": baseline,
         "single_ks_preprocessing": stages["interpolated_unfiltered"].frame_slice(
             start_frame=start, end_frame=stop
         ),
     }
+    single_pass_baseline = recordings["single_ks_preprocessing"]
     for condition, sigma_um in CONDITION_SIGMA_UM.items():
         if sigma_um is None:
             continue
+        p = 2 if condition in P2_CONDITIONS else 1
+        border_mode = "force_extrapolate" if p == 2 else "force_zeros"
+        interpolation_source = (
+            single_pass_baseline if condition in SINGLE_PASS_CONDITIONS else baseline
+        )
+        interpolation_motion = (
+            preset_scale_motion
+            if condition == "single_ks_preprocessing_dredge_400_400_p2"
+            else motion
+        )
         recordings[condition] = interpolate_motion(
-            baseline.astype("float"),
-            motion,
-            border_mode="force_zeros",
+            interpolation_source.astype("float"),
+            interpolation_motion,
+            border_mode=border_mode,
             spatial_interpolation_method="kriging",
             sigma_um=sigma_um,
+            p=p,
         ).astype("int16")
     for condition, recording in recordings.items():
         target = recording_path(condition)
@@ -133,13 +171,37 @@ def prepare_recordings() -> None:
                     "stop_sample": stop,
                     "source_stage": (
                         "interpolated_unfiltered"
-                        if condition == "single_ks_preprocessing"
+                        if condition in SINGLE_PASS_CONDITIONS
                         else "current_conditioned"
                     ),
-                    "motion_run": str(motion_path) if CONDITION_SIGMA_UM[condition] is not None else None,
-                    "rigid_gain": 0.25 if CONDITION_SIGMA_UM[condition] is not None else 0.0,
+                    "motion_run": (
+                        str(preset_scale_path)
+                        if condition == "single_ks_preprocessing_dredge_400_400_p2"
+                        else str(motion_path)
+                    )
+                    if CONDITION_SIGMA_UM[condition] is not None
+                    else None,
+                    "rigid_gain": (
+                        None
+                        if condition == "single_ks_preprocessing_dredge_400_400_p2"
+                        else 0.25
+                    )
+                    if CONDITION_SIGMA_UM[condition] is not None
+                    else 0.0,
                     "spatial_interpolation_method": "kriging" if CONDITION_SIGMA_UM[condition] is not None else None,
                     "spatial_interpolation_sigma_um": CONDITION_SIGMA_UM[condition],
+                    "spatial_interpolation_p": (
+                        2 if condition in P2_CONDITIONS else 1
+                    )
+                    if CONDITION_SIGMA_UM[condition] is not None
+                    else None,
+                    "interpolation_border_mode": (
+                        "force_extrapolate"
+                        if condition in P2_CONDITIONS
+                        else "force_zeros"
+                    )
+                    if CONDITION_SIGMA_UM[condition] is not None
+                    else None,
                     "claim_mask": "off for downstream diagnostic sort",
                 },
                 indent=2,

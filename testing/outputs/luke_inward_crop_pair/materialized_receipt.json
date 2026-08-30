@@ -1,0 +1,79 @@
+{
+  "conditions": {
+    "no_motion": {
+      "checks": {
+        "exact_binary_size": true,
+        "same_frames": true,
+        "same_channel_ids": true,
+        "same_locations": true,
+        "same_dtype": true,
+        "sampled_chunks_exactly_equal": true
+      },
+      "sampled_chunks": [
+        {
+          "fraction": 0.0,
+          "start_frame": 0,
+          "exactly_equal": true
+        },
+        {
+          "fraction": 0.25,
+          "start_frame": 78543524,
+          "exactly_equal": true
+        },
+        {
+          "fraction": 0.5,
+          "start_frame": 157087047,
+          "exactly_equal": true
+        },
+        {
+          "fraction": 0.75,
+          "start_frame": 235630570,
+          "exactly_equal": true
+        },
+        {
+          "fraction": 1.0,
+          "start_frame": 314174094,
+          "exactly_equal": true
+        }
+      ]
+    },
+    "rigid025_p2": {
+      "checks": {
+        "exact_binary_size": true,
+        "same_frames": true,
+        "same_channel_ids": true,
+        "same_locations": true,
+        "same_dtype": true,
+        "sampled_chunks_exactly_equal": true
+      },
+      "sampled_chunks": [
+        {
+          "fraction": 0.0,
+          "start_frame": 0,
+          "exactly_equal": true
+        },
+        {
+          "fraction": 0.25,
+          "start_frame": 78543524,
+          "exactly_equal": true
+        },
+        {
+          "fraction": 0.5,
+          "start_frame": 157087047,
+          "exactly_equal": true
+        },
+        {
+          "fraction": 0.75,
+          "start_frame": 235630570,
+          "exactly_equal": true
+        },
+        {
+          "fraction": 1.0,
+          "start_frame": 314174094,
+          "exactly_equal": true
+        }
+      ]
+    }
+  },
+  "passed": true
+}

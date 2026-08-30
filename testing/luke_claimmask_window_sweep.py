@@ -141,7 +141,9 @@ def load_reference_settings() -> tuple[dict, float]:
     return dict(ops["settings"]), float(ops["fs"])
 
 
-def build_sorter_params(setting: ClaimSetting) -> dict:
+def build_sorter_params(
+    setting: ClaimSetting, bad_channels: list[int] | None = None
+) -> dict:
     # Import here so --plan-only remains useful on machines lacking the sorting
     # environment.  NUMBA_CACHE_DIR also avoids trying to cache in site-packages.
     os.environ.setdefault("NUMBA_CACHE_DIR", "/tmp/luke-claimmask-numba-cache")
@@ -159,6 +161,8 @@ def build_sorter_params(setting: ClaimSetting) -> dict:
         cross_peel_claim_ms=setting.claim_ms,
         cross_peel_claim_um=setting.claim_um,
     )
+    if bad_channels is not None:
+        params["bad_channels"] = [int(channel) for channel in bad_channels]
     return params
 
 
@@ -213,7 +217,7 @@ def make_motion_corrected_recording():
 
     # Importing the project package may load optional motion dependencies, so do
     # it only for actual preparation rather than for planning/scoring.
-    from pipeline.preprocess import condition_signal
+    from pipelineold.preprocess import condition_signal
 
     raw = si.read_spikeglx(
         folder_path=RAW_ROOT, load_sync_channel=False, stream_id=STREAM_ID

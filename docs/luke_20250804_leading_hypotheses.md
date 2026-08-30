@@ -1,5 +1,10 @@
 # Luke 2025-08-04: leading failure hypotheses and decisive tests
 
+> **2026-08-29 update:** This document records the hypothesis history. The
+> current conditioning decision, evidence synthesis and prioritized remaining
+> tests are in
+> [`luke_20250804_rescue_status_and_test_plan.md`](luke_20250804_rescue_status_and_test_plan.md).
+
 ## 2026-08-29 raw-voltage qualification
 
 The original six-sigma unmatched-event evidence below remains useful for
@@ -25,6 +30,30 @@ types. The corrected footprint calculation and shank-median reference control
 remain to be run. Full details are in
 [`luke_yates_raw_voltage_audit_notes.md`](luke_yates_raw_voltage_audit_notes.md).
 
+## 2026-08-29 cross-session recurrence check
+
+A discovery-only check now compares imec0/imec1 channel-level polarity on
+2025-08-04 against the next recording session, 2025-08-05, using the same
+matched filter, local reference and fixed 75 µV threshold. Both headline imec1
+anomalies recur: the positive:negative event-rate ratio is 4.31 (imec1) versus
+1.15 (imec0) on 2025-08-04 and 2.80 (imec1) versus 1.30 (imec0) on 2025-08-05,
+and the physical channel-191 outlier reappears on both probes on 2025-08-05.
+The per-channel polarity profile correlates moderately across days for imec1
+(Spearman r=0.42, p=7e-18, n=384) but not for imec0 (r=-0.28), and the two
+probes do not track each other consistently within a day (r=-0.43 on
+2025-08-04, r=0.08 and not significant on 2025-08-05).
+
+This shifts the acquisition-architecture explanation for imec1's polarity
+anomaly (hypothesis 7 in the rescue status doc's principal contamination
+hypotheses) toward a stream-fixed cause specific to the imec1 probe,
+headstage, cable or reference path, rather than a 2025-08-04-session-specific
+biological or pipeline effect.
+It is only two sessions on one rig and does not identify which hardware
+element is responsible. See the cross-session recurrence subsection of
+[`luke_20250804_rescue_status_and_test_plan.md`](luke_20250804_rescue_status_and_test_plan.md)
+for the full numbers and `testing/luke_20250805_polarity_recurrence_audit.py`
+for the method.
+
 ## Current answer
 
 The strongest working model is not a single acquisition failure. Luke appears
@@ -40,6 +69,17 @@ more full sorts:
 1. the raw candidate is an artifact and should be rejected;
 2. it is a real spike detected under another local cluster;
 3. it is a real spike with no local sorted event.
+
+**2026-08-29 validation note:** a discovery-only float32 injection adapter has
+now traced ten raw templates through the CPU conditioning stages. The current
+CAR/high-pass/materialized stage retained median peak amplitude 0.699 and
+median waveform cosine 0.674 relative to the phase-corrected injected delta,
+so conditioning remains a live source of measurable waveform distortion.
+However, different reviewed events assigned to the same discovery
+cluster/window had median raw multichannel cosine only 0.047 (none of ten at
+or above 0.8). That cohort is therefore not unit-identity ground truth, and the
+pilot cannot yet adjudicate neural recovery. See the rescue plan and
+`luke_validation_scaffolds.md` for the output paths, limitations and next gate.
 
 ## 1. The apparent misses include artifacts or non-neural transients
 
@@ -106,6 +146,47 @@ events that fall below a fixed detection threshold.
 causes a material loss (pilot target: at least 10%) in reviewed-event
 detectability or waveform similarity relative to both no correction and rigid
 correction.
+
+**2026-08-29 scale update:** Direct pre-registration peak-raster matching does
+not support interpreting the successful 0.25 voltage-warp gain as a fourfold
+physical scale calibration. Viable observed/DREDGE slopes span 0.51--0.81,
+with the primary interval 0.31--0.90. Moderate estimator inflation remains
+plausible, but interpolation cost and estimator definition are still in play.
+See `docs/luke_20250804_direct_motion_scale_audit.md`.
+
+**2026-08-29 estimator-band update:** The historical Luke implementation did
+already estimate DREDGE from a narrower AP branch (300--3000 Hz) and apply that
+field to the separate 300--6000 Hz sorting branch. A direct fingerprint check
+against the saved peak amplitudes confirms that the cached full-session peaks
+came from the 300--3000 Hz branch (amplitude correlation 0.9997 versus 0.7835
+for 300--6000 Hz). This was a narrower AP bandpass, not an LFP low-pass.
+
+A new paired 60-second registration-outlier ablation changed only this terminal
+estimator band. Every channel detection at one sample time was assigned to the
+same deterministic half, preventing shared transients from leaking across the
+estimator and evaluation populations. The unused 300--6000 Hz half (98,887
+peaks) supplied a common raster check, and both fields were applied at the same
+gains to the same 160 wideband events separated by at least 1 ms. The bands
+changed the peak population materially (244,805 detections at 300--3000 Hz
+versus 198,019 at 300--6000 Hz), although their fields had rigid correlation
+0.85 and residual nonrigid correlation 0.90.
+
+At 0.25 gain both preserved voltage closely: median waveform correlation was
+0.9954 for the narrow estimator and 0.9963 for the wide estimator, while median
+retained peak amplitude was 0.998 and 1.000. At full gain both remained
+damaging, but the wider estimator was consistently less damaging on the paired
+events: median waveform correlation 0.9047 versus 0.8848 and median retained
+amplitude 0.929 versus 0.893. The paired wide-minus-narrow waveform-correlation
+difference was 0.0220 (event-bootstrap 95% interval 0.0167--0.0267), and the
+wider field reduced absolute peak-amplitude error by 0.0128 (interval
+0.0105--0.0248). Only seven raster pairs qualified; their scale/correlation
+results were mixed and do not establish which field is geometrically correct.
+Changing the upper cutoff therefore does not make full-strength registration
+safe, but 300--6000 Hz at 0.25 gain is the leading estimator-band challenger for
+replication in a second motion state. It must not advance to a full sort without
+that replication and an independent motion anchor. The cache-safe harness is
+`testing/luke_motion_estimator_band_ablation.py`; outputs are under
+`motion_estimator_band_ablation` in the surviving imec1 DREDGE pipeline.
 
 ## 4. Real tissue motion causes waveform drift and unit fragmentation
 

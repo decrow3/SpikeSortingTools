@@ -1,0 +1,14 @@
+{
+  "target_units": 16,
+  "edge_dominated_units": 9,
+  "weak_first_last_pc_units": 7,
+  "class_counts": {
+    "strip_boundary_truncation_candidate": 9,
+    "waveform_feature_instability_requires_review": 4,
+    "low_amplitude_high_rate_template_instability": 2,
+    "motion_or_family_fragmentation_candidate": 1
+  },
+  "ks_good_targets": 9,
+  "automatic_curation_allowed": false,
+  "interpretation": "Boundary classification identifies units whose evidence is censored by the 96-channel strip; it does not establish artifact. Low PC cosine is a review trigger, not proof of motion fragmentation."
+}

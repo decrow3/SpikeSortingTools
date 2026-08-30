@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "parent_manifest": "testing/outputs/luke_prospective_holdout/holdout_manifest_v2.json",
+  "parent_manifest_sha256": "01643baa20fd9ee4905a9bd6e9282ab25e1365dd4899bd69244ea63a4a7fcc9b",
+  "sealed_before_raw_voltage_access": true,
+  "filter": {
+    "kind": "scipy.signal.sosfiltfilt",
+    "design": "third-order Butterworth bandpass",
+    "low_hz": 300.0,
+    "high_hz": 6000.0,
+    "sampling_rate_design_hz": 30000.0,
+    "chunk_core_s": 5.0,
+    "chunk_padding_s": 0.1
+  },
+  "reference": "For every physical channel, subtract at each sample the median of all same-shank contacts within 100 um, including the target contact.",
+  "candidate": "Positive or negative temporal local extremum with absolute referenced amplitude at least 50 uV.",
+  "deduplication": "Greedy descending-amplitude suppression within +/-0.5 ms and <=100 um; ties break by sample then physical channel.",
+  "depth_strata": "Equal thirds of the probe's physical y-coordinate span; boundary values enter the higher third except the maximum.",
+  "amplitude_strata_uv": {
+    "50_to_75": [
+      50.0,
+      75.0
+    ],
+    "75_to_100": [
+      75.0,
+      100.0
+    ],
+    "at_least_100": [
+      100.0,
+      null
+    ]
+  },
+  "selection": "Within every probe/window/depth/polarity/amplitude cell, rank SHA256(seed|probe|window_id|sample_index|physical_channel) ascending and take four; no replacement across sparse cells.",
+  "forbidden_inputs": "All sorter outputs, reviewed-event labels, recovery metrics and candidate motion-branch results."
+}

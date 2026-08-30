@@ -74,6 +74,20 @@ def spatial_neighbors(
     return [np.flatnonzero(same_shank[i] & (distance[i] <= radius_um)) for i in range(len(locations))]
 
 
+def nearest_neighbors(
+    locations: np.ndarray, shanks: np.ndarray, count: int
+) -> list[np.ndarray]:
+    """Return a fixed-size within-shank neighborhood for each channel."""
+    delta = locations[:, None, :] - locations[None, :, :]
+    distance = np.sqrt(np.sum(delta * delta, axis=2))
+    result: list[np.ndarray] = []
+    for channel in range(len(locations)):
+        candidates = np.flatnonzero(shanks == shanks[channel])
+        order = np.argsort(distance[channel, candidates], kind="stable")
+        result.append(candidates[order[: min(count, len(candidates))]])
+    return result
+
+
 def local_median_reference(values: np.ndarray, neighbors: list[np.ndarray]) -> np.ndarray:
     result = np.empty_like(values, dtype=np.float32)
     for channel, neighborhood in enumerate(neighbors):
@@ -371,6 +385,7 @@ def run_audit(n_batches: int, batch_s: float, padding_s: float, footprint_limit:
         print(f"Analyzing {spec.name}", flush=True)
         neighbors_100 = spatial_neighbors(spec.locations_um, spec.shanks, 100.0)
         reference_neighbors = spatial_neighbors(spec.locations_um, spec.shanks, 100.0)
+        equal_count_neighbors = nearest_neighbors(spec.locations_um, spec.shanks, 5)
         starts = select_batch_starts(spec, n_batches, batch_s, padding_s)
         manifest_specs.append(
             {
@@ -394,6 +409,9 @@ def run_audit(n_batches: int, batch_s: float, padding_s: float, footprint_limit:
             stages = {
                 "common_bandpass": filtered,
                 "common_bandpass_shank_median": shank_median_reference(filtered, spec.shanks),
+                "common_bandpass_equal_5_reference": local_median_reference(
+                    filtered, equal_count_neighbors
+                ),
                 "common_bandpass_local_reference": local_median_reference(filtered, reference_neighbors),
             }
             raw_centered = raw_trimmed - np.median(raw_trimmed, axis=0, keepdims=True)
@@ -441,7 +459,7 @@ def run_audit(n_batches: int, batch_s: float, padding_s: float, footprint_limit:
     summarize(events, depths, footprints, channels)
     render(events, depths, footprints, channels)
     manifest = {
-        "metric_definition": "Same 300--6000 Hz filter; optional 100 um local median reference; physical deduplication within 0.5 ms and 100 um.",
+        "metric_definition": "Same 300--6000 Hz filter; optional shank-wide, five-nearest-contact, or 100 um local median reference; physical deduplication within 0.5 ms and 100 um.",
         "n_batches": n_batches,
         "batch_duration_s": batch_s,
         "padding_s": padding_s,

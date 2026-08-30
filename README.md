@@ -57,7 +57,55 @@ sorter_params['cross_peel_claim_um'] = 75.0
 
 ---
 
-## Running a SpikeGLX session — `SpikeGLX_ext_ref_2025.py`
+## Rescue-testing external-reference pipeline
+
+`SpikeGLX_ext_ref_rescue_testing.py` implements the evidence-supported baseline:
+
+```text
+raw → Neuropixels phase correction → bilateral 500-uV blanking
+    → bad-channel interpolation → int16 materialization
+    → one internal Kilosort high-pass/CAR/whitening pass
+```
+
+External filtering, external referencing, voltage motion correction, Kilosort
+motion correction, the cross-peel claim mask, and Kilosort batch artifact
+rejection are explicitly disabled. The runner fingerprints its source and
+configuration, refuses mismatched or partial caches, and writes integrity and
+sort manifests.
+
+Inspect a run without writing data:
+
+```bash
+python SpikeGLX_ext_ref_rescue_testing.py \
+  --data-dir /path/to/spikeglx/run \
+  --stream-id imec1.ap \
+  --plan
+```
+
+`--stream-id` is mandatory so an imec0/imec1 choice can never be made silently.
+The plan path reports frozen overrides directly and does not import
+SpikeInterface or require a configured Kilosort/CUDA environment.
+
+Materialize and sort the full recording:
+
+```bash
+python SpikeGLX_ext_ref_rescue_testing.py \
+  --data-dir /path/to/spikeglx/run \
+  --stream-id imec1.ap \
+  --prepare --sort
+```
+
+Use `--artifact-sidecar` to preserve phase-corrected raw samples beyond 500 uV
+for downstream exclusion of blanker-proximal claims. Use `--duration-s` only for
+bounded smoke tests; the requested slice is applied after phase correction so
+the filter margin retains real source voltage.
+
+The previous package is archived in `pipelineold/`. Historical entry points
+import that package explicitly and retain their former behavior.
+
+---
+
+## Legacy SpikeGLX pipeline — `SpikeGLX_ext_ref_2025.py`
 
 This is the primary end-to-end pipeline script for external-reference Neuropixels recordings. Open it as a script or run it cell-by-cell in an IDE (VS Code, Spyder). The `#%%` markers define logical cells.
 

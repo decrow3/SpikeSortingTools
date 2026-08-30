@@ -1,0 +1,94 @@
+{
+  "spikeinterface_version": "0.102.1",
+  "raw_root": "/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0",
+  "stream_id": "imec1.ap",
+  "review_events": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/outputs/luke_multichannel_event_validation/imec1/event_stage_trace.csv",
+  "motion_dir": "/mnt/NPX/Luke/20250804/dredge_pipeline_results_Luke0804_V2V1_g0_imec1/motion/dredge-motion",
+  "baseline": "current_conditioned",
+  "n_events": 200,
+  "bad_channel_ids": [
+    "imec1.ap#AP191"
+  ],
+  "gain_uv_per_bit": 2.34375,
+  "variants": {
+    "pipeline_p1_zero_float": {
+      "border_mode": "force_zeros",
+      "sigma_um": 20.0,
+      "p": 1,
+      "cast_int16": false
+    },
+    "pipeline_p1_zero_int16": {
+      "border_mode": "force_zeros",
+      "sigma_um": 20.0,
+      "p": 1,
+      "cast_int16": true
+    },
+    "p2_zero_int16": {
+      "border_mode": "force_zeros",
+      "sigma_um": 20.0,
+      "p": 2,
+      "cast_int16": true
+    },
+    "p1_extrapolate_int16": {
+      "border_mode": "force_extrapolate",
+      "sigma_um": 20.0,
+      "p": 1,
+      "cast_int16": true
+    },
+    "official_p2_extrapolate_float": {
+      "border_mode": "force_extrapolate",
+      "sigma_um": 20.0,
+      "p": 2,
+      "cast_int16": false
+    },
+    "official_p2_extrapolate_int16": {
+      "border_mode": "force_extrapolate",
+      "sigma_um": 20.0,
+      "p": 2,
+      "cast_int16": true
+    },
+    "ks4_width_proxy_p2_extrapolate_int16": {
+      "border_mode": "force_extrapolate",
+      "sigma_um": 28.284271247461902,
+      "p": 2,
+      "cast_int16": true
+    }
+  },
+  "installed_official_dredge_preset": {
+    "doc": "Official Dredge preset",
+    "detect_kwargs": {
+      "peak_sign": "neg",
+      "detect_threshold": 8.0,
+      "exclude_sweep_ms": 0.8,
+      "radius_um": 80.0,
+      "noise_levels": null,
+      "random_chunk_kwargs": {},
+      "method": "locally_exclusive"
+    },
+    "select_kwargs": {},
+    "localize_peaks_kwargs": {
+      "radius_um": 75.0,
+      "max_distance_um": 150.0,
+      "optimizer": "minimize_with_log_penality",
+      "enforce_decrease": true,
+      "feature": "ptp",
+      "method": "monopolar_triangulation"
+    },
+    "estimate_motion_kwargs": {
+      "direction": "y",
+      "rigid": false,
+      "win_shape": "gaussian",
+      "win_step_um": 400.0,
+      "win_scale_um": 400.0,
+      "win_margin_um": null,
+      "method": "dredge_ap"
+    },
+    "interpolate_motion_kwargs": {
+      "border_mode": "force_extrapolate",
+      "spatial_interpolation_method": "kriging",
+      "sigma_um": 20.0,
+      "p": 2
+    }
+  },
+  "scope_note": "Paired waveform audit only; no variant has passed sorter-level validation. The KS4-width proxy matches kernel width, not regularization, normalization, preprocessing order, or streaming implementation."
+}

@@ -1,0 +1,62 @@
+{
+  "peaks": 40462735,
+  "duration_s": 10474.0,
+  "time_bin_s": 10.0,
+  "pair_separation_s": 120.0,
+  "pair_stride_s": 240.0,
+  "minimum_predicted_shift_um": 6.0,
+  "raster_specs": [
+    {
+      "name": "amp_depth_dz2_smooth6",
+      "depth_bin_um": 2.0,
+      "smooth_um": 6.0,
+      "amplitude_resolved": true
+    },
+    {
+      "name": "amp_depth_dz2_smooth10",
+      "depth_bin_um": 2.0,
+      "smooth_um": 10.0,
+      "amplitude_resolved": true
+    },
+    {
+      "name": "amp_depth_dz4_smooth10",
+      "depth_bin_um": 4.0,
+      "smooth_um": 10.0,
+      "amplitude_resolved": true
+    },
+    {
+      "name": "amp_depth_dz4_smooth20",
+      "depth_bin_um": 4.0,
+      "smooth_um": 20.0,
+      "amplitude_resolved": true
+    },
+    {
+      "name": "depth_only_dz2_smooth10",
+      "depth_bin_um": 2.0,
+      "smooth_um": 10.0,
+      "amplitude_resolved": false
+    }
+  ],
+  "amplitude_edges_uv": [
+    8.0,
+    14.0,
+    17.0,
+    21.0,
+    27.0,
+    38.0,
+    221.00000000000003
+  ],
+  "prospective_holdout_labels_accessed": false,
+  "sorter_labels_accessed": false,
+  "inferred_acquisition_start_s": 3057.6775463558583,
+  "candidate_pairs_per_spec": 16,
+  "primary_spec": "amp_depth_dz2_smooth6",
+  "primary_qualified_pairs": 14,
+  "primary_observed_per_dredge_slope": 0.6401179886411908,
+  "primary_slope_ci95": [
+    0.3352190868602592,
+    1.107248537765505
+  ],
+  "primary_correlation": 0.8860194748780853,
+  "interpretation_guardrail": "Shared pre-registration peaks make this a direct scale remeasurement, not an independent biological ground truth."
+}

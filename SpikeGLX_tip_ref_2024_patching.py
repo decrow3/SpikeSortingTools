@@ -1,6 +1,6 @@
 #%%
-from pipeline import condition_signal, correct_motion, plot_motion_output, sort_ks4, save_binary_recording, run_qc
-from pipeline.curation_postpatch import run_cur_final
+from pipelineold import condition_signal, correct_motion, plot_motion_output, sort_ks4, save_binary_recording, run_qc
+from pipelineold.curation_postpatch import run_cur_final
 from spikeinterface.sorters import get_default_sorter_params
 from pathlib import Path
 import gc

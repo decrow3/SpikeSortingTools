@@ -73,6 +73,22 @@ This argues against one global Luke sensitivity adjustment. The unresolved
 imec1 problem is more consistent with a polarity/reference/morphology or
 shared-signal issue than with a simple lack of extracellular events.
 
+### Cross-session recurrence (2025-08-05)
+
+A same-method rerun on 2025-08-05, the next recording session on the same
+probes, reproduces this asymmetry independently: the fixed-75 µV,
+local-referenced positive:negative event-rate ratio is 2.80 for imec1 versus
+1.30 for imec0, compared with 4.31 versus 1.15 on 2025-08-04. The per-channel
+polarity profile correlates moderately across days for imec1 (Spearman
+r=0.42, p=7e-18, n=384 channels) but not for imec0 (r=-0.28), and imec0/imec1
+profiles do not track each other consistently within a day either. This favors
+a stream-fixed acquisition cause (imec1 probe, headstage, cable or reference
+path) over a 2025-08-04-specific biological explanation, though the moderate
+correlation means it is a real signal on top of session-specific variation,
+not a deterministic fingerprint. See the cross-session recurrence subsection
+of `luke_20250804_rescue_status_and_test_plan.md` and
+`testing/luke_20250805_polarity_recurrence_audit.py`.
+
 ### A fixed-sigma comparison is not voltage-equivalent
 
 After the 100 µm local reference, median channel noise remains approximately
@@ -93,6 +109,13 @@ count. Both sigma-normalized and fixed-microvolt results are required.
   temporal window, but those corrected metrics have not been rerun.
 - Normalized shank depth is not matched cortical layer. Histology or another
   layer anchor is still needed for a biological density comparison.
+- The shallow cortical portions are the closest Luke--Yates anatomical match.
+  Luke's longer probes extended into deeper V1 banks representing more
+  peripheral visual-field locations, while its shallow cortex may also have
+  accumulated damage from repeated penetrations. A depth-resolved biological
+  comparison must therefore be restricted to anatomically matched support and
+  must stratify by depth-dependent rigid/nonrigid motion. This comparison is
+  deferred until conditioning, preprocessing and motion handling are fixed.
 - The metadata describe Yates `recording.dat` as the raw 64-channel int16
   recording in geometry order, but a direct sample-level reconciliation to the
   original Open Ephys `.continuous` files remains a useful provenance check.
@@ -136,3 +159,6 @@ count. Both sigma-normalized and fixed-microvolt results are required.
   `testing/outputs/luke_motion_candidate_results/raw_voltage_audit/raw_channel_summary.csv`
 - The current PNG and footprint CSV are explicitly provisional and should not
   be cited until the corrected rerun completes.
+- Cross-session recurrence script: `testing/luke_20250805_polarity_recurrence_audit.py`
+  (no dedicated test file yet); outputs in
+  `testing/outputs/luke_20250805_polarity_recurrence_audit/`.

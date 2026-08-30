@@ -5,12 +5,5 @@
   "event_motion_association.png": "Candidate displacement and spatial gradient for recovered versus missed reviewed events.",
   "internal_rigid_trace_comparison.png": "Kilosort internal rigid and DREDGE rigid traces plus batch-to-batch jump magnitudes.",
   "rigid_gain_response.png": "Sorter recovery and quality response across rigid displacement gains from zero to one.",
-  "rigid_gain_event_matrix.png": "Paired reviewed-event recovery across rigid displacement gains.",
-  "rigid_gain_replication.png": "Independent shared-window comparison of no correction and quarter-strength rigid correction at 20 and 10 micrometer kriging scales.",
-  "luke_yates_interpolation_kernel_audit.png": "Geometry-dependent kriging weights and reviewed-event waveform retention across interpolation scales.",
-  "luke_yates_motion_120s_comparison.png": "Matched-duration Luke and Yates motion summaries under MEDiCINe and Kilosort-style estimators.",
-  "rigid_gain_replication_voltage_effects.png": "Reviewed-event voltage retention versus applied rigid displacement.",
-  "rigid_gain_replication_switching_events.png": "Trace-level inspection of reviewed events whose sorter recovery changed after correction.",
-  "luke_yates_detection_stage_audit.png": "Matched Kilosort-input event density, recovery, and sorter-output comparison normalized by sampled physical depth.",
-  "luke_preprocessing_unit_structure_audit.png": "Temporal unit stability and nearby-template redundancy under current versus single-pass conditioning."
+  "rigid_gain_event_matrix.png": "Paired reviewed-event recovery across rigid displacement gains."
 }

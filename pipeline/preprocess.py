@@ -1,204 +1,373 @@
-#%%
-from pathlib import Path
-import matplotlib.pyplot as plt
-import numpy as np
-from tqdm import tqdm
+"""The tested rescue conditioning graph and guarded materialization.
 
-from spikeinterface.preprocessing import blank_staturation
-from spikeinterface.preprocessing import phase_shift
-from spikeinterface.preprocessing import interpolate_bad_channels
-from scipy.signal import medfilt, welch
-from spikeinterface.preprocessing import highpass_filter
-from spikeinterface.preprocessing import common_reference
-from spikeinterface.preprocessing import filter
-from spikeinterface.preprocessing import highpass_spatial_filter
+Sorter input stops after phase correction, 500-uV bilateral sample blanking,
+and bad-channel interpolation.  There is deliberately no external AP filter,
+common reference, whitening, or voltage motion correction here.
+"""
 
-from probeinterface import Probe
-from probeinterface.plotting import plot_probe
+from __future__ import annotations
 
+import json
 import os
+from pathlib import Path
+from typing import Any, Iterable
 
-def get_45mm_npx_probe(debug=False):
-    npx_nhp_positions = np.zeros((384, 2))
-    npx_nhp_row_pitch = 20
-    npx_nhp_col_pitch = 103
-    npx_nhp_width = 12 # 12x12um
-    for iR in range(192):
-        npx_nhp_positions[2*iR, 0] = 0
-        npx_nhp_positions[2*iR, 1] = npx_nhp_row_pitch * iR
-        npx_nhp_positions[2*iR+1, 0] = npx_nhp_col_pitch
-        npx_nhp_positions[2*iR+1, 1] = npx_nhp_row_pitch * iR
+import numpy as np
+from scipy.signal import medfilt, welch
 
-    probe = Probe(ndim=2, si_units='um')
-    probe.set_contacts(positions=npx_nhp_positions, shapes='square', shape_params={'width': npx_nhp_width})
-    probe.set_device_channel_indices(np.arange(384))
-    if debug:
-        plot_probe(probe)
-    return probe
+from .config import PIPELINE_VERSION, RescueConfig, fingerprint
 
-def get_default_job_kwargs():
-    n_cpus = os.cpu_count()
-    n_cpus = n_cpus if n_cpus is not None else 1
-    n_jobs = max(1, n_cpus - 1) 
-    job_kwargs = dict(n_jobs=n_jobs, 
-                      chunk_duration='2s', 
-                      progress_bar=True,)
-    return job_kwargs
 
-def get_channel_metrics(seg, n_batches=50, batch_duration=2, med_n=11, psd_cuttoff=.8, psd_n_samples=2048, uV_per_bit=.195, freq_min=300, seed = 1002, debug=0):
-    '''
-    Compute channel metrics for a recording segment
+MANIFEST_NAME = "rescue_recording_manifest.json"
 
-    Parameters
-    ----------
-    seg : RecordingExtractor
-        Recording segment
-    n_batches : int, optional
-        Number of batches to compute metrics, by default 50
-    batch_duration : int, optional
-        Duration of batches in seconds, by default 2
-    med_n : int, optional
-        Window size for median filter, by default 11
-    psd_cuttoff : float, optional
-        Fraction of Nyquist frequency to compute noise power, by default .8
-    psd_n_samples : int, optional
-        Number of samples for PSD, by default 2048
-    uV_per_bit : float, optional
-        Microvolts per bit, by default .195
-    freq_min : int, optional
-        Minimum frequency for highpass filter, by default 300
-    seed : int, optional
-        Random seed, by default 1002
-    debug : int, optional
-        Debug flag, by default 0
 
-    Returns
-    -------
-    similarity : np.ndarray
-        Similarity to median for each channel
-    noise : np.ndarray
-        Noise power for each channel
+def _single_gain_uv_per_count(recording) -> float:
+    gains = np.unique(np.asarray(recording.get_property("gain_to_uV"), dtype=float))
+    if gains.size != 1 or not np.isfinite(gains[0]) or gains[0] <= 0:
+        raise ValueError(f"Expected one positive gain_to_uV value, got {gains}")
+    return float(gains[0])
 
-    '''
-    seg = highpass_filter(seg, freq_min=freq_min, direction='forward-backward')
 
-    fs = seg.get_sampling_frequency()
-    n_samples = seg.get_num_frames()
-    n_channels = seg.get_num_channels()
-    batch_size = int(batch_duration * fs)
-    f_thresh = psd_cuttoff * fs / 2
-    similarity = np.zeros(n_channels)
-    noise = np.zeros(n_channels)
-    batches = np.arange(0, n_samples//batch_size*batch_size, batch_size)
-    np.random.seed(seed)
-    batch_sub = np.random.choice(batches, n_batches, replace=False)
-    iter = tqdm(batch_sub, desc='Computing channel metrics') if debug else batch_sub
-    for iB in iter:
-        iE = min(iB + batch_size, n_samples)
-        trace = seg.get_traces(start_frame=iB, end_frame=iE) * uV_per_bit
-        med = np.median(trace, axis=1)
-        med_e = np.sum(med**2)
-        cc = np.sum(trace * med[:, None], axis=0) / med_e
-        cc_detrend = cc - medfilt(cc, med_n)
-        similarity += cc_detrend
+def phase_correct(recording):
+    """Apply Neuropixels phase correction only when shifts are present."""
+    shifts = recording.get_property("inter_sample_shift")
+    if shifts is None or not np.any(shifts):
+        return recording
+    from spikeinterface.preprocessing import phase_shift
 
-        f, psd = welch(trace, fs=fs, nperseg=psd_n_samples, axis=0)
-        noise += np.mean(psd[f > f_thresh], axis=0)
+    return phase_shift(recording)
 
-    similarity /= n_batches
-    noise /= n_batches
+
+def _channel_metrics(
+    recording,
+    *,
+    gain_uv_per_count: float,
+    n_batches: int,
+    batch_duration_s: float,
+    seed: int,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Reproduce the channel metrics used to select the tested baseline."""
+    from spikeinterface.preprocessing import highpass_filter
+
+    highpassed = highpass_filter(recording, freq_min=300, direction="forward-backward")
+    fs = float(highpassed.get_sampling_frequency())
+    batch_size = int(round(batch_duration_s * fs))
+    starts = np.arange(0, highpassed.get_num_samples() - batch_size + 1, batch_size)
+    if starts.size == 0:
+        raise ValueError("Recording is too short for one channel-metric batch")
+    count = min(int(n_batches), int(starts.size))
+    selected = np.random.RandomState(seed).choice(starts, count, replace=False)
+    similarity = np.zeros(highpassed.get_num_channels(), dtype=float)
+    noise = np.zeros_like(similarity)
+    f_threshold = 0.8 * fs / 2
+    for start in selected:
+        traces = highpassed.get_traces(
+            start_frame=int(start), end_frame=int(start + batch_size)
+        ).astype(np.float64)
+        traces *= gain_uv_per_count
+        median = np.median(traces, axis=1)
+        median_energy = float(np.sum(median**2))
+        if median_energy == 0:
+            raise ValueError("Channel-metric batch has zero median energy")
+        correlation = np.sum(traces * median[:, None], axis=0) / median_energy
+        similarity += correlation - medfilt(correlation, 11)
+        frequencies, psd = welch(traces, fs=fs, nperseg=2048, axis=0)
+        noise += np.mean(psd[frequencies > f_threshold], axis=0)
+    return similarity / count, noise / count
+
+
+def select_bad_channel_ids(
+    channel_ids: Iterable[Any],
+    similarity: np.ndarray,
+    noise: np.ndarray,
+    *,
+    similarity_threshold: float,
+    noise_threshold: float,
+) -> list[Any]:
+    """Select bad channel IDs from the frozen legacy metrics."""
+    ids = np.asarray(list(channel_ids))
+    similarity = np.asarray(similarity)
+    noise = np.asarray(noise)
+    if similarity.shape != ids.shape or noise.shape != ids.shape:
+        raise ValueError("Channel IDs, similarity, and noise must have equal shape")
+    bad = (similarity < similarity_threshold) | (noise > noise_threshold)
+    return ids[bad].tolist()
+
+
+def _metric_request(recording, config: RescueConfig) -> dict[str, Any]:
+    return {
+        "pipeline_version": PIPELINE_VERSION,
+        "config_digest": config.digest,
+        "num_samples": int(recording.get_num_samples()),
+        "num_channels": int(recording.get_num_channels()),
+        "sampling_frequency_hz": float(recording.get_sampling_frequency()),
+        "channel_ids": [str(value) for value in recording.get_channel_ids()],
+    }
+
+
+def _load_or_compute_metrics(
+    recording,
+    cache_dir: Path,
+    config: RescueConfig,
+    *,
+    recompute: bool,
+) -> tuple[np.ndarray, np.ndarray]:
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    values_path = cache_dir / "channel_metrics.npz"
+    manifest_path = cache_dir / "channel_metrics_manifest.json"
+    request = _metric_request(recording, config)
+    request_digest = fingerprint(request)
+    if values_path.exists() or manifest_path.exists():
+        if not values_path.exists() or not manifest_path.exists():
+            raise RuntimeError(f"Incomplete channel-metric cache in {cache_dir}")
+        manifest = json.loads(manifest_path.read_text())
+        if manifest.get("request_digest") != request_digest:
+            if not recompute:
+                raise RuntimeError(
+                    "Channel-metric cache does not match this source/configuration; "
+                    "use --recompute-channel-metrics or a new output directory"
+                )
+        elif not recompute:
+            values = np.load(values_path)
+            return values["similarity"], values["noise"]
+    gain = _single_gain_uv_per_count(recording)
+    similarity, noise = _channel_metrics(
+        recording,
+        gain_uv_per_count=gain,
+        n_batches=config.channel_metric_batches,
+        batch_duration_s=config.channel_metric_batch_duration_s,
+        seed=config.channel_metric_seed,
+    )
+    np.savez(values_path, similarity=similarity, noise=noise)
+    manifest_path.write_text(
+        json.dumps({**request, "request_digest": request_digest}, indent=2) + "\n"
+    )
     return similarity, noise
 
 
-def condition_signal(seg, cache_dir, recalc=False, uV_per_bit=.195, uV_thresh=.5e3, similarity_thresh=-0.5, noise_thresh=1e-2, job_kwargs={}):
-    gainvals=list(set(seg.get_property('gain_to_uV')))
-    if len(gainvals) ==1:
-        uV_per_bit=gainvals[0]
-    print(f'Gain value is {uV_per_bit} uV/bit')
+def build_rescue_recording(
+    raw_recording,
+    *,
+    cache_dir: Path,
+    config: RescueConfig,
+    bad_channel_ids: Iterable[Any] | None = None,
+    recompute_channel_metrics: bool = False,
+):
+    """Return the lazy rescue recording and a preprocessing receipt."""
+    from spikeinterface.preprocessing import blank_staturation, interpolate_bad_channels
 
-    if isinstance(cache_dir, str):
-        cache_dir = Path(cache_dir)
-    cache_dir.mkdir(parents=True, exist_ok=True)
-
-    print('\tPreprocessing...')
-
-    job_kwargs = dict(get_default_job_kwargs(), **job_kwargs)
-
-    n_channels = seg.get_num_channels()
-
-    check_sample_shift=seg.get_property('inter_sample_shift')
-    # skip if check_sample_shift is None or all values are 0, otherwise do phase shift
-    if check_sample_shift is not None and check_sample_shift.any():  
-        seg_shift = phase_shift(seg)
+    gain = _single_gain_uv_per_count(raw_recording)
+    shifted = phase_correct(raw_recording)
+    threshold_counts = config.saturation_threshold_uv / gain
+    blanked = blank_staturation(shifted, threshold_counts, direction="both")
+    if bad_channel_ids is None:
+        similarity, noise = _load_or_compute_metrics(
+            blanked,
+            Path(cache_dir) / "channel_metrics",
+            config,
+            recompute=recompute_channel_metrics,
+        )
+        bad_ids = select_bad_channel_ids(
+            raw_recording.get_channel_ids(),
+            similarity,
+            noise,
+            similarity_threshold=config.similarity_threshold,
+            noise_threshold=config.noise_threshold,
+        )
+        bad_source = "frozen_similarity_and_noise_metrics"
     else:
-        seg_shift = seg
+        available = set(raw_recording.get_channel_ids().tolist())
+        bad_ids = list(bad_channel_ids)
+        missing = [value for value in bad_ids if value not in available]
+        if missing:
+            raise ValueError(f"Explicit bad channels are absent: {missing}")
+        bad_source = "explicit"
+    conditioned = interpolate_bad_channels(blanked, bad_channel_ids=bad_ids)
+    if np.dtype(conditioned.dtype) != np.dtype("int16"):
+        raise TypeError(
+            f"Expected int16 production quantization after interpolation, got {conditioned.dtype}"
+        )
+    receipt = {
+        "pipeline_version": PIPELINE_VERSION,
+        "config": config.as_dict(),
+        "graph": [
+            "neuropixels_phase_correction_if_present",
+            "samplewise_bilateral_blanking_500uv",
+            "bad_channel_interpolation",
+        ],
+        "external_filter": None,
+        "external_reference": None,
+        "external_voltage_motion_correction": False,
+        "gain_uv_per_count": gain,
+        "threshold_counts": threshold_counts,
+        "bad_channel_ids": [str(value) for value in bad_ids],
+        "bad_channel_source": bad_source,
+        "dtype": str(conditioned.dtype),
+        "num_samples": int(conditioned.get_num_samples()),
+        "num_channels": int(conditioned.get_num_channels()),
+        "sampling_frequency_hz": float(conditioned.get_sampling_frequency()),
+    }
+    return conditioned, receipt
 
 
-    print(f'Threshold value is {uV_thresh} uV')
-
-    seg_sat = blank_staturation(seg_shift, uV_thresh / uV_per_bit, direction='both') #remove blanks before the phase shift? Shouldn't matter but kind of weird
-    #seg_sat = blank_staturation(seg_shift, 500, direction='both') # 350 and 500 good (but look identical), removing completely looks better? in NP! should be 1.2mV or 1200uV
-    
-    #Destriping
-    #seg_sat = highpass_spatial_filter(seg_sat)#(40, 140)) 
-
-    f_cm = cache_dir / 'channel_metrics.npy'
-    if not f_cm.exists() or recalc:
-        batchn=min([seg.get_num_samples()/seg.get_sampling_frequency()/2, 50]) # 50 batches unless the recording is shorter than 10s
-        similarity, noise = get_channel_metrics(seg_sat, n_batches=int(batchn), uV_per_bit=uV_per_bit, debug=True)
-        if cache_dir is not None:
-            np.save(cache_dir / 'channel_metrics.npy', np.stack((similarity, noise)))
-    else:
-        similarity, noise = np.load(cache_dir / 'channel_metrics.npy')
-
-    noisy_channels = noise > noise_thresh
-    dead_channels = similarity < similarity_thresh
-    bad_channels = np.logical_or(noisy_channels, dead_channels)
-    print(f'\tFound {np.sum(noisy_channels)} noisy channels and {np.sum(dead_channels)} dead channels')
-
-    #Todo: might be a good idea to pass the noise levels back up to set the kilosort thresholds adaptively
-    ids = seg_sat.get_channel_ids()
-    bad_ids = ids[bad_channels]
-    seg_interp = interpolate_bad_channels(seg_sat, bad_ids)
-
-    #Doing the common reference after removing bad channels and high frequency noise is a good idea
-    #global car for the not as stable as we'd like npx grounds over multiple areas
-    #local_radius : tuple(int, int), default: (30, 55) loccar_um=40,140. In CatGT we also did butterworth filtering for AP
-    
-    # # Old filtering approach, temporarily reimplemented for testing
-    # seg_cr = common_reference(seg_interp, reference = 'global', operator = 'median') 
-    # seg_out = highpass_filter(seg_cr, freq_min=300., direction='forward-backward')
-    
-    
-    # Branch 1: Wideband for Sorting (300-6000 Hz)
-    seg_hp_wide = filter(seg_interp, band=[300.0, 6000.0], btype='bandpass', filter_order=12, ftype='butter', direction='forward-backward')
-    seg_out_sorting = common_reference(seg_hp_wide, reference='local', operator='median', local_radius=(40, 140))
-
-    # Branch 2: Narrowband for Motion Estimation (300-3000 Hz)
-    # Filter directly from source (seg_interp) to avoid double high-passing
-    seg_hp_narrow = filter(seg_interp, band=[300.0, 3000.0], btype='bandpass', filter_order=12, ftype='butter', direction='forward-backward')
-    
-    # Apply same reference logic (or slightly tweaked if desired)
-    # Using the same referencing ensures the spatial structure is comparable
-    seg_out_motion = common_reference(seg_hp_narrow, reference='local', operator='median', local_radius=(40, 140))
+def _materialization_request(
+    raw_recording,
+    source_folder: Path,
+    stream_id: str,
+    config: RescueConfig,
+    explicit_bad_channel_ids: Iterable[Any] | None,
+    start_frame: int,
+    end_frame: int,
+) -> dict[str, Any]:
+    return {
+        "pipeline_version": PIPELINE_VERSION,
+        "source_folder": str(Path(source_folder).resolve()),
+        "stream_id": stream_id,
+        "num_samples": int(raw_recording.get_num_samples()),
+        "num_channels": int(raw_recording.get_num_channels()),
+        "sampling_frequency_hz": float(raw_recording.get_sampling_frequency()),
+        "dtype": str(raw_recording.dtype),
+        "selected_start_frame": start_frame,
+        "selected_end_frame": end_frame,
+        "config": config.as_dict(),
+        "explicit_bad_channel_ids": (
+            None
+            if explicit_bad_channel_ids is None
+            else [str(value) for value in explicit_bad_channel_ids]
+        ),
+    }
 
 
-    fig, axs = plt.subplots(1,2, figsize=(8,6), sharey=True)
-    axs[0].plot(similarity, np.arange(n_channels))
-    axs[0].scatter(similarity[dead_channels], np.where(dead_channels)[0], color='r')
-    axs[0].axvline(similarity_thresh, color='r', linestyle='--')
-    axs[0].set_title('Similarity to Median')
-    axs[0].set_xlabel('Similarity')
-    axs[0].set_ylabel('Channel')
-    axs[1].plot(noise, np.arange(n_channels))
-    axs[1].scatter(noise[noisy_channels], np.where(noisy_channels)[0], color='r')
-    axs[1].axvline(noise_thresh, color='r', linestyle='--')
-    axs[1].set_title('Noise Power (>.8 Nyquist)')
-    axs[1].set_xlabel('Power (uV^2/Hz)')
-    plt.tight_layout()
-    #fig.savefig(cache_dir / 'channel_metrics.png') #out of space so not saving for now
-    plt.close('all')
+def _validate_materialized_recording(folder: Path, expected_recording) -> dict[str, Any]:
+    """Run cheap structural and population checks before accepting a cache."""
+    from spikeinterface.core import load_extractor
 
-    return seg_out_motion, seg_out_sorting
+    loaded = load_extractor(folder)
+    expected_shape = (
+        int(expected_recording.get_num_samples()),
+        int(expected_recording.get_num_channels()),
+    )
+    actual_shape = (int(loaded.get_num_samples()), int(loaded.get_num_channels()))
+    if actual_shape != expected_shape:
+        raise RuntimeError(f"Materialized shape {actual_shape} != expected {expected_shape}")
+    if np.dtype(loaded.dtype) != np.dtype(expected_recording.dtype):
+        raise RuntimeError(f"Materialized dtype {loaded.dtype} != {expected_recording.dtype}")
+    expected_bytes = int(np.prod(expected_shape) * np.dtype(loaded.dtype).itemsize)
+    binaries = list(folder.glob("*.raw")) + list(folder.glob("*.bin"))
+    actual_bytes = sum(path.stat().st_size for path in binaries)
+    if actual_bytes != expected_bytes:
+        raise RuntimeError(f"Materialized bytes {actual_bytes} != expected {expected_bytes}")
+    sample_frames = min(int(round(loaded.get_sampling_frequency())), actual_shape[0])
+    starts = sorted(
+        {
+            min(actual_shape[0] - sample_frames, int(fraction * actual_shape[0]))
+            for fraction in (0.0, 0.25, 0.5, 0.75, 0.99)
+        }
+    )
+    sampled = []
+    channel_min_std = np.inf
+    for start in starts:
+        traces = loaded.get_traces(start_frame=start, end_frame=start + sample_frames)
+        standard_deviation = np.std(traces.astype(np.float32), axis=0)
+        channel_min_std = min(channel_min_std, float(np.min(standard_deviation)))
+        sampled.append(
+            {
+                "start_frame": start,
+                "nonzero_fraction": float(np.mean(traces != 0)),
+                "minimum_counts": int(np.min(traces)),
+                "maximum_counts": int(np.max(traces)),
+            }
+        )
+    if not sampled or any(row["nonzero_fraction"] == 0 for row in sampled):
+        raise RuntimeError("Materialized recording contains an empty validation chunk")
+    if channel_min_std == 0:
+        raise RuntimeError("Materialized recording contains a stuck channel")
+    return {
+        "actual_binary_bytes": actual_bytes,
+        "structural_integrity_passed": True,
+        "minimum_sampled_channel_std_counts": channel_min_std,
+        "sampled_chunks": sampled,
+    }
 
 
+def materialize_rescue_recording(
+    raw_recording,
+    output_dir: Path,
+    *,
+    source_folder: Path,
+    stream_id: str,
+    config: RescueConfig,
+    bad_channel_ids: Iterable[Any] | None = None,
+    recompute_channel_metrics: bool = False,
+    start_frame: int = 0,
+    end_frame: int | None = None,
+):
+    """Materialize once, reusing only a cache with an exact request fingerprint."""
+    from spikeinterface.core import load_extractor
+
+    output_dir = Path(output_dir)
+    partial = output_dir.with_name(output_dir.name + ".partial")
+    manifest_path = output_dir / MANIFEST_NAME
+    source_frames = int(raw_recording.get_num_samples())
+    if end_frame is None:
+        end_frame = source_frames
+    if start_frame < 0 or end_frame > source_frames or start_frame >= end_frame:
+        raise ValueError("Invalid materialization frame range")
+    request = _materialization_request(
+        raw_recording,
+        source_folder,
+        stream_id,
+        config,
+        bad_channel_ids,
+        int(start_frame),
+        int(end_frame),
+    )
+    request_digest = fingerprint(request)
+    if partial.exists():
+        raise RuntimeError(f"Incomplete materialization requires inspection: {partial}")
+    if output_dir.exists():
+        if not manifest_path.exists():
+            raise RuntimeError(f"Existing recording lacks {MANIFEST_NAME}: {output_dir}")
+        manifest = json.loads(manifest_path.read_text())
+        if manifest.get("request_digest") != request_digest:
+            raise RuntimeError("Existing recording cache belongs to another request")
+        return load_extractor(output_dir), manifest
+    conditioned, receipt = build_rescue_recording(
+        raw_recording,
+        cache_dir=output_dir.parent,
+        config=config,
+        bad_channel_ids=bad_channel_ids,
+        recompute_channel_metrics=recompute_channel_metrics,
+    )
+    # Slice after phase correction so bounded smoke tests retain genuine source
+    # voltage in the phase-shift margin instead of padding the requested edge.
+    if start_frame != 0 or end_frame != source_frames:
+        conditioned = conditioned.frame_slice(
+            start_frame=int(start_frame), end_frame=int(end_frame)
+        )
+        receipt["selected_start_frame"] = int(start_frame)
+        receipt["selected_end_frame"] = int(end_frame)
+        receipt["num_samples"] = int(conditioned.get_num_samples())
+    output_dir.parent.mkdir(parents=True, exist_ok=True)
+    conditioned.save(
+        folder=partial,
+        n_jobs=config.materialize_n_jobs,
+        chunk_duration=config.materialize_chunk_duration,
+        progress_bar=True,
+    )
+    integrity = _validate_materialized_recording(partial, conditioned)
+    manifest = {
+        **request,
+        **receipt,
+        "request_digest": request_digest,
+        "expected_binary_bytes": int(
+            conditioned.get_num_samples()
+            * conditioned.get_num_channels()
+            * np.dtype(conditioned.dtype).itemsize
+        ),
+        "integrity": integrity,
+        "complete": True,
+    }
+    (partial / MANIFEST_NAME).write_text(json.dumps(manifest, indent=2) + "\n")
+    os.replace(partial, output_dir)
+    return load_extractor(output_dir), manifest

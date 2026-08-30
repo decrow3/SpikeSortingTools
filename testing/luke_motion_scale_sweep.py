@@ -162,6 +162,15 @@ CANDIDATES = (
         method_kwargs=_dredge_kwargs(1.0, 1.0),
     ),
     Candidate(
+        "dredge_nr_400_400_preset_scale",
+        "spatial_preset_control",
+        "dredge_ap",
+        False,
+        win_step_um=400.0,
+        win_scale_um=400.0,
+        method_kwargs=_dredge_kwargs(1.0, 1.0),
+    ),
+    Candidate(
         "decentralized_rigid",
         "method",
         "decentralized",

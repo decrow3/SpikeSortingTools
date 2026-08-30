@@ -2,8 +2,8 @@
 # It assumes that the dredge pipeline has already been run on the server, and that the motion correction results are available. 
 # The script will load the preprocessed recording from the server, run Kilosort4, curation, and QC, and save the results to harddrive.
 
-from pipeline import condition_signal, correct_motion, plot_motion_output, sort_ks4, save_binary_recording, run_qc
-from pipeline.curation_postpatch import run_cur_final
+from pipelineold import condition_signal, correct_motion, plot_motion_output, sort_ks4, save_binary_recording, run_qc
+from pipelineold.curation_postpatch import run_cur_final
 from spikeinterface.sorters import get_default_sorter_params
 from pathlib import Path
 import gc

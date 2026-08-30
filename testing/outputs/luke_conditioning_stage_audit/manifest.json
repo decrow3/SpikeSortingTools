@@ -1,0 +1,79 @@
+{
+  "motion_enabled": false,
+  "raw_binary": "/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0/Luke0730_V2V1_g0_imec1/Luke0730_V2V1_g0_t0.imec1.ap.bin",
+  "sampling_frequency_hz": 29999.759166666667,
+  "windows": [
+    {
+      "name": "good",
+      "start_s": 7095.0,
+      "duration_s": 120.0
+    },
+    {
+      "name": "neutral",
+      "start_s": 7215.0,
+      "duration_s": 120.0
+    },
+    {
+      "name": "pathological",
+      "start_s": 8160.0,
+      "duration_s": 120.0
+    }
+  ],
+  "batch_duration_s": 1.0,
+  "batches_per_window": 2,
+  "saturation_enriched_starts": [
+    {
+      "kind": "saturation_broad",
+      "start_s": 7280.111111111111
+    },
+    {
+      "kind": "saturation_broad",
+      "start_s": 8278.0
+    },
+    {
+      "kind": "saturation_broad",
+      "start_s": 8186.222222222223
+    },
+    {
+      "kind": "saturation_focal",
+      "start_s": 8212.444444444445
+    },
+    {
+      "kind": "saturation_focal",
+      "start_s": 8199.333333333334
+    },
+    {
+      "kind": "saturation_focal",
+      "start_s": 7174.333333333333
+    }
+  ],
+  "stages": [
+    "raw",
+    "phase_int16",
+    "phase_float32",
+    "phase_car",
+    "phase_clip_car",
+    "phase_car_highpass",
+    "phase_clip_car_highpass",
+    "phase_car_highpass_postblank_1ms",
+    "phase_car_highpass_interp191",
+    "phase_interp191_float_car_highpass",
+    "current_source_int16_car_highpass"
+  ],
+  "outputs": [
+    "batch_metrics.csv",
+    "stage_summary.csv",
+    "reviewed_event_metrics.csv",
+    "covariance_metrics.csv",
+    "whitening_metrics.csv",
+    "manifest.json"
+  ],
+  "gain_uv_per_count": 2.34375,
+  "saturation_uv": 500.0,
+  "saturation_counts": 213.33333333333334,
+  "source_frames": 314204094,
+  "source_channels": 384,
+  "review_events": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/outputs/luke_multichannel_event_validation/imec1/event_stage_trace.csv",
+  "n_reviewed_event_stage_rows": 330,
+  "whitening_status": "Kilosort local regularized ZCA matrices are fit diagnostically for every terminal upstream branch; no branch is selected automatically"
+}

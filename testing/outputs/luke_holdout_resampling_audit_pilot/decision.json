@@ -1,0 +1,31 @@
+{
+  "events": 24,
+  "complete_holdout": false,
+  "variants": [
+    "pipeline_p1_zero_int16",
+    "official_p2_extrapolate_float",
+    "official_p2_extrapolate_int16"
+  ],
+  "automatic_motion_promotion": false,
+  "promotion_rule": "No resampling branch advances to sorting until polarity-, amplitude-, motion- and probe-stratified waveform preservation is reviewed; yield is not used.",
+  "sorter_outputs_accessed": false,
+  "review_labels_accessed": false,
+  "probe_info": {
+    "imec0": {
+      "sampling_rate_hz": 29999.835983263598,
+      "bad_channel_ids": [
+        "imec0.ap#AP191"
+      ],
+      "gain_uv_per_bit": 2.34375,
+      "motion_dir": "/mnt/NPX/Luke/20250804/dredge_pipeline_results_Luke0804_V2V1_g0_imec0/motion/dredge-motion"
+    },
+    "imec1": {
+      "sampling_rate_hz": 29999.759166666667,
+      "bad_channel_ids": [
+        "imec1.ap#AP191"
+      ],
+      "gain_uv_per_bit": 2.34375,
+      "motion_dir": "/mnt/NPX/Luke/20250804/dredge_pipeline_results_Luke0804_V2V1_g0_imec1/motion/dredge-motion"
+    }
+  }
+}

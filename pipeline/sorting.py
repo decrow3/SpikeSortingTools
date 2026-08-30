@@ -1,185 +1,214 @@
+"""Guarded Kilosort 4 execution for the rescue recording."""
 
-from spikeinterface.extractors import read_kilosort
+from __future__ import annotations
+
+import csv
+import json
+import math
+import os
 from pathlib import Path
-import shutil
-from spikeinterface.core import load_extractor
+from typing import Any, Mapping
+
 import numpy as np
-from spikeinterface.extractors import read_kilosort
-import pandas as pd
-from spikeinterface.sorters import run_sorter
 
-class KilosortResults:
-    def __init__(self, directory):
-        if isinstance(directory, str):
-            directory = Path(directory)
-        assert isinstance(directory, Path), 'directory must be a string or Path object'
-        assert directory.exists(), f'{directory} does not exist'
-        assert directory.is_dir(), f'{directory} is not a directory'
-        self.directory = directory
-
-        # Move directory to sorter_output if it is a kilosort4 output directory
-        if (directory / 'sorter_output').exists():
-            directory = directory / 'sorter_output'
-
-        self.spike_times_file = directory / 'spike_times.npy'
-        assert self.spike_times_file.exists(), f'{self.spike_times_file} does not exist'
-        self._spike_times = None
-
-        self.spike_amplitudes_file = directory / 'amplitudes.npy'
-        assert self.spike_amplitudes_file.exists(), f'{self.spike_amplitudes_file} does not exist'
-        self._spike_amplitudes = None
-
-        self.st_file = directory / 'full_st.npy'
-        if not self.st_file.exists():
-            print(f'Warning: {self.st_file} does not exist. Use Kilosort4 with save_extra_vars=True to generate.')
-        self.kept_spikes_file = directory / 'kept_spikes.npy'
-        if not self.kept_spikes_file.exists():
-            print(f'Warning: {self.kept_spikes_file} does not exist. Use Kilosort4 with save_extra_vars=True to generate.')
-        self._st = None
-
-        self.spike_clusters_file = directory / 'spike_clusters.npy'
-        assert self.spike_clusters_file.exists(), f'{self.spike_clusters_file} does not exist'
-        self._spike_clusters = None
-
-        self.spike_templates_file = directory / 'spike_templates.npy'
-        assert self.spike_templates_file.exists(), f'{self.spike_templates_file} does not exist'
-        self._spike_templates = None
-        
-        self.spike_positions_file = directory / 'spike_positions.npy'
-        assert self.spike_positions_file.exists(), f'{self.spike_positions_file} does not exist'
-        self._spike_positions = None
-
-        self.cluster_labels_file = directory / 'cluster_KSLabel.tsv'
-        assert self.cluster_labels_file.exists(), f'{self.cluster_labels_file} does not exist'
-        self._cluster_labels = None
-        
-    @property
-    def spike_times(self):
-        if self._spike_times is None:
-            self._spike_times = np.load(self.spike_times_file)
-        return self._spike_times
-    
-    @property
-    def spike_amplitudes(self):
-        if self._spike_amplitudes is None:
-            self._spike_amplitudes = np.load(self.spike_amplitudes_file)
-        return self._spike_amplitudes
-
-    @property
-    def st(self): 
-        if self._st is None:
-            st = np.load(self.st_file)
-            spikes = np.load(self.kept_spikes_file)
-            self._st = st[spikes]
-        return self._st
-    
-    @property
-    def spike_clusters(self):
-        if self._spike_clusters is None:
-            self._spike_clusters = np.load(self.spike_clusters_file)
-        return self._spike_clusters
-
-    @property
-    def spike_templates(self):
-        if self._spike_templates is None:
-            self._spike_templates = np.load(self.spike_templates_file)
-        return self._spike_templates
-
-    @property
-    def spike_positions(self):
-        if self._spike_positions is None:
-            self._spike_positions = np.load(self.spike_positions_file)
-        return self._spike_positions
-
-    @property
-    def cluster_labels(self):
-        if self._cluster_labels is None:
-            self._cluster_labels = pd.read_csv(self.cluster_labels_file, sep='\t')
-        return self._cluster_labels
+from .config import PIPELINE_VERSION, fingerprint
+from .preprocess import MANIFEST_NAME
 
 
-def save_binary_recording(seg, cache_dir, recalc=False):
-    '''
-        Save a given spikeinterface extractor to a binary format. If the cache_dir exists,
-        then will attempt to load from there. If the extractor cannot be loaded, then the extractor is saved.
-        Saving a preprocessed recording reduces computation time when running the sorter, especially if
-        running multiple sorters.
-
-        Parameters:
-        ------------
-        seg: spikeinterface extractor
-            The extractor to save
-        cache_dir: str or Path
-        recalc: bool
-            If True, will delete the cache_dir and rerun the sorter
-
-        Returns:
-        -----------
-        seg_saved: spikeinterface extractor
-            The loaded output
-    '''
-    if recalc:
-        shutil.rmtree(cache_dir)
-
-    if isinstance(cache_dir, str):
-        cache_dir = Path(cache_dir)
-
-    if cache_dir.exists():
-        try:
-            seg_load = load_extractor(cache_dir)
-        except Exception as e:
-            print(f'Failed to load extractor: {e}')
-            shutil.rmtree(cache_dir)
-    
-    if not cache_dir.exists():
-        seg.save(folder=cache_dir, n_jobs=-1)
-
-    return load_extractor(cache_dir)
-
-def sort_ks4(seg, cache_dir, sorter_params = {}, recalc=False):
-    '''
-        Sort a given spikeinterface extractor using kilosort4. If the cache_dir exists,
-        then will attempt to loaded from there. If the sorting cannot be loaded, then kilsort4 is run.
-
-        Parameters:
-        ------------
-        seg: spikeinterface extractor
-            The extractor to sort
-        cache_dir: str or Path
-        sorter_params: dict
-            Parameters to pass to the sorter
-        recalc: bool
-            If True, will delete the cache_dir and rerun the sorter
-
-        Returns:
-        -----------
-        ks4_sorting: spikeinterface sorting extractor
-            The sorted output
-    '''
-    if isinstance(cache_dir, str):
-        cache_dir = Path(cache_dir)
-
-    if recalc and cache_dir.exists():
-        shutil.rmtree(cache_dir)
-
-    ks4_sorting = None
-    ks4_sorter = None
-    if cache_dir.exists():
-        try:
-            ks4_sorting = KilosortResults(cache_dir / 'sorter_output')
-            #ks4_sorter = load_extractor(cache_dir / 'sorter')
-        except Exception as e:
-            print(f'Failed to load kilosort4 sorting: {e}')
-            shutil.rmtree(cache_dir)
-
-    if not cache_dir.exists():
+SORT_MANIFEST = "rescue_sort_manifest.json"
 
 
-        ks4_sorter = run_sorter("kilosort4", seg, folder=str(cache_dir), verbose=True, remove_existing_folder=True, **sorter_params)
-        ks4_sorter.save_to_folder(folder=cache_dir / 'sorter')
-        ks4_sorting = KilosortResults(cache_dir / 'sorter_output') # Pull from output directory
+def rescue_kilosort4_overrides() -> dict[str, Any]:
+    """Return the frozen settings selected by the rescue experiments.
 
-    return ks4_sorting, load_extractor(cache_dir / 'sorter')
+    This function is deliberately independent of SpikeInterface so ``--plan``
+    can report the tested choices without importing a sorter environment.
+    """
+    return {
+        "do_correction": False,
+        "do_CAR": True,
+        "artifact_threshold": math.inf,
+        "save_extra_vars": True,
+        "bad_channels": None,
+        "Th_universal": 12,
+        "Th_learned": 9,
+        "duplicate_spike_ms": 0.25,
+        "ccg_threshold": 0.75,
+        "nearest_chans": 20,
+        "nearest_templates": 200,
+        "max_channel_distance": 64,
+        "clear_cache": True,
+        "cross_peel_claim_ms": 0.0,
+        "cross_peel_claim_um": 0.0,
+    }
 
 
+def build_kilosort4_params(defaults: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    """Return explicit, tested sorter settings with all rejected features off."""
+    if defaults is None:
+        os.environ.setdefault("NUMBA_CACHE_DIR", "/tmp/spikeglx-rescue-numba-cache")
+        from spikeinterface.sorters import get_default_sorter_params
 
+        defaults = get_default_sorter_params("kilosort4")
+    params = dict(defaults)
+    required = {
+        "do_correction",
+        "do_CAR",
+        "artifact_threshold",
+        "save_extra_vars",
+        "Th_universal",
+        "Th_learned",
+        "duplicate_spike_ms",
+        "ccg_threshold",
+        "nearest_chans",
+        "nearest_templates",
+        "max_channel_distance",
+        "clear_cache",
+    }
+    missing = required - params.keys()
+    if missing:
+        raise RuntimeError(f"Kilosort 4 settings are missing: {sorted(missing)}")
+    overrides = rescue_kilosort4_overrides()
+    # Patched environments expose the claim-mask keys. In an unpatched
+    # environment the feature does not exist and is therefore already off.
+    for name in ("cross_peel_claim_ms", "cross_peel_claim_um"):
+        if name not in params:
+            overrides.pop(name)
+    params.update(overrides)
+    return params
+
+
+def _json_safe_params(params: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        key: ("Infinity" if isinstance(value, float) and math.isinf(value) else value)
+        for key, value in params.items()
+    }
+
+
+def validate_applied_settings(
+    applied: Mapping[str, Any], requested: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Refuse a completed sort whose saved critical settings differ."""
+    expected = {
+        "do_correction": False,
+        "do_CAR": True,
+        "artifact_threshold": math.inf,
+        "cross_peel_claim_ms": 0.0,
+        "cross_peel_claim_um": 0.0,
+    }
+    validated = {}
+    for key, value in expected.items():
+        if key not in requested:
+            continue
+        if key not in applied:
+            raise RuntimeError(f"Saved Kilosort ops omit critical setting {key}")
+        observed = applied[key]
+        if math.isinf(value):
+            try:
+                matches = bool(np.isinf(observed))
+            except TypeError:
+                matches = False
+        else:
+            matches = observed == value
+        if not matches:
+            raise RuntimeError(f"Saved Kilosort setting {key}={observed!r}, expected {value!r}")
+        validated[key] = "Infinity" if math.isinf(value) else value
+    return validated
+
+
+def _sort_summary(sorter_output: Path, params: Mapping[str, Any]) -> dict[str, Any]:
+    ops_path = sorter_output / "ops.npy"
+    if not ops_path.exists():
+        raise RuntimeError(f"Kilosort ended without {ops_path}")
+    ops = np.load(ops_path, allow_pickle=True).item()
+    applied = ops.get("settings", ops)
+    validated = validate_applied_settings(applied, params)
+    clusters = np.load(sorter_output / "spike_clusters.npy", mmap_mode="r").reshape(-1)
+    label_path = sorter_output / "cluster_KSLabel.tsv"
+    good_units = None
+    if label_path.exists():
+        with label_path.open(newline="") as handle:
+            rows = list(csv.DictReader(handle, delimiter="\t"))
+        good_units = sum(
+            any(str(value).strip().lower() == "good" for value in row.values())
+            for row in rows
+        )
+    return {
+        "critical_saved_settings": validated,
+        "final_spike_count": int(clusters.size),
+        "unit_count": int(np.unique(clusters).size),
+        "kilosort_good_unit_count": good_units,
+    }
+
+
+def run_kilosort4(recording_dir: Path, output_dir: Path) -> dict[str, Any]:
+    """Run Kilosort into a partial directory and atomically accept completion."""
+    os.environ.setdefault("NUMBA_CACHE_DIR", "/tmp/spikeglx-rescue-numba-cache")
+    from spikeinterface.core import load_extractor
+    from spikeinterface.sorters import run_sorter
+
+    recording_dir = Path(recording_dir)
+    output_dir = Path(output_dir)
+    partial = output_dir.with_name(output_dir.name + ".partial")
+    recording_manifest_path = recording_dir / MANIFEST_NAME
+    if not recording_manifest_path.exists():
+        raise FileNotFoundError(f"Missing accepted recording manifest: {recording_manifest_path}")
+    recording_manifest = json.loads(recording_manifest_path.read_text())
+    if not recording_manifest.get("complete"):
+        raise RuntimeError("Recording manifest is not marked complete")
+    binaries = list(recording_dir.glob("*.raw")) + list(recording_dir.glob("*.bin"))
+    actual_bytes = sum(path.stat().st_size for path in binaries)
+    if actual_bytes != recording_manifest["expected_binary_bytes"]:
+        raise RuntimeError(
+            f"Recording bytes changed after acceptance: {actual_bytes} != "
+            f"{recording_manifest['expected_binary_bytes']}"
+        )
+    params = build_kilosort4_params()
+    safe_params = _json_safe_params(params)
+    request = {
+        "pipeline_version": PIPELINE_VERSION,
+        "recording_request_digest": recording_manifest["request_digest"],
+        "sorter": "kilosort4",
+        "sorter_params": safe_params,
+    }
+    request_digest = fingerprint(request)
+    manifest_path = output_dir / SORT_MANIFEST
+    if partial.exists():
+        raise RuntimeError(f"Incomplete sort requires inspection: {partial}")
+    if output_dir.exists():
+        if not manifest_path.exists():
+            raise RuntimeError(f"Existing sort lacks {SORT_MANIFEST}: {output_dir}")
+        manifest = json.loads(manifest_path.read_text())
+        if manifest.get("request_digest") != request_digest:
+            raise RuntimeError("Existing sort belongs to another recording/configuration")
+        return manifest
+    output_dir.parent.mkdir(parents=True, exist_ok=True)
+    recording = load_extractor(recording_dir)
+    selected_samples = (
+        recording_manifest["selected_end_frame"]
+        - recording_manifest["selected_start_frame"]
+    )
+    if recording.get_num_samples() != selected_samples:
+        raise RuntimeError("Loaded recording length differs from its accepted manifest")
+    run_sorter(
+        "kilosort4",
+        recording,
+        folder=str(partial),
+        verbose=True,
+        remove_existing_folder=False,
+        **params,
+    )
+    sorter_output = partial / "sorter_output"
+    spike_times = sorter_output / "spike_times.npy"
+    if not spike_times.exists():
+        raise RuntimeError(f"Kilosort ended without {spike_times}")
+    summary = _sort_summary(sorter_output, params)
+    manifest = {
+        **request,
+        "request_digest": request_digest,
+        "summary": summary,
+        "complete": True,
+    }
+    (partial / SORT_MANIFEST).write_text(json.dumps(manifest, indent=2) + "\n")
+    os.replace(partial, output_dir)
+    return manifest

@@ -1,0 +1,55 @@
+{
+  "status": "sensitivity_only; no-halo correction remains ineligible for advancement",
+  "reason": "interior restriction cannot undo global effects on template learning",
+  "scores": {
+    "no_motion": {
+      "interior_depth_range_um": [
+        1840.0,
+        2620.0
+      ],
+      "margin_um_each_edge": 80.0,
+      "n_spikes": 2454733,
+      "n_units_with_interior_spikes": 113,
+      "n_ks_good_units_with_median_depth_interior": 26,
+      "median_contamination_pct_units_with_median_depth_interior": 17.5,
+      "cross_unit_coincidence_excess": 0.10843460368194831,
+      "median_refractory_violation_fraction": 0.006154960173787111,
+      "spike_rate_cv_across_300s_bins": 0.26129338538536834,
+      "n_neural_unmatched_events": 44,
+      "neural_unmatched_recovery": 0.9090909090909091,
+      "neural_unmatched_jitter_recovery": 0.07522727272727273,
+      "neural_unmatched_recovery_excess": 0.8338636363636364
+    },
+    "rigid025_p2_no_halo": {
+      "interior_depth_range_um": [
+        1840.0,
+        2620.0
+      ],
+      "margin_um_each_edge": 80.0,
+      "n_spikes": 2390100,
+      "n_units_with_interior_spikes": 107,
+      "n_ks_good_units_with_median_depth_interior": 27,
+      "median_contamination_pct_units_with_median_depth_interior": 26.4,
+      "cross_unit_coincidence_excess": 0.11683737082130455,
+      "median_refractory_violation_fraction": 0.009564293304994687,
+      "spike_rate_cv_across_300s_bins": 0.2535148308361449,
+      "n_neural_unmatched_events": 44,
+      "neural_unmatched_recovery": 0.9090909090909091,
+      "neural_unmatched_jitter_recovery": 0.07113636363636364,
+      "neural_unmatched_recovery_excess": 0.8379545454545454
+    }
+  },
+  "rigid025_minus_no_motion": {
+    "n_spikes": -64633,
+    "n_units_with_interior_spikes": -6,
+    "n_ks_good_units_with_median_depth_interior": 1,
+    "median_contamination_pct_units_with_median_depth_interior": 8.899999999999999,
+    "cross_unit_coincidence_excess": 0.00840276713935624,
+    "median_refractory_violation_fraction": 0.0034093331312075766,
+    "spike_rate_cv_across_300s_bins": -0.007778554549223438,
+    "n_neural_unmatched_events": 0,
+    "neural_unmatched_recovery": 0.0,
+    "neural_unmatched_jitter_recovery": -0.0040909090909090895,
+    "neural_unmatched_recovery_excess": 0.004090909090909034
+  }
+}

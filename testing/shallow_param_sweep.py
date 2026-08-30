@@ -4,9 +4,9 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]  # .../SpikeSortingTools/SpikeSortingTools
 sys.path.insert(0, str(REPO_ROOT))
-from pipeline import condition_signal, correct_motion, sort_ks4, save_binary_recording, run_qc, KilosortResults
-from pipeline.qc import truncation_qc
-from pipeline.curation_postpatch import run_cur
+from pipelineold import condition_signal, correct_motion, sort_ks4, save_binary_recording, run_qc, KilosortResults
+from pipelineold.qc import truncation_qc
+from pipelineold.curation_postpatch import run_cur
 from spikeinterface.sorters import get_default_sorter_params
 from spikeinterface.core import load_extractor
 import os

@@ -79,16 +79,16 @@ if str(REPO_ROOT) not in sys.path:
 
 from spikeinterface.extractors import read_kilosort
 from spikeinterface.postprocessing.correlograms import correlogram_for_one_segment
-from pipeline.sorting import KilosortResults
-from pipeline.qc import truncation_qc, refractory_qc, contamination_rate_from_rvl
-from pipeline.curation_postpatch import (
+from pipelineold.sorting import KilosortResults
+from pipelineold.qc import truncation_qc, refractory_qc, contamination_rate_from_rvl
+from pipelineold.curation_postpatch import (
     run_cur, run_cur_cosine, run_cur_amp_bic, run_cur_no_merge,
 )
-from pipeline.curation_evidence import (
+from pipelineold.curation_evidence import (
     build_evidence_table, contamination_rate_per_unit, DEFAULT_MERGE_RULES,
 )
-from pipeline.curation_split import score_split_candidates
-from pipeline.curation_temporal_diag import build_temporal_diagnostics
+from pipelineold.curation_split import score_split_candidates
+from pipelineold.curation_temporal_diag import build_temporal_diagnostics
 
 # =============================================================================
 # Style

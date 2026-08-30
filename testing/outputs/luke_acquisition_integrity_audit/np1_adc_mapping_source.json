@@ -1,0 +1,24 @@
+{
+  "status": "available",
+  "mapping_csv": "testing/outputs/luke_acquisition_integrity_audit/np1_adc_mapping.csv",
+  "mapping_kind": "NP1_ADC_identity",
+  "channel_count": 384,
+  "adc_count": 32,
+  "software_source": {
+    "package": "spikeinterface",
+    "version": "0.102.1",
+    "module_file": "/home/huklab/anaconda3/envs/spikeinterface/lib/python3.12/site-packages/spikeinterface/extractors/neuropixels_utils.py",
+    "module_sha256": "27175713cd3914d2fb960d587e670369cddb2e6e4fca953ba96b2a30af1c1d93",
+    "symbol": "get_neuropixels_sample_shifts",
+    "source_lines": "49-51",
+    "derivation": "adc_indices expression evaluated verbatim for num_channels=384 and num_channels_per_adc=12"
+  },
+  "recording_metadata_evidence": {
+    "meta": "/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0/Luke0730_V2V1_g0_imec1/Luke0730_V2V1_g0_t0.imec1.ap.meta",
+    "imDatPrb_type": "0",
+    "snsSaveChanSubset": "0:383,768",
+    "snsApLfSy": "384,0,1",
+    "snsChanMap_neural_channels": "AP0..AP383 map saved index 0..383"
+  },
+  "scope_note": "ADC identity, not simultaneous sampling-phase group; sync channel excluded"
+}

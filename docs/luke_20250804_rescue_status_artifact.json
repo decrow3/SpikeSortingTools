@@ -1,0 +1,233 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Luke 2025-08-04 rescue status and test plan",
+    "description": "Technical evidence synthesis and prioritized validation plan for the Luke imec1 rescue pipeline.",
+    "generatedAt": "2026-08-29T15:38:22-07:00",
+    "cards": [],
+    "charts": [
+      {
+        "id": "conditioning-recovery",
+        "title": "Reviewed-neural recovery favors the current 500 µV blanking baseline in harder windows",
+        "subtitle": "Matched 120-second sorts; exact reviewed-event denominators are shown in the tooltip.",
+        "type": "bar",
+        "dataset": "recovery_comparison",
+        "sourceId": "conditioning-evidence",
+        "source": {"id": "conditioning-evidence", "label": "Matched conditioning sorter gates", "query": {"engine": "snapshot", "sql": "SELECT window, conditioning, recovery, reviewed_neural, ks_good, median_contamination FROM recovery_comparison ORDER BY window, conditioning", "description": "Rows transcribed from the matched conditioning score tables."}},
+        "intent": "comparison",
+        "question": "Does removing 500 µV samplewise blanking preserve reviewed neural events at the sorter output?",
+        "rationale": "A grouped bar chart exposes the conditioning-by-window interaction while retaining exact denominators in tooltips.",
+        "comparisonContext": "Good, neutral and pathological 120-second windows under otherwise matched interpolation and sorter settings.",
+        "encodings": {
+          "x": {"field": "window", "type": "nominal", "title": "Window"},
+          "y": {"field": "recovery", "type": "quantitative", "title": "Reviewed-neural recovery"},
+          "color": {"field": "conditioning", "type": "nominal", "title": "Conditioning"},
+          "tooltip": [
+            {"field": "window", "type": "nominal", "title": "Window"},
+            {"field": "conditioning", "type": "nominal", "title": "Conditioning"},
+            {"field": "recovery", "type": "quantitative", "title": "Recovery", "format": ".1%"},
+            {"field": "reviewed_neural", "type": "quantitative", "title": "Reviewed neural events"},
+            {"field": "ks_good", "type": "quantitative", "title": "KS-good units"},
+            {"field": "median_contamination", "type": "quantitative", "title": "Median contamination", "format": ".1f"}
+          ]
+        },
+        "valueFormat": "percent",
+        "layout": "full",
+        "palette": {"kind": "categorical"},
+        "legend": {"position": "bottom"},
+        "settings": {"groupMode": "grouped", "showGrid": true, "showValues": true},
+        "surface": {"surface": "export", "viewMode": "both"}
+      }
+    ],
+    "tables": [
+      {
+        "id": "decision-matrix",
+        "title": "Current pipeline decisions",
+        "subtitle": "Decisions are provisional until the full-duration baseline and order-of-operations checks pass.",
+        "dataset": "decision_matrix",
+        "sourceId": "decision-source",
+        "source": {"id": "decision-source", "label": "Conditioning final decision record", "query": {"engine": "snapshot", "sql": "SELECT component, decision, basis, status FROM decision_matrix ORDER BY order", "description": "Current decisions synthesized from the conditioning decision record."}},
+        "layout": "full",
+        "density": "compact",
+        "defaultSort": {"field": "order", "direction": "asc"},
+        "columns": [
+          {"field": "order", "label": "Order", "type": "number", "format": ".0f", "hidden": true},
+          {"field": "component", "label": "Component", "type": "string"},
+          {"field": "decision", "label": "Decision", "type": "string"},
+          {"field": "basis", "label": "Evidence basis", "type": "string"},
+          {"field": "status", "label": "Status", "type": "string"}
+        ]
+      },
+      {
+        "id": "test-register",
+        "title": "Prioritized remaining tests",
+        "subtitle": "Advance one factor at a time; no full-probe finalist before snippet and strip gates pass.",
+        "dataset": "test_register",
+        "sourceId": "plan-source",
+        "source": {"id": "plan-source", "label": "Rescue evidence synthesis", "query": {"engine": "snapshot", "sql": "SELECT priority, test, purpose, gate, status FROM test_register ORDER BY order", "description": "Prioritized test register synthesized from completed audits."}},
+        "layout": "full",
+        "density": "compact",
+        "defaultSort": {"field": "order", "direction": "asc"},
+        "columns": [
+          {"field": "order", "label": "Order", "type": "number", "format": ".0f", "hidden": true},
+          {"field": "priority", "label": "Priority", "type": "string"},
+          {"field": "test", "label": "Test", "type": "string"},
+          {"field": "purpose", "label": "Purpose", "type": "string"},
+          {"field": "gate", "label": "Advancement gate", "type": "string"},
+          {"field": "status", "label": "Status", "type": "string"}
+        ]
+      },
+      {
+        "id": "artifact-thresholds",
+        "title": "Why Kilosort whole-batch artifact rejection stays disabled",
+        "subtitle": "At useful thresholds it erases reviewed events; at safer thresholds it rarely acts.",
+        "dataset": "artifact_thresholds",
+        "sourceId": "artifact-threshold-source",
+        "source": {"id": "artifact-threshold-source", "label": "Kilosort batch artifact-threshold audit", "query": {"engine": "snapshot", "sql": "SELECT window, threshold_uv, rejected_batches, total_batches, erased_reviewed_neural FROM artifact_thresholds ORDER BY threshold_uv, window", "description": "Rows transcribed from the artifact-threshold audit summary."}},
+        "layout": "full",
+        "density": "compact",
+        "defaultSort": {"field": "threshold_uv", "direction": "asc"},
+        "columns": [
+          {"field": "window", "label": "Window", "type": "string"},
+          {"field": "threshold_uv", "label": "Threshold (µV)", "type": "number", "format": ".0f"},
+          {"field": "rejected_batches", "label": "Rejected batches", "type": "number", "format": ".0f"},
+          {"field": "total_batches", "label": "Total batches", "type": "number", "format": ".0f"},
+          {"field": "erased_reviewed_neural", "label": "Erased reviewed neural", "type": "number", "format": ".0f"}
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "id": "conditioning-evidence",
+        "label": "Matched conditioning sorter gates",
+        "query": {
+          "engine": "Python",
+          "description": "Matched 120-second Kilosort comparisons of 500 µV blanking versus unchanged saturation samples, with physical channel 191 interpolated and included.",
+          "language": "python",
+          "filters": ["Luke imec1", "good/neutral/pathological windows", "reviewed neural events"],
+          "metric_definitions": ["recovery = reviewed neural events with a local sorted match / reviewed neural events"],
+          "tables_used": ["conditioning_2x2_scores.csv", "harder_window_scores.csv"]
+        }
+      },
+      {
+        "id": "decision-source",
+        "label": "Conditioning final decision record",
+        "query": {
+          "engine": "Python",
+          "description": "Machine-readable synthesis of conditioning, channel handling and sorter settings.",
+          "language": "python",
+          "filters": ["Luke 2025-08-04 imec1"],
+          "metric_definitions": [],
+          "tables_used": ["testing/outputs/luke_conditioning_final_decision/decision.json"]
+        }
+      },
+      {
+        "id": "artifact-threshold-source",
+        "label": "Kilosort batch artifact-threshold audit",
+        "query": {
+          "engine": "Python",
+          "description": "Counts whole batches and reviewed neural events erased at candidate Kilosort artifact thresholds.",
+          "language": "python",
+          "filters": ["neutral and pathological 120-second windows"],
+          "metric_definitions": ["a batch is rejected if any sample exceeds the configured threshold"],
+          "tables_used": ["testing/outputs/luke_kilosort_artifact_threshold_audit/threshold_summary.csv"]
+        }
+      },
+      {
+        "id": "motion-source",
+        "label": "Upstream motion ablation",
+        "query": {
+          "engine": "Python",
+          "description": "Matched no-motion and external-DREDGE Kilosort runs on the pathological 120-second window.",
+          "language": "python",
+          "filters": ["Luke imec1 pathological window"],
+          "metric_definitions": ["reviewed-neural recovery", "KS-good units", "median contamination", "cross-unit coincidence excess"],
+          "tables_used": ["docs/luke_20250804_upstream_ablation_report.md"]
+        }
+      },
+      {
+        "id": "plan-source",
+        "label": "Rescue evidence synthesis",
+        "query": {
+          "engine": "Document synthesis",
+          "description": "Prioritized tests derived from completed raw-voltage, conditioning, artifact, claim-mask and motion audits.",
+          "language": "markdown",
+          "filters": ["verify individual stages before adding motion"],
+          "metric_definitions": [],
+          "tables_used": ["docs/luke_20250804_rescue_status_and_test_plan.md"]
+        }
+      }
+    ],
+    "blocks": [
+      {"id": "summary", "type": "markdown", "layout": "full", "body": "# Luke 2025-08-04 rescue status\n\n**Conditioning is provisionally fixed; the no-motion full-duration depth strip has been materialized and passed initial integrity checks, but is not yet sorted.** The evidence favors a multi-factor pipeline failure over a simple absence of neural signal. The best-supported correctable issues are saturation/preprocessing interaction, channel-191 handling, overaggressive claim masking and the current external nonrigid resampling implementation. Genuine motion remains likely to limit the long recording after those upstream stages are controlled."},
+      {"id": "recovery-heading", "type": "markdown", "layout": "full", "body": "## The blanker is imperfect but currently necessary\n\nPoint blanking creates local ringing, yet removing it caused a much larger sorter-level loss in reviewed-neural recovery. The good window was nondiagnostic because both policies recovered every reviewed event; the neutral and pathological windows provide the decisive evidence."},
+      {"id": "recovery-chart", "type": "chart", "layout": "full", "chartId": "conditioning-recovery", "sourceId": "conditioning-evidence"},
+      {"id": "recovery-note", "type": "markdown", "layout": "full", "body": "The recovery improvement is not a free win: no blanking reduced near-zero-lag coincidence and slightly improved pathological contamination. The current action is therefore to retain 500 µV blanking for sorting while recording raw saturation intervals in a sidecar and excluding nearby detections from artifact-sensitive claims."},
+      {"id": "decisions-heading", "type": "markdown", "layout": "full", "body": "## Current decisions\n\nThese settings define the unwarped baseline. They should stay fixed until the materialized strip passes provenance and completeness checks and the full-384-versus-depth-strip conditioning order is quantified."},
+      {"id": "decisions", "type": "table", "layout": "full", "tableId": "decision-matrix", "sourceId": "decision-source"},
+      {"id": "motion", "type": "markdown", "layout": "full", "sourceId": "motion-source", "body": "## Motion result and interpretation\n\nIn the pathological window, external DREDGE increased learned detections from 562,417 to 1,298,050 but reduced KS-good units from 95 to 74, raised median contamination from 38.65% to 51.55%, raised coincidence excess from 0.365 to 0.770, and reduced reviewed-neural recovery from 85.2% to 70.4%. This rejects the tested warp, not voltage registration as a class. Motion estimation and voltage resampling must next be tested as separate stages."},
+      {"id": "threshold-heading", "type": "markdown", "layout": "full", "body": "## Whole-batch artifact rejection is too coarse\n\nAt 300 µV the native rule erases useful data; at 400–500 µV it is mostly or completely inactive. The sorter threshold stays infinite while artifact intervals are handled explicitly."},
+      {"id": "thresholds", "type": "table", "layout": "full", "tableId": "artifact-thresholds", "sourceId": "artifact-threshold-source"},
+      {"id": "tests-heading", "type": "markdown", "layout": "full", "body": "## Remaining corrections and tests\n\nThe immediate work is verification, not a parameter sweep. Provenance, conditioning order and an artifact sidecar precede the no-motion strip sort. Only candidates that pass matched snippet gates can advance to the long strip; at most two finalists should reach a full-probe run."},
+      {"id": "tests", "type": "table", "layout": "full", "tableId": "test-register", "sourceId": "plan-source"},
+      {"id": "outlook", "type": "markdown", "layout": "full", "body": "## Outlook\n\nLuke may approach Yates after pipeline adaptation, but the ceiling remains unknown. Luke contains abundant large voltage and comparable broad noise, while current cross-dataset event density is confounded by reference, polarity and shared artifacts. A credible rescue must preserve reviewed events, suppress artifact-proximal and synchronous duplicates, maintain plausible refractory behavior and residuals, and retain unit-family continuity through motion before a matched Luke–Yates biological comparison is defensible."},
+      {"id": "questions", "type": "markdown", "layout": "full", "body": "## Further questions\n\n1. Does conditioning a 96-channel strip before Kilosort reproduce the same signal as conditioning all 384 channels and then slicing?\n2. What artifact-exclusion margin removes blanking-induced ringing without excluding true reviewed spikes?\n3. Does the unwarped strip fail gradually with displacement, abruptly at motion events, or not at all?\n4. Can a validated rigid registration or motion-aware template-family linkage improve continuity without detection expansion?\n5. Does the 3.5–5.3× positive-polarity excess recur across Luke sessions, streams and rigs?"}
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-29T15:38:22-07:00",
+    "status": "ready",
+    "datasets": {
+      "recovery_comparison": [
+        {"window": "Good", "conditioning": "500 µV blanking", "recovery": 1.0, "reviewed_neural": 14, "ks_good": 197, "median_contamination": 17.3},
+        {"window": "Good", "conditioning": "No blanking", "recovery": 1.0, "reviewed_neural": 14, "ks_good": 178, "median_contamination": 19.8},
+        {"window": "Neutral", "conditioning": "500 µV blanking", "recovery": 0.952381, "reviewed_neural": 21, "ks_good": 103, "median_contamination": 40.1},
+        {"window": "Neutral", "conditioning": "No blanking", "recovery": 0.428571, "reviewed_neural": 21, "ks_good": 93, "median_contamination": 40.7},
+        {"window": "Pathological", "conditioning": "500 µV blanking", "recovery": 0.814815, "reviewed_neural": 27, "ks_good": 114, "median_contamination": 38.4},
+        {"window": "Pathological", "conditioning": "No blanking", "recovery": 0.481481, "reviewed_neural": 27, "ks_good": 113, "median_contamination": 34.7}
+      ],
+      "decision_matrix": [
+        {"order": 1, "component": "Neuropixels phase correction", "decision": "Retain", "basis": "Required acquisition-phase alignment; evaluated in conditioning chain", "status": "Baseline"},
+        {"order": 2, "component": "500 µV bilateral sample blanking", "decision": "Retain provisionally", "basis": "Large reviewed-recovery advantage in neutral and pathological windows", "status": "Needs sidecar"},
+        {"order": 3, "component": "Physical channel 191", "decision": "Interpolate and include in sorter", "basis": "Better unit yield and contamination than exclusion", "status": "Exclude from metrics"},
+        {"order": 4, "component": "Kilosort preprocessing", "decision": "One internal high-pass/CAR/whitening stage", "basis": "Avoid repeated conditioning stages", "status": "Baseline"},
+        {"order": 5, "component": "External motion correction", "decision": "Off", "basis": "Current DREDGE warp worsened recovery and duplication metrics", "status": "Rejected implementation"},
+        {"order": 6, "component": "Kilosort internal motion", "decision": "Off for baseline", "basis": "Needed as a clean comparator before motion is reintroduced", "status": "Candidate later"},
+        {"order": 7, "component": "Cross-peel claim mask", "decision": "Off", "basis": "Every nonzero tested setting reduced reviewed recovery", "status": "Rejected for now"},
+        {"order": 8, "component": "Kilosort artifact threshold", "decision": "Infinite/off", "basis": "Whole-batch rejection was either destructive or ineffective", "status": "Rejected"}
+      ],
+      "artifact_thresholds": [
+        {"window": "Neutral", "threshold_uv": 300, "rejected_batches": 14, "total_batches": 60, "erased_reviewed_neural": 9},
+        {"window": "Pathological", "threshold_uv": 300, "rejected_batches": 3, "total_batches": 60, "erased_reviewed_neural": 3},
+        {"window": "Neutral", "threshold_uv": 400, "rejected_batches": 0, "total_batches": 60, "erased_reviewed_neural": 0},
+        {"window": "Pathological", "threshold_uv": 400, "rejected_batches": 1, "total_batches": 60, "erased_reviewed_neural": 3},
+        {"window": "Neutral", "threshold_uv": 500, "rejected_batches": 0, "total_batches": 60, "erased_reviewed_neural": 0},
+        {"window": "Pathological", "threshold_uv": 500, "rejected_batches": 0, "total_batches": 60, "erased_reviewed_neural": 0}
+      ],
+      "test_register": [
+        {"order": 1, "priority": "P0", "test": "Materialized-strip provenance and completeness", "purpose": "Exclude preallocated, partial or zero-filled inputs", "gate": "Correct source, exact size, representative nonzero chunks across duration", "status": "Initial checks passed"},
+        {"order": 2, "priority": "P0", "test": "Full-384-then-slice versus slice-then-condition", "purpose": "Quantify conditioning order and neighborhood effects", "gate": "Near-identical waveforms, amplitudes and event rates except prespecified ch191 effects", "status": "Not started"},
+        {"order": 3, "priority": "P0", "test": "Raw saturation/artifact sidecar", "purpose": "Separate signal transformation from claim exclusion", "gate": "Reproducible components and justified temporal margins", "status": "Not started"},
+        {"order": 4, "priority": "P0", "test": "Artifact-exclusion margin sweep", "purpose": "Suppress ringing-driven claims", "gate": "Lower artifact-proximal false events without reviewed-recovery loss", "status": "Not started"},
+        {"order": 5, "priority": "P0", "test": "No-motion full-duration depth-strip sort", "purpose": "Set longitudinal baseline", "gate": "Stable time bins, no detection explosion, acceptable recovery and quality", "status": "Awaiting conditioning-order check"},
+        {"order": 6, "priority": "P1", "test": "Longitudinal unit-family continuity", "purpose": "Separate motion fragmentation from signal loss", "gate": "Continuous waveform families without merge-induced refractory failures", "status": "Not started"},
+        {"order": 7, "priority": "P1", "test": "Motion-field qualification without resampling", "purpose": "Validate estimator support independently", "gate": "Supported bins, reproducibility and controlled edges", "status": "Not started"},
+        {"order": 8, "priority": "P1", "test": "Voltage-resampling implementation audit", "purpose": "Test interpolation, dtype, gain, ordering and borders", "gate": "Preserved reviewed waveforms with no edge or duplicate burden", "status": "Partially implemented"},
+        {"order": 9, "priority": "P1", "test": "Matched-snippet motion candidate gates", "purpose": "Reintroduce one motion factor at a time", "gate": "Beat no-motion recovery and quality, not just yield", "status": "Pending baseline"},
+        {"order": 10, "priority": "P1", "test": "Template, collision and residual audit", "purpose": "Find artifact templates, duplicate peels and genuine misses", "gate": "Better residual explanation without coincidence/refractory inflation", "status": "Not started"},
+        {"order": 11, "priority": "P2", "test": "Positive-polarity recurrence matrix", "purpose": "Localize session, stream or rig dependence", "gate": "Multiple Luke sessions, both streams, Yates and another rig", "status": "Deferred"},
+        {"order": 12, "priority": "P2", "test": "At most two full-probe finalists", "purpose": "Estimate final attainable quality", "gate": "All snippet and depth-strip gates passed", "status": "Blocked by earlier gates"}
+      ]
+    }
+  },
+  "sources": [
+    {"id": "conditioning-evidence", "label": "Matched conditioning sorter gates"},
+    {"id": "decision-source", "label": "Conditioning final decision record"},
+    {"id": "artifact-threshold-source", "label": "Kilosort batch artifact-threshold audit"},
+    {"id": "motion-source", "label": "Upstream motion ablation"},
+    {"id": "plan-source", "label": "Rescue evidence synthesis"}
+  ]
+}

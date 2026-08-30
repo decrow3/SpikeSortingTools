@@ -1,0 +1,45 @@
+{
+  "decision": "interpolation_not_primary_contaminant_retain_with_metric_exclusion",
+  "population_summary": [
+    {
+      "population": "all reviewed",
+      "n_events": 200,
+      "exact_peak_amplitude_fraction": 0.96,
+      "same_peak_channel_fraction": 0.965,
+      "median_peak_amplitude_ratio": 1.0,
+      "p10_peak_amplitude_ratio": 1.0,
+      "p90_peak_amplitude_ratio": 1.0
+    },
+    {
+      "population": "reviewed neural",
+      "n_events": 128,
+      "exact_peak_amplitude_fraction": 0.953125,
+      "same_peak_channel_fraction": 0.9609375,
+      "median_peak_amplitude_ratio": 1.0,
+      "p10_peak_amplitude_ratio": 1.0,
+      "p90_peak_amplitude_ratio": 1.0
+    },
+    {
+      "population": "reviewed unmatched neural",
+      "n_events": 62,
+      "exact_peak_amplitude_fraction": 0.9193548387096774,
+      "same_peak_channel_fraction": 0.9354838709677419,
+      "median_peak_amplitude_ratio": 1.0,
+      "p10_peak_amplitude_ratio": 1.0,
+      "p90_peak_amplitude_ratio": 1.0
+    }
+  ],
+  "channel_191_peak_events": {
+    "all_reviewed": 6,
+    "reviewed_neural": 4,
+    "remain_on_191_after_interpolation": 0,
+    "interpretation": "Without synthesis, the near-flat contact can win a normalized negative-peak search. Interpolation redirects all such fixed events to non-bad contacts."
+  },
+  "interpretation": "With saturation blanking, bandpass, and local reference held fixed, bad-channel interpolation has no population-wide peak-amplitude cost and removes false peak localization to channel 191.",
+  "rescue_policy": [
+    "Retain channel-191 interpolation in the next sorter candidate.",
+    "Exclude synthetic channel 191 from event-footprint, dominant-contact, and claim-mask distance metrics.",
+    "Treat recurring row-216 structure as a separate distributed/common-mode question."
+  ],
+  "remaining_limit": "This is a fixed-event waveform audit, not a leave-blank sorter comparison; subtle unit-family effects remain possible."
+}

@@ -5,6 +5,7 @@ from testing.luke_yates_raw_voltage_audit import (
     depth_exposure_mm,
     extrema_candidates,
     local_median_reference,
+    nearest_neighbors,
     shank_median_reference,
     spatial_neighbors,
 )
@@ -21,6 +22,17 @@ def test_local_reference_removes_shared_signal():
     locations = np.array([[0, 0], [0, 20], [0, 40]], float)
     neighbors = spatial_neighbors(locations, np.zeros(3), 100)
     assert np.allclose(local_median_reference(values, neighbors), 0)
+
+
+def test_nearest_neighbors_has_fixed_count_and_stays_on_shank():
+    locations = np.array(
+        [[0, 0], [0, 20], [0, 40], [200, 0], [200, 20], [200, 40]], float
+    )
+    shanks = np.array([0, 0, 0, 1, 1, 1])
+    neighbors = nearest_neighbors(locations, shanks, 2)
+    assert all(len(group) == 2 for group in neighbors)
+    assert all(np.all(shanks[group] == shanks[channel]) for channel, group in enumerate(neighbors))
+    assert all(channel in group for channel, group in enumerate(neighbors))
 
 
 def test_shank_reference_is_independent_between_shanks():

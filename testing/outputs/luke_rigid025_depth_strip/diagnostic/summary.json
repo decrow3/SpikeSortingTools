@@ -1,0 +1,43 @@
+{
+  "sorter": "/media/huklab/Data/NPX/Ryansorting/Luke/Luke0804_two_axis_pilot_imec1/sorts/core_depth_strip/rigid025_p2_single_ks_preprocessing_claim_off/sorter_output",
+  "duration_s": 10473.553879363088,
+  "n_spikes": 3603232,
+  "n_units": 125,
+  "n_ks_good": 33,
+  "time_bin_s": 300.0,
+  "depth_range_um": [
+    1760.0,
+    2700.0
+  ],
+  "overall_edge_spike_fraction": 0.2011477473557073,
+  "edge_spike_fraction_top_5_units": 0.9233038348082596,
+  "units_edge_dominated_gt50pct": 13,
+  "maximum_time_bin_edge_fraction": 0.36836831597287134,
+  "maximum_time_bin_coincidence_excess": 0.19692895755066098,
+  "median_time_bin_coincidence_excess": 0.07098107336028123,
+  "excess_coincident_pairs_broad_screen": 1104,
+  "high_priority_pairs_for_ccg_template_residual_review": 109,
+  "high_priority_pairs_with_any_ks_good": 30,
+  "median_unit_depth_excursion_um": 30.375244140625,
+  "p90_unit_depth_excursion_um": 49.07932983398443,
+  "median_first_last_pc_cosine": 0.9365840733907839,
+  "units_first_last_pc_cosine_lt_0_8": 7,
+  "median_late_early_amplitude_ratio": 1.0037957500373167,
+  "units_late_early_amplitude_ratio_outside_0_5_2": 3,
+  "motion_spearman_correlations": {
+    "spikes_per_s_vs_rigid_excursion_um": 0.47198879551820727,
+    "edge_spike_fraction_vs_rigid_excursion_um": 0.009243697478991597,
+    "coincidence_excess_vs_rigid_excursion_um": -0.7722689075630252,
+    "median_amplitude_vs_rigid_excursion_um": -0.4815126050420168,
+    "spikes_per_s_vs_median_nonrigid_spread_um": -0.09327731092436975,
+    "edge_spike_fraction_vs_median_nonrigid_spread_um": -0.08011204481792718,
+    "coincidence_excess_vs_median_nonrigid_spread_um": 0.04481792717086835,
+    "median_amplitude_vs_median_nonrigid_spread_um": 0.511484593837535,
+    "spikes_per_s_vs_p99_abs_rigid_step_um": 0.09803921568627451,
+    "edge_spike_fraction_vs_p99_abs_rigid_step_um": 0.11092436974789915,
+    "coincidence_excess_vs_p99_abs_rigid_step_um": -0.2350140056022409,
+    "median_amplitude_vs_p99_abs_rigid_step_um": -0.04341736694677871
+  },
+  "residual_status": "not_computed; no residual binary was saved; reconstruct only for prioritized units/events",
+  "interpretation_guardrail": "PC-feature, depth and amplitude continuity are diagnostic and do not establish biological unit identity. Excess coincidence does not establish duplicate peeling; high-priority pairs require CCG, template, refractory, waveform and residual review."
+}

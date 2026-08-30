@@ -5,6 +5,7 @@ from testing.luke_motion_candidate_sort import (
     SOURCE_RECORDING,
     condition_paths,
     field_displacement,
+    interpolation_spec,
     sorter_params,
 )
 
@@ -15,6 +16,35 @@ def test_field_displacement_preserves_native_nonrigid_field():
     result = field_displacement(displacement, "nonrigid")
 
     assert result is displacement
+
+
+@pytest.mark.parametrize(
+    "field", ["nonrigid_p2_extrapolate", "nonrigid_p2_sigma28_extrapolate"]
+)
+def test_field_displacement_preserves_p2_candidate_field(field):
+    displacement = np.arange(12, dtype=float).reshape(3, 4)
+    assert field_displacement(displacement, field) is displacement
+
+
+def test_interpolation_specs_make_low_level_defaults_explicit():
+    assert interpolation_spec("nonrigid") == {
+        "border_mode": "force_zeros",
+        "sigma_um": 20.0,
+        "p": 1,
+    }
+    assert interpolation_spec("nonrigid_p2_extrapolate") == {
+        "border_mode": "force_extrapolate",
+        "sigma_um": 20.0,
+        "p": 2,
+    }
+    assert interpolation_spec("rigid_gain_025_p2_extrapolate") == {
+        "border_mode": "force_extrapolate",
+        "sigma_um": 20.0,
+        "p": 2,
+    }
+    assert interpolation_spec("nonrigid_p2_sigma28_extrapolate")["sigma_um"] == pytest.approx(
+        np.sqrt(2.0) * 20.0
+    )
 
 
 def test_field_displacement_preserves_native_medicine_field():
@@ -45,7 +75,13 @@ def test_field_displacement_returns_zeros_for_identity_field():
 
 @pytest.mark.parametrize(
     ("field", "gain"),
-    [("rigid_gain_025", 0.25), ("rigid_gain_050", 0.5), ("rigid_gain_075", 0.75)],
+    [
+        ("rigid_gain_025", 0.25),
+        ("rigid_gain_050", 0.5),
+        ("rigid_gain_075", 0.75),
+        ("rigid_gain_025_p2_extrapolate", 0.25),
+        ("rigid_gain_100_p2_extrapolate", 1.0),
+    ],
 )
 def test_field_displacement_scales_rigid_mean(field, gain):
     displacement = np.array([[0.0, 2.0, 4.0], [-3.0, 0.0, 3.0]])

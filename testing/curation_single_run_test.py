@@ -8,9 +8,9 @@
 # Intended for rapid iteration on curation_postpatch.py.
 # tF is loaded via torch throughout curation — keep torch installed in this env.
 
-from pipeline import sort_ks4, run_qc, KilosortResults, save_binary_recording
-from pipeline.qc import truncation_qc
-from pipeline.curation_postpatch import (
+from pipelineold import sort_ks4, run_qc, KilosortResults, save_binary_recording
+from pipelineold.qc import truncation_qc
+from pipelineold.curation_postpatch import (
     run_cur,
     run_cur_cosine,
     run_cur_amp_bic,

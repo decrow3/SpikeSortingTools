@@ -34,10 +34,13 @@ CONDITIONS = {
     "Current DREDGE 150/100": OUTPUT_ROOT.parent / "claimmask_window_sweep/sorts/registration_outlier/claim_off/sorter_output",
     "Rigid from 300/200": OUTPUT_ROOT / "sorts/dredge_rigid_from_300_200/sorter_output",
     "Selected DREDGE 300/200": OUTPUT_ROOT / "sorts/dredge_nr_200_300_split/sorter_output",
+    "Selected DREDGE p2 sigma 20": OUTPUT_ROOT / "sorts/dredge_nr_200_300_split_p2_extrapolate/sorter_output",
+    "Selected DREDGE p2 sigma 28": OUTPUT_ROOT / "sorts/dredge_nr_200_300_split_p2_sigma28_extrapolate/sorter_output",
     "MEDiCINe default, sigma 10": OUTPUT_ROOT / "sorts/medicine_default_sigma10/sorter_output",
 }
 GAIN_CONDITIONS = {
     "Rigid gain 0.25": OUTPUT_ROOT / "sorts/dredge_rigid_gain_025/sorter_output",
+    "Rigid gain 0.25 p2": OUTPUT_ROOT / "sorts/dredge_rigid_gain_025_p2_extrapolate/sorter_output",
     "Rigid gain 0.50": OUTPUT_ROOT / "sorts/dredge_rigid_gain_050/sorter_output",
     "Rigid gain 0.75": OUTPUT_ROOT / "sorts/dredge_rigid_gain_075/sorter_output",
 }
@@ -48,6 +51,8 @@ PALETTE = {
     "Current DREDGE 150/100": "#777777",
     "Rigid from 300/200": "#d08b27",
     "Selected DREDGE 300/200": "#3569a8",
+    "Selected DREDGE p2 sigma 20": "#2a9d8f",
+    "Selected DREDGE p2 sigma 28": "#64b5a8",
     "MEDiCINe default, sigma 10": "#b85c7a",
 }
 
@@ -162,18 +167,32 @@ def sorter_metrics() -> pd.DataFrame:
     identity = pd.read_csv(OUTPUT_ROOT / "zero_displacement_identity_scores.csv")
     internal = pd.read_csv(OUTPUT_ROOT / "kilosort_internal_rigid_scores.csv")
     medicine = pd.read_csv(OUTPUT_ROOT / "medicine_default_sigma10_scores.csv")
+    p2_nonrigid = [
+        pd.read_csv(OUTPUT_ROOT / f"{condition}_scores.csv")
+        for condition in (
+            "dredge_nr_200_300_split_p2_extrapolate",
+            "dredge_nr_200_300_split_p2_sigma28_extrapolate",
+        )
+    ]
     gains = [
         pd.read_csv(OUTPUT_ROOT / f"dredge_rigid_gain_{gain}_scores.csv")
         for gain in ("025", "050", "075")
     ]
+    gains.append(pd.read_csv(OUTPUT_ROOT / "dredge_rigid_gain_025_p2_extrapolate_scores.csv"))
     baseline = baseline[baseline.population.eq("visual_neural_unmatched")]
     candidate = candidate[candidate.population.eq("visual_neural_unmatched")]
     rigid = rigid[rigid.population.eq("visual_neural_unmatched")]
     identity = identity[identity.population.eq("visual_neural_unmatched")]
     internal = internal[internal.population.eq("visual_neural_unmatched")]
     medicine = medicine[medicine.population.eq("visual_neural_unmatched")]
+    p2_nonrigid = [
+        frame[frame.population.eq("visual_neural_unmatched")] for frame in p2_nonrigid
+    ]
     gains = [frame[frame.population.eq("visual_neural_unmatched")] for frame in gains]
-    combined = pd.concat([baseline, identity, internal, rigid, candidate, medicine, *gains], ignore_index=True)
+    combined = pd.concat(
+        [baseline, identity, internal, rigid, candidate, *p2_nonrigid, medicine, *gains],
+        ignore_index=True,
+    )
     mapping = {
         "current_no_motion": "No external correction",
         "zero_displacement_identity": "Zero-displacement identity",
@@ -181,8 +200,11 @@ def sorter_metrics() -> pd.DataFrame:
         "current_motion": "Current DREDGE 150/100",
         "dredge_rigid_from_300_200": "Rigid from 300/200",
         "dredge_nr_200_300_split": "Selected DREDGE 300/200",
+        "dredge_nr_200_300_split_p2_extrapolate": "Selected DREDGE p2 sigma 20",
+        "dredge_nr_200_300_split_p2_sigma28_extrapolate": "Selected DREDGE p2 sigma 28",
         "medicine_default_sigma10": "MEDiCINe default, sigma 10",
         "dredge_rigid_gain_025": "Rigid gain 0.25",
+        "dredge_rigid_gain_025_p2_extrapolate": "Rigid gain 0.25 p2",
         "dredge_rigid_gain_050": "Rigid gain 0.50",
         "dredge_rigid_gain_075": "Rigid gain 0.75",
     }
@@ -288,25 +310,25 @@ def save_recovery_figure(metrics: pd.DataFrame, output: Path) -> None:
         ("median_contamination_pct", "Median contamination", "Percent", lambda x: f"{x:.1f}%"),
         ("n_ks_good", "KS-good units", "Units", lambda x: f"{int(x)}"),
     ]
-    fig, axes = plt.subplots(2, 3, figsize=(17, 8.2))
+    fig, axes = plt.subplots(2, 3, figsize=(20, 8.2))
     colors = [PALETTE[name] for name in order]
     for ax, (field, title, ylabel, formatter) in zip(axes.ravel(), specs):
         data = values[field].to_numpy(float)
         bars = ax.bar(np.arange(len(order)), data, color=colors, edgecolor="#333333", lw=0.7)
         ax.set_title(title)
         ax.set_ylabel(ylabel)
-        ax.set_xticks(
-            np.arange(len(order)),
-            [
-                "No\ncorrection",
-                "Identity",
-                "KS\nrigid",
-                "DREDGE\n150/100",
-                "Rigid\n300/200",
-                "DREDGE\n300/200",
-                "MEDiCINe\nσ10",
-            ],
-        )
+        short_labels = {
+            "No external correction": "No\ncorrection",
+            "Zero-displacement identity": "Identity",
+            "Kilosort internal rigid": "KS\nrigid",
+            "Current DREDGE 150/100": "DREDGE\n150/100 p1",
+            "Rigid from 300/200": "Rigid\n300/200 p1",
+            "Selected DREDGE 300/200": "DREDGE\n300/200 p1",
+            "Selected DREDGE p2 sigma 20": "DREDGE p2\nσ20",
+            "Selected DREDGE p2 sigma 28": "DREDGE p2\nσ28",
+            "MEDiCINe default, sigma 10": "MEDiCINe\nσ10 p1",
+        }
+        ax.set_xticks(np.arange(len(order)), [short_labels[name] for name in order])
         ax.tick_params(axis="x", labelsize=8)
         ax.set_ylim(0, max(data) * 1.20 if max(data) else 1)
         ax.grid(axis="y", color="#e0e0e0", lw=0.7)
@@ -324,7 +346,7 @@ def save_event_matrix(events: pd.DataFrame, output: Path) -> None:
     matrix = matrix[list(CONDITIONS)]
     matrix["pattern"] = matrix.astype(str).agg("".join, axis=1)
     matrix = matrix.sort_values(["pattern", matrix.index.name], ascending=[False, True]).drop(columns="pattern")
-    fig, ax = plt.subplots(figsize=(9.5, 8.5))
+    fig, ax = plt.subplots(figsize=(12.5, 8.5))
     image = ax.imshow(matrix.to_numpy(), aspect="auto", cmap="Blues", vmin=0, vmax=1, interpolation="nearest")
     totals = matrix.sum(axis=0).astype(int)
     labels = [
@@ -334,6 +356,8 @@ def save_event_matrix(events: pd.DataFrame, output: Path) -> None:
         "Current 150/100",
         "Rigid 300/200",
         "Non-rigid 300/200",
+        "Non-rigid p2 sigma 20",
+        "Non-rigid p2 sigma 28",
         "MEDiCINe sigma 10",
     ]
     ax.set_xticks(

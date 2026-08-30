@@ -1,0 +1,36 @@
+{
+  "decision": "reject_current_claim_mask_for_luke_rescue",
+  "production_setting": {
+    "claim_ms": 0.25,
+    "claim_um": 75.0
+  },
+  "causal_short_window_result": {
+    "all_nonzero_masks_reduce_visual_neural_recovery_in_both_windows": true,
+    "production_recovery_change_pp_by_window": {
+      "registration_outlier": -25.92592592592593,
+      "shared_template": -48.57142857142859
+    },
+    "production_spike_retention_by_window": {
+      "registration_outlier": 0.21781902705925874,
+      "shared_template": 0.32924887939340625
+    },
+    "mildest_mask_recovery_change_pp_by_window": {
+      "registration_outlier": -7.4074074074074066,
+      "shared_template": -5.714285714285728
+    },
+    "mildest_mask_near_coincident_relative_change_by_window": {
+      "registration_outlier": -0.44190848878411515,
+      "shared_template": -0.2654331546493216
+    }
+  },
+  "full_session_replication": {
+    "population": "62 visually neural unmatched events",
+    "patched_recovery": 0.1612903225806451,
+    "claim_off_dredge_recovery": 0.8064516129032258,
+    "patched_to_claim_off_recovery_ratio": 0.19999999999999993,
+    "caveat": "This comparison includes downstream curation; use it as replication, not the primary causal estimate."
+  },
+  "interpretation": "The current 0.25 ms/75 um cross-peel mask removes duplicate-like activity by suppressing a large fraction of all detections, including reviewed neural events. It is not a rescue setting for Luke.",
+  "next_test": "If claim masking is revisited, test only the mild 0.10 ms/25 um setting on the no-external-voltage-correction baseline, and require event-level non-inferiority plus collision and unit-family continuity checks.",
+  "scope_caveat": "The causal sweep used the already DREDGE-warped binary. It rejects the current mask on that input but does not establish whether a milder, template-family-aware mask could help the no-warp production baseline."
+}

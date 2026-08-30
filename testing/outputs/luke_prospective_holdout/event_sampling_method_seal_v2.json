@@ -1,0 +1,6 @@
+{
+  "method": "testing/outputs/luke_prospective_holdout/event_sampling_method_addendum_v2.json",
+  "sha256": "630632a7245226f5ae6209d640e9932bd429d013c7ca42bec0cd55f75117d062",
+  "sealed": true,
+  "event_indices_drawn": false
+}

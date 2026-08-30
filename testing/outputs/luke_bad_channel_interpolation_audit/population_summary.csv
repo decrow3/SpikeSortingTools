@@ -1,0 +1,4 @@
+population,n_events,exact_peak_amplitude_fraction,same_peak_channel_fraction,median_peak_amplitude_ratio,p10_peak_amplitude_ratio,p90_peak_amplitude_ratio
+all reviewed,200,0.96,0.965,1.0,1.0,1.0
+reviewed neural,128,0.953125,0.9609375,1.0,1.0,1.0
+reviewed unmatched neural,62,0.9193548387096774,0.9354838709677419,1.0,1.0,1.0

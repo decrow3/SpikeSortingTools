@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "safety": {
+    "raw_recording_read": false,
+    "gpu_used": false
+  },
+  "inputs": {
+    "event_csv": {
+      "path": "testing/outputs/luke_imec1_event_localization_audit/channel_event_summary.csv",
+      "sha256": "8d115f96bdba087ef92a5301010c9ec69426deac2a2824fcea587615c83e0075"
+    },
+    "mapping_csv": {
+      "path": "testing/outputs/luke_acquisition_integrity_audit/np1_adc_mapping.csv",
+      "sha256": "499759671f296c7ed49a4a0318b1a00489bc8e5ffd13742bc1ef05adbe82942a"
+    },
+    "geometry_csv": {
+      "path": "testing/outputs/luke_geometry_mapping_audit/imec1/channel_mapping_rows.csv",
+      "sha256": "4d552fecaca737462dafcad75cf22ee667ef73d793f80fea4afe1e54746cefd9"
+    },
+    "mapping_source_json": {
+      "path": "testing/outputs/luke_acquisition_integrity_audit/np1_adc_mapping_source.json",
+      "sha256": "91735771085f81b5ee1d22761142891c1d8007381418be3d876ad465585f0b07"
+    }
+  },
+  "mapping_semantics": {
+    "adc_identity": "adc_index from explicit NP1_ADC_identity mapping",
+    "sampling_phase": "(channel mod 24)//2; equivalent to the 12 sequential values assigned per ADC by get_neuropixels_sample_shifts(..., 12, 13)",
+    "software_source_lines": "spikeinterface.extractors.neuropixels_utils:get_neuropixels_sample_shifts lines 49-56; package/module hash recorded in mapping_source_json",
+    "warning": "ADC identity is structurally tied to a 240-um depth block and channel parity; association is not causal identification."
+  },
+  "controls": {
+    "geometry": "lateral x fixed effects plus piecewise-linear depth trend at depth quintiles",
+    "sampling_phase_extra": "240-um ADC-block fixed effects",
+    "adc_identity_null": "all 95 nonzero global cyclic shifts by complete four-channel/40-um NP1 geometry rows",
+    "sampling_phase_null": "999 independent within-ADC-block cyclic shifts by complete four-channel/40-um geometry rows"
+  },
+  "aggregate_note": "Aggregate sums reused stage/window counts and is descriptive, not an independent replication.",
+  "row_count": 10,
+  "stratum_count": 9,
+  "results": [
+    {
+      "dataset": "ALL",
+      "window_kind": "ALL",
+      "stage": "ALL",
+      "scope": "aggregate_descriptive",
+      "n_channels": 384,
+      "adc_identity_partial_r2": 0.2152121944108595,
+      "adc_identity_cyclic_p": 0.9375,
+      "adc_identity_null_shifts": 95,
+      "sampling_phase_partial_r2": 0.021970574748755915,
+      "sampling_phase_cyclic_p": 0.205,
+      "sampling_phase_null_permutations": 999
+    },
+    {
+      "dataset": "Luke imec1 pathological",
+      "window_kind": "pathological",
+      "stage": "common_bandpass_equal_5_reference",
+      "scope": "stratum",
+      "n_channels": 384,
+      "adc_identity_partial_r2": 0.1163712670797485,
+      "adc_identity_cyclic_p": 0.3333333333333333,
+      "adc_identity_null_shifts": 95,
+      "sampling_phase_partial_r2": 0.010332002553793702,
+      "sampling_phase_cyclic_p": 0.523,
+      "sampling_phase_null_permutations": 999
+    },
+    {
+      "dataset": "Luke imec1 pathological",
+      "window_kind": "pathological",
+      "stage": "common_bandpass_local_reference",
+      "scope": "stratum",
+      "n_channels": 384,
+      "adc_identity_partial_r2": 0.18320561805054794,
+      "adc_identity_cyclic_p": 0.4270833333333333,
+      "adc_identity_null_shifts": 95,
+      "sampling_phase_partial_r2": 0.02062069039179652,
+      "sampling_phase_cyclic_p": 0.117,
+      "sampling_phase_null_permutations": 999
+    },
+    {
+      "dataset": "Luke imec1 pathological",
+      "window_kind": "pathological",
+      "stage": "common_bandpass_shank_median",
+      "scope": "stratum",
+      "n_channels": 384,
+      "adc_identity_partial_r2": 0.1833013764632648,
+      "adc_identity_cyclic_p": 0.5729166666666666,
+      "adc_identity_null_shifts": 95,
+      "sampling_phase_partial_r2": 0.03574776871199823,
+      "sampling_phase_cyclic_p": 0.01,
+      "sampling_phase_null_permutations": 999
+    },
+    {
+      "dataset": "Luke imec1 session",
+      "window_kind": "session-wide",
+      "stage": "common_bandpass_equal_5_reference",
+      "scope": "stratum",
+      "n_channels": 384,
+      "adc_identity_partial_r2": 0.11972045715970543,
+      "adc_identity_cyclic_p": 0.5833333333333334,
+      "adc_identity_null_shifts": 95,
+      "sampling_phase_partial_r2": 0.01704509903689975,
+      "sampling_phase_cyclic_p": 0.427,
+      "sampling_phase_null_permutations": 999
+    },
+    {
+      "dataset": "Luke imec1 session",
+      "window_kind": "session-wide",
+      "stage": "common_bandpass_local_reference",
+      "scope": "stratum",
+      "n_channels": 384,
+      "adc_identity_partial_r2": 0.18728769575222984,
+      "adc_identity_cyclic_p": 0.625,
+      "adc_identity_null_shifts": 95,
+      "sampling_phase_partial_r2": 0.01668617806614514,
+      "sampling_phase_cyclic_p": 0.42,
+      "sampling_phase_null_permutations": 999
+    },
+    {
+      "dataset": "Luke imec1 session",
+      "window_kind": "session-wide",
+      "stage": "common_bandpass_shank_median",
+      "scope": "stratum",
+      "n_channels": 384,
+      "adc_identity_partial_r2": 0.1550730856907142,
+      "adc_identity_cyclic_p": 0.8958333333333334,
+      "adc_identity_null_shifts": 95,
+      "sampling_phase_partial_r2": 0.022545378241854753,
+      "sampling_phase_cyclic_p": 0.256,
+      "sampling_phase_null_permutations": 999
+    },
+    {
+      "dataset": "Luke imec1 shared",
+      "window_kind": "shared",
+      "stage": "common_bandpass_equal_5_reference",
+      "scope": "stratum",
+      "n_channels": 384,
+      "adc_identity_partial_r2": 0.07485516992843604,
+      "adc_identity_cyclic_p": 0.96875,
+      "adc_identity_null_shifts": 95,
+      "sampling_phase_partial_r2": 0.01188346482494493,
+      "sampling_phase_cyclic_p": 0.631,
+      "sampling_phase_null_permutations": 999
+    },
+    {
+      "dataset": "Luke imec1 shared",
+      "window_kind": "shared",
+      "stage": "common_bandpass_local_reference",
+      "scope": "stratum",
+      "n_channels": 384,
+      "adc_identity_partial_r2": 0.1593905605305758,
+      "adc_identity_cyclic_p": 0.8854166666666666,
+      "adc_identity_null_shifts": 95,
+      "sampling_phase_partial_r2": 0.019975957000231477,
+      "sampling_phase_cyclic_p": 0.478,
+      "sampling_phase_null_permutations": 999
+    },
+    {
+      "dataset": "Luke imec1 shared",
+      "window_kind": "shared",
+      "stage": "common_bandpass_shank_median",
+      "scope": "stratum",
+      "n_channels": 384,
+      "adc_identity_partial_r2": 0.1537043574529246,
+      "adc_identity_cyclic_p": 0.8958333333333334,
+      "adc_identity_null_shifts": 95,
+      "sampling_phase_partial_r2": 0.04288794558746585,
+      "sampling_phase_cyclic_p": 0.05,
+      "sampling_phase_null_permutations": 999
+    }
+  ]
+}

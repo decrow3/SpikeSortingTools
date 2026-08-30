@@ -59,6 +59,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--motion-only", action="store_true")
     parser.add_argument("--max-events", type=int)
+    parser.add_argument(
+        "--stage",
+        dest="stages",
+        action="append",
+        help="Extract only this named stage (repeatable; minimal_bandpass is required as baseline)",
+    )
     return parser.parse_args()
 
 
@@ -289,6 +295,9 @@ def build_recording_stages(raw):
     minimal = wideband(shifted)
     blanked_bandpass = wideband(blanked)
     interpolated_bandpass = wideband(interpolated)
+    blanked_local = common_reference(
+        blanked_bandpass, reference="local", operator="median", local_radius=(40, 140)
+    )
     current = common_reference(
         interpolated_bandpass, reference="local", operator="median", local_radius=(40, 140)
     )
@@ -336,6 +345,7 @@ def build_recording_stages(raw):
         "minimal_bandpass": minimal,
         "blanked_bandpass": blanked_bandpass,
         "interpolated_bandpass": interpolated_bandpass,
+        "blanked_local_reference_control": blanked_local,
         "minimal_local_reference_control": minimal_local,
         "global_reference_control": global_control,
         "current_conditioned": current,
@@ -465,6 +475,13 @@ def main() -> None:
     if not args.motion_only:
         events = selected_events(args.review_events, args.max_events)
         stages, bad_ids, gain = build_recording_stages(raw)
+        if args.stages:
+            unknown = set(args.stages) - set(stages)
+            if unknown:
+                raise ValueError(f"Unknown stages: {sorted(unknown)}")
+            if "minimal_bandpass" not in args.stages:
+                raise ValueError("--stage minimal_bandpass is required as the waveform baseline")
+            stages = {name: stage for name, stage in stages.items() if name in args.stages}
         manifest.update(
             stages=list(stages),
             n_events=len(events),
