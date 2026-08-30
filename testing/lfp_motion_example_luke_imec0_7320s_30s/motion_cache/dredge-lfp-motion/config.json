@@ -1,0 +1,18 @@
+{
+  "sampling_frequency_hz": 250.0,
+  "method_args": {
+    "method": "dredge_lfp",
+    "direction": "y",
+    "rigid": false,
+    "win_shape": "gaussian",
+    "win_step_um": 800.0,
+    "win_scale_um": 850.0,
+    "win_margin_um": null,
+    "chunk_len_s": 10.0,
+    "max_disp_um": 500.0,
+    "progress_bar": true,
+    "verbose": true,
+    "extra_outputs": false,
+    "device": "cpu"
+  }
+}

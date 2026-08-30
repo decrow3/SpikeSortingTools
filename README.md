@@ -72,7 +72,7 @@ stream_id = "imec0.ap"   # imec0 = first inserted probe, imec1 = second probe
 
 All pipeline outputs are saved to a directory derived from the data path:
 ```
-/mnt/NPX/Luke/20260224/dredge_pipeline_results_<session>_<stream>/
+/mnt/NPX/Luke/20260224/<dredge|dredge_lfp>_pipeline_results_<session>_<stream>/
 ```
 
 ---
@@ -99,9 +99,9 @@ This step performs the following operations in order:
    - *Similarity to median*: correlation of each channel to the spatial median across the probe. Dead or disconnected channels have anomalously low values (threshold: `similarity < -0.5`).
    - *High-frequency noise power*: PSD energy above 80% of Nyquist. Noisy channels have anomalously high values (threshold controlled by `noise_thresh`; 0.3 is appropriate for SpikeGLX external ref). Bad channels are **interpolated** from neighbours rather than dropped, so the channel count remains constant.
 
-4. **Dual-branch filtering and referencing** — two output branches are produced from the same interpolated signal:
+4. **Dual-branch filtering and referencing** — two AP-band output branches are produced from the same interpolated signal:
    - **Sorting branch** (300–6000 Hz, 12th-order Butterworth, zero-phase): used as input to Kilosort4. The wider band preserves fast spike transients.
-   - **Motion estimation branch** (300–3000 Hz, same filter order): used for DREDGE motion estimation. The narrower band reduces high-frequency noise that can bias peak localisation.
+   - **Motion estimation branch** (300–3000 Hz, same filter order): used only by the DREDGE-AP fallback. The narrower band reduces high-frequency noise that can bias peak localisation.
    
    Both branches apply **local common median referencing** (radius 40–140 µm), which cancels correlated noise between nearby channels without attenuating genuine single-unit signals that are spatially compact.
 
@@ -109,7 +109,34 @@ Results are cached in `conditioning/channel_metrics.npy`. Set `recalc=True` to r
 
 ---
 
-### Step 2 — Motion correction (`correct_motion`)
+### Step 2 — Motion correction (`correct_motion_lfp`)
+
+```python
+lfp_stream_id = paired_lfp_stream_id(stream_id)
+seg_lfp = si.read_spikeglx(
+    folder_path=data_dir,
+    load_sync_channel=False,
+    stream_id=lfp_stream_id,
+)
+seg_lfp_motion = prepare_lfp_for_motion(seg_lfp, target_sampling_frequency=250)
+seg_motion = correct_motion_lfp(
+    seg_lfp_motion,
+    rec_for_sorting=seg_pre_sorting,
+    cache_dir=pipeline_dir / 'motion',
+    recalc=False,
+)
+plot_lfp_motion_output(cache_dir=pipeline_dir / 'motion')
+```
+
+The primary SpikeGLX scripts expose this path behind `use_dredge_lfp = True`; it is experimental and disabled by default pending session-specific validation. When enabled, they load the LF stream paired with the selected AP stream and estimate motion at 250 Hz, which is temporally capable of resolving the expected 3.8–5.8 Hz marmoset heartbeat range. They fall back to DREDGE-AP when no paired LF stream was recorded. LFP runs use a distinct `dredge_lfp_pipeline_results_*` directory so an older AP-corrected binary or Kilosort result cannot be silently reused.
+
+LFP preprocessing follows the SpikeInterface DREDGE-LFP recipe: float conversion, depth ordering, 0.5–250 Hz filtering, dead/noisy-channel detection, phase-shift correction, optional global common-median reference, resampling to the target rate, second spatial derivative, and averaging contacts that share the same depth. The current SpikeInterface tutorial does not apply common reference in its minimal example, so `apply_common_reference=False` is the default. The resulting motion is applied to the separately conditioned 300–6000 Hz AP recording before Kilosort.
+
+Motion estimates are cached under `motion/dredge-lfp-motion/`. The cache includes the LFP sampling frequency and DREDGE arguments; change `recalc=True` after changing those parameters. `plot_lfp_motion_output` writes `dredge_lfp_motion.png`, including a motion spectrum with the marmoset heartbeat band highlighted.
+
+The conservative LFP defaults are rigid registration with `max_disp_um=100`. A 40 um one-sample discontinuity guard rejects the abrupt false jumps seen in underconstrained registrations before they can be applied to AP data; pass `max_step_um=None` only after independent validation. Nonrigid registration must be requested explicitly through `dredge_lfp_args` and should not be applied unless an independent AP-raster or waveform-stability check improves.
+
+The AP fallback remains available directly:
 
 ```python
 seg_motion = correct_motion(
@@ -119,7 +146,6 @@ seg_motion = correct_motion(
     recalc=False,
     method='dredge',
 )
-plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
 ```
 
 Motion correction estimates and compensates for probe drift along the depth axis.
@@ -226,7 +252,7 @@ qc/presence_data.mat
 ## Pipeline output directory structure
 
 ```
-dredge_pipeline_results_<session>_<stream>/
+<dredge|dredge_lfp>_pipeline_results_<session>_<stream>/
 ├── conditioning/
 │   └── channel_metrics.npy          # per-channel similarity & noise
 ├── motion/

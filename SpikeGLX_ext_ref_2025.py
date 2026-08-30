@@ -1,5 +1,5 @@
 #%%
-from pipeline import condition_signal, correct_motion, plot_motion_output, sort_ks4, save_binary_recording, run_qc, KilosortResults, load_qc, run_cur, load_cur
+from pipeline import condition_signal, correct_motion, correct_motion_lfp, paired_lfp_stream_id, plot_lfp_motion_output, plot_motion_output, prepare_lfp_for_motion, sort_ks4, save_binary_recording, run_qc, KilosortResults, load_qc, run_cur, load_cur
 from spikeinterface.sorters import get_default_sorter_params
 from pathlib import Path
 import shutil
@@ -12,6 +12,16 @@ data_dir=   r"/mnt/NPX/Luke/20260224/Luke02242026_V1V2_RH_g0/"
 
 stream_id = "imec0.ap" #usually imec0 is first inserted probe (often V2/MT), imec1 is second probe (often V1)
 seg = si.read_spikeglx(folder_path=data_dir, load_sync_channel=False, stream_id=stream_id)# experiment_names="experiment1")
+use_dredge_lfp = False  # Experimental: enable only after session-specific validation.
+seg_lfp = None
+if use_dredge_lfp:
+    lfp_stream_id = paired_lfp_stream_id(stream_id)
+    try:
+        seg_lfp = si.read_spikeglx(
+            folder_path=data_dir, load_sync_channel=False, stream_id=lfp_stream_id,
+        )
+    except Exception as exc:
+        print(f'No usable paired LF stream ({lfp_stream_id}): {exc}; falling back to DREDGE-AP')
 
 #%% Run on a snippet to check params
 # start_time = 0 #lots of motion around 10000s in, but time didn't start at 0?
@@ -28,7 +38,8 @@ stream_name = stream_id.split('.')[0] # get the stream id without the extension
 data_root = data_dir.split('/')[0:5] #
 print(f'Using data root {"/".join(data_root)}, pipeline results will be saved in this directory')
 #%%
-pipeline_dir = Path(f'{"/".join(data_root)}/dredge_pipeline_results_{sess_name}_{stream_name}')
+pipeline_kind = 'dredge_lfp' if use_dredge_lfp else 'dredge'
+pipeline_dir = Path(f'{"/".join(data_root)}/{pipeline_kind}_pipeline_results_{sess_name}_{stream_name}')
 pipeline_dir.mkdir(parents=True, exist_ok=True)
 
 #%%
@@ -53,9 +64,20 @@ seg_pre_motion_est, seg_pre_sorting = condition_signal(seg, cache_dir=pipeline_d
 # #shutil.rmtree(pipeline_dir / 'cur')
 # cur_results = run_cur(seg_saved, ks4_sorter, ks4_results, pipeline_dir / 'cur', recalc=False) # this should save out some merges
 
-#%% Motion issue on SpikeGLX, this may have had more to do with the conditioning failing, kilosort4 is actually more robust??
-seg_motion = correct_motion(seg_pre_motion_est, rec_for_sorting=seg_pre_sorting, cache_dir=pipeline_dir / 'motion', recalc=False, method='dredge')
-plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
+#%% Experimental high-rate LFP motion; AP-DREDGE remains the validated default.
+if seg_lfp is not None:
+    seg_lfp_motion = prepare_lfp_for_motion(seg_lfp, target_sampling_frequency=250)
+    seg_motion = correct_motion_lfp(
+        seg_lfp_motion, rec_for_sorting=seg_pre_sorting,
+        cache_dir=pipeline_dir / 'motion', recalc=False,
+    )
+    plot_lfp_motion_output(cache_dir=pipeline_dir / 'motion')
+else:
+    seg_motion = correct_motion(
+        seg_pre_motion_est, rec_for_sorting=seg_pre_sorting,
+        cache_dir=pipeline_dir / 'motion', recalc=False, method='dredge',
+    )
+    plot_motion_output(seg_motion, cache_dir=pipeline_dir / 'motion')
 
 # skipping motion correction, just running it in kilosort
 #seg_motion = seg_pre_sorting
@@ -77,6 +99,9 @@ sorter_params = dict(sorter_params, **sorter_params)
 
 #%% Clear seg, this shouldn't help since files are memory mapped. For memory problems try uhang and enable zswap, also set ulimit -v for oom messages
 del seg
+if seg_lfp is not None:
+    del seg_lfp
+    del seg_lfp_motion
 del seg_pre_motion_est
 del seg_pre_sorting
 #%% Run Pipeline

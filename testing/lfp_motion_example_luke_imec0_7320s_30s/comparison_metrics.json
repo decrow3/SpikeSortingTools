@@ -1,0 +1,75 @@
+{
+  "recording": "Luke02242026_V1V2_RH_g0 imec0",
+  "interval_relative_s": [
+    7320,
+    7350
+  ],
+  "ap_peaks": 100848,
+  "time_bin_ms": 50,
+  "heartbeat_band_hz": [
+    3.8,
+    5.8
+  ],
+  "metrics": {
+    "uncorrected": {
+      "shift_rms_um": 10.2484,
+      "heartbeat_rms_um": 4.5256,
+      "median_profile_corr": 0.64231
+    },
+    "dredge_ap": {
+      "shift_rms_um": 10.2874,
+      "heartbeat_rms_um": 4.5796,
+      "median_profile_corr": 0.64475
+    },
+    "lfp_nonrigid_max500": {
+      "shift_rms_um": 12.5735,
+      "heartbeat_rms_um": 5.2945,
+      "median_profile_corr": 0.63829,
+      "raw_ap_vs_lfp_heartbeat_corr": 0.0349,
+      "motion_p1_p99_um": 85.844
+    },
+    "lfp_rigid_max100": {
+      "shift_rms_um": 10.2506,
+      "heartbeat_rms_um": 4.5289,
+      "median_profile_corr": 0.6423,
+      "raw_ap_vs_lfp_heartbeat_corr": -0.0068,
+      "motion_p1_p99_um": 0.2044
+    },
+    "lfp_nonrigid_max100": {
+      "shift_rms_um": 10.1484,
+      "heartbeat_rms_um": 4.4755,
+      "median_profile_corr": 0.64378,
+      "raw_ap_vs_lfp_heartbeat_corr": -0.026,
+      "motion_p1_p99_um": 15.3688
+    },
+    "reference_recipe_rigid_250hz": {
+      "heartbeat_rms_um": 4.46,
+      "median_profile_corr": 0.642,
+      "raw_ap_vs_lfp_heartbeat_corr": -0.216,
+      "motion_p1_p99_um": 0.99,
+      "motion_min_max_um": [
+        -120.5,
+        88.2
+      ]
+    },
+    "reference_recipe_25hz_mincorr0p65": {
+      "shift_rms_um": 10.286,
+      "heartbeat_rms_um": 4.577,
+      "median_profile_corr": 0.6429,
+      "raw_ap_vs_lfp_heartbeat_corr": 0.042
+    },
+    "reference_recipe_25hz_mincorr0p6": {
+      "heartbeat_rms_um": 4.708,
+      "median_profile_corr": 0.6446,
+      "raw_ap_vs_lfp_heartbeat_corr": 0.032
+    }
+  },
+  "registration_confidence_10s": {
+    "default_mincorr": 0.8,
+    "median_best_off_diagonal_correlation": 0.779,
+    "median_accepted_edge_degree": 0,
+    "largest_false_displacement_um": -40.5,
+    "supporting_edges_for_largest_false_displacement": 1
+  },
+  "conclusion": "The initial nonrigid implementation was overcorrecting. Matching the reference rigid preprocessing does not recover a validated heartbeat displacement on this interval: most time bins have no accepted registration edges, rare estimates are unsupported outliers, and independent AP-raster metrics do not improve."
+}

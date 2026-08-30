@@ -6,7 +6,13 @@ from tqdm import tqdm
 
 from spikeinterface.preprocessing import blank_staturation
 from spikeinterface.preprocessing import phase_shift
+from spikeinterface.preprocessing import astype
+from spikeinterface.preprocessing import average_across_direction
+from spikeinterface.preprocessing import depth_order
+from spikeinterface.preprocessing import detect_bad_channels
+from spikeinterface.preprocessing import directional_derivative
 from spikeinterface.preprocessing import interpolate_bad_channels
+from spikeinterface.preprocessing import resample
 from scipy.signal import medfilt, welch
 from spikeinterface.preprocessing import highpass_filter
 from spikeinterface.preprocessing import common_reference
@@ -44,6 +50,104 @@ def get_default_job_kwargs():
                       chunk_duration='2s', 
                       progress_bar=True,)
     return job_kwargs
+
+
+def paired_lfp_stream_id(ap_stream_id):
+    """Return the SpikeGLX LF stream paired with an AP stream."""
+    probe, separator, band = ap_stream_id.rpartition('.')
+    if not separator or band != 'ap' or not probe:
+        raise ValueError(
+            f"Expected a SpikeGLX AP stream such as 'imec0.ap', got {ap_stream_id!r}"
+        )
+    return f'{probe}.lf'
+
+
+def prepare_lfp_for_motion(
+    recording,
+    target_sampling_frequency=250.0,
+    freq_min=0.5,
+    freq_max=250.0,
+    spatial_derivative_order=2,
+    detect_bad_lfp_channels=True,
+    bad_channel_kwargs=None,
+    apply_common_reference=False,
+    filter_margin_ms=1500.0,
+):
+    """Prepare a SpikeGLX LF stream for high-rate DREDGE-LFP registration.
+
+    This follows the SpikeInterface DREDGE-LFP preprocessing recipe: convert
+    to float, depth-order, band-pass, remove dead/noisy channels, phase-align,
+    optionally common-median reference, resample, spatially differentiate,
+    and average contacts that share a depth. The final averaging is required
+    because ``dredge_lfp`` expects unique channel positions along the
+    registration direction.
+    """
+    if recording.get_num_segments() != 1:
+        raise ValueError('DREDGE-LFP currently requires a single recording segment')
+
+    input_fs = float(recording.get_sampling_frequency())
+    target_fs = float(target_sampling_frequency)
+    if target_fs <= 0 or target_fs > input_fs:
+        raise ValueError(
+            f'target_sampling_frequency must be in (0, {input_fs}], got {target_fs}'
+        )
+    if not 0 < freq_min < freq_max < input_fs / 2:
+        raise ValueError(
+            f'Expected 0 < freq_min < freq_max < input Nyquist ({input_fs / 2:g} Hz), '
+            f'got {freq_min:g}-{freq_max:g} Hz'
+        )
+
+    if not target_fs.is_integer():
+        raise ValueError('SpikeInterface 0.102.1 requires an integer target sampling frequency')
+
+    lfp = astype(recording, 'float32')
+    lfp = depth_order(lfp, dimensions=('x', 'y'))
+    lfp = filter(
+        lfp,
+        band=[float(freq_min), float(freq_max)],
+        btype='bandpass',
+        filter_order=3,
+        ftype='butter',
+        direction='forward-backward',
+        dtype='float32',
+        add_reflect_padding=True,
+        margin_ms=float(filter_margin_ms),
+    )
+
+    if detect_bad_lfp_channels:
+        default_bad_channel_kwargs = dict(
+            psd_hf_threshold=1.4,
+            num_random_chunks=100,
+            seed=0,
+        )
+        bad_channel_kwargs = dict(
+            default_bad_channel_kwargs, **(bad_channel_kwargs or {})
+        )
+        bad_channel_ids, _channel_labels = detect_bad_channels(
+            lfp, **bad_channel_kwargs
+        )
+        if len(bad_channel_ids):
+            print(f'Removing {len(bad_channel_ids)} bad LFP channels: {bad_channel_ids}')
+            lfp = lfp.remove_channels(bad_channel_ids)
+
+    sample_shifts = lfp.get_property('inter_sample_shift')
+    if sample_shifts is not None and np.any(sample_shifts):
+        lfp = phase_shift(lfp)
+
+    if apply_common_reference:
+        lfp = common_reference(lfp, reference='global', operator='median')
+    if not np.isclose(input_fs, target_fs):
+        lfp = resample(lfp, int(target_fs), margin_ms=1000.0)
+    lfp = directional_derivative(
+        lfp, direction='y', order=int(spatial_derivative_order), edge_order=1,
+        dtype='float32',
+    )
+    lfp = average_across_direction(lfp, direction='y', dtype='float32')
+
+    depths = np.asarray(lfp.get_channel_locations())[:, 1]
+    if depths.size != np.unique(depths).size or np.any(np.diff(depths) <= 0):
+        raise RuntimeError('Prepared LFP channel depths must be unique and increasing')
+    return lfp
 
 def get_channel_metrics(seg, n_batches=50, batch_duration=2, med_n=11, psd_cuttoff=.8, psd_n_samples=2048, uV_per_bit=.195, freq_min=300, seed = 1002, debug=0):
     '''
@@ -200,5 +304,3 @@ def condition_signal(seg, cache_dir, recalc=False, uV_per_bit=.195, uV_thresh=.5
     plt.close('all')
 
     return seg_out_motion, seg_out_sorting
-
-
