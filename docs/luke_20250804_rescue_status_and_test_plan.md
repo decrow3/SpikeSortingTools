@@ -630,18 +630,47 @@ through motion. Only after those gates pass should Luke be compared with Yates
 on matched depth, reference, voltage threshold, duration, behavior and quality
 criteria.
 
-The realistic near-term claim is therefore: **Luke may approach Yates after a
-pipeline adaptation, but the attainable ceiling is not known.** The no-motion
-longitudinal baseline is viable and substantially stronger than expected from
-the failed externally warped runs. The next decisive evidence is independent
-holdout validation plus further localization of the no-motion baseline's
-coincidence, waveform and residual burdens. A different motion candidate or
-sorter should return only under a separately prespecified comparison, and must
-improve those endpoints without boundary accumulation, detection expansion or
-refractory-quality loss.
+## Full-probe rescue result (2026-08-30)
+
+The frozen full-probe rescue completed and is a strong provisional success.
+It produced 43,669,711 final spikes, 583 units and 216 KS-good units over
+10,473.6 s. This is 65 more KS-good units than the best prior full-probe result
+(+43.0%), and 70 more than `pipeline_an5` (+47.9%) despite 6.7% fewer assigned
+spikes. Median KS-good contamination is 3.55%, median 1.5 ms refractory
+violation fraction is 0.125%, median 300 s presence is 100%, and median
+lifetime is 10,430.6 s. The median holdout-window cross-unit coincidence excess
+is 0.077, below the prior no-motion strip's 0.094.
+
+The sealed automatic imec1 raw-event holdout recovers 74.5% overall versus a
+22.1% jitter-null mean, while the reused reviewed-neural cohort recovers 93.5%.
+The important unresolved localization is the middle depth third, where sealed
+automatic recovery is only 47.2%. Eleven nearby similar KS-good pairs also
+remain for targeted duplicate review. These checks can be done on the accepted
+sort and do not justify another full run.
+
+The result establishes a materially better Luke operating regime, but not
+Yates parity. Although depth-normalized KS-good yield is higher than the
+available sampled Yates comparator, anatomy, duration, preprocessing and the
+quality of that Yates sort are not matched. The complete interpretation and
+tables are in `docs/luke_20250804_full_probe_rescue_result.md` and
+`testing/outputs/luke_full_probe_rescue_diagnostics/`.
+
+The updated near-term claim is therefore: **the rescue pipeline materially
+improves full-session Luke yield and internal quality, and is ready for targeted
+curation and multi-session replication; matched Yates quality remains
+unproven.** The next decisive evidence is review of the localized holdout and
+similar-template exceptions, followed by replication rather than another
+parameter sweep. A different motion candidate or sorter should return only
+under a separately prespecified comparison, and must improve these endpoints
+without boundary accumulation, detection expansion or refractory-quality loss.
 
 ## Evidence inventory
 
+- `docs/luke_20250804_imec0_rescue_control_plan.md`
+- `testing/outputs/luke_full_probe_rescue_diagnostics_imec0_legacy/summary.json`
+- `testing/outputs/luke_full_probe_rescue_diagnostics_imec0_legacy/acceptance_criteria.json`
+- `testing/outputs/luke_full_probe_rescue_diagnostics/summary.json`
+- `docs/luke_20250804_full_probe_rescue_result.md`
 - `testing/outputs/luke_conditioning_final_decision/decision.json`
 - `testing/outputs/luke_conditioning_stage_audit/`
 - `testing/outputs/luke_saturation_policy_audit/`

@@ -1,0 +1,5 @@
+dataset,depth_exposure_mm,units_per_depth_mm,ks_good_per_depth_mm,final_spikes_per_depth_mm_s,source_note
+rescue_full_probe,3.82,152.61780104712042,56.54450261780105,1091.4978478174207,accepted full-probe rescue sort
+prior_96_channel_full_strip,0.94,132.97872340425533,34.04255319148936,332.06036534669244,prior 96-channel full-session strip audit
+"Luke shared, single KS preprocessing",3.82,102.87958115183248,43.97905759162304,1434.9,reported detection-stage audit rate; sampled comparison
+Yates known-good,2.17,66.3594470046083,16.129032258064516,666.1,reported detection-stage audit rate; sampled comparison

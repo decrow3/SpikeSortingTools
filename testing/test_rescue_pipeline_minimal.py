@@ -74,6 +74,25 @@ def test_saved_sorter_settings_are_verified():
         validate_applied_settings(changed, requested)
 
 
+def test_native_nblocks_proves_wrapper_correction_was_disabled():
+    requested = build_kilosort4_params(sorter_defaults())
+    applied = dict(requested)
+    applied.pop("do_correction")
+    applied["nblocks"] = 0
+    receipt = validate_applied_settings(applied, requested)
+    assert receipt["do_correction"] is False
+    assert receipt["effective_nblocks"] == 0
+
+
+def test_native_nblocks_refuses_effective_motion_correction():
+    requested = build_kilosort4_params(sorter_defaults())
+    applied = dict(requested)
+    applied.pop("do_correction")
+    applied["nblocks"] = 1
+    with pytest.raises(RuntimeError, match="do_correction"):
+        validate_applied_settings(applied, requested)
+
+
 def test_select_bad_channels_uses_both_frozen_metrics():
     selected = select_bad_channel_ids(
         ["AP0", "AP1", "AP2"],

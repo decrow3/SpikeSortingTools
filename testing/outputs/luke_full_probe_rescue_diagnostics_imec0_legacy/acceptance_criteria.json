@@ -1,0 +1,46 @@
+{
+  "purpose": "Prespecified paired acceptance gates for the frozen imec0 rescue run",
+  "baseline_sorter": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output",
+  "baseline_summary": "testing/outputs/luke_full_probe_rescue_diagnostics_imec0_legacy/summary.json",
+  "primary_target": {
+    "n_ks_good": 260,
+    "interpretation": "Match or exceed the existing imec0 pipeline yield without worsening quality guardrails"
+  },
+  "hard_gates": {
+    "n_ks_good_min": 234,
+    "n_spikes_max": 43401343,
+    "median_contamination_pct_good_max": 5.0,
+    "median_refractory_violation_fraction_good_max": 0.0025,
+    "median_good_presence_fraction_300s_min": 0.9,
+    "fraction_good_units_presence_ge_0_9_min": 0.75,
+    "median_holdout_window_coincidence_excess_max": 0.17,
+    "sealed_holdout_all_raw_events_recovery_min": 0.58,
+    "sealed_holdout_middle_depth_recovery_min": 0.25,
+    "overall_edge_spike_fraction_40um_max": 0.02,
+    "nearby_similar_good_good_pairs_per_good_unit_max": 0.06
+  },
+  "decision_rule": {
+    "adopt_general_pipeline": "All hard gates pass and n_ks_good >= 260",
+    "qualified_stream_policy": "All hard gates pass and 234 <= n_ks_good < 260 only if at least two prespecified quality guardrails improve materially",
+    "reject_universal_default": "Any hard gate fails; retain an imec1-specific rescue policy pending diagnosis"
+  },
+  "baseline_values": {
+    "n_spikes": 34721074,
+    "n_units": 602,
+    "n_ks_good": 260,
+    "median_contamination_pct_good": 4.05,
+    "median_refractory_violation_fraction_good": 0.002026268362403891,
+    "median_good_presence_fraction_300s": 1.0,
+    "fraction_good_units_presence_ge_0_9": 0.7884615384615384,
+    "median_holdout_window_coincidence_excess": 0.16154376143152255,
+    "sealed_holdout_all_raw_events_recovery": 0.6064814814814815,
+    "sealed_holdout_middle_depth_recovery": 0.25,
+    "overall_edge_spike_fraction_40um": 0.018391625788994892,
+    "nearby_similar_good_good_pairs_per_good_unit": 0.05
+  },
+  "notes": [
+    "The 10% KS-good tolerance is a qualification band, not an automatic pass.",
+    "The automatic holdout contains raw extrema without manual neural labels and is a preservation guardrail, not absolute neural recall.",
+    "Use the same pipeline policy and thresholds; do not copy imec1's explicit AP191 repair mask onto imec0."
+  ]
+}

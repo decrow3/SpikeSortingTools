@@ -1,0 +1,5 @@
+{
+  "state": "waiting_for_sort",
+  "started_at": "2026-08-30T14:19:35.737875+00:00",
+  "sort_manifest": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/rescue_sort_manifest.json"
+}
