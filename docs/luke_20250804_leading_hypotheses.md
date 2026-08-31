@@ -4,6 +4,10 @@
 > current conditioning decision, evidence synthesis and prioritized remaining
 > tests are in
 > [`luke_20250804_rescue_status_and_test_plan.md`](luke_20250804_rescue_status_and_test_plan.md).
+> The active 2026-08-31 development order and stage-local validation rule are
+> in
+> [`luke_pipeline_stage_local_validation_strategy.md`](luke_pipeline_stage_local_validation_strategy.md).
+> They supersede the historical execution order in this document.
 
 ## 2026-08-29 raw-voltage qualification
 

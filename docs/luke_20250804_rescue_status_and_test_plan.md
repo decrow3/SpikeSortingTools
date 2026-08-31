@@ -1,12 +1,36 @@
 # Luke 2025-08-04 rescue status and test plan
 
-**Evidence snapshot:** 2026-08-29  
-**Scope:** imec1 unless otherwise noted  
-**Status:** conditioning baseline selected provisionally; full-duration,
-motion-free depth-strip materialization, integrity checks, sort, longitudinal
-localization and prioritized pair audits completed; prospective validation
-windows and 864-event raw cohort sealed; conservative rigid motion is the only
-branch eligible for a confirmatory pilot.
+**Evidence snapshot:** 2026-08-31
+
+**Scope:** both Luke probes unless a result is explicitly probe-specific
+
+**Status:** frozen rescue graph replicated at full-session scale across both
+probes; bounded pinned-AIND challenger completed; preprocessing conditionally
+frozen; motion estimation is the active unfinished stage.
+
+## 2026-08-31 strategic update
+
+This update supersedes the older prioritization language below while retaining
+the detailed experiment history. Rescue and pinned AIND are substantially
+different preprocessing architectures, yet they tie aggregate sealed-event
+recovery at 470/720 and have similar pooled continuity and firing-rate
+distributions. AIND improves refractory/coincidence diagnostics, while rescue
+retains better yield and normalized similar-template burden. Together with the
+successful full-session rescue on both probes, this places preprocessing in
+diminishing-returns territory.
+
+The frozen rescue graph is now the production/downstream reference. Pinned
+AIND remains an independent competent comparator, not a full-session finalist.
+Broad preprocessing searches are paused; reopen them only for a demonstrated,
+stage-local failure. The active sequence is motion-estimator validation,
+coordinate-only motion application, bounded sorter experiments, and only then
+voltage warping or suppressive mechanisms.
+
+The governing rule is **stage-local validation**: each stage must pass an
+observable the next stage cannot rescue or manufacture. A better final sort
+does not prove that every upstream choice was correct. The complete observable
+map, advancement gates and reopening criteria are in
+[`luke_pipeline_stage_local_validation_strategy.md`](luke_pipeline_stage_local_validation_strategy.md).
 
 ## Executive answer
 
@@ -31,7 +55,7 @@ Luke has abundant large raw voltage, comparable broad-band noise in the matched
 audits, and substantially better reviewed-neural recovery when the conditioning
 and sorter interventions are chosen carefully.
 
-## Provisional conditioning baseline
+## Frozen preprocessing reference
 
 The current baseline fixes one upstream chain before motion correction is
 reintroduced:
@@ -45,7 +69,7 @@ reintroduced:
 6. save raw samples exceeding 500 microvolts as a separate artifact sidecar and
    exclude nearby detections from artifact-sensitive claims.
 
-This is a provisional engineering baseline, not a biological optimum. In
+This is the frozen engineering reference, not a biological optimum. In
 particular, point blanking creates local filter ringing and false peaks around
 saturation. It is retained because removing it caused a much larger loss of
 reviewed-neural recovery at the sorter output in both harder test windows.
@@ -349,7 +373,8 @@ bulk hashing and any holdout sorter runs remain deferred.
 | Is Kilosort batch rejection suitable? | No tested threshold is both safe and effective. | Disable it. |
 | Is the claim mask suitable? | No nonzero tested setting passed recovery gates. | Disable it. |
 | Is current external DREDGE correction suitable? | No; it expands detections and worsens quality. | Fixable implementation/parameter question remains. |
-| Is motion real? | Yes; estimates and cross-probe behavior support it. | A long recording will probably need motion handling. |
+| Is motion real? | Yes; estimates and cross-probe behavior support it. | Motion estimation remains unfinished; voltage warping is not yet authorized. |
+| Is preprocessing still the leading search axis? | No; rescue and pinned AIND converge on broadly similar bounded KS4 outcomes, and rescue generalized across both probes. | Freeze rescue; retain AIND as a comparator and reopen only for a specific demonstrated failure. |
 | Does Luke approach Yates after repair? | Unknown. | Requires a stable full-duration result and fair matched claims. |
 
 ## Baseline materialization complete
@@ -537,7 +562,11 @@ the full sidecar is deferred until it is needed for post-sort artifact-sensitive
 claims. This does not change the sorter voltage and must not be interpreted as
 permission to credit blanker-proximal detections without the sidecar.
 
-## Prioritized corrections and tests
+## Historical prioritized corrections and tests (superseded)
+
+This table records the sequence that produced the current evidence. Its open
+P0/P1 labels no longer define the active work order; the 2026-08-31 strategic
+update and stage-local strategy document do.
 
 | Priority | Test | Purpose | Advancement gate |
 |---|---|---|---|
@@ -666,6 +695,9 @@ without boundary accumulation, detection expansion or refractory-quality loss.
 
 ## Evidence inventory
 
+- `docs/luke_pipeline_stage_local_validation_strategy.md`
+- `docs/luke_20250804_aind_downstream_bounded_result.md`
+- `testing/outputs/luke_aind_downstream_bounded_endpoint_review/README.md`
 - `docs/luke_20250804_imec0_rescue_control_plan.md`
 - `testing/outputs/luke_full_probe_rescue_diagnostics_imec0_legacy/summary.json`
 - `testing/outputs/luke_full_probe_rescue_diagnostics_imec0_legacy/acceptance_criteria.json`

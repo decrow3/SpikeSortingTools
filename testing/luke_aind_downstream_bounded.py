@@ -561,14 +561,16 @@ def _score_one(
     ].copy()
     global_start = int(round(window["start_s"] * fs))
     event_samples = events.sample_index.to_numpy(np.int64) - global_start
-    matches = local_match_details(
+    matches = np.asarray(local_match_details(
         event_samples,
         events.depth_um.to_numpy(float),
         times,
         depths,
         tolerance,
         100.0,
-    ).present
+    ).present, dtype=bool)
+    if len(matches) != len(events):
+        raise RuntimeError("Sealed-event recovery vector changed length")
     events["recovered"] = matches
 
     peak_channels = np.argmax(np.max(np.abs(templates), axis=1), axis=1)
@@ -624,6 +626,9 @@ def _score_one(
             float(np.median(presence)) if presence else math.nan
         ),
         "good_units_present_ge_90pct": int(np.sum(np.asarray(presence) >= 0.9)),
+        "stable_good_fraction_30s": (
+            float(np.mean(np.asarray(presence) >= 0.9)) if presence else math.nan
+        ),
         "coincidence_fraction": coincidence,
         "coincidence_shift_null": coincidence_null,
         "coincidence_excess": coincidence - coincidence_null,
@@ -678,6 +683,7 @@ def score_all(config: dict[str, Any]) -> None:
         "final_spikes_per_s",
         "median_good_refractory_fraction_1p5ms",
         "median_good_presence_fraction_30s",
+        "stable_good_fraction_30s",
         "coincidence_excess",
         "nearby_similar_good_good_pairs",
         "residual_pairs_supporting_redundancy",

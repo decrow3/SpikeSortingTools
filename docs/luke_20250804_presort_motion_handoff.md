@@ -1,5 +1,27 @@
 # Luke 2025-08-04 pre-sort conditioning and motion investigation
 
+## 2026-08-31 active handoff update
+
+The conditioning question that motivated this handoff is now sufficiently
+resolved to freeze preprocessing as the current reference. Full-session rescue
+generalized across both Luke probes, and a bounded comparison against the
+substantially different pinned-AIND branch produced similar overall KS4 results
+with opposing tradeoffs rather than a general AIND win. Rescue remains the
+production/downstream reference; AIND remains a fixed independent comparator.
+
+The active load-bearing question is now motion estimation: **does any estimator
+improve held-out raster residuals, independent recurrent trajectories and field
+stability beyond the current DREDGE fit?** Select estimators without sorter
+labels or voltage resampling. Motion application is a separate decision:
+coordinate correction must demonstrate benefit before voltage interpolation is
+tested, and a good field does not authorize a warp automatically.
+
+All new work follows stage-local validation: each stage must pass an observable
+the next stage cannot rescue or manufacture. See
+[`luke_pipeline_stage_local_validation_strategy.md`](luke_pipeline_stage_local_validation_strategy.md)
+for the current development order, gates and preprocessing reopening criteria.
+The 2026-08-29 material below is retained as investigation history.
+
 ## 2026-08-29 pause update
 
 The investigation is paused after a first matched raw-voltage Luke--Yates
