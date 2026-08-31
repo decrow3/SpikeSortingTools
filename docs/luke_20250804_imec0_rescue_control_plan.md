@@ -47,3 +47,19 @@ thresholds. It does not copy imec1's AP191 repair mask. The output is
 The raw-over-500-uV artifact sidecar is diagnostic and does not alter sorter
 input.
 
+## Result
+
+The completed rescue increased KS-good yield from 260 to 301 (+15.8%) while
+reducing assigned spikes by 12.2% and improving contamination, refractory,
+depth-continuity, holdout-recovery and coincidence endpoints. The frozen
+universal-adoption evaluator remains formally negative because three gates
+failed, principally the broad similar-good-pair screen. Exact artifact/CCG
+follow-up reduces 37 broad pairs to one strong and one partial duplicate
+hypothesis, both artifact-associated. Residual and waveform review finds no
+outside-artifact subset for any of the four units, extreme positive-dominant
+morphology/raw threshold footprints, and no evidence that two distinct
+templates improve the coincident-event residual. The units remain unmerged and
+are conservatively discounted for sensitivity accounting. This leaves 297 good
+units (+14.2% versus legacy). The historical frozen decision remains negative,
+but the rescue graph is locked as the current downstream Luke reference for
+bounded challengers. See `docs/luke_20250804_imec0_rescue_result.md`.

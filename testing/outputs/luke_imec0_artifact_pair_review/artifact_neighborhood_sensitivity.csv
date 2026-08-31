@@ -1,0 +1,5 @@
+unit_id,original_spike_count,spikes_outside_0p5ms,fraction_outside_0p5ms,spikes_outside_1ms,fraction_outside_1ms,spikes_outside_2ms,fraction_outside_2ms,spikes_outside_5ms,fraction_outside_5ms
+184,643,0,0.0,0,0.0,0,0.0,0,0.0
+191,4389,0,0.0,0,0.0,0,0.0,0,0.0
+164,978,0,0.0,0,0.0,0,0.0,0,0.0
+165,625,0,0.0,0,0.0,0,0.0,0,0.0

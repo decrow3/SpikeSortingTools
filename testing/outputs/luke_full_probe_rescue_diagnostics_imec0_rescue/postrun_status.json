@@ -1,5 +1,10 @@
 {
-  "state": "waiting_for_sort",
+  "state": "complete",
   "started_at": "2026-08-30T14:19:35.737875+00:00",
-  "sort_manifest": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/rescue_sort_manifest.json"
+  "sort_manifest": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/rescue_sort_manifest.json",
+  "sort_seen_at": "2026-08-30T20:34:48.616166+00:00",
+  "finished_at": "2026-08-30T20:35:17.056847+00:00",
+  "n_ks_good": 301,
+  "decision": "reject_universal_default",
+  "decision_path": "testing/outputs/luke_full_probe_rescue_diagnostics_imec0_rescue/acceptance_decision.json"
 }

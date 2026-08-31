@@ -202,6 +202,8 @@ def main() -> None:
             output_dir / "artifacts/raw_over_500uv.h5",
             threshold_uv=config.saturation_threshold_uv,
             excluded_channel_ids=bad_ids,
+            chunk_duration_s=args.chunk_duration,
+            n_jobs=args.n_jobs,
         )
         print(json.dumps(result, indent=2))
 

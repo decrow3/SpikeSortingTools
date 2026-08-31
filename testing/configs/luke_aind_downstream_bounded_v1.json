@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "experiment": "luke-aind-downstream-bounded-v1",
+  "purpose": "Compare the locked rescue graph with the exact pinned AIND preprocessing branch before any full-session AIND sort.",
+  "source": {
+    "data_dir": "/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0",
+    "dataset_manifest_digest": "82d933695c95535f404ee108f3cb856ea5329784a0fd37ace31d67073a06f661",
+    "raw_ap_sha256": {
+      "imec0": "1e3a89ec68e0ad23b6dcd95225f48db49ab5897d9a0966e276c4ec191fef6833",
+      "imec1": "35beae0e13134501381af846845547bef57609a401cd0984b5dc7c01e1915cde"
+    }
+  },
+  "aind_provenance": {
+    "benchmark_repo_head": "306aa05f1491b48d58433164ad5797cd1d1358e1",
+    "upstream_repo": "AllenNeuralDynamics/aind-ephys-preprocessing",
+    "upstream_commit": "653de8f0471de65cd138f1815dd6ca770673b7cf",
+    "spikeinterface_version": "0.104.7",
+    "python_version": "3.12.4",
+    "branch_config_digest": "8cce687e31337f2e9869e5756110f9a5b26d245248b56ab3d7b57213eae81d68",
+    "bad_channel_manifest_digest": "d084759fb30791c445fa2aa5be0d0ebe4da6e7c9545f85b494059b1fd7a2db55",
+    "capsule_environment_sha256": "338893625319668e6db3e9c533f8f85a2348a3daf05f6a254cb14abb337d8cb6",
+    "graph": [
+      "phase_shift(margin_ms=100.0)",
+      "highpass_filter(freq_min=300.0)",
+      "remove_frozen_bad_channels",
+      "common_reference(reference=global,operator=median)"
+    ],
+    "bad_channel_detection_provenance": {
+      "method": "coherence+psd",
+      "dead_channel_threshold": -0.5,
+      "noisy_channel_threshold": 1.0,
+      "outside_channel_threshold": -0.3,
+      "outside_channels_location": "top",
+      "n_neighbors": 11,
+      "channel_filters": ["noise", "dead", "out"],
+      "seed": 0,
+      "bounded_run_policy": "Do not redetect; remove the frozen full-recording AP191 identity."
+    },
+    "frozen_removed_channels": {
+      "imec0": ["imec0.ap#AP191"],
+      "imec1": ["imec1.ap#AP191"]
+    },
+    "blanking": null,
+    "clipping": null,
+    "bad_channel_interpolation": false,
+    "motion_compute": false,
+    "motion_apply": false,
+    "materialized_dtype": "float32",
+    "materialized_units": "uV"
+  },
+  "windows": [
+    {
+      "name": "T1_high_motion",
+      "start_s": 1200.0,
+      "duration_s": 120.0,
+      "sealed_windows_covered": ["T1_high_motion"]
+    },
+    {
+      "name": "T2_combined",
+      "start_s": 4680.0,
+      "duration_s": 240.0,
+      "sealed_windows_covered": ["T2_relative_quiet", "T2_high_motion"]
+    },
+    {
+      "name": "T3_combined",
+      "start_s": 9000.0,
+      "duration_s": 240.0,
+      "sealed_windows_covered": ["T3_high_motion", "T3_relative_quiet"]
+    }
+  ],
+  "omitted_sealed_window": {
+    "name": "T1_relative_quiet",
+    "reason": "It is temporally isolated from the other early window; the bounded panel retains five of six sealed windows and 360 of 432 sealed events per probe."
+  },
+  "conditions": [
+    {
+      "name": "rescue_ks_car_on",
+      "preprocessing": "locked_rescue",
+      "kilosort_do_CAR": true
+    },
+    {
+      "name": "pinned_aind_ks_car_on",
+      "preprocessing": "pinned_aind",
+      "kilosort_do_CAR": true
+    },
+    {
+      "name": "pinned_aind_ks_car_off",
+      "preprocessing": "pinned_aind",
+      "kilosort_do_CAR": false
+    }
+  ],
+  "sorter_policy": {
+    "base": "pipeline.sorting.rescue_kilosort4_overrides",
+    "motion_correction": false,
+    "skip_kilosort_preprocessing": false,
+    "highpass_cutoff": 300,
+    "only_mechanistic_ablation": "do_CAR true versus false on the identical pinned AIND recording"
+  },
+  "primary_endpoint_families": [
+    "sealed_event_recovery",
+    "detection_expansion",
+    "coincidence",
+    "refractory_behavior",
+    "residuals",
+    "duplicate_burden",
+    "continuity"
+  ],
+  "secondary_diagnostics": ["kilosort_good_count", "contamination"],
+  "artifact_sidecar_policy": "annotation_only",
+  "output_root": "/media/huklab/Data/NPX/Ryansorting/Luke/Luke0804_aind_downstream_bounded_v1"
+}

@@ -108,7 +108,15 @@ def run_audit(
     from kilosort.io import bfile_from_ops, load_ops
 
     pairs = pd.read_csv(pair_csv)
-    pairs = pairs[pairs.strong_duplicate_hypothesis.astype(bool)].copy()
+    pairs = pairs.rename(
+        columns={"unit_first": "first_unit", "unit_second": "second_unit"}
+    )
+    hypothesis_column = (
+        "partial_or_strong_duplicate_hypothesis"
+        if "partial_or_strong_duplicate_hypothesis" in pairs
+        else "strong_duplicate_hypothesis"
+    )
+    pairs = pairs[pairs[hypothesis_column].astype(bool)].copy()
     ops = load_ops(sorter / "ops.npy", device=torch.device("cpu"))
     bfile = bfile_from_ops(ops=ops, device=torch.device("cpu"))
     fs = float(ops["fs"])
@@ -137,6 +145,29 @@ def run_audit(
         selected = centers[
             np.linspace(0, len(centers) - 1, min(events_per_pair, len(centers)), dtype=int)
         ]
+        if len(selected) == 0:
+            pair_rows.append(
+                {
+                    "first_unit": int(pair.first_unit),
+                    "second_unit": int(pair.second_unit),
+                    "n_sampled_coincident_events": 0,
+                    "first_template_shift_samples": 0,
+                    "second_template_shift_samples": 0,
+                    "empirical_median_first_template_cosine": np.nan,
+                    "empirical_median_second_template_cosine": np.nan,
+                    "median_first_template_residual_fraction": np.nan,
+                    "median_second_template_residual_fraction": np.nan,
+                    "median_two_template_residual_fraction": np.nan,
+                    "median_two_over_best_single_relative_improvement": np.nan,
+                    "p90_two_over_best_single_relative_improvement": np.nan,
+                    "residual_supports_redundant_templates": False,
+                    "interpretation": (
+                        "no one-to-one coincident events inside valid recording bounds; "
+                        "residual evidence unavailable"
+                    ),
+                }
+            )
+            continue
         waveforms = []
         for center in selected:
             start = int(center - context)
@@ -222,7 +253,8 @@ def run_audit(
     pair_result.to_csv(output_dir / "pair_residual_summary.csv", index=False)
     event_result.to_csv(output_dir / "event_residual_metrics.csv", index=False)
     summary = {
-        "input_strong_pair_hypotheses": int(len(pairs)),
+        "input_pair_hypotheses": int(len(pairs)),
+        "input_hypothesis_column": hypothesis_column,
         "pairs_with_residual_support_for_redundancy": int(
             pair_result.residual_supports_redundant_templates.sum()
         ),

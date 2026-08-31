@@ -1,0 +1,9 @@
+{
+  "input_pair_hypotheses": 2,
+  "input_hypothesis_column": "partial_or_strong_duplicate_hypothesis",
+  "pairs_with_residual_support_for_redundancy": 0,
+  "pairs_remaining_ambiguous": 2,
+  "events_reconstructed": 128,
+  "automatic_curation_allowed": false,
+  "preprocessing_space": "Exact saved Kilosort CAR and FFT high-pass operators, followed by the saved inverse-whitening transform used by Kilosort's waveform export utility; no motion shift"
+}

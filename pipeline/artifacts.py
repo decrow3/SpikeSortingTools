@@ -38,16 +38,63 @@ def _append(dataset, values: np.ndarray) -> None:
         dataset[old_size:] = values
 
 
+def _init_threshold_worker(
+    recording,
+    channel_ids: np.ndarray,
+    threshold_counts: float,
+    excluded_channel_ids: list[Any],
+) -> dict[str, Any]:
+    return {
+        "recording": recording,
+        "channel_ids": channel_ids,
+        "threshold_counts": threshold_counts,
+        "excluded_channel_ids": excluded_channel_ids,
+        "id_to_index": {
+            str(value): index for index, value in enumerate(channel_ids)
+        },
+    }
+
+
+def _threshold_chunk(
+    segment_index: int,
+    start_frame: int,
+    end_frame: int,
+    worker_ctx: dict[str, Any],
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    recording = worker_ctx["recording"]
+    traces = recording.get_traces(
+        segment_index=segment_index,
+        start_frame=start_frame,
+        end_frame=end_frame,
+        return_scaled=False,
+    )
+    samples, channels, values, claim_samples = threshold_points(
+        traces,
+        start_frame,
+        worker_ctx["channel_ids"],
+        worker_ctx["threshold_counts"],
+        worker_ctx["excluded_channel_ids"],
+    )
+    channel_indices = np.asarray(
+        [worker_ctx["id_to_index"][str(value)] for value in channels],
+        dtype=np.int32,
+    )
+    return samples, channel_indices, values, claim_samples
+
+
 def write_artifact_sidecar(
     phase_corrected_recording,
     output: Path,
     *,
     threshold_uv: float,
     excluded_channel_ids: Iterable[Any],
-    chunk_duration_s: float = 10.0,
+    chunk_duration_s: float | str = 10.0,
+    n_jobs: int = 1,
+    progress_bar: bool = True,
 ) -> dict[str, Any]:
-    """Scan a phase-corrected recording without changing sorter voltage."""
+    """Scan phase-corrected voltage in parallel without changing sorter input."""
     import h5py
+    from spikeinterface.core.job_tools import ChunkRecordingExecutor
 
     output = Path(output)
     partial = output.with_suffix(output.suffix + ".partial")
@@ -59,11 +106,7 @@ def write_artifact_sidecar(
     gain = float(gains[0])
     threshold_counts = threshold_uv / gain
     fs = float(phase_corrected_recording.get_sampling_frequency())
-    chunk_frames = int(round(chunk_duration_s * fs))
-    if chunk_frames < 1:
-        raise ValueError("chunk_duration_s is too small")
     channel_ids = np.asarray(phase_corrected_recording.get_channel_ids())
-    id_to_index = {str(value): index for index, value in enumerate(channel_ids)}
     excluded = list(excluded_channel_ids)
     output.parent.mkdir(parents=True, exist_ok=True)
     totals = {"point_count": 0, "claim_active_sample_count": 0}
@@ -94,30 +137,37 @@ def write_artifact_sidecar(
                 "threshold_counts": threshold_counts,
                 "gain_uv_per_count": gain,
                 "sampling_frequency_hz": fs,
+                "n_jobs": int(n_jobs),
+                "chunk_duration": str(chunk_duration_s),
                 "channel_ids_json": json.dumps([str(value) for value in channel_ids]),
                 "excluded_channel_ids_json": json.dumps(
                     [str(value) for value in excluded]
                 ),
             }
         )
-        stop = int(phase_corrected_recording.get_num_samples())
-        for start in range(0, stop, chunk_frames):
-            end = min(stop, start + chunk_frames)
-            traces = phase_corrected_recording.get_traces(
-                start_frame=start, end_frame=end, return_scaled=False
-            )
-            samples, channels, values, claim_samples = threshold_points(
-                traces, start, channel_ids, threshold_counts, excluded
-            )
-            channel_indices = np.asarray(
-                [id_to_index[str(value)] for value in channels], dtype=np.int32
-            )
+        def gather(result) -> None:
+            samples, channel_indices, values, claim_samples = result
             _append(datasets["sample_index"], samples)
             _append(datasets["channel_index"], channel_indices)
             _append(datasets["value_counts"], values)
             _append(datasets["claim_active_sample_index"], claim_samples)
             totals["point_count"] += int(samples.size)
             totals["claim_active_sample_count"] += int(claim_samples.size)
+
+        executor = ChunkRecordingExecutor(
+            phase_corrected_recording,
+            _threshold_chunk,
+            _init_threshold_worker,
+            (phase_corrected_recording, channel_ids, threshold_counts, excluded),
+            gather_func=gather,
+            pool_engine="process",
+            n_jobs=n_jobs,
+            chunk_duration=chunk_duration_s,
+            progress_bar=progress_bar,
+            verbose=True,
+            job_name="write_artifact_sidecar",
+        )
+        executor.run()
         handle.attrs["complete"] = True
         for key, value in totals.items():
             handle.attrs[key] = value
@@ -127,6 +177,8 @@ def write_artifact_sidecar(
         "complete": True,
         "threshold_uv": threshold_uv,
         "threshold_counts": threshold_counts,
+        "n_jobs": int(n_jobs),
+        "chunk_duration": str(chunk_duration_s),
         "excluded_channel_ids": [str(value) for value in excluded],
         **totals,
     }

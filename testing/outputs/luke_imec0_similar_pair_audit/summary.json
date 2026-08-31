@@ -1,0 +1,14 @@
+{
+  "input_similar_good_pairs": 37,
+  "unique_good_units_in_pairs": 55,
+  "strong_duplicate_hypotheses": 1,
+  "artifact_enriched_coincident_pairs": 1,
+  "artifact_associated_pairs": 13,
+  "strong_and_artifact_associated_pairs": 1,
+  "partial_or_strong_duplicate_hypotheses": 2,
+  "partial_or_strong_and_artifact_associated_pairs": 2,
+  "median_good_unit_artifact_2ms_fraction": 0.11691542288557213,
+  "median_similar_pair_coincident_artifact_2ms_fraction": 0.3055555555555556,
+  "automatic_curation_allowed": false,
+  "interpretation_guardrail": "Similarity, CCG, and artifact proximity rank hypotheses; they do not establish biological identity or authorize merging."
+}
