@@ -1,0 +1,16 @@
+name: spike-sort-challengers
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - h5py
+  - numpy
+  - scipy
+  - pip:
+      # Driver 550 on this host supports the CUDA 12.4 build. Leaving Torch
+      # unconstrained currently selects CUDA 13, which cannot initialize.
+      - "--extra-index-url https://download.pytorch.org/whl/cu124"
+      - "torch==2.6.0+cu124"
+      - "spikeinterface[full]==0.104.8"
+      - "dartsort==0.5.16"

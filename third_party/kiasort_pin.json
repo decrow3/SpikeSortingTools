@@ -1,0 +1,18 @@
+{
+  "schema_version": "upstream-installation-pin-v1",
+  "repository": "https://github.com/banaiek/KIASORT.git",
+  "commit": "4caecd25132da06485b6b2dde267fe1ecac5b895",
+  "installed_path": "/home/huklab/Documents/KIASORT",
+  "installed_on": "2026-08-31",
+  "complete_checkout_required": true,
+  "entrypoints": {
+    "matlab_gui": "kiaSort.m",
+    "matlab_nogui": "run_kiasort_nogui.m",
+    "spikeinterface_wrapper": "SpikeInterface_wrapper/kiasort_spikeinterface.py"
+  },
+  "sha256": {
+    "matlab_gui": "d3b07412692c31af3e48791fe54375979b8a6946f19fd2e9f8abee98010abcdc",
+    "matlab_nogui": "fd012e030653e00f7df2ba14c2618742cc21961d5bb62b4213861e2140bb5d60",
+    "spikeinterface_wrapper": "1baaf24f3909f8fc91951d3fd4f6a92fa851fd49fbec32606f132bda243ccbd0"
+  }
+}

@@ -3,3 +3,7 @@
 .venv-aind/
 pipeline_results
 pipeline_results*
+
+# Generated diagnostic runs, arrays, figures, reports, and notebooks.
+# Curated evidence can still be added explicitly with `git add -f`.
+testing/outputs/

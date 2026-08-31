@@ -100,6 +100,104 @@ for downstream exclusion of blanker-proximal claims. Use `--duration-s` only for
 bounded smoke tests; the requested slice is applied after phase correction so
 the filter margin retains real source voltage.
 
+### Post-sort motion coordinates
+
+Motion can be introduced without changing the accepted recording or rerunning
+Kilosort. After an estimator artifact passes the independent polarity,
+split-half, cross-probe, and support controls, write per-spike raw and corrected
+depths with:
+
+```bash
+python SpikeGLX_ext_ref_rescue_testing.py \
+  --data-dir /path/to/spikeglx/run \
+  --stream-id imec1.ap \
+  --output-dir /path/to/existing/rescue_results \
+  --motion-field /path/to/qualified_motion_field.npz \
+  --motion-gain 1.0 \
+  --motion-min-confidence 0.5 \
+  --motion-min-support 1
+```
+
+The field NPZ uses schema `qualified-motion-field-v1` and must contain
+`qualification_passed=True`, `time_reference='selected_recording_start'`, and
+`depth_reference='probe_y_um'`. Its
+`displacement_convention='observed_depth_offset_um'` fixes the sign so corrected
+depth is raw depth minus displacement. Estimator, polarity, and qualification
+digest are mandatory provenance fields. Time-by-depth arrays are named
+`displacement_um`, `support`, and `confidence`, with axes `time_s` and
+`depth_um`. Unsupported spikes receive `NaN` corrected
+coordinates rather than a silently extrapolated displacement. The output in
+`motion_coordinates/` retains raw depths in memory-mappable `.npy` arrays,
+processes full sorts in bounded chunks, records the gain and source hashes,
+and explicitly declares that voltage was not modified. It is intended for
+trajectory QC and motion-aware unit-family candidate generation; it does not
+perform automatic merges.
+
+### Drift-architecture sorter bake-off
+
+The next sorter comparison uses the same accepted unwarped rescue recording
+and compares different ways of handling drift. Inspect the candidate matrix and
+the current environment without starting a sort:
+
+```bash
+python sorter_bakeoff.py \
+  --rescue-output-dir /path/to/existing/rescue_results \
+  --plan
+```
+
+The plan includes KS4/no-motion, native DARTsort, KIASORT, and the
+SpikeInterface motion-aware peeler prototype, with IronClust available as an
+optional control. Candidate availability is feature-detected: a named or
+planned condition is never reported as runnable merely because it appears in
+the matrix.
+
+Register the existing accepted KS4 sort as the reference condition:
+
+```bash
+python sorter_bakeoff.py \
+  --rescue-output-dir /path/to/existing/rescue_results \
+  --run ks4_no_motion
+```
+
+Create the pinned isolated challenger environment without modifying the
+production environment:
+
+```bash
+conda env create -f environment-challengers.yml
+conda activate spike-sort-challengers
+```
+
+Then run the experimental native-motion challenger with:
+
+```bash
+python sorter_bakeoff.py \
+  --rescue-output-dir /path/to/existing/rescue_results \
+  --run dartsort_native
+```
+
+DARTsort receives the accepted unwarped recording and uses its recorded native
+`ibllikecmr` frontend plus motion estimation. This is a comparison of complete
+sorting architectures, so sorter-specific filtering, referencing,
+standardization, and whitening may differ; the invariant is that none of the
+conditions may spatially resample the voltage for motion correction. DARTsort
+is explicitly marked experimental because its maintainers describe it as work
+in progress and do not recommend it for production sorting.
+
+KIASORT is run through the wrapper maintained in the KIASORT repository:
+
+```bash
+python sorter_bakeoff.py \
+  --rescue-output-dir /path/to/existing/rescue_results \
+  --run kiasort \
+  --kiasort-path /path/to/pinned/KIASORT
+```
+
+The newer SpikeInterface motion-aware peeler has a strict qualified-field to
+`Motion` adapter but remains a prototype until its clustering/template stages
+are assembled and validated. Common endpoints prioritize reviewed-event recovery,
+duplicate and refractory guardrails, and longitudinal continuity—not unit
+count alone. See [the architecture bake-off design](docs/sorter_architecture_bakeoff.md).
+
 The previous package is archived in `pipelineold/`. Historical entry points
 import that package explicitly and retain their former behavior.
 

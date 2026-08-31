@@ -26,6 +26,7 @@ from pipeline import (
     rescue_kilosort4_overrides,
     run_kilosort4,
     write_artifact_sidecar,
+    write_motion_coordinate_sidecar,
 )
 
 
@@ -38,6 +39,15 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--prepare", action="store_true")
     parser.add_argument("--sort", action="store_true")
     parser.add_argument("--artifact-sidecar", action="store_true")
+    parser.add_argument(
+        "--motion-field",
+        type=Path,
+        help="Qualified motion-field NPZ; writes a post-sort coordinate sidecar.",
+    )
+    parser.add_argument("--motion-gain", type=float, default=1.0)
+    parser.add_argument("--motion-min-support", type=float, default=1.0)
+    parser.add_argument("--motion-min-confidence", type=float, default=0.5)
+    parser.add_argument("--motion-coordinate-chunk-spikes", type=int, default=1_000_000)
     parser.add_argument(
         "--bad-channel",
         action="append",
@@ -157,14 +167,20 @@ def main() -> None:
     )
     if args.plan:
         print(json.dumps(plan_payload(args, output_dir, config), indent=2))
-    if not any((args.prepare, args.sort, args.artifact_sidecar)):
+    if not any((args.prepare, args.sort, args.artifact_sidecar, args.motion_field)):
         if not args.plan:
-            raise SystemExit("Choose --plan, --prepare, --sort, or --artifact-sidecar")
+            raise SystemExit(
+                "Choose --plan, --prepare, --sort, --artifact-sidecar, or --motion-field"
+            )
         return
-    raw = load_raw(args)
-    start_frame, end_frame = requested_frames(raw, args)
-    bad_ids = physical_channel_ids(raw, args.bad_channel)
     recording_dir = output_dir / "recording"
+    raw = None
+    start_frame = end_frame = None
+    bad_ids = None
+    if any((args.prepare, args.artifact_sidecar)):
+        raw = load_raw(args)
+        start_frame, end_frame = requested_frames(raw, args)
+        bad_ids = physical_channel_ids(raw, args.bad_channel)
     if args.prepare:
         _, manifest = materialize_rescue_recording(
             raw,
@@ -204,6 +220,17 @@ def main() -> None:
             excluded_channel_ids=bad_ids,
             chunk_duration_s=args.chunk_duration,
             n_jobs=args.n_jobs,
+        )
+        print(json.dumps(result, indent=2))
+    if args.motion_field:
+        result = write_motion_coordinate_sidecar(
+            output_dir / "kilosort4",
+            args.motion_field,
+            output_dir / "motion_coordinates",
+            gain=args.motion_gain,
+            min_support=args.motion_min_support,
+            min_confidence=args.motion_min_confidence,
+            chunk_spikes=args.motion_coordinate_chunk_spikes,
         )
         print(json.dumps(result, indent=2))
 
