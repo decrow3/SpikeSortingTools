@@ -11,6 +11,8 @@ from pipeline.bakeoff import (
     accept_ks4_reference,
     build_bakeoff_plan,
     run_dartsort_challenger,
+    run_ks4_seeded_peeler_pair,
+    run_kiasort_auto_curation,
     run_kiasort_challenger,
     resolve_bakeoff_window,
 )
@@ -21,7 +23,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--rescue-output-dir", type=Path, required=True)
     parser.add_argument("--plan", action="store_true")
     parser.add_argument(
-        "--run", choices=("ks4_no_motion", "dartsort_native", "kiasort")
+        "--run",
+        choices=(
+            "ks4_no_motion",
+            "ks4_seeded_peeler_pair",
+            "dartsort_native",
+            "kiasort",
+            "kiasort_auto_curated",
+        ),
     )
     parser.add_argument(
         "--candidates",
@@ -29,11 +38,26 @@ def build_parser() -> argparse.ArgumentParser:
         choices=tuple(CANDIDATES),
         default=[
             "ks4_no_motion",
-            "dartsort_native",
-            "kiasort",
-            "si_motion_aware_peeler",
+            "ks4_seeded_static_peeler",
+            "ks4_seeded_motion_native_peeler",
+            "ks4_seeded_motion_stabilized_peeler",
         ],
     )
+    parser.add_argument("--ks4-motion-ops", type=Path)
+    parser.add_argument(
+        "--ks4-motion-time-reference",
+        choices=("window_start", "selected_recording_start"),
+        default="window_start",
+    )
+    parser.add_argument("--ks4-motion-max-step-um", type=float, default=20.0)
+    parser.add_argument("--peeler-template-radius-um", type=float, default=100.0)
+    parser.add_argument("--peeler-min-seed-spikes", type=int, default=20)
+    parser.add_argument("--peeler-max-seed-spikes", type=int, default=2000)
+    parser.add_argument("--peeler-detect-threshold", type=float, default=5.0)
+    parser.add_argument("--peeler-motion-step-um", type=float, default=5.0)
+    parser.add_argument("--peeler-motion-time-bin-s", type=float, default=1.0)
+    parser.add_argument("--peeler-n-jobs", type=int, default=1)
+    parser.add_argument("--peeler-chunk-duration", default="1s")
     parser.add_argument("--dartsort-preprocessing", default="ibllikecmr")
     parser.add_argument("--dartsort-no-work-in-tmpdir", action="store_true")
     parser.add_argument("--kiasort-path", type=Path)
@@ -85,6 +109,27 @@ def main() -> None:
             **window_args,
         )
         print(json.dumps(result, indent=2))
+    elif args.run == "ks4_seeded_peeler_pair":
+        if args.ks4_motion_ops is None:
+            raise SystemExit("--ks4-motion-ops is required for the paired peeler run")
+        result = run_ks4_seeded_peeler_pair(
+            recording_dir,
+            root / "kilosort4",
+            args.ks4_motion_ops,
+            bakeoff_dir / "ks4_seeded_peeler_pair",
+            motion_time_reference=args.ks4_motion_time_reference,
+            motion_max_step_um=args.ks4_motion_max_step_um,
+            template_radius_um=args.peeler_template_radius_um,
+            min_spikes_per_unit=args.peeler_min_seed_spikes,
+            max_spikes_per_unit=args.peeler_max_seed_spikes,
+            detect_threshold=args.peeler_detect_threshold,
+            interpolation_time_bin_size_s=args.peeler_motion_time_bin_s,
+            motion_step_um=args.peeler_motion_step_um,
+            n_jobs=args.peeler_n_jobs,
+            chunk_duration=args.peeler_chunk_duration,
+            **window_args,
+        )
+        print(json.dumps(result, indent=2))
     elif args.run == "dartsort_native":
         result = run_dartsort_challenger(
             recording_dir,
@@ -121,6 +166,23 @@ def main() -> None:
             config_overrides=overrides,
             keep_intermediate=args.kiasort_keep_intermediate,
             **window_args,
+        )
+        print(json.dumps(result, indent=2))
+    elif args.run == "kiasort_auto_curated":
+        channel_end = args.kiasort_channel_start_index + (
+            args.kiasort_channel_count
+            if args.kiasort_channel_count is not None
+            else int(recording_manifest["num_channels"])
+        )
+        source_name = (
+            "kiasort"
+            if args.kiasort_channel_count is None
+            else f"kiasort_channels_{args.kiasort_channel_start_index}_{channel_end}"
+        )
+        result = run_kiasort_auto_curation(
+            bakeoff_dir / source_name,
+            bakeoff_dir / f"{source_name}_auto_curated",
+            kiasort_path=args.kiasort_path,
         )
         print(json.dumps(result, indent=2))
 

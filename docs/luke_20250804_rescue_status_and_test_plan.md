@@ -695,6 +695,8 @@ without boundary accumulation, detection expansion or refractory-quality loss.
 
 ## Evidence inventory
 
+- `docs/luke_ks4_neuron_loss_audit.md`
+- `testing/outputs/luke_ks4_neuron_loss_audit/decision.json`
 - `docs/luke_pipeline_stage_local_validation_strategy.md`
 - `docs/luke_20250804_aind_downstream_bounded_result.md`
 - `testing/outputs/luke_aind_downstream_bounded_endpoint_review/README.md`

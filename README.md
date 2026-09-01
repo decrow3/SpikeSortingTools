@@ -183,6 +183,13 @@ conditions may spatially resample the voltage for motion correction. DARTsort
 is explicitly marked experimental because its maintainers describe it as work
 in progress and do not recommend it for production sorting.
 
+The completed DARTsort 0.5.16 challenge run is retained as integration and
+historical evidence, not as an algorithmic verdict. It predates relevant 0.5.x
+bug fixes, and the bake-off did not fully close voltage-standardization and
+rapid-window temporal-sampling fairness checks. A current-version validation
+pass would be required before interpreting its sparse recovery, but that work
+is deferred rather than prioritized.
+
 KIASORT is run through the wrapper maintained in the KIASORT repository:
 
 ```bash
@@ -192,11 +199,53 @@ python sorter_bakeoff.py \
   --kiasort-path /path/to/pinned/KIASORT
 ```
 
-The newer SpikeInterface motion-aware peeler has a strict qualified-field to
-`Motion` adapter but remains a prototype until its clustering/template stages
-are assembled and validated. Common endpoints prioritize reviewed-event recovery,
-duplicate and refractory guardrails, and longitudinal continuity—not unit
-count alone. See [the architecture bake-off design](docs/sorter_architecture_bakeoff.md).
+The newer SpikeInterface motion-aware peeler now has a runnable atomic
+KS4-seeded benchmark. It re-estimates one shared template set from accepted KS4
+labels, then runs static, native-rigid-motion, and prespecified jump-stabilized
+rigid-motion arms on the same unwarped voltage. This is informally the
+"motion-aware Kilosort4" test; stock KS4 is not being presented as exposing
+this mode. Run it in the isolated challenger environment with:
+
+```bash
+python sorter_bakeoff.py \
+  --rescue-output-dir /path/to/existing/rescue_results \
+  --run ks4_seeded_peeler_pair \
+  --ks4-motion-ops /path/to/rigid_ks4/sorter_output/ops.npy \
+  --ks4-motion-time-reference window_start \
+  --window-name rapid_motion --start-s 5910 --duration-s 120
+```
+
+The run is serial because of a recorded SpikeInterface 0.104.8 warm-up
+workaround. The prespecified next stage, if the rapid-motion guardrails pass,
+is an independently chosen duration-matched quiet window. Common
+endpoints prioritize reviewed-event recovery, duplicate and refractory
+guardrails, and longitudinal continuity—not unit count alone. See [the
+architecture bake-off design](docs/sorter_architecture_bakeoff.md).
+
+The first rapid-motion execution is complete. Neither native nor stabilized
+rigid motion passed: both reduced label-preserving KS4 recovery and increased
+near-coincident burden relative to the static peeler, while the static peeler
+itself recovered only 7.8% of eligible KS4 events with the same label. The
+benchmark therefore does not advance to the quiet control or a full session;
+static matcher recall and determinism would need to be resolved first.
+
+The static-fidelity trace also corrects the informal name of this branch: it is
+a KS4-seeded TDC replay, not KS4's matcher with motion toggled. The original
+TDC control used a negative-only detector even though 79.7% of eligible KS4
+events came from positive-dominant re-estimated templates. A both-polarity,
+threshold-4 local trace fixes much of threshold availability but selects the
+correct template for only 49.5% of sampled misses, so the mismatch remains
+architectural as well as configurational. See [the static TDC fidelity
+trace](docs/luke_static_tdc_fidelity_trace.md).
+
+The follow-up stage-local loss audit points away from global sensitivity
+tuning. The repaired unwarped KS4 final table contains 119/128 reused reviewed
+neural events, and only one reviewed event is learned but removed during final
+processing. The larger exclusion is downstream: 58/128 are present only in
+MUA-labelled units, while 61/128 reach a KS-good unit. No MUA unit yet passes
+the conservative automatic-promotion screen, so the next bounded target is a
+split/reconciliation review of reviewed-event-rich MUA unit 389. See [the KS4
+neuron-loss audit](docs/luke_ks4_neuron_loss_audit.md).
 
 The previous package is archived in `pipelineold/`. Historical entry points
 import that package explicitly and retain their former behavior.
