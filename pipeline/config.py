@@ -8,7 +8,7 @@ from dataclasses import asdict, dataclass
 from typing import Any, Mapping
 
 
-PIPELINE_VERSION = "spikeglx-ext-ref-rescue-testing-v1"
+PIPELINE_VERSION = "spikeglx-ext-ref-rescue-testing-v2"
 
 
 def fingerprint(value: Mapping[str, Any]) -> str:

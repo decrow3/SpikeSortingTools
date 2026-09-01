@@ -64,14 +64,18 @@ sorter_params['cross_peel_claim_um'] = 75.0
 ```text
 raw → Neuropixels phase correction → bilateral 500-uV blanking
     → bad-channel interpolation → int16 materialization
+    ├→ rigid DREDGE estimation/QC sidecar
+    └→ exact accepted-recording identity route
     → one internal Kilosort high-pass/CAR/whitening pass
 ```
 
-External filtering, external referencing, voltage motion correction, Kilosort
-motion correction, the cross-peel claim mask, and Kilosort batch artifact
-rejection are explicitly disabled. The runner fingerprints its source and
-configuration, refuses mismatched or partial caches, and writes integrity and
-sort manifests.
+External filtering and referencing on the **sorter voltage path**, voltage
+motion correction, Kilosort motion correction, the cross-peel claim mask, and
+Kilosort batch artifact rejection are explicitly disabled. The observational
+DREDGE branch uses its own frozen 300–3000 Hz/local-median estimator view but
+never replaces the accepted sorter recording. The runner fingerprints its
+source and configuration, refuses mismatched or partial caches, and writes
+integrity, motion, and sort manifests.
 
 Inspect a run without writing data:
 
@@ -94,6 +98,33 @@ python SpikeGLX_ext_ref_rescue_testing.py \
   --stream-id imec1.ap \
   --prepare --sort
 ```
+
+Rigid DREDGE is run by default with `--prepare` or `--sort`. Its outputs retain
+the familiar `motion/` layout with inspectable peaks, localizations, time/depth
+bins, support maps, reports, and figures. Canonical estimates live under
+`motion/dredge-rigid-sidecar/`; the legacy
+`motion/dredge-motion/motion.npy` correction-ready path is never written or
+consumed. Use `--no-motion-sidecar` to disable estimation explicitly,
+`--recompute-motion` to recompute an exact request while archiving the prior
+artifact, and `--motion-split-half` for the optional diagnostic audit.
+
+A failed estimator writes `motion/estimation_failure.json` and still leaves the
+accepted recording routed unchanged to KS4. `--motion-strict` is available when
+an audit run should stop on estimator failure. QC thresholds and correction
+eligibility remain unvalidated, so current reports explicitly state:
+
+```text
+Correction policy validated: NO
+Correction-eligible epochs: NOT EVALUATED
+Voltage motion correction applied: NO
+```
+
+Version-2 accepted recordings include a full SHA-256 receipt for every
+materialized binary. The receipt is verified before sidecar estimation and
+again before sorting, so a same-size content change cannot silently reuse a
+motion or sorting cache. Earlier `rescue_recording_manifest.json` files do not
+contain this identity and are intentionally refused; rematerialize into a new
+output directory before using the version-2 runner.
 
 Use `--artifact-sidecar` to preserve phase-corrected raw samples beyond 500 uV
 for downstream exclusion of blanker-proximal claims. Use `--duration-s` only for

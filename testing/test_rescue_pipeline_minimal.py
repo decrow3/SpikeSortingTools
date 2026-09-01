@@ -11,7 +11,11 @@ from pipeline import (
     validate_applied_settings,
 )
 from pipeline.artifacts import threshold_points
-from pipeline.preprocess import select_bad_channel_ids
+from pipeline.preprocess import (
+    recording_binary_receipt,
+    select_bad_channel_ids,
+    validate_accepted_recording,
+)
 from SpikeGLX_ext_ref_rescue_testing import physical_channel_ids
 from SpikeGLX_ext_ref_rescue_testing import build_parser, plan_payload
 
@@ -151,3 +155,25 @@ def test_plan_uses_frozen_overrides_without_loading_sorter_defaults():
     assert payload["stream_id"] == "imec1.ap"
     assert payload["sorter_overrides"]["do_correction"] is False
     assert payload["sorter_overrides"]["artifact_threshold"] == "Infinity"
+    assert payload["motion_sidecar"]["enabled_by_default_with_prepare_or_sort"] is True
+    assert payload["motion_sidecar"]["config"]["estimator_mode"] == "rigid"
+    assert payload["motion_sidecar"]["job_config"]["chunk_duration"] == "2s"
+    assert payload["motion_sidecar"]["voltage_modified"] is False
+
+
+def test_accepted_recording_detects_same_size_content_change(tmp_path):
+    recording_dir = tmp_path / "recording"
+    recording_dir.mkdir()
+    binary = recording_dir / "traces.raw"
+    binary.write_bytes(b"abcdefgh")
+    receipt = recording_binary_receipt(recording_dir)
+    manifest = {
+        "schema_version": "rescue-recording-manifest-v2",
+        "complete": True,
+        "expected_binary_bytes": 8,
+        **receipt,
+    }
+    validate_accepted_recording(recording_dir, manifest)
+    binary.write_bytes(b"abcdEfgh")
+    with pytest.raises(RuntimeError, match="content digest"):
+        validate_accepted_recording(recording_dir, manifest)

@@ -12,7 +12,7 @@ from typing import Any, Mapping
 import numpy as np
 
 from .config import PIPELINE_VERSION, fingerprint
-from .preprocess import MANIFEST_NAME
+from .preprocess import MANIFEST_NAME, validate_accepted_recording
 
 
 SORT_MANIFEST = "rescue_sort_manifest.json"
@@ -181,15 +181,7 @@ def run_kilosort4(recording_dir: Path, output_dir: Path) -> dict[str, Any]:
     if not recording_manifest_path.exists():
         raise FileNotFoundError(f"Missing accepted recording manifest: {recording_manifest_path}")
     recording_manifest = json.loads(recording_manifest_path.read_text())
-    if not recording_manifest.get("complete"):
-        raise RuntimeError("Recording manifest is not marked complete")
-    binaries = list(recording_dir.glob("*.raw")) + list(recording_dir.glob("*.bin"))
-    actual_bytes = sum(path.stat().st_size for path in binaries)
-    if actual_bytes != recording_manifest["expected_binary_bytes"]:
-        raise RuntimeError(
-            f"Recording bytes changed after acceptance: {actual_bytes} != "
-            f"{recording_manifest['expected_binary_bytes']}"
-        )
+    validate_accepted_recording(recording_dir, recording_manifest)
     params = build_kilosort4_params()
     safe_params = _json_safe_params(params)
     request = {

@@ -9,8 +9,9 @@ from __future__ import annotations
 
 import json
 import os
+import hashlib
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Mapping
 
 import numpy as np
 from scipy.signal import medfilt, welch
@@ -19,6 +20,70 @@ from .config import PIPELINE_VERSION, RescueConfig, fingerprint
 
 
 MANIFEST_NAME = "rescue_recording_manifest.json"
+RECORDING_MANIFEST_SCHEMA = "rescue-recording-manifest-v2"
+
+
+def recording_binary_receipt(folder: Path) -> dict[str, Any]:
+    """Hash every materialized binary and return a deterministic content receipt."""
+    folder = Path(folder)
+    binaries = sorted(
+        list(folder.glob("*.raw")) + list(folder.glob("*.bin")),
+        key=lambda path: path.name,
+    )
+    if not binaries:
+        raise RuntimeError(f"No materialized recording binary found in {folder}")
+    files = []
+    aggregate = hashlib.sha256()
+    for path in binaries:
+        digest = hashlib.sha256()
+        with path.open("rb") as handle:
+            for block in iter(lambda: handle.read(8 * 1024 * 1024), b""):
+                digest.update(block)
+        file_digest = digest.hexdigest()
+        size = path.stat().st_size
+        files.append({"name": path.name, "size_bytes": size, "sha256": file_digest})
+        aggregate.update(path.name.encode("utf-8"))
+        aggregate.update(b"\0")
+        aggregate.update(str(size).encode("ascii"))
+        aggregate.update(b"\0")
+        aggregate.update(file_digest.encode("ascii"))
+        aggregate.update(b"\n")
+    return {
+        "recording_content_sha256": aggregate.hexdigest(),
+        "recording_binary_files": files,
+        "actual_binary_bytes": sum(item["size_bytes"] for item in files),
+    }
+
+
+def validate_accepted_recording(
+    folder: Path, manifest: Mapping[str, Any] | None = None
+) -> dict[str, Any]:
+    """Verify completion, size, and full content identity of an accepted recording."""
+    folder = Path(folder)
+    if manifest is None:
+        manifest_path = folder / MANIFEST_NAME
+        if not manifest_path.exists():
+            raise FileNotFoundError(f"Missing accepted recording manifest: {manifest_path}")
+        manifest = json.loads(manifest_path.read_text())
+    manifest = dict(manifest)
+    if manifest.get("schema_version") != RECORDING_MANIFEST_SCHEMA:
+        raise RuntimeError("Recording manifest schema is unsupported")
+    if not manifest.get("complete"):
+        raise RuntimeError("Recording manifest is not marked complete")
+    expected_digest = manifest.get("recording_content_sha256")
+    if not expected_digest:
+        raise RuntimeError("Recording manifest lacks a verified content digest")
+    receipt = recording_binary_receipt(folder)
+    if receipt["actual_binary_bytes"] != manifest.get("expected_binary_bytes"):
+        raise RuntimeError(
+            "Recording bytes changed after acceptance: "
+            f"{receipt['actual_binary_bytes']} != {manifest.get('expected_binary_bytes')}"
+        )
+    if receipt["recording_content_sha256"] != expected_digest:
+        raise RuntimeError("Recording content digest changed after acceptance")
+    if receipt["recording_binary_files"] != manifest.get("recording_binary_files"):
+        raise RuntimeError("Recording binary file receipt changed after acceptance")
+    return manifest
 
 
 def _single_gain_uv_per_count(recording) -> float:
@@ -26,6 +91,24 @@ def _single_gain_uv_per_count(recording) -> float:
     if gains.size != 1 or not np.isfinite(gains[0]) or gains[0] <= 0:
         raise ValueError(f"Expected one positive gain_to_uV value, got {gains}")
     return float(gains[0])
+
+
+def recording_geometry_receipt(recording) -> dict[str, Any]:
+    """Return stable physical channel and geometry identity for downstream gates."""
+    channel_ids = [str(value) for value in recording.get_channel_ids()]
+    locations = np.asarray(recording.get_channel_locations(), dtype=np.float64)
+    if locations.ndim != 2 or locations.shape[0] != len(channel_ids):
+        raise ValueError("Channel locations do not match physical channel IDs")
+    if not np.all(np.isfinite(locations)):
+        raise ValueError("Channel locations must be finite")
+    identity = {
+        "physical_channel_ids": channel_ids,
+        "channel_locations_um": locations.tolist(),
+    }
+    return {
+        **identity,
+        "probe_geometry_hash": fingerprint(identity),
+    }
 
 
 def phase_correct(recording):
@@ -206,6 +289,7 @@ def build_rescue_recording(
         "num_samples": int(conditioned.get_num_samples()),
         "num_channels": int(conditioned.get_num_channels()),
         "sampling_frequency_hz": float(conditioned.get_sampling_frequency()),
+        **recording_geometry_receipt(conditioned),
     }
     return conditioned, receipt
 
@@ -331,6 +415,7 @@ def materialize_rescue_recording(
         manifest = json.loads(manifest_path.read_text())
         if manifest.get("request_digest") != request_digest:
             raise RuntimeError("Existing recording cache belongs to another request")
+        validate_accepted_recording(output_dir, manifest)
         return load_extractor(output_dir), manifest
     conditioned, receipt = build_rescue_recording(
         raw_recording,
@@ -356,7 +441,9 @@ def materialize_rescue_recording(
         progress_bar=True,
     )
     integrity = _validate_materialized_recording(partial, conditioned)
+    binary_receipt = recording_binary_receipt(partial)
     manifest = {
+        "schema_version": RECORDING_MANIFEST_SCHEMA,
         **request,
         **receipt,
         "request_digest": request_digest,
@@ -365,6 +452,7 @@ def materialize_rescue_recording(
             * conditioned.get_num_channels()
             * np.dtype(conditioned.dtype).itemsize
         ),
+        **binary_receipt,
         "integrity": integrity,
         "complete": True,
     }

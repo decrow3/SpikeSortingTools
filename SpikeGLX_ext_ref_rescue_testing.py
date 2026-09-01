@@ -19,12 +19,18 @@ import os
 from pathlib import Path
 
 from pipeline import (
+    JobConfig,
+    MotionBackend,
+    MotionSidecarConfig,
     PIPELINE_VERSION,
     RescueConfig,
+    build_motion_estimator_input,
     materialize_rescue_recording,
     phase_correct,
     rescue_kilosort4_overrides,
     run_kilosort4,
+    run_motion_sidecar_safely,
+    validate_accepted_recording,
     write_artifact_sidecar,
     write_motion_coordinate_sidecar,
 )
@@ -38,6 +44,25 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--plan", action="store_true")
     parser.add_argument("--prepare", action="store_true")
     parser.add_argument("--sort", action="store_true")
+    motion_group = parser.add_mutually_exclusive_group()
+    motion_group.add_argument(
+        "--motion-sidecar",
+        action="store_true",
+        help="Run the rigid DREDGE sidecar (already default with --prepare/--sort).",
+    )
+    motion_group.add_argument(
+        "--no-motion-sidecar",
+        action="store_true",
+        help="Explicitly disable the default rigid DREDGE sidecar.",
+    )
+    parser.add_argument("--recompute-motion", action="store_true")
+    parser.add_argument("--motion-strict", action="store_true")
+    parser.add_argument("--motion-chunk-duration", default="2s")
+    parser.add_argument(
+        "--motion-split-half",
+        action="store_true",
+        help="Run the optional diagnostic split-half DREDGE audit.",
+    )
     parser.add_argument("--artifact-sidecar", action="store_true")
     parser.add_argument(
         "--motion-field",
@@ -140,16 +165,32 @@ def plan_payload(
             "samplewise_bilateral_blanking_500uv",
             "bad_channel_interpolation",
             "materialize_int16",
+            "rigid_dredge_motion_sidecar_on_estimator_view",
+            "exact_identity_route_to_sorter",
             "single_internal_kilosort_car_highpass_whitening",
         ],
         "disabled": [
-            "external_filter",
-            "external_reference",
+            "external_sorter_filter",
+            "external_sorter_reference",
             "external_voltage_motion_correction",
             "kilosort_internal_motion_correction",
             "cross_peel_claim_mask",
             "kilosort_batch_artifact_rejection",
+            "nonrigid_dredge_estimation",
+            "legacy_motion_cache_export",
         ],
+        "motion_sidecar": {
+            "enabled_by_default_with_prepare_or_sort": True,
+            "explicitly_disabled": args.no_motion_sidecar,
+            "config": MotionSidecarConfig(split_half=args.motion_split_half).as_dict(),
+            "job_config": JobConfig(
+                n_jobs=args.n_jobs,
+                chunk_duration=args.motion_chunk_duration,
+                progress_bar=True,
+            ).as_kwargs(),
+            "voltage_modified": False,
+            "correction_policy_validated": False,
+        },
         "sorter_overrides": {
             key: ("Infinity" if value == float("inf") else value)
             for key, value in overrides.items()
@@ -167,10 +208,19 @@ def main() -> None:
     )
     if args.plan:
         print(json.dumps(plan_payload(args, output_dir, config), indent=2))
-    if not any((args.prepare, args.sort, args.artifact_sidecar, args.motion_field)):
+    if not any(
+        (
+            args.prepare,
+            args.sort,
+            args.motion_sidecar,
+            args.artifact_sidecar,
+            args.motion_field,
+        )
+    ):
         if not args.plan:
             raise SystemExit(
-                "Choose --plan, --prepare, --sort, --artifact-sidecar, or --motion-field"
+                "Choose --plan, --prepare, --sort, --motion-sidecar, "
+                "--artifact-sidecar, or --motion-field"
             )
         return
     recording_dir = output_dir / "recording"
@@ -194,6 +244,67 @@ def main() -> None:
             end_frame=end_frame,
         )
         print(json.dumps(manifest, indent=2))
+    run_default_sidecar = (args.prepare or args.sort) and not args.no_motion_sidecar
+    if args.motion_sidecar or run_default_sidecar:
+        from spikeinterface.core import load_extractor
+
+        accepted_recording = load_extractor(recording_dir)
+        accepted_manifest = json.loads(
+            (recording_dir / "rescue_recording_manifest.json").read_text()
+        )
+        validate_accepted_recording(recording_dir, accepted_manifest)
+        try:
+            estimator_recording = build_motion_estimator_input(
+                accepted_recording,
+                MotionSidecarConfig().estimator_input,
+            )
+            motion_backend = None
+        except Exception as estimator_input_error:
+            # Preserve a normal sidecar failure receipt and identity sorting even
+            # when construction of the estimator-only view fails.
+            estimator_recording = accepted_recording
+
+            def fail_estimator_input(
+                *args, _error=estimator_input_error, **kwargs
+            ):
+                raise RuntimeError(
+                    f"Motion estimator input construction failed: {_error}"
+                ) from _error
+
+            motion_backend = MotionBackend(
+                fail_estimator_input,
+                fail_estimator_input,
+                fail_estimator_input,
+                {"estimator_input": "construction-failed"},
+            )
+        motion_result = run_motion_sidecar_safely(
+            estimator_recording,
+            recording_for_sorting=accepted_recording,
+            cache_dir=output_dir / "motion",
+            config=MotionSidecarConfig(split_half=args.motion_split_half),
+            job_config=JobConfig(
+                n_jobs=args.n_jobs,
+                chunk_duration=args.motion_chunk_duration,
+                progress_bar=True,
+            ),
+            recompute=args.recompute_motion,
+            strict=args.motion_strict,
+            backend=motion_backend,
+            accepted_recording_manifest=accepted_manifest,
+        )
+        print(
+            json.dumps(
+                {
+                    "motion_sidecar_status": motion_result.status,
+                    "request_digest": motion_result.request_digest,
+                    "cache_lineage": motion_result.cache_lineage,
+                    "qc_status": motion_result.qc.status,
+                    "recording_for_sorting": str(recording_dir),
+                    "voltage_modified": False,
+                },
+                indent=2,
+            )
+        )
     if args.sort:
         manifest = run_kilosort4(recording_dir, output_dir / "kilosort4")
         print(json.dumps(manifest, indent=2))
