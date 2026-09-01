@@ -26,7 +26,7 @@ from .sorting import (
 from .runtime import (
     PRODUCTION_PACKAGES,
     PRODUCTION_PYTHON,
-    PRODUCTION_UV_PREFIX,
+    PRODUCTION_UV_SETUP,
     PRODUCTION_UV_PROJECT,
     production_environment_contract,
     production_environment_receipt,
@@ -58,6 +58,7 @@ from .motion_sidecar import (
     evaluate_motion_qc,
     plot_motion_sidecar,
     run_motion_sidecar,
+    run_motion_sidecar_for_accepted_recording,
     run_motion_sidecar_safely,
 )
 from .bakeoff import (
@@ -78,7 +79,7 @@ __all__ = [
     "PIPELINE_VERSION",
     "PRODUCTION_PACKAGES",
     "PRODUCTION_PYTHON",
-    "PRODUCTION_UV_PREFIX",
+    "PRODUCTION_UV_SETUP",
     "PRODUCTION_UV_PROJECT",
     "RescueConfig",
     "RECORDING_MANIFEST_SCHEMA",
@@ -111,6 +112,7 @@ __all__ = [
     "rescue_kilosort4_overrides",
     "run_kilosort4",
     "run_motion_sidecar",
+    "run_motion_sidecar_for_accepted_recording",
     "run_motion_sidecar_safely",
     "run_dartsort_challenger",
     "run_ks4_seeded_peeler_pair",

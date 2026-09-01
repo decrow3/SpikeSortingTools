@@ -39,7 +39,7 @@ middle-depth holdout recovery, edge burden, and similar good-template burden.
 
 ## Run configuration
 
-The control uses `SpikeGLX_ext_ref_rescue_testing.py` with explicit stream
+The control uses `SpikeGLX_ext_ref_rescue.py` with explicit stream
 `imec0.ap`, the same preprocessing policy and frozen Kilosort settings as
 imec1, and automatic channel selection from the frozen similarity/noise
 thresholds. It does not copy imec1's AP191 repair mask. The output is

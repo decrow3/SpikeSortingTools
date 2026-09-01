@@ -27,8 +27,9 @@ PRODUCTION_PACKAGES = {
     "torch": "2.6.0+cu124",
 }
 PRODUCTION_UV_PROJECT = "environments/rescue-production"
-PRODUCTION_UV_PREFIX = (
-    "uv run --project environments/rescue-production --frozen --no-group test"
+PRODUCTION_UV_SETUP = (
+    "uv sync --project environments/rescue-production --frozen --no-group test",
+    "source environments/rescue-production/.venv/bin/activate",
 )
 PRODUCTION_LOCKFILE = (
     Path(__file__).resolve().parents[1]
@@ -69,7 +70,7 @@ def production_environment_receipt(*, check_cuda: bool = False) -> dict[str, Any
             installed[distribution] = None
     receipt: dict[str, Any] = {
         "uv_project": PRODUCTION_UV_PROJECT,
-        "canonical_prefix": PRODUCTION_UV_PREFIX,
+        "canonical_setup": list(PRODUCTION_UV_SETUP),
         "python_required": ".".join(map(str, PRODUCTION_PYTHON)),
         "python_installed": platform.python_version(),
         "packages_required": dict(PRODUCTION_PACKAGES),
@@ -112,6 +113,7 @@ def validate_production_environment(*, require_cuda: bool = False) -> dict[str, 
         details = "; ".join(problems)
         raise RuntimeError(
             "Production environment validation failed: "
-            f"{details}. Run through `{PRODUCTION_UV_PREFIX} ...`."
+            f"{details}. From the repository root, run `{PRODUCTION_UV_SETUP[0]}`, "
+            f"then `{PRODUCTION_UV_SETUP[1]}`."
         )
     return receipt

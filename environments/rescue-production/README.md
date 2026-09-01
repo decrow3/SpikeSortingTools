@@ -1,7 +1,7 @@
 # Rescue production environment
 
 This uv project is the only supported production runtime for
-`SpikeGLX_ext_ref_rescue_testing.py`. It is intentionally separate from the
+`SpikeGLX_ext_ref_rescue.py`. It is intentionally separate from the
 legacy pipeline environment. Do not add legacy curation, MEDiCINe, notebook, or
 experimental sorter dependencies here.
 
@@ -32,44 +32,34 @@ unknown source, changes only that empty-center branch, and records the patched
 source SHA-256 in the sort request and manifest. This replaces the undocumented
 hand edit that existed in the historical Conda environment.
 
-From the repository root, create or exactly update the runtime with:
+For every production run, start from the repository root. Leave any active
+Conda environment, exactly sync the uv runtime to the committed lock, activate
+it, and verify package versions and GPU visibility:
 
 ```bash
+conda deactivate  # only when a Conda environment is active
 uv sync \
   --project environments/rescue-production \
   --frozen \
   --no-group test
+source environments/rescue-production/.venv/bin/activate
+python environments/rescue-production/verify_environment.py --require-cuda
 ```
 
-Verify package versions and GPU visibility before a sort:
+Edit the clearly marked settings block at the top of
+`SpikeGLX_ext_ref_rescue.py`, then run it as a normal Python script without CLI
+arguments:
 
 ```bash
-uv run \
-  --project environments/rescue-production \
-  --frozen \
-  --no-group test \
-  python environments/rescue-production/verify_environment.py --require-cuda
+python SpikeGLX_ext_ref_rescue.py
 ```
 
-Always invoke the production pipeline through the same project:
+Use `deactivate` when finished. The Python program contains the runtime guard;
+the tested processing implementation remains in `pipeline/`, while the entry
+point is a readable sequential run sheet with restartable stage switches.
 
-```bash
-uv run \
-  --project environments/rescue-production \
-  --frozen \
-  --no-group test \
-  python SpikeGLX_ext_ref_rescue_testing.py --help
-```
-
-The repository-root launcher supplies this exact prefix. A complete configured
-run can therefore be started with:
-
-```bash
-./run_rescue_pipeline --config configs/rescue/luke0804_imec0_smoke_60s.json
-```
-
-To run repository tests in the same locked graph, add `--group test` instead of
-`--no-group test`. Dependency changes must be made in `pyproject.toml`, followed
-by an intentional `uv lock --project environments/rescue-production`; commit
-the project file and changed lockfile together. Production commands must never
-use `uv run --with`, an active Conda environment, or an unlocked sync.
+To run repository tests, sync with `--group test` instead of `--no-group test`.
+Dependency changes must be made in `pyproject.toml`, followed by an intentional
+`uv lock --project environments/rescue-production`; commit the project file and
+changed lockfile together. Production commands must never use `uv run --with`,
+an active Conda environment, or an unlocked sync.

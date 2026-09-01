@@ -10,58 +10,65 @@ Currently maintained by Declan Rowley
 The conservative rescue pipeline has an isolated uv project at
 [`environments/rescue-production`](environments/rescue-production). This is
 the only supported production runtime for
-`SpikeGLX_ext_ref_rescue_testing.py`; the Conda environment below remains for
-the legacy pipeline and must not be used for rescue production runs.
+`SpikeGLX_ext_ref_rescue.py`; the Conda environment below remains for the
+legacy pipeline and must not be used for rescue production runs.
 
 The uv project pins CPython 3.12.4, SpikeInterface 0.102.1, Neo 0.14.0,
-Kilosort 4.0.27, DREDGE 0.3.0, and PyTorch 2.6.0 CUDA 12.4. Neo 0.14.0 is a
-hard compatibility pin because later Neo releases removed the SpikeGLX
-`load_sync_channel` argument still used by this SpikeInterface version. The
-committed `uv.lock` freezes the complete transitive graph and wheel hashes.
-Create the exact environment from the repository root:
+Kilosort 4.0.27, DREDGE 0.3.0, and PyTorch 2.6.0 CUDA 12.4. The committed
+`uv.lock` freezes the complete transitive graph and wheel hashes.
+
+### Activate and run (routine workflow)
+
+From a new terminal, run these commands. If the prompt shows a Conda
+environment such as `(base)`, deactivate it first. The frozen sync is safe to
+repeat and brings the environment back to the committed lockfile before each
+production run:
 
 ```bash
+cd /home/huklab/Documents/RyanSorting/SpikeSortingTools
+conda deactivate  # only when a Conda environment is active
 uv sync \
   --project environments/rescue-production \
   --frozen \
   --no-group test
+source environments/rescue-production/.venv/bin/activate
+python environments/rescue-production/verify_environment.py --require-cuda
 ```
 
-Before sorting, verify both package identity and GPU visibility:
+The prompt should now show `(spikesortingtools-rescue-production)`. Open
+`SpikeGLX_ext_ref_rescue.py` and edit the first `# %%` section: `DATA_DIR`,
+`STREAM_ID`, `OUTPUT_DIR`, the optional time range, and the stage switches.
+Then run it without command-line arguments:
 
 ```bash
-uv run \
-  --project environments/rescue-production \
-  --frozen \
-  --no-group test \
-  python environments/rescue-production/verify_environment.py --require-cuda
+python SpikeGLX_ext_ref_rescue.py
 ```
 
-All production commands must begin with:
-
-```text
-uv run --project environments/rescue-production --frozen --no-group test
-```
-
-For routine use, the checked-in launcher supplies that prefix, the local Python
-install location, and the uv cache automatically:
+Completed matching stages are validated and reused, so the switches can remain
+enabled when restarting an interrupted run. When finished, leave the
+environment with:
 
 ```bash
-./run_rescue_pipeline --config configs/rescue/luke0804_imec0_smoke_60s.json
+deactivate
 ```
 
-Run configurations are versioned JSON files. They can specify paths, actions,
-time bounds, strictness, and job settings; explicit command-line flags override
-their values. The config path and SHA-256 are printed by `--plan` and retained
-with the run plan, so repeated invocations are inspectable without copying a
-long shell command.
+Neo 0.14.0 is a hard compatibility pin because later Neo releases removed the
+SpikeGLX `load_sync_channel` argument still used by this SpikeInterface
+version.
+
+The script is intentionally an operator-facing run sheet like
+`SpikeGLX_ext_ref_2025.py`: paths and controls are ordinary named Python values,
+and the execution block visibly proceeds through environment verification,
+source loading, preparation, motion estimation, and Kilosort. The resolved
+settings are written to `rescue_run_plan.json` in the output directory.
 
 The pipeline independently checks the exact Python and direct package versions
 before any data-changing action. Sorting additionally requires CUDA to be
 visible to PyTorch. This catches bare-Python, active-Conda, unlocked, CPU-only,
 and accidentally upgraded launches before they materialize data or create a
-sort. `--plan` remains dependency-light and prints the required production
-contract.
+sort. The preceding frozen sync enforces the complete transitive lock. Set
+`PLAN_ONLY = True` to print the production contract without loading data or
+writing files.
 
 Kilosort 4.0.27's published wheel contains a known empty-clustering-center
 return-arity defect. The rescue sorter applies one repository-owned,
@@ -132,9 +139,9 @@ sorter_params['cross_peel_claim_um'] = 75.0
 
 ---
 
-## Rescue-testing external-reference pipeline
+## Rescue external-reference pipeline
 
-`SpikeGLX_ext_ref_rescue_testing.py` implements the evidence-supported baseline:
+`SpikeGLX_ext_ref_rescue.py` implements the evidence-supported baseline:
 
 ```text
 raw → Neuropixels phase correction → bilateral 500-uV blanking
@@ -152,42 +159,43 @@ never replaces the accepted sorter recording. The runner fingerprints its
 source and configuration, refuses mismatched or partial caches, and writes
 integrity, motion, and sort manifests.
 
-Inspect a run without writing data:
+The file starts with one clearly marked editable block. For example:
 
-```bash
-uv run --project environments/rescue-production --frozen --no-group test \
-  python SpikeGLX_ext_ref_rescue_testing.py \
-  --data-dir /path/to/spikeglx/run \
-  --stream-id imec1.ap \
-  --plan
+```python
+DATA_DIR = Path("/path/to/spikeglx/run")
+STREAM_ID = "imec1.ap"
+OUTPUT_DIR = Path("/path/to/rescue_results")
+START_S = 0.0
+DURATION_S = None  # full recording; use 60.0 for a smoke test
+
+RUN_PREPARE = True
+RUN_MOTION_SIDECAR = True
+RUN_KILOSORT = True
 ```
 
-`--stream-id` is mandatory so an imec0/imec1 choice can never be made silently.
-The plan path reports frozen overrides directly and does not import
-SpikeInterface or require a configured Kilosort/CUDA environment.
+These explicit values ensure the input stream and output location are visible
+before the run. Set `PLAN_ONLY = True` and run the file to inspect all frozen
+settings without opening the recording.
 
-Materialize and sort the full recording:
+With the uv environment active, execute the visible sequential workflow with:
 
 ```bash
-uv run --project environments/rescue-production --frozen --no-group test \
-  python SpikeGLX_ext_ref_rescue_testing.py \
-  --data-dir /path/to/spikeglx/run \
-  --stream-id imec1.ap \
-  --prepare --sort
+python SpikeGLX_ext_ref_rescue.py
 ```
 
-Rigid DREDGE is run by default with `--prepare` or `--sort`. Its outputs retain
+Each expensive stage is restartable and reuses only an exact, complete,
+content-validated cache. Rigid DREDGE outputs retain
 the familiar `motion/` layout with inspectable peaks, localizations, time/depth
 bins, support maps, reports, and figures. Canonical estimates live under
 `motion/dredge-rigid-sidecar/`; the legacy
 `motion/dredge-motion/motion.npy` correction-ready path is never written or
-consumed. Use `--no-motion-sidecar` to disable estimation explicitly,
-`--recompute-motion` to recompute an exact request while archiving the prior
-artifact, and `--motion-split-half` for the optional diagnostic audit.
+consumed. Set `RUN_MOTION_SIDECAR = False` to skip estimation,
+`RECOMPUTE_MOTION = True` to recompute while archiving the prior artifact, or
+`RUN_MOTION_SPLIT_HALF = True` for the optional diagnostic audit.
 
 A failed estimator writes `motion/estimation_failure.json` and still leaves the
-accepted recording routed unchanged to KS4. `--motion-strict` is available when
-an audit run should stop on estimator failure. QC thresholds and correction
+accepted recording routed unchanged to KS4. `MOTION_STRICT = True` makes an
+audit run stop on estimator failure. QC thresholds and correction
 eligibility remain unvalidated, so current reports explicitly state:
 
 ```text
@@ -203,27 +211,20 @@ motion or sorting cache. Earlier `rescue_recording_manifest.json` files do not
 contain this identity and are intentionally refused; rematerialize into a new
 output directory before using the version-2 runner.
 
-Use `--artifact-sidecar` to preserve phase-corrected raw samples beyond 500 uV
-for downstream exclusion of blanker-proximal claims. Use `--duration-s` only for
-bounded smoke tests; the requested slice is applied after phase correction so
-the filter margin retains real source voltage.
+Set `WRITE_RAW_ARTIFACT_SIDECAR = True` to preserve phase-corrected raw samples
+beyond 500 uV for downstream exclusion of blanker-proximal claims. Set
+`DURATION_S` to a positive number only for bounded smoke tests; the requested
+slice is applied after phase correction so the filter margin retains real
+source voltage.
 
 ### Post-sort motion coordinates
 
 Motion can be introduced without changing the accepted recording or rerunning
 Kilosort. After an estimator artifact passes the independent polarity,
-split-half, cross-probe, and support controls, write per-spike raw and corrected
-depths with:
+split-half, cross-probe, and support controls, set:
 
-```bash
-python SpikeGLX_ext_ref_rescue_testing.py \
-  --data-dir /path/to/spikeglx/run \
-  --stream-id imec1.ap \
-  --output-dir /path/to/existing/rescue_results \
-  --motion-field /path/to/qualified_motion_field.npz \
-  --motion-gain 1.0 \
-  --motion-min-confidence 0.5 \
-  --motion-min-support 1
+```python
+QUALIFIED_MOTION_FIELD = Path("/path/to/qualified_motion_field.npz")
 ```
 
 The field NPZ uses schema `qualified-motion-field-v1` and must contain

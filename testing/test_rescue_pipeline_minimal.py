@@ -20,8 +20,7 @@ from pipeline.preprocess import (
 )
 from pipeline.kilosort_compat import ORIGINAL_BLOCK, PATCHED_BLOCK, patch_source_text
 from pipeline.sorting import _archive_declared_failed_partial
-from SpikeGLX_ext_ref_rescue_testing import physical_channel_ids
-from SpikeGLX_ext_ref_rescue_testing import build_parser, parse_args, plan_payload
+from SpikeGLX_ext_ref_rescue import build_run_plan, physical_channel_ids
 
 
 def sorter_defaults():
@@ -140,68 +139,14 @@ def test_physical_bad_channel_resolves_spikeglx_channel_name():
     assert physical_channel_ids(Recording(), [191]) == ["imec1.ap#AP191"]
 
 
-def test_stream_id_is_required():
-    with pytest.raises(SystemExit):
-        build_parser().parse_args(["--data-dir", "/tmp/example", "--plan"])
-
-
-def test_versioned_run_config_supplies_defaults_and_cli_overrides(tmp_path):
-    config = tmp_path / "run.json"
-    config.write_text(
-        """{
-          "schema_version": "rescue-run-config-v1",
-          "description": "test",
-          "arguments": {
-            "data_dir": "/tmp/source",
-            "stream_id": "imec0.ap",
-            "output_dir": "/tmp/output",
-            "duration_s": 60,
-            "prepare": true,
-            "sort": true,
-            "n_jobs": 20
-          }
-        }"""
-    )
-    args = parse_args(["--config", str(config), "--n-jobs", "4"])
-    assert args.data_dir == Path("/tmp/source")
-    assert args.output_dir == Path("/tmp/output")
-    assert args.prepare is True
-    assert args.sort is True
-    assert args.duration_s == 60
-    assert args.n_jobs == 4
-    assert args.run_config_receipt["path"] == str(config.resolve())
-    assert len(args.run_config_receipt["sha256"]) == 64
-
-
-def test_run_config_rejects_unknown_arguments(tmp_path):
-    config = tmp_path / "run.json"
-    config.write_text(
-        '{"schema_version":"rescue-run-config-v1",'
-        '"arguments":{"data_dir":"/tmp/source","stream_id":"imec0.ap",'
-        '"surprise":true}}'
-    )
-    with pytest.raises(SystemExit):
-        parse_args(["--config", str(config)])
-
-
-def test_plan_uses_frozen_overrides_without_loading_sorter_defaults():
-    args = build_parser().parse_args(
-        [
-            "--data-dir",
-            "/tmp/example",
-            "--stream-id",
-            "imec1.ap",
-            "--plan",
-        ]
-    )
-    payload = plan_payload(args, Path("/tmp/output"), RescueConfig())
-    assert payload["stream_id"] == "imec1.ap"
+def test_run_sheet_plan_uses_frozen_overrides_without_loading_sorter_defaults():
+    payload = build_run_plan()
+    assert payload["stream_id"] == "imec0.ap"
     assert payload["sorter_overrides"]["do_correction"] is False
     assert payload["sorter_overrides"]["artifact_threshold"] == "Infinity"
-    assert payload["motion_sidecar"]["enabled_by_default_with_prepare_or_sort"] is True
-    assert payload["motion_sidecar"]["config"]["estimator_mode"] == "rigid"
-    assert payload["motion_sidecar"]["job_config"]["chunk_duration"] == "2s"
-    assert payload["motion_sidecar"]["voltage_modified"] is False
+    assert payload["motion_sidecar"]["estimator_mode"] == "rigid"
+    assert payload["job_settings"]["motion_chunk_duration"] == "2s"
+    assert payload["voltage_motion_correction"] is False
 
 
 def test_accepted_recording_detects_same_size_content_change(tmp_path):

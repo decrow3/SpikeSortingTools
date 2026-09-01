@@ -5,13 +5,14 @@
 The implemented rescue pipeline is bound to the separate uv project in
 `environments/rescue-production`. Production execution requires its committed
 `uv.lock`, exact CPython and direct package versions, and the CUDA 12.4 PyTorch
-wheel when sorting. The canonical command prefix is:
+wheel when sorting. The canonical environment setup is:
 
-```text
-uv run --project environments/rescue-production --frozen --no-group test
+```bash
+uv sync --project environments/rescue-production --frozen --no-group test
+source environments/rescue-production/.venv/bin/activate
 ```
 
-The CLI validates this contract before any data-changing action and includes
+The operator run sheet validates this contract before any data-changing action and includes
 the lockfile SHA-256 in accepted-recording cache identity. The historical
 pipeline environment remains separate; legacy dependencies must not be added
 to this production project.
@@ -21,7 +22,7 @@ to this production project.
 Initial production milestone implemented, 2026-08-31.
 
 The implementation lives in `pipeline/motion_sidecar.py`, is exported through
-`pipeline`, and is wired into `SpikeGLX_ext_ref_rescue_testing.py`. Contract
+`pipeline`, and is wired into `SpikeGLX_ext_ref_rescue.py`. Contract
 tests live in `testing/test_motion_sidecar.py`. Selective voltage correction
 remains unimplemented and unauthorized.
 

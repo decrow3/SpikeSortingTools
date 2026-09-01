@@ -1581,6 +1581,59 @@ def run_motion_sidecar_safely(
         )
 
 
+def run_motion_sidecar_for_accepted_recording(
+    recording_dir: Path,
+    *,
+    cache_dir: Path,
+    config: MotionSidecarConfig | None = None,
+    job_config: JobConfig | None = None,
+    recompute: bool = False,
+    strict: bool = False,
+) -> MotionSidecarRun:
+    """Run the sidecar from a verified accepted-recording directory."""
+    from spikeinterface.core import load
+
+    from .preprocess import MANIFEST_NAME, validate_accepted_recording
+
+    recording_dir = Path(recording_dir)
+    accepted_recording = load(recording_dir)
+    accepted_manifest = json.loads((recording_dir / MANIFEST_NAME).read_text())
+    validate_accepted_recording(recording_dir, accepted_manifest)
+    selected_config = MotionSidecarConfig() if config is None else config
+    try:
+        estimator_recording = build_motion_estimator_input(
+            accepted_recording,
+            selected_config.estimator_input,
+        )
+        backend = None
+    except Exception as estimator_input_error:
+        # Sidecar construction may fail without changing the sorter input.
+        estimator_recording = accepted_recording
+
+        def fail_estimator_input(*args, _error=estimator_input_error, **kwargs):
+            raise RuntimeError(
+                f"Motion estimator input construction failed: {_error}"
+            ) from _error
+
+        backend = MotionBackend(
+            fail_estimator_input,
+            fail_estimator_input,
+            fail_estimator_input,
+            {"estimator_input": "construction-failed"},
+        )
+    return run_motion_sidecar_safely(
+        estimator_recording,
+        recording_for_sorting=accepted_recording,
+        cache_dir=cache_dir,
+        config=selected_config,
+        job_config=job_config,
+        recompute=recompute,
+        strict=strict,
+        backend=backend,
+        accepted_recording_manifest=accepted_manifest,
+    )
+
+
 def plot_motion_sidecar(result: MotionSidecarRun, cache_dir: Path | None = None) -> None:
     """Regenerate sidecar plots without implying voltage correction."""
     if result.estimate is None:
