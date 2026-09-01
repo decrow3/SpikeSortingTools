@@ -111,6 +111,18 @@ deficient estimator.
 Historical failure of the tested external warp therefore does not reject motion
 handling in general. It rejects that field/application combination.
 
+The subsequent exact KS4 4.0.27 native-operator audit also failed its
+preregistered waveform, amplitude and zero-shift-tax gates. Do not advance that
+operator to a supplied-trajectory sort. This result remains application-local:
+the estimator bakeoff and coordinate-only ladder are still active. See
+[`luke_20250804_ks4_native_operator_audit_result.md`](luke_20250804_ks4_native_operator_audit_result.md).
+
+A narrower exact-identity/selective-correction hypothesis may be tested only as
+a new operator experiment. The existing grid has no complete residual,
+amplitude, and cosine crossover, so it cannot yet authorize a real trajectory
+or bounded sort. See
+[`Luke KS4 selective correction crossover plan.md`](../testing/Luke%20KS4%20selective%20correction%20crossover%20plan.md).
+
 ## Sorter experiment rules
 
 - Start with the frozen rescue input and frozen metric-blind windows.
@@ -125,6 +137,30 @@ handling in general. It rejects that field/application combination.
   credited as beneficial.
 - Advance to a full session only after a bounded candidate wins across endpoint
   families without boundary accumulation or hidden detection expansion.
+
+### Next bounded sorter-architecture test
+
+The next mechanism-matched alternative-sorter test is upstream Kilosort 2 on
+the frozen unwarped rescue recording. It asks whether KS2's native batch
+reordering and time-varying template tracking preserve identities that KS4
+leaves fragmented or MUA, without spatial voltage interpolation. This is a
+step-4 sorter experiment and does not validate a physical motion estimate or
+advance the voltage-application ladder.
+
+The test must begin with patched-source and batch-boundary integrity gates, then
+progress from a 120-s integration smoke test to a frozen panel of six
+non-overlapping 10-minute segments spanning supported-motion magnitude, input
+anomaly, and support dropout. Full-session execution requires coherent native
+tracking diagnostics, preserved clean KS4 control families, and several
+residual/refractory-supported family wins replicated across motion segments.
+See
+[`Luke KS2 native tracking validation plan.md`](../testing/Luke%20KS2%20native%20tracking%20validation%20plan.md).
+
+The shared central endpoint is identity through motion: whether a candidate
+neuron's time-resolved waveform path approaches competing identities and is
+split into temporally consecutive labels. The segment panel and frozen
+time-ordered family analysis are specified in
+[`Luke identity through motion segment panel plan.md`](../testing/Luke%20identity%20through%20motion%20segment%20panel%20plan.md).
 
 ## When to reopen preprocessing
 
@@ -148,3 +184,4 @@ AIND provide the two characterized baselines needed for that interaction test.
 - [`luke_20250804_aind_downstream_bounded_result.md`](luke_20250804_aind_downstream_bounded_result.md)
 - [`luke_20250804_presort_motion_handoff.md`](luke_20250804_presort_motion_handoff.md)
 - [`luke_20250804_rescue_status_and_test_plan.md`](luke_20250804_rescue_status_and_test_plan.md)
+- [`luke_20250804_ks4_native_operator_audit_result.md`](luke_20250804_ks4_native_operator_audit_result.md)
