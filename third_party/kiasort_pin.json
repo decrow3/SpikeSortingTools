@@ -5,6 +5,22 @@
   "installed_path": "/home/huklab/Documents/KIASORT",
   "installed_on": "2026-08-31",
   "complete_checkout_required": true,
+  "compatibility_patch": {
+    "target": "MATLAB R2022b",
+    "tracked_diff_sha256": "a25e73b58346fcf49e5df80f3bc4fb335378a6faf156bc8872dd6b5553db30c2",
+    "changes": [
+      "Replace numeric omitmissing options with omitnan in seven MATLAB source files",
+      "Pass generated wrapper statements directly to MATLAB -batch instead of parsing them through run()",
+      "Round duration-derived sample counts before using them as MATLAB indices or array dimensions",
+      "Use the R2022b GPU-compatible one-input eig form followed by diag",
+      "Configure MATLAB Python explicitly from KIASORT_PYTHON_EXECUTABLE",
+      "Allow opt-in reuse of a complete, channel-count-validated sample extraction",
+      "Preserve the underlying MATLAB/Python exception when UMAP fails",
+      "Disable Python user-site leakage before MATLAB loads the isolated environment",
+      "Run embedded Python out of process with the isolated environment library path",
+      "Use SpikeInterface 0.104 NumpySorting.from_samples_and_labels for native sample indices"
+    ]
+  },
   "entrypoints": {
     "matlab_gui": "kiaSort.m",
     "matlab_nogui": "run_kiasort_nogui.m",
@@ -12,7 +28,7 @@
   },
   "sha256": {
     "matlab_gui": "d3b07412692c31af3e48791fe54375979b8a6946f19fd2e9f8abee98010abcdc",
-    "matlab_nogui": "fd012e030653e00f7df2ba14c2618742cc21961d5bb62b4213861e2140bb5d60",
-    "spikeinterface_wrapper": "1baaf24f3909f8fc91951d3fd4f6a92fa851fd49fbec32606f132bda243ccbd0"
+    "matlab_nogui": "ebb249700b958be1650a8c7a5ba3b2abf04f59dc7ab516b05d85224be62f8881",
+    "spikeinterface_wrapper": "7f4f68e75a124f1f25a3a2d7cfce42af5392eb39d3bfb165255795f0286f42ef"
   }
 }

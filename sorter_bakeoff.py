@@ -37,6 +37,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--dartsort-preprocessing", default="ibllikecmr")
     parser.add_argument("--dartsort-no-work-in-tmpdir", action="store_true")
     parser.add_argument("--kiasort-path", type=Path)
+    parser.add_argument("--kiasort-python-executable", type=Path)
+    parser.add_argument("--kiasort-numba-threads", type=int, default=2)
+    parser.add_argument("--kiasort-channel-start-index", type=int, default=0)
+    parser.add_argument("--kiasort-channel-count", type=int)
     parser.add_argument("--kiasort-config-json", type=Path)
     parser.add_argument("--kiasort-keep-intermediate", action="store_true")
     parser.add_argument("--window-name", default="full_recording")
@@ -98,10 +102,22 @@ def main() -> None:
         )
         if not isinstance(overrides, dict):
             raise ValueError("KIASORT config JSON must contain an object")
+        kiasort_output_name = "kiasort"
+        if args.kiasort_channel_count is not None:
+            channel_end = (
+                args.kiasort_channel_start_index + args.kiasort_channel_count
+            )
+            kiasort_output_name = (
+                f"kiasort_channels_{args.kiasort_channel_start_index}_{channel_end}"
+            )
         result = run_kiasort_challenger(
             recording_dir,
-            bakeoff_dir / "kiasort",
+            bakeoff_dir / kiasort_output_name,
             kiasort_path=args.kiasort_path,
+            python_executable=args.kiasort_python_executable,
+            numba_threads=args.kiasort_numba_threads,
+            channel_start_index=args.kiasort_channel_start_index,
+            channel_count=args.kiasort_channel_count,
             config_overrides=overrides,
             keep_intermediate=args.kiasort_keep_intermediate,
             **window_args,

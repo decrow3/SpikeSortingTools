@@ -10,6 +10,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -171,6 +172,24 @@ def resolve_kiasort_installation(path: Path | None) -> dict[str, Any]:
             "gui": str(gui),
             "reason": f"Could not choose run_kiasort_nogui.m from {len(entrypoints)} copies",
         }
+    git_commit = None
+    tracked_diff_sha256 = None
+    try:
+        commit_result = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        diff_result = subprocess.run(
+            ["git", "-C", str(root), "diff", "--binary", "--no-ext-diff"],
+            check=True,
+            capture_output=True,
+        )
+        git_commit = commit_result.stdout.strip()
+        tracked_diff_sha256 = hashlib.sha256(diff_result.stdout).hexdigest()
+    except (OSError, subprocess.CalledProcessError):
+        pass
     return {
         "configured": True,
         "root": str(root),
@@ -181,6 +200,8 @@ def resolve_kiasort_installation(path: Path | None) -> dict[str, Any]:
         "gui_entrypoint_sha256": _sha256_file(gui),
         "nogui_entrypoint_sha256": _sha256_file(entrypoint),
         "nogui_entrypoint_candidates": [str(item) for item in entrypoints],
+        "git_commit": git_commit,
+        "tracked_diff_sha256": tracked_diff_sha256,
     }
 
 
@@ -458,6 +479,76 @@ def _load_upstream_kiasort_wrapper(wrapper_path: Path):
     return module
 
 
+def _load_kiasort_native_sorting(native_output: Path, sampling_frequency: float):
+    """Load the two native arrays used by KIASORT's upstream SI wrapper."""
+    import h5py
+    import spikeinterface as si
+
+    result_dir = Path(native_output) / "RES_Sorted"
+    spike_path = result_dir / "spike_idx.h5"
+    label_path = result_dir / "unifiedLabels.h5"
+    if not spike_path.exists() or not label_path.exists():
+        raise RuntimeError(f"KIASORT ended without native result arrays in {result_dir}")
+    with h5py.File(spike_path, "r") as values:
+        spike_indices = np.asarray(values["/spike_idx"]).reshape(-1).astype(np.int64)
+    with h5py.File(label_path, "r") as values:
+        labels = np.asarray(values["/unifiedLabels"]).reshape(-1).astype(np.int64)
+    if spike_indices.size != labels.size:
+        raise RuntimeError("KIASORT native spike and label arrays have different lengths")
+    assigned = labels >= 0
+    return si.NumpySorting.from_samples_and_labels(
+        samples_list=spike_indices[assigned],
+        labels_list=labels[assigned],
+        sampling_frequency=float(sampling_frequency),
+    )
+
+
+def _resume_kiasort_matlab(
+    native_output: Path,
+    matlab_executable: str,
+    python_executable: str,
+    numba_threads: int,
+) -> None:
+    """Resume a guarded partial after SI already exported its binary input."""
+    script_path = Path(native_output) / "_run_kiasort.m"
+    recording_path = Path(native_output) / "recording.dat"
+    channel_map_path = Path(native_output) / "channel_map.mat"
+    missing = [
+        str(path)
+        for path in (script_path, recording_path, channel_map_path)
+        if not path.exists()
+    ]
+    if missing:
+        raise RuntimeError(f"KIASORT partial cannot be resumed; missing: {missing}")
+    matlab_env = os.environ.copy()
+    python_lib = str(Path(python_executable).resolve().parent.parent / "lib")
+    existing_library_path = matlab_env.get("LD_LIBRARY_PATH", "")
+    matlab_env["LD_LIBRARY_PATH"] = (
+        python_lib
+        if not existing_library_path
+        else python_lib + os.pathsep + existing_library_path
+    )
+    matlab_env["PYTHONNOUSERSITE"] = "1"
+    matlab_env["NUMBA_NUM_THREADS"] = str(numba_threads)
+    process = subprocess.Popen(
+        [matlab_executable, "-batch", script_path.read_text().replace("\n", " ")],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        env=matlab_env,
+    )
+    output_lines = []
+    assert process.stdout is not None
+    for line in process.stdout:
+        output_lines.append(line)
+        print(line, end="", flush=True)
+    returncode = process.wait()
+    if returncode:
+        raise RuntimeError(
+            f"MATLAB exited with code {returncode}\n{''.join(output_lines[-80:])}"
+        )
+
+
 def _normalize_sorting(sorting, output_dir: Path, num_samples: int) -> dict[str, Any]:
     vector = sorting.to_spike_vector()
     times = np.asarray(vector["sample_index"], dtype=np.int64)
@@ -487,6 +578,10 @@ def run_kiasort_challenger(
     output_dir: Path,
     *,
     kiasort_path: Path | None = None,
+    python_executable: Path | str | None = None,
+    numba_threads: int = 2,
+    channel_start_index: int = 0,
+    channel_count: int | None = None,
     matlab_bin: str = "matlab",
     config_overrides: dict[str, Any] | None = None,
     keep_intermediate: bool = False,
@@ -510,6 +605,39 @@ def run_kiasort_challenger(
     matlab_executable = shutil.which(matlab_bin)
     if matlab_executable is None:
         raise RuntimeError(f"MATLAB executable is unavailable: {matlab_bin}")
+    configured_python = python_executable or os.environ.get(
+        "KIASORT_PYTHON_EXECUTABLE"
+    )
+    if configured_python is None:
+        raise RuntimeError(
+            "KIASORT requires a MATLAB-compatible Python with UMAP; pass "
+            "python_executable or set KIASORT_PYTHON_EXECUTABLE"
+        )
+    configured_python = str(Path(configured_python).resolve())
+    if not Path(configured_python).is_file():
+        raise RuntimeError(f"KIASORT Python executable is unavailable: {configured_python}")
+    if numba_threads < 1:
+        raise ValueError("KIASORT Numba thread count must be positive")
+    total_channels = int(recording_manifest["num_channels"])
+    selected_channel_count = (
+        total_channels - channel_start_index
+        if channel_count is None
+        else int(channel_count)
+    )
+    channel_end_index = channel_start_index + selected_channel_count
+    if (
+        channel_start_index < 0
+        or selected_channel_count < 1
+        or channel_end_index > total_channels
+    ):
+        raise ValueError("KIASORT channel selection is outside the recording")
+    os.environ["KIASORT_PYTHON_EXECUTABLE"] = configured_python
+    os.environ["NUMBA_NUM_THREADS"] = str(numba_threads)
+    numba_cache_dir = os.environ.get(
+        "NUMBA_CACHE_DIR", "/tmp/kiasort-numba-cache"
+    )
+    Path(numba_cache_dir).mkdir(parents=True, exist_ok=True)
+    os.environ["NUMBA_CACHE_DIR"] = numba_cache_dir
     overrides = dict(config_overrides or {})
     request = {
         "schema_version": BAKEOFF_SCHEMA,
@@ -520,14 +648,24 @@ def run_kiasort_challenger(
         "wrapper_sha256": installation["wrapper_sha256"],
         "gui_entrypoint_sha256": installation["gui_entrypoint_sha256"],
         "nogui_entrypoint_sha256": installation["nogui_entrypoint_sha256"],
+        "kiasort_git_commit": installation["git_commit"],
+        "kiasort_tracked_diff_sha256": installation["tracked_diff_sha256"],
+        "kiasort_python_executable": configured_python,
+        "kiasort_numba_threads": int(numba_threads),
+        "channel_selection": {
+            "start_index": int(channel_start_index),
+            "end_index_exclusive": int(channel_end_index),
+            "count": int(selected_channel_count),
+            "full_probe": selected_channel_count == total_channels,
+        },
         "config_overrides": overrides,
         "keep_intermediate": bool(keep_intermediate),
         "raw_voltage_warp": False,
     }
     request_digest = fingerprint(request)
     accepted_manifest = output_dir / BAKEOFF_MANIFEST
-    if partial.exists():
-        raise RuntimeError(f"Incomplete KIASORT run requires inspection: {partial}")
+    recovering_partial = partial.exists()
+    partial_request_path = partial / "bakeoff_partial_request.json"
     if output_dir.exists():
         if not accepted_manifest.exists():
             raise RuntimeError("Existing KIASORT output lacks an accepted manifest")
@@ -535,6 +673,15 @@ def run_kiasort_challenger(
         if existing.get("request_digest") != request_digest:
             raise RuntimeError("Existing KIASORT run belongs to another request")
         return existing
+    if recovering_partial:
+        if not partial_request_path.exists():
+            raise RuntimeError(
+                "KIASORT partial predates guarded request receipts and cannot be "
+                "resumed automatically"
+            )
+        partial_request = json.loads(partial_request_path.read_text())
+        if partial_request.get("request_digest") != request_digest:
+            raise RuntimeError("KIASORT partial belongs to another request")
 
     recording = _load_si_extractor(recording_dir)
     full_num_samples = int(
@@ -544,19 +691,57 @@ def run_kiasort_challenger(
     if recording.get_num_samples() != full_num_samples:
         raise RuntimeError("Loaded recording length differs from its accepted manifest")
     recording = _slice_recording(recording, window)
+    selected_channel_ids = recording.channel_ids[
+        channel_start_index:channel_end_index
+    ]
+    recording = recording.select_channels(channel_ids=selected_channel_ids)
     num_samples = window.frame_count
     wrapper = _load_upstream_kiasort_wrapper(Path(installation["wrapper"]))
-    partial.mkdir(parents=True)
-    native_output = partial / "native_output"
-    sorting = wrapper.run_kiasort(
-        recording,
-        native_output,
-        Path(installation["nogui_dir"]),
-        matlab_bin=matlab_executable,
-        config_overrides=overrides,
-        keep_intermediate=keep_intermediate,
-        verbose=True,
+    partial.mkdir(parents=True, exist_ok=recovering_partial)
+    partial_request_path.write_text(
+        json.dumps({"request_digest": request_digest, "request": request}, indent=2)
+        + "\n"
     )
+    native_output = partial / "native_output"
+    reused_native_results = False
+    if recovering_partial:
+        result_dir = native_output / "RES_Sorted"
+        reused_native_results = (result_dir / "spike_idx.h5").exists() and (
+            result_dir / "unifiedLabels.h5"
+        ).exists()
+        if not reused_native_results:
+            recovery_overrides = dict(overrides)
+            recovery_overrides.setdefault(
+                "samplingFrequency", recording.get_sampling_frequency()
+            )
+            recovery_overrides.setdefault("numChannels", recording.get_num_channels())
+            recovery_overrides.setdefault("dataType", "int16")
+            script_path = native_output / "_run_kiasort.m"
+            script_path.write_text(
+                wrapper._build_matlab_script(
+                    Path(installation["nogui_dir"]),
+                    native_output / "recording.dat",
+                    native_output,
+                    native_output / "channel_map.mat",
+                    recovery_overrides,
+                )
+            )
+            _resume_kiasort_matlab(
+                native_output, matlab_executable, configured_python, numba_threads
+            )
+        sorting = _load_kiasort_native_sorting(
+            native_output, recording.get_sampling_frequency()
+        )
+    else:
+        sorting = wrapper.run_kiasort(
+            recording,
+            native_output,
+            Path(installation["nogui_dir"]),
+            matlab_bin=matlab_executable,
+            config_overrides=overrides,
+            keep_intermediate=keep_intermediate,
+            verbose=True,
+        )
     summary = _normalize_sorting(sorting, partial, num_samples)
     receipt = {
         **request,
@@ -565,6 +750,8 @@ def run_kiasort_challenger(
         "matlab_executable": matlab_executable,
         "summary": summary,
         "experimental": True,
+        "recovered_partial": recovering_partial,
+        "reused_native_results": reused_native_results,
         "complete": True,
     }
     (partial / BAKEOFF_MANIFEST).write_text(json.dumps(receipt, indent=2) + "\n")

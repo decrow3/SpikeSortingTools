@@ -66,15 +66,70 @@ are required by the installation audit.
 To test KIASORT graphically, open desktop MATLAB and run:
 
 ```matlab
+pyenv('Version', '/home/huklab/anaconda3/envs/kiasort-python/bin/python');
 addpath(genpath('/home/huklab/Documents/KIASORT'));
 kiaSort
 ```
+
+Alternatively, run `third_party/launch_kiasort_gui.sh`; it opens desktop MATLAB
+with the same checkout and isolated Python 3.10 environment. Both paths can be
+overridden with `KIASORT_PATH` and `KIASORT_PYTHON_EXECUTABLE`.
 
 The graphical entrypoint resolves to the pinned checkout's `kiaSort.m`. The
 pipeline separately uses the root `run_kiasort_nogui.m` through KIASORT's
 upstream SpikeInterface wrapper. Current upstream also contains a mirrored
 copy under `No_GUI/`; the adapter deliberately selects the root copy and
 fingerprints it to avoid MATLAB path-order ambiguity.
+
+This machine uses MATLAB R2022b. The pinned checkout carries a narrow,
+documented compatibility diff: numeric `omitmissing` options are changed to
+R2022b's equivalent `omitnan`, and the Python wrapper passes its generated
+statements directly to `matlab -batch` rather than through R2022b's `run()`
+helper. The GPU shared-noise decomposition also uses the R2022b-compatible
+one-input `eig` form followed by `diag`, which is equivalent to the newer
+`eig(C, 'vector')` result.
+Duration-derived sample counts are rounded before indexing so the exact
+non-integer SpikeGLX sampling rate remains supported. The base commit and
+SHA-256 of the complete tracked diff are included
+in every KIASORT request. This patch does not change sorter parameters or
+algorithmic decisions.
+
+For interrupted bounded runs, the opt-in `resumeCompletedStages` override may
+reuse sample extraction only when `channel_info.mat` and at least one result
+file for every configured channel are present. The override is part of the
+request digest and receipt. New partial directories persist that digest before
+MATLAB starts; older unguarded partials and parameter-mismatched partials are
+refused rather than reused.
+
+KIASORT's documented Python dependencies are installed in the isolated
+`kiasort-python` environment (Python 3.10). The adapter requires an explicit
+`--kiasort-python-executable` or `KIASORT_PYTHON_EXECUTABLE`, configures MATLAB
+with out-of-process `pyenv`, disables user-site package leakage, exposes only
+the isolated environment's library directory to the Python worker, and records
+the executable in the run receipt.
+
+The adapter defaults `NUMBA_NUM_THREADS` to 2 because a same-matrix benchmark
+on this host completed in 25 seconds at two threads, while unconstrained nested
+parallelism remained in the first UMAP fit for more than 15 minutes. Override
+with `--kiasort-numba-threads`; the selected count is receipt-recorded.
+Numba cache files default to `/tmp/kiasort-numba-cache` (or `NUMBA_CACHE_DIR`)
+so MATLAB's isolated Python worker always has a writable cache location.
+
+For feasibility pilots, `--kiasort-channel-start-index` and
+`--kiasort-channel-count` select a contiguous channel-index band before the
+wrapper exports voltage. The band is request-digested and receipt-recorded,
+and its output directory includes the half-open index range. Such a result is
+not a full-probe bake-off condition.
+
+The first accepted KIASORT feasibility run used the rapid-motion window,
+channel indices `[82, 114)`, 20 distributed one-second sample chunks, serial
+sample modeling, and two Numba threads. It completed native sorting on
+2026-08-31 and normalized 284,980 in-bounds spikes from 93 units. Its accepted
+output is `kiasort_channels_82_114/` under the window directory. The run proves
+the adapter and native MATLAB path work; it does not establish a quality win or
+provide a full-probe comparison. Full-probe sample modeling was not operationally
+bounded, and MATLAB parallel workers aborted when each initialized Python/UMAP,
+so neither route is a production default.
 
 ### SpikeInterface motion-aware peeler prototype
 
