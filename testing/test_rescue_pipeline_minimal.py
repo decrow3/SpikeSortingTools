@@ -1,3 +1,4 @@
+import json
 import math
 from pathlib import Path
 
@@ -12,12 +13,15 @@ from pipeline import (
 )
 from pipeline.artifacts import threshold_points
 from pipeline.preprocess import (
+    _recover_completed_binary_folder,
     recording_binary_receipt,
     select_bad_channel_ids,
     validate_accepted_recording,
 )
+from pipeline.kilosort_compat import ORIGINAL_BLOCK, PATCHED_BLOCK, patch_source_text
+from pipeline.sorting import _archive_declared_failed_partial
 from SpikeGLX_ext_ref_rescue_testing import physical_channel_ids
-from SpikeGLX_ext_ref_rescue_testing import build_parser, plan_payload
+from SpikeGLX_ext_ref_rescue_testing import build_parser, parse_args, plan_payload
 
 
 def sorter_defaults():
@@ -141,6 +145,45 @@ def test_stream_id_is_required():
         build_parser().parse_args(["--data-dir", "/tmp/example", "--plan"])
 
 
+def test_versioned_run_config_supplies_defaults_and_cli_overrides(tmp_path):
+    config = tmp_path / "run.json"
+    config.write_text(
+        """{
+          "schema_version": "rescue-run-config-v1",
+          "description": "test",
+          "arguments": {
+            "data_dir": "/tmp/source",
+            "stream_id": "imec0.ap",
+            "output_dir": "/tmp/output",
+            "duration_s": 60,
+            "prepare": true,
+            "sort": true,
+            "n_jobs": 20
+          }
+        }"""
+    )
+    args = parse_args(["--config", str(config), "--n-jobs", "4"])
+    assert args.data_dir == Path("/tmp/source")
+    assert args.output_dir == Path("/tmp/output")
+    assert args.prepare is True
+    assert args.sort is True
+    assert args.duration_s == 60
+    assert args.n_jobs == 4
+    assert args.run_config_receipt["path"] == str(config.resolve())
+    assert len(args.run_config_receipt["sha256"]) == 64
+
+
+def test_run_config_rejects_unknown_arguments(tmp_path):
+    config = tmp_path / "run.json"
+    config.write_text(
+        '{"schema_version":"rescue-run-config-v1",'
+        '"arguments":{"data_dir":"/tmp/source","stream_id":"imec0.ap",'
+        '"surprise":true}}'
+    )
+    with pytest.raises(SystemExit):
+        parse_args(["--config", str(config)])
+
+
 def test_plan_uses_frozen_overrides_without_loading_sorter_defaults():
     args = build_parser().parse_args(
         [
@@ -177,3 +220,68 @@ def test_accepted_recording_detects_same_size_content_change(tmp_path):
     binary.write_bytes(b"abcdEfgh")
     with pytest.raises(RuntimeError, match="content digest"):
         validate_accepted_recording(recording_dir, manifest)
+
+
+def test_complete_interrupted_binary_folder_can_be_recovered(tmp_path):
+    si = pytest.importorskip("spikeinterface")
+    traces = np.arange(800, dtype=np.int16).reshape(200, 4)
+    recording = si.NumpyRecording(traces_list=[traces], sampling_frequency=30_000.0)
+    partial = tmp_path / "recording.partial"
+    recording.save(folder=partial, n_jobs=1, progress_bar=False)
+    (partial / "binary.json").unlink()
+    (partial / "si_folder.json").unlink()
+
+    _recover_completed_binary_folder(partial, recording)
+
+    loaded = si.load_extractor(partial)
+    np.testing.assert_array_equal(loaded.get_traces(), traces)
+
+
+def test_incomplete_interrupted_binary_folder_is_not_recovered(tmp_path):
+    si = pytest.importorskip("spikeinterface")
+    traces = np.arange(800, dtype=np.int16).reshape(200, 4)
+    recording = si.NumpyRecording(traces_list=[traces], sampling_frequency=30_000.0)
+    partial = tmp_path / "recording.partial"
+    recording.save(folder=partial, n_jobs=1, progress_bar=False)
+    (partial / "binary.json").unlink()
+    (partial / "si_folder.json").unlink()
+    binary = partial / "traces_cached_seg0.raw"
+    binary.write_bytes(binary.read_bytes()[:-2])
+
+    with pytest.raises(RuntimeError, match="binary is incomplete"):
+        _recover_completed_binary_folder(partial, recording)
+
+
+def test_kilosort_empty_center_patch_is_exact_and_minimal():
+    source = "before\n" + ORIGINAL_BLOCK + "after\n"
+    patched = patch_source_text(source)
+    assert patched == "before\n" + PATCHED_BLOCK + "after\n"
+    assert "all(value is None for value in data_result)" in patched
+    with pytest.raises(RuntimeError, match="not unique"):
+        patch_source_text(patched)
+
+
+def test_declared_failed_sort_partial_is_archived(tmp_path):
+    partial = tmp_path / "kilosort4.partial"
+    partial.mkdir()
+    (partial / "spikeinterface_log.json").write_text(
+        json.dumps({"error": True, "error_trace": ["synthetic failure"]})
+    )
+    (partial / "evidence.txt").write_text("preserve me")
+
+    archived = _archive_declared_failed_partial(partial)
+
+    assert not partial.exists()
+    assert archived.name.startswith("kilosort4.failed-")
+    assert (archived / "evidence.txt").read_text() == "preserve me"
+
+
+def test_ambiguous_sort_partial_is_not_archived(tmp_path):
+    partial = tmp_path / "kilosort4.partial"
+    partial.mkdir()
+    (partial / "spikeinterface_log.json").write_text(
+        json.dumps({"error": False, "error_trace": []})
+    )
+    with pytest.raises(RuntimeError, match="requires inspection"):
+        _archive_declared_failed_partial(partial)
+    assert partial.exists()

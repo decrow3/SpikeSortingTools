@@ -22,7 +22,7 @@ from typing import Any, Callable, Literal, Mapping
 import numpy as np
 
 from .config import PIPELINE_VERSION, fingerprint
-from .preprocess import RECORDING_MANIFEST_SCHEMA
+from .preprocess import RECORDING_MANIFEST_SCHEMA, recording_geometry_receipt
 
 
 MOTION_SIDECAR_CONFIG_SCHEMA = "dredge-sidecar-config-v1"
@@ -350,21 +350,13 @@ def build_motion_estimator_input(accepted_recording, config: MotionEstimatorInpu
 
 
 def _recording_identity(recording) -> dict[str, Any]:
-    channel_ids = [str(value) for value in recording.get_channel_ids()]
     try:
-        locations = np.asarray(recording.get_channel_locations(), dtype=np.float64)
+        geometry = recording_geometry_receipt(recording)
     except Exception as exc:
-        raise ValueError("Recording must expose channel locations for motion estimation") from exc
-    if locations.shape[0] != len(channel_ids) or locations.ndim != 2:
-        raise ValueError("Channel locations do not match physical channel IDs")
-    if not np.all(np.isfinite(locations)):
-        raise ValueError("Channel locations must be finite")
-    geometry = {"physical_channel_ids": channel_ids, "locations_um": locations.tolist()}
+        raise ValueError("Recording must expose valid channel locations") from exc
     return {
-        "physical_channel_ids": channel_ids,
-        "probe_geometry_hash": fingerprint(geometry),
-        "channel_locations_um": locations.tolist(),
-        "num_channels": len(channel_ids),
+        **geometry,
+        "num_channels": len(geometry["physical_channel_ids"]),
     }
 
 

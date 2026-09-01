@@ -14,6 +14,7 @@ Materialize the tested no-motion recording and run Kilosort 4::
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -23,27 +24,61 @@ from pipeline import (
     MotionBackend,
     MotionSidecarConfig,
     PIPELINE_VERSION,
+    PRODUCTION_UV_PREFIX,
     RescueConfig,
     build_motion_estimator_input,
     materialize_rescue_recording,
     phase_correct,
+    production_environment_contract,
     rescue_kilosort4_overrides,
     run_kilosort4,
     run_motion_sidecar_safely,
     validate_accepted_recording,
+    validate_production_environment,
     write_artifact_sidecar,
     write_motion_coordinate_sidecar,
 )
 
 
-def build_parser() -> argparse.ArgumentParser:
+RUN_CONFIG_SCHEMA = "rescue-run-config-v1"
+
+
+def _load_run_config(path: Path) -> tuple[dict, dict]:
+    path = Path(path).resolve()
+    try:
+        raw = path.read_bytes()
+        payload = json.loads(raw)
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError(f"Cannot load run config {path}: {error}") from error
+    if payload.get("schema_version") != RUN_CONFIG_SCHEMA:
+        raise ValueError(f"Unsupported run config schema in {path}")
+    arguments = payload.get("arguments")
+    if not isinstance(arguments, dict):
+        raise ValueError(f"Run config {path} must contain an arguments object")
+    receipt = {
+        "schema_version": RUN_CONFIG_SCHEMA,
+        "path": str(path),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "description": payload.get("description"),
+    }
+    return dict(arguments), receipt
+
+
+def build_parser(defaults: dict | None = None) -> argparse.ArgumentParser:
+    defaults = {} if defaults is None else dict(defaults)
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--data-dir", type=Path, required=True)
-    parser.add_argument("--stream-id", required=True)
+    parser.add_argument(
+        "--config",
+        dest="run_config",
+        type=Path,
+        help="Versioned JSON run configuration; explicit CLI flags override it.",
+    )
+    parser.add_argument("--data-dir", type=Path, required="data_dir" not in defaults)
+    parser.add_argument("--stream-id", required="stream_id" not in defaults)
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--plan", action="store_true")
-    parser.add_argument("--prepare", action="store_true")
-    parser.add_argument("--sort", action="store_true")
+    parser.add_argument("--prepare", action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument("--sort", action=argparse.BooleanOptionalAction, default=False)
     motion_group = parser.add_mutually_exclusive_group()
     motion_group.add_argument(
         "--motion-sidecar",
@@ -56,7 +91,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="Explicitly disable the default rigid DREDGE sidecar.",
     )
     parser.add_argument("--recompute-motion", action="store_true")
-    parser.add_argument("--motion-strict", action="store_true")
+    parser.add_argument(
+        "--motion-strict", action=argparse.BooleanOptionalAction, default=False
+    )
     parser.add_argument("--motion-chunk-duration", default="2s")
     parser.add_argument(
         "--motion-split-half",
@@ -89,11 +126,32 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--n-jobs", type=int, default=20)
     parser.add_argument("--chunk-duration", default="10s")
+    valid_destinations = {action.dest for action in parser._actions}
+    unknown = sorted(set(defaults) - valid_destinations)
+    if unknown:
+        parser.error(f"Run config contains unknown arguments: {unknown}")
+    parser.set_defaults(**defaults)
     return parser
 
 
-def parse_args() -> argparse.Namespace:
-    return build_parser().parse_args()
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    config_parser = argparse.ArgumentParser(add_help=False)
+    config_parser.add_argument("--config", dest="run_config", type=Path)
+    preliminary, _ = config_parser.parse_known_args(argv)
+    defaults = {}
+    receipt = None
+    if preliminary.run_config is not None:
+        try:
+            defaults, receipt = _load_run_config(preliminary.run_config)
+        except ValueError as error:
+            config_parser.error(str(error))
+    args = build_parser(defaults).parse_args(argv)
+    for name in ("data_dir", "output_dir", "motion_field"):
+        value = getattr(args, name, None)
+        if value is not None and not isinstance(value, Path):
+            setattr(args, name, Path(value))
+    args.run_config_receipt = receipt
+    return args
 
 
 def default_output_dir(data_dir: Path, stream_id: str) -> Path:
@@ -125,6 +183,11 @@ def physical_channel_ids(recording, requested: list[int] | None):
 def load_raw(args: argparse.Namespace):
     import spikeinterface.full as si
 
+    print(
+        f"Loading SpikeGLX source {args.data_dir} stream {args.stream_id}; "
+        "large sessions can take tens of seconds to scan...",
+        flush=True,
+    )
     raw = si.read_spikeglx(
         folder_path=args.data_dir,
         load_sync_channel=False,
@@ -132,6 +195,13 @@ def load_raw(args: argparse.Namespace):
     )
     if args.start_s < 0 or (args.duration_s is not None and args.duration_s <= 0):
         raise ValueError("Requested time range must be positive")
+    print(
+        "Loaded SpikeGLX source: "
+        f"{raw.get_num_channels()} channels, "
+        f"{raw.get_total_duration():.2f} s, "
+        f"{raw.get_num_samples()} samples.",
+        flush=True,
+    )
     return raw
 
 
@@ -154,6 +224,12 @@ def plan_payload(
     overrides = rescue_kilosort4_overrides()
     return {
         "pipeline_version": PIPELINE_VERSION,
+        "run_config": getattr(args, "run_config_receipt", None),
+        "production_environment": {
+            **production_environment_contract(),
+            "canonical_prefix": PRODUCTION_UV_PREFIX,
+            "lock_required": True,
+        },
         "source_folder": str(args.data_dir.resolve()),
         "stream_id": args.stream_id,
         "output_dir": str(output_dir),
@@ -208,6 +284,7 @@ def main() -> None:
     )
     if args.plan:
         print(json.dumps(plan_payload(args, output_dir, config), indent=2))
+        return
     if not any(
         (
             args.prepare,
@@ -217,12 +294,12 @@ def main() -> None:
             args.motion_field,
         )
     ):
-        if not args.plan:
-            raise SystemExit(
-                "Choose --plan, --prepare, --sort, --motion-sidecar, "
-                "--artifact-sidecar, or --motion-field"
-            )
-        return
+        raise SystemExit(
+            "Choose --plan, --prepare, --sort, --motion-sidecar, "
+            "--artifact-sidecar, or --motion-field"
+        )
+    environment_receipt = validate_production_environment(require_cuda=args.sort)
+    print(json.dumps({"production_environment": environment_receipt}, indent=2))
     recording_dir = output_dir / "recording"
     raw = None
     start_frame = end_frame = None
@@ -232,6 +309,13 @@ def main() -> None:
         start_frame, end_frame = requested_frames(raw, args)
         bad_ids = physical_channel_ids(raw, args.bad_channel)
     if args.prepare:
+        print(
+            "Preparing accepted recording. Bad-channel metrics sample "
+            f"{config.channel_metric_batches} x "
+            f"{config.channel_metric_batch_duration_s:g}-s batches across the "
+            "source session before the requested interval is materialized.",
+            flush=True,
+        )
         _, manifest = materialize_rescue_recording(
             raw,
             recording_dir,
@@ -246,9 +330,9 @@ def main() -> None:
         print(json.dumps(manifest, indent=2))
     run_default_sidecar = (args.prepare or args.sort) and not args.no_motion_sidecar
     if args.motion_sidecar or run_default_sidecar:
-        from spikeinterface.core import load_extractor
+        from spikeinterface.core import load
 
-        accepted_recording = load_extractor(recording_dir)
+        accepted_recording = load(recording_dir)
         accepted_manifest = json.loads(
             (recording_dir / "rescue_recording_manifest.json").read_text()
         )

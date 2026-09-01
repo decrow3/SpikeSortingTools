@@ -15,6 +15,7 @@ from pipeline.motion_sidecar import (
     run_motion_sidecar,
     run_motion_sidecar_safely,
 )
+from pipeline.preprocess import recording_geometry_receipt
 
 
 class FakeRecording:
@@ -58,7 +59,19 @@ def accepted_manifest(recording):
         "complete": True,
         "request_digest": f"request-{recording.content_id}",
         "recording_content_sha256": f"content-{recording.content_id}",
+        **recording_geometry_receipt(recording),
     }
+
+
+def test_manifest_and_motion_lineage_use_identical_geometry_receipt():
+    recording = FakeRecording()
+    manifest = accepted_manifest(recording)
+    from pipeline.motion_sidecar import _recording_identity
+
+    identity = _recording_identity(recording)
+    assert identity["physical_channel_ids"] == manifest["physical_channel_ids"]
+    assert identity["channel_locations_um"] == manifest["channel_locations_um"]
+    assert identity["probe_geometry_hash"] == manifest["probe_geometry_hash"]
 
 
 def run_test_sidecar(estimator_recording, *, recording_for_sorting, **kwargs):

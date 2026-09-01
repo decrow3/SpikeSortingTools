@@ -1,0 +1,17 @@
+{
+  "schema_version": "rescue-run-config-v1",
+  "description": "Production-environment smoke test: first 60 seconds of Luke0804 imec0, rigid DREDGE sidecar, then KS4.",
+  "arguments": {
+    "data_dir": "/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0",
+    "stream_id": "imec0.ap",
+    "output_dir": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0_v2_smoke_60s",
+    "start_s": 0.0,
+    "duration_s": 60.0,
+    "prepare": true,
+    "sort": true,
+    "motion_strict": true,
+    "n_jobs": 20,
+    "chunk_duration": "10s",
+    "motion_chunk_duration": "2s"
+  }
+}

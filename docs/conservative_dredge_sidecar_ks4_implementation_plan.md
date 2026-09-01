@@ -1,5 +1,21 @@
 # Conservative DREDGE Sidecar for the KS4 Production Pipeline
 
+## Production runtime
+
+The implemented rescue pipeline is bound to the separate uv project in
+`environments/rescue-production`. Production execution requires its committed
+`uv.lock`, exact CPython and direct package versions, and the CUDA 12.4 PyTorch
+wheel when sorting. The canonical command prefix is:
+
+```text
+uv run --project environments/rescue-production --frozen --no-group test
+```
+
+The CLI validates this contract before any data-changing action and includes
+the lockfile SHA-256 in accepted-recording cache identity. The historical
+pipeline environment remains separate; legacy dependencies must not be added
+to this production project.
+
 ## Status
 
 Initial production milestone implemented, 2026-08-31.

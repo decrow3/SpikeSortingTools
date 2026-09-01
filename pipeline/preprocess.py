@@ -17,6 +17,7 @@ import numpy as np
 from scipy.signal import medfilt, welch
 
 from .config import PIPELINE_VERSION, RescueConfig, fingerprint
+from .runtime import production_environment_contract
 
 
 MANIFEST_NAME = "rescue_recording_manifest.json"
@@ -131,6 +132,7 @@ def _channel_metrics(
 ) -> tuple[np.ndarray, np.ndarray]:
     """Reproduce the channel metrics used to select the tested baseline."""
     from spikeinterface.preprocessing import highpass_filter
+    from tqdm.auto import tqdm
 
     highpassed = highpass_filter(recording, freq_min=300, direction="forward-backward")
     fs = float(highpassed.get_sampling_frequency())
@@ -143,7 +145,7 @@ def _channel_metrics(
     similarity = np.zeros(highpassed.get_num_channels(), dtype=float)
     noise = np.zeros_like(similarity)
     f_threshold = 0.8 * fs / 2
-    for start in selected:
+    for start in tqdm(selected, desc="Channel metrics", unit="batch"):
         traces = highpassed.get_traces(
             start_frame=int(start), end_frame=int(start + batch_size)
         ).astype(np.float64)
@@ -305,6 +307,7 @@ def _materialization_request(
 ) -> dict[str, Any]:
     return {
         "pipeline_version": PIPELINE_VERSION,
+        "production_environment": production_environment_contract(),
         "source_folder": str(Path(source_folder).resolve()),
         "stream_id": stream_id,
         "num_samples": int(raw_recording.get_num_samples()),
@@ -324,9 +327,9 @@ def _materialization_request(
 
 def _validate_materialized_recording(folder: Path, expected_recording) -> dict[str, Any]:
     """Run cheap structural and population checks before accepting a cache."""
-    from spikeinterface.core import load_extractor
+    from spikeinterface.core import load
 
-    loaded = load_extractor(folder)
+    loaded = load(folder)
     expected_shape = (
         int(expected_recording.get_num_samples()),
         int(expected_recording.get_num_channels()),
@@ -374,6 +377,64 @@ def _validate_materialized_recording(folder: Path, expected_recording) -> dict[s
     }
 
 
+def _recover_completed_binary_folder(folder: Path, expected_recording) -> None:
+    """Finish SpikeInterface metadata after an interrupted complete binary write.
+
+    SpikeInterface writes the raw binary before ``binary.json`` and
+    ``si_folder.json``. Recovery is allowed only when every expected segment
+    binary exists at its exact final byte count. The normal structural and
+    population checks still run afterward before the folder is accepted.
+    """
+    from spikeinterface.core.binaryfolder import BinaryFolderRecording
+    from spikeinterface.core.binaryrecordingextractor import BinaryRecordingExtractor
+
+    folder = Path(folder)
+    dtype = np.dtype(expected_recording.dtype)
+    expected_paths = [
+        folder / f"traces_cached_seg{segment_index}.raw"
+        for segment_index in range(expected_recording.get_num_segments())
+    ]
+    for segment_index, path in enumerate(expected_paths):
+        expected_bytes = int(
+            expected_recording.get_num_samples(segment_index=segment_index)
+            * expected_recording.get_num_channels()
+            * dtype.itemsize
+        )
+        if not path.is_file() or path.stat().st_size != expected_bytes:
+            raise RuntimeError(
+                "Interrupted materialization binary is incomplete: "
+                f"{path} has {path.stat().st_size if path.exists() else 'no'} bytes; "
+                f"expected {expected_bytes}"
+            )
+    binary_recording = BinaryRecordingExtractor(
+        file_paths=expected_paths,
+        sampling_frequency=expected_recording.get_sampling_frequency(),
+        num_channels=expected_recording.get_num_channels(),
+        dtype=dtype,
+        t_starts=[
+            (
+                expected_recording._recording_segments[segment_index].t_start
+                if expected_recording._recording_segments[segment_index].t_start
+                is not None
+                else 0.0
+            )
+            for segment_index in range(expected_recording.get_num_segments())
+        ],
+        channel_ids=expected_recording.get_channel_ids(),
+        time_axis=0,
+        file_offset=0,
+        is_filtered=expected_recording.is_filtered(),
+        gain_to_uV=expected_recording.get_channel_gains(),
+        offset_to_uV=expected_recording.get_channel_offsets(),
+    )
+    binary_recording.dump(folder / "binary.json", relative_to=folder)
+    recovered = BinaryFolderRecording(folder_path=folder)
+    expected_recording.copy_metadata(recovered)
+    if expected_recording.get_property("contact_vector") is not None:
+        recovered.set_probegroup(expected_recording.get_probegroup())
+    recovered.dump_to_json(folder / "si_folder.json", relative_to=folder)
+
+
 def materialize_rescue_recording(
     raw_recording,
     output_dir: Path,
@@ -387,7 +448,7 @@ def materialize_rescue_recording(
     end_frame: int | None = None,
 ):
     """Materialize once, reusing only a cache with an exact request fingerprint."""
-    from spikeinterface.core import load_extractor
+    from spikeinterface.core import load
 
     output_dir = Path(output_dir)
     partial = output_dir.with_name(output_dir.name + ".partial")
@@ -407,8 +468,10 @@ def materialize_rescue_recording(
         int(end_frame),
     )
     request_digest = fingerprint(request)
-    if partial.exists():
-        raise RuntimeError(f"Incomplete materialization requires inspection: {partial}")
+    if partial.exists() and output_dir.exists():
+        raise RuntimeError(
+            f"Accepted and partial materializations coexist and require inspection: {output_dir}"
+        )
     if output_dir.exists():
         if not manifest_path.exists():
             raise RuntimeError(f"Existing recording lacks {MANIFEST_NAME}: {output_dir}")
@@ -416,7 +479,7 @@ def materialize_rescue_recording(
         if manifest.get("request_digest") != request_digest:
             raise RuntimeError("Existing recording cache belongs to another request")
         validate_accepted_recording(output_dir, manifest)
-        return load_extractor(output_dir), manifest
+        return load(output_dir), manifest
     conditioned, receipt = build_rescue_recording(
         raw_recording,
         cache_dir=output_dir.parent,
@@ -434,12 +497,24 @@ def materialize_rescue_recording(
         receipt["selected_end_frame"] = int(end_frame)
         receipt["num_samples"] = int(conditioned.get_num_samples())
     output_dir.parent.mkdir(parents=True, exist_ok=True)
-    conditioned.save(
-        folder=partial,
-        n_jobs=config.materialize_n_jobs,
-        chunk_duration=config.materialize_chunk_duration,
-        progress_bar=True,
-    )
+    if partial.exists():
+        print(
+            f"Found {partial}; validating and recovering a completed interrupted binary...",
+            flush=True,
+        )
+        try:
+            _recover_completed_binary_folder(partial, conditioned)
+        except Exception as error:
+            raise RuntimeError(
+                f"Incomplete materialization requires inspection: {partial}"
+            ) from error
+    else:
+        conditioned.save(
+            folder=partial,
+            n_jobs=config.materialize_n_jobs,
+            chunk_duration=config.materialize_chunk_duration,
+            progress_bar=True,
+        )
     integrity = _validate_materialized_recording(partial, conditioned)
     binary_receipt = recording_binary_receipt(partial)
     manifest = {
@@ -458,4 +533,4 @@ def materialize_rescue_recording(
     }
     (partial / MANIFEST_NAME).write_text(json.dumps(manifest, indent=2) + "\n")
     os.replace(partial, output_dir)
-    return load_extractor(output_dir), manifest
+    return load(output_dir), manifest

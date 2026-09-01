@@ -23,6 +23,16 @@ from .sorting import (
     run_kilosort4,
     validate_applied_settings,
 )
+from .runtime import (
+    PRODUCTION_PACKAGES,
+    PRODUCTION_PYTHON,
+    PRODUCTION_UV_PREFIX,
+    PRODUCTION_UV_PROJECT,
+    production_environment_contract,
+    production_environment_receipt,
+    production_lock_sha256,
+    validate_production_environment,
+)
 from .motion_coordinates import (
     MOTION_COORDINATE_SCHEMA,
     MOTION_FIELD_SCHEMA,
@@ -66,6 +76,10 @@ from .bakeoff import (
 
 __all__ = [
     "PIPELINE_VERSION",
+    "PRODUCTION_PACKAGES",
+    "PRODUCTION_PYTHON",
+    "PRODUCTION_UV_PREFIX",
+    "PRODUCTION_UV_PROJECT",
     "RescueConfig",
     "RECORDING_MANIFEST_SCHEMA",
     "build_kilosort4_params",
@@ -110,10 +124,14 @@ __all__ = [
     "motion_aware_peeler_kwargs",
     "validate_applied_settings",
     "validate_accepted_recording",
+    "validate_production_environment",
     "validate_dartsort_output",
     "accept_ks4_reference",
     "inspect_bakeoff_environment",
     "resolve_kiasort_installation",
     "write_artifact_sidecar",
     "write_motion_coordinate_sidecar",
+    "production_environment_receipt",
+    "production_environment_contract",
+    "production_lock_sha256",
 ]

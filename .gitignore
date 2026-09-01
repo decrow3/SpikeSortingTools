@@ -1,6 +1,7 @@
 **/__pycache__/
 .uv-python/
 .venv-aind/
+environments/*/.venv/
 pipeline_results
 pipeline_results*
 

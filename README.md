@@ -5,7 +5,82 @@ Spike sorting pipeline for the Huk Lab forked from the version for the Yates Lab
 Currently maintained by Declan Rowley
 ---
 
-## Installation
+## Production environment for the rescue pipeline
+
+The conservative rescue pipeline has an isolated uv project at
+[`environments/rescue-production`](environments/rescue-production). This is
+the only supported production runtime for
+`SpikeGLX_ext_ref_rescue_testing.py`; the Conda environment below remains for
+the legacy pipeline and must not be used for rescue production runs.
+
+The uv project pins CPython 3.12.4, SpikeInterface 0.102.1, Neo 0.14.0,
+Kilosort 4.0.27, DREDGE 0.3.0, and PyTorch 2.6.0 CUDA 12.4. Neo 0.14.0 is a
+hard compatibility pin because later Neo releases removed the SpikeGLX
+`load_sync_channel` argument still used by this SpikeInterface version. The
+committed `uv.lock` freezes the complete transitive graph and wheel hashes.
+Create the exact environment from the repository root:
+
+```bash
+uv sync \
+  --project environments/rescue-production \
+  --frozen \
+  --no-group test
+```
+
+Before sorting, verify both package identity and GPU visibility:
+
+```bash
+uv run \
+  --project environments/rescue-production \
+  --frozen \
+  --no-group test \
+  python environments/rescue-production/verify_environment.py --require-cuda
+```
+
+All production commands must begin with:
+
+```text
+uv run --project environments/rescue-production --frozen --no-group test
+```
+
+For routine use, the checked-in launcher supplies that prefix, the local Python
+install location, and the uv cache automatically:
+
+```bash
+./run_rescue_pipeline --config configs/rescue/luke0804_imec0_smoke_60s.json
+```
+
+Run configurations are versioned JSON files. They can specify paths, actions,
+time bounds, strictness, and job settings; explicit command-line flags override
+their values. The config path and SHA-256 are printed by `--plan` and retained
+with the run plan, so repeated invocations are inspectable without copying a
+long shell command.
+
+The pipeline independently checks the exact Python and direct package versions
+before any data-changing action. Sorting additionally requires CUDA to be
+visible to PyTorch. This catches bare-Python, active-Conda, unlocked, CPU-only,
+and accidentally upgraded launches before they materialize data or create a
+sort. `--plan` remains dependency-light and prints the required production
+contract.
+
+Kilosort 4.0.27's published wheel contains a known empty-clustering-center
+return-arity defect. The rescue sorter applies one repository-owned,
+source-hash-guarded compatibility repair before KS4 starts and records its ID
+and patched source hash in sorter provenance. Unknown or additionally modified
+Kilosort source is refused.
+
+Dependency upgrades are deliberate changes: edit the production
+`pyproject.toml`, regenerate its lockfile, run the complete test suite and a
+bounded real-data smoke test, and commit both dependency files together. Do
+not use `uv run --with` for production because it layers untracked packages
+over the locked environment.
+
+## Legacy pipeline environment
+
+The historical pipeline continues to use the existing Conda specification.
+It may be migrated to its own separate uv project and lockfile, but its broader
+MEDiCINe, curation, notebook, and experimental dependencies must not be added
+to the rescue-production project.
 
 ### 1. Create the Conda environment
 
@@ -80,7 +155,8 @@ integrity, motion, and sort manifests.
 Inspect a run without writing data:
 
 ```bash
-python SpikeGLX_ext_ref_rescue_testing.py \
+uv run --project environments/rescue-production --frozen --no-group test \
+  python SpikeGLX_ext_ref_rescue_testing.py \
   --data-dir /path/to/spikeglx/run \
   --stream-id imec1.ap \
   --plan
@@ -93,7 +169,8 @@ SpikeInterface or require a configured Kilosort/CUDA environment.
 Materialize and sort the full recording:
 
 ```bash
-python SpikeGLX_ext_ref_rescue_testing.py \
+uv run --project environments/rescue-production --frozen --no-group test \
+  python SpikeGLX_ext_ref_rescue_testing.py \
   --data-dir /path/to/spikeglx/run \
   --stream-id imec1.ap \
   --prepare --sort

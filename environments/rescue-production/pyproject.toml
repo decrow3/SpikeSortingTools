@@ -1,0 +1,42 @@
+[project]
+name = "spikesortingtools-rescue-production"
+version = "0.1.0"
+description = "Locked production runtime for the conservative rescue pipeline"
+requires-python = "==3.12.4"
+dependencies = [
+    "dredge-ephys==0.3.0",
+    "h5py==3.13.0",
+    "kilosort==4.0.27",
+    # PyPI yanked 3.9.1 because of deleted Windows wheels. The manylinux wheel
+    # is functional and this exact version is retained from the validated host
+    # runtime; uv.lock fixes the Linux artifact hash.
+    "matplotlib==3.9.1",
+    # SpikeInterface 0.102.1 forwards load_sync_channel to Neo's SpikeGLXRawIO.
+    # Neo 0.14.1+ removed that argument, so this is a hard compatibility pin.
+    "neo==0.14.0",
+    "numba==0.61.0",
+    "numpy==1.26.4",
+    "pandas==2.2.3",
+    "probeinterface==0.2.25",
+    "scikit-learn==1.6.1",
+    "scipy==1.15.2",
+    "spikeinterface==0.102.1",
+    "torch==2.6.0+cu124",
+]
+
+[dependency-groups]
+test = [
+    "pytest==8.3.5",
+]
+
+[tool.uv]
+package = false
+default-groups = []
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu124" }
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true

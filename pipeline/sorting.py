@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+from datetime import datetime, timezone
 import json
 import math
 import os
@@ -12,6 +13,7 @@ from typing import Any, Mapping
 import numpy as np
 
 from .config import PIPELINE_VERSION, fingerprint
+from .kilosort_compat import ensure_kilosort_compatibility
 from .preprocess import MANIFEST_NAME, validate_accepted_recording
 
 
@@ -168,12 +170,26 @@ def _validate_saved_sorter_params(partial: Path, params: Mapping[str, Any]) -> N
         raise RuntimeError("Completed partial sort belongs to another sorter configuration")
 
 
+def _archive_declared_failed_partial(partial: Path) -> Path:
+    """Archive only a partial that SpikeInterface explicitly marked failed."""
+    log_path = partial / "spikeinterface_log.json"
+    if not log_path.is_file():
+        raise RuntimeError(f"Incomplete sort requires inspection: {partial}")
+    try:
+        log = json.loads(log_path.read_text())
+    except (OSError, json.JSONDecodeError) as error:
+        raise RuntimeError(f"Unreadable failed-sort log in {partial}") from error
+    if log.get("error") is not True or not log.get("error_trace"):
+        raise RuntimeError(f"Incomplete sort requires inspection: {partial}")
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    archived = partial.with_name(partial.name.removesuffix(".partial") + f".failed-{timestamp}")
+    os.replace(partial, archived)
+    return archived
+
+
 def run_kilosort4(recording_dir: Path, output_dir: Path) -> dict[str, Any]:
     """Run Kilosort into a partial directory and atomically accept completion."""
     os.environ.setdefault("NUMBA_CACHE_DIR", "/tmp/spikeglx-rescue-numba-cache")
-    from spikeinterface.core import load_extractor
-    from spikeinterface.sorters import run_sorter
-
     recording_dir = Path(recording_dir)
     output_dir = Path(output_dir)
     partial = output_dir.with_name(output_dir.name + ".partial")
@@ -182,6 +198,15 @@ def run_kilosort4(recording_dir: Path, output_dir: Path) -> dict[str, Any]:
         raise FileNotFoundError(f"Missing accepted recording manifest: {recording_manifest_path}")
     recording_manifest = json.loads(recording_manifest_path.read_text())
     validate_accepted_recording(recording_dir, recording_manifest)
+    compatibility_patch = ensure_kilosort_compatibility()
+    patch_identity = {
+        key: value
+        for key, value in compatibility_patch.items()
+        if key != "source_path"
+    }
+    from spikeinterface.core import load
+    from spikeinterface.sorters import run_sorter
+
     params = build_kilosort4_params()
     safe_params = _json_safe_params(params)
     request = {
@@ -189,25 +214,28 @@ def run_kilosort4(recording_dir: Path, output_dir: Path) -> dict[str, Any]:
         "recording_request_digest": recording_manifest["request_digest"],
         "sorter": "kilosort4",
         "sorter_params": safe_params,
+        "compatibility_patches": [patch_identity],
     }
     request_digest = fingerprint(request)
     manifest_path = output_dir / SORT_MANIFEST
+    archived_failed_partial = None
     if partial.exists():
         sorter_output = partial / "sorter_output"
         if not (sorter_output / "spike_times.npy").exists():
-            raise RuntimeError(f"Incomplete sort requires inspection: {partial}")
-        _validate_saved_sorter_params(partial, params)
-        summary = _sort_summary(sorter_output, params)
-        manifest = {
-            **request,
-            "request_digest": request_digest,
-            "summary": summary,
-            "complete": True,
-            "recovered_completed_partial": True,
-        }
-        (partial / SORT_MANIFEST).write_text(json.dumps(manifest, indent=2) + "\n")
-        os.replace(partial, output_dir)
-        return manifest
+            archived_failed_partial = _archive_declared_failed_partial(partial)
+        else:
+            _validate_saved_sorter_params(partial, params)
+            summary = _sort_summary(sorter_output, params)
+            manifest = {
+                **request,
+                "request_digest": request_digest,
+                "summary": summary,
+                "complete": True,
+                "recovered_completed_partial": True,
+            }
+            (partial / SORT_MANIFEST).write_text(json.dumps(manifest, indent=2) + "\n")
+            os.replace(partial, output_dir)
+            return manifest
     if output_dir.exists():
         if not manifest_path.exists():
             raise RuntimeError(f"Existing sort lacks {SORT_MANIFEST}: {output_dir}")
@@ -216,7 +244,7 @@ def run_kilosort4(recording_dir: Path, output_dir: Path) -> dict[str, Any]:
             raise RuntimeError("Existing sort belongs to another recording/configuration")
         return manifest
     output_dir.parent.mkdir(parents=True, exist_ok=True)
-    recording = load_extractor(recording_dir)
+    recording = load(recording_dir)
     selected_samples = (
         recording_manifest["selected_end_frame"]
         - recording_manifest["selected_start_frame"]
@@ -242,6 +270,8 @@ def run_kilosort4(recording_dir: Path, output_dir: Path) -> dict[str, Any]:
         "summary": summary,
         "complete": True,
     }
+    if archived_failed_partial is not None:
+        manifest["archived_failed_partial"] = str(archived_failed_partial)
     (partial / SORT_MANIFEST).write_text(json.dumps(manifest, indent=2) + "\n")
     os.replace(partial, output_dir)
     return manifest
