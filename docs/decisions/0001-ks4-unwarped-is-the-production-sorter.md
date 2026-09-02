@@ -1,17 +1,21 @@
 # 0001 — KS4 on the unwarped frozen graph is the production sorter
 
 **Status:** Adopted (2026-08-30, cross-probe control 2026-08-31).
-**Qualified 2026-09-02 by [0008](0008-amplitude-completeness-gates-promotion.md)** —
-read that record before citing any yield result below.
+**Qualified 2026-09-02 by [0008](0008-amplitude-completeness-gates-promotion.md)
+and [0009](0009-cross-sort-comparisons-must-be-unit-matched.md)** — read both
+before citing any yield result below.
 **Applies to:** every production sort
 
 > **The interpretation in this record is narrowed by
-> [0008](0008-amplitude-completeness-gates-promotion.md).** The measurements
-> here stand. The inference that yield gains alongside *fewer* assigned spikes
-> demonstrate the improvement is not detection inflation has since been shown
-> insufficient: post-curation amplitude-truncation analysis finds rescue units
-> are typically *less* completely detected than both comparators. This record is
-> not the basis for promoting the configuration.
+> [0008](0008-amplitude-completeness-gates-promotion.md), as corrected by
+> [0009](0009-cross-sort-comparisons-must-be-unit-matched.md).** The
+> measurements here stand. The inference that yield gains alongside *fewer*
+> assigned spikes demonstrate the improvement is not detection inflation remains
+> insufficient — aggregate spike count is a contamination-side check, not a
+> per-unit recall measure. But the completeness deficit 0008 originally reported
+> was a unit-composition artifact and is retracted: matched on the same neurons,
+> rescue detects units exactly as completely as the comparators. This record is
+> still not by itself a basis for promotion; the failed gates are.
 
 ## Decision
 
@@ -69,9 +73,11 @@ So: the rescue graph is the **locked operational downstream reference**, and tha
 is a different and weaker claim than universal adoption. Do not cite this record
 as evidence that the frozen gates passed.
 
-The post-curation evaluation added a second, independent ground for that verdict
-— worse amplitude completeness than either comparator — and reframed the pair
-evidence: after curation, 27 similar good–good pairs remain (against 8 legacy
+The post-curation evaluation initially appeared to add a second, independent
+ground for that verdict — worse amplitude completeness than either comparator —
+but that finding was a composition artifact and is retracted
+([0009](0009-cross-sort-comparisons-must-be-unit-matched.md)). The verdict rests
+on the failed gates alone. The evaluation did reframe the pair evidence: after curation, 27 similar good–good pairs remain (against 8 legacy
 and 11 claim-mask) while the artifact-aware audit finds *zero* strong duplicate
 hypotheses. The pre-curation 184/191 and 164/165 hypotheses recorded above were
 a different screen at a different stage; both results stand as measured. See
@@ -88,12 +94,13 @@ available Yates sort.
 - **Kilosort internal motion correction** — same class of risk, and the accepted
   `ops.npy` independently records that it was off.
 - **Cross-peel claim mask** — tested and measured as a source of loss/duplication.
-  *Qualified 2026-09-02:* on the post-curation imec0 comparison the claim-mask
-  configuration has the **best** amplitude completeness of the three (0.82%
-  median missingness in the >1 Hz cohort, 91.8% of units below 10%), at a large
-  yield cost (191 KS-good against 301). The rejection was reasonable on the
-  evidence then available, but the trade-off it represents was never measured.
-  See [0008](0008-amplitude-completeness-gates-promotion.md).
+  *Qualified 2026-09-02, then largely restored:* the claim-mask configuration
+  appeared to have the best amplitude completeness of the three, but on matched
+  neurons it is indistinguishable from rescue (0.73% vs 0.75%, p = 0.19). Its
+  apparent advantage came from keeping only larger units at a large yield cost
+  (191 KS-good against 301). The original rejection stands; what remains true is
+  that the yield-versus-selectivity trade-off was never measured. See
+  [0009](0009-cross-sort-comparisons-must-be-unit-matched.md).
 - **Kilosort batch artifact threshold** — superseded by the explicit sidecar.
 - **Pinned AIND preprocessing** — a competent independent comparator that ties
   rescue on aggregate sealed-event recovery (470/720) and improves

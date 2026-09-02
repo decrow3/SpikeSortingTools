@@ -5,6 +5,16 @@
 **Rescue sort identity:** `22ded4d503b6de8edf4851a08797ae4e594fe41118b913451365727ffbd616ac`
 **Assessment:** Do not promote the rescue configuration as a universal production default.
 
+> **CORRECTION, 2026-09-02 (same day).** The amplitude-completeness finding
+> below is a unit-composition artifact and is retracted. Matched on the same
+> neurons the three configurations are indistinguishable (rescue 0.63% vs
+> legacy 0.63% on 43 shared units, p = 0.80); the population gap is entirely
+> the 50 additional, smaller units rescue recovers. All numbers below
+> reproduce exactly — the arithmetic is right, the inference is not. See
+> [`luke_20250804_truncation_fitter_audit.md`](luke_20250804_truncation_fitter_audit.md)
+> and [`decisions/0009`](decisions/0009-cross-sort-comparisons-must-be-unit-matched.md).
+> The assessment above still stands, on the prespecified gates that failed.
+
 > Recorded 2026-09-02. This is the post-curation evaluation. It supersedes the
 > yield-centred reading of
 > [`luke_20250804_imec0_rescue_result.md`](luke_20250804_imec0_rescue_result.md)

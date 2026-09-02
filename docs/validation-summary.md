@@ -88,7 +88,7 @@ The +73 KS-good units (+32%) over legacy become only +29 stable good units
 (+16%), the stable *fraction* falls by 9.7 points, and there is no gain at
 >5 Hz or >10 Hz. The increase is concentrated in low-rate units.
 
-## Amplitude completeness — the decisive negative result
+## Amplitude completeness — reported deficit, since retracted
 
 Estimated percentage of spikes missing below the detection boundary, summarized
 per unit (median across 1,000-spike windows) then compared across methods.
@@ -98,17 +98,31 @@ per unit (median across 1,000-spike windows) then compared across methods.
 | Median estimated missingness | 3.07% | 1.16% | **0.82%** |
 | Fraction below 10% missingness | 68.8% | 77.9% | **91.8%** |
 
-The rescue is worst in **every** reported cohort. Claim-mask is strongest
-throughout, at a large yield cost. Eligibility is proportionally similar across
-methods (110/301 rescue, 78/228 legacy, 72/191 claim-mask units had fitted
-windows), and in the >1 Hz cohort nearly every unit is eligible, which makes it
-the most informative population-level comparison available.
+**These population figures are confounded and do not show a detection-quality
+difference.** They reproduce exactly, but the three configurations admit
+different unit populations, and estimated missingness depends strongly on unit
+amplitude (within-method Spearman −0.44 rescue, −0.56 legacy).
 
-Confidence in the *direction* is high; confidence in exact magnitudes is
-moderate — the fitter caps at 50% estimated missingness, and the three stored
-analyses were produced at different times without equivalent provenance
-receipts. A frozen matched recomputation is required before any numeric gate is
-set.
+Matched on the same neurons, the configurations are indistinguishable:
+
+| Matched pair | n | A | B | Paired Δ | p |
+|---|---:|---:|---:|---:|---:|
+| rescue vs legacy | 43 | 0.63% | 0.63% | −0.02 pp | 0.797 |
+| rescue vs claim-mask | 47 | 0.75% | 0.73% | +0.03 pp | 0.193 |
+| legacy vs claim-mask | 42 | 0.60% | 0.76% | +0.01 pp | 1.000 |
+
+The population gap decomposes entirely into the units each sort uniquely finds:
+rescue is 43 shared units at 0.63% plus **50 unique units at 9.45%**; legacy is
+the same 43 at 0.63% plus 25 unique at 3.01%. Rescue's extra units are smaller
+(amplitude 15.8 vs 19.0) and small units sit closer to the detection floor in
+every pipeline. See
+[0009](decisions/0009-cross-sort-comparisons-must-be-unit-matched.md).
+
+**Estimator status:** validated. Unbiased to under 0.5 pp for true missing
+fractions of 0.5–40%, which covers every KS-good cohort (0.6–3%). Hard-censored
+at 50% — a window reported at exactly 50.0 is boundary-pinned, not measured, and
+must be filtered. That affects 54.9%/56.3%/16.4% of all windows but ~0% of
+KS-good windows.
 
 ## Established limits — do not overstate these results
 
@@ -127,14 +141,15 @@ set.
 5. **Single session.** All full-session validation is Luke 2025-08-04. No
    multi-session replication cohort has been run.
 6. **No manual curation** was performed in the accepted runs.
-7. **Higher yield did not mean better detection.** Rescue units are typically
-   *less* completely detected than both comparators. Contamination and
-   refractory improvements do not measure completeness, and firing-rate-bin
-   occupancy ("stable" units) is not a substitute for amplitude-based
-   missing-spike estimation.
-8. **No mechanism is established** for the completeness deficit. Fragmentation,
-   partial detection, amplitude scaling, and fit behaviour all remain open. The
-   analyses diagnose association and consistency, not cause.
+7. **Higher yield still does not by itself mean better detection.**
+   Contamination and refractory improvements do not measure completeness, and
+   firing-rate-bin occupancy ("stable" units) is not a substitute for
+   amplitude-based missing-spike estimation. But the specific claim that rescue
+   detects units *less* completely is retracted — see above.
+8. **Whether rescue's 50 additional units are genuine is still open.** They are
+   smaller and closer to the detection floor, which is expected and not itself
+   evidence of a defect. Distinguishing genuine small units from fragments needs
+   waveform, refractory, CCG and spatial evidence on those specific units.
 9. **A tension is unresolved:** the artifact-aware audit finds zero strong
    duplicate hypotheses, yet 27 similar good–good pairs survive curation against
    8 and 11 for the comparators.
@@ -147,9 +162,10 @@ set.
 - Any challenger sorter in production ([0005](decisions/0005-dartsort-kiasort-deferred.md))
 - MUA family promotion ([0006](decisions/0006-recovery-axis-is-post-sort-mua-reconciliation.md))
 - Second-machine installation and bounded smoke test
-- A formal amplitude-completeness acceptance gate ([0008](decisions/0008-amplitude-completeness-gates-promotion.md)),
-  which is itself blocked on a frozen matched recomputation of all three
-  truncation analyses and an audit of the truncation fitter
+- A formal amplitude-completeness acceptance gate ([0008](decisions/0008-amplitude-completeness-gates-promotion.md)).
+  The fitter audit is now complete, but the gate must be specified on
+  unit-matched or amplitude-stratified comparisons, never on population medians
+  ([0009](decisions/0009-cross-sort-comparisons-must-be-unit-matched.md))
 - The yield-versus-completeness trade-off curve across intermediate
   detection/artifact/claim settings
 
@@ -160,6 +176,8 @@ set.
 - Acceptance evaluator: `testing/luke_imec0_rescue_acceptance.py`
 - Pair audit: `testing/luke_imec0_similar_pair_audit.py`
 - Post-curation evaluation: `docs/luke_20250804_imec0_postcuration_evaluation.md`
+- Estimator audit and unit-matched re-analysis: `docs/luke_20250804_truncation_fitter_audit.md`
+  (`testing/luke_truncation_fitter_audit.py`, `testing/luke_truncation_matched_units.py`)
 - Accepted run receipts: `rescue_pipeline_results_Luke0804_V2V1_g0_imec{0,1}/kilosort4/rescue_sort_manifest.json`
 
 Note: the three `testing/` modules above are imported by `pipeline/downstream.py`

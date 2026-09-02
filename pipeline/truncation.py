@@ -1,8 +1,34 @@
 """Amplitude-truncation fits used by production QC.
 
-Extracted verbatim from ``pipelineold/truncation.py`` at research-repository commit
-e71b144. Only the definitions reachable from the production entry
-points are carried over; the legacy module keeps the rest.
+The fitting functions below were extracted verbatim from
+``pipelineold/truncation.py`` at research-repository commit e71b144; only the
+definitions reachable from the production entry points were carried over.
+
+Two interpretation helpers were ADDED afterwards (2026-09-02) and have no
+legacy counterpart: :func:`is_saturated` and
+:func:`missing_pct_from_normalisation`. They do not change any fit or any
+stored QC schema.
+
+Estimator behaviour, characterised in ``testing/test_truncation_fitter.py``:
+
+* Unbiased to well under a percentage point for true missing fractions from
+  0.5% to about 40%. Every KS-good cohort measured so far sits at 0.6-3%, i.e.
+  inside this range.
+* **Hard-censored at 50%.** ``fit_truncated_sigmoid`` bounds ``x0`` below by
+  ``x_min``, so ``truncated_sigmoid_missing_pct`` cannot exceed 50. A window
+  reported at exactly 50.0 is a boundary-pinned fit, not a measurement; true
+  70% missing is reported as 50.0. Filter these with :func:`is_saturated`
+  before taking any median. In the stored Luke0804 imec0 analyses they are
+  54.9% (rescue), 56.3% (legacy) and 16.4% (claim-mask) of all windows, though
+  ~0% of windows belonging to KS-good units.
+* Scale-invariant: missingness depends on ``k * (x0 - x_min)``, so differing
+  amplitude scales between sorts do not by themselves bias the comparison.
+* Eligibility is rate-dependent: a unit needs 1000 spikes within a continuous
+  block (gaps > ``max_isi``) to produce any window at all.
+
+``fit_truncated_sigmoid`` also swallows fit failures and falls back to
+``[mean_amp, 1, 1]``, which typically reports near-0% missing. The fallback is
+printed but not flagged in the returned arrays.
 """
 
 import matplotlib.pyplot as plt
@@ -124,3 +150,38 @@ def plot_amplitude_truncation(spike_times, spike_amplitudes, window_blocks, vali
     axs[1].set_ylim(0, 55)
     plt.tight_layout()
     return fig, axs
+
+
+# ---------------------------------------------------------------------------
+# Interpretation helpers (added 2026-09-02; no legacy counterpart)
+# ---------------------------------------------------------------------------
+
+SATURATION_PCT = 50.0
+
+
+def is_saturated(mpcts, tol=1e-9):
+    """Return a mask of windows whose fit was pinned at the 50% bound.
+
+    These are censored, not measured: the optimiser drove ``x0`` onto its lower
+    bound ``x_min``, which forces the reported statistic to exactly 50. Treat
+    them as "at least 50% missing" and exclude them from means and medians
+    rather than averaging them in as if they were estimates.
+    """
+    return np.isclose(np.asarray(mpcts, dtype=float), SATURATION_PCT, atol=tol)
+
+
+def missing_pct_from_normalisation(popts):
+    """Second, independent estimate of the same quantity, from ``A``.
+
+    For a sigmoid CDF truncated at ``x_min`` the renormalisation factor is
+    ``A = 1 / (1 - F(x_min))``, so the missing fraction is ``1 - 1/A``. The
+    production statistic instead evaluates ``F(x_min)`` from ``(x0, k)`` and
+    discards ``A`` entirely. Comparing the two is a free goodness-of-fit check:
+    large disagreement means the truncated-sigmoid shape does not describe the
+    window. On the stored Luke0804 analyses they agree to about 2 percentage
+    points at the median, but disagree by more than 5 points in roughly a fifth
+    of windows.
+    """
+    popts = np.atleast_2d(np.asarray(popts, dtype=float))
+    A = np.clip(popts[:, 2], 1e-12, None)
+    return 100.0 * (1.0 - 1.0 / A)

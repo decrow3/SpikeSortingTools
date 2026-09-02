@@ -41,10 +41,18 @@ Three specific substitutions that this proved invalid:
 | Aggregate spike count → per-unit recall | Fewer total spikes with more units is compatible with each unit being less completely detected |
 | Contamination / refractory violations → completeness | These are contamination measures; they bound false positives, not false negatives |
 | Firing-rate-bin occupancy ("stable") → amplitude completeness | Units count as stable by time-bin occupancy while being poorly captured by amplitude fitting |
+| Cross-sort population median → per-unit quality | Configurations admit different unit populations; the median then measures *which units were admitted*, not how well they were detected ([0009](0009-cross-sort-comparisons-must-be-unit-matched.md)) |
 
 So when adding a gate, ask what the gate set as a whole *cannot* see. A metric
 that only ever moves in the favourable direction under a change is more likely
 to be insensitive than confirmatory.
+
+The same rule caught the *next* error too. When a new observable was finally
+added, it was read as a population comparison across sorts with different unit
+populations, and produced a confident conclusion in the wrong direction. A gate
+is only as good as the contrast it is evaluated on: match the units, or
+stratify on whatever the metric actually depends on
+([0009](0009-cross-sort-comparisons-must-be-unit-matched.md)).
 
 ## Consequences
 

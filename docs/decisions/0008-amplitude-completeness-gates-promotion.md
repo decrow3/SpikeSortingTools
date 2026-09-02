@@ -1,8 +1,22 @@
 # 0008 — Amplitude completeness gates promotion, and yield alone never does
 
-**Status:** Adopted 2026-09-02
+**Status:** Adopted 2026-09-02. **Central empirical claim CORRECTED the same day
+by [0009](0009-cross-sort-comparisons-must-be-unit-matched.md).**
 **Supersedes the yield-centred reading of:** [0001](0001-ks4-unwarped-is-the-production-sorter.md)
 **Evidence:** [`luke_20250804_imec0_postcuration_evaluation.md`](../luke_20250804_imec0_postcuration_evaluation.md)
+
+> **RETRACTED: the completeness deficit below is a unit-composition artifact.**
+> Matched on the same neurons, the three configurations are indistinguishable
+> (rescue 0.63% vs legacy 0.63% on 43 shared units, p = 0.80). The population
+> gap is entirely the 50 additional, smaller units rescue recovers; small units
+> sit closer to the detection floor in every pipeline. See
+> [0009](0009-cross-sort-comparisons-must-be-unit-matched.md) and
+> [`luke_20250804_truncation_fitter_audit.md`](../luke_20250804_truncation_fitter_audit.md).
+>
+> What survives: amplitude completeness is still a missing acceptance
+> dimension, yield alone still must not gate promotion, and
+> `reject_universal_default` still stands — but on the gates that actually
+> failed, not on completeness.
 
 ## Decision
 
