@@ -1,3 +1,0 @@
-window,duration_s,current_effective_ks_good_families,single_pass_effective_ks_good_families,family_gain,family_gain_fraction,min_family_gain_across_thresholds,max_family_gain_across_thresholds,single_pass_good_related_fraction,conservative_independent_candidates,moderate_independent_candidates
-shared,240.0,123,163,40,0.3252032520325203,37,41,0.6011904761904762,3,14
-pathological,120.0,87,108,21,0.2413793103448276,17,21,0.7280701754385965,14,24

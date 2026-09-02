@@ -1,2 +1,0 @@
-variant,n_spikes,n_units,n_ks_good,median_unit_rate_hz,mean_unit_rate_hz,median_contamination_pct,fraction_units_contamination_le_10pct
-imec0_legacy_pipeline,30494981,727,301,0.5447052784751304,4.004975754924023,23.6,0.38239339752407153

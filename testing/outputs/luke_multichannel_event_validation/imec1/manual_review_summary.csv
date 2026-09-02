@@ -1,3 +1,0 @@
-status,n_reviewed,n_neural,n_artifact,n_uncertain,neural_fraction_excluding_uncertain,neural_fraction_ci95_low,neural_fraction_ci95_high
-matched,100,66,27,7,0.7096774193548387,0.6105740949932597,0.7921459845566579
-unmatched,100,62,32,6,0.6595744680851063,0.5592082220071468,0.7474102642827856

@@ -1,6 +1,0 @@
-[INFO] - Loading faiss with AVX512 support.
-[INFO] - Successfully loaded faiss with AVX512 support.
-[INFO] - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes.
-[INFO] -  
-[INFO] - Saving to phy and computing refractory periods (low-memory export)
-[INFO] - ----------------------------------------

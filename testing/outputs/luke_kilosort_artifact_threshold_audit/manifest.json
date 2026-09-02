@@ -1,9 +1,0 @@
-{
-  "sorting_run": false,
-  "motion_correction": false,
-  "claim_mask": "off",
-  "device": "cuda",
-  "batch_size": 60000,
-  "padding": 61,
-  "threshold_semantics": "Kilosort zeros the complete padded batch if any post-CAR/high-pass absolute value reaches the threshold"
-}

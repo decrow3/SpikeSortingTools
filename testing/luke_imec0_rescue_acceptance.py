@@ -9,9 +9,9 @@ from pathlib import Path
 import pandas as pd
 
 
-CRITERIA = Path(
-    "testing/outputs/luke_full_probe_rescue_diagnostics_imec0_legacy/"
-    "acceptance_criteria.json"
+CRITERIA = (
+    Path(__file__).resolve().parents[1]
+    / "configs/rescue/imec0_legacy_acceptance_criteria.json"
 )
 
 

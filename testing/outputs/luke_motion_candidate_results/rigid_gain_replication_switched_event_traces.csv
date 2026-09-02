@@ -1,7 +1,0 @@
-review_id,condition,recovered,peak_abs_counts,peak_depth_um,local_rms_counts
-E0032,No correction,True,23.0,2100.0,3.5804569723915884
-E0032,0.25× rigid,False,22.0,2100.0,3.4328360254759915
-E0068,No correction,False,250.0,2580.0,28.775011051849276
-E0068,0.25× rigid,True,233.0,2580.0,26.728469785972067
-E0143,No correction,True,26.0,2120.0,3.126181995881642
-E0143,0.25× rigid,False,22.0,2120.0,2.8631017845161164

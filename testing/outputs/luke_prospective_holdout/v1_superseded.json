@@ -1,6 +1,0 @@
-{
-  "superseded": true,
-  "reason": "Before any event indices were drawn, the label quiet was corrected to relative_quiet because the minimum-motion candidate in time third 3 remained at combined percentile 0.72.",
-  "v1_event_indices_drawn": false,
-  "replacement": "testing/outputs/luke_prospective_holdout/seal_v2.json"
-}

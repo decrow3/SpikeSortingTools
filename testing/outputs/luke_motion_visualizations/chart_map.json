@@ -1,7 +1,0 @@
-{
-  "ap_motion_fields.png": "Common-scale dynamic displacement heatmaps for AP-derived estimators.",
-  "rigid_trace_comparison.png": "AP rigid-component traces and separately scaled LFP rigid traces.",
-  "estimator_agreement_matrices.png": "Annotated rigid and residual-field correlation matrices.",
-  "corrected_peak_density.png": "Localized-peak density before and after candidate correction.",
-  "dredge_lfp_diagnostic_imec1.png": "Full/clipped non-rigid LFP field with chunk boundaries and AP reference."
-}

@@ -10,6 +10,10 @@ Every expensive stage is cache-aware and safe to restart with its switch left on
 # ---------------------------------------------------------------------------
 from pathlib import Path
 
+# Anchored to this file so the run sheet works from any working directory.
+# Not part of the per-recording configuration below.
+REPO_ROOT = Path(__file__).resolve().parent
+
 DATA_DIR = Path("/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0")
 STREAM_ID = "imec0.ap"
 OUTPUT_DIR = Path(
@@ -386,10 +390,9 @@ def main() -> None:
             sort_identity,
             probe=STREAM_ID.split(".")[0],
             duration_s=duration_s,
-            criteria_path=Path(
-                "testing/outputs/"
-                "luke_full_probe_rescue_diagnostics_imec0_legacy/"
-                "acceptance_criteria.json"
+            criteria_path=(
+                REPO_ROOT
+                / "configs/rescue/imec0_legacy_acceptance_criteria.json"
             ),
         )
         print(json.dumps(diagnostic_result, indent=2), flush=True)

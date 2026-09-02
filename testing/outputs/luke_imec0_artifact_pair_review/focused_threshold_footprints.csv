@@ -1,5 +1,0 @@
-unit_id,sampled_spikes,median_unique_threshold_channels_0p5ms,median_max_simultaneous_threshold_channels,p90_max_simultaneous_threshold_channels,median_maximum_absolute_threshold_counts,median_unique_threshold_channels_0p5ms_good_unit_percentile,median_max_simultaneous_threshold_channels_good_unit_percentile,p90_max_simultaneous_threshold_channels_good_unit_percentile
-164,200,272.0,269.0,372.0,275.5,99.00332225913621,99.00332225913621,100.0
-165,200,77.5,75.0,363.1,249.0,97.34219269102991,97.34219269102991,96.01328903654485
-184,200,16.0,15.0,333.2,232.5,92.69102990033223,92.69102990033223,90.36544850498339
-191,200,20.0,19.0,346.1,235.0,93.35548172757476,93.35548172757476,90.69767441860465

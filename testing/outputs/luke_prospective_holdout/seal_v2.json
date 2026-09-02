@@ -1,6 +1,0 @@
-{
-  "manifest": "testing/outputs/luke_prospective_holdout/holdout_manifest_v2.json",
-  "sha256": "01643baa20fd9ee4905a9bd6e9282ab25e1365dd4899bd69244ea63a4a7fcc9b",
-  "sealed": true,
-  "event_indices_drawn": false
-}

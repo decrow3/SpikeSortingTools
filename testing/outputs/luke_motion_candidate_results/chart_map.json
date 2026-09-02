@@ -1,9 +1,0 @@
-{
-  "spatial_scale_validation.png": "Residual-field heatmaps and spatial-scale validation scorecard.",
-  "motion_candidate_sorter_outcomes.png": "Fixed-event recovery and sorter-quality guardrails.",
-  "reviewed_event_recovery_matrix.png": "Paired recovery of each prespecified visually neural missed event.",
-  "event_motion_association.png": "Candidate displacement and spatial gradient for recovered versus missed reviewed events.",
-  "internal_rigid_trace_comparison.png": "Kilosort internal rigid and DREDGE rigid traces plus batch-to-batch jump magnitudes.",
-  "rigid_gain_response.png": "Sorter recovery and quality response across rigid displacement gains from zero to one.",
-  "rigid_gain_event_matrix.png": "Paired reviewed-event recovery across rigid displacement gains."
-}

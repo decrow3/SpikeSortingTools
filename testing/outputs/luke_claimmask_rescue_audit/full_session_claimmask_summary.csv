@@ -1,3 +1,0 @@
-variant,population,n_events,n_sorted_spikes,observed_recovery,jitter_null_mean,jitter_null_p95,recovery_above_null,empirical_p,sorting_path
-dredge,visual_neural_unmatched,62,53880132,0.8064516129032258,0.0901290322580645,0.1451612903225806,0.7163225806451612,0.0039840637450199,/mnt/NPX/Luke/20250804/dredge_pipeline_results_Luke0804_V2V1_g0_imec1/cur/cur_sorter_output
-patched,visual_neural_unmatched,62,21039024,0.1612903225806451,0.0292903225806451,0.064516129032258,0.132,0.0039840637450199,/mnt/NPX/Luke/20250804/patched_pipeline_results_Luke0804_V2V1_g0_imec1/cur/cur_sorter_output

@@ -8,3 +8,10 @@ pipeline_results*
 # Generated diagnostic runs, arrays, figures, reports, and notebooks.
 # Curated evidence can still be added explicitly with `git add -f`.
 testing/outputs/
+
+# Generated repository collations / code bundles (see collate_files.py).
+repo_collation.txt
+code_bundle.md
+
+# Batch and resume run logs. Curated logs can be added with `git add -f`.
+*.log
