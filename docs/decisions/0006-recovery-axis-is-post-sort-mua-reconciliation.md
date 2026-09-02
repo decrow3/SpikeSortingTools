@@ -43,6 +43,22 @@ and preservation of already-good neighbouring units.
 Each would create new events or identities where the evidence only supports
 targeted reconciliation.
 
+## The rescue configuration is already doing this automatically
+
+Recorded 2026-09-02. On Luke0804 imec0, 80 of the 200 KS-good units that rescue
+has and legacy does not are legacy `mua` clusters relabelled good — roughly two
+thirds of each unit's spikes coming from a single legacy MUA cluster. That is
+this record's recovery axis, performed automatically by the curation stage
+rather than by the reversible, evidence-backed family linkage specified below.
+
+The refractory evidence is reassuring: median violation fraction 0.16% with 6.3%
+exceeding 1%, against 0.09% and 1.0% for units both sorts agree on. But that is
+not the screen this record specified.
+
+Either the screen below is relaxed deliberately and on the record, or those 80
+promotions are not yet authorized. See
+[0010](0010-rescue-yield-is-relabelling-not-detection.md).
+
 ## Current state
 
 Under the conservative screen (≥2 MUA-only reviewed neural events, contamination

@@ -146,13 +146,19 @@ KS-good windows.
    firing-rate-bin occupancy ("stable" units) is not a substitute for
    amplitude-based missing-spike estimation. But the specific claim that rescue
    detects units *less* completely is retracted — see above.
-8. **Whether rescue's 50 additional units are genuine is still open.** They are
-   smaller and closer to the detection floor, which is expected and not itself
-   evidence of a defect. Distinguishing genuine small units from fragments needs
-   waveform, refractory, CCG and spatial evidence on those specific units.
+8. **The yield difference is relabelling, not detection.** None of the 200
+   KS-good units rescue has and legacy does not is a new detection; every one is
+   built from spikes legacy already detected (80 legacy-MUA promotions, 85
+   dispersed across many legacy clusters, 35 splits of legacy good units). The
+   headline +73 is really +200/−127 — rescue also fails to reproduce 127 legacy
+   good units, which no gate measures. See
+   [0010](decisions/0010-rescue-yield-is-relabelling-not-detection.md).
 9. **A tension is unresolved:** the artifact-aware audit finds zero strong
    duplicate hypotheses, yet 27 similar good–good pairs survive curation against
-   8 and 11 for the comparators.
+   8 and 11 for the comparators. The 27 are not attributable to the extra units
+   — involvement is 20.0% for splits, 14.9% for units shared with legacy, 13.8%
+   for MUA promotions, 10.6% for dispersed units (odds ratio 0.66, p = 0.36).
+   The cause is still unknown.
 
 ## Not yet validated
 
@@ -178,6 +184,8 @@ KS-good windows.
 - Post-curation evaluation: `docs/luke_20250804_imec0_postcuration_evaluation.md`
 - Estimator audit and unit-matched re-analysis: `docs/luke_20250804_truncation_fitter_audit.md`
   (`testing/luke_truncation_fitter_audit.py`, `testing/luke_truncation_matched_units.py`)
+- Composition of the extra units: `docs/luke_20250804_rescue_unique_units_audit.md`
+  (`testing/luke_rescue_unique_units_audit.py`)
 - Accepted run receipts: `rescue_pipeline_results_Luke0804_V2V1_g0_imec{0,1}/kilosort4/rescue_sort_manifest.json`
 
 Note: the three `testing/` modules above are imported by `pipeline/downstream.py`
