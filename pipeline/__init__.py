@@ -48,6 +48,7 @@ from .downstream import (
     validate_sort_identity,
     write_conservative_decision,
 )
+from .preflight import format_preflight, preflight_report
 from .runtime import (
     PRODUCTION_PACKAGES,
     PRODUCTION_PYTHON,
@@ -86,21 +87,14 @@ from .motion_sidecar import (
     run_motion_sidecar_for_accepted_recording,
     run_motion_sidecar_safely,
 )
-from .bakeoff import (
-    BAKEOFF_SCHEMA,
-    CANDIDATES,
-    accept_ks4_reference,
-    build_bakeoff_plan,
-    inspect_bakeoff_environment,
-    run_dartsort_challenger,
-    run_ks4_seeded_peeler_pair,
-    run_kiasort_challenger,
-    normalize_dartsort_output,
-    resolve_kiasort_installation,
-    validate_dartsort_output,
-)
 
+# ``pipeline.bakeoff`` (DARTsort/KIAsort challengers) is deliberately NOT
+# re-exported here. It is research code, excluded from the production
+# extraction; see docs/decisions/0005-dartsort-kiasort-deferred.md. Research
+# scripts import it explicitly as ``pipeline.bakeoff``.
 __all__ = [
+    "preflight_report",
+    "format_preflight",
     "PIPELINE_VERSION",
     "PRODUCTION_PACKAGES",
     "PRODUCTION_PYTHON",
@@ -113,7 +107,6 @@ __all__ = [
     "build_kilosort4_params",
     "build_sort_identity",
     "build_motion_estimator_input",
-    "build_bakeoff_plan",
     "build_rescue_recording",
     "build_spikeinterface_motion",
     "fingerprint",
@@ -131,8 +124,6 @@ __all__ = [
     "PeakDetectionConfig",
     "PeakLocalizationConfig",
     "RigidMotionEstimate",
-    "BAKEOFF_SCHEMA",
-    "CANDIDATES",
     "phase_correct",
     "recording_binary_receipt",
     "recording_geometry_receipt",
@@ -149,10 +140,6 @@ __all__ = [
     "run_motion_sidecar",
     "run_motion_sidecar_for_accepted_recording",
     "run_motion_sidecar_safely",
-    "run_dartsort_challenger",
-    "run_ks4_seeded_peeler_pair",
-    "run_kiasort_challenger",
-    "normalize_dartsort_output",
     "select_bad_channel_ids",
     "stage_spikeglx_stream",
     "threshold_points",
@@ -166,10 +153,6 @@ __all__ = [
     "validate_accepted_recording",
     "validate_staged_spikeglx_stream",
     "validate_production_environment",
-    "validate_dartsort_output",
-    "accept_ks4_reference",
-    "inspect_bakeoff_environment",
-    "resolve_kiasort_installation",
     "write_artifact_sidecar",
     "write_conservative_decision",
     "write_motion_coordinate_sidecar",
