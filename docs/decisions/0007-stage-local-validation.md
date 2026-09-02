@@ -23,6 +23,29 @@ This is also why [0001](0001-ks4-unwarped-is-the-production-sorter.md) reports
 yield gains *alongside reduced assigned spikes* — the second number is what makes
 the first interpretable.
 
+## The rule applies to the gate set itself
+
+Extended 2026-09-02. Stage-local validation was written about *stages*, but the
+same failure occurred one layer up, in the **acceptance criteria**.
+
+The frozen gate set measured yield, contamination, refractory violations,
+presence, coincidence and edge burden — and contained no measure of per-unit
+detection completeness. A configuration could therefore improve every gate it
+was scored on while degrading a dimension nobody was scoring. It did:
+[0008](0008-amplitude-completeness-gates-promotion.md).
+
+Three specific substitutions that this proved invalid:
+
+| Not a valid proxy for | Because |
+|---|---|
+| Aggregate spike count → per-unit recall | Fewer total spikes with more units is compatible with each unit being less completely detected |
+| Contamination / refractory violations → completeness | These are contamination measures; they bound false positives, not false negatives |
+| Firing-rate-bin occupancy ("stable") → amplitude completeness | Units count as stable by time-bin occupancy while being poorly captured by amplitude fitting |
+
+So when adding a gate, ask what the gate set as a whole *cannot* see. A metric
+that only ever moves in the favourable direction under a change is more likely
+to be insensitive than confirmatory.
+
 ## Consequences
 
 - Broad preprocessing searches are **paused**; reopen only for a demonstrated,
@@ -36,9 +59,14 @@ the first interpretable.
 - Screens are diagnostic: they do not silently merge or relabel units, and a
   frozen evaluator verdict is not waived retrospectively when follow-up looks
   favourable ([0001](0001-ks4-unwarped-is-the-production-sorter.md)).
+- A gate cannot be formalized on top of an unvalidated estimator or unmatched
+  recomputations ([0008](0008-amplitude-completeness-gates-promotion.md),
+  follow-up items 2 and 3).
 
 ## Evidence pointers
 
 - `docs/luke_pipeline_stage_local_validation_strategy.md` — full observable map,
   advancement gates, and reopening criteria
 - `docs/luke_20250804_rescue_status_and_test_plan.md` § 2026-08-31 strategic update
+- `docs/luke_20250804_imec0_postcuration_evaluation.md` — the acceptance-layer
+  instance of this failure

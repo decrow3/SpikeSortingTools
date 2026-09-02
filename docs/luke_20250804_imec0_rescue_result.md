@@ -1,5 +1,13 @@
 # Luke imec0 frozen-rescue control result
 
+> **Superseded in interpretation, 2026-09-02.** These pre-curation measurements
+> stand. The post-curation evaluation in
+> [`luke_20250804_imec0_postcuration_evaluation.md`](luke_20250804_imec0_postcuration_evaluation.md)
+> adds an amplitude-completeness analysis showing rescue units are typically
+> *less* completely detected than both the legacy and claim-mask comparators,
+> and reports 0 strong duplicate hypotheses among the 27 similar pairs surviving
+> curation. Read it before citing the yield results below.
+
 The cross-probe control supports the frozen rescue graph as a substantial
 improvement on imec0. It is now locked operationally as the downstream Luke
 reference graph, while the prespecified universal-adoption result remains the

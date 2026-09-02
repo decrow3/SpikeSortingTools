@@ -1,7 +1,17 @@
 # 0001 — KS4 on the unwarped frozen graph is the production sorter
 
-**Status:** Adopted (2026-08-30, cross-probe control 2026-08-31)
+**Status:** Adopted (2026-08-30, cross-probe control 2026-08-31).
+**Qualified 2026-09-02 by [0008](0008-amplitude-completeness-gates-promotion.md)** —
+read that record before citing any yield result below.
 **Applies to:** every production sort
+
+> **The interpretation in this record is narrowed by
+> [0008](0008-amplitude-completeness-gates-promotion.md).** The measurements
+> here stand. The inference that yield gains alongside *fewer* assigned spikes
+> demonstrate the improvement is not detection inflation has since been shown
+> insufficient: post-curation amplitude-truncation analysis finds rescue units
+> are typically *less* completely detected than both comparators. This record is
+> not the basis for promoting the configuration.
 
 ## Decision
 
@@ -33,8 +43,14 @@ Both probes of Luke 2025-08-04, full session (10,473.6 s):
 | Median 1.5 ms refractory violation | 0.125% | 0.113% (from 0.203%) |
 
 The yield gain comes with *fewer* assigned spikes on both probes, so it is not
-explained by indiscriminate detection inflation. That is the load-bearing part
-of this result.
+explained by indiscriminate *aggregate* detection inflation.
+
+**This was originally described as the load-bearing part of the result. It is
+not sufficient.** Fewer total spikes with more good units is still compatible
+with a population whose individual units are each less completely detected.
+That is precisely what the post-curation truncation analysis later measured —
+see [0008](0008-amplitude-completeness-gates-promotion.md). Aggregate spike
+count is a contamination-side check; it says nothing about per-unit recall.
 
 ## Important qualification
 
@@ -53,6 +69,14 @@ So: the rescue graph is the **locked operational downstream reference**, and tha
 is a different and weaker claim than universal adoption. Do not cite this record
 as evidence that the frozen gates passed.
 
+The post-curation evaluation added a second, independent ground for that verdict
+— worse amplitude completeness than either comparator — and reframed the pair
+evidence: after curation, 27 similar good–good pairs remain (against 8 legacy
+and 11 claim-mask) while the artifact-aware audit finds *zero* strong duplicate
+hypotheses. The pre-curation 184/191 and 164/165 hypotheses recorded above were
+a different screen at a different stage; both results stand as measured. See
+[0008](0008-amplitude-completeness-gates-promotion.md).
+
 Neither does this establish Yates parity. That comparison is confounded by
 anatomy, depth, preprocessing, duration, and the high contamination of the
 available Yates sort.
@@ -64,6 +88,12 @@ available Yates sort.
 - **Kilosort internal motion correction** — same class of risk, and the accepted
   `ops.npy` independently records that it was off.
 - **Cross-peel claim mask** — tested and measured as a source of loss/duplication.
+  *Qualified 2026-09-02:* on the post-curation imec0 comparison the claim-mask
+  configuration has the **best** amplitude completeness of the three (0.82%
+  median missingness in the >1 Hz cohort, 91.8% of units below 10%), at a large
+  yield cost (191 KS-good against 301). The rejection was reasonable on the
+  evidence then available, but the trade-off it represents was never measured.
+  See [0008](0008-amplitude-completeness-gates-promotion.md).
 - **Kilosort batch artifact threshold** — superseded by the explicit sidecar.
 - **Pinned AIND preprocessing** — a competent independent comparator that ties
   rescue on aggregate sealed-event recovery (470/720) and improves
