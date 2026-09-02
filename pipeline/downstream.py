@@ -374,6 +374,10 @@ def run_qc_stage(
             "recording_dir": str(Path(recording_dir).resolve()),
             "curated_output": str(Path(curated_output).resolve()),
             "waveform_seed": waveform_seed,
+            "waveform_extractor": "ordered_chunked_local_memmap_v1",
+            "waveform_read_chunk_duration_s": 1.0,
+            "waveforms_per_unit": 512,
+            "waveform_samples": 82,
         },
     )
     required = (
