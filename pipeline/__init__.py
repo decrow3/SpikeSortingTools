@@ -1,8 +1,14 @@
 """Minimal SpikeGLX external-reference rescue pipeline.
 
-Historical preprocessing, motion, curation, and QC code lives in
-``pipelineold``.  This package intentionally exposes only the tested rescue
-graph and its provenance-guarded materialization and sorting helpers.
+This package is self-contained: the production curation, QC, refractory,
+truncation, and Kilosort-result modules were extracted from ``pipelineold``
+and narrowed to the definitions the rescue graph actually calls.  Nothing in
+``pipeline`` imports ``pipelineold``.
+
+``pipelineold`` remains in the research repository for the legacy run sheets
+(``SpikeGLX_tip_ref_2024.py``, ``batch_*_patching.py``, ``example*.py``) and
+for the retired curation strategies kept as comparison evidence.  It is not a
+production dependency and is not part of the production extraction.
 """
 
 from .artifacts import threshold_points, write_artifact_sidecar

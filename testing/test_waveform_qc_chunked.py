@@ -1,6 +1,6 @@
 import numpy as np
 
-from pipelineold.qc import waveform_qc
+from pipeline.qc import waveform_qc
 
 
 class ArrayRecording:

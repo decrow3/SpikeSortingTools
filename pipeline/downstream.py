@@ -319,8 +319,8 @@ def run_curation_stage(
         return receipt
 
     import spikeinterface.full as si
-    from pipelineold import KilosortResults
-    from pipelineold.curation_postpatch import run_cur_final
+    from .kilosort_results import KilosortResults
+    from .curation import run_cur_final
 
     source = Path(sorter_output)
     sorter = si.read_kilosort(folder_path=source)
@@ -395,7 +395,8 @@ def run_qc_stage(
         return receipt
 
     from spikeinterface.core import load
-    from pipelineold import KilosortResults, run_qc
+    from .kilosort_results import KilosortResults
+    from .qc import run_qc
 
     np.random.seed(waveform_seed)
     recording = load(Path(recording_dir))
