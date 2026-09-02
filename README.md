@@ -37,7 +37,12 @@ python environments/rescue-production/verify_environment.py --require-cuda
 
 The prompt should now show `(spikesortingtools-rescue-production)`. Open
 `SpikeGLX_ext_ref_rescue.py` and edit the first `# %%` section: `DATA_DIR`,
-`STREAM_ID`, `OUTPUT_DIR`, the optional time range, and the stage switches.
+`STREAM_ID`, `OUTPUT_DIR`, `LOCAL_WORK_DIR`, the optional time range, and the
+stage switches. For new recordings, set `LOCAL_WORK_DIR` to a unique folder on
+local NVMe. The selected stream is copied there once (with restart support),
+and the preprocessed binary is also materialized there so later stages avoid
+repeated reads from `DATA_DIR` on the server. Leave it as `None` only for an
+existing run whose accepted recording already lives under `OUTPUT_DIR`.
 Then run it without command-line arguments:
 
 ```bash
@@ -165,6 +170,7 @@ The file starts with one clearly marked editable block. For example:
 DATA_DIR = Path("/path/to/spikeglx/run")
 STREAM_ID = "imec1.ap"
 OUTPUT_DIR = Path("/path/to/rescue_results")
+LOCAL_WORK_DIR = Path("/local/nvme/recording-specific-work")
 START_S = 0.0
 DURATION_S = None  # full recording; use 60.0 for a smoke test
 

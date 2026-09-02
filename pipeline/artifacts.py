@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+from datetime import datetime, timezone
+import hashlib
 from typing import Any, Iterable
 
 import numpy as np
@@ -36,6 +38,41 @@ def _append(dataset, values: np.ndarray) -> None:
         old_size = dataset.shape[0]
         dataset.resize((old_size + values.size,))
         dataset[old_size:] = values
+
+
+def _request_digest(payload: dict[str, Any]) -> str:
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _sidecar_result(output: Path, expected_digest: str) -> dict[str, Any]:
+    import h5py
+
+    with h5py.File(output, "r") as handle:
+        observed_digest = str(handle.attrs.get("request_digest", ""))
+        if not bool(handle.attrs.get("complete", False)):
+            raise RuntimeError(f"Artifact sidecar is incomplete: {output}")
+        if observed_digest != expected_digest:
+            raise RuntimeError(
+                "Existing artifact sidecar belongs to another recording/configuration"
+            )
+        return {
+            "output": str(output),
+            "complete": True,
+            "reused": True,
+            "request_digest": observed_digest,
+            "threshold_uv": float(handle.attrs["threshold_uv"]),
+            "threshold_counts": float(handle.attrs["threshold_counts"]),
+            "n_jobs": int(handle.attrs["n_jobs"]),
+            "chunk_duration": str(handle.attrs["chunk_duration"]),
+            "excluded_channel_ids": json.loads(
+                handle.attrs["excluded_channel_ids_json"]
+            ),
+            "point_count": int(handle.attrs["point_count"]),
+            "claim_active_sample_count": int(
+                handle.attrs["claim_active_sample_count"]
+            ),
+        }
 
 
 def _init_threshold_worker(
@@ -91,15 +128,19 @@ def write_artifact_sidecar(
     chunk_duration_s: float | str = 10.0,
     n_jobs: int = 1,
     progress_bar: bool = True,
+    source_identity: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Scan phase-corrected voltage in parallel without changing sorter input."""
+    """Scan phase-corrected voltage without changing sorter input.
+
+    A complete exact sidecar is reused.  A complete ``.partial`` is recovered;
+    an incomplete partial is archived before a clean restart so interrupted
+    multi-hour scans never need manual deletion.
+    """
     import h5py
     from spikeinterface.core.job_tools import ChunkRecordingExecutor
 
     output = Path(output)
     partial = output.with_suffix(output.suffix + ".partial")
-    if output.exists() or partial.exists():
-        raise RuntimeError(f"Sidecar target already exists: {output} or {partial}")
     gains = np.unique(phase_corrected_recording.get_property("gain_to_uV"))
     if gains.size != 1:
         raise ValueError(f"Expected one gain_to_uV value, got {gains}")
@@ -108,6 +149,35 @@ def write_artifact_sidecar(
     fs = float(phase_corrected_recording.get_sampling_frequency())
     channel_ids = np.asarray(phase_corrected_recording.get_channel_ids())
     excluded = list(excluded_channel_ids)
+    request = {
+        "source_stage": "phase_corrected_raw_before_500uv_blanking",
+        "threshold_uv": float(threshold_uv),
+        "gain_uv_per_count": gain,
+        "sampling_frequency_hz": fs,
+        "num_samples": int(phase_corrected_recording.get_num_samples()),
+        "channel_ids": [str(value) for value in channel_ids],
+        "excluded_channel_ids": [str(value) for value in excluded],
+        "source_identity": source_identity,
+    }
+    request_digest = _request_digest(request)
+    if output.exists():
+        return _sidecar_result(output, request_digest)
+    if partial.exists():
+        import h5py
+
+        try:
+            with h5py.File(partial, "r") as handle:
+                partial_complete = bool(handle.attrs.get("complete", False))
+                partial_digest = str(handle.attrs.get("request_digest", ""))
+        except OSError:
+            partial_complete = False
+            partial_digest = ""
+        if partial_complete and partial_digest == request_digest:
+            os.replace(partial, output)
+            return _sidecar_result(output, request_digest)
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+        archived = partial.with_name(partial.name + f".interrupted-{timestamp}")
+        os.replace(partial, archived)
     output.parent.mkdir(parents=True, exist_ok=True)
     totals = {"point_count": 0, "claim_active_sample_count": 0}
     with h5py.File(partial, "w") as handle:
@@ -139,6 +209,9 @@ def write_artifact_sidecar(
                 "sampling_frequency_hz": fs,
                 "n_jobs": int(n_jobs),
                 "chunk_duration": str(chunk_duration_s),
+                "request_digest": request_digest,
+                "request_json": json.dumps(request, sort_keys=True),
+                "num_samples": int(phase_corrected_recording.get_num_samples()),
                 "channel_ids_json": json.dumps([str(value) for value in channel_ids]),
                 "excluded_channel_ids_json": json.dumps(
                     [str(value) for value in excluded]
@@ -175,6 +248,8 @@ def write_artifact_sidecar(
     result = {
         "output": str(output),
         "complete": True,
+        "reused": False,
+        "request_digest": request_digest,
         "threshold_uv": threshold_uv,
         "threshold_counts": threshold_counts,
         "n_jobs": int(n_jobs),

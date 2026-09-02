@@ -17,15 +17,45 @@ OUTPUT_DIR = Path(
     "rescue_pipeline_results_Luke0804_V2V1_g0_imec0"
 )
 
+# For a new recording, point this at an NVMe-backed folder. The selected AP
+# stream is copied there once; preprocessing, artifact scans, motion, sorting,
+# and QC then reuse local bytes. Keep None for this already-completed legacy run.
+LOCAL_WORK_DIR = None  # Example: Path("/local/nvme/Luke0804_imec0_rescue")
+
 # Use DURATION_S = None for the complete recording.
 START_S = 0.0
 DURATION_S = None
 
 # Leave completed stages enabled: exact accepted caches are reused. Set a stage
 # to False only when deliberately skipping it.
-RUN_PREPARE = True
-RUN_MOTION_SIDECAR = True
-RUN_KILOSORT = True
+# This Luke0804 imec0 sort is complete, so the current continuation starts at
+# downstream review.  Set these three back to True for a new recording or when
+# deliberately validating/rebuilding the upstream caches.
+RUN_PREPARE = False
+RUN_MOTION_SIDECAR = False
+RUN_KILOSORT = False
+
+# Downstream stages for a completed sort.  Identity and diagnostics are cheap
+# enough to leave enabled.  The artifact scan is long but restart-safe.  Keep
+# curation/QC/export off until the artifact-aware pair report has been reviewed;
+# then enable them in order and rerun this same file.
+PIN_COMPLETED_SORT_IDENTITY = True
+RUN_FULL_PROBE_DIAGNOSTICS = True
+WRITE_RAW_ARTIFACT_SIDECAR = True
+RUN_SIMILAR_PAIR_AUDIT = True
+RUN_CURATION = False
+RUN_QC = False
+RUN_MATLAB_EXPORT = False
+RUN_POSTCURATION_COMPARISON = False
+
+LEGACY_CURATED_OUTPUT = Path(
+    "/mnt/NPX/Luke/20250804/"
+    "pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output"
+)
+CLAIM_MASK_CURATED_OUTPUT = Path(
+    "/mnt/NPX/Luke/20250804/"
+    "patched_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output"
+)
 
 # Safety and restart controls.
 MOTION_STRICT = True
@@ -39,8 +69,7 @@ MATERIALIZE_CHUNK_DURATION = "10s"
 MOTION_CHUNK_DURATION = "2s"
 RUN_MOTION_SPLIT_HALF = False
 
-# Optional diagnostic exports, normally left off.
-WRITE_RAW_ARTIFACT_SIDECAR = False
+# Optional diagnostic exports.
 QUALIFIED_MOTION_FIELD = None  # Example: Path("/path/to/qualified_motion.npz")
 MOTION_COORDINATE_GAIN = 1.0
 MOTION_COORDINATE_MIN_SUPPORT = 1.0
@@ -64,13 +93,22 @@ from pipeline import (
     PRODUCTION_UV_SETUP,
     RescueConfig,
     materialize_rescue_recording,
+    pin_sort_identity,
     phase_correct,
     production_environment_contract,
     rescue_kilosort4_overrides,
     run_kilosort4,
+    run_curation_stage,
+    run_diagnostics_stage,
+    run_matlab_export_stage,
+    run_pair_audit_stage,
+    run_postcuration_comparison_stage,
+    run_qc_stage,
     run_motion_sidecar_for_accepted_recording,
+    stage_spikeglx_stream,
     validate_production_environment,
     write_artifact_sidecar,
+    write_conservative_decision,
     write_motion_coordinate_sidecar,
 )
 
@@ -79,12 +117,12 @@ def _stage(number: int, title: str) -> None:
     print(f"\n{'=' * 72}\nSTEP {number}: {title}\n{'=' * 72}", flush=True)
 
 
-def _load_raw():
+def _load_raw(source_folder=DATA_DIR):
     import spikeinterface.full as si
 
-    print(f"Reading {DATA_DIR} [{STREAM_ID}] ...", flush=True)
+    print(f"Reading {source_folder} [{STREAM_ID}] ...", flush=True)
     recording = si.read_spikeglx(
-        folder_path=DATA_DIR,
+        folder_path=source_folder,
         load_sync_channel=False,
         stream_id=STREAM_ID,
     )
@@ -151,12 +189,27 @@ def build_run_plan() -> dict:
         "source_folder": str(DATA_DIR.resolve()),
         "stream_id": STREAM_ID,
         "output_dir": str(OUTPUT_DIR.resolve()),
+        "local_work_dir": (
+            None if LOCAL_WORK_DIR is None else str(LOCAL_WORK_DIR.resolve())
+        ),
+        "source_stage_policy": (
+            "read_server_source_directly"
+            if LOCAL_WORK_DIR is None
+            else "copy_selected_stream_once_then_read_local_only"
+        ),
         "time_range": {"start_s": START_S, "duration_s": DURATION_S},
         "stages": {
             "prepare": RUN_PREPARE,
             "motion_sidecar": RUN_MOTION_SIDECAR,
             "sort_kilosort4": RUN_KILOSORT,
+            "pin_sort_identity": PIN_COMPLETED_SORT_IDENTITY,
+            "full_probe_diagnostics": RUN_FULL_PROBE_DIAGNOSTICS,
             "artifact_sidecar": WRITE_RAW_ARTIFACT_SIDECAR,
+            "similar_pair_audit": RUN_SIMILAR_PAIR_AUDIT,
+            "curation": RUN_CURATION,
+            "qc": RUN_QC,
+            "matlab_export": RUN_MATLAB_EXPORT,
+            "postcuration_comparison": RUN_POSTCURATION_COMPARISON,
             "motion_coordinates": QUALIFIED_MOTION_FIELD is not None,
         },
         "restart_policy": "reuse_only_exact_validated_cache",
@@ -190,7 +243,14 @@ def main() -> None:
             RUN_PREPARE,
             RUN_MOTION_SIDECAR,
             RUN_KILOSORT,
+            PIN_COMPLETED_SORT_IDENTITY,
+            RUN_FULL_PROBE_DIAGNOSTICS,
             WRITE_RAW_ARTIFACT_SIDECAR,
+            RUN_SIMILAR_PAIR_AUDIT,
+            RUN_CURATION,
+            RUN_QC,
+            RUN_MATLAB_EXPORT,
+            RUN_POSTCURATION_COMPARISON,
             QUALIFIED_MOTION_FIELD is not None,
         )
     ):
@@ -204,15 +264,28 @@ def main() -> None:
         json.dumps(plan, indent=2) + "\n"
     )
 
-    recording_dir = OUTPUT_DIR / "recording"
+    work_dir = OUTPUT_DIR if LOCAL_WORK_DIR is None else LOCAL_WORK_DIR
+    recording_dir = work_dir / "recording"
     raw = None
     start_frame = end_frame = None
     bad_channel_ids = None
+    sort_identity = None
 
     # STEP 1 is idempotent. An exact accepted recording is validated and reused.
     if RUN_PREPARE or WRITE_RAW_ARTIFACT_SIDECAR:
-        _stage(1, "LOAD SPIKEGLX SOURCE")
-        raw = _load_raw()
+        source_for_reads = DATA_DIR
+        if LOCAL_WORK_DIR is not None:
+            _stage(1, "STAGE SELECTED SPIKEGLX STREAM ON LOCAL NVME")
+            stage_manifest = stage_spikeglx_stream(
+                DATA_DIR,
+                work_dir / "source",
+                stream_id=STREAM_ID,
+            )
+            print(json.dumps(stage_manifest, indent=2), flush=True)
+            source_for_reads = work_dir / "source"
+        else:
+            _stage(1, "LOAD SPIKEGLX SOURCE")
+        raw = _load_raw(source_for_reads)
         start_frame, end_frame = _selected_frames(raw)
         bad_channel_ids = physical_channel_ids(raw)
 
@@ -277,8 +350,52 @@ def main() -> None:
         sort_manifest = run_kilosort4(recording_dir, OUTPUT_DIR / "kilosort4")
         print(json.dumps(sort_manifest, indent=2), flush=True)
 
+    downstream_enabled = any(
+        (
+            PIN_COMPLETED_SORT_IDENTITY,
+            RUN_FULL_PROBE_DIAGNOSTICS,
+            WRITE_RAW_ARTIFACT_SIDECAR,
+            RUN_SIMILAR_PAIR_AUDIT,
+            RUN_CURATION,
+            RUN_QC,
+            RUN_MATLAB_EXPORT,
+            RUN_POSTCURATION_COMPARISON,
+        )
+    )
+    if downstream_enabled:
+        _stage(5, "PIN AND VERIFY THE COMPLETED SORT IDENTITY")
+        sort_identity = pin_sort_identity(
+            OUTPUT_DIR / "kilosort4",
+            OUTPUT_DIR / "rescue_sort_identity.json",
+        )
+        print(json.dumps(sort_identity, indent=2), flush=True)
+
+    diagnostics_dir = OUTPUT_DIR / "diagnostics/full_probe"
+    if RUN_FULL_PROBE_DIAGNOSTICS:
+        _stage(6, "RUN IDENTITY-BOUND FULL-PROBE DIAGNOSTICS")
+        recording_manifest = json.loads(
+            (recording_dir / "rescue_recording_manifest.json").read_text()
+        )
+        duration_s = (
+            recording_manifest["selected_end_frame"]
+            - recording_manifest["selected_start_frame"]
+        ) / recording_manifest["sampling_frequency_hz"]
+        diagnostic_result = run_diagnostics_stage(
+            OUTPUT_DIR / "kilosort4/sorter_output",
+            diagnostics_dir,
+            sort_identity,
+            probe=STREAM_ID.split(".")[0],
+            duration_s=duration_s,
+            criteria_path=Path(
+                "testing/outputs/"
+                "luke_full_probe_rescue_diagnostics_imec0_legacy/"
+                "acceptance_criteria.json"
+            ),
+        )
+        print(json.dumps(diagnostic_result, indent=2), flush=True)
+
     if WRITE_RAW_ARTIFACT_SIDECAR:
-        _stage(5, "WRITE RAW OVER-500-uV ARTIFACT SIDECAR")
+        _stage(7, "WRITE RAW OVER-500-uV ARTIFACT SIDECAR")
         if bad_channel_ids is None:
             recording_manifest = json.loads(
                 (recording_dir / "rescue_recording_manifest.json").read_text()
@@ -302,11 +419,91 @@ def main() -> None:
             excluded_channel_ids=bad_channel_ids,
             chunk_duration_s=MATERIALIZE_CHUNK_DURATION,
             n_jobs=N_JOBS,
+            source_identity={
+                "sort_identity_digest": sort_identity["identity_digest"],
+                "recording_request_digest": sort_identity[
+                    "recording_request_digest"
+                ],
+            },
         )
         print(json.dumps(artifact_result, indent=2), flush=True)
 
+    pair_audit_result = None
+    if RUN_SIMILAR_PAIR_AUDIT:
+        _stage(8, "AUDIT EVERY SIMILAR GOOD-GOOD PAIR AGAINST THE ARTIFACT SIDECAR")
+        pair_audit_result = run_pair_audit_stage(
+            OUTPUT_DIR / "kilosort4/sorter_output",
+            diagnostics_dir / "similar_template_pairs.csv",
+            OUTPUT_DIR / "artifacts/raw_over_500uv.h5",
+            OUTPUT_DIR / "diagnostics/artifact_pair_audit",
+            sort_identity,
+        )
+        print(json.dumps(pair_audit_result, indent=2), flush=True)
+
+    if sort_identity is not None:
+        decision = write_conservative_decision(
+            OUTPUT_DIR / "decision/formal_decision.json",
+            sort_identity,
+            pair_audit_summary=(
+                pair_audit_result["summary"]
+                if pair_audit_result is not None
+                else None
+            ),
+        )
+        print(json.dumps(decision, indent=2), flush=True)
+
+    if RUN_CURATION:
+        _stage(9, "RUN RESTARTABLE LEGACY-COMPATIBLE CURATION")
+        curation_result = run_curation_stage(
+            OUTPUT_DIR / "kilosort4/sorter_output",
+            OUTPUT_DIR / "cur",
+            sort_identity,
+        )
+        print(json.dumps(curation_result, indent=2), flush=True)
+
+    if RUN_QC:
+        _stage(10, "RUN RESTARTABLE CURATED WAVEFORM AND UNIT QC")
+        qc_result = run_qc_stage(
+            recording_dir,
+            OUTPUT_DIR / "cur/cur_output",
+            OUTPUT_DIR / "qc",
+            sort_identity,
+        )
+        print(json.dumps(qc_result, indent=2), flush=True)
+
+    if RUN_MATLAB_EXPORT:
+        _stage(11, "EXPORT LEGACY-COMPATIBLE MATLAB ARTIFACTS")
+        matlab_result = run_matlab_export_stage(
+            OUTPUT_DIR / "cur/cur_output",
+            OUTPUT_DIR / "qc",
+            sort_identity,
+        )
+        print(json.dumps(matlab_result, indent=2), flush=True)
+
+    if RUN_POSTCURATION_COMPARISON:
+        _stage(12, "COMPARE MATCHED POST-CURATION POPULATIONS")
+        recording_manifest = json.loads(
+            (recording_dir / "rescue_recording_manifest.json").read_text()
+        )
+        duration_s = (
+            recording_manifest["selected_end_frame"]
+            - recording_manifest["selected_start_frame"]
+        ) / recording_manifest["sampling_frequency_hz"]
+        comparison_result = run_postcuration_comparison_stage(
+            {
+                "new_rescue": OUTPUT_DIR / "cur/cur_output",
+                "legacy": LEGACY_CURATED_OUTPUT,
+                "claim_mask": CLAIM_MASK_CURATED_OUTPUT,
+            },
+            OUTPUT_DIR / "diagnostics/postcuration_comparison",
+            sort_identity,
+            probe=STREAM_ID.split(".")[0],
+            duration_s=duration_s,
+        )
+        print(json.dumps(comparison_result, indent=2), flush=True)
+
     if QUALIFIED_MOTION_FIELD is not None:
-        _stage(6, "WRITE QUALIFIED POST-SORT MOTION COORDINATES")
+        _stage(13, "WRITE QUALIFIED POST-SORT MOTION COORDINATES")
         coordinate_result = write_motion_coordinate_sidecar(
             OUTPUT_DIR / "kilosort4",
             QUALIFIED_MOTION_FIELD,
@@ -318,7 +515,10 @@ def main() -> None:
         )
         print(json.dumps(coordinate_result, indent=2), flush=True)
 
-    print(f"\nFinished: {DATA_DIR.name} {STREAM_ID}\nOutputs: {OUTPUT_DIR}")
+    print(
+        f"\nFinished: {DATA_DIR.name} {STREAM_ID}\n"
+        f"Working data: {work_dir}\nOutputs: {OUTPUT_DIR}"
+    )
 
 
 if __name__ == "__main__":

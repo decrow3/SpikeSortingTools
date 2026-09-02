@@ -9,6 +9,7 @@ from pipeline import (
     RescueConfig,
     build_kilosort4_params,
     fingerprint,
+    pin_sort_identity,
     validate_applied_settings,
 )
 from pipeline.artifacts import threshold_points
@@ -17,6 +18,12 @@ from pipeline.preprocess import (
     recording_binary_receipt,
     select_bad_channel_ids,
     validate_accepted_recording,
+)
+from pipeline.staging import (
+    SOURCE_STAGE_MANIFEST,
+    SOURCE_STAGE_SCHEMA,
+    stage_spikeglx_stream,
+    validate_staged_spikeglx_stream,
 )
 from pipeline.kilosort_compat import ORIGINAL_BLOCK, PATCHED_BLOCK, patch_source_text
 from pipeline.sorting import _archive_declared_failed_partial
@@ -197,6 +204,65 @@ def test_incomplete_interrupted_binary_folder_is_not_recovered(tmp_path):
         _recover_completed_binary_folder(partial, recording)
 
 
+def test_spikeglx_stream_stage_copies_only_selected_stream_and_reuses_it(tmp_path):
+    source = tmp_path / "server" / "run"
+    source.mkdir(parents=True)
+    (source / "run_t0.imec0.ap.bin").write_bytes(b"selected-ap-data")
+    (source / "run_t0.imec0.ap.meta").write_text("nSavedChans=2\n")
+    (source / "run_t0.imec0.lf.bin").write_bytes(b"do-not-copy")
+    (source / "run_t0.imec0.lf.meta").write_text("nSavedChans=2\n")
+    staged = tmp_path / "nvme" / "source"
+
+    first = stage_spikeglx_stream(source, staged, stream_id="imec0.ap")
+    second = stage_spikeglx_stream(source, staged, stream_id="imec0.ap")
+
+    assert first == second
+    assert (staged / "run_t0.imec0.ap.bin").read_bytes() == b"selected-ap-data"
+    assert not (staged / "run_t0.imec0.lf.bin").exists()
+    validate_staged_spikeglx_stream(staged)
+
+
+def test_spikeglx_stream_stage_resumes_partial_binary(tmp_path):
+    source = tmp_path / "server"
+    source.mkdir()
+    data = b"abcdefghijklmnopqrstuvwxyz"
+    (source / "run_t0.imec1.ap.bin").write_bytes(data)
+    (source / "run_t0.imec1.ap.meta").write_text("nSavedChans=2\n")
+    staged = tmp_path / "nvme" / "source"
+    partial = staged.with_name("source.partial")
+    partial.mkdir(parents=True)
+    (partial / "run_t0.imec1.ap.bin").write_bytes(data[:10])
+    stat = (source / "run_t0.imec1.ap.bin").stat()
+    meta_stat = (source / "run_t0.imec1.ap.meta").stat()
+    (partial / SOURCE_STAGE_MANIFEST).write_text(
+        json.dumps(
+            {
+                "schema_version": SOURCE_STAGE_SCHEMA,
+                "source_folder": str(source.resolve()),
+                "stream_id": "imec1.ap",
+                "source_files": [
+                    {
+                        "relative_path": "run_t0.imec1.ap.bin",
+                        "size_bytes": stat.st_size,
+                        "mtime_ns": stat.st_mtime_ns,
+                    },
+                    {
+                        "relative_path": "run_t0.imec1.ap.meta",
+                        "size_bytes": meta_stat.st_size,
+                        "mtime_ns": meta_stat.st_mtime_ns,
+                    },
+                ],
+                "complete": False,
+            }
+        )
+        + "\n"
+    )
+
+    stage_spikeglx_stream(source, staged, stream_id="imec1.ap")
+
+    assert (staged / "run_t0.imec1.ap.bin").read_bytes() == data
+
+
 def test_kilosort_empty_center_patch_is_exact_and_minimal():
     source = "before\n" + ORIGINAL_BLOCK + "after\n"
     patched = patch_source_text(source)
@@ -230,3 +296,32 @@ def test_ambiguous_sort_partial_is_not_archived(tmp_path):
     with pytest.raises(RuntimeError, match="requires inspection"):
         _archive_declared_failed_partial(partial)
     assert partial.exists()
+
+
+def test_pinned_sort_identity_reuses_exact_files_and_rejects_replacement(tmp_path):
+    kilosort = tmp_path / "kilosort4"
+    sorter = kilosort / "sorter_output"
+    sorter.mkdir(parents=True)
+    manifest = {
+        "complete": True,
+        "request_digest": "sort-request",
+        "recording_request_digest": "recording-request",
+        "summary": {"final_spike_count": 3, "unit_count": 2},
+    }
+    (kilosort / "rescue_sort_manifest.json").write_text(json.dumps(manifest))
+    np.save(sorter / "spike_times.npy", np.array([1, 2, 3], dtype=np.int64))
+    np.save(sorter / "spike_clusters.npy", np.array([0, 0, 1], dtype=np.int32))
+    np.save(sorter / "templates.npy", np.zeros((2, 3, 2), dtype=np.float32))
+    np.save(sorter / "ops.npy", {"fs": 30_000}, allow_pickle=True)
+    (sorter / "cluster_KSLabel.tsv").write_text(
+        "cluster_id\tKSLabel\n0\tgood\n1\tmua\n"
+    )
+    identity_path = tmp_path / "rescue_sort_identity.json"
+
+    first = pin_sort_identity(kilosort, identity_path)
+    second = pin_sort_identity(kilosort, identity_path)
+    assert first["identity_digest"] == second["identity_digest"]
+
+    np.save(sorter / "spike_clusters.npy", np.array([0, 1, 1], dtype=np.int32))
+    with pytest.raises(RuntimeError, match="pinned sort identity"):
+        pin_sort_identity(kilosort, identity_path)
