@@ -15,3 +15,8 @@ code_bundle.md
 
 # Batch and resume run logs. Curated logs can be added with `git add -f`.
 *.log
+
+# Active run configuration is host state; the tracked template is
+# configs/example.run.toml.
+configs/run.toml
+configs/run.*.toml

@@ -10,21 +10,27 @@ Every expensive stage is cache-aware and safe to restart with its switch left on
 # ---------------------------------------------------------------------------
 from pathlib import Path
 
+from pipeline.run_config import load_run_config, require_configured
+
 # Anchored to this file so the run sheet works from any working directory.
 # Not part of the per-recording configuration below.
 REPO_ROOT = Path(__file__).resolve().parent
 
-DATA_DIR = Path("/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0")
-STREAM_ID = "imec0.ap"
-OUTPUT_DIR = Path(
-    "/mnt/NPX/Luke/20250804/"
-    "rescue_pipeline_results_Luke0804_V2V1_g0_imec0"
-)
+# Machine- and recording-specific paths live in configs/run.toml, which is
+# gitignored host state; configs/example.run.toml is the tracked template.
+# Everything below that block is a per-run operator decision and is still
+# edited here, in this file, as before.
+RUN = load_run_config()
 
-# For a new recording, point this at an NVMe-backed folder. The selected AP
-# stream is copied there once; preprocessing, artifact scans, motion, sorting,
-# and QC then reuse local bytes. Keep None for this already-completed legacy run.
-LOCAL_WORK_DIR = None  # Example: Path("/local/nvme/Luke0804_imec0_rescue")
+DATA_DIR = RUN.data_dir
+STREAM_ID = RUN.stream_id
+OUTPUT_DIR = RUN.output_dir
+
+# NVMe scratch. When set, the selected AP stream is copied there once and
+# preprocessing, artifact scans, motion, sorting, and QC reuse local bytes.
+# Unset means the server source is read directly. Configure it via
+# ``local_work_dir`` in configs/run.toml.
+LOCAL_WORK_DIR = RUN.local_work_dir
 
 # Use DURATION_S = None for the complete recording.
 START_S = 0.0
@@ -52,14 +58,10 @@ RUN_QC = True
 RUN_MATLAB_EXPORT = True
 RUN_POSTCURATION_COMPARISON = True
 
-LEGACY_CURATED_OUTPUT = Path(
-    "/mnt/NPX/Luke/20250804/"
-    "pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output"
-)
-CLAIM_MASK_CURATED_OUTPUT = Path(
-    "/mnt/NPX/Luke/20250804/"
-    "patched_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output"
-)
+# Comparison sorter outputs for the post-curation stage, from configs/run.toml.
+# Either may be unset; unset comparators are simply omitted from the comparison.
+LEGACY_CURATED_OUTPUT = RUN.legacy_curated_output
+CLAIM_MASK_CURATED_OUTPUT = RUN.claim_mask_curated_output
 
 # Safety and restart controls.
 MOTION_STRICT = True
@@ -68,7 +70,7 @@ RECOMPUTE_CHANNEL_METRICS = False
 PHYSICAL_BAD_CHANNELS = None  # Example: [191]; None uses frozen metrics.
 
 # Compute settings.
-N_JOBS = 20
+N_JOBS = RUN.n_jobs  # host property; set ``n_jobs`` in configs/run.toml
 MATERIALIZE_CHUNK_DURATION = "10s"
 MOTION_CHUNK_DURATION = "2s"
 RUN_MOTION_SPLIT_HALF = False
@@ -99,6 +101,8 @@ from pipeline import (
     materialize_rescue_recording,
     pin_sort_identity,
     phase_correct,
+    format_preflight,
+    preflight_report,
     production_environment_contract,
     rescue_kilosort4_overrides,
     run_kilosort4,
@@ -242,6 +246,12 @@ def main() -> None:
     print(json.dumps({"run_plan": plan}, indent=2), flush=True)
     if PLAN_ONLY:
         return
+
+    # Refuse to touch data with the placeholder configuration. Plan-only runs
+    # above are still allowed so the run sheet stays inspectable on a fresh
+    # clone before configs/run.toml exists.
+    require_configured(RUN)
+
     if not any(
         (
             RUN_PREPARE,
@@ -263,6 +273,26 @@ def main() -> None:
     _stage(0, "VERIFY LOCKED PRODUCTION ENVIRONMENT")
     environment = validate_production_environment(require_cuda=RUN_KILOSORT)
     print(json.dumps(environment, indent=2), flush=True)
+
+    # Host preconditions: server mount, stream discovery, output writability,
+    # NVMe headroom. Always reported; only fatal when a stage below actually
+    # reads the source recording, so downstream-only reruns are not blocked by
+    # an unmounted acquisition server.
+    reads_source = RUN_PREPARE or WRITE_RAW_ARTIFACT_SIDECAR
+    host = preflight_report(
+        data_dir=DATA_DIR,
+        stream_id=STREAM_ID,
+        output_dir=OUTPUT_DIR,
+        local_work_dir=LOCAL_WORK_DIR,
+    )
+    print("\nHost preflight:")
+    print(format_preflight(host), flush=True)
+    if not host["ok"] and reads_source:
+        raise RuntimeError(
+            "Host preflight failed and a stage that reads the source recording "
+            "is enabled. Fix the failures above, or disable RUN_PREPARE and "
+            "WRITE_RAW_ARTIFACT_SIDECAR."
+        )
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     (OUTPUT_DIR / "rescue_run_plan.json").write_text(
         json.dumps(plan, indent=2) + "\n"
@@ -494,9 +524,13 @@ def main() -> None:
         ) / recording_manifest["sampling_frequency_hz"]
         comparison_result = run_postcuration_comparison_stage(
             {
-                "new_rescue": OUTPUT_DIR / "cur/cur_output",
-                "legacy": LEGACY_CURATED_OUTPUT,
-                "claim_mask": CLAIM_MASK_CURATED_OUTPUT,
+                name: path
+                for name, path in (
+                    ("new_rescue", OUTPUT_DIR / "cur/cur_output"),
+                    ("legacy", LEGACY_CURATED_OUTPUT),
+                    ("claim_mask", CLAIM_MASK_CURATED_OUTPUT),
+                )
+                if path is not None
             },
             OUTPUT_DIR / "diagnostics/postcuration_comparison",
             sort_identity,

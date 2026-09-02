@@ -33,7 +33,7 @@ from testing.luke_yates_raw_voltage_audit import (
 )
 
 
-OUTPUT = Path("testing/outputs/luke_prospective_holdout")
+OUTPUT = REPO_ROOT / "testing/outputs/luke_prospective_holdout"
 MANIFEST = OUTPUT / "holdout_manifest_v2.json"
 PARENT_SEAL = OUTPUT / "seal_v2.json"
 SEALED_WINDOWS = OUTPUT / "sealed_windows_v2.csv"

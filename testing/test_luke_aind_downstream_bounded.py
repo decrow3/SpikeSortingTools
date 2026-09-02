@@ -12,7 +12,7 @@ from testing.luke_aind_downstream_bounded import (
 import numpy as np
 
 
-CONFIG = Path("testing/configs/luke_aind_downstream_bounded_v1.json")
+CONFIG = Path(__file__).resolve().parents[1] / "testing/configs/luke_aind_downstream_bounded_v1.json"
 
 
 def test_frozen_plan_has_three_conditions_across_both_probes_and_three_windows():

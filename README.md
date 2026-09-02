@@ -37,29 +37,79 @@ repeat and brings the environment back to the committed lockfile before each
 production run:
 
 ```bash
-cd /home/huklab/Documents/RyanSorting/SpikeSortingTools
+cd /path/to/SpikeSortingTools   # the repository root on this machine
 conda deactivate  # only when a Conda environment is active
 uv sync \
   --project environments/rescue-production \
   --frozen \
-  --no-group test
+  --no-group test \
+  --inexact
 source environments/rescue-production/.venv/bin/activate
 python environments/rescue-production/verify_environment.py --require-cuda
 ```
 
-The prompt should now show `(spikesortingtools-rescue-production)`. Open
-`SpikeGLX_ext_ref_rescue.py` and edit the first `# %%` section: `DATA_DIR`,
-`STREAM_ID`, `OUTPUT_DIR`, `LOCAL_WORK_DIR`, the optional time range, and the
-stage switches. For new recordings, set `LOCAL_WORK_DIR` to a unique folder on
-local NVMe. The selected stream is copied there once (with restart support),
-and the preprocessed binary is also materialized there so later stages avoid
-repeated reads from `DATA_DIR` on the server. Leave it as `None` only for an
-existing run whose accepted recording already lives under `OUTPUT_DIR`.
-Then run it without command-line arguments:
+`--inexact` keeps the editable install of this repository (see *First-time
+setup on a new machine* below) from being pruned. Without it, `uv sync` removes
+every package not named in `uv.lock`, including that install.
+
+The prompt should now show `(spikesortingtools-rescue-production)`.
+
+#### Configure the recording
+
+Machine- and recording-specific paths live in `configs/run.toml`, which is
+gitignored host state. Copy the tracked template and edit it:
+
+```bash
+cp configs/example.run.toml configs/run.toml
+```
+
+Set `data_dir`, `stream_id`, `output_dir` and, for new recordings,
+`local_work_dir` — a unique folder on local NVMe. The selected stream is copied
+there once (with restart support), and the preprocessed binary is materialized
+there too, so later stages avoid repeated reads from `data_dir` on the server.
+Leave `local_work_dir` unset only for an existing run whose accepted recording
+already lives under `output_dir`. `n_jobs` is a property of the machine.
+
+Check the host is actually ready before committing to a long run — this
+verifies the server mount, locates the stream, and confirms the scratch volume
+has room:
+
+```bash
+python environments/rescue-production/verify_environment.py \
+  --require-cuda \
+  --data-dir <data_dir> --stream-id <stream_id> \
+  --output-dir <output_dir> --local-work-dir <local_work_dir>
+```
+
+#### Choose the stages and run
+
+Stage switches stay in the run sheet, which remains the human-readable operator
+document. Open `SpikeGLX_ext_ref_rescue.py`, edit the first `# %%` section —
+the optional time range and the `RUN_*` switches — then run it without
+command-line arguments:
 
 ```bash
 python SpikeGLX_ext_ref_rescue.py
 ```
+
+Set `PLAN_ONLY = True` to print the full run plan without loading data or
+writing anything.
+
+#### First-time setup on a new machine
+
+Once per clone, install the repository into the locked environment so
+`import pipeline` resolves from any working directory:
+
+```bash
+uv pip install --python environments/rescue-production/.venv -e .
+```
+
+This is deliberately kept out of `environments/rescue-production/pyproject.toml`.
+Adding it there would regenerate `uv.lock`, and the lockfile hash is part of the
+recording materialization request digest — every existing accepted recording
+would then refuse to reuse with *"Existing recording cache belongs to another
+request"*. The root `pyproject.toml` declares no dependencies, so it cannot
+affect the locked resolution.
 
 Completed matching stages are validated and reused, so the switches can remain
 enabled when restarting an interrupted run. When finished, leave the

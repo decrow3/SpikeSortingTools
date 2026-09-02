@@ -1,0 +1,42 @@
+# Machine- and recording-specific settings for SpikeGLX_ext_ref_rescue.py.
+#
+# Copy this file to configs/run.toml and edit it for the current machine and
+# recording. configs/run.toml is gitignored: it is host state, not tracked
+# source. You can also point $RESCUE_RUN_CONFIG at a file anywhere.
+#
+# Stage switches (RUN_PREPARE, RUN_CURATION, ...) are NOT here. They stay in the
+# run sheet, which remains the human-readable, cell-by-cell operator document.
+
+# --- Source ---------------------------------------------------------------
+
+# SpikeGLX run folder holding the AP stream.
+data_dir = "/mnt/NPX/Subject/YYYYMMDD/Subject_g0"
+
+# Stream to sort, in SpikeInterface form.
+stream_id = "imec0.ap"
+
+# --- Destinations ---------------------------------------------------------
+
+# Where pipeline results are written.
+output_dir = "/mnt/NPX/Subject/YYYYMMDD/rescue_pipeline_results_Subject_g0_imec0"
+
+# NVMe-backed scratch. The selected AP stream is copied here once; preprocessing,
+# artifact scans, motion, sorting, and QC then reuse local bytes. Omit this key
+# to read the server source directly (much slower over a network mount).
+#
+# Verify it has room first:
+#   python environments/rescue-production/verify_environment.py \
+#       --data-dir <data_dir> --stream-id <stream_id> --local-work-dir <this>
+#
+# local_work_dir = "/local/nvme/subject_imec0_rescue"
+
+# --- Comparison sorter outputs (optional) ---------------------------------
+# Used only by the post-curation comparison stage. Omit when not comparing.
+#
+# legacy_curated_output = "/mnt/NPX/.../pipeline_results_.../cur/cur_sorter_output"
+# claim_mask_curated_output = "/mnt/NPX/.../patched_pipeline_results_.../cur/cur_sorter_output"
+
+# --- Host compute ---------------------------------------------------------
+# Worker count for materialization, artifact scans, and QC. This is a property
+# of the machine, not the recording. 20 was validated on the primary host.
+n_jobs = 20

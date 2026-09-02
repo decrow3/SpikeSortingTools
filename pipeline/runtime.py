@@ -28,7 +28,11 @@ PRODUCTION_PACKAGES = {
 }
 PRODUCTION_UV_PROJECT = "environments/rescue-production"
 PRODUCTION_UV_SETUP = (
-    "uv sync --project environments/rescue-production --frozen --no-group test",
+    # --inexact preserves the editable install of this repository (root
+    # pyproject.toml), which is intentionally absent from uv.lock so that the
+    # lockfile hash -- and therefore every recording materialization digest --
+    # stays stable. Without it, uv sync prunes that install.
+    "uv sync --project environments/rescue-production --frozen --no-group test --inexact",
     "source environments/rescue-production/.venv/bin/activate",
 )
 PRODUCTION_LOCKFILE = (
