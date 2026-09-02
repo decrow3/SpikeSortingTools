@@ -17,7 +17,7 @@ def collate_files(repo_path, output_file):
     all_files = py_files + md_files
     
     # Filter out __pycache__ and common unwanted directories
-    excluded_dirs = {'__pycache__', '.git', '.pytest_cache', 'node_modules', '.venv', 'venv'}
+    excluded_dirs = {'__pycache__', '.venv-aind', '.claude', '.codex', '.gitignore', '.uv-python', '.vscode', '.idea', '.git', '.pytest_cache', 'node_modules', '.venv', 'venv'}
     all_files = [
         f for f in all_files 
         if not any(excluded in f.parts for excluded in excluded_dirs)

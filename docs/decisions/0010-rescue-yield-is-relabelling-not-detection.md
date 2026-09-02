@@ -51,6 +51,16 @@ Concretely:
   a symmetric risk to the 200 gained and no current gate measures them. A
   configuration that silently drops 127 previously-good units is not obviously
   an improvement, whatever its net count.
+  **Resolved 2026-09-02** by
+  [`luke_20250804_rescue_lost_units_audit.md`](../luke_20250804_rescue_lost_units_audit.md)
+  (Phase A of [`pipeline_improvement_plan.md`](../pipeline_improvement_plan.md)):
+  none of the 127 is lost at detection or by curation — all 127 have 100% of
+  their spikes in the rescue sort. The −127 decomposes as 27 legacy-good
+  clusters that rescue keeps intact but relabels `mua` (the exact mirror of the
+  80 MUA→good promotions — one moved threshold, both directions), plus 100 that
+  the re-clustering fragments or disperses. No detection or curation-drop
+  regression exists on this probe. The 80 promotions and 27 demotions must be
+  decided as a single threshold change, not evaluated in isolation.
 
 ## What this does not resolve
 

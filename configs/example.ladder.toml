@@ -1,0 +1,14 @@
+# Evaluation-ladder host state. Copy to configs/ladder.toml and edit.
+#
+# configs/ladder.toml is gitignored: it is host state, not tracked source.
+# You can also point $LADDER_SNIPPET_ROOT at a directory directly.
+#
+# The frozen snippet panel (docs/pipeline_improvement_plan.md §4) lives here.
+# It must be local disk with room for ~40 GB — NEVER under /mnt.
+#   /            617 GB free
+#   /media/huklab/Data   1.1 TB free   <- default
+snippet_root = "/media/huklab/Data/ladder_snippets"
+
+# L1 runner cache (sort / curate / score per snippet). Also local, never /mnt.
+# Override with $LADDER_L1_ROOT.
+l1_root = "/media/huklab/Data/ladder_l1"

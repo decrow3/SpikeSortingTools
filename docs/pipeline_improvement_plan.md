@@ -159,6 +159,36 @@ amplitude variation, overlapping spikes, both polarities (imec1 is ~59%
 positive-dominant — a negative-only detector is disqualifying), and artifact
 proximity.
 
+### Completeness — where the QC truncation estimator fits
+
+The amplitude-truncation estimator measures something **nothing else in this
+plan measures**: per-unit detection completeness — what fraction of a unit's
+spikes fall below the detection floor.
+[`0008`](decisions/0008-amplitude-completeness-gates-promotion.md) was right
+that the frozen gate set had no completeness dimension, and that point survived
+[`0009`](decisions/0009-cross-sort-comparisons-must-be-unit-matched.md)'s
+retraction. 0009 retracted one *use* of the metric, not the instrument.
+
+| Layer | Use | Required guard |
+|---|---|---|
+| **Primary** (injected truth) | On an injected unit **recall is the completeness ground truth** — TP/(TP+FN) says exactly what fraction of a known train was recovered. Truncation is **calibrated against it**: does the estimator track true missingness in this pipeline, on this background? | Report estimator *error*, not only the estimate. First chance to check it against truth rather than against itself. |
+| **Secondary** (real data) | **Matched-unit paired** truncation difference — the same neuron, found by both pipelines, compared to itself. For real units with no truth, the only completeness measure available. | **Never a population median across sorts** (0009). Filter censored windows with `pipeline.truncation.is_saturated` before any aggregate. |
+| **Mechanistic** (A2 / C2) | A fragmentation signature. *Temporal* fragmentation (A→B→C over epochs) leaves each fragment with the full amplitude range, so truncation should stay flat; *amplitude* fragmentation splits off the low tail and should elevate it. | A **prediction to test**, not an established result. Stated so it is falsifiable. |
+
+**Estimator limits, established by the audit**
+(`docs/luke_20250804_truncation_fitter_audit.md`):
+
+- **Trustworthy where used:** unbiased to under 0.5 pp for true missing
+  fractions of 0.5–40%. Every KS-good cohort measured sits at 0.6–3%.
+- **Hard-censored at 50%.** The bound `x0 >= x_min` makes the statistic unable
+  to exceed 50, so true 70% reports as 50.0. A window at exactly 50.0 is a
+  boundary-pinned fit, not a measurement — filter it, never average it in.
+- **Eligibility is rate-dependent.** A unit needs 1000 spikes in a continuous
+  block, so only ~1/3 of KS-good units are ever estimated.
+- **Amplitude-driven** (within-method Spearman −0.44 to −0.56). Match units or
+  stratify on amplitude, or the comparison measures composition — exactly how it
+  produced a false conclusion once already.
+
 ### Secondary — real-data symmetric agreement
 
 Automated from `testing/luke_rescue_unique_units_audit.py` (exists, works):
@@ -171,6 +201,8 @@ because only the net was reported.
 - Similar good–good pairs per good unit (similarity ≥ 0.8 within 100 µm)
 - Refractory violation distribution vs the matched-unit reference
 - Edge-spike fraction (40 µm)
+- **Matched-unit completeness** — paired truncation difference, censored windows
+  filtered
 - **Runtime per unit data**, tracked at every tier
 
 ### Explicitly not endpoints
@@ -239,10 +271,31 @@ classified. *Decision:* if a substantial share of the 127 are genuine neurons
 lost at detection or curation, that is a regression the yield narrative hid, and
 it becomes the top-priority defect.
 
-### Phase A2 — is the repartitioning motion-structured? (no new sort)
+### Phase A2 — is the repartitioning motion-structured? (no new sort)  ✅ complete 2026-09-02
 
 Runs entirely on existing outputs. Hours, not days. **This gates Phase D's
 priority order**, and could change what the whole candidate search is for.
+
+**Result:** [`luke_20250804_rescue_repartition_motion_audit.md`](luke_20250804_rescue_repartition_motion_audit.md).
+`testing/luke_rescue_repartition_motion_audit.py` (prespec frozen in `PRESPEC`;
++ `test_…`, 6 tests). 117 imec0 + 62 imec1 dispersed families scored. Consistent
+across both probes:
+
+| | imec0 | imec1 |
+|---|---:|---:|
+| coexisting fragments (over-splitting signature) | **0%** | 1.6% |
+| successive (one fragment at a time) | 50% | 69% |
+| merge is refractory-clean | 92% | 95% |
+| depth ↔ rigid-DREDGE-motion correlation | 0.11 | 0.13 |
+| ownership flips per hour | 18 | 22 |
+
+**Reading (the mix, not a verdict):** the re-partitioning is **not over-splitting**
+(fragments never coexist), the fragments **are one clean neuron** (merge is
+refractory-clean → family stitching would recover them), and it is **not tracked
+by the rigid motion estimate** and **not slow** — it is rapid template-ownership
+flicker (~every 3 min) with no depth trajectory. A2 cannot separate *non-rigid /
+fast motion* from *KS4 template competition on preserved voltage*; both produce
+this. **C2 separates them.**
 
 **Prespecify before looking**, or this becomes story-fitting: freeze the sample
 of legacy↔rescue families and the decision rule first, then run once.
@@ -265,6 +318,14 @@ Both patterns can be present; report the mix, not a verdict.
 
 **Checkpoint A2.** *Go:* a classified sample with the mix quantified per probe.
 *Decision:* this sets the Phase D priority order (see the decision tree there).
+
+*Reached 2026-09-02.* The mix points away from the "clustering/curation first"
+branch (coexisting fragments ~0%) and toward **post-sort family stitching of
+temporally-complementary, refractory-clean fragments** as the first Phase D
+target — indicated whether the root cause is non-rigid motion or template
+competition, because stitching repairs both flicker and slow drift while
+curation tuning addresses neither. **C2 is still required** to frame the cause
+before the search starts.
 
 ### Phase B — build the ladder
 
@@ -391,6 +452,11 @@ motion:
 Run the trajectories at several amplitudes, including rigid and non-rigid, and
 at both polarities.
 
+Because the injected train is known, C2 also **calibrates the truncation
+estimator against truth** for the first time, and separates the two
+fragmentation modes: temporal splitting should leave per-fragment truncation
+flat, amplitude splitting should elevate it.
+
 *Confound to control:* the background contains real tissue motion of its own, so
 an injected trajectory interacts with it. Either define the trajectory relative
 to the estimated tissue position, or draw the static arm from quiet windows and
@@ -485,8 +551,10 @@ eliminated.
   matter — the motion-representation hypothesis says it can — but because a
   sweep scored on yield is the wrong instrument. Preprocessing changes are
   tested through A2 and the C2 drift penalty, hypothesis-first.
-- Further truncation-fitter work unless it serves a matched-unit question.
-  Audit complete; estimator sound in its working range.
+- Truncation as a **population median across sorts**. The instrument is sound and
+  is now a metric in its own right (§5); the fitter audit is complete. The one
+  use that must not return is the unmatched population comparison that produced
+  a false conclusion in 0008.
 - Tuning motion amplitudes or kernels against unit yield.
 - Motion-aware TDC arms until the static replay is deterministic and exceeds a
   prespecified fidelity threshold. The current static control reproduced 7.8% of
@@ -529,16 +597,19 @@ eliminated.
 **Then, before any curation parameter search** — these two results decide what
 the next block of time is spent on, and neither needs a new sorter:
 
-7. **Phase A2**: the temporal-fragment analysis of existing sorts. Are the 100
-   re-clustered losses and the dispersed gains temporally complementary and
-   motion-tracking, or coexisting? Prespecify the sample and the discriminator,
-   then run once. imec0 **and** imec1.
+7. ~~**Phase A2**: the temporal-fragment analysis of existing sorts.~~ **done
+   2026-09-02** — `testing/luke_rescue_repartition_motion_audit.py`,
+   [`luke_20250804_rescue_repartition_motion_audit.md`](luke_20250804_rescue_repartition_motion_audit.md).
+   Not over-splitting (0% coexisting), fragments are one clean neuron (92–95%
+   refractory-clean merges), not rigid-motion-tracked (|r| ≈ 0.12), rapid
+   flicker not slow succession. imec0 and imec1 agree.
 8. **Phase C2**: the paired stationary-vs-moving injected identity challenge.
    Same waveform, same train, one held still and one translated along a known
-   trajectory. Measures the drift penalty directly.
+   trajectory. Measures the drift penalty directly. **Now the single gating
+   item** before Phase D — A2 has reported; C2 has not.
 
-Phase D does not begin until 7 and 8 report. The decision tree in Phase D
-consumes their output.
+Phase D does not begin until 8 reports. The decision tree in Phase D consumes
+A2's output (above) and C2's.
 
 The defensible claim until then:
 

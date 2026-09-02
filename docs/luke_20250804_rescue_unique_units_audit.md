@@ -99,8 +99,10 @@ legacy — not of the extra units.
    configuration is performing that promotion automatically, at scale, without
    the family-link evidence 0006 required. The refractory evidence here is
    reassuring but it is not the screen 0006 specified.
-3. **The 127 lost legacy good units are unexamined** and are a symmetric risk to
-   the 200 gained. No gate measures them.
+3. **The 127 lost legacy good units** — now examined in
+   [`luke_20250804_rescue_lost_units_audit.md`](luke_20250804_rescue_lost_units_audit.md):
+   none is lost at detection or by curation; the −127 is 27 good→`mua`
+   demotions plus 100 re-clustered, a symmetric mirror of the +200.
 4. **The similar-pair gate failure remains unexplained** and is not attributable
    to the extra units.
 

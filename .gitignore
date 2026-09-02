@@ -20,3 +20,6 @@ code_bundle.md
 # configs/example.run.toml.
 configs/run.toml
 configs/run.*.toml
+
+# Evaluation-ladder host state; tracked template is configs/example.ladder.toml.
+configs/ladder.toml
