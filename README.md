@@ -5,6 +5,18 @@ Spike sorting pipeline for the Huk Lab forked from the version for the Yates Lab
 Currently maintained by Declan Rowley
 ---
 
+## Start here
+
+- **[Decision records](docs/decisions/README.md)** — what the production pipeline
+  does and why: the frozen sorting graph, motion policy, artifact handling,
+  challenger-sorter status, and the rules governing when to reopen a question.
+- **[Validation summary](docs/validation-summary.md)** — what has actually been
+  validated, on which data, against which prespecified gates, and the limits
+  that should not be overstated.
+
+The remaining files in [`docs/`](docs/) and [`testing/`](testing/) are the raw
+investigative record. They are kept deliberately and are not condensed.
+
 ## Production environment for the rescue pipeline
 
 The conservative rescue pipeline has an isolated uv project at
