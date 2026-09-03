@@ -574,6 +574,24 @@ top row, narrowed:
 > is **not** a candidate — C2 showed it comparable-or-worse. Curation-threshold
 > tuning is deprioritised — C2 showed the lower-threshold config fragments more.
 
+**Resolved priority after Candidate 2 (2026-09-02).** Candidate 1 was rejected
+and Candidate 2's oracle arm turned voltage interpolation from a closed question
+into an open, optimizable one. The order is now:
+
+1. **Optimize conventional voltage-based motion correction with KS4** — the
+   full-session field and a bounded stabilization-versus-interpolation tradeoff
+   study (**D2** below).
+2. **Validate the winner at L2 and especially L2L.** Longitudinal identity is
+   the endpoint a short snippet cannot measure.
+3. **Only if a significant identity deficit remains**, compare alternative
+   motion-aware architectures — behind the architecture gate.
+4. **Curation / MUA-threshold work stays secondary and orthogonal.**
+
+Post-sort stitching remains a **useful negative result**: severe fragmentation
+proved too diffuse to repair reliably after sorting (2 of 127 reconstituted, 4
+matches destroyed, 34 good units absorbed). That strengthens the case for
+*preventing* fragmentation upstream rather than repairing it downstream.
+
 **Candidate 1 built, evaluated, and rejected 2026-09-02** —
 [`luke_20250804_family_stitch_candidate.md`](luke_20250804_family_stitch_candidate.md),
 `testing/ladder_stitch.py` (+ tests), `testing/luke_rescue_stitch_c2_eval.py`,
@@ -608,13 +626,150 @@ median penalty −0.35 → −0.17. Static arms untouched (0.941→0.941, 0.948�
 (median −0.48) — too few units, too short a window to estimate drift; and (b)
 interpolation blurs the waveform, so it does nothing for 15 µm (sub-channel)
 drift and *hurts* T01, the sharpest/highest-SNR donor (0.40→0.29 at 40 µm).
-→ Next: an **external non-rigid estimate computed on the full session** (where a
-drift estimate has 10 000 s and hundreds of units), then interpolation, then the
-rescue sort — scored against the 127 (full-session reconstitution, the test that
-killed stitching) and against C2 injected truth per SNR tertile. If it
-reconstitutes the 127 with no similar-pair/edge-spike regression it is the Phase
-D winner → L2. If not, rescue vs legacy resolves as "trade the same errors,
-neither clearly better on this recording; lever is elsewhere".
+#### What Candidate 2 establishes — and what it does not
+
+**Motion representation is a real lever, and voltage interpolation is the first
+architecture to optimize.** The oracle arm is a *positive control*: with a
+correct displacement field, conventional voltage stabilization nearly eliminates
+the severe-motion penalty (T04, T06 at 40 µm: 0.40 → 0.99).
+
+Three things follow, and the third is the strategic one:
+
+- `InterpolateMotionRecording` **is a voltage-resampling operator** and belongs
+  to the same general class as the historical DREDGE correction. The oracle
+  result is not a different kind of operation; it is the same operation with a
+  correct field.
+- The oracle result **does not erase our earlier interpolation failures.** Its
+  failures at 15 µm sub-channel drift, and on T01 — the sharpest, highest-SNR
+  donor, which it makes *worse* (0.40 → 0.29) — are real and establish a
+  **tradeoff, not a rejection**.
+- Those earlier failures therefore most likely placed us at a **poor operating
+  point** in the motion-benefit / interpolation-cost space, not on the wrong
+  side of a categorical question.
+
+The objective is now to **find the best operating point in that tradeoff space
+before changing architectures**. The next external estimate is *not* a
+make-or-break test of voltage interpolation; it is the first sample of a bounded
+search — see D2 below.
+
+**Stopping rule (revised).** Failure of one full-session field/application
+configuration returns to the bounded D2 tradeoff characterization. **Voltage
+interpolation is abandoned only after a prespecified small set of well-supported
+field/application policies fails** to beat the no-motion baseline on
+known-identity metrics, without unacceptable waveform, refractory, duplicate,
+edge, or completeness regressions.
+
+To stop this becoming indefinite, **preregister the candidate budget**: at most
+**6 field/application configurations** across D2a–D2c, logged, before the
+branch is either adopted or closed.
+
+### D2 — Conventional motion-correction optimization
+
+**The next active branch**, before DARTsort, KIASORT, TDC motion-aware matching,
+post-sort tracking, or any other architectural alternative. Three stages, all
+bounded.
+
+#### D2a — Best-supported motion field
+
+Estimate motion from the **full-duration recording**, not from isolated 120 s
+snippets, so the estimator has the temporal and population support it will have
+in the real sorting problem. C2 already showed why: KS4's own `nblocks=6` on a
+snippet is *worse than no correction* (median −0.48) — too few units, too short
+a window.
+
+Prefer the best-supported external field available from the existing DREDGE work
+initially. Preserve, and record in the manifest:
+
+- exact time reference / clock handling
+- probe geometry
+- support/confidence diagnostics
+- real voltage support at spatial boundaries
+- float interpolation prior to final quantization
+- explicit provenance and caching
+
+**Do not assume the previously successful 0.25 gain is a physical calibration.**
+The direct scale audit did not support a simple fourfold error. Treat it as one
+point in the D2b sweep, not as a correction constant.
+
+#### D2b — Characterize the interpolation tradeoff, independently of sorter yield
+
+Before any broad sorter comparison, use the injection framework and
+waveform-level diagnostics to **map where correction helps versus hurts**.
+
+Minimal bounded axes:
+
+| Axis | Levels |
+|---|---|
+| Displacement magnitude | spanning sub-channel to ≥ 40 µm |
+| Estimator support / confidence | high vs low, from the sidecar diagnostics |
+| Rigid vs depth-varying displacement | where justified by the field |
+| Interpolation spatial scale / kernel | appropriate to Luke's probe geometry |
+| Correction strength | full vs reduced/partial, if needed |
+| Waveform / SNR class | potentially — T01 vs T04 already diverge |
+
+The key comparison is always:
+
+> **uncorrected motion error** versus **interpolation-induced waveform error**
+
+Measured against known injected trajectories and known waveforms:
+
+- recovery accuracy
+- waveform cosine
+- peak / amplitude retention
+- localization error
+- identity count / split burden
+
+**Do not optimize any of these parameters against KS-good count or total unit
+yield.** The purpose is to locate a sensible **Pareto region** — not to reopen
+an unconstrained preprocessing sweep. Keep it inside the preregistered budget.
+
+#### D2c — Test correction policies
+
+At minimum, three arms:
+
+| # | Policy |
+|---|---|
+| 1 | **No voltage correction** — the present rescue baseline |
+| 2 | **Best full correction** — best-supported field and interpolation configuration from D2a/D2b |
+| 3 | **Best selective/partial correction** — only if D2b shows a clear crossover where small corrections cost more than they help |
+
+Selective correction must be gated on **prespecified physical/estimator
+criteria** — displacement magnitude, support/confidence — **never on downstream
+sorter yield**.
+
+C2's oracle results motivate this directly: large ~40 µm trajectories can
+benefit enormously, whereas smaller sub-channel motion and sharp, high-SNR
+waveforms may sit on the opposite side of the tradeoff.
+
+### Architecture gate
+
+> Compare DARTsort, KIASORT, motion-aware template matching/tracking, or other
+> non-voltage-warp approaches **only if** the best conventional motion-corrected
+> KS4 candidate still has a meaningful, reproducible identity deficit on
+> injected truth and L2L longitudinal continuity.
+
+These alternatives must be compared against the **best conventional
+motion-corrected KS4 pipeline** — not against:
+
+- the pathological historical DREDGE warp;
+- the intentionally uncorrected rescue baseline; or
+- an obviously under-supported short-window `nblocks` estimate.
+
+Anything else is an unfair architecture comparison, and would let a challenger
+win against a strawman.
+
+### Why the field's conventional approach is still worth testing
+
+Voltage interpolation is widely used because in ordinary regimes the benefit of
+stabilizing spike waveforms can exceed the interpolation error. **That does not
+establish that it is optimal** — adoption is not evidence of correctness. But
+our own oracle experiment now independently shows that such a favorable regime
+**exists in Luke**. The working hypothesis is therefore not that voltage
+interpolation is fundamentally unsuitable, but that the historical
+implementation used a poorly supported field and/or an unfavorable
+correction/interpolation operating point for this probe and motion regime.
+That is a claim we can test cheaply, and should, before abandoning the standard
+solution.
 
 **Orthogonal, and deliberately later:** the MUA threshold question — the 80
 promotions and their 27 mirrored demotions. It is one moved threshold. Changing
@@ -687,7 +842,11 @@ eliminated.
   is now a metric in its own right (§5); the fitter audit is complete. The one
   use that must not return is the unmatched population comparison that produced
   a false conclusion in 0008.
-- Tuning motion amplitudes or kernels against unit yield.
+- **Tuning motion gain, interpolation scale, or correction gates against unit
+  yield.** These parameters *may* be tested in a small prespecified
+  operator-level tradeoff study (**D2b**) using injected truth, waveform
+  preservation, estimator support, and identity metrics. The prohibition is on
+  the *endpoint*, not on the parameters.
 - Motion-aware TDC arms until the static replay is deterministic and exceeds a
   prespecified fidelity threshold. The current static control reproduced 7.8% of
   KS4 events and used a negative-only detector.
@@ -740,18 +899,22 @@ the next block of time is spent on, and neither needs a new sorter:
    Not over-splitting (0% coexisting), fragments are one clean neuron (92–95%
    refractory-clean merges), not rigid-motion-tracked (|r| ≈ 0.12), rapid
    flicker not slow succession. imec0 and imec1 agree.
-8. **Phase C2**: the paired stationary-vs-moving injected identity challenge.
-   Same waveform, same train, one held still and one translated along a known
-   trajectory. Measures the drift penalty directly. **Now the single gating
-   item** before Phase D — A2 has reported; C2 has not.
+8. ~~**Phase C2**: the paired stationary-vs-moving injected identity challenge.~~
+   **done 2026-09-02** — drift penalty measured directly (−0.30 to −0.81
+   accuracy), and `nblocks=1` rigid correction shown not to recover it. Both
+   inputs to the Phase D decision tree have now reported.
 
-Phase D does not begin until 8 reports. The decision tree in Phase D consumes
-A2's output (above) and C2's.
+**Next:** **D2a** — the full-session external non-rigid field, then the bounded
+D2b tradeoff characterization. Candidate 1 (stitching) is rejected; Candidate 2
+established that the tradeoff space is worth searching.
 
 The defensible claim until then:
 
-> **The current pipeline avoids a proven damaging motion-warp path and preserves
-> the unwarped voltage, but this may trade interpolation damage for
-> motion-driven identity fragmentation. Whether rescue, legacy, or a
-> motion-aware unwarped approach best preserves neuron identity remains
-> undetermined.**
+> **Motion is now causally established as a major source of missed spikes and
+> identity fragmentation when Luke is sorted without stabilization. Voltage
+> interpolation is also established to impose waveform-dependent costs, but
+> oracle correction shows that accurate stabilization can outweigh those costs
+> for substantial motion. The immediate objective is therefore to determine the
+> best achievable conventional motion-corrected KS4 operating point. Alternative
+> motion-aware sorting/tracking architectures should be evaluated only against
+> that strong baseline if a meaningful identity deficit remains.**
