@@ -111,8 +111,26 @@ class SnippetSpec:
         return {"snippet_schema": SNIPPET_SCHEMA, **asdict(self)}
 
     @property
+    def content_selection(self) -> dict[str, Any]:
+        """The physical voltage this spec selects — what the digest hashes.
+
+        `axes`, `split`, `selection_basis` and `name` are metadata: two specs
+        that pick the same window and channels get the same content, so an
+        emergent label like the measured SNR tertile can be filled into `axes`
+        after the snippet is built without changing its identity.
+        """
+        return {
+            "snippet_schema": SNIPPET_SCHEMA,
+            "start_s": self.start_s,
+            "duration_s": self.duration_s,
+            "channel_start": self.channel_start,
+            "channel_count": self.channel_count,
+            "window_name": self.window_name,
+        }
+
+    @property
     def digest(self) -> str:
-        return fingerprint(self.as_dict())
+        return fingerprint(self.content_selection)
 
     @property
     def directory_name(self) -> str:
@@ -225,6 +243,28 @@ def build_snippet(
                 and (out_dir / MANIFEST_NAME).exists()
                 and verify_snippet(out_dir)
             ):
+                # Content is identical; refresh the metadata fields that are not
+                # part of the digest (axes, split, name, selection_basis) so an
+                # emergent label measured after the first build is recorded.
+                changed = (
+                    existing.get("axes") != spec.axes
+                    or existing.get("split") != spec.split
+                    or existing.get("name") != spec.name
+                    or existing.get("selection_basis") != spec.selection_basis
+                )
+                if changed:
+                    existing.update({
+                        "name": spec.name,
+                        "spec": spec.as_dict(),
+                        "split": spec.split,
+                        "axes": spec.axes,
+                        "selection_basis": spec.selection_basis,
+                    })
+                    existing.pop("manifest_digest", None)
+                    existing["manifest_digest"] = fingerprint(existing)
+                    (out_dir / "snippet_manifest.json").write_text(
+                        json.dumps(existing, indent=2) + "\n"
+                    )
                 return existing
         _rmtree(out_dir)
     out_root.mkdir(parents=True, exist_ok=True)

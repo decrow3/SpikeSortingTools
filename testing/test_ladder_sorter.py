@@ -5,6 +5,7 @@ import pytest
 from testing.ladder_sorter import (
     LEGACY_STYLE,
     NAMED_CONFIGS,
+    NONRIGID,
     RESCUE,
     SorterConfig,
     run_sorter_config,
@@ -34,7 +35,15 @@ def test_digest_is_stable_and_config_sensitive():
 
 
 def test_named_configs_registry():
-    assert set(NAMED_CONFIGS) == {"rescue", "legacy_style"}
+    assert set(NAMED_CONFIGS) == {"rescue", "legacy_style", "nonrigid"}
+
+
+def test_nonrigid_turns_on_datashift_without_touching_thresholds():
+    p = NONRIGID.params()
+    assert p["do_correction"] is True and p["nblocks"] == 6
+    assert p["Th_universal"] == RESCUE.params()["Th_universal"]
+    assert p["Th_learned"] == RESCUE.params()["Th_learned"]
+    assert NONRIGID.digest not in {RESCUE.digest, LEGACY_STYLE.digest}
 
 
 def test_run_sorter_config_refuses_mnt():

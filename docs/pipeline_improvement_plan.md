@@ -327,6 +327,12 @@ competition, because stitching repairs both flicker and slow drift while
 curation tuning addresses neither. **C2 is still required** to frame the cause
 before the search starts.
 
+*Superseded 2026-09-02.* Stitching was built and rejected — it reconstitutes
+only 2 of the 127 on the full session and loses matches on net (see Phase D
+Candidate 1). The A2 "family stitching would recover them" reading held only at
+snippet scale; full-session the dispersed fragments are too finely smeared.
+Phase D target is now Candidate 2, a non-rigid motion representation.
+
 ### Phase B — build the ladder
 
 1. ~~**Snippet builder**~~ — **done 2026-09-02**, `testing/ladder_snippets.py`
@@ -350,9 +356,28 @@ before the search starts.
    amplitude distribution (`detect_peaks`, both polarities) from the voltage
    alone — no labels — and `stratify_by_snr` tertiles a pool. Validated on the
    quiet window's three depth strips: shallow SNR 8.1 → mid 11.4 → deep 13.8,
-   tertiles low/medium/high. ~18 s/snippet (build + profile). What remains for
-   this item: choose the 16 concrete regime×strip×SNR×artifact combinations and
-   fix the dev/held-out split *before* any result is seen, then `freeze_panel`.
+   tertiles low/medium/high. ~18 s/snippet (build + profile).
+
+   **Panel design 2026-09-02** — `testing/luke_ladder_panel.py`
+   (+ `test_…`, 6 tests). 16 cells on **imec0**: the 5
+   `luke_motion_regime_windows` windows × 3 depth strips (112 ch: shallow ch
+   8–120, mid 136–248, deep 260–372) + a second quiet window. **Split rule,
+   written before any characterisation was read:** cells ordered regime-major
+   (quiet, rapid_motion, sustained_noise, support_dropout, noise_plus_motion) ×
+   strip-minor; odd positions → development, even → held_out. Deterministic,
+   both halves span all 5 regimes and all 3 strips. SNR and artifact-proximity
+   (>500 µV sidecar point density) are **measured, not chosen** — recorded in
+   `axes` after the build (`SnippetSpec.digest` now hashes only the physical
+   window × channel selection, so filling an emergent label does not change
+   snippet identity). `--characterise` builds + profiles all 16 (no sorter);
+   `--freeze` then calls `freeze_panel`.
+
+   **Panel FROZEN 2026-09-02**, `panel_digest 07d5d808…` (approved after the
+   balance table was reviewed; split rule unchanged). 16 imec0 snippets, 13 GB,
+   all content-hash-verified. Both halves span all 5 regimes and all 3 strips;
+   SNR tertiles 3H/3M/2L (dev) vs 2H/2M/4L (held); artifact-near 2 (dev) / 3
+   (held). Table:
+   `testing/outputs/luke_ladder_panel/panel_characterisation.csv`.
 3. ~~**`score_sort(sorter_output, snippet) -> dict`**~~ — **done 2026-09-02**,
    `testing/ladder_score.py` (+ `test_ladder_score.py`, 8 tests). One function,
    three layers (primary hybrid-GT / secondary symmetric agreement / guardrails)
@@ -549,6 +574,48 @@ top row, narrowed:
 > is **not** a candidate — C2 showed it comparable-or-worse. Curation-threshold
 > tuning is deprioritised — C2 showed the lower-threshold config fragments more.
 
+**Candidate 1 built, evaluated, and rejected 2026-09-02** —
+[`luke_20250804_family_stitch_candidate.md`](luke_20250804_family_stitch_candidate.md),
+`testing/ladder_stitch.py` (+ tests), `testing/luke_rescue_stitch_c2_eval.py`,
+`testing/luke_rescue_stitch_fullsession_eval.py`.
+`stitch_families` merges mutual-best-partner units that are spatially plausible,
+temporally complementary, not simultaneous, and refractory-clean on merge. On
+the C2 injected-truth pairs it is safe at snippet scale (0 families on every
+static arm) and helps two mild-drift arms (+0.16, +0.23 accuracy). **But the
+decisive full-session test fails.** Run on the whole imec0 rescue sort against
+the 127 legacy-lost units: it reconstitutes **2** of the 127, destroys **4**
+existing legacy matches by over-merging, absorbs **34** genuine rescue good
+units, and takes the legacy-match count from 101 to **99** — a net loss. The 82
+"dispersed" units (the bulk of the 127) are smeared across 5–15
+contamination-dominated clusters each; there is no clean 2–4-member family to
+rejoin. **Verdict: not adopted.** The motion fragmentation must be *prevented*,
+not repaired → Candidate 2 (non-rigid representation). `ladder_stitch.py` stays
+as a tested negative result and family-detection primitive, not a curation
+stage.
+
+**Candidate 2 built and evaluated 2026-09-02** —
+[`luke_20250804_nonrigid_motion_candidate.md`](luke_20250804_nonrigid_motion_candidate.md),
+`testing/ladder_motion.py` (oracle correction), `ladder_sorter.NONRIGID`
+(`do_correction=True, nblocks=6`), `testing/luke_rescue_c2_nonrigid_eval.py`.
+Three arms on the cached C2 injected recordings — `rescue` (baseline),
+`nonrigid` (KS4 datashift, the estimated case), `oracle` (correct with the
+**exact** injected trajectory, then rescue sort — the ceiling).
+**A non-rigid representation is a real lever** — the first candidate that is.
+Oracle correction closes the severe rigid-drift penalty on both clean donors:
+T04 and T06 at 40 µm go from accuracy ≈ 0.40 back to ≈ 0.99 (static baseline),
+median penalty −0.35 → −0.17. Static arms untouched (0.941→0.941, 0.948→0.948).
+**But** (a) KS4's own `nblocks=6` is *worse than no correction* on a snippet
+(median −0.48) — too few units, too short a window to estimate drift; and (b)
+interpolation blurs the waveform, so it does nothing for 15 µm (sub-channel)
+drift and *hurts* T01, the sharpest/highest-SNR donor (0.40→0.29 at 40 µm).
+→ Next: an **external non-rigid estimate computed on the full session** (where a
+drift estimate has 10 000 s and hundreds of units), then interpolation, then the
+rescue sort — scored against the 127 (full-session reconstitution, the test that
+killed stitching) and against C2 injected truth per SNR tertile. If it
+reconstitutes the 127 with no similar-pair/edge-spike regression it is the Phase
+D winner → L2. If not, rescue vs legacy resolves as "trade the same errors,
+neither clearly better on this recording; lever is elsewhere".
+
 **Orthogonal, and deliberately later:** the MUA threshold question — the 80
 promotions and their 27 mirrored demotions. It is one moved threshold. Changing
 `good` versus `mua` labels **will not fix identity fragmentation**, so it should
@@ -656,8 +723,9 @@ eliminated.
    `testing/ladder_inject.py` + `luke_rescue_c2_drift_challenge.py`. Benchmark
    validated (static T01 recovered at accuracy 0.94); first drift penalty
    measured (−0.54 accuracy for a 40 µm rigid ramp, rescue arm).
-5. Define + freeze the real 16-snippet panel (regime × strip × SNR × artifact),
-   dev/held-out split fixed before any result is seen.
+5. ~~Define + freeze the real 16-snippet panel~~ — **frozen 2026-09-02**,
+   `panel_digest 07d5d808…`, `testing/luke_ladder_panel.py`. imec0, 16 snippets,
+   pre-registered position-parity split, SNR/artifact measured not chosen.
 6. ~~Config-parametrised sorter~~ — done 2026-09-02, `testing/ladder_sorter.py`
    (`SorterConfig`, `RESCUE`, `LEGACY_STYLE` = `nblocks=1, Th 9/8` — the two
    `ops.npy` diffs); `l1_run(sorter=…)` caches each config at its own leaf.

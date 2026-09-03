@@ -12,13 +12,17 @@ and writes a manifest keyed by the config digest. The cache leaf per config is
 what makes `l1_run` reuse a sort across curation variants but recompute it when
 the sorter config changes (plan §3 caching contract).
 
-The only configs with a name are the two the plan compares directly:
+The only configs with a name are the ones the plan compares directly:
 
 * `RESCUE` — the frozen baseline, no override.
 * `LEGACY_STYLE` — KS4 with rigid internal drift correction and the legacy
   detection thresholds, on the *same* conditioned input. The controlled
   contrast for "what does representing motion buy?" (`ops.npy`:
   legacy `nblocks=1, Th_universal=9, Th_learned=8` vs rescue `nblocks=0, 12, 9`).
+* `NONRIGID` — Phase D candidate 2: KS4's own *non-rigid* datashift
+  (`do_correction=True, nblocks=6`) with the rescue detection thresholds
+  unchanged. The controlled contrast against `LEGACY_STYLE` isolates
+  non-rigid vs rigid; against `RESCUE`, motion representation vs none.
 """
 
 from __future__ import annotations
@@ -67,7 +71,11 @@ LEGACY_STYLE = SorterConfig(
     "legacy_style",
     {"do_correction": True, "nblocks": 1, "Th_universal": 9, "Th_learned": 8},
 )
-NAMED_CONFIGS = {c.label: c for c in (RESCUE, LEGACY_STYLE)}
+NONRIGID = SorterConfig(
+    "nonrigid",
+    {"do_correction": True, "nblocks": 6},
+)
+NAMED_CONFIGS = {c.label: c for c in (RESCUE, LEGACY_STYLE, NONRIGID)}
 
 
 def _json_safe(params: dict) -> dict:
