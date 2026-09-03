@@ -4,6 +4,18 @@
 [`pipeline_improvement_plan.md`](pipeline_improvement_plan.md)); it is not gated
 by it and does not gate it.
 
+> **INCREMENT 1 RAN 2026-09-03 — GATE FAILED.** Zero of 87 Luke imec0 120 s
+> windows reach the Yates-Q75 overlap box under any common estimator; Luke's
+> quietest 2-minute window still drifts more (rigid P95−P5 ≥ 4.2 µm, primary
+> estimator) than the Yates 75th percentile (3.6 µm). Non-rigid gradient is
+> *not* the problem — rigid translation magnitude/rate is. The motion-matched
+> design (increments 2–5) is **not viable as written**; there is no
+> genuinely-quiet Luke subset to match. See
+> [`luke_yates_stable_window_overlap_result.md`](luke_yates_stable_window_overlap_result.md)
+> for the numbers, the estimator-disagreement caveat, the "1.28 µm" discrepancy,
+> and the three salvage options. Increments 2–5 below are on hold pending that
+> decision.
+
 **Supersedes as the active form of:** the depth-resolved biological comparison
 deferred in
 [`luke_yates_raw_voltage_audit_notes.md`](luke_yates_raw_voltage_audit_notes.md)
