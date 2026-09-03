@@ -1,12 +1,11 @@
-"""Does full-session family stitching reconstitute the 127 legacy-lost good units?
+"""Does full-session family stitching reconstitute corrected unmatched units?
 
 `docs/luke_20250804_family_stitch_candidate.md`: post-sort family stitching is
 safe and helps mild drift at snippet scale, but the C2 fragments at 120 s are
 contamination-dominated so it does not close the drift penalty there. A2's
-"clean merge" property (92-95 % refractory-clean) is a **full-session**
-property, so the decisive test for stitching is the full session: run it on the
-whole imec0 rescue sort and ask how many of the 127 legacy-good units that
-rescue does not reproduce (decisions/0010) it puts back.
+The original 2-recovered/4-destroyed result is retracted: it inherited the
+non-exclusive identity matcher and invalid 127-unit cohort. This v2 script
+recomputes both before and after cohorts with exclusive event matching.
 
 This is a pure post-processing evaluation on the cached full-session sorts. No
 sorter runs, nothing is written under /mnt, and the 28 GB `cur_output` is not
@@ -16,7 +15,7 @@ that defined the 127 in the first place.
 
     python testing/luke_rescue_stitch_fullsession_eval.py
 
-Outputs to testing/outputs/luke_rescue_stitch_fullsession_eval/ (untracked).
+Outputs to testing/outputs/luke_rescue_stitch_fullsession_eval_v2/ (untracked).
 """
 
 from __future__ import annotations
@@ -33,7 +32,6 @@ from testing.luke_rescue_lost_units_audit import (
     DOMINANT_FRAC,
     classify,
     dominant_partner_counts,
-    spike_distribution,
 )
 from testing.luke_rescue_unique_units_audit import (
     DURATION_S,
@@ -43,10 +41,12 @@ from testing.luke_rescue_unique_units_audit import (
     RESCUE,
     load_sort,
     mutual_best_matches,
+    spatial_null_distribution,
+    template_depth_by_cluster,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_stitch_fullsession_eval"
+OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_stitch_fullsession_eval_v2"
 
 
 def _apply_remap(sort: dict, families: list[list[int]]) -> tuple[dict, dict]:
@@ -74,15 +74,33 @@ def _apply_remap(sort: dict, families: list[list[int]]) -> tuple[dict, dict]:
     return new, remap
 
 
-def _reconstituted(lost: list[int], legacy: dict, rescue_after: dict) -> pd.DataFrame:
+def _reconstituted(
+    lost: list[int],
+    legacy: dict,
+    rescue_after: dict,
+    legacy_depth: dict[int, float],
+    rescue_depth: dict[int, float],
+) -> pd.DataFrame:
     """For each lost legacy good unit, does a stitched rescue good unit now own it?"""
-    merge_targets = dominant_partner_counts(legacy, rescue_after, lost)
+    merge_targets = dominant_partner_counts(
+        legacy, rescue_after, lost, legacy_depth, rescue_depth
+    )
     rows = []
     for cid in lost:
         a = legacy["st"][legacy["cl"] == cid]
         n = int(a.size)
-        frac, ranked = spike_distribution(a, rescue_after)
-        cls = classify(frac, ranked, merge_targets)
+        frac, ranked, evidence = spatial_null_distribution(
+            a,
+            legacy_depth.get(int(cid), np.nan),
+            rescue_after,
+            rescue_depth,
+        )
+        cls = classify(
+            frac,
+            ranked,
+            merge_targets,
+            shared_detection_supported=evidence["shared_detection_supported"],
+        )
         top_cl, p1, top_label = (ranked[0] if ranked else (-1, 0.0, "none"))
         isi = np.diff(np.sort(a)) / FS * 1000.0
         rv = float((isi < REFRACTORY_MS).mean()) if n > 1 else np.nan
@@ -92,6 +110,9 @@ def _reconstituted(lost: list[int], legacy: dict, rescue_after: dict) -> pd.Data
             "rate_hz": n / DURATION_S,
             "rv_frac": rv,
             "frac_found": round(frac, 3),
+            "null_median_fraction": evidence["null_median_fraction"],
+            "coincidence_excess": evidence["coincidence_excess"],
+            "shared_detection_supported": evidence["shared_detection_supported"],
             "best_rescue_cluster": int(top_cl),
             "best_rescue_label": top_label,
             "best_rescue_frac": round(p1, 3),
@@ -107,6 +128,8 @@ def run(config: StitchConfig | None = None) -> dict:
 
     legacy = load_sort(LEGACY)
     rescue = load_sort(RESCUE)
+    legacy_depth = template_depth_by_cluster(LEGACY)
+    rescue_depth = template_depth_by_cluster(RESCUE)
 
     before = mutual_best_matches(rescue, legacy)
     matched_before = set(before.legacy_cluster)
@@ -122,7 +145,9 @@ def run(config: StitchConfig | None = None) -> dict:
     newly_matched = sorted(matched_after - matched_before)
     lost_by_stitch = sorted(matched_before - matched_after)
 
-    recon = _reconstituted(lost, legacy, rescue_after)
+    recon = _reconstituted(
+        lost, legacy, rescue_after, legacy_depth, rescue_depth
+    )
     recon.sort_values("n_spikes", ascending=False).to_csv(
         OUTPUT / "lost_units_after_stitch.csv", index=False
     )
@@ -143,10 +168,12 @@ def run(config: StitchConfig | None = None) -> dict:
         "matched_before": len(matched_before),
         "lost_before": len(lost),
         "matched_after": len(matched_after),
-        "newly_matched_from_the_127": sorted(
+        "newly_matched_from_baseline_unmatched": sorted(
             c for c in newly_matched if c in set(lost)
         ),
-        "n_newly_matched_from_the_127": sum(1 for c in newly_matched if c in set(lost)),
+        "n_newly_matched_from_baseline_unmatched": sum(
+            1 for c in newly_matched if c in set(lost)
+        ),
         "n_matches_lost_to_overmerge": len(lost_by_stitch),
         "matches_lost_to_overmerge": lost_by_stitch,
         "reconstituted_owned_by_good_unit": int(owned.shape[0]),

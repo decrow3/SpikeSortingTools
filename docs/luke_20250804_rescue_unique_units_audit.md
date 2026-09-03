@@ -1,5 +1,11 @@
 # What the rescue pipeline's extra KS-good units actually are (Luke0804 imec0)
 
+> **RETRACTED PENDING V2 RERUN — 2026-09-03.** The matcher reused target events,
+> and “found anywhere within 0.5 ms” had an approximately 89% whole-probe chance
+> baseline. The +200/-127 decomposition, 80/85/35 classes, and “none are new
+> detections” conclusion below are historical only. Corrected code uses
+> one-to-one matching plus spatial and circular-shift-null evidence.
+
 **Date:** 2026-09-02
 **Question left open by** [`decisions/0009`](decisions/0009-cross-sort-comparisons-must-be-unit-matched.md):
 rescue reports 301 KS-good units against legacy's 228. Are the extra units

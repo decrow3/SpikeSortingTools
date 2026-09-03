@@ -5,14 +5,13 @@
 produces at L4 (plan §3 rule 1). The stages are cached on content so an
 iteration only recomputes what changed (plan §3 caching contract):
 
-    <l1_root>/<snippet spec digest>/
+    <l1_root>/<accepted recording request digest>/
         sort/                     ← per snippet; reused across curation variants
         cur-<curation digest>/    ← per curation config
             l1_result.json
 
-A curation-parameter change reuses the sort. Only a snippet change invalidates
-the sort — and a snippet change is a new spec digest, so it lands in a new
-directory by construction.
+A curation-parameter change reuses the sort. Any recording-content change
+invalidates the sort and lands in a new directory by construction.
 
 Per §3 rule 2, every run also records cheap per-stage observables (detection
 counts, unit counts, amplitude spread) so per-stage auditing is a by-product of
@@ -33,11 +32,12 @@ import numpy as np
 
 from pipeline.config import PIPELINE_VERSION, fingerprint
 from pipeline.downstream import build_sort_identity, run_curation_stage
+from pipeline.preprocess import MANIFEST_NAME
 from pipeline.sorting import SORT_MANIFEST, run_kilosort4
 from testing.ladder_score import score_sort
 from testing.ladder_snippets import load_snippet, snippet_root
 
-L1_SCHEMA = "luke-ladder-l1-v1"
+L1_SCHEMA = "luke-ladder-l1-v2"
 DEFAULT_L1_ROOT = Path("/media/huklab/Data/ladder_l1")
 L1_WALL_BUDGET_S = 300.0  # §3: L1 target < 5 min
 
@@ -117,7 +117,13 @@ def l1_run(
         raise ValueError("refusing to write L1 outputs under /mnt (plan §3)")
 
     is_rescue = sorter is None or getattr(sorter, "label", "rescue") == "rescue"
-    work = out_root / snippet.manifest["spec_digest"][:16]
+    current_recording = json.loads((snippet.dir / MANIFEST_NAME).read_text())
+    recording_cache_digest = current_recording.get("request_digest")
+    if not recording_cache_digest:
+        raise ValueError(f"recording manifest has no request_digest: {snippet.dir}")
+    # A selection spec is not a content identity. Use the accepted recording's
+    # content-bound request digest so regenerated voltage cannot reuse a sort.
+    work = out_root / recording_cache_digest[:16]
     sort_dir = work / ("sort" if is_rescue else f"sort-{sorter.digest[:12]}")
     cur_dir = work / (
         f"cur-{curation.digest[:12]}"
@@ -129,6 +135,13 @@ def l1_run(
     # --- stage 1: sort (cached per snippet × sorter config) ---------------- #
     t0 = time.time()
     sort_cached = (sort_dir / SORT_MANIFEST).exists()
+    if sort_cached:
+        cached_sort = json.loads((sort_dir / SORT_MANIFEST).read_text())
+        if cached_sort.get("recording_request_digest") != current_recording.get("request_digest"):
+            raise RuntimeError(
+                "cached L1 sort belongs to different recording content; "
+                f"refusing {sort_dir}"
+            )
     if not sort_cached:
         if is_rescue:
             run_kilosort4(snippet.dir, sort_dir)
@@ -180,6 +193,7 @@ def l1_run(
         "pipeline_version": PIPELINE_VERSION,
         "snippet_dir": str(snippet.dir),
         "spec_digest": snippet.manifest["spec_digest"],
+        "recording_cache_digest": recording_cache_digest,
         "snippet_axes": snippet.manifest.get("axes", {}),
         "sorter_config": "rescue" if is_rescue else sorter.label,
         "sorter_overrides": {} if is_rescue else dict(sorter.overrides),

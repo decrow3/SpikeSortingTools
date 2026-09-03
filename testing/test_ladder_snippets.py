@@ -105,6 +105,23 @@ def test_verify_snippet_detects_mutation(accepted_recording, tmp_path):
     buf[0] ^= 0xFF
     raw.write_bytes(buf)
     assert verify_snippet(d) is False
+    with pytest.raises(RuntimeError, match="content hash mismatch"):
+        load_snippet(d)
+
+
+def test_build_snippet_does_not_reuse_a_different_source_recording_identity(
+    accepted_recording, tmp_path
+):
+    out = tmp_path / "snips"
+    first = build_snippet(_spec(), accepted_recording, out, n_jobs=1)
+    source_manifest_path = accepted_recording / "rescue_recording_manifest.json"
+    source_manifest = json.loads(source_manifest_path.read_text())
+    source_manifest["request_digest"] = "b" * 64
+    source_manifest_path.write_text(json.dumps(source_manifest))
+
+    second = build_snippet(_spec(), accepted_recording, out, n_jobs=1)
+    assert first["recording_request_digest"] == "a" * 64
+    assert second["recording_request_digest"] == "b" * 64
 
 
 def test_raw_domain_float32_is_scaled_int16(accepted_recording, tmp_path):

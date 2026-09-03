@@ -20,7 +20,7 @@ def _other_from_assignment(anchor_st, frag_of_spike):
 
 
 def test_prespec_is_frozen_shape():
-    assert PRESPEC["schema"] == "luke-rescue-repartition-motion-v1"
+    assert PRESPEC["schema"] == "luke-rescue-repartition-motion-v2"
     assert set(PRESPEC["family_sampling"]["sides"]) == {
         "legacy_lost_dispersed",
         "rescue_gained_dispersed",
@@ -85,3 +85,24 @@ def test_contaminated_merge_is_not_motion_fragmentation():
     out = _score_family(anchor_st, depth, other, FS, motion)
     assert not out["clean_merge"]
     assert out["classification"] != "motion_fragmentation"
+
+
+def test_merge_cleanliness_includes_unmatched_fragment_spikes():
+    n = 6000
+    anchor_st = np.arange(0, n * 3000, 3000, dtype=np.int64)
+    frag = np.where(np.arange(n) < n // 2, 0, 1)
+    other = _other_from_assignment(anchor_st, frag)
+    # Extra events do not match the anchor but would be present after merging.
+    extra = anchor_st[: n // 2] + 12
+    other["st"] = np.concatenate([other["st"], extra])
+    other["cl"] = np.concatenate(
+        [other["cl"], np.zeros(extra.size, dtype=np.int64)]
+    )
+    order = np.argsort(other["st"], kind="stable")
+    other["st"], other["cl"] = other["st"][order], other["cl"][order]
+
+    out = _score_family(
+        anchor_st, np.linspace(1200.0, 1230.0, n), other, FS, None
+    )
+    assert not out["clean_merge"]
+    assert out["merged_fragment_spikes"] > out["n_spikes"]

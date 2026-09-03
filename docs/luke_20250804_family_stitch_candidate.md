@@ -1,5 +1,12 @@
 # Phase D candidate 1: post-sort family stitching — helps mild drift at snippet scale, fails the full session
 
+> **RETRACTED PENDING V2 RERUN — 2026-09-03.** Both supports were invalidated:
+> C2 used non-inverse motion operators and non-exclusive truth scoring, while
+> the full-session test inherited the invalid 127-unit cohort and non-exclusive
+> matcher. The +0.16–0.23, 2 recovered, and 4 destroyed results are historical
+> only. Family stitching's status is unresolved until both corrected evaluations
+> are regenerated.
+
 **Date:** 2026-09-02
 **Advances:** Phase D of [`pipeline_improvement_plan.md`](pipeline_improvement_plan.md)
 **Module:** `testing/ladder_stitch.py` (+ `test_ladder_stitch.py`, 9 tests)

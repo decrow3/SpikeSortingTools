@@ -43,8 +43,8 @@ from pipeline.preprocess import (
     recording_binary_receipt,
 )
 
-SNIPPET_SCHEMA = "luke-ladder-snippet-v1"
-PANEL_SCHEMA = "luke-ladder-panel-v1"
+SNIPPET_SCHEMA = "luke-ladder-snippet-v2"
+PANEL_SCHEMA = "luke-ladder-panel-v2"
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SNIPPET_ROOT = Path("/media/huklab/Data/ladder_snippets")
@@ -242,6 +242,13 @@ def build_snippet(
                 existing.get("content_sha256")
                 and (out_dir / MANIFEST_NAME).exists()
                 and verify_snippet(out_dir)
+                and existing.get("recording_request_digest")
+                == recording_manifest.get("request_digest")
+                and (
+                    recording_manifest.get("recording_content_sha256") is None
+                    or existing.get("source_recording_content_sha256")
+                    == recording_manifest.get("recording_content_sha256")
+                )
             ):
                 # Content is identical; refresh the metadata fields that are not
                 # part of the digest (axes, split, name, selection_basis) so an
@@ -298,6 +305,9 @@ def build_snippet(
         "axes": spec.axes,
         "selection_basis": spec.selection_basis,
         "recording_request_digest": recording_manifest["request_digest"],
+        "source_recording_content_sha256": recording_manifest.get(
+            "recording_content_sha256"
+        ),
         "source_recording_dir": str(recording_dir.resolve()),
         "window": {
             "name": window.name,
@@ -332,7 +342,11 @@ def _write_recording_manifest(
         "pipeline_version": PIPELINE_VERSION,
         "kind": "ladder_snippet",
         "parent_recording_request_digest": source_manifest["request_digest"],
+        "parent_recording_content_sha256": source_manifest.get(
+            "recording_content_sha256"
+        ),
         "spec_digest": spec.digest,
+        "recording_content_sha256": receipt["recording_content_sha256"],
     }
     manifest = {
         "schema_version": RECORDING_MANIFEST_SCHEMA,
@@ -341,6 +355,9 @@ def _write_recording_manifest(
         "complete": True,
         "request_digest": fingerprint(request),
         "parent_recording_request_digest": source_manifest["request_digest"],
+        "parent_recording_content_sha256": source_manifest.get(
+            "recording_content_sha256"
+        ),
         "spec_digest": spec.digest,
         "source_folder": source_manifest.get("source_folder"),
         "stream_id": source_manifest.get("stream_id"),
@@ -416,6 +433,8 @@ def load_snippet(snippet_dir: Path | str) -> Snippet:
     manifest = json.loads((snippet_dir / "snippet_manifest.json").read_text())
     if manifest.get("snippet_schema") != SNIPPET_SCHEMA:
         raise ValueError(f"{snippet_dir} is not a {SNIPPET_SCHEMA} snippet")
+    if not verify_snippet(snippet_dir):
+        raise RuntimeError(f"snippet content hash mismatch: {snippet_dir}")
     return Snippet(dir=snippet_dir, manifest=manifest)
 
 

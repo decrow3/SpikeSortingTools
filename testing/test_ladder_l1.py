@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -30,18 +31,28 @@ class _FakeSnippet:
 def patched(monkeypatch, tmp_path):
     snip_dir = tmp_path / "snip"
     snip_dir.mkdir()
+    (snip_dir / "rescue_recording_manifest.json").write_text(
+        json.dumps({"request_digest": "recording-v1"})
+    )
     monkeypatch.setattr(ladder_l1, "load_snippet", lambda p: _FakeSnippet(snip_dir))
 
     calls = {"sort": 0, "cur": 0}
 
     def fake_sort(recording_dir, sort_dir):
         calls["sort"] += 1
+        recording = json.loads(
+            (Path(recording_dir) / "rescue_recording_manifest.json").read_text()
+        )
         so = sort_dir / "sorter_output"
         so.mkdir(parents=True)
         np.save(so / "amplitudes.npy", np.array([10.0, 20.0, 30.0, 40.0]))
         np.save(so / "spike_clusters.npy", np.array([0, 0, 1, 1]))
         (sort_dir / "rescue_sort_manifest.json").write_text(
-            json.dumps({"complete": True, "summary": {"unit_count": 2}})
+            json.dumps({
+                "complete": True,
+                "recording_request_digest": recording["request_digest"],
+                "summary": {"unit_count": 2},
+            })
         )
 
     def fake_identity(sort_dir):
@@ -78,7 +89,7 @@ def test_l1_run_orchestrates_and_writes_result(patched):
     assert result["stage_observables"]["curated_unit_count"] == 2
     assert result["wall_clock"]["sort_was_cached"] is False
 
-    work = out / ("deadbeef" * 8)[:16]
+    work = out / "recording-v1"
     written = json.loads(
         (work / f"cur-{CurationConfig().digest[:12]}" / "l1_result.json").read_text()
     )
@@ -105,6 +116,19 @@ def test_l1_run_marks_sort_cached_on_second_call(patched):
     assert calls["sort"] == 1
 
 
+def test_l1_run_routes_changed_recording_content_to_a_new_cache(patched):
+    calls, tmp_path = patched
+    out = tmp_path / "l1"
+    l1_run("x", out_root=out)
+    (tmp_path / "snip" / "rescue_recording_manifest.json").write_text(
+        json.dumps({"request_digest": "recording-v2"})
+    )
+    l1_run("x", out_root=out)
+    assert calls["sort"] == 2
+    assert (out / "recording-v1").exists()
+    assert (out / "recording-v2").exists()
+
+
 def test_l1_run_refuses_mnt(patched):
     with pytest.raises(ValueError, match="/mnt"):
         l1_run("x", out_root="/mnt/somewhere")
@@ -123,7 +147,11 @@ def test_l1_run_routes_non_rescue_sorter_to_its_own_cache_leaf(patched, monkeypa
         np.save(so / "amplitudes.npy", np.array([10.0, 20.0]))
         np.save(so / "spike_clusters.npy", np.array([0, 1]))
         (sort_dir / "rescue_sort_manifest.json").write_text(
-            json.dumps({"complete": True, "summary": {"unit_count": 2}})
+            json.dumps({
+                "complete": True,
+                "recording_request_digest": "recording-v1",
+                "summary": {"unit_count": 2},
+            })
         )
 
     monkeypatch.setattr(
@@ -134,4 +162,4 @@ def test_l1_run_routes_non_rescue_sorter_to_its_own_cache_leaf(patched, monkeypa
 
     assert routed["n"] == 1 and calls["sort"] == 0  # rescue path not taken
     assert result["sorter_config"] == "legacy_style"
-    assert (out / ("deadbeef" * 8)[:16] / f"sort-{LEGACY_STYLE.digest[:12]}").exists()
+    assert (out / "recording-v1" / f"sort-{LEGACY_STYLE.digest[:12]}").exists()

@@ -11,18 +11,20 @@ It never injects into stored `int16` — injection is into the
 sealed scaffold's primitives are reused unchanged; this module only schedules
 per-spike events along a known trajectory.
 
-C2 in one call:
+C2's legacy discrete-index form in one call:
 
     static_uv, moving_uv, truth = paired_injection(bg_uv, template, train, ...)
     # write each back as an accepted recording, l1_run both, then:
     penalty = drift_penalty(static_score, moving_score)
 
-`penalty` is the change caused *solely* by motion — Δaccuracy, Δidentities,
-Δlabel-switches — the decisive quantity for Phase D's decision tree.
+For physical motion experiments, use
+`ladder_motion.paired_geometry_motion_injection`; the discrete-index form is
+retained only for static injections and explicit index-shift tests.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -43,7 +45,7 @@ from testing.luke_injected_ground_truth_benchmark import (
     validate_template,
 )
 
-INJECT_SCHEMA = "luke-ladder-inject-v1"
+INJECT_SCHEMA = "luke-ladder-inject-v2"
 
 TrajectoryFn = Callable[[np.ndarray], np.ndarray]  # seconds -> channel offset
 
@@ -101,12 +103,17 @@ def inject_trajectory(
     template_id: str = "inj",
     edge_guard_samples: int = 2,
 ) -> np.ndarray:
-    """Add `template` at every `train_samples` time, its channel following `trajectory`.
+    """Add a template using discrete channel-index shifts.
 
     `trajectory(t_seconds)` returns the channel-index offset from `base_channel`.
     The sealed primitive raises if a shifted footprint would cross a time or
     channel boundary, so callers must keep `base_channel + trajectory` within
     `[0, n_channels - template_width]` and the train clear of the window edges.
+
+    This helper is suitable for static injections and explicit index-shift unit
+    tests.  It is not a physical depth-motion operator on staggered or
+    multi-column probes; use `ladder_motion.paired_geometry_motion_injection`
+    for motion experiments.
     """
     background_uv = np.asarray(background_uv, dtype=np.float32)
     template = validate_template(
@@ -146,7 +153,7 @@ def paired_injection(
     unit_id: str = "inj0",
     edge_guard_samples: int = 2,
 ) -> tuple[np.ndarray, np.ndarray, dict]:
-    """The C2 pair: identical waveform and train, one held still, one moved."""
+    """Legacy discrete-index pair; not physical motion on multi-column probes."""
     static_uv = inject_trajectory(
         background_uv.copy(),
         template,
@@ -211,11 +218,20 @@ def write_injected_recording(
 
     receipt = recording_binary_receipt(out_dir)
     n_samples = int(traces.shape[0])
+    geometry = np.asarray(channel_positions, dtype=np.float64)
+    geometry_sha256 = hashlib.sha256(geometry.tobytes(order="C")).hexdigest()
     request = {
         "pipeline_version": PIPELINE_VERSION,
         "kind": "ladder_injected_snippet",
         "name": name,
         "source_snippet_dir": str(source_snippet_dir) if source_snippet_dir else None,
+        # The L1 cache is keyed by this request digest. Bind it to the actual
+        # voltage and geometry so rewriting a named injection cannot silently
+        # reuse a sort produced from different samples.
+        "recording_content_sha256": receipt["recording_content_sha256"],
+        "geometry_sha256": geometry_sha256,
+        "sampling_frequency_hz": float(fs),
+        "gain_uv_per_count": float(gain_uv_per_count),
     }
     recording_manifest = {
         "schema_version": RECORDING_MANIFEST_SCHEMA,
@@ -232,6 +248,7 @@ def write_injected_recording(
         "gain_uv_per_count": float(gain_uv_per_count),
         "expected_binary_bytes": receipt["actual_binary_bytes"],
         "recording_content_sha256": receipt["recording_content_sha256"],
+        "geometry_sha256": geometry_sha256,
         "recording_binary_files": receipt["recording_binary_files"],
         "injection_clipped_samples": clipped,
     }
@@ -255,6 +272,7 @@ def write_injected_recording(
             float(np.asarray(channel_positions)[:, 1].max()),
         ],
         "content_sha256": receipt["recording_content_sha256"],
+        "geometry_sha256": geometry_sha256,
         "injection_clipped_samples": clipped,
     }
     (out_dir / "snippet_manifest.json").write_text(

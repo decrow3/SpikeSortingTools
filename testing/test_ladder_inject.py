@@ -100,6 +100,20 @@ def test_write_injected_recording_is_loadable_and_manifested(tmp_path):
     assert manifest["selected_end_frame"] == bg.shape[0]
 
 
+def test_write_injected_recording_cache_identity_changes_with_content(tmp_path):
+    geom = np.column_stack([np.zeros(4), np.arange(4) * 10.0])
+    a = write_injected_recording(
+        tmp_path / "inj", np.zeros((100, 4), np.float32),
+        channel_positions=geom, fs=FS, gain_uv_per_count=1.0, name="same", n_jobs=1,
+    )
+    b = write_injected_recording(
+        tmp_path / "inj", np.full((100, 4), 50.0, np.float32),
+        channel_positions=geom, fs=FS, gain_uv_per_count=1.0, name="same", n_jobs=1,
+    )
+    assert a["content_sha256"] != b["content_sha256"]
+    assert a["spec_digest"] != b["spec_digest"]
+
+
 def test_write_injected_recording_refuses_mnt():
     with pytest.raises(ValueError, match="/mnt"):
         write_injected_recording(

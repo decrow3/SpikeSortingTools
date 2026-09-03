@@ -2,9 +2,9 @@
 
 The population comparison in the post-curation evaluation is confounded: the
 three configurations admit different unit populations, and estimated
-missingness depends strongly on unit amplitude. This script matches units
-across sorts by spike-time coincidence and compares truncation only on units
-that all relevant sorts found, which removes composition entirely.
+missingness depends strongly on unit amplitude. The original matched-unit
+numbers are retracted because their matcher could reuse target events. This v2
+implementation uses exclusive event pairs; its empirical output must be rerun.
 
 Outputs to testing/outputs/luke_truncation_fitter_audit/ (gitignored, local).
 """
@@ -18,9 +18,12 @@ import numpy as np
 import pandas as pd
 from scipy.stats import wilcoxon
 
+from testing.luke_rescue_unique_units_audit import exclusive_event_pairs
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 ROOT = Path("/mnt/NPX/Luke/20250804")
 OUTPUT = REPO_ROOT / "testing/outputs/luke_truncation_fitter_audit"
+MATCHED_OUTPUT = OUTPUT / "matched_units_v2.csv"
 
 CUR = {
     "rescue": ROOT / "rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output",
@@ -42,26 +45,18 @@ def good_spikes(method: str, units: pd.DataFrame) -> tuple[np.ndarray, np.ndarra
 
 
 def coincidence_matrix(a_st, a_cl, b_st, b_cl):
-    """Count, for each (a_cluster, b_cluster), spikes coincident within tolerance."""
-    idx = np.searchsorted(b_st, a_st)
-    best = np.full(a_st.shape, -1, dtype=np.int64)
-    dist = np.full(a_st.shape, np.iinfo(np.int64).max, dtype=np.int64)
-    for shift in (-1, 0):
-        j = idx + shift
-        ok = (j >= 0) & (j < len(b_st))
-        d = np.where(ok, np.abs(a_st - b_st[np.clip(j, 0, len(b_st) - 1)]), np.iinfo(np.int64).max)
-        take = d < dist
-        dist = np.where(take, d, dist)
-        best = np.where(take & ok, j, best)
-    hit = (dist <= TOLERANCE_SAMPLES) & (best >= 0)
+    """Count exclusive coincident events for each cluster pair."""
+    a_hit, b_hit = exclusive_event_pairs(
+        a_st, b_st, tolerance=TOLERANCE_SAMPLES
+    )
 
     a_ids = np.unique(a_cl)
     b_ids = np.unique(b_cl)
     a_pos = {c: i for i, c in enumerate(a_ids)}
     b_pos = {c: i for i, c in enumerate(b_ids)}
     counts = np.zeros((len(a_ids), len(b_ids)), dtype=np.int64)
-    ai = np.array([a_pos[c] for c in a_cl[hit]])
-    bi = np.array([b_pos[c] for c in b_cl[best[hit]]])
+    ai = np.array([a_pos[c] for c in a_cl[a_hit]])
+    bi = np.array([b_pos[c] for c in b_cl[b_hit]])
     if len(ai):
         np.add.at(counts, (ai, bi), 1)
     return a_ids, b_ids, counts
@@ -126,8 +121,8 @@ def main() -> None:
 
     if all_pairs:
         out = pd.concat(all_pairs, ignore_index=True)
-        out.to_csv(OUTPUT / "matched_units.csv", index=False)
-        print(f"wrote {OUTPUT/'matched_units.csv'}")
+        out.to_csv(MATCHED_OUTPUT, index=False)
+        print(f"wrote {MATCHED_OUTPUT}")
 
 
 if __name__ == "__main__":

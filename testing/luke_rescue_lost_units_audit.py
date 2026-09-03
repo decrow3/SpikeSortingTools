@@ -1,29 +1,26 @@
 """Where do the legacy KS-good units the rescue sort does not reproduce go?
 
-[`decisions/0010`](../docs/decisions/0010-rescue-yield-is-relabelling-not-detection.md)
-established the rescue-vs-legacy KS-good difference on Luke0804 imec0 is
-+200 / -127, a two-way relabelling. The +200 side was classified in
-`luke_rescue_unique_units_audit.py`: none is a new detection. The -127 side --
-legacy good units rescue does not reproduce -- had never been examined. They are
-a symmetric risk to the 200 gained and no gate measures them.
+Corrected v2 implementation.  The original +200/-127 decomposition and the
+claim that both sides were entirely relabelling are retracted.  They depended
+on non-exclusive identity matching and a whole-probe coincidence statistic
+whose chance baseline covered most of the session.
 
-This closes Phase A of `docs/pipeline_improvement_plan.md`: it locates every
-one of the 127 legacy-good units' spikes inside the *complete* rescue sort
+This rerunnable audit locates each unmatched legacy-good unit's spikes inside
+the *complete* rescue sort
 (MUA clusters included, pre- and post-curation) and classifies each into
 
     absent at detection | preserved as MUA | merged into a rescue good unit
     | split across rescue clusters | dispersed across rescue clusters
 
-The decisive class is **absent at detection**: a legacy good unit whose spikes
-the rescue sort never produced. If a substantial share of the 127 are clean,
-well-formed neurons lost at detection, that is a regression the yield narrative
-hid, and per Checkpoint A it becomes the top-priority defect.
+V2 fails closed as ``detection status unresolved`` unless spatial coincidence
+also exceeds fixed circular-shift nulls.  It does not infer absence from a low
+whole-probe coincidence fraction.
 
 The coincidence machinery is imported unchanged from
 `luke_rescue_unique_units_audit.py` so the two sides of the +200 / -127 table
 are computed the same way.
 
-Outputs to testing/outputs/luke_rescue_lost_units_audit/ (untracked, local).
+Outputs to testing/outputs/luke_rescue_lost_units_audit_v2/ (untracked, local).
 Nothing is written under /mnt.
 """
 
@@ -44,10 +41,12 @@ from testing.luke_rescue_unique_units_audit import (
     load_sort,
     mutual_best_matches,
     nearest_hit,
+    spatial_null_distribution,
+    template_depth_by_cluster,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_lost_units_audit"
+OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_lost_units_audit_v2"
 
 # A legacy good unit counts as recovered somewhere in rescue if this fraction
 # of its spikes land within TOL of any rescue spike (any cluster, any label).
@@ -96,9 +95,17 @@ def spike_distribution(a_st: np.ndarray, sort: dict) -> tuple:
     return float(hit.mean()), ranked
 
 
-def classify(frac_found: float, ranked: list, merge_targets: set) -> str:
+def classify(
+    frac_found: float,
+    ranked: list,
+    merge_targets: set,
+    *,
+    shared_detection_supported: bool | None = None,
+) -> str:
+    if shared_detection_supported is False:
+        return "detection status unresolved"
     if frac_found < DETECTION_FLOOR or not ranked:
-        return "absent at detection"
+        return "detection status unresolved"
     top_cl, p1, top_label = ranked[0]
     p2 = ranked[1][1] if len(ranked) > 1 else 0.0
     if p1 >= DOMINANT_FRAC:
@@ -112,8 +119,13 @@ def classify(frac_found: float, ranked: list, merge_targets: set) -> str:
     return "dispersed across rescue clusters"
 
 
-def dominant_partner_counts(legacy: dict, rescue_curated: dict,
-                            legacy_good: list) -> dict:
+def dominant_partner_counts(
+    legacy: dict,
+    rescue_curated: dict,
+    legacy_good: list,
+    legacy_depth: dict[int, float] | None = None,
+    rescue_depth: dict[int, float] | None = None,
+) -> set[int]:
     """For every legacy good unit, its dominant rescue-curated cluster.
 
     A rescue cluster that is the dominant partner (>= DOMINANT_FRAC) of two or
@@ -122,7 +134,14 @@ def dominant_partner_counts(legacy: dict, rescue_curated: dict,
     claims: dict[int, int] = {}
     for cid in legacy_good:
         a = legacy["st"][legacy["cl"] == cid]
-        _, ranked = spike_distribution(a, rescue_curated)
+        if legacy_depth is not None and rescue_depth is not None:
+            _, ranked, evidence = spatial_null_distribution(
+                a, legacy_depth.get(int(cid), np.nan), rescue_curated, rescue_depth
+            )
+            if not evidence["shared_detection_supported"]:
+                continue
+        else:
+            _, ranked = spike_distribution(a, rescue_curated)
         if ranked and ranked[0][1] >= DOMINANT_FRAC:
             claims[ranked[0][0]] = claims.get(ranked[0][0], 0) + 1
     return {cl for cl, k in claims.items() if k >= 2}
@@ -134,6 +153,8 @@ def main() -> None:
     legacy = load_sort(LEGACY)
     rescue = load_sort(RESCUE)
     rescue_full = load_full_sort(RESCUE)
+    legacy_depth = template_depth_by_cluster(LEGACY)
+    rescue_depth = template_depth_by_cluster(RESCUE)
     legacy_amp = cluster_amplitude(LEGACY)
 
     matches = mutual_best_matches(rescue, legacy)
@@ -146,27 +167,41 @@ def main() -> None:
     )
 
     merge_targets = dominant_partner_counts(
-        legacy, rescue, sorted(legacy["good"])
+        legacy,
+        rescue,
+        sorted(legacy["good"]),
+        legacy_depth,
+        rescue_depth,
     )
 
     rows = []
     for cid in lost:
         a = legacy["st"][legacy["cl"] == cid]
         n = len(a)
-        frac_curated, ranked_curated = spike_distribution(a, rescue)
-        frac_full, ranked_full = spike_distribution(a, rescue_full)
+        anchor_depth = legacy_depth.get(int(cid), np.nan)
+        frac_curated, ranked_curated, evidence_curated = spatial_null_distribution(
+            a, anchor_depth, rescue, rescue_depth
+        )
+        frac_full, ranked_full, evidence_full = spatial_null_distribution(
+            a, anchor_depth, rescue_full, rescue_depth
+        )
 
         top_cl, p1, top_label = (ranked_curated[0] if ranked_curated
                                  else (-1, 0.0, "none"))
         isi = np.diff(np.sort(a)) / FS * 1000.0
         rv = float((isi < REFRACTORY_MS).mean()) if n > 1 else np.nan
 
-        cls = classify(frac_curated, ranked_curated, merge_targets)
+        cls = classify(
+            frac_curated,
+            ranked_curated,
+            merge_targets,
+            shared_detection_supported=evidence_curated["shared_detection_supported"],
+        )
         # A unit absent from the curated sort but present pre-curation was
         # detected then dropped by curation, not missed at detection.
         dropped_by_curation = (
-            cls == "absent at detection"
-            and frac_full >= DETECTION_FLOOR
+            cls == "detection status unresolved"
+            and evidence_full["shared_detection_supported"]
         )
         if dropped_by_curation:
             cls = "removed by curation"
@@ -179,6 +214,16 @@ def main() -> None:
             "rv_frac": rv,
             "frac_found_in_rescue_curated": frac_curated,
             "frac_found_in_rescue_full": frac_full,
+            "curated_null_median_fraction": evidence_curated["null_median_fraction"],
+            "curated_coincidence_excess": evidence_curated["coincidence_excess"],
+            "curated_shared_detection_supported": evidence_curated[
+                "shared_detection_supported"
+            ],
+            "full_null_median_fraction": evidence_full["null_median_fraction"],
+            "full_coincidence_excess": evidence_full["coincidence_excess"],
+            "full_shared_detection_supported": evidence_full[
+                "shared_detection_supported"
+            ],
             "best_rescue_cluster": top_cl,
             "best_rescue_label": top_label,
             "best_rescue_frac": p1,
@@ -191,7 +236,7 @@ def main() -> None:
     df = pd.DataFrame(rows)
     df.to_csv(OUTPUT / "legacy_lost_good_classified.csv", index=False)
 
-    print("=== Where the 127 legacy-good units rescue drops actually go ===")
+    print("=== Where unmatched legacy-good units have supported counterparts ===")
     summary = (
         df.groupby("classification")
         .agg(
@@ -241,7 +286,7 @@ def main() -> None:
 
 
 def _read_plus_side() -> pd.DataFrame | None:
-    path = (REPO_ROOT / "testing/outputs/luke_rescue_unique_units_audit"
+    path = (REPO_ROOT / "testing/outputs/luke_rescue_unique_units_audit_v2"
             / "rescue_unique_all_good_classified.csv")
     if not path.exists():
         print(f"\n(skip symmetric table: {path} not found; "

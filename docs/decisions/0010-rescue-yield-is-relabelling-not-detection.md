@@ -1,12 +1,17 @@
 # 0010 — The rescue pipeline's yield difference is relabelling, not detection
 
-**Status:** Adopted 2026-09-02
+**Status:** **Retracted 2026-09-03** by [0011](0011-cross-sort-event-matching-and-detection-evidence.md); corrected rerun pending
 **Evidence:** [`luke_20250804_rescue_unique_units_audit.md`](../luke_20250804_rescue_unique_units_audit.md)
 **Bears on:** [0001](0001-ks4-unwarped-is-the-production-sorter.md),
 [0006](0006-recovery-axis-is-post-sort-mua-reconciliation.md),
 [0009](0009-cross-sort-comparisons-must-be-unit-matched.md)
 
 ## Finding
+
+> **Withdrawn:** the identity matcher reused target events, and “found anywhere
+> on the probe” had an 87–89% chance-coverage baseline. The +200/-127
+> decomposition and all derived classes and decisions below are not evidence
+> until the exclusive, spatial, null-controlled v2 audits are regenerated.
 
 On Luke0804 imec0, **the rescue pipeline detects no spikes that the legacy
 pipeline did not detect.** All 200 KS-good units that rescue has and legacy does

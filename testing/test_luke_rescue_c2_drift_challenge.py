@@ -14,10 +14,10 @@ FS = 30_000.0
 
 
 def test_prespec_is_frozen_shape():
-    assert PRESPEC["schema"] == "luke-rescue-c2-drift-challenge-v1"
+    assert PRESPEC["schema"] == "luke-rescue-c2-drift-challenge-v2"
     assert PRESPEC["probe"] == "imec1"
     assert "static" in PRESPEC["trajectories"]
-    assert PRESPEC["status"].startswith("diagnostic")
+    assert PRESPEC["status"] == "corrected_geometry_aware_rerun_pending"
 
 
 def test_prepare_template_yields_a_sealable_template():

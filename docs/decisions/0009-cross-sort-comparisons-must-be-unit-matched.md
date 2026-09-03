@@ -1,10 +1,15 @@
 # 0009 — Cross-sort quality comparisons must be unit-matched
 
-**Status:** Adopted 2026-09-02
+**Status:** Method rule retained; empirical matched-unit result retracted 2026-09-03 by [0011](0011-cross-sort-event-matching-and-detection-evidence.md)
 **Corrects the central empirical claim of:** [0008](0008-amplitude-completeness-gates-promotion.md)
 **Evidence:** [`luke_20250804_truncation_fitter_audit.md`](../luke_20250804_truncation_fitter_audit.md)
 
 ## Decision
+
+> **Correction:** “unit matched” was the right requirement, but the original
+> implementation was not one-to-one and could reuse target events. The 43/47/42
+> match counts and paired numerical comparisons below are withdrawn until the
+> exclusive v2 matcher is rerun. They are retained only as audit history.
 
 Any comparison of sorting-quality metrics **between configurations** must be
 made on **matched units** — the same neurons identified in both sorts — or

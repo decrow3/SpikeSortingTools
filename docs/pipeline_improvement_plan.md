@@ -1,5 +1,27 @@
 # Plan: beat the legacy pipeline, and find out fast
 
+> **EVIDENCE CORRECTION — 2026-09-03.** C2, Candidate 2, D2b-1, D2b-3, and the
+> Checkpoint C panel comparison are **retracted pending rerun**. The motion
+> injection used contiguous channel-index shifts on a four-column probe while
+> oracle correction used continuous physical y-motion; the operators were not
+> inverses. Ground-truth matching was non-exclusive, and injected-recording
+> cache identity did not include voltage content. The donor cohort and ladder
+> infrastructure remain useful, but no drift penalty, interpolation ceiling,
+> field-tolerance envelope, kernel conclusion, or rescue-versus-legacy panel
+> direction from those runs is currently established. D2a is paused until the
+> corrected geometry-aware and content-bound reruns report.
+
+> **EARLIER-EVIDENCE CORRECTION — 2026-09-03.** Phase A, Phase A2, the
+> matched-unit truncation comparison, and full-session stitching are also
+> **retracted pending rerun** under [decision 0011](decisions/0011-cross-sort-event-matching-and-detection-evidence.md).
+> Cross-sort matching reused target spikes; whole-probe ±0.5 ms coincidence had
+> an 87–89% chance-coverage baseline; and A2 scored merge cleanliness on the
+> anchor rather than the actual fragment union. Therefore +200/-127, “no new or
+> lost detections,” the 80/85/35 and 27/100 decompositions, 92–95% clean merges,
+> and 2 recovered/4 destroyed by stitching are historical diagnostics only.
+> Corrected code writes v2 outputs and fails closed; no claim that the new
+> pipeline is better than legacy is currently supported.
+
 **Status:** proposed 2026-09-02
 **Supersedes as a work plan:** the follow-up lists in
 [`decisions/0008`](decisions/0008-amplitude-completeness-gates-promotion.md) and
@@ -17,7 +39,8 @@
 
 Four clauses, each independently falsifiable. All four must hold. Yield is not
 one of them — [`0010`](decisions/0010-rescue-yield-is-relabelling-not-detection.md)
-showed a +32% KS-good headline that was entirely relabelling.
+previously described a +32% KS-good headline as entirely relabelling; that
+empirical decomposition is now retracted by 0011.
 
 ## 2. Why the last attempt took days to fail
 
@@ -191,10 +214,11 @@ retraction. 0009 retracted one *use* of the metric, not the instrument.
 
 ### Secondary — real-data symmetric agreement
 
-Automated from `testing/luke_rescue_unique_units_audit.py` (exists, works):
-gained good units, **lost good units**, and their classification. Reported as
-`+N / −M`, never as a net. The 127 losses were invisible for months precisely
-because only the net was reported.
+Automated from `testing/luke_rescue_unique_units_audit.py`: gained and **lost**
+good units, reported as `+N / −M`, never as a net. The implementation now
+uses exclusive event identities; detection classifications additionally require
+spatial agreement and excess above a time-shift null. Corrected v2 output is
+pending, so the old 127 count is not an active result.
 
 ### Guardrails (any breach blocks promotion)
 
@@ -225,11 +249,11 @@ per-unit metric across sorts with different unit populations
 
 ## 6. Phases, checkpoints, go/no-go
 
-### Phase A — the symmetric audit (no new compute)  ✅ complete 2026-09-02
+### Phase A — the symmetric audit (no new sort)  ⚠ corrected rerun pending
 
 Runs on existing outputs; can proceed in parallel with Phase B.
 
-**Result:** [`luke_20250804_rescue_lost_units_audit.md`](luke_20250804_rescue_lost_units_audit.md).
+**Original result — retracted by 0011:** [`luke_20250804_rescue_lost_units_audit.md`](luke_20250804_rescue_lost_units_audit.md).
 `testing/luke_rescue_lost_units_audit.py` classifies all 127 (~35 s on existing
 outputs). **0 lost at detection, 0 removed by curation** — every one has 100% of
 its spikes in the rescue sort. The −127 is 27 legacy-good→`mua` demotions (the
@@ -462,10 +486,12 @@ one Checkpoint B should ultimately turn on; that is Phase C.
    accepted-recording folder + manifests, so `l1_run` sorts and
    `score_sort(truth=…)` scores it. `drift_penalty(static, moving)` is the
    decisive Δ.
-2. **Benchmark validated 2026-09-02** — the rescue pipeline recovers the
+2. **Historical static sanity result; rerun required** — the rescue pipeline
+   was reported to recover the
    high-SNR (SNR 11) donor template T01, injected static into a quiet imec1
-   strip, at **accuracy 0.94 ≥ 0.9**. The benchmark is sound (legacy arm still
-   pending the config-parametrised sorter).
+   strip, at **accuracy 0.94 ≥ 0.9**. This old result does not validate the
+   moving-arm benchmark and will be regenerated with the corrected cache and
+   scorer.
 3. Establish the legacy baseline score on the development panel — pending the
    config-parametrised sorter and the frozen panel.
 
@@ -507,13 +533,21 @@ an injected trajectory interacts with it. Either define the trajectory relative
 to the estimated tissue position, or draw the static arm from quiet windows and
 say so. Record which was done.
 
-**First run 2026-09-02** — [`luke_20250804_c2_drift_challenge.md`](luke_20250804_c2_drift_challenge.md).
+**Retracted pending geometry-aware rerun 2026-09-03.** The historical run below
+did not apply mutually inverse forward and correction operators on the real
+probe geometry.
+
+**Historical first run 2026-09-02** — [`luke_20250804_c2_drift_challenge.md`](luke_20250804_c2_drift_challenge.md).
 `testing/luke_rescue_c2_drift_challenge.py` (prespec frozen; diagnostic — reuses
 the pilot's discovery-cohort donor templates; static arm from the quiet imec1
 window). Benchmark **sane**: static T01 (SNR 11) / T04 (SNR 6) recovered at
 0.94–0.98 under both sorter configs.
 
-**Drift penalty (Δ accuracy = moving − static), both arms:**
+**Retracted historical drift penalty (Δ accuracy = moving − static), both arms:**
+
+The following table is retained for audit history only. Its motion/scoring
+implementation was invalid for inference and the values must not guide Phase D
+until reproduced by the corrected experiment.
 
 | donor | trajectory | rescue | legacy_style (`nblocks=1`) |
 |---|---|---:|---:|
@@ -524,7 +558,8 @@ window). Benchmark **sane**: static T01 (SNR 11) / T04 (SNR 6) recovered at
 | T04 | rigid 40 µm | −0.53 | −0.31 |
 | T04 | osc 20 µm/40 s | −0.38 | −0.49 |
 
-Two findings, both decisive for Phase D:
+The original run claimed the following two findings. **Both are withdrawn
+pending rerun:**
 
 1. **Motion alone costs 30–80 accuracy points, under both configs** — mostly
    missed spikes (T01 rigid-40: FN 24→314 rescue, 11→503 legacy) and identity
@@ -548,12 +583,28 @@ development snippets with the sanity condition met, **and** a measured drift
 penalty for both legacy and rescue. This is the first point at which "better"
 becomes measurable, and together with A2 it sets Phase D's target.
 
-*Partially reached 2026-09-02.* The **drift-penalty half is done** (diagnostic):
-measured for both the rescue config and KS4-with-rigid-correction, on injected
-imec1 snippets. Motion is a sufficient cause of A2's fragmentation, and rigid
-correction does not fix it. The **panel-baseline half** (legacy score on all 8
-dev snippets) waits on the frozen panel. Phase D's *direction* is set; its
-*promotion baseline* is not yet.
+*Historical status recorded 2026-09-02; withdrawn 2026-09-03.* The
+drift-penalty half was initially marked done. It is now pending because the
+forward injection and inverse correction did not implement the same physical
+motion and scoring was non-exclusive.
+
+**Retracted pending rerun 2026-09-03.** The historical result below used a
+content-unbound cache and non-exclusive scorer; Checkpoint C is not reached.
+
+**Historical run recorded 2026-09-03** — `testing/luke_ladder_checkpoint_c.py`,
+[`luke_20250804_checkpoint_c_panel_baseline.md`](luke_20250804_checkpoint_c_panel_baseline.md).
+3 compact D2b-2 donors (73 / 149 / 274 µV, static) injected into all 8 dev
+snippets, scored under `RESCUE` and `LEGACY_STYLE`. Sanity condition met (D02
+recovered static at ≥ 0.94 everywhere). **Result: no clean winner — rescue wins
+where there is motion (noise+motion: +0.6 to +0.8 accuracy; `legacy_style`'s
+rigid correction *collapses* there), legacy wins on pure sustained noise
+(−0.2 to −0.6), quiet is tied.** The 73 µV donor is below *both* pipelines'
+floor (rescue median 0.02, legacy 0.26) — the low-SNR detection limit is where
+panel yield is actually lost, and it is not a motion problem.
+
+*(Caveat: `score_sort`'s headline count over-counts splits for multi-unit dense
+injections — the ±0.5 ms coincidence is non-exclusive. Accuracy-on-best-cluster
+is the readout used; the headline metric needs an exclusive-assignment fix.)*
 
 ### Phase D — candidate search
 
@@ -572,7 +623,10 @@ order:
 | Fragments coexist at the same time and motion state | Moving injections stay one identity | **Clustering and curation.** The repartitioning is ordinary over-splitting. |
 | Mixed | Mixed | Split the effort by the measured proportions, and say what the split was. |
 
-**The tree has resolved (2026-09-02).** A2: fragments are temporally
+**Correction 2026-09-03:** the tree is unresolved again because its C2 input is
+retracted pending a geometry-aware rerun. A2 remains observational evidence.
+
+**Historical reading (2026-09-02).** A2: fragments are temporally
 complementary, refractory-clean, ~0 % coexisting — **not** over-splitting. C2:
 moving injections fragment where static ones do not (−0.3 to −0.8 accuracy), and
 **KS4 rigid drift correction does not recover it**. So the first target is the
@@ -586,7 +640,7 @@ top row, narrowed:
 > is **not** a candidate — C2 showed it comparable-or-worse. Curation-threshold
 > tuning is deprioritised — C2 showed the lower-threshold config fragments more.
 
-**Resolved priority after Candidate 2 (2026-09-02).** Candidate 1 was rejected
+**Historical priority after Candidate 2 (2026-09-02; withdrawn 2026-09-03).** Candidate 1 was rejected
 and Candidate 2's oracle arm turned voltage interpolation from a closed question
 into an open, optimizable one. The order is now:
 
@@ -623,7 +677,10 @@ not repaired → Candidate 2 (non-rigid representation). `ladder_stitch.py` stay
 as a tested negative result and family-detection primitive, not a curation
 stage.
 
-**Candidate 2 built and evaluated 2026-09-02** —
+**Candidate 2 result retracted pending rerun 2026-09-03.** The implementation is
+retained, but the old oracle was not the inverse of the injected motion.
+
+**Historical Candidate 2 evaluation 2026-09-02** —
 [`luke_20250804_nonrigid_motion_candidate.md`](luke_20250804_nonrigid_motion_candidate.md),
 `testing/ladder_motion.py` (oracle correction), `ladder_sorter.NONRIGID`
 (`do_correction=True, nblocks=6`), `testing/luke_rescue_c2_nonrigid_eval.py`.
@@ -638,12 +695,21 @@ median penalty −0.35 → −0.17. Static arms untouched (0.941→0.941, 0.948�
 (median −0.48) — too few units, too short a window to estimate drift; and (b)
 interpolation blurs the waveform, so it does nothing for 15 µm (sub-channel)
 drift and *hurts* T01, the sharpest/highest-SNR donor (0.40→0.29 at 40 µm).
-#### What Candidate 2 establishes — and what it does not
+#### What Candidate 2 originally claimed — retracted pending rerun
 
-**Motion representation is a real lever, and voltage interpolation is the first
-architecture to optimize.** The oracle arm is a *positive control*: with a
-correct displacement field, conventional voltage stabilization nearly eliminates
-the severe-motion penalty (T04, T06 at 40 µm: 0.40 → 0.99).
+The paragraph below was the original interpretation. It is retained only as
+history; the corrected experiment has not yet established that motion
+representation is a lever or that the oracle closes the penalty.
+
+> **Revised by D2b-3 (2026-09-03).** That 0.40 → 0.99 was measured on the *flat
+> plateau* pilot donors, which are trivially interpolatable. On **compact real
+> donors** a perfectly-known 40 µm field leaves a **0.4–0.6 residual penalty** —
+> only the single highest-SNR/cleanest donor (D02, 274 µV) recovers fully, and
+> the lowest (D08, 73 µV) is *destroyed* by the correction. The lever is real but
+> its ceiling is much lower than the plateau donors implied, and the
+> architecture gate (a sorter that tracks templates instead of resampling
+> voltage) moves up in priority. See
+> [`luke_20250804_d2b3_sharpness_tradeoff.md`](luke_20250804_d2b3_sharpness_tradeoff.md).
 
 Three things follow, and the third is the strategic one:
 
@@ -652,9 +718,9 @@ Three things follow, and the third is the strategic one:
   result is not a different kind of operation; it is the same operation with a
   correct field.
 - The oracle result **does not erase our earlier interpolation failures.** Its
-  failures at 15 µm sub-channel drift, and on T01 — the sharpest, highest-SNR
-  donor, which it makes *worse* (0.40 → 0.29) — are real and establish a
-  **tradeoff, not a rejection**.
+  failures at 15 µm sub-channel drift, on T01 (0.40 → 0.29), and now on every
+  compact donor below ~250 µV (D2b-3) are real and establish a **tradeoff, not a
+  rejection** — but a costlier tradeoff than the plateau donors showed.
 - Those earlier failures therefore most likely placed us at a **poor operating
   point** in the motion-benefit / interpolation-cost space, not on the wrong
   side of a categorical question.
@@ -693,11 +759,12 @@ before changing architectures.
 
 | # | Step | Status |
 |---|---|---|
-| 1 | **Oracle positive control** — attainable stabilization benefit and interpolation cost | ✅ done (Candidate 2) |
-| 2 | **D2b-1 field-error tolerance** — corrupt the oracle field, find how accurate a real estimate must be | next |
-| 3 | **D2b-2 donor expansion** — establish the crossover is not specific to T01/T04; protect sharp/high-SNR waveforms | next |
-| 4 | **D2a full-session external estimation** — obtain the best-supported real field | |
-| 5 | **Pre-sort field qualification** — compare the estimated field's error/support against the measured tolerance envelope | |
+| 1 | **Oracle positive control** — attainable stabilization benefit and interpolation cost | ⚠ retracted; rerun required |
+| 2 | **D2b-1 field-error tolerance** — corrupt the oracle field, find how accurate a real estimate must be | ⚠ retracted; rerun required |
+| 3 | **D2b-2 rebuild the donor cohort** — verified spatially-compact waveforms (the T01–T10 pilot donors are common-mode-flat, ±160 µm plateau — not gate-able). | ✅ done ([`luke_20250804_d2b2_donor_cohort.md`](luke_20250804_d2b2_donor_cohort.md)) — 14 compact imec0 donors, de-whitened KS shape scaled to bandpass-STA µV (73–295 µV), both polarities, 6/6 static-sanity pass |
+| 3b | **D2b-3 synthetic sharpness extension + per-stratum tradeoff** — `testing/ladder_synthetic_donors.py`, `testing/luke_d2b3_sharpness_tradeoff.py`, `testing/luke_d2b3_interp_kernel.py` | ⚠ retracted; rerun required |
+| 4 | **D2a full-session external estimation** — obtain the best-supported real field. | ⏸ blocked on corrected reruns |
+| 5 | **Pre-sort field qualification** — independent support, reproducibility, and error evidence required | ⏸ fails closed; tolerance envelope withdrawn |
 | 6 | **D2c bounded policy comparison** — none / best full / one simple selective policy if D2b justifies it | |
 | 7 | **L2 → L2L → L3** — injected truth, longitudinal identity, waveform preservation, existing guardrails | |
 | 8 | **Architecture gate** — opened only if the best conventional correction remains meaningfully deficient | |
@@ -708,11 +775,11 @@ ever reaches a sorter.
 
 #### D2a — Best-supported motion field
 
-Estimate motion from the **full-duration recording**, not from isolated 120 s
-snippets, so the estimator has the temporal and population support it will have
-in the real sorting problem. C2 already showed why: KS4's own `nblocks=6` on a
-snippet is *worse than no correction* (median −0.48) — too few units, too short
-a window.
+If D2a is reopened after the corrected reruns, estimate motion from the
+**full-duration recording**, not from isolated 120 s snippets, so the estimator
+has the temporal and population support it will have in the real sorting
+problem. The old C2 comparison cannot currently be used to quantify the cost of
+snippet-based estimation.
 
 Prefer the best-supported external field available from the existing DREDGE work
 initially. Preserve, and record in the manifest:
@@ -730,16 +797,15 @@ point in the D2b sweep, not as a correction constant.
 
 #### D2b — Field-error tolerance and the interpolation tradeoff
 
-The oracle arm bounded two things: accurate stabilization can recover large
-motion-induced identity losses, and interpolation can damage some waveforms even
-when the displacement is *correct*. Neither is the practical unknown.
+The old oracle arm purported to bound stabilization benefit and interpolation
+damage. That bound is **withdrawn** until the geometry-correct rerun.
 
 > **The practical unknown is how accurate an estimated displacement field must be
 > for stabilization benefit to exceed both residual-motion error and
 > interpolation damage.**
 
-So the oracle stays as a positive-control ceiling, and **field-error tolerance
-becomes the load-bearing D2b result**.
+After rerun, a valid oracle may serve as a positive-control ceiling. No
+field-error tolerance is currently established.
 
 ##### D2b-1 — Oracle degradation (run before any expensive full-session candidate)
 
@@ -774,39 +840,95 @@ get an expensive full-session sorting run.** That is a pre-sort gate (step 5 of
 the sequence above), and it is the main defence against another days-long
 failure.
 
-##### D2b-2 — Donor cohort (frozen before any gate is fitted)
+**Historical run 2026-09-02; retracted pending rerun** — `testing/luke_rescue_d2b1_field_tolerance.py`,
+[`luke_20250804_d2b1_field_tolerance.md`](luke_20250804_d2b1_field_tolerance.md).
+Perturbed the exact field (gain ×0.5–1.5, temporal lag 2–6 s, smoothing σ 3–10 s,
+bias 8–20 µm, spurious depth gradient 0.3–0.7) on T04/T06/T01 rigid-40 µm and T04
+oscillation. Findings:
 
-Waveform class is **required**, not optional. T01 is the warning: exact-trajectory
-interpolation made the sharpest, highest-SNR donor *worse* (0.40 → 0.29) despite
-correcting substantial motion.
+- **Severe rigid drift is forgiving.** Every perturbation still beat
+  no-correction. ±25 % amplitude error keeps ≳ 50 % of the benefit;
+  over-estimation (≥ ×1.25) starts generating false positives. Timing errors are
+  nearly free on a slow ramp.
+- **Oscillation is fragile** — and it is the A2-relevant regime. Over-smoothing
+  to σ = ¼ period drops recovery to **0** (correction = no correction); a 20 µm
+  constant bias goes **negative** (worse than nothing). A fast-motion field must
+  keep temporal bandwidth ≳ 3× the motion frequency and near-zero bias.
+- **Exact ≠ optimal for oscillation:** a *deliberately over-scaled* field
+  (gain ×1.25–1.5) sorted the T04 oscillation better than the true trajectory
+  (0.99 vs 0.78) by suppressing residual FPs. Chase in D2b-3.
+- **The pilot donor templates are not spatially compact** — T04/T06 are flat
+  ±160 µm plateaus, T01 is at noise level. The waveform guardrail (criterion 4)
+  cannot be frozen on them and the penalty magnitudes may not transfer to
+  compact real neurons. **This makes D2b-2 a prerequisite.**
 
-T01 is **not** a privileged biological unit. Treat it as evidence that
-**sharp / spatially compact / high-SNR units may occupy a different tradeoff
-regime** from broad, lower-SNR ones.
+**Withdrawn gate:** the ~30 % amplitude and ~⅓-bandwidth thresholds must not
+be applied. The implementation now fails closed unless independent error,
+support, and split-half evidence are supplied; corrected reruns must define any
+numeric envelope.
 
-The cohort must span:
+##### D2b-2 — Rebuild the donor cohort (prerequisite; frozen before any gate is fitted)
+
+**D2b-1 promoted this from a follow-up to a blocker.** The T01–T10 pilot donors
+are **not spatially compact** — inspected raw, T04/T06 are ~flat high-amplitude
+plateaus across ±160 µm and T01 sits at noise level. They are common-mode-
+contaminated or were never spatially localised. Consequences: the waveform
+guardrail (criterion 4) cannot be frozen on them, and the D2b-1 penalty
+magnitudes may not transfer to compact real neurons (which could be more
+sensitive — sharper spatial gradient, more interpolation blur — or less — higher
+local SNR).
+
+T01 is the warning: exact-trajectory interpolation made the **lowest-amplitude**
+donor (−68 µV, near noise) *worse* (0.40 → 0.29). Treat it as evidence that
+low-SNR / poorly-localised units occupy a different tradeoff regime — not that
+"sharp high-SNR" units do (T01 is neither).
+
+Rebuild the cohort from **verified spatially-compact reviewed waveforms** with a
+real amplitude-decay footprint (< 10 % of peak within ~100 µm). It must span:
 
 - waveform sharpness / spatial compactness
-- SNR
+- SNR (measured on the compact footprint, not the plateau)
 - both polarities where feasible
 
-**At least 8 independent reviewed donor waveforms before any correction gate is
+**At least 8 independent donor waveforms before any correction gate is
 defined**, preferably ~12 given how cheap L1 has proven. Span the observed
-sharpness and SNR range — do not simply add more units like the ones already
-there. **Freeze the cohort before fitting any selective/partial policy.**
+sharpness and SNR range. **Freeze the cohort before fitting any
+selective/partial policy.**
 
-> Do not infer a selective-correction crossover from T01 and T04 alone.
+> Do not infer a selective-correction crossover from T01 and T04 alone —
+> especially not from the flat pilot donors.
+
+**Real half done 2026-09-03** — `testing/ladder_donors.py`,
+[`luke_20250804_d2b2_donor_cohort.md`](luke_20250804_d2b2_donor_cohort.md).
+14 spatially-compact imec0 donors: **de-whitened Kilosort template shape**
+(the STA KS computed after its internal high-pass + CAR + whitening, mapped back
+to sensor space with `whitening_mat_inv`) **scaled to µV by the unit's bandpass
+spike-triggered-average peak**. Median energy-within-±3-channels 0.73 vs the
+pilot's 0.22; half-energy width 1 channel vs 33. Both polarities (7 neg / 7 pos),
+73–295 µV (median 135). No manual review, no /mnt writes.
+
+**Scaling bug caught by the sanity check:** `cluster_Amplitude` is *not* µV — it
+runs ~4–7× small, so the first cohort was injected at 22–70 µV and 5 of 6 donors
+failed to sort. Fixed to the bandpass-STA anchor. The C2 "−270 µV" donors were
+plateau artefacts — their nominal amplitude was noise energy, not a real
+footprint.
+
+**The compact clean good units span 73–295 µV.** A genuinely sharp,
+very-high-SNR stratum is best rounded out with **synthetic** parametric
+templates on top of the 14 real anchors — D2b-3's first task. Until the
+synthetic extension exists and D2b-1 + the C2 drift penalty are re-run per
+stratum on the full cohort, criterion 4's waveform guardrail stays unfrozen.
 
 ##### D2b-3 — Tradeoff axes
 
-| Axis | Levels |
-|---|---|
-| Displacement magnitude | sub-channel to ≥ 40 µm |
-| Estimator support / confidence | high vs low, from the sidecar diagnostics |
-| Rigid vs depth-varying displacement | where justified by the field |
-| Interpolation spatial scale / kernel | appropriate to Luke's probe geometry |
-| Correction strength | full vs reduced/partial |
-| **Waveform / SNR class** | **required** — sharpness, compactness, SNR, polarity |
+| Axis | Levels | D2b-3 first-pass result (2026-09-03) |
+|---|---|---|
+| Displacement magnitude | sub-channel to ≥ 40 µm | tested at 40 µm rigid; residual large there |
+| Estimator support / confidence | high vs low | deferred to D2a |
+| Rigid vs depth-varying displacement | where justified | deferred to D2a |
+| Interpolation spatial scale / kernel | kriging σ 20/40, IDW | **retracted; unresolved pending corrected rerun** |
+| Correction strength | full vs reduced/partial | not yet tested; a *selective* (per-unit-SNR) policy is what D2c should carry |
+| **Waveform / SNR class** | sharpness, compactness, SNR, polarity | **amplitude/SNR dominates; the synthetic sharpness knob did not predict cost.** Only D02 (274 µV) fully recovers; D08 (73 µV) is harmed. The 120–255 µV middle is not cleanly ordered |
 
 The key comparison is always:
 
@@ -1057,22 +1179,41 @@ the next block of time is spent on, and neither needs a new sorter:
    Not over-splitting (0% coexisting), fragments are one clean neuron (92–95%
    refractory-clean merges), not rigid-motion-tracked (|r| ≈ 0.12), rapid
    flicker not slow succession. imec0 and imec1 agree.
-8. ~~**Phase C2**: the paired stationary-vs-moving injected identity challenge.~~
-   **done 2026-09-02** — drift penalty measured directly (−0.30 to −0.81
-   accuracy), and `nblocks=1` rigid correction shown not to recover it. Both
-   inputs to the Phase D decision tree have now reported.
+8. **Phase C2**: the paired stationary-vs-moving injected identity challenge.
+   **Historical run retracted 2026-09-03; corrected rerun pending.** The old
+   −0.30 to −0.81 result and `nblocks=1` comparison are not evidence.
 
-**Next:** **D2a** — the full-session external non-rigid field, then the bounded
-D2b tradeoff characterization. Candidate 1 (stitching) is rejected; Candidate 2
-established that the tradeoff space is worth searching.
+**Superseded 2026-09-03:** this decision point was based on retracted C2/D2b
+results and must not trigger D2a.
 
-The defensible claim until then:
+**Historical decision point.** D2b-1/2/3 were reported done. D2b-3 lowered the expected
+payoff of D2a substantially: with a *perfect* field, voltage interpolation
+recovers only the D02-class (highest-SNR, cleanest) units and cannot be tuned by
+kernel. The options:
 
-> **Motion is now causally established as a major source of missed spikes and
-> identity fragmentation when Luke is sorted without stabilization. Voltage
-> interpolation is also established to impose waveform-dependent costs, but
-> oracle correction shows that accurate stabilization can outweigh those costs
-> for substantial motion. The immediate objective is therefore to determine the
-> best achievable conventional motion-corrected KS4 operating point. Alternative
-> motion-aware sorting/tracking architectures should be evaluated only against
-> that strong baseline if a meaningful identity deficit remains.**
+1. **Run D2a anyway** (full-session external field → `qualify_field` → sort →
+   score vs the 127 + C2 truth). Now a *quantifying* experiment: how many real
+   units are D02-class, and is the net positive once D08-class harm is counted?
+   Multi-hour compute; infra is built (`ladder_motion_estimate.py`).
+2. **Open the architecture gate early.** D2b-3 arguably already shows "the best
+   conventional correction remains meaningfully deficient" for compact units —
+   the gate's trigger. Evaluate a motion-aware template-matching sorter (no
+   voltage resampling) against the rescue baseline.
+3. **Accept the null on motion.** If D2a's net is neutral, rescue vs legacy trade
+   the same errors on this recording and the lever is elsewhere
+   (detection / clustering / the MUA threshold, `0006`).
+
+The earlier recommendation to run D2a next is withdrawn. **Current next step:**
+rerun C2, Candidate 2, D2b-1, D2b-3, and Checkpoint C with geometry-aware
+forward motion, exclusive scoring, and content-bound caches. Only a reproduced
+result may reopen D2a or the architecture gate.
+
+The defensible claim now:
+
+> **Existing observational audits are consistent with motion-related identity
+> instability, and post-sort family stitching did not recover the 127 legacy
+> losses. The intervention tests do not currently establish that imposed motion
+> caused the measured loss, that rescue handles motion better than legacy, or
+> that voltage interpolation has an intrinsic SNR-dependent ceiling. Those
+> questions remain open until the geometry-aware, exclusively scored,
+> content-bound reruns reproduce them.**

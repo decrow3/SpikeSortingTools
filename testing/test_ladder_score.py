@@ -118,7 +118,27 @@ def test_ground_truth_merge_is_flagged_for_both_trains():
     assert out["headline_units_recovered"] == 0
 
 
-def test_symmetric_agreement_reports_both_sides_and_absent(tmp_path):
+def test_ground_truth_one_output_event_cannot_credit_two_truth_events():
+    # The two injected events are closer than the scoring tolerance, but there
+    # is only one detected event.  Exclusive matching may credit either truth
+    # unit, never both.
+    sort = {
+        "st": np.array([1_010], dtype=np.int64),
+        "cl": np.array([0], dtype=np.int64),
+        "label": {0: "good"},
+        "good": {0},
+    }
+    out = ground_truth_scores(
+        sort,
+        {"a": np.array([1_000]), "b": np.array([1_015])},
+        FS,
+        duration_s=1.0,
+        tol_ms=0.5,
+    )
+    assert sum(u["tp"] for u in out["units"]) == 1
+
+
+def test_symmetric_agreement_reports_both_sides_and_withholds_detection_claim(tmp_path):
     shared = np.arange(1000, 200_000, 500)
     cand_unique = np.arange(1200, 200_000, 1700)
     ref_unique = np.arange(300_000, 400_000, 500)  # entirely after any cand spike
@@ -135,8 +155,9 @@ def test_symmetric_agreement_reports_both_sides_and_absent(tmp_path):
     assert agree["matched_good_pairs"] == 1  # the shared train
     assert agree["gained_good"] == 1 and agree["lost_good"] == 1
     assert agree["net_good"] == 0
-    # ref unit 1 has no counterpart in cand at all -> absent at detection
-    assert agree["lost_absent_at_detection"] == 1
+    # Temporal absence alone is no longer promoted to a detection claim.
+    assert agree["lost_absent_at_detection"] is None
+    assert agree["lost_detection_status"] == "unresolved_requires_spatial_null_audit"
 
 
 def test_window_reference_sort_rebases_frames_and_drops_empty_units():

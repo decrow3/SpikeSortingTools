@@ -146,13 +146,18 @@ KS-good windows.
    firing-rate-bin occupancy ("stable" units) is not a substitute for
    amplitude-based missing-spike estimation. But the specific claim that rescue
    detects units *less* completely is retracted — see above.
-8. **The yield difference is relabelling, not detection.** None of the 200
+8. **Retracted pending corrected rerun.** The earlier claim that the yield
+   difference was relabelling rather than detection is unsupported. None of the 200
    KS-good units rescue has and legacy does not is a new detection; every one is
    built from spikes legacy already detected (80 legacy-MUA promotions, 85
    dispersed across many legacy clusters, 35 splits of legacy good units). The
    headline +73 is really +200/−127 — rescue also fails to reproduce 127 legacy
    good units, which no gate measures. See
-   [0010](decisions/0010-rescue-yield-is-relabelling-not-detection.md).
+   [0010](decisions/0010-rescue-yield-is-relabelling-not-detection.md), retracted
+   by [0011](decisions/0011-cross-sort-event-matching-and-detection-evidence.md).
+   Its matcher reused target events, while “found anywhere” had an 87–89%
+   whole-probe chance baseline. Treat every number in this item as historical
+   until the exclusive, spatial, null-controlled v2 output exists.
 9. **A tension is unresolved:** the artifact-aware audit finds zero strong
    duplicate hypotheses, yet 27 similar good–good pairs survive curation against
    8 and 11 for the comparators. The 27 are not attributable to the extra units

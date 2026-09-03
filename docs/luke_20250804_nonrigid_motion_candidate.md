@@ -1,4 +1,11 @@
-# Phase D candidate 2: a non-rigid motion representation — the lever is real, the estimate is the problem
+# RETRACTED: Phase D candidate 2 non-rigid motion evaluation
+
+> **RETRACTED PENDING RERUN — 2026-09-03.** The purported oracle did not invert
+> the injection on Luke's real four-column geometry: the forward path used
+> rounded contiguous channel-index shifts and the correction used continuous
+> physical y-motion. The 0.40 → 0.99 result and every conclusion derived from it
+> are diagnostic history only until regenerated with geometry-aware forward
+> motion, content-bound caches, and exclusive ground-truth matching.
 
 **Date:** 2026-09-02
 **Advances:** Phase D of [`pipeline_improvement_plan.md`](pipeline_improvement_plan.md)
@@ -6,7 +13,7 @@
 **Evaluation:** `testing/luke_rescue_c2_nonrigid_eval.py` — on the cached C2
 injected-truth recordings, drift penalty scored the identical way.
 
-## Verdict
+## Original verdict — withdrawn pending rerun
 
 **A non-rigid motion representation is a real lever** — the first Phase D
 candidate that is. Handed the **exact** injected trajectory and told to correct
@@ -21,7 +28,9 @@ fragmentation goes with it.
 because it has too few units over too short a window to estimate drift and then
 interpolates by the noise. And **the correction itself has a cost**:
 interpolation blurs the waveform, so it does nothing for sub-channel (15 µm)
-drift and actively hurts the sharpest, highest-SNR donor (T01).
+drift and actively hurts T01, the **lowest-amplitude donor** (−68 µV peak, near
+the noise floor — the earlier "sharpest, highest-SNR" reading was wrong; see
+D2b-1).
 
 The path forward is an **external non-rigid estimate computed where it has the
 data to be accurate — the full session** — then interpolation, then the rescue
@@ -81,11 +90,12 @@ Absolute moving-arm accuracy, the clearest cut:
    more data.
 3. **Interpolation is not free.** It does not help sub-channel drift (15 µm ≈
    0.75 channel — the interpolation noise swamps the signal), and it degrades
-   T01 — the sharpest waveform, most sensitive to spatial blur. A real candidate
+   T01 — the lowest-amplitude donor, near the noise floor. A real candidate
    must be judged per-SNR-tertile, not on a median.
 4. **T01 is a warning.** Even a perfect motion vector can lose to no correction
-   when the waveform is sharp and the drift is small. The rescue pipeline's
-   whole thesis is "preserve the voltage"; interpolation spends some of that.
+   for a low-amplitude unit near the noise floor at small drift. The rescue
+   pipeline's whole thesis is "preserve the voltage"; interpolation spends some
+   of that.
 
 ## Next
 

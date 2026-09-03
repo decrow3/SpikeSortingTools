@@ -1,5 +1,11 @@
 # Phase A2: rescue's re-partitioning is clean temporal flicker, not motion-tracked, not over-splitting
 
+> **RETRACTED PENDING V2 RERUN — 2026-09-03.** This report inherited the invalid
+> cross-sort cohorts and measured “merged” refractory violations on the anchor
+> train rather than the union of fragment trains. The 92–95% clean-merge result,
+> one-neuron interpretation, and stitching recommendation are withdrawn. V2
+> uses exclusive identities, spatially plausible fragments, and actual unions.
+
 **Date:** 2026-09-02
 **Closes:** Phase A2 / Checkpoint A2 of
 [`pipeline_improvement_plan.md`](pipeline_improvement_plan.md)

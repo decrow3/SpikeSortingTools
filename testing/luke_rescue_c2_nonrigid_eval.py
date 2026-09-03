@@ -1,10 +1,10 @@
-"""Phase D candidate 2 — does a non-rigid motion representation close the C2 drift penalty?
+"""Phase D candidate 2 — rerun the non-rigid representation test correctly.
 
-C2 (`luke_rescue_c2_drift_challenge.py`): the same neuron injected on a known
-trajectory loses 30-80 accuracy points against its static twin, and KS4's
-*rigid* internal correction (`legacy_style`, `nblocks=1`) does not recover it.
+The original C2 penalty and Candidate 2 conclusions are retracted. This version
+uses the geometry-aware C2 recordings to determine whether a reproducible drift
+penalty exists and whether non-rigid correction closes it.
 
-This evaluates two non-rigid representations against the identical cached C2
+This evaluates two non-rigid representations against the corrected cached C2
 injected recordings, scored the identical way (drift penalty = moving − static
 on the injected unit):
 
@@ -24,8 +24,9 @@ Reading:
 
     python testing/luke_rescue_c2_nonrigid_eval.py
 
-Status: diagnostic (reuses the C2 discovery-cohort donor templates). Outputs to
-testing/outputs/luke_rescue_c2_nonrigid_eval/. Nothing under /mnt.
+Status: corrected rerun pending (reuses the C2 discovery-cohort donor
+templates). Outputs to testing/outputs/luke_rescue_c2_nonrigid_eval_v2/.
+Nothing under /mnt.
 """
 
 from __future__ import annotations
@@ -50,13 +51,13 @@ from testing.luke_rescue_c2_drift_challenge import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_c2_nonrigid_eval"
+OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_c2_nonrigid_eval_v2"
 C2_RUNS = C2_OUTPUT / "runs"
 
 PRESPEC = {
-    "schema": "luke-rescue-c2-nonrigid-v1",
-    "frozen": "2026-09-02",
-    "status": "diagnostic_discovery_cohort_reuse_not_confirmatory",
+    "schema": "luke-rescue-c2-nonrigid-v2",
+    "frozen": "2026-09-03",
+    "status": "corrected_geometry_aware_rerun_pending",
     "question": (
         "Does a non-rigid motion representation (KS4 datashift nblocks=6, or "
         "oracle correction with the known trajectory) close the C2 drift penalty "
@@ -67,7 +68,7 @@ PRESPEC = {
         "nonrigid": "KS4 non-rigid datashift do_correction=True nblocks=6",
         "oracle": "InterpolateMotionRecording with the exact injected trajectory, then rescue sort",
     },
-    "reuses": "testing/outputs/luke_rescue_c2_drift_challenge/runs (cached injected recordings)",
+    "reuses": "testing/outputs/luke_rescue_c2_drift_challenge_v2/runs",
     "oracle_sign_check": (
         "the static arm must stay >= 0.9 accuracy after oracle correction; a "
         "sign error would corrupt it"

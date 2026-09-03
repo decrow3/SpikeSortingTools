@@ -4,6 +4,10 @@
 **Qualified 2026-09-02 by [0008](0008-amplitude-completeness-gates-promotion.md)
 and [0009](0009-cross-sort-comparisons-must-be-unit-matched.md)** — read both
 before citing any yield result below.
+**Further qualified 2026-09-03 by [0011](0011-cross-sort-event-matching-and-detection-evidence.md):**
+the empirical matched-unit and “yield is relabelling” claims are retracted;
+there is currently no validated evidence that rescue detects the same neurons
+as legacy or performs better.
 **Applies to:** every production sort
 
 > **The interpretation in this record is narrowed by

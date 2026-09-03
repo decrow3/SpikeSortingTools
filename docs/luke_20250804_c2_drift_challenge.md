@@ -1,5 +1,13 @@
 # Phase C2: motion shatters a clean neuron, and KS4 rigid drift correction does not fix it
 
+> **RETRACTED PENDING RERUN — 2026-09-03.** The moving injection shifted
+> contiguous channel indices, which is not physical depth motion on Luke's
+> four-column geometry, while the oracle correction applied a continuous
+> y-displacement. Ground-truth event matching was also non-exclusive. The
+> numerical drift penalties below are retained as history but must not be cited
+> as evidence that motion causes the reported loss until the geometry-aware,
+> exclusively scored experiment is rerun.
+
 **Date:** 2026-09-02
 **Advances:** Phase C (steps 1–2) and Phase C2 of
 [`pipeline_improvement_plan.md`](pipeline_improvement_plan.md)
@@ -38,7 +46,7 @@ Two sorter configs were run on the *identical* injected snippets:
 - **legacy_style** — KS4 with rigid internal drift correction (`nblocks=1`) and
   the legacy detection thresholds (`Th 9/8`), `ladder_sorter.LEGACY_STYLE`.
 
-## Benchmark sanity — passed
+## Historical benchmark sanity — not sufficient to validate the experiment
 
 | donor | SNR | rescue static acc | legacy_style static acc |
 |---|---:|---:|---:|
@@ -46,12 +54,13 @@ Two sorter configs were run on the *identical* injected snippets:
 | T04 | 6.1 | **0.95** | **0.95** |
 | T06 | 4.6 | 0.50 | 0.65 |
 
-Both configs recover the easy high-SNR static injections at ≥ 0.9 (plan Phase C
-step 2). **The benchmark is sound.** T06 (lowest SNR) is not cleanly recovered
+Both configs recovered the easy high-SNR static injections at ≥ 0.9. This
+does **not** make the old moving-arm benchmark sound because the forward motion
+operator was invalid. T06 (lowest SNR) was not cleanly recovered
 even static under either config, so its drift penalties are measured against a
 broken baseline and are **not interpretable** — excluded below.
 
-## Result — the drift penalty, both arms
+## Retracted historical result — the drift penalty, both arms
 
 For the two donors with a clean static baseline (Δ accuracy = moving − static):
 
@@ -64,7 +73,7 @@ For the two donors with a clean static baseline (Δ accuracy = moving − static
 | T04 | rigid 40 µm | −0.53 | −0.31 | +15 | +12 |
 | T04 | osc 20 µm / 40 s | −0.38 | −0.49 | +13 | +10 |
 
-### What the numbers say
+### Original interpretation — withdrawn pending rerun
 
 1. **Motion alone costs 30–80 accuracy points — under *both* configs.** The
    waveform and train are identical between arms; the only difference is a
@@ -96,16 +105,15 @@ For the two donors with a clean static baseline (Δ accuracy = moving − static
 6. **Even 1.5 channels of drift costs −0.30 to −0.58.** Motion does not have to
    be large to matter.
 
-## Consequence for Phase D
+## Historical consequence for Phase D — withdrawn
 
 Phase A2 could not separate *non-rigid / fast motion* from *KS4 template
-competition*. **C2 shows imposing motion reproduces the A2 signature** —
-identity proliferation, accuracy collapse via missed spikes — so motion is a
-**sufficient cause** of the fragmentation pattern.
+competition*. The old C2 run does not resolve that ambiguity. It cannot show
+that motion is a sufficient cause because its imposed motion was not physically
+consistent with the correction operator.
 
-And C2 rules out the cheapest candidate fix: **`nblocks=1` rigid drift
-correction is comparable or worse, not better.** The Phase D target is therefore
-one of:
+The old C2 run also cannot rule out `nblocks=1` or establish a preferred Phase D
+target. The original candidate list was:
 
 - **non-rigid** motion handling (the rigid arm's failure on the oscillation is
   the direct evidence);

@@ -9,8 +9,16 @@ from testing.luke_rescue_lost_units_audit import (
 
 
 def test_classify_covers_every_branch():
-    assert classify(0.0, [], set()) == "absent at detection"
-    assert classify(0.1, [(1, 0.1, "mua")], set()) == "absent at detection"
+    assert classify(0.0, [], set()) == "detection status unresolved"
+    assert (
+        classify(0.1, [(1, 0.1, "mua")], set())
+        == "detection status unresolved"
+    )
+    assert (
+        classify(1.0, [(5, 0.9, "mua")], set(),
+                 shared_detection_supported=False)
+        == "detection status unresolved"
+    )
     assert classify(1.0, [(5, 0.9, "mua")], set()) == "preserved as MUA"
     assert classify(1.0, [(5, 0.9, "mua")], {5}) == "merged into a rescue good unit"
     assert classify(1.0, [(5, 0.9, "good")], set()) == "merged into a rescue good unit"

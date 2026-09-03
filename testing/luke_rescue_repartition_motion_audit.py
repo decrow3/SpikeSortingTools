@@ -1,10 +1,9 @@
 """Phase A2 — is rescue's re-partitioning of legacy units motion-structured?
 
-`docs/pipeline_improvement_plan.md` Phase A2. Phase A established that the −127
-lost legacy-good units and the +200 gains are all relabelling — no detection
-loss. It split the −127 into 27 label-threshold demotions and **100 re-clustered
-units**, and named a mechanistic hypothesis for the 100 (and the dispersed
-gains):
+Corrected Phase A2 implementation.  The original Phase A cohort counts and
+"all relabelling" premise were produced by a non-exclusive event matcher and a
+whole-probe coincidence statistic with a very high chance baseline.  Those
+empirical claims are retracted pending regeneration of this v2 output.
 
 > Legacy partially stabilised moving neurons by resampling voltage. Rescue
 > preserves the voltage but leaves KS4 to represent a moving waveform footprint,
@@ -26,7 +25,7 @@ Runs on **imec0 and imec1** (`--probe`). imec0's DREDGE rigid estimate is small
 and QC-unqualified; imec1's motion is larger. The output reports the *mix* per
 probe — counts per class, not a verdict — which sets the Phase D priority tree.
 
-Outputs to testing/outputs/luke_rescue_repartition_motion_audit/<probe>/.
+Outputs to testing/outputs/luke_rescue_repartition_motion_audit_v2/<probe>/.
 Nothing is written under /mnt.
 """
 
@@ -40,15 +39,21 @@ import numpy as np
 import pandas as pd
 from scipy.stats import spearmanr
 
-from testing.luke_rescue_unique_units_audit import load_sort, nearest_hit
+from testing.luke_rescue_unique_units_audit import (
+    exclusive_event_pairs,
+    load_sort,
+    nearest_hit,
+    template_depth_by_cluster,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_repartition_motion_audit"
+OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_repartition_motion_audit_v2"
 LUKE_ROOT = Path("/mnt/NPX/Luke/20250804")
 
 PRESPEC = {
-    "schema": "luke-rescue-repartition-motion-v1",
-    "frozen": "2026-09-02",
+    "schema": "luke-rescue-repartition-motion-v2",
+    "frozen": "2026-09-03",
+    "status": "exclusive_null_aware_rerun_pending",
     "question": (
         "Are rescue's dispersed re-partitions of legacy units temporally "
         "complementary and motion-tracking (motion fragmentation), or coexisting "
@@ -154,19 +159,22 @@ def _rigid_motion_relative(motion_dir: Path):
 
 
 def _mutual_best_good(a: dict, b: dict) -> tuple[set, set]:
-    """Return (a good ids matched to b, b good ids matched to a)."""
+    """Return good-unit identities using one-to-one event coincidence."""
     a_mask = np.isin(a["cl"], list(a["good"]))
     b_mask = np.isin(b["cl"], list(b["good"]))
     a_st, a_cl = a["st"][a_mask], a["cl"][a_mask]
     b_st, b_cl = b["st"][b_mask], b["cl"][b_mask]
-    hit, hit_cl = nearest_hit(a_st, b_st, b_cl)
+    a_hit, b_hit = exclusive_event_pairs(a_st, b_st, tolerance=TOL)
     a_ids, b_ids = np.unique(a_cl), np.unique(b_cl)
     ai = {c: i for i, c in enumerate(a_ids)}
     bi = {c: i for i, c in enumerate(b_ids)}
     counts = np.zeros((len(a_ids), len(b_ids)), dtype=np.int64)
-    np.add.at(
-        counts, ([ai[c] for c in a_cl[hit]], [bi[c] for c in hit_cl[hit]]), 1
-    )
+    if a_hit.size:
+        np.add.at(
+            counts,
+            ([ai[c] for c in a_cl[a_hit]], [bi[c] for c in b_cl[b_hit]]),
+            1,
+        )
     n_a = np.array([(a_cl == c).sum() for c in a_ids])
     n_b = np.array([(b_cl == c).sum() for c in b_ids])
     frac = counts / np.maximum(np.minimum(n_a[:, None], n_b[None, :]), 1)
@@ -179,9 +187,21 @@ def _mutual_best_good(a: dict, b: dict) -> tuple[set, set]:
     return a_matched, b_matched
 
 
-def _fragments(anchor_st: np.ndarray, other: dict) -> list[tuple[int, float]]:
-    """Other-sort clusters capturing >= CAPTURE_FLOOR of the anchor train."""
+def _fragments(
+    anchor_st: np.ndarray,
+    other: dict,
+    anchor_depth_um: float | None = None,
+) -> list[tuple[int, float]]:
+    """Spatially plausible clusters capturing enough of the anchor train."""
     hit, hit_cl = nearest_hit(anchor_st, other["st"], other["cl"])
+    depth = other.get("_template_depth")
+    if depth is not None and anchor_depth_um is not None and np.isfinite(anchor_depth_um):
+        plausible_ids = {
+            int(cid)
+            for cid, value in depth.items()
+            if abs(float(value) - float(anchor_depth_um)) <= 100.0
+        }
+        hit &= np.isin(hit_cl, list(plausible_ids))
     n = anchor_st.size
     if not hit.any():
         return []
@@ -207,6 +227,14 @@ def _assign_to_fragments(
     return out
 
 
+def _cluster_train(sort: dict, cluster_id: int) -> np.ndarray:
+    """Sorted full train for a cluster, cached for family-union diagnostics."""
+    cache = sort.setdefault("_train_cache", {})
+    if cluster_id not in cache:
+        cache[cluster_id] = np.sort(sort["st"][sort["cl"] == cluster_id])
+    return cache[cluster_id]
+
+
 def _score_family(
     anchor_st: np.ndarray,
     anchor_depth: np.ndarray,
@@ -216,7 +244,7 @@ def _score_family(
 ) -> dict | None:
     order = np.argsort(anchor_st)
     st, depth = anchor_st[order], anchor_depth[order]
-    frags = _fragments(st, other)
+    frags = _fragments(st, other, float(np.median(depth)))
     if len(frags) < 2:
         return None
     frag_ids = [f for f, _ in frags]
@@ -274,8 +302,14 @@ def _score_family(
         if ok.sum() >= 3 and np.std(vd[ok]) > 0 and np.std(m_at[ok]) > 0:
             motion_corr = float(np.corrcoef(vd[ok], m_at[ok])[0, 1])
 
-    isi_ms = np.diff(st) / fs * 1000.0
-    merged_rv = float((isi_ms < REFRACTORY_MS).mean()) if st.size > 1 else np.nan
+    # Cleanliness must be measured on the spike trains that would actually be
+    # merged, including their unmatched/extra events. The old implementation
+    # measured the already-clean anchor and therefore could not test a merge.
+    merged = np.sort(
+        np.concatenate([_cluster_train(other, cluster_id) for cluster_id in frag_ids])
+    )
+    isi_ms = np.diff(merged) / fs * 1000.0
+    merged_rv = float((isi_ms < REFRACTORY_MS).mean()) if merged.size > 1 else np.nan
 
     successive = temporal_overlap < D["temporal_overlap_successive_max"]
     coexist = temporal_overlap > D["temporal_overlap_coexist_min"]
@@ -302,7 +336,9 @@ def _score_family(
     return {
         "n_spikes": int(st.size),
         "n_fragments": len(frag_ids),
+        "fragment_ids": [int(c) for c in frag_ids],
         "fragment_capture": [round(c, 3) for _, c in frags],
+        "merged_fragment_spikes": int(merged.size),
         "n_bins_scored": int(valid.sum()),
         "n_ownership_switches": n_switches,
         "ownership_switch_per_hr": switch_per_hr,
@@ -337,7 +373,7 @@ def _families_for_side(
         if m.sum() < MIN_SPIKES:
             continue
         a_st = st_native[m]
-        frags = _fragments(np.sort(a_st), other)
+        frags = _fragments(np.sort(a_st), other, float(np.median(depth_native[m])))
         if not frags or frags[0][1] >= best_partner_ceiling:
             continue
         rows.append({"cid": int(cid), "st": a_st, "depth": depth_native[m]})
@@ -367,6 +403,8 @@ def run_probe(probe: str) -> dict:
 
     legacy = load_sort(paths["legacy"])
     rescue = load_sort(paths["rescue"])
+    legacy["_template_depth"] = template_depth_by_cluster(paths["legacy"])
+    rescue["_template_depth"] = template_depth_by_cluster(paths["rescue"])
     fs_legacy = _sample_rate(paths["legacy"])
     fs_rescue = _sample_rate(paths["rescue"])
     motion = _rigid_motion_relative(paths["motion"])

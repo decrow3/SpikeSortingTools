@@ -12,9 +12,9 @@ Three layers, matching §5:
   identity continuity. Headline: *units recovered at accuracy ≥ 0.8 with no
   split and no merge* — one integer, `headline_units_recovered`.
 * **secondary** — real-data symmetric agreement against a reference sort:
-  `gained_good` / `lost_good`, never a bare net, plus `lost_absent_at_detection`
-  (the Phase A regression signal). Reuses the coincidence machinery from
-  `luke_rescue_unique_units_audit.py` unchanged.
+  `gained_good` / `lost_good`, never a bare net. Identity uses the corrected
+  one-to-one coincidence machinery. Detection-loss classification is withheld
+  until spatial, null-controlled evidence is available.
 * **guardrails** — similar good–good pairs per good unit, refractory-violation
   distribution, edge-spike fraction, runtime per unit data. Any breach blocks
   promotion.
@@ -36,13 +36,12 @@ from testing.luke_rescue_unique_units_audit import (
     REFRACTORY_MS,
     SIMILARITY_THRESHOLD,
     DEPTH_WINDOW_UM,
-    TOL,
     load_sort,
     mutual_best_matches,
     nearby_similar_good_pairs,
 )
 
-SCORE_SCHEMA = "luke-ladder-score-sort-v1"
+SCORE_SCHEMA = "luke-ladder-score-sort-v2"
 
 # §5 "Explicitly not endpoints". Present in `context` for provenance only; a
 # promotion decision that cites any of these is out of contract.
@@ -79,21 +78,61 @@ def coincident_mask(a: np.ndarray, b: np.ndarray, tol: int) -> np.ndarray:
 # --------------------------------------------------------------------------- #
 # primary — hybrid ground truth
 # --------------------------------------------------------------------------- #
-def _identity_continuity(truth_st, trains, tol, edges):
+def _exclusive_event_matches(
+    truth: Mapping[str, np.ndarray], st: np.ndarray, tol: int
+):
+    """Maximum-cardinality one-to-one matches between all truth and output events.
+
+    Matching all injected trains together prevents one output spike from being
+    credited to two nearby truth events.  Inputs are interval ordered, so the
+    standard two-pointer matcher is maximum-cardinality for a fixed tolerance.
+    """
+    truth_times = np.concatenate(list(truth.values())) if truth else np.array([], dtype=np.int64)
+    truth_ids = np.concatenate([
+        np.full(v.size, k, dtype=object) for k, v in truth.items()
+    ]) if truth else np.array([], dtype=object)
+    truth_order = np.argsort(truth_times, kind="stable")
+    truth_times = truth_times[truth_order]
+    truth_ids = truth_ids[truth_order]
+
+    output_order = np.argsort(st, kind="stable")
+    output_times = np.asarray(st, dtype=np.int64)[output_order]
+    matched_truth: list[int] = []
+    matched_output: list[int] = []
+    i = j = 0
+    while i < truth_times.size and j < output_times.size:
+        delta = int(output_times[j]) - int(truth_times[i])
+        if delta < -tol:
+            j += 1
+        elif delta > tol:
+            i += 1
+        else:
+            matched_truth.append(i)
+            matched_output.append(int(output_order[j]))
+            i += 1
+            j += 1
+    return truth_times, truth_ids, np.asarray(matched_truth), np.asarray(matched_output)
+
+
+def _identity_continuity(truth_st, trains, matched_times_by_out, edges):
     labels: list[int | None] = []
     bin_acc: list[float] = []
+    n_bins_scored = 0
     for lo, hi in zip(edges[:-1], edges[1:]):
         seg = truth_st[(truth_st >= lo) & (truth_st < hi)]
         if seg.size < 5:  # too few injected spikes in this bin to adjudicate
-            labels.append(None)
             continue
-        best, best_tp = None, -1
-        for oid, ost in trains.items():
-            o_seg = ost[(ost >= lo) & (ost < hi)]
-            tp = int(coincident_mask(seg, o_seg, tol).sum())
+        n_bins_scored += 1
+        best, best_tp = None, 0
+        for oid in trains:
+            mt = np.asarray(matched_times_by_out.get(oid, []), dtype=np.int64)
+            tp = int(((mt >= lo) & (mt < hi)).sum())
             if tp > best_tp:
                 best, best_tp = oid, tp
-        labels.append(best)
+        labels.append(best if best_tp else None)
+        if best is None:
+            bin_acc.append(0.0)
+            continue
         o_seg = trains[best][(trains[best] >= lo) & (trains[best] < hi)]
         fn = seg.size - best_tp
         fp = o_seg.size - best_tp
@@ -103,7 +142,7 @@ def _identity_continuity(truth_st, trains, tol, edges):
     switches = sum(1 for a, b in zip(seq, seq[1:]) if a != b)
     return {
         "label_switches": int(switches),
-        "n_bins_scored": len(seq),
+        "n_bins_scored": n_bins_scored,
         "min_bin_accuracy": float(min(bin_acc)) if bin_acc else float("nan"),
     }
 
@@ -128,12 +167,14 @@ def ground_truth_scores(
     if edges.size < 2:
         edges = np.array([0.0, duration_s * fs])
 
+    truth_times, truth_ids, mt, mo = _exclusive_event_matches(truth, st, tol)
     caught: dict[tuple[str, int], int] = {}
-    for tid, tst in truth.items():
-        for oid, ost in trains.items():
-            n = int(coincident_mask(tst, ost, tol).sum())
-            if n:
-                caught[(tid, oid)] = n
+    matched_times: dict[str, dict[int, list[int]]] = {tid: {} for tid in truth}
+    for ti, oi in zip(mt, mo):
+        tid = str(truth_ids[ti])
+        oid = int(cl[oi])
+        caught[(tid, oid)] = caught.get((tid, oid), 0) + 1
+        matched_times[tid].setdefault(oid, []).append(int(truth_times[ti]))
 
     units = []
     for tid, tst in truth.items():
@@ -156,7 +197,7 @@ def ground_truth_scores(
             and caught.get((otid, best), 0) / truth[otid].size > CAPTURE_FRAC
         ]
         merge = len(merged_with) > 0
-        cont = _identity_continuity(tst, trains, tol, edges)
+        cont = _identity_continuity(tst, trains, matched_times[tid], edges)
         recovered = (
             accuracy >= ACCURACY_GATE and n_capturing <= 1 and not merge
         )
@@ -241,8 +282,9 @@ def window_reference_sort(
 def symmetric_agreement(sort: Mapping, reference) -> dict:
     """`+N / -M` KS-good agreement against a reference sort (§5 secondary).
 
-    Never returns a bare net. `lost_absent_at_detection` is the Phase A signal:
-    reference good units with < 25% of their spikes anywhere in `sort`.
+    Never returns a bare net. Detection-loss status is deliberately unresolved
+    here: this generic interface has no validated spatial identity/null model,
+    and whole-probe temporal coincidence cannot establish presence or absence.
     """
     ref = reference if isinstance(reference, Mapping) else load_sort(Path(reference))
     matches = mutual_best_matches(sort, ref)
@@ -251,18 +293,13 @@ def symmetric_agreement(sort: Mapping, reference) -> dict:
     gained = sorted(set(sort["good"]) - matched_cand)
     lost = sorted(set(ref["good"]) - matched_ref)
 
-    lost_absent = 0
-    for cid in lost:
-        a = ref["st"][ref["cl"] == cid]
-        if coincident_mask(a, sort["st"], TOL).mean() < 0.25:
-            lost_absent += 1
-
     return {
         "matched_good_pairs": int(len(matches)),
         "gained_good": len(gained),
         "lost_good": len(lost),
         "net_good": len(gained) - len(lost),
-        "lost_absent_at_detection": int(lost_absent),
+        "lost_absent_at_detection": None,
+        "lost_detection_status": "unresolved_requires_spatial_null_audit",
         "reference_good": len(ref["good"]),
         "candidate_good": len(sort["good"]),
         "gained_ids": [int(c) for c in gained],

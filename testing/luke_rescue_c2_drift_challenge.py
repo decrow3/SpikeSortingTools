@@ -25,7 +25,7 @@ on top and reported in µm and channels. Recorded here, not corrected for.
 
     python testing/luke_rescue_c2_drift_challenge.py --templates T01 T04 T06
 
-Outputs to testing/outputs/luke_rescue_c2_drift_challenge/. Nothing under /mnt.
+Outputs to testing/outputs/luke_rescue_c2_drift_challenge_v2/. Nothing under /mnt.
 """
 
 from __future__ import annotations
@@ -40,18 +40,18 @@ from pipeline.config import fingerprint
 from testing.ladder_inject import (
     channels_per_um,
     drift_penalty,
-    paired_injection,
     rigid_oscillation,
     rigid_ramp,
     static_trajectory,
     write_injected_recording,
 )
 from testing.ladder_l1 import l1_run
+from testing.ladder_motion import paired_geometry_motion_injection
 from testing.ladder_score import score_sort
 from testing.luke_injected_ground_truth_benchmark import validate_template
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_c2_drift_challenge"
+OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_c2_drift_challenge_v2"
 LUKE_ROOT = Path("/mnt/NPX/Luke/20250804")
 DONOR_TEMPLATES = (
     REPO_ROOT
@@ -59,9 +59,9 @@ DONOR_TEMPLATES = (
 )
 
 PRESPEC = {
-    "schema": "luke-rescue-c2-drift-challenge-v1",
-    "frozen": "2026-09-02",
-    "status": "diagnostic_discovery_cohort_reuse_not_confirmatory",
+    "schema": "luke-rescue-c2-drift-challenge-v2",
+    "frozen": "2026-09-03",
+    "status": "corrected_geometry_aware_rerun_pending",
     "question": (
         "Does an injected neuron on a known Luke-like trajectory fragment where "
         "the identical static injection does not?"
@@ -215,10 +215,11 @@ def run(
         injected: dict[str, tuple[Path, dict]] = {}
         for traj_name in PRESPEC["trajectories"]:
             traj_fn, traj_meta = _trajectory_fn(traj_name, geometry, duration_s)
-            static_uv, moving_uv, truth = paired_injection(
+            static_uv, moving_uv, truth = paired_geometry_motion_injection(
                 bg_uv, template, train, fs=fs, base_channel=base_channel,
                 moving_trajectory=traj_fn, amplitude_scale=PRESPEC["amplitude_scale"],
                 unit_id="inj0", edge_guard_samples=TP["edge_guard_samples"],
+                channel_positions=geometry,
             )
             arm_uv = static_uv if traj_name == "static" else moving_uv
             rec_dir = out_root / f"{tid}_{traj_name}"

@@ -1,5 +1,12 @@
 # Truncation estimator audit and unit-matched re-analysis (Luke0804 imec0)
 
+> **PARTIAL RETRACTION — 2026-09-03.** The synthetic logistic-model fitter
+> characterization and the population-composition confound remain valid. The
+> 43/47/42 matched-unit counts, paired estimates, tolerance robustness, and
+> reweighted empirical result are withdrawn because the matcher reused target
+> events. Rerun `luke_truncation_matched_units.py` to create
+> `matched_units_v2.csv` before citing a cross-sort numerical result.
+
 **Date:** 2026-09-02
 **Scope:** follow-up items 2 and 3 of
 [`decisions/0008`](decisions/0008-amplitude-completeness-gates-promotion.md),

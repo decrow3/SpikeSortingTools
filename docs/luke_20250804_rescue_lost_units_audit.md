@@ -1,5 +1,11 @@
 # The 127 legacy-good units rescue drops: all relabelling, none lost (Luke0804 imec0)
 
+> **RETRACTED PENDING V2 RERUN — 2026-09-03.** The 127-unit cohort came from a
+> non-exclusive matcher, and the 100% “present in rescue” statistic had an
+> approximately 87% whole-probe chance baseline. No claim about detection loss,
+> curation loss, or relabelling survives. V2 fails closed unless spatial
+> coincidence exceeds a fixed circular-shift null.
+
 **Date:** 2026-09-02
 **Closes:** Phase A / Checkpoint A of
 [`pipeline_improvement_plan.md`](pipeline_improvement_plan.md)
