@@ -118,10 +118,12 @@ def test_ground_truth_merge_is_flagged_for_both_trains():
     assert out["headline_units_recovered"] == 0
 
 
-def test_ground_truth_one_output_event_cannot_credit_two_truth_events():
-    # The two injected events are closer than the scoring tolerance, but there
-    # is only one detected event.  Exclusive matching may credit either truth
-    # unit, never both.
+def test_ground_truth_two_trains_one_output_event_is_scored_as_a_merge():
+    # Two injected units fire within the scoring tolerance and the sorter
+    # resolves only one event. Per-cluster matching (decisions/0014) credits
+    # both trains against that cluster; the invariant that matters is that the
+    # single output unit is flagged as a merge for both trains, so neither is
+    # counted as cleanly recovered.
     sort = {
         "st": np.array([1_010], dtype=np.int64),
         "cl": np.array([0], dtype=np.int64),
@@ -135,7 +137,68 @@ def test_ground_truth_one_output_event_cannot_credit_two_truth_events():
         duration_s=1.0,
         tol_ms=0.5,
     )
-    assert sum(u["tp"] for u in out["units"]) == 1
+    assert all(u["merge"] for u in out["units"])
+    assert out["headline_units_recovered"] == 0
+
+
+# --- decisions/0014 regression tests: per-cluster matching ------------------- #
+def test_dense_background_does_not_steal_from_the_best_cluster():
+    # The C2 v3 pathology: with global exclusive matching against the pooled
+    # spike river, unrelated spikes near the injected times stole ~10% of
+    # matches, a constant ~0.78 accuracy floor regardless of donor. Per-cluster
+    # matching must be immune: a real recording's background lives in many
+    # low-rate clusters, none of which owns the injected train.
+    truth_st = np.arange(1_000, 300_000, 400)  # 748 spikes over 10 s
+    rng = np.random.default_rng(0)
+    st = [truth_st]
+    cl = [np.zeros(truth_st.size, dtype=np.int64)]
+    for k in range(1, 60):  # 59 background clusters, ~300 random spikes each
+        bg = np.sort(rng.integers(0, 300_000, 300))
+        st.append(bg)
+        cl.append(np.full(bg.size, k, dtype=np.int64))
+    st = np.concatenate(st)
+    cl = np.concatenate(cl)
+    sort = {
+        "st": st.astype(np.int64), "cl": cl,
+        "label": {c: ("good" if c == 0 else "mua") for c in range(60)}, "good": {0},
+    }
+    out = ground_truth_scores(sort, {"u1": truth_st}, FS, duration_s=10.0)
+    u = out["units"][0]
+    assert u["best_output_unit"] == 0
+    assert u["tp"] == truth_st.size and u["fn"] == 0
+    assert u["accuracy"] == 1.0
+    assert u["n_output_units_capturing"] == 1  # no background cluster captures >5%
+    assert u["recovered"] is True
+
+
+def test_true_split_lowers_accuracy_and_is_flagged():
+    truth_st = np.arange(0, 300_000, 200)  # 1500 spikes
+    half = truth_st.size // 2
+    st = truth_st.copy()
+    cl = np.zeros(truth_st.size, dtype=np.int64)
+    cl[half:] = 1  # one injected neuron, two output clusters, no overlap
+    sort = {"st": st, "cl": cl, "label": {0: "good", 1: "good"}, "good": {0, 1}}
+    out = ground_truth_scores(sort, {"u1": truth_st}, FS, duration_s=10.0)
+    u = out["units"][0]
+    assert u["n_output_units_capturing"] == 2 and u["split"] is True
+    assert u["accuracy"] < 0.55  # best cluster only holds ~half the train
+    assert u["recovered"] is False
+
+
+def test_duplicate_cluster_is_noticed_while_best_cluster_score_stays_sensible():
+    truth_st = np.arange(1_000, 300_000, 300)  # ~997 spikes
+    dup = truth_st[: int(truth_st.size * 0.4)]  # 40% copied into another cluster
+    st = np.concatenate([truth_st, dup])
+    cl = np.concatenate([np.zeros(truth_st.size), np.ones(dup.size)]).astype(np.int64)
+    sort = {
+        "st": st.astype(np.int64), "cl": cl,
+        "label": {0: "good", 1: "good"}, "good": {0, 1},
+    }
+    out = ground_truth_scores(sort, {"u1": truth_st}, FS, duration_s=10.0)
+    u = out["units"][0]
+    assert u["best_output_unit"] == 0 and u["accuracy"] == 1.0  # clean best cluster
+    assert u["n_output_units_capturing"] == 2 and u["split"] is True
+    assert u["recovered"] is False  # the duplicate blocks a clean-recovery call
 
 
 def test_symmetric_agreement_reports_both_sides_and_withholds_detection_claim(tmp_path):

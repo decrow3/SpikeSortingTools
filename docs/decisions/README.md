@@ -23,6 +23,7 @@ this research repository and is not duplicated here.
 | [0011](0011-cross-sort-event-matching-and-detection-evidence.md) | Exclusive event identity and null-controlled detection evidence (retracts 0009/0010 empirical results) |
 | [0012](0012-c2-uses-compact-donor-cohort.md) | C2 uses compact D2b-2 donors; pilot plateau donors are forbidden |
 | [0013](0013-luke-imec0-has-appreciable-rigid-motion.md) | Luke imec0 has appreciable rigid motion; the 1.28 µm sidecar is withdrawn |
+| [0014](0014-injected-truth-scoring-is-per-cluster.md) | Injected-truth recovery is scored per output cluster, not against the pooled spike river |
 
 The active work plan derived from these records is
 [`../pipeline_improvement_plan.md`](../pipeline_improvement_plan.md).

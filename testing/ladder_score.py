@@ -41,7 +41,7 @@ from testing.luke_rescue_unique_units_audit import (
     nearby_similar_good_pairs,
 )
 
-SCORE_SCHEMA = "luke-ladder-score-sort-v2"
+SCORE_SCHEMA = "luke-ladder-score-sort-v3"
 
 # §5 "Explicitly not endpoints". Present in `context` for provenance only; a
 # promotion decision that cites any of these is out of contract.
@@ -78,40 +78,39 @@ def coincident_mask(a: np.ndarray, b: np.ndarray, tol: int) -> np.ndarray:
 # --------------------------------------------------------------------------- #
 # primary — hybrid ground truth
 # --------------------------------------------------------------------------- #
-def _exclusive_event_matches(
-    truth: Mapping[str, np.ndarray], st: np.ndarray, tol: int
-):
-    """Maximum-cardinality one-to-one matches between all truth and output events.
+def _exclusive_pairs(a: np.ndarray, b: np.ndarray, tol: int):
+    """Greedy interval-order 1:1 matches between two *sorted* int arrays.
 
-    Matching all injected trains together prevents one output spike from being
-    credited to two nearby truth events.  Inputs are interval ordered, so the
-    standard two-pointer matcher is maximum-cardinality for a fixed tolerance.
+    Each event is used at most once. For a fixed tolerance and interval-ordered
+    inputs the greedy two-pointer is maximum-cardinality. Returns the indices
+    into `a` and `b` of the matched pairs.
+
+    Exclusivity is enforced **only between the two arrays passed in** — a single
+    truth train and a single output cluster. It is deliberately not enforced
+    across output clusters: on a dense recording that lets any cluster with a
+    chance coincidence steal ownership of an injected event, which produced a
+    constant ~10% false-negative/false-positive floor regardless of donor
+    (see docs/decisions/0014). Cross-cluster competition is resolved afterwards
+    by picking the best cluster, and duplicated capture across clusters is the
+    signal the split/merge diagnostics are meant to detect.
     """
-    truth_times = np.concatenate(list(truth.values())) if truth else np.array([], dtype=np.int64)
-    truth_ids = np.concatenate([
-        np.full(v.size, k, dtype=object) for k, v in truth.items()
-    ]) if truth else np.array([], dtype=object)
-    truth_order = np.argsort(truth_times, kind="stable")
-    truth_times = truth_times[truth_order]
-    truth_ids = truth_ids[truth_order]
-
-    output_order = np.argsort(st, kind="stable")
-    output_times = np.asarray(st, dtype=np.int64)[output_order]
-    matched_truth: list[int] = []
-    matched_output: list[int] = []
+    a = np.asarray(a, dtype=np.int64)
+    b = np.asarray(b, dtype=np.int64)
+    ai: list[int] = []
+    bi: list[int] = []
     i = j = 0
-    while i < truth_times.size and j < output_times.size:
-        delta = int(output_times[j]) - int(truth_times[i])
+    while i < a.size and j < b.size:
+        delta = int(b[j]) - int(a[i])
         if delta < -tol:
             j += 1
         elif delta > tol:
             i += 1
         else:
-            matched_truth.append(i)
-            matched_output.append(int(output_order[j]))
+            ai.append(i)
+            bi.append(j)
             i += 1
             j += 1
-    return truth_times, truth_ids, np.asarray(matched_truth), np.asarray(matched_output)
+    return np.asarray(ai, dtype=np.int64), np.asarray(bi, dtype=np.int64)
 
 
 def _identity_continuity(truth_st, trains, matched_times_by_out, edges):
@@ -156,10 +155,21 @@ def ground_truth_scores(
     tol_ms: float = DEFAULT_TOL_MS,
     bin_s: float = DEFAULT_BIN_S,
 ) -> dict:
-    """Score a sort against a known injected spike-train manifest (§5 primary)."""
+    """Score a sort against a known injected spike-train manifest (§5 primary).
+
+    Recovery is scored **per candidate output cluster**: each injected train is
+    matched exclusively 1:1 against one cluster's spikes at a time, and the best
+    cluster (by accuracy, then TP, then fewest FP) is the primary result. The
+    split diagnostic counts every cluster that captures > 5% of the train —
+    duplicated capture across clusters is allowed there, because that is exactly
+    the over-split / duplicate signal it exists to detect. See
+    docs/decisions/0014.
+    """
     tol = int(round(tol_ms / 1000.0 * fs))
     st, cl = np.asarray(sort["st"]), np.asarray(sort["cl"])
-    trains = {int(c): np.sort(st[cl == c]) for c in np.unique(cl)}
+    order = np.argsort(st, kind="stable")
+    st, cl = st[order], cl[order]
+    trains = {int(c): st[cl == c] for c in np.unique(cl)}  # each already sorted
     truth = {
         str(k): np.sort(np.asarray(v, dtype=np.int64)) for k, v in truth.items()
     }
@@ -167,37 +177,71 @@ def ground_truth_scores(
     if edges.size < 2:
         edges = np.array([0.0, duration_s * fs])
 
-    truth_times, truth_ids, mt, mo = _exclusive_event_matches(truth, st, tol)
-    caught: dict[tuple[str, int], int] = {}
-    matched_times: dict[str, dict[int, list[int]]] = {tid: {} for tid in truth}
-    for ti, oi in zip(mt, mo):
-        tid = str(truth_ids[ti])
-        oid = int(cl[oi])
-        caught[(tid, oid)] = caught.get((tid, oid), 0) + 1
-        matched_times[tid].setdefault(oid, []).append(int(truth_times[ti]))
+    def _candidate_clusters(tst: np.ndarray) -> list[int]:
+        """Clusters with at least one spike within tol of this train."""
+        if st.size == 0 or tst.size == 0:
+            return []
+        return [int(c) for c in np.unique(cl[coincident_mask(st, tst, tol)])]
 
     units = []
     for tid, tst in truth.items():
         n_truth = int(tst.size)
-        frac_by_out = {
-            oid: caught.get((tid, oid), 0) / n_truth for oid in trains
-        }
-        best = max(frac_by_out, key=frac_by_out.get) if frac_by_out else None
-        tp = caught.get((tid, best), 0)
-        fn = n_truth - tp
-        fp = int(trains[best].size - tp) if best is not None else 0
-        denom = tp + fp + fn
-        accuracy = tp / denom if denom else 0.0
-        n_capturing = sum(1 for f in frac_by_out.values() if f > CAPTURE_FRAC)
-        merged_with = [
-            otid
-            for otid in truth
-            if otid != tid
-            and best is not None
-            and caught.get((otid, best), 0) / truth[otid].size > CAPTURE_FRAC
-        ]
+        # exclusive 1:1 match against each candidate cluster independently
+        per_cluster: dict[int, dict] = {}
+        for oid in _candidate_clusters(tst):
+            ost = trains[oid]
+            ta, _ = _exclusive_pairs(tst, ost, tol)
+            tp_c = int(ta.size)
+            fp_c = int(ost.size - tp_c)
+            fn_c = n_truth - tp_c
+            denom_c = tp_c + fp_c + fn_c
+            per_cluster[oid] = {
+                "tp": tp_c,
+                "fp": fp_c,
+                "fn": fn_c,
+                "accuracy": tp_c / denom_c if denom_c else 0.0,
+                "capture": tp_c / n_truth if n_truth else 0.0,
+                "matched_truth_times": tst[ta],
+            }
+
+        if per_cluster:
+            best = max(
+                per_cluster,
+                key=lambda o: (
+                    per_cluster[o]["accuracy"],
+                    per_cluster[o]["tp"],
+                    -per_cluster[o]["fp"],
+                ),
+            )
+            tp = per_cluster[best]["tp"]
+            fp = per_cluster[best]["fp"]
+            fn = per_cluster[best]["fn"]
+            accuracy = per_cluster[best]["accuracy"]
+        else:
+            best, tp, fp, fn, accuracy = None, 0, 0, n_truth, 0.0
+
+        # split burden: every cluster that captures > 5% of the train, counted
+        # independently (a truth event may contribute to more than one cluster)
+        capturing = [o for o, v in per_cluster.items() if v["capture"] > CAPTURE_FRAC]
+        n_capturing = len(capturing)
+
+        # merge burden: does the best cluster also capture > 5% of another train?
+        merged_with = []
+        if best is not None:
+            for otid, otst in truth.items():
+                if otid == tid or otst.size == 0:
+                    continue
+                oa, _ = _exclusive_pairs(otst, trains[best], tol)
+                if oa.size / otst.size > CAPTURE_FRAC:
+                    merged_with.append(otid)
         merge = len(merged_with) > 0
-        cont = _identity_continuity(tst, trains, matched_times[tid], edges)
+
+        matched_times_by_out = {
+            o: v["matched_truth_times"] for o, v in per_cluster.items()
+        }
+        cont = _identity_continuity(
+            tst, {o: trains[o] for o in per_cluster}, matched_times_by_out, edges
+        )
         recovered = (
             accuracy >= ACCURACY_GATE and n_capturing <= 1 and not merge
         )
@@ -205,12 +249,13 @@ def ground_truth_scores(
             "truth_unit": tid,
             "n_truth": n_truth,
             "best_output_unit": best,
-            "best_output_label": sort["label"].get(best, "?"),
+            "best_output_label": sort["label"].get(best, "?") if best is not None else "none",
             "tp": tp,
             "fp": fp,
             "fn": fn,
             "accuracy": float(accuracy),
             "n_output_units_capturing": int(n_capturing),
+            "capturing_output_units": sorted(int(o) for o in capturing),
             "split": bool(n_capturing > 1),
             "merge": bool(merge),
             "merged_with": merged_with,

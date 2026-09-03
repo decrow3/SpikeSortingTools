@@ -665,9 +665,13 @@ rigid correction *collapses* there), legacy wins on pure sustained noise
 floor (rescue median 0.02, legacy 0.26) — the low-SNR detection limit is where
 panel yield is actually lost, and it is not a motion problem.
 
-*(Caveat: `score_sort`'s headline count over-counts splits for multi-unit dense
-injections — the ±0.5 ms coincidence is non-exclusive. Accuracy-on-best-cluster
-is the readout used; the headline metric needs an exclusive-assignment fix.)*
+*(Caveat, now resolved: this historical run's `score_sort` used the v2 matcher,
+which both over-counted splits (non-exclusive within a cluster) and — the
+failure C2 v3 exposed — under-counted recovery (global exclusivity let
+background clusters steal events). Both are fixed in `SCORE_SCHEMA` v3,
+[decision 0014](decisions/0014-injected-truth-scoring-is-per-cluster.md): per
+candidate cluster, exclusive 1:1 within the cluster, best cluster by accuracy.
+Any Checkpoint C rerun uses the v3 scorer.)*
 
 ### Phase D — candidate search
 
@@ -1251,6 +1255,19 @@ eliminated.
    content-bound caches; a donor enters the primary drift comparison only if its
    static arm reaches accuracy ≥ 0.8 under both `RESCUE` and `LEGACY_STYLE`.
    This is the experiment that reopens everything below it.
+
+   *First run 2026-09-03 is VOID* — a scorer bug, not a C2 result. All 14
+   donors failed static qualification at a near-constant ~0.78 accuracy because
+   `ground_truth_scores` v2 matched injected truth against the pooled spike
+   river and let background clusters steal ~10 % of events
+   ([decision 0014](decisions/0014-injected-truth-scoring-is-per-cluster.md),
+   [`c2_v3_scorer_validation_failure`](luke_20250804_c2_v3_scorer_validation_failure.md)).
+   Fixed: per-cluster exclusive matching, `SCORE_SCHEMA` → v3, 3 regression
+   tests. **Before the real run:** re-score the 14 static arms under the v3
+   scorer and confirm the floor is gone; then update the trajectory set to the
+   Luke-calibrated rigid family (~4–5 / 10–12 / 20–25 µm,
+   [decision 0013](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md));
+   then re-run the moving arms. Held pending the Luke/Yates motion work.
 
 ### Paused pending C2 v3
 
