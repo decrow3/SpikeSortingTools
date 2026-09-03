@@ -1,0 +1,475 @@
+{
+  "schema": "luke-within-rigid-motion-dose-response-v2",
+  "prespec": "docs/luke_within_rigid_motion_dose_response_plan.md",
+  "git_commit": "c3e225034e22c12c57f5c990ea78c7cf1c8d1115",
+  "source_csv": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/outputs/luke_yates_stable_window_overlap/window_signatures.csv",
+  "source_csv_sha256": "0a4739cb60f4d95062ee66cb3541987a448b613930fd0a5a98b20ff9e5bb46c0",
+  "primary_dose": "exc_consensus_rank",
+  "concordant_estimators": [
+    "ks-motion",
+    "dredge-motion",
+    "decentralized-motion"
+  ],
+  "window_s": 120.0,
+  "n_windows": 24,
+  "time_interval_ids": [
+    1200,
+    5640,
+    4560,
+    4080,
+    6960,
+    1920,
+    2640,
+    3000,
+    10320,
+    1440,
+    1800,
+    1560,
+    3360,
+    7800,
+    2880,
+    2280,
+    7680,
+    9360,
+    4800,
+    5880,
+    9000,
+    9240,
+    6000,
+    7200
+  ],
+  "windows": [
+    {
+      "time_interval_id": 1200,
+      "snippet_start_s": 1199.9999999999995,
+      "exc_consensus_rank": 0.02681992337164751,
+      "spd_consensus_rank": 0.09195402298850575,
+      "exc_by_estimator": {
+        "medicine": 7.2571612954139715,
+        "ks-motion": 1.9027777777777783,
+        "dredge-motion": 4.072699965179893,
+        "decentralized-motion": 5.86126626562594
+      },
+      "spd_by_estimator": {
+        "medicine": 0.4326546430587766,
+        "ks-motion": 0.7500000000000002,
+        "dredge-motion": 1.586147502026372,
+        "decentralized-motion": 2.458443864508869
+      }
+    },
+    {
+      "time_interval_id": 5640,
+      "snippet_start_s": 5640.0,
+      "exc_consensus_rank": 0.06513409961685825,
+      "spd_consensus_rank": 0.06513409961685823,
+      "exc_by_estimator": {
+        "medicine": 5.650760978460312,
+        "ks-motion": 2.5638888888888878,
+        "dredge-motion": 4.766889401020837,
+        "decentralized-motion": 5.501851193415415
+      },
+      "spd_by_estimator": {
+        "medicine": 0.3136096715927123,
+        "ks-motion": 0.7027777777777781,
+        "dredge-motion": 1.7042612870160303,
+        "decentralized-motion": 1.958133032576368
+      }
+    },
+    {
+      "time_interval_id": 4560,
+      "snippet_start_s": 4560.0,
+      "exc_consensus_rank": 0.1149425287356322,
+      "spd_consensus_rank": 0.1264367816091954,
+      "exc_by_estimator": {
+        "medicine": 13.09187584221363,
+        "ks-motion": 2.394444444444445,
+        "dredge-motion": 7.128815574197333,
+        "decentralized-motion": 7.550407233522995
+      },
+      "spd_by_estimator": {
+        "medicine": 0.5386872768402099,
+        "ks-motion": 0.5888888888888887,
+        "dredge-motion": 2.009475833790981,
+        "decentralized-motion": 3.162298006585377
+      }
+    },
+    {
+      "time_interval_id": 4080,
+      "snippet_start_s": 4080.0,
+      "exc_consensus_rank": 0.1532567049808429,
+      "spd_consensus_rank": 0.13409961685823754,
+      "exc_by_estimator": {
+        "medicine": 6.703794801235198,
+        "ks-motion": 2.727777777777777,
+        "dredge-motion": 7.479176130851943,
+        "decentralized-motion": 7.236927703782101
+      },
+      "spd_by_estimator": {
+        "medicine": 0.3744793832302093,
+        "ks-motion": 0.8111111111111103,
+        "dredge-motion": 2.206320754019709,
+        "decentralized-motion": 1.8609368962261612
+      }
+    },
+    {
+      "time_interval_id": 6960,
+      "snippet_start_s": 6960.0,
+      "exc_consensus_rank": 0.20306513409961688,
+      "spd_consensus_rank": 0.32950191570881227,
+      "exc_by_estimator": {
+        "medicine": 8.967647613212467,
+        "ks-motion": 2.5249999999999986,
+        "dredge-motion": 7.654357533471982,
+        "decentralized-motion": 11.935946558841206
+      },
+      "spd_by_estimator": {
+        "medicine": 0.4813133239746093,
+        "ks-motion": 0.7861111111111105,
+        "dredge-motion": 3.2156045338401142,
+        "decentralized-motion": 4.105528147946784
+      }
+    },
+    {
+      "time_interval_id": 1920,
+      "snippet_start_s": 1919.9999999999993,
+      "exc_consensus_rank": 0.2758620689655173,
+      "spd_consensus_rank": 0.47509578544061304,
+      "exc_by_estimator": {
+        "medicine": 10.728001657128337,
+        "ks-motion": 3.119444444444444,
+        "dredge-motion": 6.693143480399548,
+        "decentralized-motion": 19.499090744247827
+      },
+      "spd_by_estimator": {
+        "medicine": 0.6138033136725425,
+        "ks-motion": 0.941666666666666,
+        "dredge-motion": 2.5092634650863355,
+        "decentralized-motion": 7.662093267417423
+      }
+    },
+    {
+      "time_interval_id": 2640,
+      "snippet_start_s": 2639.9999999999995,
+      "exc_consensus_rank": 0.2988505747126437,
+      "spd_consensus_rank": 0.3716475095785441,
+      "exc_by_estimator": {
+        "medicine": 9.974664225429295,
+        "ks-motion": 2.7388888888888867,
+        "dredge-motion": 8.649064790980024,
+        "decentralized-motion": 17.92719506177779
+      },
+      "spd_by_estimator": {
+        "medicine": 0.6650709738954901,
+        "ks-motion": 0.7944444444444438,
+        "dredge-motion": 3.044481840877166,
+        "decentralized-motion": 5.778794599629953
+      }
+    },
+    {
+      "time_interval_id": 3000,
+      "snippet_start_s": 2999.9999999999995,
+      "exc_consensus_rank": 0.3256704980842912,
+      "spd_consensus_rank": 0.5057471264367817,
+      "exc_by_estimator": {
+        "medicine": 13.893546095490455,
+        "ks-motion": 3.0027777777777804,
+        "dredge-motion": 8.980433224339013,
+        "decentralized-motion": 16.38529529662558
+      },
+      "spd_by_estimator": {
+        "medicine": 0.8064209461212157,
+        "ks-motion": 0.9749999999999978,
+        "dredge-motion": 3.795569651730601,
+        "decentralized-motion": 4.932205119456754
+      }
+    },
+    {
+      "time_interval_id": 10320,
+      "snippet_start_s": 10320.0,
+      "exc_consensus_rank": 0.38314176245210724,
+      "spd_consensus_rank": 0.2681992337164751,
+      "exc_by_estimator": {
+        "medicine": 21.926318865269423,
+        "ks-motion": 4.105555555555553,
+        "dredge-motion": 8.228078328100187,
+        "decentralized-motion": 15.922449944404068
+      },
+      "spd_by_estimator": {
+        "medicine": 0.7436343312263488,
+        "ks-motion": 0.9166666666666664,
+        "dredge-motion": 2.4034221041109185,
+        "decentralized-motion": 4.272124514164816
+      }
+    },
+    {
+      "time_interval_id": 1440,
+      "snippet_start_s": 1439.9999999999993,
+      "exc_consensus_rank": 0.43678160919540227,
+      "spd_consensus_rank": 0.6091954022988505,
+      "exc_by_estimator": {
+        "medicine": 7.7538103692233555,
+        "ks-motion": 3.125,
+        "dredge-motion": 8.838388759482582,
+        "decentralized-motion": 22.19523913842347
+      },
+      "spd_by_estimator": {
+        "medicine": 0.2670931577682495,
+        "ks-motion": 0.933333333333332,
+        "dredge-motion": 3.491508141067553,
+        "decentralized-motion": 7.991541656821248
+      }
+    },
+    {
+      "time_interval_id": 1800,
+      "snippet_start_s": 1799.9999999999993,
+      "exc_consensus_rank": 0.4559386973180077,
+      "spd_consensus_rank": 0.5287356321839081,
+      "exc_by_estimator": {
+        "medicine": 7.349915158748626,
+        "ks-motion": 4.363888888888888,
+        "dredge-motion": 8.871194468016675,
+        "decentralized-motion": 17.47583011494523
+      },
+      "spd_by_estimator": {
+        "medicine": 0.3674438714981079,
+        "ks-motion": 1.2416666666666654,
+        "dredge-motion": 3.168906394440985,
+        "decentralized-motion": 5.313525566776661
+      }
+    },
+    {
+      "time_interval_id": 1560,
+      "snippet_start_s": 1559.9999999999993,
+      "exc_consensus_rank": 0.49808429118773945,
+      "spd_consensus_rank": 0.40613026819923376,
+      "exc_by_estimator": {
+        "medicine": 8.406092113256454,
+        "ks-motion": 4.636111111111111,
+        "dredge-motion": 8.819888136950153,
+        "decentralized-motion": 19.55313128991129
+      },
+      "spd_by_estimator": {
+        "medicine": 0.4824189662933349,
+        "ks-motion": 0.9833333333333328,
+        "dredge-motion": 2.4395806367043065,
+        "decentralized-motion": 6.321343261471215
+      }
+    },
+    {
+      "time_interval_id": 3360,
+      "snippet_start_s": 3359.9999999999995,
+      "exc_consensus_rank": 0.524904214559387,
+      "spd_consensus_rank": 0.5019157088122606,
+      "exc_by_estimator": {
+        "medicine": 13.025497770309448,
+        "ks-motion": 3.461111111111112,
+        "dredge-motion": 10.74376185580407,
+        "decentralized-motion": 22.26403445261369
+      },
+      "spd_by_estimator": {
+        "medicine": 0.674205859005451,
+        "ks-motion": 1.063888888888889,
+        "dredge-motion": 3.0960407523939786,
+        "decentralized-motion": 6.072759457719304
+      }
+    },
+    {
+      "time_interval_id": 7800,
+      "snippet_start_s": 7800.0,
+      "exc_consensus_rank": 0.5555555555555556,
+      "spd_consensus_rank": 0.5172413793103449,
+      "exc_by_estimator": {
+        "medicine": 12.026831954717636,
+        "ks-motion": 4.633333333333335,
+        "dredge-motion": 9.379502260423171,
+        "decentralized-motion": 21.221140546853995
+      },
+      "spd_by_estimator": {
+        "medicine": 0.6992675334215164,
+        "ks-motion": 1.2555555555555558,
+        "dredge-motion": 2.647511923702731,
+        "decentralized-motion": 6.107359401091181
+      }
+    },
+    {
+      "time_interval_id": 2880,
+      "snippet_start_s": 2879.9999999999995,
+      "exc_consensus_rank": 0.5823754789272031,
+      "spd_consensus_rank": 0.5670498084291188,
+      "exc_by_estimator": {
+        "medicine": 9.174151726812124,
+        "ks-motion": 3.4222222222222207,
+        "dredge-motion": 11.1076000956327,
+        "decentralized-motion": 25.23087520664445
+      },
+      "spd_by_estimator": {
+        "medicine": 0.619500072300434,
+        "ks-motion": 1.0111111111111106,
+        "dredge-motion": 3.331634996850335,
+        "decentralized-motion": 6.892485467144676
+      }
+    },
+    {
+      "time_interval_id": 2280,
+      "snippet_start_s": 2279.9999999999995,
+      "exc_consensus_rank": 0.6628352490421456,
+      "spd_consensus_rank": 0.578544061302682,
+      "exc_by_estimator": {
+        "medicine": 14.253563314676285,
+        "ks-motion": 4.730555555555554,
+        "dredge-motion": 9.46317855891733,
+        "decentralized-motion": 25.55841673398324
+      },
+      "spd_by_estimator": {
+        "medicine": 0.6010363653302192,
+        "ks-motion": 1.033333333333332,
+        "dredge-motion": 3.078211191195826,
+        "decentralized-motion": 7.284513989692154
+      }
+    },
+    {
+      "time_interval_id": 7680,
+      "snippet_start_s": 7680.0,
+      "exc_consensus_rank": 0.6934865900383143,
+      "spd_consensus_rank": 0.5708812260536399,
+      "exc_by_estimator": {
+        "medicine": 15.08152171522379,
+        "ks-motion": 4.391666666666666,
+        "dredge-motion": 11.463257114283788,
+        "decentralized-motion": 25.538483406027726
+      },
+      "spd_by_estimator": {
+        "medicine": 0.5990884900093076,
+        "ks-motion": 0.9472222222222224,
+        "dredge-motion": 3.027148171488841,
+        "decentralized-motion": 7.836327017331487
+      }
+    },
+    {
+      "time_interval_id": 9360,
+      "snippet_start_s": 9360.0,
+      "exc_consensus_rank": 0.7394636015325671,
+      "spd_consensus_rank": 0.7816091954022989,
+      "exc_by_estimator": {
+        "medicine": 15.395956426858902,
+        "ks-motion": 6.405555555555555,
+        "dredge-motion": 12.9569571598348,
+        "decentralized-motion": 21.26138832792575
+      },
+      "spd_by_estimator": {
+        "medicine": 0.7830796539783477,
+        "ks-motion": 1.4472222222222215,
+        "dredge-motion": 4.494082036564902,
+        "decentralized-motion": 6.390206580407294
+      }
+    },
+    {
+      "time_interval_id": 4800,
+      "snippet_start_s": 4800.0,
+      "exc_consensus_rank": 0.7701149425287356,
+      "spd_consensus_rank": 0.8850574712643677,
+      "exc_by_estimator": {
+        "medicine": 13.472356812655926,
+        "ks-motion": 6.574999999999999,
+        "dredge-motion": 9.894535282878966,
+        "decentralized-motion": 26.092288771807716
+      },
+      "spd_by_estimator": {
+        "medicine": 0.425509852170944,
+        "ks-motion": 1.713888888888886,
+        "dredge-motion": 3.610058982831161,
+        "decentralized-motion": 9.27675570345132
+      }
+    },
+    {
+      "time_interval_id": 5880,
+      "snippet_start_s": 5880.0,
+      "exc_consensus_rank": 0.7969348659003832,
+      "spd_consensus_rank": 0.7547892720306514,
+      "exc_by_estimator": {
+        "medicine": 13.27839786298573,
+        "ks-motion": 12.936111111111112,
+        "dredge-motion": 21.42735638220556,
+        "decentralized-motion": 18.936535659710085
+      },
+      "spd_by_estimator": {
+        "medicine": 0.7733740806579588,
+        "ks-motion": 2.444444444444444,
+        "dredge-motion": 4.683386985740215,
+        "decentralized-motion": 4.311301520645278
+      }
+    },
+    {
+      "time_interval_id": 9000,
+      "snippet_start_s": 9000.0,
+      "exc_consensus_rank": 0.8275862068965517,
+      "spd_consensus_rank": 0.7241379310344828,
+      "exc_by_estimator": {
+        "medicine": 7.217747247219085,
+        "ks-motion": 7.1194444444444445,
+        "dredge-motion": 15.44120541788235,
+        "decentralized-motion": 21.69638612833029
+      },
+      "spd_by_estimator": {
+        "medicine": 0.4275452256202697,
+        "ks-motion": 1.3944444444444437,
+        "dredge-motion": 3.742501108900136,
+        "decentralized-motion": 6.591916297513268
+      }
+    },
+    {
+      "time_interval_id": 9240,
+      "snippet_start_s": 9240.0,
+      "exc_consensus_rank": 0.8697318007662834,
+      "spd_consensus_rank": 0.7662835249042145,
+      "exc_by_estimator": {
+        "medicine": 8.248880495131015,
+        "ks-motion": 6.913888888888888,
+        "dredge-motion": 15.265557973929951,
+        "decentralized-motion": 24.398506819612983
+      },
+      "spd_by_estimator": {
+        "medicine": 0.4708380840718746,
+        "ks-motion": 1.3944444444444424,
+        "dredge-motion": 4.0546842533172605,
+        "decentralized-motion": 6.666763494588009
+      }
+    },
+    {
+      "time_interval_id": 6000,
+      "snippet_start_s": 6000.0,
+      "exc_consensus_rank": 0.888888888888889,
+      "spd_consensus_rank": 0.9770114942528735,
+      "exc_by_estimator": {
+        "medicine": 9.64995010793209,
+        "ks-motion": 6.122222222222222,
+        "dredge-motion": 13.275706728325698,
+        "decentralized-motion": 29.50606869648262
+      },
+      "spd_by_estimator": {
+        "medicine": 0.6999637722969054,
+        "ks-motion": 1.8166666666666664,
+        "dredge-motion": 4.541708130442193,
+        "decentralized-motion": 8.619500605385596
+      }
+    },
+    {
+      "time_interval_id": 7200,
+      "snippet_start_s": 7200.0,
+      "exc_consensus_rank": 1.0,
+      "spd_consensus_rank": 0.8237547892720306,
+      "exc_by_estimator": {
+        "medicine": 18.33769216872752,
+        "ks-motion": 16.083333333333336,
+        "dredge-motion": 24.63363970589465,
+        "decentralized-motion": 41.70285809295456
+      },
+      "spd_by_estimator": {
+        "medicine": 0.9745650529861446,
+        "ks-motion": 1.6444444444444417,
+        "dredge-motion": 4.173414881979369,
+        "decentralized-motion": 6.664812866809855
+      }
+    }
+  ]
+}
