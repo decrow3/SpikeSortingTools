@@ -317,12 +317,23 @@ motion-driven fragmentation and an unwarped alternative that links temporally
 fragmented clusters or lets templates follow tissue. **Phase A2 tests it before
 any candidate search begins.**
 
-*Tension that A2 must confront:* on imec0 the DREDGE rigid sidecar reports only
-**1.28 µm** of total drift (6.4% of one site pitch). If the re-clustered losses
-are motion-fragmented on *this* probe, the cause must be non-rigid, or that
-estimate must be wrong — it is rigid-only and QC-unqualified, with
-`weights_thresh` entirely non-finite. A2 therefore runs on **imec1 as well**,
-where the motion is known to be real.
+*Tension that A2 must confront — resolved 2026-09-03, see
+[decision 0013](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md).* An
+earlier draft here cited a **1.28 µm** total-drift DREDGE sidecar for imec0 and
+concluded that motion-driven re-clustering on this probe would have to be
+non-rigid. That 1.28 µm value came from a rigid-only, QC-unqualified sidecar
+(`weights_thresh` entirely non-finite) and is **not reproduced by any accepted
+on-disk motion estimate**: `ks-motion` 6.6 µm, `dredge-motion` 15.3 µm,
+`medicine` 21.9 µm, `decentralized-motion` 29.5 µm full-session rigid range, and
+the motion-overlap gate found 0 / 87 imec0 120 s windows quiet enough to reach
+the Yates 75th percentile
+([`luke_yates_stable_window_overlap_result.md`](luke_yates_stable_window_overlap_result.md)).
+**Rigid motion on imec0 is appreciable and is a live candidate mechanism for the
+re-clustered losses.** At 120 s scale the dominant imec0-vs-Yates difference is
+rigid translation magnitude/rate, not non-rigid deformation (Luke's
+depth-normalised non-rigid gradient is at or below Yates). Estimators still
+disagree ~5× on the magnitude — a quantification problem, not grounds to treat
+imec0 as stationary. A2 continues to run on imec1 as well.
 
 1. Classify all legacy-good units rescue does not reproduce: preserved as MUA,
    split, merged, dispersed, absent at detection, or rejected by curation.
@@ -553,6 +564,24 @@ motion:
 
 Run the trajectories at several amplitudes, including rigid and non-rigid, and
 at both polarities.
+
+**C2 v3 motion families — Luke-calibrated, rigid first (2026-09-03,
+[decision 0013](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md)).**
+The motion-overlap analysis measured Luke imec0's actual regime: per 120 s
+window, rigid excursion runs ~4–23 µm (median ~11 µm under MEDiCINe, ~4 µm under
+`ks-motion`) with rigid speed ~0.2–0.8 µm/s, while the depth-normalised non-rigid
+gradient is at or below Yates. So the **first and primary** C2 v3 motion family
+is a **pure rigid translation** at three Luke-matched magnitudes —
+**~4–5 µm / ~10–12 µm / ~20–25 µm** rigid excursion — each with a representative
+Luke speed profile (a slow ramp and a moderate within-window drift). Non-rigid
+and oscillatory trajectories are retained as a **secondary** family, not the
+headline, because the empirical comparison says rigid displacement is what most
+separates Luke from the known-good recording at this timescale. The decisive
+question C2 v3 answers first:
+
+> At the amount of *rigid* motion Luke imec0 actually experiences, how much
+> neuron recovery does no-correction KS4 lose, and how much does standard rigid
+> correction (`nblocks=1`) recover?
 
 Because the injected train is known, C2 also **calibrates the truncation
 estimator against truth** for the first time, and separates the two

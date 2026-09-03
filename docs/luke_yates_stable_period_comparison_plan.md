@@ -4,17 +4,26 @@
 [`pipeline_improvement_plan.md`](pipeline_improvement_plan.md)); it is not gated
 by it and does not gate it.
 
-> **INCREMENT 1 RAN 2026-09-03 — GATE FAILED.** Zero of 87 Luke imec0 120 s
-> windows reach the Yates-Q75 overlap box under any common estimator; Luke's
-> quietest 2-minute window still drifts more (rigid P95−P5 ≥ 4.2 µm, primary
-> estimator) than the Yates 75th percentile (3.6 µm). Non-rigid gradient is
-> *not* the problem — rigid translation magnitude/rate is. The motion-matched
-> design (increments 2–5) is **not viable as written**; there is no
-> genuinely-quiet Luke subset to match. See
-> [`luke_yates_stable_window_overlap_result.md`](luke_yates_stable_window_overlap_result.md)
-> for the numbers, the estimator-disagreement caveat, the "1.28 µm" discrepancy,
-> and the three salvage options. Increments 2–5 below are on hold pending that
-> decision.
+> **INCREMENT 1 RAN 2026-09-03 — GATE FAILED. MATCHED DESIGN FORMALLY ABANDONED.**
+> Zero of 87 Luke imec0 120 s windows reach the Yates-Q75 overlap box under any
+> common estimator; Luke's quietest 2-minute window still drifts more (rigid
+> P95−P5 ≥ 4.2 µm, primary estimator) than the Yates 75th percentile (3.6 µm).
+> Non-rigid gradient is *not* the problem — rigid translation magnitude/rate is.
+> Results: [`luke_yates_stable_window_overlap_result.md`](luke_yates_stable_window_overlap_result.md).
+>
+> **Decision (2026-09-03).** The `dataset × motion-regime` matched comparison
+> (old increments 2–5) is abandoned — there is no genuinely-quiet Luke subset to
+> match, and manufacturing one would weaken the logic. Replaced by:
+> - **Primary:** a **within-Luke rigid-motion dose–response** —
+>   [`luke_within_rigid_motion_dose_response_plan.md`](luke_within_rigid_motion_dose_response_plan.md).
+> - **Secondary, descriptive only:** a small **best-case Luke vs Yates** arm
+>   (§B below) — an engineering upper bound, explicitly *not* the causal test.
+> - The 1.28 µm premise error is corrected in
+>   [decision 0013](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md);
+>   the measured Luke rigid-motion distribution feeds C2 v3 (`pipeline_improvement_plan.md` §C2).
+>
+> Sections 1–5 below are **historical** — the original matched design, kept for
+> the reasoning trail. Increment 1 (§3) is the part that ran.
 
 **Supersedes as the active form of:** the depth-resolved biological comparison
 deferred in
@@ -181,7 +190,45 @@ this arm. That handicaps Luke, which is the conservative direction for a
 
 ---
 
+## B. Best-case Luke vs Yates — secondary, descriptive (added 2026-09-03)
+
+**Not the causal test.** This arm answers one bounded engineering question:
+
+> When Luke imec0 is as motion-quiet as it ever gets, how close does its
+> sorting quality come to the known-good Yates recording?
+
+**Windows.** Luke: the quietest decile of imec0 120 s windows by
+`rigid_excursion_um` under the primary estimator (from increment 1's
+`window_signatures.csv`) — ~6–8 windows, rigid excursion ~4–6 µm. Yates:
+6–8 representative windows near its own median motion (not its extremes), same
+estimator. Depth: the shallow overlap range if a Luke anchor is found, otherwise
+normalized-depth with the caveat stated on every figure.
+
+**Sorting.** The common subgraph of §4 (bandpass + reference + KS4 internal
+high-pass/whitening, `nblocks = 0`, identical detection + `score_sort` config).
+Luke loses its NP-specific conditioning — conservative for a "is Luke viable"
+read.
+
+**Endpoints.** The same per-window endpoints as §A (compact-event density/mm,
+fraction of events in plausible units, QC-qualified units/mm, refractory burden,
+similar-unit burden, waveform stability, qualified-unit firing rate).
+
+**Pre-committed reading — and its hard limit.** Luke still carries *more* motion
+than Yates even in these windows, so:
+
+| Result | Reading |
+|---|---|
+| quiet-Luke ≈ Yates | **Encouraging** — Luke reaches the comparator despite residual extra motion. |
+| quiet-Luke < Yates | **Cannot** be attributed to intrinsic signal quality — motion is still unmatched. Inconclusive on its own; defer to §A. |
+
+This arm produces supportive context, never a promotion or causal claim. It runs
+only after §A's prespec is frozen, and shares §A's sorting/scoring code.
+
+---
+
 ## 6. Reproducibility
 
 - Increment 1 script: `testing/luke_yates_stable_window_overlap.py`
 - Tests: `testing/test_luke_yates_stable_window_overlap.py`
+- Increment 1 result: [`luke_yates_stable_window_overlap_result.md`](luke_yates_stable_window_overlap_result.md)
+- Primary follow-on: [`luke_within_rigid_motion_dose_response_plan.md`](luke_within_rigid_motion_dose_response_plan.md)
