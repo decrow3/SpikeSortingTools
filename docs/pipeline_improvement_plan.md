@@ -203,7 +203,19 @@ because only the net was reported.
 - Edge-spike fraction (40 µm)
 - **Matched-unit completeness** — paired truncation difference, censored windows
   filtered
-- **Runtime per unit data**, tracked at every tier
+- **Waveform preservation** — required from the moment a candidate deliberately
+  modifies voltage:
+  - waveform cosine against the known injected waveform, or the matched
+    uncorrected real-unit waveform
+  - peak-amplitude retention
+  - spatial-footprint / depth preservation, where it can be measured reliably
+
+  Evaluated **by donor / waveform stratum as well as in aggregate**. A candidate
+  must not buy a headline identity improvement by systematically degrading the
+  sharp, high-SNR stratum. Thresholds are **frozen from the D2b operator study
+  before L2/L3 promotion testing**, never selected from candidate yield.
+- **Runtime per unit data**, tracked at every tier — and measured during D2
+  (estimation / interpolation / sorting / total), not deferred to Phase E
 
 ### Explicitly not endpoints
 
@@ -666,8 +678,33 @@ branch is either adopted or closed.
 ### D2 — Conventional motion-correction optimization
 
 **The next active branch**, before DARTsort, KIASORT, TDC motion-aware matching,
-post-sort tracking, or any other architectural alternative. Three stages, all
-bounded.
+post-sort tracking, or any other architectural alternative.
+
+The question is no longer *"does voltage interpolation work?"* It is:
+
+> **Is the motion field we can estimate accurate enough, and can it be applied in
+> a regime where stabilization benefit exceeds interpolation damage across the
+> neuronal population we care about?**
+
+That is the conventional motion-correction question, and it should be answered
+before changing architectures.
+
+#### The active sequence
+
+| # | Step | Status |
+|---|---|---|
+| 1 | **Oracle positive control** — attainable stabilization benefit and interpolation cost | ✅ done (Candidate 2) |
+| 2 | **D2b-1 field-error tolerance** — corrupt the oracle field, find how accurate a real estimate must be | next |
+| 3 | **D2b-2 donor expansion** — establish the crossover is not specific to T01/T04; protect sharp/high-SNR waveforms | next |
+| 4 | **D2a full-session external estimation** — obtain the best-supported real field | |
+| 5 | **Pre-sort field qualification** — compare the estimated field's error/support against the measured tolerance envelope | |
+| 6 | **D2c bounded policy comparison** — none / best full / one simple selective policy if D2b justifies it | |
+| 7 | **L2 → L2L → L3** — injected truth, longitudinal identity, waveform preservation, existing guardrails | |
+| 8 | **Architecture gate** — opened only if the best conventional correction remains meaningfully deficient | |
+
+Steps 2 and 3 come **before** the expensive full-session estimation in step 4.
+That ordering is the point: step 5 can reject a field on cheap evidence before it
+ever reaches a sorter.
 
 #### D2a — Best-supported motion field
 
@@ -691,37 +728,93 @@ initially. Preserve, and record in the manifest:
 The direct scale audit did not support a simple fourfold error. Treat it as one
 point in the D2b sweep, not as a correction constant.
 
-#### D2b — Characterize the interpolation tradeoff, independently of sorter yield
+#### D2b — Field-error tolerance and the interpolation tradeoff
 
-Before any broad sorter comparison, use the injection framework and
-waveform-level diagnostics to **map where correction helps versus hurts**.
+The oracle arm bounded two things: accurate stabilization can recover large
+motion-induced identity losses, and interpolation can damage some waveforms even
+when the displacement is *correct*. Neither is the practical unknown.
 
-Minimal bounded axes:
+> **The practical unknown is how accurate an estimated displacement field must be
+> for stabilization benefit to exceed both residual-motion error and
+> interpolation damage.**
+
+So the oracle stays as a positive-control ceiling, and **field-error tolerance
+becomes the load-bearing D2b result**.
+
+##### D2b-1 — Oracle degradation (run before any expensive full-session candidate)
+
+Uses the **cached C2 injected recordings**, so it is cheap. Start from the exact
+injected trajectory and introduce controlled field errors, measuring where
+correction stops outperforming no correction.
+
+| Perturbation | What it emulates |
+|---|---|
+| **Gain error** | under- and over-estimation of displacement amplitude |
+| **Temporal smoothing / bandwidth loss** | progressive removal of fast components |
+| **Temporal lag / offset** | clock or alignment error — if computationally cheap |
+| **Spatial mismatch** (non-rigid) | wrong depth dependence, or spatial over-smoothing |
+| **Constant displacement bias** | residual offset after centering, if relevant |
+
+**Coarse levels only.** This is not a factorial sweep; it needs just enough
+resolution to locate a crossover region.
+
+Report per perturbation: injected-train **accuracy and recall**, number of
+**claiming output identities / split burden**, **waveform cosine**,
+**peak-amplitude retention**, **localization/depth error**.
+
+The deliverable is a **field-error tolerance envelope**:
+
+> How much error in displacement amplitude, timing, and spatial structure can be
+> tolerated before corrected voltage performs no better than the uncorrected
+> rescue baseline?
+
+**This becomes the standard against which any estimated DREDGE or other external
+field is judged. A candidate field demonstrably outside the envelope does not
+get an expensive full-session sorting run.** That is a pre-sort gate (step 5 of
+the sequence above), and it is the main defence against another days-long
+failure.
+
+##### D2b-2 — Donor cohort (frozen before any gate is fitted)
+
+Waveform class is **required**, not optional. T01 is the warning: exact-trajectory
+interpolation made the sharpest, highest-SNR donor *worse* (0.40 → 0.29) despite
+correcting substantial motion.
+
+T01 is **not** a privileged biological unit. Treat it as evidence that
+**sharp / spatially compact / high-SNR units may occupy a different tradeoff
+regime** from broad, lower-SNR ones.
+
+The cohort must span:
+
+- waveform sharpness / spatial compactness
+- SNR
+- both polarities where feasible
+
+**At least 8 independent reviewed donor waveforms before any correction gate is
+defined**, preferably ~12 given how cheap L1 has proven. Span the observed
+sharpness and SNR range — do not simply add more units like the ones already
+there. **Freeze the cohort before fitting any selective/partial policy.**
+
+> Do not infer a selective-correction crossover from T01 and T04 alone.
+
+##### D2b-3 — Tradeoff axes
 
 | Axis | Levels |
 |---|---|
-| Displacement magnitude | spanning sub-channel to ≥ 40 µm |
+| Displacement magnitude | sub-channel to ≥ 40 µm |
 | Estimator support / confidence | high vs low, from the sidecar diagnostics |
 | Rigid vs depth-varying displacement | where justified by the field |
 | Interpolation spatial scale / kernel | appropriate to Luke's probe geometry |
-| Correction strength | full vs reduced/partial, if needed |
-| Waveform / SNR class | potentially — T01 vs T04 already diverge |
+| Correction strength | full vs reduced/partial |
+| **Waveform / SNR class** | **required** — sharpness, compactness, SNR, polarity |
 
 The key comparison is always:
 
 > **uncorrected motion error** versus **interpolation-induced waveform error**
 
-Measured against known injected trajectories and known waveforms:
-
-- recovery accuracy
-- waveform cosine
-- peak / amplitude retention
-- localization error
-- identity count / split burden
-
-**Do not optimize any of these parameters against KS-good count or total unit
-yield.** The purpose is to locate a sensible **Pareto region** — not to reopen
-an unconstrained preprocessing sweep. Keep it inside the preregistered budget.
+**Do not optimize any of these against KS-good count or total unit yield.** The
+purpose is to locate a **Pareto region**, not to reopen an unconstrained
+preprocessing sweep. Stay inside the preregistered budget.
 
 #### D2c — Test correction policies
 
@@ -733,13 +826,78 @@ At minimum, three arms:
 | 2 | **Best full correction** — best-supported field and interpolation configuration from D2a/D2b |
 | 3 | **Best selective/partial correction** — only if D2b shows a clear crossover where small corrections cost more than they help |
 
-Selective correction must be gated on **prespecified physical/estimator
-criteria** — displacement magnitude, support/confidence — **never on downstream
-sorter yield**.
+##### Discovery and validation must be separated
+
+D2b is a **development experiment**. It *estimates* the correction/interpolation
+crossover on the frozen donor cohort. It does not validate a policy.
+
+If D2b motivates a displacement / support / waveform-dependent correction rule:
+
+1. **Freeze the rule** — before it touches the L2 development panel, and long
+   before held-out evaluation.
+2. It must be **simple enough to state prospectively**, e.g.:
+
+   > Correct only when estimated displacement and field confidence place the
+   > epoch inside the region where D2b showed stabilization benefit reliably
+   > exceeds interpolation cost.
+
+3. **No unit-specific exceptions constructed after inspecting sorter results.**
+   That is fitting to the answer.
+
+Selective correction is gated on **prespecified physical/estimator criteria** —
+displacement magnitude, support/confidence, waveform class — **never on
+downstream sorter yield**.
 
 C2's oracle results motivate this directly: large ~40 µm trajectories can
 benefit enormously, whereas smaller sub-channel motion and sharp, high-SNR
 waveforms may sit on the opposite side of the tradeoff.
+
+#### Runtime accounting — measured during D2, not at Phase E
+
+The promotion ceiling is **≤ 1.25× legacy per unit data**. A correction
+architecture already outside that envelope should be identified *before* it
+consumes L2L, held-out, or replication tiers.
+
+Measure and report separately at D2a–D2c:
+
+| # | Stage |
+|---|---|
+| 1 | Full-session motion-field estimation |
+| 2 | Voltage interpolation / materialization |
+| 3 | KS4 sorting |
+| 4 | Total end-to-end |
+
+Report **absolute runtime and the multiplier relative to the legacy/current
+reference per unit data**.
+
+Runtime does not determine scientific correctness — but an obviously
+non-promotable implementation should not consume later ladder tiers.
+
+#### The role of the 127 legacy-lost units
+
+Resolving an inconsistency between Candidate 2's evaluation and Phase E
+criterion 3, which had been left standing side by side.
+
+The **127** legacy-good / rescue-lost cohort is an **extremely useful, sensitive
+real-data diagnostic**. It exposed the failure of post-sort stitching — 2
+reconstituted, 4 matches destroyed, 34 good units absorbed — which no snippet
+test caught. It should continue to be reported for every candidate.
+
+**But it is not a promotion endpoint and it is not ground truth.**
+
+| Use | Status |
+|---|---|
+| Reconstitution / accounting of the 127 as a cheap mechanistic diagnostic | ✅ keep, report always |
+| *Maximizing* recovery of legacy cluster identities | ❌ not an objective |
+| Injected ground truth, matched high-confidence family safeguards, L2L longitudinal identity | ✅ the actual promotion endpoints |
+
+> A candidate may fail to recreate a particular legacy cluster and still be
+> better, if injected truth and validated family evidence show the legacy
+> partition was itself wrong.
+
+Phase A already established the ground for this: the −127 contains **zero**
+detection losses, so a "legacy good unit" is as much a labelling and
+partitioning artifact as a fact about a neuron.
 
 ### Architecture gate
 
@@ -824,7 +982,7 @@ criterion is a regression safeguard, not the definition of correctness.
 | 1 | Ground truth: ≥ legacy on units-recovered-at-accuracy-0.8, on held-out **and** second session |
 | 2 | Strictly better on at least one of {high-motion, low-SNR} subsets |
 | 3 | Preserves ≥ 95% of **high-confidence legacy-supported neuron families**, *or* accounts for each apparent loss by a validated merge/split relationship |
-| 4 | All guardrails ≤ legacy |
+| 4 | All guardrails ≤ legacy — **including waveform preservation, by stratum**, against thresholds frozen at D2b |
 | 5 | Runtime ≤ 1.25× legacy per unit data |
 | 6 | Held-out and second-session results consistent in direction |
 
