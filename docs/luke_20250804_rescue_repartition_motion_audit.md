@@ -1,28 +1,36 @@
-# Phase A2: rescue's re-partitioning is clean temporal flicker, not motion-tracked, not over-splitting
+# Phase A2: rescue's re-partitioning is contaminated template flicker — not over-splitting, and not clean motion fragmentation
 
-> **RETRACTED PENDING V2 RERUN — 2026-09-03.** This report inherited the invalid
-> cross-sort cohorts and measured “merged” refractory violations on the anchor
+> **V1 RESULT RETRACTED — 2026-09-03.** The original report inherited the invalid
+> cross-sort cohorts and measured "merged" refractory violations on the anchor
 > train rather than the union of fragment trains. The 92–95% clean-merge result,
-> one-neuron interpretation, and stitching recommendation are withdrawn. V2
-> uses exclusive identities, spatially plausible fragments, and actual unions.
+> the "these are one clean neuron" interpretation, and the stitching
+> recommendation are withdrawn.
+>
+> **V2 RESULT — 2026-09-03 (below).** Corrected run: exclusive cross-sort
+> identities, spatially-plausible fragment selection, and refractory violations
+> measured on the actual union of the fragment clusters' full trains. The
+> not-over-splitting finding survives (0% coexisting on both probes). The
+> "one clean neuron / stitching would recover it" finding **does not** — only
+> 6–13% of fragment unions are refractory-clean. Almost every family is now
+> `ambiguous`: neither classic over-splitting nor clean motion fragmentation.
 
-**Date:** 2026-09-02
+**V1 date:** 2026-09-02 · **V2 rerun:** 2026-09-03
 **Closes:** Phase A2 / Checkpoint A2 of
 [`pipeline_improvement_plan.md`](pipeline_improvement_plan.md)
 **Prespecified** (frozen before looking) in `PRESPEC` inside
 `testing/luke_rescue_repartition_motion_audit.py` and written to
-`testing/outputs/luke_rescue_repartition_motion_audit/prespec.json`. The script
+`testing/outputs/luke_rescue_repartition_motion_audit_v2/prespec.json`. The script
 refuses to run against a changed prespec.
 **Runs on existing sorts only** — imec0 **and** imec1, no new sort.
 
 ## Question
 
 Phase A ([`luke_20250804_rescue_lost_units_audit.md`](luke_20250804_rescue_lost_units_audit.md))
-split the −127 lost legacy-good units into 27 label-threshold demotions and
-**100 re-clustered** units, and named a hypothesis: legacy stabilised moving
-neurons by resampling voltage; rescue preserves the voltage and leaves KS4 to
-represent a moving footprint by splitting it across templates. Phase A2 tests
-that against the plan's discriminator, **fixed in advance**:
+found the lost legacy-good units are dispersed across many rescue clusters, and
+named a hypothesis: legacy stabilised moving neurons by resampling voltage;
+rescue preserves the voltage and leaves KS4 to represent a moving footprint by
+splitting it across templates. Phase A2 tests that against the plan's
+discriminator, **fixed in advance**:
 
 | Observation | Reading |
 |---|---|
@@ -43,93 +51,106 @@ qualifying family scored, no subsampling):
   changes.
 - **Depth trajectory** — per-bin median spike depth vs time (Spearman), vs the
   DREDGE **rigid** motion trace (`motion_corr`), and the depth excursion.
-- **Merge cleanliness** — refractory-violation fraction (ISI < 1.5 ms) of the
-  merged train `S`.
+- **Merge cleanliness (v2)** — refractory-violation fraction (ISI < 1.5 ms) of
+  the **union of the fragment clusters' full spike trains** — every spike that
+  would actually enter a merge, including each fragment's unmatched/extra
+  events. (V1 measured the anchor train alone, which is clean by construction
+  and cannot test a merge.)
 
 Classes: `motion_fragmentation` (successive + trajectory + clean),
 `over_splitting` (coexisting), `successive_clean_no_motion_signal` (successive +
 clean but no trajectory — reported as its own bucket, forced into neither),
-`ambiguous` (the 0.2–0.5 partial-overlap zone).
+`ambiguous` (none of the above).
 
 Reproduce: `python testing/luke_rescue_repartition_motion_audit.py --probe both`.
+Outputs to `testing/outputs/luke_rescue_repartition_motion_audit_v2/<probe>/`.
 
-## Result — consistent across both probes
+## V2 result — the not-over-splitting finding holds; the clean-merge finding does not
 
-| | imec0 | imec1 |
-|---|---:|---:|
-| families scored | 117 | 62 |
-| **coexisting fragments** (overlap > 0.5) | **0.0%** | **1.6%** |
-| successive fragments (overlap < 0.2) | 50% | 69% |
-| **merge is refractory-clean** | **92%** | **95%** |
-| median ownership switches / hour | 18 | 22 |
-| **median \|depth ↔ rigid-motion correlation\|** | **0.11** | **0.13** |
-| classed `motion_fragmentation` | 2 / 117 | 3 / 62 |
-| classed `over_splitting` | 0 | 1 |
+| | imec0 | imec1 | (v1, retracted) |
+|---|---:|---:|---|
+| families scored | 96 | 46 | 117 / 62 |
+| **coexisting fragments** (overlap > 0.5) | **0.0%** | **0.0%** | 0.0% / 1.6% |
+| successive fragments (overlap < 0.2) | 56% | 72% | 50% / 69% |
+| **fragment-union merge is refractory-clean** (rv ≤ 1.5%) | **6%** | **13%** | ~92% / ~95% |
+| median fragment-union refractory-violation fraction | **14.1%** | **8.1%** | (anchor: 0.2%) |
+| median ownership switches / hour | 17.6 | 21.2 | 18 / 22 |
+| **median \|depth ↔ rigid-motion correlation\|** | **0.13** | **0.17** | 0.11 / 0.13 |
+| classed `motion_fragmentation` | **0 / 96** | 2 / 46 | 2 / 117 · 3 / 62 |
+| classed `over_splitting` | 0 | 0 | 0 / 1 |
+| classed `ambiguous` | **92 / 96** | **41 / 46** | — |
 
 (imec1 rescue is the **uncurated** KS4 output — no `cur/` stage was run for that
 probe. The temporal-structure discriminator does not depend on curation labels;
 the KS-good filter for family selection does. Noted as an asymmetry.)
 
-### Three things this rules in and out
+### What survives, what falls
 
 1. **It is not over-splitting.** Coexisting fragments — the signature of ordinary
    over-peeling, where two templates both fire for one neuron at the same time —
-   are essentially absent (0% / 1.6%). The Phase D branch "the repartitioning is
-   ordinary over-splitting → fix clustering and curation" is **not indicated**.
+   are **absent** on both probes (0.0%). The Phase D branch "the repartitioning
+   is ordinary over-splitting → fix clustering and curation" is **not indicated**.
+   *This finding is unchanged from v1.*
 
-2. **The fragments are one neuron.** Merging each dispersed legacy unit's own
-   spike train is refractory-clean in 92–95% of families (median violation
-   0.2%). Whatever splits them, **post-sort family stitching would recover the
-   unit** — the spikes are already there and already clean.
+2. **The fragments are NOT demonstrably one clean neuron.** When the fragment
+   clusters' full trains are unioned — the actual merge, not the anchor — only
+   **6–13%** are refractory-clean; the median union carries an **8–14%**
+   refractory-violation fraction. Fragment capture is partial (top-3 fragments
+   typically cover 60–80% of the anchor train, medians ~3 fragments) and the
+   fragment clusters are frequently large contaminated clusters that merely clip
+   the anchor. **Post-sort family stitching of these would produce
+   refractory-violating units, not recover clean ones.** This directly
+   anticipates the Candidate 1 full-session stitching failure
+   ([`luke_20250804_family_stitch_candidate.md`](luke_20250804_family_stitch_candidate.md):
+   2/127 reconstituted, 4 matches destroyed, 34 good units absorbed, net loss).
+   *This reverses the load-bearing v1 finding.*
 
 3. **It is not tracked by the rigid motion estimate, and it is not slow.**
-   Depth ↔ rigid-DREDGE correlation is ≈ 0.11–0.13 (no relationship). Ownership
-   of a unit's spikes flips between templates ~18–22 times per hour — every
+   Depth ↔ rigid-DREDGE correlation is ≈ 0.13–0.17 (no relationship). Ownership
+   of a unit's spikes flips between templates ~18–21 times per hour — every
    ~3 minutes — with no depth trajectory. This is **rapid template flicker**,
-   not slow drift-driven succession. Only 2–3 families per probe clear the
-   `motion_fragmentation` bar, and those are borderline.
+   not slow drift-driven succession. 0/96 (imec0) and 2/46 (imec1) families
+   clear the `motion_fragmentation` bar. *Unchanged from v1.*
 
 ## Reading, as a mix (not a verdict)
 
-The dominant pattern on both probes is **temporally one-at-a-time, refractory-clean,
-rapidly-flickering** template ownership with **no rigid-motion depth signature**.
+The dominant pattern on both probes (~90% of families, `ambiguous`) is
+**temporally one-at-a-time but not cleanly reassemblable**, with **rapidly
+flickering** template ownership and **no rigid-motion depth signature**. It is
+neither classic over-splitting (fragments never coexist) nor clean motion
+fragmentation (the pieces don't merge cleanly and don't track motion). The
+re-partitioning churns a contaminated, low-rate spike pool.
 
-This is consistent with the plan's *tension*: on imec0 the rigid DREDGE estimate
-is small and QC-unqualified, so "if this is motion-driven the cause must be
-non-rigid, or that estimate must be wrong." A2 cannot distinguish:
+A2 still cannot distinguish:
 
 - **non-rigid / fast motion** that wobbles the footprint faster than the rigid
   estimate's resolution, from
 - **template competition** in KS4's matching-pursuit step — several near-duplicate
   templates for one neuron, with an unstable choice between them over time.
 
-Both produce successive, clean, flickering fragments. **C2 (the paired
-static-vs-moving injection) is what separates them**: if a neuron injected on a
-known trajectory flickers where the identical static injection does not, motion
-is the driver.
-
-Weak consistency signal for a motion contribution: imec1 (motion known to be
-real) has a higher successive fraction (69% vs 50%) and larger depth excursions
-in its fragmented families (16–35 µm vs 11–23 µm) than imec0.
+Both produce successive, flickering fragments. **C2 (the paired
+static-vs-moving injection) is what separates them** — and C2's geometry-aware
+rerun is still pending.
 
 ## Consequence for Phase D's decision tree
 
 | Plan's A2 row | Fits? |
 |---|---|
-| Fragments temporally complementary **and track estimated motion** | Partly — complementary yes, track the *rigid* estimate no |
-| Fragments coexist at the same time and motion state | **No** (0–2%) |
-| Mixed | Closest, but the "clustering/curation" side is near-empty |
+| Fragments temporally complementary **and track estimated motion** | Complementary yes; track the rigid estimate no; **merge cleanly no** |
+| Fragments coexist at the same time and motion state | **No** (0.0% both probes) |
+| Mixed | Closest — but neither pure branch is supported |
 
-**First target: unwarped motion-aware identity handling — post-sort family
-stitching of temporally-complementary, refractory-clean fragments.** It is
-indicated regardless of whether the root cause turns out to be non-rigid motion
-or template competition, because family stitching repairs flicker and slow drift
-alike, whereas curation-threshold tuning addresses neither. Curation/clustering
-tuning drops down the priority order.
+**The v1 "first target: post-sort family stitching of refractory-clean
+fragments" recommendation is withdrawn.** V2 shows the fragment unions are
+*not* refractory-clean (6–13%), so stitching them reconstructs contaminated
+units — which is exactly what the Candidate 1 full-session evaluation went on to
+observe. This *strengthens* the case that fragmentation must be **prevented
+upstream**, not repaired downstream.
 
 **C2 still decides the framing** — whether this is "the cost of the no-motion
 strategy" (motion) or "KS4 template competition on preserved voltage" (not
-motion). The plan requires A2 **and** C2 before Phase D begins; A2 has reported.
+motion). Both A2 and the corrected C2 are required before Phase D's tree
+resolves; A2 v2 has reported, C2's geometry-aware rerun has not.
 
 ## Limits
 
@@ -145,3 +166,10 @@ motion). The plan requires A2 **and** C2 before Phase D begins; A2 has reported.
   rescue-KS-good-raw.
 - Spike-time coincidence (±0.5 ms) identifies shared spikes, not shared
   identity. Refractory cleanliness of a merge is necessary, not sufficient.
+- **V2 fragment-union cleanliness is a conservative (pessimistic) merge
+  estimate.** `_fragments` admits any spatially-plausible cluster capturing
+  ≥ 5% of the anchor train, then unions the full trains. A real stitcher would
+  merge mutual-best partners only, so the true "best-case stitch" cleanliness
+  lies somewhere between the 6–13% here and the retracted 92–95% anchor figure.
+  The Candidate 1 full-session result (net loss, contaminated merges) is the
+  direct test and lands on the pessimistic side.

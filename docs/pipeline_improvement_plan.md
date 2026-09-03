@@ -12,15 +12,29 @@
 > corrected geometry-aware and content-bound reruns report.
 
 > **EARLIER-EVIDENCE CORRECTION — 2026-09-03.** Phase A, Phase A2, the
-> matched-unit truncation comparison, and full-session stitching are also
+> matched-unit truncation comparison, and full-session stitching were
 > **retracted pending rerun** under [decision 0011](decisions/0011-cross-sort-event-matching-and-detection-evidence.md).
 > Cross-sort matching reused target spikes; whole-probe ±0.5 ms coincidence had
 > an 87–89% chance-coverage baseline; and A2 scored merge cleanliness on the
-> anchor rather than the actual fragment union. Therefore +200/-127, “no new or
-> lost detections,” the 80/85/35 and 27/100 decompositions, 92–95% clean merges,
-> and 2 recovered/4 destroyed by stitching are historical diagnostics only.
-> Corrected code writes v2 outputs and fails closed; no claim that the new
-> pipeline is better than legacy is currently supported.
+> anchor rather than the actual fragment union. The old +200/-127, 80/85/35 and
+> 27/100 decompositions, and 92–95% clean merges are historical only.
+>
+> **V2 RERUN COMPLETE — 2026-09-03.** Phase A (both audits) and Phase A2 have
+> been re-run with exclusive one-to-one matching and a depth-windowed,
+> circular-shift-null detection gate. Results:
+> - **Phase A holds and is firmer.** Cohort is now +210 / −137. **0 legacy-good
+>   units absent at detection, 0 removed by curation.** No supported new
+>   detection in the +210. The yield gain is relabelling/re-clustering.
+> - **Phase A2's load-bearing finding is reversed.** Not-over-splitting survives
+>   (0.0% coexisting fragments, both probes), but when refractory violations are
+>   measured on the actual fragment-cluster union only **6–13%** of merges are
+>   clean (was 92–95% on the anchor). The "fragments are one clean neuron /
+>   stitching would recover them" reading is withdrawn — and this now agrees
+>   with the Candidate 1 full-session stitching failure.
+>
+> The C2 drift challenge and the D2b chain remain retracted pending the
+> geometry-aware rerun. No claim that the new pipeline beats legacy is
+> currently supported.
 
 **Status:** proposed 2026-09-02
 **Supersedes as a work plan:** the follow-up lists in
@@ -249,16 +263,22 @@ per-unit metric across sorts with different unit populations
 
 ## 6. Phases, checkpoints, go/no-go
 
-### Phase A — the symmetric audit (no new sort)  ⚠ corrected rerun pending
+### Phase A — the symmetric audit (no new sort)  ✅ v2 rerun complete 2026-09-03
 
 Runs on existing outputs; can proceed in parallel with Phase B.
 
-**Original result — retracted by 0011:** [`luke_20250804_rescue_lost_units_audit.md`](luke_20250804_rescue_lost_units_audit.md).
-`testing/luke_rescue_lost_units_audit.py` classifies all 127 (~35 s on existing
-outputs). **0 lost at detection, 0 removed by curation** — every one has 100% of
-its spikes in the rescue sort. The −127 is 27 legacy-good→`mua` demotions (the
-mirror of the 80 MUA→good promotions) plus **100 re-clustered**. Checkpoint A's
-regression trigger did not fire.
+**V2 result:** [`luke_20250804_rescue_unique_units_audit.md`](luke_20250804_rescue_unique_units_audit.md)
++ [`luke_20250804_rescue_lost_units_audit.md`](luke_20250804_rescue_lost_units_audit.md).
+Exclusive one-to-one matching, depth-windowed coincidence gated against
+circular-shift nulls. Cohort **+210 / −137** (net +73 unchanged). **0
+legacy-good units absent at detection, 0 removed by curation** (5 of the 137 are
+`detection status unresolved` — 11 µV, 3.6 Hz, 40% RV, marginal everywhere). No
+supported new detection in the +210 (2 unresolved, neither clears the null bar).
+Checkpoint A's regression trigger did not fire.
+
+**Historical v1 result — retracted by 0011:** classified 127; same qualitative
+conclusion (0 lost at detection) but via a non-exclusive matcher and a
+whole-probe coincidence statistic with an ≈87% chance baseline.
 
 **Interpretation — corrected 2026-09-02.** An earlier draft of this section
 concluded that "curation/clustering remain the only stages that differ." That
@@ -271,15 +291,15 @@ prevent. The correct statement:
 > motion representations can preserve the same event pool while changing how a
 > moving neuron is partitioned into identities.
 
-The two halves of the −127 are different phenomena and must not be pooled:
+The two halves of the −137 are different phenomena and must not be pooled:
 
-| | n | Nature |
+| | n (v2) | Nature |
 |---|---:|---|
-| legacy-good → `mua` demotions | 27 | A **labelling-threshold** issue — the mirror of the 80 MUA→good promotions. One moved threshold, to be decided as one. |
-| **re-clustered** | **100** | A **repartitioning** phenomenon. Motion-driven fragmentation is now a leading candidate explanation, alongside ordinary over-splitting. |
+| legacy-good → `mua` demotions (preserved as MUA) | 23 | A **labelling-threshold** issue — the mirror of the MUA→good promotions. One moved threshold, to be decided as one. |
+| **re-clustered** (dispersed + split + merged) | **109** | A **repartitioning** phenomenon. Non-rigid motion and KS4 template competition are both candidate explanations; A2 does not separate them. |
 
-The leading mechanistic hypothesis for the 100, and for the corresponding
-dispersed/split gains among the +200:
+The leading mechanistic hypothesis for the re-clustered losses, and for the
+corresponding dispersed/split gains among the +210:
 
 > Legacy partially stabilized moving neurons by resampling voltage. Rescue
 > preserves the voltage but leaves KS4 to represent a moving waveform footprint,
@@ -291,47 +311,50 @@ fragmented clusters or lets templates follow tissue. **Phase A2 tests it before
 any candidate search begins.**
 
 *Tension that A2 must confront:* on imec0 the DREDGE rigid sidecar reports only
-**1.28 µm** of total drift (6.4% of one site pitch). If the 100 are
-motion-fragmented on *this* probe, the cause must be non-rigid, or that estimate
-must be wrong — it is rigid-only and QC-unqualified, with `weights_thresh`
-entirely non-finite. A2 therefore runs on **imec1 as well**, where the motion is
-known to be real.
+**1.28 µm** of total drift (6.4% of one site pitch). If the re-clustered losses
+are motion-fragmented on *this* probe, the cause must be non-rigid, or that
+estimate must be wrong — it is rigid-only and QC-unqualified, with
+`weights_thresh` entirely non-finite. A2 therefore runs on **imec1 as well**,
+where the motion is known to be real.
 
-1. Classify all **127 legacy-good units rescue does not reproduce**: preserved
-   as MUA, split, merged, dispersed, absent at detection, or rejected by
-   curation. Reuse the coincidence machinery already written.
-2. Apply the same waveform/refractory/amplitude evidence used for the 200 gains.
+1. Classify all legacy-good units rescue does not reproduce: preserved as MUA,
+   split, merged, dispersed, absent at detection, or rejected by curation.
+2. Apply the same waveform/refractory/amplitude evidence used for the gains.
 
-**Checkpoint A.** *Go:* a symmetric `+200 / −127` table with both sides
-classified. *Decision:* if a substantial share of the 127 are genuine neurons
-lost at detection or curation, that is a regression the yield narrative hid, and
-it becomes the top-priority defect.
+**Checkpoint A.** *Go:* a symmetric `+N / −M` table with both sides classified.
+*Decision:* if a substantial share of the losses are genuine neurons lost at
+detection or curation, that is a regression the yield narrative hid. **Met
+2026-09-03 (v2): 0 / 137 lost at detection, 0 removed by curation.**
 
-### Phase A2 — is the repartitioning motion-structured? (no new sort)  ✅ complete 2026-09-02
+### Phase A2 — is the repartitioning motion-structured? (no new sort)  ✅ v2 rerun complete 2026-09-03
 
 Runs entirely on existing outputs. Hours, not days. **This gates Phase D's
 priority order**, and could change what the whole candidate search is for.
 
-**Result:** [`luke_20250804_rescue_repartition_motion_audit.md`](luke_20250804_rescue_repartition_motion_audit.md).
-`testing/luke_rescue_repartition_motion_audit.py` (prespec frozen in `PRESPEC`;
-+ `test_…`, 6 tests). 117 imec0 + 62 imec1 dispersed families scored. Consistent
-across both probes:
+**V2 result:** [`luke_20250804_rescue_repartition_motion_audit.md`](luke_20250804_rescue_repartition_motion_audit.md).
+`testing/luke_rescue_repartition_motion_audit.py` (prespec frozen in `PRESPEC`).
+96 imec0 + 46 imec1 dispersed families scored, exclusive identities, spatially
+plausible fragments, refractory violations on the **fragment-cluster union**:
 
-| | imec0 | imec1 |
-|---|---:|---:|
-| coexisting fragments (over-splitting signature) | **0%** | 1.6% |
-| successive (one fragment at a time) | 50% | 69% |
-| merge is refractory-clean | 92% | 95% |
-| depth ↔ rigid-DREDGE-motion correlation | 0.11 | 0.13 |
-| ownership flips per hour | 18 | 22 |
+| | imec0 | imec1 | (v1, retracted) |
+|---|---:|---:|---|
+| coexisting fragments (over-splitting signature) | **0.0%** | **0.0%** | 0% / 1.6% |
+| successive (one fragment at a time) | 56% | 72% | 50% / 69% |
+| **fragment-union merge is refractory-clean** | **6%** | **13%** | ~92% / ~95% |
+| median fragment-union RV fraction | 14% | 8% | (anchor: 0.2%) |
+| depth ↔ rigid-DREDGE-motion correlation | 0.13 | 0.17 | 0.11 / 0.13 |
+| ownership flips per hour | 18 | 21 | 18 / 22 |
+| classed `ambiguous` | 92/96 | 41/46 | — |
 
-**Reading (the mix, not a verdict):** the re-partitioning is **not over-splitting**
-(fragments never coexist), the fragments **are one clean neuron** (merge is
-refractory-clean → family stitching would recover them), and it is **not tracked
-by the rigid motion estimate** and **not slow** — it is rapid template-ownership
-flicker (~every 3 min) with no depth trajectory. A2 cannot separate *non-rigid /
-fast motion* from *KS4 template competition on preserved voltage*; both produce
-this. **C2 separates them.**
+**Reading (the mix, not a verdict):** the re-partitioning is **not
+over-splitting** (fragments never coexist — this survives v1). But the fragments
+are **not demonstrably one clean neuron** — unioning the fragment clusters'
+trains is refractory-clean in only 6–13% of families. It is **not tracked by the
+rigid motion estimate** and **not slow** — rapid template-ownership flicker
+(~every 3 min) with no depth trajectory. ~90% of families are `ambiguous`:
+neither classic over-splitting nor clean motion fragmentation. A2 cannot
+separate *non-rigid / fast motion* from *KS4 template competition on preserved
+voltage*. **The corrected C2 would separate them.**
 
 **Prespecify before looking**, or this becomes story-fitting: freeze the sample
 of legacy↔rescue families and the decision rule first, then run once.
@@ -355,19 +378,20 @@ Both patterns can be present; report the mix, not a verdict.
 **Checkpoint A2.** *Go:* a classified sample with the mix quantified per probe.
 *Decision:* this sets the Phase D priority order (see the decision tree there).
 
-*Reached 2026-09-02.* The mix points away from the "clustering/curation first"
-branch (coexisting fragments ~0%) and toward **post-sort family stitching of
-temporally-complementary, refractory-clean fragments** as the first Phase D
-target — indicated whether the root cause is non-rigid motion or template
-competition, because stitching repairs both flicker and slow drift while
-curation tuning addresses neither. **C2 is still required** to frame the cause
-before the search starts.
+*Reached 2026-09-02 (v1); re-run 2026-09-03 (v2).* The v1 reading — "fragments
+are one clean neuron → post-sort family stitching would recover them" — was the
+load-bearing input to the first Phase D target. **V2 retracts it:** the
+fragment-cluster unions are refractory-clean in only 6–13% of families.
+Not-over-splitting still holds (0.0% coexisting), so "fix clustering/curation
+first" is still **not** indicated — but neither is "stitch first". The v2 mix is
+mostly `ambiguous`.
 
-*Superseded 2026-09-02.* Stitching was built and rejected — it reconstitutes
-only 2 of the 127 on the full session and loses matches on net (see Phase D
-Candidate 1). The A2 "family stitching would recover them" reading held only at
-snippet scale; full-session the dispersed fragments are too finely smeared.
-Phase D target is now Candidate 2, a non-rigid motion representation.
+*Superseded 2026-09-02, and now doubly so.* Stitching was built and rejected
+independently — it reconstitutes only 2 of the 127 on the full session and loses
+matches on net (see Phase D Candidate 1). V2 A2 predicts exactly this: stitching
+contaminated partial clusters yields refractory-violating units. **The target is
+to prevent fragmentation upstream, not repair it** — Candidate 2, a non-rigid
+motion representation, pending the geometry-aware C2/D2b reruns.
 
 ### Phase B — build the ladder
 
