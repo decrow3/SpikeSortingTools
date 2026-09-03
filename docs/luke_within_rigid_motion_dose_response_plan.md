@@ -108,7 +108,11 @@ the pattern across E1–E8 together, not to any single test.
 
 ## 7. Reproducibility
 
-- Selection + analysis: `testing/luke_within_rigid_motion_dose_response.py` (to build)
-- Tests: `testing/test_luke_within_rigid_motion_dose_response.py` (to build)
+- Selection + analysis: `testing/luke_within_rigid_motion_dose_response.py`
+  — **phase 1 (window selection) and phase 4 (statistics) implemented + tested
+  (13 tests); phases 2–3 (build/sort, endpoint extraction) are a skeleton
+  pending code review.** Not run.
+- Tests: `testing/test_luke_within_rigid_motion_dose_response.py`
 - Frozen window list: `docs/luke_within_rigid_motion_windows.frozen.json`
+  (written once by `--select`)
 - Outputs: `testing/outputs/luke_within_rigid_motion_dose_response/`
