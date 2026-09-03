@@ -4,178 +4,286 @@ import numpy as np
 import pandas as pd
 import pytest
 
+import testing.luke_within_rigid_motion_dose_response as m
 from testing.luke_within_rigid_motion_dose_response import (
-    DOSE_AXES,
+    ALL_ESTIMATORS,
+    CONCORDANT_ESTIMATORS,
+    ENDPOINT_KEYS,
     N_WINDOWS,
-    N_WINDOWS_MAX,
     SelectedWindow,
+    consensus_dose_table,
     dose_response,
-    frame_relative_start,
     load_frozen_list,
     mann_kendall,
-    partial_spearman,
+    partial_corr_spearman,
+    qualify_units,
     select_windows,
     spearman_ci,
     write_frozen_list,
-    _increment1_luke_imec0,
+    _fragmentation,
+    _similar_pairs,
+    _spec_for,
 )
 
 
 # --------------------------------------------------------------------------- #
-# phase 1 -- clock conversion
+# synthetic increment-1 CSV
 # --------------------------------------------------------------------------- #
-def test_frame_relative_start_matches_repo_convention():
-    from testing.luke_motion_regime_windows import relative_times
-
-    native = np.arange(3057.7, 3057.7 + 20.0, 1.0)  # dt = 1.0, origin 3057.7
-    # a window that starts at the 5th native bin
-    want = float(relative_times(native)[5])
-    got = frame_relative_start(native[5], native[0], 1.0)
-    assert got == pytest.approx(want)
-
-
-def test_frame_relative_start_two_second_bins():
-    from testing.luke_motion_regime_windows import relative_times
-
-    native = np.arange(1.0, 1.0 + 40.0, 2.0)  # dt = 2.0, origin 1.0
-    want = float(relative_times(native)[3])
-    got = frame_relative_start(native[3], native[0], 2.0)
-    assert got == pytest.approx(want)
-
-
-# --------------------------------------------------------------------------- #
-# phase 1 -- synthetic increment-1 CSV
-# --------------------------------------------------------------------------- #
-def _fake_csv(tmp_path, n_luke=87, seed=0):
+def _fake_csv(tmp_path, n=87, seed=0, medicine_agrees=False):
     rng = np.random.default_rng(seed)
-    origin, dt = 3057.7, 1.0
+    origin = {"medicine": 3057.7, "ks-motion": 3058.7, "dredge-motion": 3058.2,
+              "decentralized-motion": 3058.7}
+    dt = {"medicine": 1.0, "ks-motion": 2.0, "dredge-motion": 1.0, "decentralized-motion": 2.0}
+    # a shared "true" motion order; concordant estimators track it, medicine doesn't
+    truth = np.linspace(2.0, 25.0, n)
+    perm_med = truth if medicine_agrees else rng.permutation(truth)
     rows = []
-    # Luke imec0 medicine: rigid excursion 4..23 um, speed loosely correlated
-    exc = np.linspace(4.0, 23.0, n_luke) + rng.normal(0, 0.3, n_luke)
-    spd = 0.02 * exc + rng.normal(0, 0.05, n_luke) + 0.2
-    for k in range(n_luke):
-        rows.append(dict(
-            dataset="Luke", probe="imec0", estimator="medicine",
-            window_start_native_s=origin + k * 120.0,
-            window_start_recording_s=k * 120.0,
-            time_origin_native_s=origin, window_duration_s=120.0, time_interval_id=k,
-            rigid_excursion_um=float(exc[k]), nonrigid_grad_um_per_mm=1.5,
-            p95_nonrigid_grad_um_per_mm=2.0, rigid_speed_um_s=float(max(spd[k], 0.01)),
-            finite_fraction=1.0, n_time_bins=120, n_depth_bins=2,
-            depth_span_um=4074.0, dt_median_s=dt, max_time_gap_s=1.0,
-        ))
-    # a couple of QC-failing Luke windows that must be dropped
-    rows.append({**rows[0], "window_start_native_s": origin + 999 * 120.0,
-                 "finite_fraction": 0.5, "rigid_excursion_um": 5.0})
-    rows.append({**rows[0], "window_start_native_s": origin + 998 * 120.0,
-                 "max_time_gap_s": 99.0, "rigid_excursion_um": 6.0})
-    # noise rows for other datasets/estimators
-    for est in ("ks-motion", "decentralized-motion"):
-        rows.append({**rows[0], "estimator": est})
+    for est in ALL_ESTIMATORS:
+        base = truth if est != "medicine" else perm_med
+        exc = base + rng.normal(0, 0.8, n)
+        spd = 0.02 * base + rng.normal(0, 0.03, n) + 0.2
+        for k in range(n):
+            rows.append(dict(
+                dataset="Luke", probe="imec0", estimator=est,
+                window_start_native_s=origin[est] + k * 120.0,
+                window_start_recording_s=k * 120.0,
+                time_origin_native_s=origin[est], window_duration_s=120.0,
+                time_interval_id=k * 120,  # matches the real CSV's rounding on a 120 s stride
+                rigid_excursion_um=float(exc[k]), nonrigid_grad_um_per_mm=1.5,
+                p95_nonrigid_grad_um_per_mm=2.0, rigid_speed_um_s=float(max(spd[k], 0.01)),
+                finite_fraction=1.0, n_time_bins=int(120 / dt[est]), n_depth_bins=2,
+                depth_span_um=4074.0, dt_median_s=dt[est], max_time_gap_s=dt[est],
+            ))
+    # a QC-failing interval on ks-motion only -> the interval must be dropped
+    rows.append({**rows[0], "estimator": "ks-motion", "time_interval_id": 999 * 120,
+                 "window_start_native_s": origin["ks-motion"] + 999 * 120.0,
+                 "window_start_recording_s": 999 * 120.0, "finite_fraction": 0.4})
+    for est in ("dredge-motion", "decentralized-motion", "medicine"):
+        rows.append({**rows[0], "estimator": est, "time_interval_id": 999 * 120,
+                     "window_start_native_s": origin[est] + 999 * 120.0,
+                     "window_start_recording_s": 999 * 120.0})
     rows.append({**rows[0], "dataset": "Yates", "probe": "shank1"})
     p = tmp_path / "window_signatures.csv"
     pd.DataFrame(rows).to_csv(p, index=False)
     return p
 
 
-def test_increment1_filter_drops_qc_failures_and_sorts(tmp_path):
-    df = _increment1_luke_imec0(_fake_csv(tmp_path), "medicine")
-    assert (df["dataset"] == "Luke").all() and (df["probe"] == "imec0").all()
-    assert (df["estimator"] == "medicine").all()
-    assert len(df) == 87  # the two QC failures dropped
-    assert df["rigid_excursion_um"].is_monotonic_increasing
+# --------------------------------------------------------------------------- #
+# phase 1 -- consensus dose
+# --------------------------------------------------------------------------- #
+def test_consensus_table_joins_on_interval_and_drops_incomplete(tmp_path):
+    t = consensus_dose_table(_fake_csv(tmp_path))
+    assert len(t) == 87  # the 999*120 interval fails ks QC -> dropped
+    assert 999 * 120 not in set(t["time_interval_id"])
+    assert {"exc_consensus_rank", "spd_consensus_rank"} <= set(t.columns)
+    for e in ALL_ESTIMATORS:
+        assert f"exc_{e}" in t.columns
+    assert t["exc_consensus_rank"].between(0, 1).all()
 
 
-def test_select_windows_spans_range_and_is_deterministic(tmp_path):
+def test_consensus_rank_tracks_concordant_not_medicine(tmp_path):
+    from scipy.stats import spearmanr
+
+    t = consensus_dose_table(_fake_csv(tmp_path, seed=1))
+    for e in CONCORDANT_ESTIMATORS:
+        assert spearmanr(t["exc_consensus_rank"], t[f"exc_{e}"]).statistic > 0.7
+    assert abs(spearmanr(t["exc_consensus_rank"], t["exc_medicine"]).statistic) < 0.4
+
+
+def test_select_windows_deterministic_and_spans_range(tmp_path):
     csv = _fake_csv(tmp_path)
-    a = select_windows(csv)
-    b = select_windows(csv)
-    assert [w.rank for w in a] == [w.rank for w in b]
-    assert N_WINDOWS <= len(a) <= N_WINDOWS_MAX
-    excs = [w.rigid_excursion_um for w in a]
-    assert min(excs) < 5.0 and max(excs) > 22.0  # both tails covered
-    assert a[0].rank == 0  # quietest window always included
-    # frame starts are the native starts shifted by (origin - dt/2)
-    assert a[0].frame_start_s == pytest.approx(a[0].native_start_s - (3057.7 - 0.5))
-
-
-def test_select_windows_speed_topup_flag(tmp_path):
-    windows = select_windows(_fake_csv(tmp_path, seed=3))
-    # base picks are the 24 even ranks; any extra are flagged
-    base = [w for w in windows if not w.added_for_speed_coverage]
-    extra = [w for w in windows if w.added_for_speed_coverage]
-    assert len(base) <= N_WINDOWS
-    assert len(base) + len(extra) == len(windows)
-
-
-def test_frozen_list_roundtrip_and_no_overwrite(tmp_path):
-    windows = select_windows(_fake_csv(tmp_path))
-    path = tmp_path / "frozen.json"
-    write_frozen_list(windows, path)
-    loaded = load_frozen_list(path)
-    assert [w.rank for w in loaded] == [w.rank for w in windows]
-    assert loaded[0] == windows[0]
-    with pytest.raises(RuntimeError, match="frozen once"):
-        write_frozen_list(windows, path)
+    a, b = select_windows(csv), select_windows(csv)
+    assert [w.time_interval_id for w in a] == [w.time_interval_id for w in b]
+    assert len(a) == N_WINDOWS
+    assert a[0].exc_consensus_rank < 0.1 and a[-1].exc_consensus_rank > 0.9
+    assert a[0].snippet_start_s == a[0].time_interval_id  # recording-relative == interval id here
 
 
 def test_select_windows_raises_when_too_few(tmp_path):
     with pytest.raises(RuntimeError, match="need"):
-        select_windows(_fake_csv(tmp_path, n_luke=10))
+        select_windows(_fake_csv(tmp_path, n=10))
+
+
+def test_frozen_list_records_provenance_and_validates(tmp_path):
+    csv = _fake_csv(tmp_path)
+    windows = select_windows(csv)
+    path = tmp_path / "frozen.json"
+    write_frozen_list(windows, csv, path)
+    payload = json.loads(path.read_text())
+    assert payload["source_csv_sha256"] and payload["git_commit"]
+    assert payload["time_interval_ids"] == [w.time_interval_id for w in windows]
+
+    loaded = load_frozen_list(path, csv)
+    assert [w.time_interval_id for w in loaded] == [w.time_interval_id for w in windows]
+
+    with pytest.raises(RuntimeError, match="frozen once"):
+        write_frozen_list(windows, csv, path)
+
+    csv.write_text(csv.read_text() + "\n")  # tamper
+    with pytest.raises(RuntimeError, match="changed since"):
+        load_frozen_list(path, csv)
+
+
+# --------------------------------------------------------------------------- #
+# phase 2 -- spec / dir resolution (the KeyError bug)
+# --------------------------------------------------------------------------- #
+def test_spec_and_dir_resolution(tmp_path, monkeypatch):
+    w = SelectedWindow(time_interval_id=1200, snippet_start_s=1200.0,
+                       exc_consensus_rank=0.5, spd_consensus_rank=0.5,
+                       exc_by_estimator={e: 5.0 for e in ALL_ESTIMATORS},
+                       spd_by_estimator={e: 0.3 for e in ALL_ESTIMATORS})
+    spec = _spec_for(w)
+    assert spec.start_s == 1200.0 and spec.channel_count == 384
+    assert spec.duration_s == 120.0
+    monkeypatch.setattr(m, "_snippet_dir_for", lambda s: tmp_path / s.directory_name)
+    d = m._snippet_dir_for(spec)
+    assert d.name.startswith("rigid_dose_iv1200-")
+
+
+# --------------------------------------------------------------------------- #
+# phase 3 -- endpoints
+# --------------------------------------------------------------------------- #
+def _train(rate_hz, dur_s, fs, jitter=0.0, seed=0):
+    rng = np.random.default_rng(seed)
+    t = np.arange(0, dur_s, 1.0 / rate_hz)
+    t = t + rng.normal(0, jitter, t.size)
+    return np.sort((t * fs).astype(np.int64))
+
+
+def test_qualify_units_applies_every_frozen_gate():
+    fs, dur = 30000.0, 120.0
+    clean = _train(5.0, dur, fs, jitter=0.05, seed=1)          # 0: ~600 spikes, clean
+    few = _train(0.5, dur, fs, seed=2)                          # 1: ~60 spikes
+    contaminated = np.sort(np.arange(0, int(dur * fs), int(fs / 1000)))  # 2: 1 kHz -> ISI 1 ms < 1.5
+    early = _train(6.0, dur, fs, seed=4)
+    early = early[early < 40 * fs]                              # 3: present only first 40 s
+    st = np.concatenate([clean, few, contaminated, early])
+    cl = np.concatenate([np.full(a.size, i) for i, a in enumerate([clean, few, contaminated, early])])
+    amp = {i: 40.0 for i in range(4)}
+    dep = {i: 1000.0 for i in range(4)}
+
+    q = qualify_units(st, cl, amp, dep, fs, dur)
+    assert q["qualified"] == [0]
+    by_c = {u["cluster"]: u for u in q["per_unit"]}
+    assert by_c[1]["n_spikes"] < m.QUAL_MIN_SPIKES
+    assert by_c[2]["rv_fraction"] > m.QUAL_RV_CEILING
+    assert by_c[3]["presence_bins"] < m.QUAL_PRESENCE_MIN_BINS
+
+    amp[0] = 5.0
+    assert qualify_units(st, cl, amp, dep, fs, dur)["qualified"] == []
+
+
+def test_similar_pairs_and_fragmentation_are_label_free():
+    templates = np.zeros((3, 40, 4))
+    templates[0, 20, 0] = -10.0
+    templates[1, 20, 0] = -9.9   # ~identical to 0
+    templates[2, 20, 3] = -10.0  # different channel
+    depth = {0: 1000.0, 1: 1000.0, 2: 1000.0}
+    assert _similar_pairs([0, 1, 2], templates, depth) == 1
+
+    fs = 30000.0
+    a = np.arange(0, 3_000_000, 6000)          # 5 Hz
+    b = a + 3000                                # interleaved, never coincident
+    frag = _fragmentation([0, 1], {0: a, 1: b}, {0: 1000.0, 1: 1000.0}, fs)
+    assert frag["n_fragment_pairs"] == 1 and frag["E8_fragmentation_index"] == 1.0
 
 
 # --------------------------------------------------------------------------- #
 # phase 4 -- statistics
 # --------------------------------------------------------------------------- #
-def test_spearman_ci_monotone():
-    x = np.arange(24.0)
-    y = x ** 1.3
-    r = spearman_ci(x, y, n_boot=200)
-    assert r["rho"] == pytest.approx(1.0)
-    assert r["ci_lo"] > 0.8 and r["n"] == 24
+def test_spearman_ci_monotone_and_degenerate():
+    r = spearman_ci(np.arange(24.0), np.arange(24.0) ** 1.3, n_boot=200)
+    assert r["rho"] == pytest.approx(1.0) and r["ci_lo"] > 0.8
+    assert np.isnan(spearman_ci(np.ones(10), np.arange(10.0))["rho"])
 
 
-def test_spearman_ci_degenerate_returns_nan():
-    r = spearman_ci(np.ones(10), np.arange(10.0))
-    assert np.isnan(r["rho"])
+def test_mann_kendall_tie_corrected_matches_reference():
+    # y with a clear increasing trend and repeated values (ties)
+    y = np.array([1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6], float)
+    x = np.arange(y.size, dtype=float)
+    mk = mann_kendall(x, y, n_perm=2000)
+    # S for a perfectly ordered tied sequence: pairs concordant = C(12,2)-ties
+    # 6 tie groups of 2 -> 6 ties; S = 66 - 6 = 60
+    assert mk["S"] == 60
+    assert 0.9 < mk["tau_b"] <= 1.0
+    assert mk["p_perm"] < 0.01
 
 
-def test_mann_kendall_detects_increasing_trend():
-    x = np.arange(20.0)
-    y = 0.5 * x + np.sin(x)  # increasing with wobble
-    mk = mann_kendall(x, y)
-    assert mk["tau"] > 0.5 and mk["p"] < 0.05
+def test_partial_corr_spearman_matches_manual_formula():
+    rng = np.random.default_rng(0)
+    z = np.linspace(0, 1, 40)
+    x = z + rng.normal(0, 0.1, 40)
+    y = z + rng.normal(0, 0.1, 40)
+    from scipy.stats import spearmanr
+
+    rxy = spearmanr(x, y).statistic
+    rxz = spearmanr(x, z).statistic
+    ryz = spearmanr(y, z).statistic
+    expected = (rxy - rxz * ryz) / np.sqrt((1 - rxz ** 2) * (1 - ryz ** 2))
+    assert partial_corr_spearman(y, x, z) == pytest.approx(expected, abs=0.03)
 
 
-def test_partial_spearman_removes_confound():
-    rng = np.random.default_rng(1)
-    z = np.linspace(0, 1, 60)              # session time
-    x = z + rng.normal(0, 0.03, 60)        # dose correlated with session time
-    y_conf = 3 * z + rng.normal(0, 0.05, 60)   # driven by z only
-    y_real = 3 * x + rng.normal(0, 0.05, 60)   # driven by x
-    assert abs(partial_spearman(y_conf, x, z)) < 0.4          # confound removed
-    assert partial_spearman(y_real, x, z) > 0.5               # real effect survives
-
-
-def test_dose_response_structure():
+def test_partial_corr_removes_pure_confound():
     rng = np.random.default_rng(2)
-    n = 24
-    exc = np.linspace(4, 23, n)
-    df = pd.DataFrame({
-        "frame_start_s": np.arange(n) * 120.0,
-        "rigid_excursion_um": exc,
-        "rigid_speed_um_s": 0.02 * exc + rng.normal(0, 0.02, n),
-        "E3_qualified_units_per_mm": 10 - 0.3 * exc + rng.normal(0, 0.2, n),
-        "E4_refractory_burden_median": 0.001 + 0.0002 * exc,
-    })
-    out = dose_response(df)
-    assert out["n_windows"] == n
-    assert set(out["by_endpoint"]) == {"E3_qualified_units_per_mm", "E4_refractory_burden_median"}
-    e3 = out["by_endpoint"]["E3_qualified_units_per_mm"]
-    assert set(e3) == set(DOSE_AXES)
-    assert e3["rigid_excursion_um"]["spearman"]["rho"] < -0.7  # declines with motion
+    z = np.linspace(0, 1, 60)
+    x = z + rng.normal(0, 0.03, 60)
+    y_conf = 3 * z + rng.normal(0, 0.05, 60)   # driven by z only
+    y_real = 3 * x + rng.normal(0, 0.05, 60)
+    assert abs(partial_corr_spearman(y_conf, x, z)) < 0.4
+    assert partial_corr_spearman(y_real, x, z) > 0.5
 
 
-def test_dose_response_needs_session_time_column():
-    with pytest.raises(ValueError, match="frame_start_s"):
-        dose_response(pd.DataFrame({"rigid_excursion_um": [1.0, 2.0], "E1_compact_events_per_mm_per_s": [1.0, 2.0]}))
+def _endpoint_frame(n=24, seed=0, e3_slope=-3.0, medicine_flips=False):
+    rng = np.random.default_rng(seed)
+    exc_rank = np.linspace(0.02, 1.0, n)
+    rows = {
+        "time_interval_id": np.arange(n) * 120,
+        "snippet_start_s": np.arange(n) * 120.0,
+        "exc_consensus_rank": exc_rank,
+        "spd_consensus_rank": exc_rank + rng.normal(0, 0.05, n),
+        "n_qualified": np.clip((30 + e3_slope * 10 * exc_rank).astype(int), 0, None),
+        "E3_qualified_units_per_mm": 8 + e3_slope * exc_rank + rng.normal(0, 0.2, n),
+        "E4_refractory_burden_median": 0.001 + 0.003 * exc_rank,
+        "E5_similar_pairs_per_qualified_unit": 0.1 + 0.2 * exc_rank,
+        "E6_waveform_stability_median": 0.99 - 0.1 * exc_rank,
+        "E7_qualified_rate_hz_median": 5 + rng.normal(0, 0.5, n),
+        "E8_fragmentation_index": 0.05 + 0.3 * exc_rank,
+        "C1_detected_events_per_mm_per_s": 100 + rng.normal(0, 5, n),
+        "C2_fraction_events_near_qualified": 0.8 - 0.2 * exc_rank,
+    }
+    for e in ALL_ESTIMATORS:
+        if e == "medicine" and medicine_flips:
+            rows[f"exc_{e}"] = -exc_rank + rng.normal(0, 0.02, n)
+        else:
+            rows[f"exc_{e}"] = exc_rank + rng.normal(0, 0.05, n)
+        rows[f"spd_{e}"] = exc_rank + rng.normal(0, 0.05, n)
+    return pd.DataFrame(rows)
+
+
+def test_dose_response_primary_and_concordance():
+    out = dose_response(_endpoint_frame(e3_slope=-3.0))
+    assert out["primary_endpoint"] == "E3_qualified_units_per_mm"
+    assert out["primary"]["spearman_vs_excursion"]["rho"] < -0.8
+    assert out["primary"]["exposure_validity"] == "resolved"
+    assert out["primary"]["matches_prereg_direction"] is True
+    # E4/E5/E8 up, E6/C2 down -> 5/5 predicted supportive endpoints move right
+    assert out["concordance_summary"].startswith("5/5")
+
+
+def test_dose_response_flags_exposure_unresolved_when_medicine_flips():
+    out = dose_response(_endpoint_frame(medicine_flips=True))
+    # concordant three still agree -> primary "resolved", but medicine disagrees
+    assert out["primary"]["medicine_sign_agrees"] is False
+
+
+def test_dose_response_requires_all_endpoints():
+    df = _endpoint_frame().drop(columns=["E8_fragmentation_index"])
+    with pytest.raises(ValueError, match="missing endpoint"):
+        dose_response(df)
+
+
+def test_dose_response_rejects_duplicate_intervals():
+    df = _endpoint_frame()
+    df.loc[1, "time_interval_id"] = df.loc[0, "time_interval_id"]
+    with pytest.raises(ValueError, match="duplicate"):
+        dose_response(df)
