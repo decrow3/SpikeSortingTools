@@ -144,6 +144,7 @@ def paired_injection(
     moving_trajectory: TrajectoryFn,
     amplitude_scale: float = 1.0,
     unit_id: str = "inj0",
+    edge_guard_samples: int = 2,
 ) -> tuple[np.ndarray, np.ndarray, dict]:
     """The C2 pair: identical waveform and train, one held still, one moved."""
     static_uv = inject_trajectory(
@@ -155,6 +156,7 @@ def paired_injection(
         trajectory=static_trajectory(),
         amplitude_scale=amplitude_scale,
         template_id=unit_id,
+        edge_guard_samples=edge_guard_samples,
     )
     moving_uv = inject_trajectory(
         background_uv.copy(),
@@ -165,6 +167,7 @@ def paired_injection(
         trajectory=moving_trajectory,
         amplitude_scale=amplitude_scale,
         template_id=unit_id,
+        edge_guard_samples=edge_guard_samples,
     )
     truth = {unit_id: np.sort(np.asarray(train_samples, dtype=np.int64))}
     return static_uv, moving_uv, truth

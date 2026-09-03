@@ -108,3 +108,30 @@ def test_l1_run_marks_sort_cached_on_second_call(patched):
 def test_l1_run_refuses_mnt(patched):
     with pytest.raises(ValueError, match="/mnt"):
         l1_run("x", out_root="/mnt/somewhere")
+
+
+def test_l1_run_routes_non_rescue_sorter_to_its_own_cache_leaf(patched, monkeypatch):
+    calls, tmp_path = patched
+    from testing.ladder_sorter import LEGACY_STYLE
+
+    routed = {"n": 0}
+
+    def fake_config_sort(recording_dir, sort_dir, config):
+        routed["n"] += 1
+        so = sort_dir / "sorter_output"
+        so.mkdir(parents=True)
+        np.save(so / "amplitudes.npy", np.array([10.0, 20.0]))
+        np.save(so / "spike_clusters.npy", np.array([0, 1]))
+        (sort_dir / "rescue_sort_manifest.json").write_text(
+            json.dumps({"complete": True, "summary": {"unit_count": 2}})
+        )
+
+    monkeypatch.setattr(
+        "testing.ladder_sorter.run_sorter_config", fake_config_sort, raising=False
+    )
+    out = tmp_path / "l1"
+    result = l1_run("x", out_root=out, sorter=LEGACY_STYLE)
+
+    assert routed["n"] == 1 and calls["sort"] == 0  # rescue path not taken
+    assert result["sorter_config"] == "legacy_style"
+    assert (out / ("deadbeef" * 8)[:16] / f"sort-{LEGACY_STYLE.digest[:12]}").exists()

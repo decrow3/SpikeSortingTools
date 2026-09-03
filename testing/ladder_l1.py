@@ -97,29 +97,45 @@ def _stage_observables(sort_dir: Path, curated: Path) -> dict:
 def l1_run(
     snippet_dir: Path | str,
     *,
+    sorter: "SorterConfig | None" = None,
     curation: CurationConfig | None = None,
     reference: Path | str | None = None,
     truth: dict | None = None,
     out_root: Path | str | None = None,
     wall_budget_s: float = L1_WALL_BUDGET_S,
 ) -> dict:
-    """Run one snippet through sort → curate → score, cached. Returns the score."""
+    """Run one snippet through sort → curate → score, cached. Returns the score.
+
+    `sorter` defaults to the frozen rescue config (`pipeline.sorting.run_kilosort4`,
+    the production path). Pass a `ladder_sorter.SorterConfig` for a comparator or
+    Phase D candidate — it caches at its own `sort-<digest>/` leaf.
+    """
     curation = curation or CurationConfig()
     snippet = load_snippet(snippet_dir)
     out_root = Path(out_root) if out_root is not None else l1_root()
     if str(out_root).startswith("/mnt/"):
         raise ValueError("refusing to write L1 outputs under /mnt (plan §3)")
 
+    is_rescue = sorter is None or getattr(sorter, "label", "rescue") == "rescue"
     work = out_root / snippet.manifest["spec_digest"][:16]
-    sort_dir = work / "sort"
-    cur_dir = work / f"cur-{curation.digest[:12]}"
+    sort_dir = work / ("sort" if is_rescue else f"sort-{sorter.digest[:12]}")
+    cur_dir = work / (
+        f"cur-{curation.digest[:12]}"
+        if is_rescue
+        else f"cur-{sorter.digest[:12]}-{curation.digest[:12]}"
+    )
     work.mkdir(parents=True, exist_ok=True)
 
-    # --- stage 1: sort (cached per snippet) --------------------------------- #
+    # --- stage 1: sort (cached per snippet × sorter config) ---------------- #
     t0 = time.time()
     sort_cached = (sort_dir / SORT_MANIFEST).exists()
     if not sort_cached:
-        run_kilosort4(snippet.dir, sort_dir)
+        if is_rescue:
+            run_kilosort4(snippet.dir, sort_dir)
+        else:
+            from testing.ladder_sorter import run_sorter_config
+
+            run_sorter_config(snippet.dir, sort_dir, sorter)
     sort_wall = 0.0 if sort_cached else time.time() - t0
     sorter_output = sort_dir / "sorter_output"
 
@@ -165,6 +181,8 @@ def l1_run(
         "snippet_dir": str(snippet.dir),
         "spec_digest": snippet.manifest["spec_digest"],
         "snippet_axes": snippet.manifest.get("axes", {}),
+        "sorter_config": "rescue" if is_rescue else sorter.label,
+        "sorter_overrides": {} if is_rescue else dict(sorter.overrides),
         "curation_config": asdict(curation),
         "curation_digest": curation.digest,
         "wall_clock": {

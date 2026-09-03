@@ -416,13 +416,21 @@ one Checkpoint B should ultimately turn on; that is Phase C.
 
 ### Phase C — connect ground truth to a sorter
 
-1. Wire the sealed injection scaffold to the L1 runner: inject into raw-domain
-   `float32` (the existing contract already forbids injecting into stored
-   `int16`), then run the real pipeline over the injected snippet.
-2. Validate the benchmark itself: legacy and rescue must both recover the
-   easy high-SNR, no-drift injections at accuracy ≥ 0.9. **If they do not, the
-   benchmark is wrong, not the pipelines.**
-3. Establish the legacy baseline score on the development panel.
+1. ~~Wire the sealed injection scaffold to the L1 runner~~ — **done 2026-09-02**,
+   `testing/ladder_inject.py` (+ `test_ladder_inject.py`, 9 tests).
+   `inject_trajectory` schedules per-spike `InjectionEvent`s along a known
+   channel trajectory and calls the sealed `inject_float32_raw_domain`
+   unchanged (float32 µV view only — never the stored int16).
+   `write_injected_recording` quantises back to int16 and writes an
+   accepted-recording folder + manifests, so `l1_run` sorts and
+   `score_sort(truth=…)` scores it. `drift_penalty(static, moving)` is the
+   decisive Δ.
+2. **Benchmark validated 2026-09-02** — the rescue pipeline recovers the
+   high-SNR (SNR 11) donor template T01, injected static into a quiet imec1
+   strip, at **accuracy 0.94 ≥ 0.9**. The benchmark is sound (legacy arm still
+   pending the config-parametrised sorter).
+3. Establish the legacy baseline score on the development panel — pending the
+   config-parametrised sorter and the frozen panel.
 
 ### C2 — the paired drift challenge (primary mechanistic experiment)
 
@@ -462,10 +470,53 @@ an injected trajectory interacts with it. Either define the trajectory relative
 to the estimated tissue position, or draw the static arm from quiet windows and
 say so. Record which was done.
 
+**First run 2026-09-02** — [`luke_20250804_c2_drift_challenge.md`](luke_20250804_c2_drift_challenge.md).
+`testing/luke_rescue_c2_drift_challenge.py` (prespec frozen; diagnostic — reuses
+the pilot's discovery-cohort donor templates; static arm from the quiet imec1
+window). Benchmark **sane**: static T01 (SNR 11) / T04 (SNR 6) recovered at
+0.94–0.98 under both sorter configs.
+
+**Drift penalty (Δ accuracy = moving − static), both arms:**
+
+| donor | trajectory | rescue | legacy_style (`nblocks=1`) |
+|---|---|---:|---:|
+| T01 | rigid 15 µm | −0.35 | −0.32 |
+| T01 | rigid 40 µm | −0.54 | **−0.81** |
+| T01 | osc 20 µm/40 s | −0.70 | −0.68 |
+| T04 | rigid 15 µm | −0.30 | **−0.58** |
+| T04 | rigid 40 µm | −0.53 | −0.31 |
+| T04 | osc 20 µm/40 s | −0.38 | −0.49 |
+
+Two findings, both decisive for Phase D:
+
+1. **Motion alone costs 30–80 accuracy points, under both configs** — mostly
+   missed spikes (T01 rigid-40: FN 24→314 rescue, 11→503 legacy) and identity
+   proliferation (T04 rigid-40: +15/+12 output units on one train). This
+   reproduces the A2 fragmentation signature **causally**: motion is a
+   sufficient cause.
+2. **KS4 rigid internal drift correction does not recover it** — `legacy_style`
+   is worse on 3 of 6 clean conditions, comparable on 2, better on 1, and piles
+   up false positives on the oscillation (FP 874 vs 473). Turning `nblocks` back
+   on is **not the fix.**
+
+→ Phase D's motion target is **non-rigid handling, a better estimate, or
+post-sort family stitching** — not `nblocks=1`. Curation-threshold tuning stays
+low: the lower-threshold `legacy_style` fragments *more* at baseline, not less.
+
+Still to add: non-rigid trajectories, both polarities, truncation-vs-truth,
+a second window. T06 (SNR 4.6) excluded — static baseline below sanity.
+
 **Checkpoint C.** *Go:* a known-truth score exists for legacy on all 8
 development snippets with the sanity condition met, **and** a measured drift
 penalty for both legacy and rescue. This is the first point at which "better"
 becomes measurable, and together with A2 it sets Phase D's target.
+
+*Partially reached 2026-09-02.* The **drift-penalty half is done** (diagnostic):
+measured for both the rescue config and KS4-with-rigid-correction, on injected
+imec1 snippets. Motion is a sufficient cause of A2's fragmentation, and rigid
+correction does not fix it. The **panel-baseline half** (legacy score on all 8
+dev snippets) waits on the frozen panel. Phase D's *direction* is set; its
+*promotion baseline* is not yet.
 
 ### Phase D — candidate search
 
@@ -483,6 +534,20 @@ order:
 | Fragments are temporally complementary and track estimated motion | Moving injections fragment where static ones do not | **Unwarped motion-aware identity handling** — post-sort family stitching, or a sorter whose templates track tissue. Curation tuning comes after. |
 | Fragments coexist at the same time and motion state | Moving injections stay one identity | **Clustering and curation.** The repartitioning is ordinary over-splitting. |
 | Mixed | Mixed | Split the effort by the measured proportions, and say what the split was. |
+
+**The tree has resolved (2026-09-02).** A2: fragments are temporally
+complementary, refractory-clean, ~0 % coexisting — **not** over-splitting. C2:
+moving injections fragment where static ones do not (−0.3 to −0.8 accuracy), and
+**KS4 rigid drift correction does not recover it**. So the first target is the
+top row, narrowed:
+
+> **Post-sort family stitching of temporally-complementary, refractory-clean
+> fragments** is the first Phase D candidate — it is indicated by both audits
+> and repairs slow drift and fast flicker alike. A *non-rigid* motion
+> representation is the second, tested only against injected-truth drift penalty
+> and L2L identity continuity, never unit counts. `nblocks=1` rigid correction
+> is **not** a candidate — C2 showed it comparable-or-worse. Curation-threshold
+> tuning is deprioritised — C2 showed the lower-threshold config fragments more.
 
 **Orthogonal, and deliberately later:** the MUA threshold question — the 80
 promotions and their 27 mirrored demotions. It is one moved threshold. Changing
@@ -587,12 +652,16 @@ eliminated.
    `ladder_snr.py`, `ladder_l1.py` (30 tests).
 3. ~~Tier calibration against the 5-minute constraint~~ — L1 measured well
    under budget at 120 s (build 26 s + KS4 38 s + curation <5 s + score 23 s).
-4. Injection wired to the sorter (Phase C) — `score_sort`'s `truth=` path is
-   built and tested; still needs real injections fed through `l1_run`.
+4. ~~Injection wired to the sorter (Phase C)~~ — done 2026-09-02,
+   `testing/ladder_inject.py` + `luke_rescue_c2_drift_challenge.py`. Benchmark
+   validated (static T01 recovered at accuracy 0.94); first drift penalty
+   measured (−0.54 accuracy for a 40 µm rigid ramp, rescue arm).
 5. Define + freeze the real 16-snippet panel (regime × strip × SNR × artifact),
    dev/held-out split fixed before any result is seen.
-6. Config-parametrised sorter so the legacy pipeline can be run at snippet scale
-   as the secondary-metric comparator (also unblocks Phase D candidate search).
+6. ~~Config-parametrised sorter~~ — done 2026-09-02, `testing/ladder_sorter.py`
+   (`SorterConfig`, `RESCUE`, `LEGACY_STYLE` = `nblocks=1, Th 9/8` — the two
+   `ops.npy` diffs); `l1_run(sorter=…)` caches each config at its own leaf.
+   Unblocks C2's legacy arm and the Phase D candidate search.
 
 **Then, before any curation parameter search** — these two results decide what
 the next block of time is spent on, and neither needs a new sorter:
