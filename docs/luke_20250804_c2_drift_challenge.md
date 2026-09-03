@@ -8,6 +8,12 @@
 > as evidence that motion causes the reported loss until the geometry-aware,
 > exclusively scored experiment is rerun.
 
+> **DONOR CORRECTION — 2026-09-03.** C2 v2 is retired without rerun. Although
+> its operator was fixed, it still specified T01/T04/T06, which D2b-2 showed are
+> common-mode plateaus or noise rather than compact neuron footprints. C2 v3
+> uses all 14 hash-frozen compact donors and statically qualifies each under
+> both rescue and `legacy_style`. See [decision 0012](decisions/0012-c2-uses-compact-donor-cohort.md).
+
 **Date:** 2026-09-02
 **Advances:** Phase C (steps 1–2) and Phase C2 of
 [`pipeline_improvement_plan.md`](pipeline_improvement_plan.md)
@@ -38,7 +44,7 @@ Confound control (plan C2): the static arm is drawn from a quiet window, so the
 background's own tissue motion is minimal; the trajectory is imposed on top and
 reported in µm and channels.
 
-Reproduce: `python testing/luke_rescue_c2_drift_challenge.py --templates T01 T04 T06`.
+Historical command (do not rerun): `python testing/luke_rescue_c2_drift_challenge.py --templates T01 T04 T06`.
 
 Two sorter configs were run on the *identical* injected snippets:
 

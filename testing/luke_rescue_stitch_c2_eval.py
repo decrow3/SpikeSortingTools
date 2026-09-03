@@ -19,10 +19,10 @@ static arms alone (it must not over-merge a cleanly-recovered neuron).
     python testing/luke_rescue_stitch_c2_eval.py
 
 The original C2 numbers are retracted because their injected recording and
-truth scoring were not content-bound/exclusive. Only a fresh v2 output using
-the corrected C2 cache is admissible.
+truth scoring were not content-bound/exclusive and used plateau donors. Only a
+fresh v3 output using the compact-donor C2 cache is admissible.
 
-Outputs to testing/outputs/luke_rescue_stitch_c2_eval_v2/. No sorter is run — this
+Outputs to testing/outputs/luke_rescue_stitch_c2_eval_v3/. No sorter is run — this
 is a pure post-processing evaluation on cached C2 outputs.
 """
 
@@ -45,7 +45,7 @@ from testing.luke_rescue_c2_drift_challenge import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_stitch_c2_eval_v2"
+OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_stitch_c2_eval_v3"
 C2_RUNS = C2_OUTPUT / "runs"
 
 
@@ -57,7 +57,7 @@ def _truth_train() -> np.ndarray:
 def _condition_dirs() -> list[tuple[str, Path]]:
     """(tag, rescue curated cur_output) for every injected C2 condition."""
     out = []
-    for rec_dir in sorted(C2_RUNS.glob("T*_*")):
+    for rec_dir in sorted(C2_RUNS.glob("D*_*")):
         man = json.loads(
             (rec_dir / "rescue_recording_manifest.json").read_text()
         )

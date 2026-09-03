@@ -21,6 +21,7 @@ this research repository and is not duplicated here.
 | [0009](0009-cross-sort-comparisons-must-be-unit-matched.md) | Cross-sort quality comparisons must be unit-matched (corrects 0008) |
 | [0010](0010-rescue-yield-is-relabelling-not-detection.md) | The rescue yield difference is relabelling, not detection |
 | [0011](0011-cross-sort-event-matching-and-detection-evidence.md) | Exclusive event identity and null-controlled detection evidence (retracts 0009/0010 empirical results) |
+| [0012](0012-c2-uses-compact-donor-cohort.md) | C2 uses compact D2b-2 donors; pilot plateau donors are forbidden |
 
 The active work plan derived from these records is
 [`../pipeline_improvement_plan.md`](../pipeline_improvement_plan.md).

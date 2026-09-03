@@ -36,6 +36,13 @@
 > geometry-aware rerun. No claim that the new pipeline beats legacy is
 > currently supported.
 
+> **C2 DONOR DECISION — 2026-09-03.** Geometry-correct C2 v2 is retired without
+> rerun because it still froze the discredited T01/T04/T06 plateau donors. Per
+> [decision 0012](decisions/0012-c2-uses-compact-donor-cohort.md), C2 v3 uses all
+> 14 hash-frozen D2b-2 compact donors, both polarities and amplitude strata. A
+> donor enters the primary drift comparison only when its static arm reaches
+> accuracy >= 0.8 under both rescue and `legacy_style`.
+
 **Status:** proposed 2026-09-02
 **Supersedes as a work plan:** the follow-up lists in
 [`decisions/0008`](decisions/0008-amplitude-completeness-gates-promotion.md) and
@@ -557,14 +564,15 @@ an injected trajectory interacts with it. Either define the trajectory relative
 to the estimated tissue position, or draw the static arm from quiet windows and
 say so. Record which was done.
 
-**Retracted pending geometry-aware rerun 2026-09-03.** The historical run below
-did not apply mutually inverse forward and correction operators on the real
-probe geometry.
+**Retracted; v2 retired; compact-donor v3 pending 2026-09-03.** The historical
+run below did not apply mutually inverse forward and correction operators on
+the real probe geometry. Geometry-correct v2 was not run because it retained
+the discredited plateau donors. V3 is the sole active C2 protocol.
 
 **Historical first run 2026-09-02** — [`luke_20250804_c2_drift_challenge.md`](luke_20250804_c2_drift_challenge.md).
-`testing/luke_rescue_c2_drift_challenge.py` (prespec frozen; diagnostic — reuses
-the pilot's discovery-cohort donor templates; static arm from the quiet imec1
-window). Benchmark **sane**: static T01 (SNR 11) / T04 (SNR 6) recovered at
+`testing/luke_rescue_c2_drift_challenge.py` (historical prespec; reused the
+now-discredited pilot donor templates; static arm from the quiet imec1 window).
+It reported static T01 (SNR 11) / T04 (SNR 6) recovered at
 0.94–0.98 under both sorter configs.
 
 **Retracted historical drift penalty (Δ accuracy = moving − static), both arms:**
@@ -599,8 +607,10 @@ pending rerun:**
 post-sort family stitching** — not `nblocks=1`. Curation-threshold tuning stays
 low: the lower-threshold `legacy_style` fragments *more* at baseline, not less.
 
-Still to add: non-rigid trajectories, both polarities, truncation-vs-truth,
-a second window. T06 (SNR 4.6) excluded — static baseline below sanity.
+V3 now supplies both polarities and the full compact real-donor amplitude range.
+Still to add: genuinely non-rigid trajectories, truncation-vs-truth, and a
+second window. Static qualification is donor-wise and prespecified; there is no
+special T06 exception because all pilot T donors are forbidden.
 
 **Checkpoint C.** *Go:* a known-truth score exists for legacy on all 8
 development snippets with the sanity condition met, **and** a measured drift
@@ -781,20 +791,24 @@ before changing architectures.
 
 #### The active sequence
 
+The whole D2 branch is **gated on C2 v3** (§9). Nothing in this sequence is
+active work until C2 v3 reports.
+
 | # | Step | Status |
 |---|---|---|
-| 1 | **Oracle positive control** — attainable stabilization benefit and interpolation cost | ⚠ retracted; rerun required |
-| 2 | **D2b-1 field-error tolerance** — corrupt the oracle field, find how accurate a real estimate must be | ⚠ retracted; rerun required |
-| 3 | **D2b-2 rebuild the donor cohort** — verified spatially-compact waveforms (the T01–T10 pilot donors are common-mode-flat, ±160 µm plateau — not gate-able). | ✅ done ([`luke_20250804_d2b2_donor_cohort.md`](luke_20250804_d2b2_donor_cohort.md)) — 14 compact imec0 donors, de-whitened KS shape scaled to bandpass-STA µV (73–295 µV), both polarities, 6/6 static-sanity pass |
-| 3b | **D2b-3 synthetic sharpness extension + per-stratum tradeoff** — `testing/ladder_synthetic_donors.py`, `testing/luke_d2b3_sharpness_tradeoff.py`, `testing/luke_d2b3_interp_kernel.py` | ⚠ retracted; rerun required |
-| 4 | **D2a full-session external estimation** — obtain the best-supported real field. | ⏸ blocked on corrected reruns |
-| 5 | **Pre-sort field qualification** — independent support, reproducibility, and error evidence required | ⏸ fails closed; tolerance envelope withdrawn |
-| 6 | **D2c bounded policy comparison** — none / best full / one simple selective policy if D2b justifies it | |
-| 7 | **L2 → L2L → L3** — injected truth, longitudinal identity, waveform preservation, existing guardrails | |
-| 8 | **Architecture gate** — opened only if the best conventional correction remains meaningfully deficient | |
+| 0 | **C2 v3** — paired static-vs-moving compact-donor drift penalty (gates everything below) | active — see §C2 |
+| 1 | **D2b-2 donor cohort** — 14 compact imec0 donors, both polarities, 73–295 µV, hash-frozen | ✅ complete ([`d2b2_donor_cohort`](luke_20250804_d2b2_donor_cohort.md)) |
+| 2 | **Oracle positive control** — attainable stabilization benefit and interpolation cost, on the compact cohort | paused — consumes C2 v3 outputs |
+| 3 | **D2b-1 field-error tolerance** — how accurate an estimated field must be | paused — `d2b1` fails closed until a compact-donor focus is frozen from C2 v3 |
+| 4 | **D2b-3 per-stratum interpolation tradeoff** — waveform/SNR-class sensitivity | paused — rerun on the compact cohort after C2 v3 |
+| 5 | **D2a full-session external estimation** — best-supported real field | paused — infra built (`ladder_motion_estimate.py`), not run |
+| 6 | **Pre-sort field qualification** — independent support, reproducibility, error evidence | paused — fails closed; numeric envelope to be set by the reruns |
+| 7 | **D2c bounded policy comparison** — none / best full / one simple selective policy | not started |
+| 8 | **L2 → L2L → L3** — injected truth, longitudinal identity, waveform preservation, guardrails | not started |
+| 9 | **Architecture gate** — opened only if the best conventional correction remains meaningfully deficient | not started |
 
-Steps 2 and 3 come **before** the expensive full-session estimation in step 4.
-That ordering is the point: step 5 can reject a field on cheap evidence before it
+Steps 2–4 come **before** the expensive full-session estimation in step 5. That
+ordering is the point: step 6 can reject a field on cheap evidence before it
 ever reaches a sorter.
 
 #### D2a — Best-supported motion field
@@ -1175,69 +1189,70 @@ eliminated.
 
 ## 9. What lands first
 
-1. ~~Phase A classification of the 127 losses~~ — done (2026-09-02): no
-   detection or curation-drop regression; the −127 mirrors the +200.
-2. ~~Snippet builder + `score_sort` + L1 runner~~ — the ladder's load-bearing
-   piece, done 2026-09-02: `testing/ladder_score.py`, `ladder_snippets.py`,
-   `ladder_snr.py`, `ladder_l1.py` (30 tests).
-3. ~~Tier calibration against the 5-minute constraint~~ — L1 measured well
-   under budget at 120 s (build 26 s + KS4 38 s + curation <5 s + score 23 s).
-4. ~~Injection wired to the sorter (Phase C)~~ — done 2026-09-02,
-   `testing/ladder_inject.py` + `luke_rescue_c2_drift_challenge.py`. Benchmark
-   validated (static T01 recovered at accuracy 0.94); first drift penalty
-   measured (−0.54 accuracy for a 40 µm rigid ramp, rescue arm).
-5. ~~Define + freeze the real 16-snippet panel~~ — **frozen 2026-09-02**,
-   `panel_digest 07d5d808…`, `testing/luke_ladder_panel.py`. imec0, 16 snippets,
-   pre-registered position-parity split, SNR/artifact measured not chosen.
-6. ~~Config-parametrised sorter~~ — done 2026-09-02, `testing/ladder_sorter.py`
-   (`SorterConfig`, `RESCUE`, `LEGACY_STYLE` = `nblocks=1, Th 9/8` — the two
-   `ops.npy` diffs); `l1_run(sorter=…)` caches each config at its own leaf.
-   Unblocks C2's legacy arm and the Phase D candidate search.
+### Complete
 
-**Then, before any curation parameter search** — these two results decide what
-the next block of time is spent on, and neither needs a new sorter:
+1. **Phase A — symmetric audit (v2).** `+210 / −137` KS-good, net +73. **No
+   supported gross detection difference:** 0 legacy-good units absent at
+   detection, 0 removed by curation; no null-controlled new detection in the
+   +210. Exclusive one-to-one matching + circular-shift-null detection gate.
+   Docs: [`rescue_unique_units_audit`](luke_20250804_rescue_unique_units_audit.md),
+   [`rescue_lost_units_audit`](luke_20250804_rescue_lost_units_audit.md).
+2. **Phase A2 — repartition audit (v2).** **0% coexisting fragments** on both
+   probes (not over-splitting), but only **6–13% of fragment-cluster unions are
+   refractory-clean** (median union RV 8–14%); ~90% of families `ambiguous`. No
+   rigid-motion tracking (|r| ≈ 0.13–0.17). **Mechanism is ambiguous** —
+   non-rigid/fast motion vs KS4 template competition are not separated here.
+   Doc: [`rescue_repartition_motion_audit`](luke_20250804_rescue_repartition_motion_audit.md).
+3. **Ladder infrastructure.** `ladder_score.py` (L1==L4 scoring dict),
+   `ladder_snippets.py` / `ladder_snr.py` / `ladder_l1.py`, `ladder_sorter.py`
+   (`RESCUE` / `LEGACY_STYLE`), `ladder_inject.py` + geometry-aware
+   `ladder_motion.paired_geometry_motion_injection`. 16-snippet imec0 panel
+   **frozen** (`panel_digest 07d5d808…`), pre-registered position-parity split.
+   L1 measured well under the 5-minute budget at 120 s.
+4. **Compact donor cohort (D2b-2).** 14 spatially-compact imec0 donors, both
+   polarities, 73–295 µV, de-whitened KS shape scaled to bandpass-STA µV, 6/6
+   static-sanity pass. Hash-frozen. The pilot `T*` plateau donors are forbidden
+   ([decision 0012](decisions/0012-c2-uses-compact-donor-cohort.md)).
+   Doc: [`d2b2_donor_cohort`](luke_20250804_d2b2_donor_cohort.md).
 
-7. ~~**Phase A2**: the temporal-fragment analysis of existing sorts.~~ **done
-   2026-09-02** — `testing/luke_rescue_repartition_motion_audit.py`,
-   [`luke_20250804_rescue_repartition_motion_audit.md`](luke_20250804_rescue_repartition_motion_audit.md).
-   Not over-splitting (0% coexisting), fragments are one clean neuron (92–95%
-   refractory-clean merges), not rigid-motion-tracked (|r| ≈ 0.12), rapid
-   flicker not slow succession. imec0 and imec1 agree.
-8. **Phase C2**: the paired stationary-vs-moving injected identity challenge.
-   **Historical run retracted 2026-09-03; corrected rerun pending.** The old
-   −0.30 to −0.81 result and `nblocks=1` comparison are not evidence.
+### Next — the gating experiment
 
-**Superseded 2026-09-03:** this decision point was based on retracted C2/D2b
-results and must not trigger D2a.
+5. **C2 v3 — paired static-vs-moving injected identity challenge.** All 14
+   compact donors, geometry-aware forward motion, exclusive truth scoring,
+   content-bound caches; a donor enters the primary drift comparison only if its
+   static arm reaches accuracy ≥ 0.8 under both `RESCUE` and `LEGACY_STYLE`.
+   This is the experiment that reopens everything below it.
 
-**Historical decision point.** D2b-1/2/3 were reported done. D2b-3 lowered the expected
-payoff of D2a substantially: with a *perfect* field, voltage interpolation
-recovers only the D02-class (highest-SNR, cleanest) units and cannot be tuned by
-kernel. The options:
+### Paused pending C2 v3
 
-1. **Run D2a anyway** (full-session external field → `qualify_field` → sort →
-   score vs the 127 + C2 truth). Now a *quantifying* experiment: how many real
-   units are D02-class, and is the net positive once D08-class harm is counted?
-   Multi-hour compute; infra is built (`ladder_motion_estimate.py`).
-2. **Open the architecture gate early.** D2b-3 arguably already shows "the best
-   conventional correction remains meaningfully deficient" for compact units —
-   the gate's trigger. Evaluate a motion-aware template-matching sorter (no
-   voltage resampling) against the rescue baseline.
-3. **Accept the null on motion.** If D2a's net is neutral, rescue vs legacy trade
-   the same errors on this recording and the lever is elsewhere
-   (detection / clustering / the MUA threshold, `0006`).
+- **Candidate 2** (non-rigid motion representation) — its oracle/estimated
+  evaluation consumes C2 v3 outputs only.
+- **D2b** (field-error tolerance, interpolation tradeoff) — `d2b1` fails closed
+  until a compact-donor focus is frozen from the C2 v3 result.
+- **D2a** (best-supported full-session field) — infra built
+  (`ladder_motion_estimate.py`), not run. A reproduced C2 v3 result is required
+  before it becomes a quantifying experiment.
+- **Architecture gate** (motion-aware template matching, no voltage resampling)
+  — opens only if the best conventional correction remains meaningfully
+  deficient *after* C2 v3 / D2.
 
-The earlier recommendation to run D2a next is withdrawn. **Current next step:**
-rerun C2, Candidate 2, D2b-1, D2b-3, and Checkpoint C with geometry-aware
-forward motion, exclusive scoring, and content-bound caches. Only a reproduced
-result may reopen D2a or the architecture gate.
-
-The defensible claim now:
+### The defensible claim now
 
 > **Existing observational audits are consistent with motion-related identity
-> instability, and post-sort family stitching did not recover the 127 legacy
+> instability, and post-sort family stitching did not recover the legacy
 > losses. The intervention tests do not currently establish that imposed motion
 > caused the measured loss, that rescue handles motion better than legacy, or
 > that voltage interpolation has an intrinsic SNR-dependent ceiling. Those
-> questions remain open until the geometry-aware, exclusively scored,
-> content-bound reruns reproduce them.**
+> questions are what C2 v3 and the experiments gated on it exist to answer.**
+
+### Historical (retracted 2026-09-03 — not active work)
+
+The 2026-09-02 C2 diagnostic (pilot plateau donors, discrete-index motion,
+non-exclusive scoring) reported a −0.30 to −0.81 drift penalty and that
+`nblocks=1` did not recover it; Candidate 2's oracle was reported to close a
+40 µm penalty to 0.99; D2b-1/2/3 reported a field-error envelope and an
+interpolation ceiling. **All retracted** under
+[decision 0011](decisions/0011-cross-sort-event-matching-and-detection-evidence.md)
+and [decision 0012](decisions/0012-c2-uses-compact-donor-cohort.md). These
+numbers must not appear in active checkpoint status or decision logic; the
+detail is preserved in the labelled historical blocks of §C2 and §D2.

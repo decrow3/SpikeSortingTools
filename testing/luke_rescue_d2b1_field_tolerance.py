@@ -12,8 +12,8 @@ the corrected voltage.
 
     python testing/luke_rescue_d2b1_field_tolerance.py
 
-Status: corrected rerun pending (C2 discovery-cohort donors). Outputs to
-testing/outputs/luke_rescue_d2b1_field_tolerance_v2/. Nothing under /mnt.
+Status: blocked until C2 v3 and the compact-donor oracle evaluation identify a
+focus cohort. The old T-donor focus is forbidden. Nothing under /mnt.
 """
 
 from __future__ import annotations
@@ -49,30 +49,23 @@ from testing.luke_rescue_c2_drift_challenge import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_d2b1_field_tolerance_v2"
+OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_d2b1_field_tolerance_v3"
 C2_RUNS = C2_OUTPUT / "runs"
-DONOR_TEMPLATES = (
-    REPO_ROOT / "testing/outputs/luke_injected_ground_truth_pilot/donor_templates.npz"
-)
+DONOR_TEMPLATES = REPO_ROOT / "testing/outputs/luke_d2b2_donor_cohort/donor_templates.npz"
 
 PRESPEC = {
-    "schema": "luke-rescue-d2b1-field-tolerance-v2",
+    "schema": "luke-rescue-d2b1-field-tolerance-v3",
     "frozen": "2026-09-03",
-    "status": "corrected_geometry_aware_rerun_pending",
+    "status": "blocked_pending_compact_donor_c2_v3_focus_freeze",
     "question": (
         "Starting from the exact injected trajectory, how much error in "
         "displacement amplitude, timing, and spatial structure can be tolerated "
         "before corrected voltage performs no better than the uncorrected rescue "
         "baseline?"
     ),
-    # (donor, trajectory): the pairs where Candidate 2's exact oracle beat rescue,
-    # plus T01/rigid_40um as the wrong-side-of-the-tradeoff control.
-    "focus": [
-        ["T04", "rigid_40um"],
-        ["T06", "rigid_40um"],
-        ["T04", "osc_20um_40s"],
-        ["T01", "rigid_40um"],
-    ],
+    # Freeze only after the compact-donor C2/nonrigid v3 result exists. Empty is
+    # an intentional fail-closed state, not permission to reuse the T donors.
+    "focus": [],
     "perturbations": {
         "gain": [0.5, 0.75, 1.25, 1.5],
         "time_smooth_s": [3.0, 10.0],
@@ -120,6 +113,11 @@ def _perturbations(geometry) -> list[tuple[str, str, object]]:
 
 def run() -> dict:
     _freeze_prespec()
+    if not PRESPEC["focus"]:
+        raise RuntimeError(
+            "D2b-1 is blocked: freeze a compact D-donor focus only after C2 v3 "
+            "and its oracle evaluation complete"
+        )
     OUTPUT.mkdir(parents=True, exist_ok=True)
     bg_uv, geometry, fs, _, _ = load_background()
     duration_s = bg_uv.shape[0] / fs

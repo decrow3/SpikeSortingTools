@@ -13,24 +13,25 @@ that the *rigid* DREDGE estimate does not explain. A2 could not separate
 The decisive quantity is the **drift penalty** — Δaccuracy, Δoutput-identities,
 Δlabel-switches — the change caused *solely* by motion.
 
-**Status: diagnostic.** This reuses the discovery-cohort donor templates from
-`luke_injected_ground_truth_pilot` (real reviewed imec1 neural events, qualified
-against independent events). Per that scaffold's contract the results are
-diagnostic, never confirmatory — which is exactly C2's role: it sets Phase D's
-*direction*, it does not promote anything.
+**Status: diagnostic.** C2 v3 uses all 14 D2b-2 spatially compact donors. The
+pilot T01/T04/T06 waveforms are explicitly forbidden: they are common-mode/LFP
+plateaus (or noise-level), not localized neuron footprints. A donor contributes
+to the primary drift comparison only when its static arm reaches accuracy >=
+0.8 under both sorter configurations.
 
 Confound control (plan C2): the static arm is drawn from a **quiet** window, so
 the background's own tissue motion is minimal; the moving trajectory is imposed
 on top and reported in µm and channels. Recorded here, not corrected for.
 
-    python testing/luke_rescue_c2_drift_challenge.py --templates T01 T04 T06
+    python testing/luke_rescue_c2_drift_challenge.py
 
-Outputs to testing/outputs/luke_rescue_c2_drift_challenge_v2/. Nothing under /mnt.
+Outputs to testing/outputs/luke_rescue_c2_drift_challenge_v3/. Nothing under /mnt.
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -51,17 +52,22 @@ from testing.ladder_score import score_sort
 from testing.luke_injected_ground_truth_benchmark import validate_template
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_c2_drift_challenge_v2"
+OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_c2_drift_challenge_v3"
 LUKE_ROOT = Path("/mnt/NPX/Luke/20250804")
 DONOR_TEMPLATES = (
     REPO_ROOT
-    / "testing/outputs/luke_injected_ground_truth_pilot/donor_templates.npz"
+    / "testing/outputs/luke_d2b2_donor_cohort/donor_templates.npz"
+)
+DONOR_MANIFEST = DONOR_TEMPLATES.with_name("donor_manifest.csv")
+DONOR_GEOMETRY = (
+    LUKE_ROOT
+    / "rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output/channel_positions.npy"
 )
 
 PRESPEC = {
-    "schema": "luke-rescue-c2-drift-challenge-v2",
+    "schema": "luke-rescue-c2-drift-challenge-v3",
     "frozen": "2026-09-03",
-    "status": "corrected_geometry_aware_rerun_pending",
+    "status": "compact_donor_geometry_aware_rerun_pending",
     "question": (
         "Does an injected neuron on a known Luke-like trajectory fragment where "
         "the identical static injection does not?"
@@ -75,11 +81,20 @@ PRESPEC = {
         "channel_count": 112,
     },
     "template_prep": {
-        "source": "luke_injected_ground_truth_pilot donor_templates.npz",
+        "source": "luke_d2b2_donor_cohort/donor_templates.npz",
+        "cohort": "all 14 spatially compact real donors",
+        "forbidden_source": "luke_injected_ground_truth_pilot T01/T04/T06",
         "time_samples": 61,
         "channel_radius": 16,
         "edge_guard_samples": 3,
-        "baseline": "edge median",
+        "preparation": "use sealed D2b-2 template unchanged",
+        "templates_sha256": "998e4dbd067cd3529fe0c18038173f62c57a79e57b2b2ef7b7ced5c348695d24",
+        "manifest_sha256": "43da816a7c52f8c8995c0f608548bc93501cae75a46dbbb0320f0b5dc905d319",
+        "source_geometry_sha256": "0469ca92fb739a0cfd2f1613262d3a2d75af1098385385d7462ee6e3fd038d75",
+        "placement": (
+            "translate each donor to the nearest strip-centre site whose full "
+            "relative x/y geometry matches its original imec0 channel crop"
+        ),
     },
     "train": {"kind": "regular", "rate_hz": 6.0, "guard_s": 1.0},
     "amplitude_scale": 1.0,
@@ -90,10 +105,14 @@ PRESPEC = {
         "osc_20um_40s": {"kind": "rigid_oscillation", "amp_um": 20.0, "period_s": 40.0},
     },
     "drift_penalty": ["delta_accuracy", "delta_n_identities", "delta_label_switches"],
-    "sanity": (
-        "the static arm must recover the highest-SNR template at accuracy >= "
-        "0.9; otherwise the benchmark is wrong, not the pipeline (plan C step 2)"
-    ),
+    "static_qualification": {
+        "accuracy_min": 0.8,
+        "required_sorters": ["rescue", "legacy_style"],
+        "rule": (
+            "a donor contributes to primary drift-penalty comparisons only if "
+            "its static accuracy is >= 0.8 under both required sorters"
+        ),
+    },
 }
 
 BG = PRESPEC["background"]
@@ -111,6 +130,35 @@ def _freeze_prespec() -> None:
             )
     else:
         path.write_text(json.dumps(PRESPEC, indent=2) + "\n")
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1 << 20), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _verify_donor_cohort() -> None:
+    expected = PRESPEC["template_prep"]
+    for path, key in (
+        (DONOR_TEMPLATES, "templates_sha256"),
+        (DONOR_MANIFEST, "manifest_sha256"),
+        (DONOR_GEOMETRY, "source_geometry_sha256"),
+    ):
+        if not path.exists() or _sha256(path) != expected[key]:
+            raise RuntimeError(f"C2 v3 donor cohort is missing or changed: {path}")
+
+
+def _resolve_frozen_cohort(available, requested: list[str] | None) -> list[str]:
+    """Enforce the all-donor v3 prespec; subsets belong in separate diagnostics."""
+    frozen = sorted(str(template_id) for template_id in available)
+    if len(frozen) != 14 or any(template_id.startswith("T") for template_id in frozen):
+        raise RuntimeError("C2 v3 requires exactly the 14 compact D-donor cohort")
+    if requested is not None and sorted(requested) != frozen:
+        raise ValueError("C2 v3 is frozen to all 14 compact donors; subsets are not C2")
+    return frozen
 
 
 def _recording_dir() -> Path:
@@ -139,31 +187,51 @@ def load_background():
     return bg_uv, geometry, fs, gain, start
 
 
-def prepare_template(full_384: np.ndarray) -> tuple[np.ndarray, int]:
-    """Crop one donor template in time and channels, baseline-correct, taper."""
-    a = np.asarray(full_384, dtype=np.float32)
-    peak_t, peak_c = np.unravel_index(np.argmax(np.abs(a)), a.shape)
-    half_t = TP["time_samples"] // 2
-    t0 = max(0, peak_t - half_t)
-    a = a[t0 : t0 + TP["time_samples"]]
-    r = TP["channel_radius"]
-    c0 = max(0, peak_c - r)
-    a = a[:, c0 : peak_c + r + 1]
-    peak_col = peak_c - c0
+def prepare_template(compact: np.ndarray) -> tuple[np.ndarray, int]:
+    """Validate a sealed D2b-2 donor without reshaping or re-tapering it."""
+    a = np.asarray(compact, dtype=np.float32)
+    if a.ndim != 2 or a.shape[0] != TP["time_samples"]:
+        raise ValueError(
+            f"C2 v3 requires a ({TP['time_samples']}, channels) compact donor; "
+            f"got {a.shape}"
+        )
+    if a.shape[1] > 2 * TP["channel_radius"] + 1:
+        raise ValueError(f"compact donor is too wide: {a.shape}")
+    sealed = validate_template(a, edge_guard_samples=TP["edge_guard_samples"])
+    peak_col = int(np.unravel_index(np.argmax(np.abs(sealed)), sealed.shape)[1])
+    return sealed, peak_col
 
-    guard = TP["edge_guard_samples"]
-    edge = np.concatenate((a[:guard], a[-guard:]))
-    a = a - np.median(edge, axis=0, keepdims=True)
-    # Hard-zero the outer `guard` samples so the template passes the sealed
-    # primitive's edge check, then a short raised-cosine ramp back to full
-    # amplitude so the injected waveform has no step discontinuity.
-    a[:guard] = 0.0
-    a[-guard:] = 0.0
-    ramp_n = 5
-    w = (np.sin(np.linspace(0, np.pi / 2, ramp_n, dtype=np.float32)) ** 2)[:, None]
-    a[guard : guard + ramp_n] *= w
-    a[-guard - ramp_n : -guard] *= w[::-1]
-    return validate_template(a.astype(np.float32), edge_guard_samples=guard), int(peak_col)
+
+def donor_base_channel(
+    template: np.ndarray,
+    peak_col: int,
+    source_peak_channel: int,
+    source_geometry: np.ndarray,
+    target_geometry: np.ndarray,
+) -> tuple[int, int]:
+    """Place a donor without changing its relative four-column geometry."""
+    width = int(template.shape[1])
+    source_start = int(source_peak_channel) - int(peak_col)
+    source_stop = source_start + width
+    if source_start < 0 or source_stop > len(source_geometry):
+        raise ValueError("donor crop does not fit its recorded source geometry")
+    source_relative = (
+        np.asarray(source_geometry[source_start:source_stop], dtype=np.float64)
+        - np.asarray(source_geometry[source_peak_channel], dtype=np.float64)
+    )
+    candidates = []
+    for target_peak in range(peak_col, len(target_geometry) - (width - peak_col) + 1):
+        target_start = target_peak - peak_col
+        target_relative = (
+            np.asarray(target_geometry[target_start:target_start + width], dtype=np.float64)
+            - np.asarray(target_geometry[target_peak], dtype=np.float64)
+        )
+        if np.allclose(target_relative, source_relative, atol=1e-6, rtol=0.0):
+            candidates.append((abs(target_peak - len(target_geometry) / 2), target_start, target_peak))
+    if not candidates:
+        raise ValueError("no target placement preserves the donor's relative probe geometry")
+    _, target_start, target_peak = min(candidates)
+    return int(target_start), int(target_peak)
 
 
 def _train(duration_s: float, fs: float) -> np.ndarray:
@@ -190,26 +258,42 @@ def _trajectory_fn(name: str, geometry: np.ndarray, duration_s: float):
 
 
 def run(
-    templates: list[str],
+    templates: list[str] | None = None,
     out_root: Path | None = None,
     sorters: list[str] | None = None,
 ) -> dict:
     _freeze_prespec()
+    _verify_donor_cohort()
     from testing.ladder_sorter import NAMED_CONFIGS
 
     out_root = out_root or (OUTPUT / "runs")
     out_root.mkdir(parents=True, exist_ok=True)
-    sorter_cfgs = [NAMED_CONFIGS[s] for s in (sorters or ["rescue"])]
+    required_sorters = PRESPEC["static_qualification"]["required_sorters"]
+    if sorters is not None and sorted(sorters) != sorted(required_sorters):
+        raise ValueError("C2 v3 requires both rescue and legacy_style")
+    sorter_names = required_sorters
+    sorter_cfgs = [NAMED_CONFIGS[s] for s in sorter_names]
 
     bg_uv, geometry, fs, gain, src_start = load_background()
     duration_s = bg_uv.shape[0] / fs
     train = _train(duration_s, fs)
     donors = np.load(DONOR_TEMPLATES)
+    templates = _resolve_frozen_cohort(donors.files, templates)
+    import pandas as pd
+
+    donor_meta = pd.read_csv(DONOR_MANIFEST).set_index("template_id").to_dict("index")
+    source_geometry = np.load(DONOR_GEOMETRY)
 
     rows = []
     for tid in templates:
         template, peak_col = prepare_template(donors[tid])
-        base_channel = BG["channel_count"] // 2 - peak_col
+        base_channel, target_peak = donor_base_channel(
+            template,
+            peak_col,
+            int(donor_meta[tid]["peak_channel"]),
+            source_geometry,
+            geometry,
+        )
 
         # inject once per trajectory, write the recording, then sort under each config
         injected: dict[str, tuple[Path, dict]] = {}
@@ -241,6 +325,11 @@ def run(
                 u = result["score"]["primary"]["units"][0]
                 rows.append({
                     "template": tid, "sorter": cfg.label, "trajectory": traj_name,
+                    "donor_peak_uv": donor_meta.get(tid, {}).get("peak_uv"),
+                    "donor_polarity": donor_meta.get(tid, {}).get("polarity"),
+                    "donor_amplitude_band": donor_meta.get(tid, {}).get("amplitude_band"),
+                    "injection_base_channel": base_channel,
+                    "injection_peak_channel": target_peak,
                     **traj_meta,
                     "accuracy": u["accuracy"],
                     "n_output_units_capturing": u["n_output_units_capturing"],
@@ -256,6 +345,9 @@ def run(
                 rows.append({
                     "template": tid, "sorter": cfg.label,
                     "trajectory": f"PENALTY:{traj_name}",
+                    "donor_peak_uv": donor_meta.get(tid, {}).get("peak_uv"),
+                    "donor_polarity": donor_meta.get(tid, {}).get("polarity"),
+                    "donor_amplitude_band": donor_meta.get(tid, {}).get("amplitude_band"),
                     "accuracy": pen["delta_accuracy"],
                     "n_output_units_capturing": pen["delta_n_identities"],
                     "label_switches": pen["delta_label_switches"],
@@ -270,17 +362,31 @@ def run(
     is_pen = df.trajectory.str.startswith("PENALTY")
     arms = df[~is_pen]
     static_arms = arms[arms.trajectory == "static"]
-    best_static = static_arms.sort_values("accuracy").iloc[-1]
+    static_min = static_arms.pivot(index="template", columns="sorter", values="accuracy")
+    required = PRESPEC["static_qualification"]["required_sorters"]
+    threshold = PRESPEC["static_qualification"]["accuracy_min"]
+    qualified = sorted(
+        tid for tid, row in static_min.iterrows()
+        if all(sorter in row.index and row[sorter] >= threshold for sorter in required)
+    )
+    penalty_rows = df[is_pen].copy()
+    qualified_penalty = penalty_rows[penalty_rows.template.isin(qualified)]
     summary = {
         "probe": PRESPEC["probe"],
         "templates": templates,
         "sorters": sorted(df["sorter"].unique().tolist()),
         "n_conditions": int(len(arms)),
-        "sanity_static_best_accuracy": round(float(best_static.accuracy), 3),
-        "sanity_passed": bool(best_static.accuracy >= 0.9),
-        "static_accuracy_by_sorter": {
-            s: round(float(sub.accuracy.max()), 3)
-            for s, sub in static_arms.groupby("sorter")
+        "static_qualification": PRESPEC["static_qualification"],
+        "qualified_templates": qualified,
+        "n_qualified_templates": len(qualified),
+        "primary_comparison_available": bool(qualified),
+        "all_donors_static_qualified": len(qualified) == len(templates),
+        "static_accuracy_by_template_sorter": {
+            str(tid): {
+                str(sorter): round(float(value), 3)
+                for sorter, value in row.items()
+            }
+            for tid, row in static_min.iterrows()
         },
         "penalties": {
             f"{r.sorter}:{r.template}:{r.trajectory.split(':')[1]}": {
@@ -288,8 +394,9 @@ def run(
                 "delta_n_identities": int(r.n_output_units_capturing),
                 "delta_label_switches": int(r.label_switches),
             }
-            for r in df[is_pen].itertuples()
+            for r in qualified_penalty.itertuples()
         },
+        "unqualified_penalties_excluded": sorted(set(templates) - set(qualified)),
     }
     (OUTPUT / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     return summary
@@ -297,11 +404,8 @@ def run(
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
-    ap.add_argument("--templates", nargs="+", default=["T01", "T04", "T06"])
-    ap.add_argument("--sorters", nargs="+", default=["rescue"],
-                    choices=["rescue", "legacy_style"])
-    args = ap.parse_args()
-    summary = run(args.templates, sorters=args.sorters)
+    ap.parse_args()
+    summary = run()
     print(json.dumps(summary, indent=2))
     print(f"\nwrote {OUTPUT}")
 

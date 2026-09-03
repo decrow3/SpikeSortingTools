@@ -7,6 +7,8 @@ from testing.luke_rescue_c2_drift_challenge import (
     TP,
     _train,
     _trajectory_fn,
+    _resolve_frozen_cohort,
+    donor_base_channel,
     prepare_template,
 )
 
@@ -14,19 +16,21 @@ FS = 30_000.0
 
 
 def test_prespec_is_frozen_shape():
-    assert PRESPEC["schema"] == "luke-rescue-c2-drift-challenge-v2"
+    assert PRESPEC["schema"] == "luke-rescue-c2-drift-challenge-v3"
     assert PRESPEC["probe"] == "imec1"
     assert "static" in PRESPEC["trajectories"]
-    assert PRESPEC["status"] == "corrected_geometry_aware_rerun_pending"
+    assert PRESPEC["status"] == "compact_donor_geometry_aware_rerun_pending"
+    assert PRESPEC["static_qualification"]["required_sorters"] == [
+        "rescue",
+        "legacy_style",
+    ]
 
 
 def test_prepare_template_yields_a_sealable_template():
-    rng = np.random.default_rng(0)
-    full = np.zeros((121, 384), dtype=np.float32)
-    # a biphasic event on channel 200, peak at t=60
-    full[55:66, 198:203] = rng.normal(0, 5, size=(11, 5)).astype(np.float32)
-    full[60, 200] = -180.0
-    tmpl, peak_col = prepare_template(full)
+    compact = np.zeros((61, 33), dtype=np.float32)
+    compact[25:36, 14:19] = 5.0
+    compact[30, 16] = -180.0
+    tmpl, peak_col = prepare_template(compact)
 
     assert tmpl.shape == (TP["time_samples"], 2 * TP["channel_radius"] + 1)
     # passes the sealed primitive's own edge check at the C2 guard width
@@ -34,7 +38,35 @@ def test_prepare_template_yields_a_sealable_template():
     guard = TP["edge_guard_samples"]
     assert np.all(tmpl[:guard] == 0) and np.all(tmpl[-guard:] == 0)
     assert peak_col == TP["channel_radius"]  # peak centred in the crop
-    assert np.abs(tmpl).max() > 50  # the spike survived
+    assert np.array_equal(tmpl, compact)  # no second crop/taper changes the donor
+
+
+def test_c2_v3_forbids_pilot_or_subset_cohorts():
+    donors = [f"D{i:02d}" for i in range(1, 15)]
+    assert _resolve_frozen_cohort(donors, None) == donors
+    with pytest.raises(ValueError, match="all 14"):
+        _resolve_frozen_cohort(donors, ["D01", "D02"])
+    with pytest.raises(RuntimeError, match="14 compact D-donor"):
+        _resolve_frozen_cohort(["T01", *donors[1:]], None)
+
+
+def test_donor_placement_preserves_four_column_geometry_phase():
+    source = np.array(
+        [[16, 0], [48, 0], [0, 20], [32, 20],
+         [16, 40], [48, 40], [0, 60], [32, 60]],
+        dtype=float,
+    )
+    target = source.copy()
+    target[:, 1] += 1_000
+    template = np.zeros((61, 5), dtype=np.float32)
+    template[30, 2] = -1
+    start, peak = donor_base_channel(template, 2, 2, source, target)
+    assert (start, peak) == (0, 2)
+
+    target_bad = target.copy()
+    target_bad[:, 0] = 0
+    with pytest.raises(ValueError, match="no target placement"):
+        donor_base_channel(template, 2, 2, source, target_bad)
 
 
 def test_train_is_regular_and_inside_the_guard():

@@ -24,8 +24,8 @@ Reading:
 
     python testing/luke_rescue_c2_nonrigid_eval.py
 
-Status: corrected rerun pending (reuses the C2 discovery-cohort donor
-templates). Outputs to testing/outputs/luke_rescue_c2_nonrigid_eval_v2/.
+Status: corrected rerun pending (reuses the compact-donor C2 v3 recordings).
+Outputs to testing/outputs/luke_rescue_c2_nonrigid_eval_v3/.
 Nothing under /mnt.
 """
 
@@ -51,11 +51,11 @@ from testing.luke_rescue_c2_drift_challenge import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_c2_nonrigid_eval_v2"
+OUTPUT = REPO_ROOT / "testing/outputs/luke_rescue_c2_nonrigid_eval_v3"
 C2_RUNS = C2_OUTPUT / "runs"
 
 PRESPEC = {
-    "schema": "luke-rescue-c2-nonrigid-v2",
+    "schema": "luke-rescue-c2-nonrigid-v3",
     "frozen": "2026-09-03",
     "status": "corrected_geometry_aware_rerun_pending",
     "question": (
@@ -68,7 +68,7 @@ PRESPEC = {
         "nonrigid": "KS4 non-rigid datashift do_correction=True nblocks=6",
         "oracle": "InterpolateMotionRecording with the exact injected trajectory, then rescue sort",
     },
-    "reuses": "testing/outputs/luke_rescue_c2_drift_challenge_v2/runs",
+    "reuses": "testing/outputs/luke_rescue_c2_drift_challenge_v3/runs",
     "oracle_sign_check": (
         "the static arm must stay >= 0.9 accuracy after oracle correction; a "
         "sign error would corrupt it"
@@ -97,9 +97,12 @@ def _freeze_prespec() -> None:
 
 
 def _conditions() -> list[str]:
-    """Template ids that C2 has cached injected recordings for."""
-    tids = sorted({d.name.split("_", 1)[0] for d in C2_RUNS.glob("T*_*")})
-    return tids
+    """C2 donors that passed static qualification under both comparators."""
+    summary_path = C2_OUTPUT / "summary.json"
+    if not summary_path.exists():
+        raise RuntimeError("run compact-donor C2 v3 before its nonrigid evaluation")
+    summary = json.loads(summary_path.read_text())
+    return list(summary.get("qualified_templates", []))
 
 
 def _score_arm(rec_dir: Path, truth: dict, arm: str, geometry, fs, duration_s):
@@ -174,7 +177,7 @@ def run(templates: list[str] | None = None, arms: list[str] | None = None) -> di
     static = df[df.trajectory == "static"]
     # a sign error in the oracle correction would corrupt the static arm; check
     # it against the same template's uncorrected static rather than an absolute
-    # bar (T06's static is inherently below the sanity line — C2 excludes it).
+    # bar. C2 v3 has already excluded donors that fail its paired static gate.
     rescue_static = static[static.arm == "rescue"].set_index("template").accuracy
     oracle_static = static[static.arm == "oracle"].set_index("template").accuracy
     oracle_static_ok = bool(
