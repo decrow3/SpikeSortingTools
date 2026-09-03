@@ -99,6 +99,16 @@ def test_write_injected_recording_is_loadable_and_manifested(tmp_path):
     assert manifest["complete"] and manifest["recording_content_sha256"]
     assert manifest["selected_end_frame"] == bg.shape[0]
 
+    # An injected recording carries no SnippetSpec; load_snippet must still
+    # verify it (via the sealed binary content hash) and reject a tampered one.
+    from testing.ladder_snippets import load_snippet, verify_snippet
+
+    assert verify_snippet(tmp_path / "inj")
+    assert load_snippet(tmp_path / "inj").manifest["name"] == "c2_static"
+    raw = tmp_path / "inj" / "traces_cached_seg0.raw"
+    raw.write_bytes(b"\x01" + raw.read_bytes()[1:])
+    assert not verify_snippet(tmp_path / "inj")
+
 
 def test_write_injected_recording_cache_identity_changes_with_content(tmp_path):
     geom = np.column_stack([np.zeros(4), np.arange(4) * 10.0])

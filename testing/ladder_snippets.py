@@ -439,13 +439,22 @@ def load_snippet(snippet_dir: Path | str) -> Snippet:
 
 
 def verify_snippet(snippet_dir: Path | str) -> bool:
-    """True iff the stored content still hashes to the sealed value."""
+    """True iff the stored content still hashes to the sealed value.
+
+    Two manifest shapes seal a snippet. `build_snippet` records the full
+    `spec` and hashes traces + probe + spec together. `ladder_inject`'s
+    injected recordings carry no `SnippetSpec` — they seal the recording
+    binary content directly — so verify that hash instead.
+    """
     snippet_dir = Path(snippet_dir)
     manifest = json.loads((snippet_dir / "snippet_manifest.json").read_text())
+    sealed = manifest.get("content_sha256")
+    if "spec" not in manifest:
+        return recording_binary_receipt(snippet_dir)["recording_content_sha256"] == sealed
     spec = SnippetSpec(
         **{k: v for k, v in manifest["spec"].items() if k != "snippet_schema"}
     )
-    return _content_hash(snippet_dir, spec) == manifest.get("content_sha256")
+    return _content_hash(snippet_dir, spec) == sealed
 
 
 # --------------------------------------------------------------------------- #
