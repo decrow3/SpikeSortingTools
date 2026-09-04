@@ -35,7 +35,7 @@ def test_digest_is_stable_and_config_sensitive():
 
 
 def test_named_configs_registry():
-    assert set(NAMED_CONFIGS) == {"rescue", "legacy_style", "nonrigid"}
+    assert set(NAMED_CONFIGS) == {"rescue", "legacy_style", "rescue_rigid", "nonrigid"}
 
 
 def test_nonrigid_turns_on_datashift_without_touching_thresholds():
@@ -49,3 +49,36 @@ def test_nonrigid_turns_on_datashift_without_touching_thresholds():
 def test_run_sorter_config_refuses_mnt():
     with pytest.raises(ValueError, match="/mnt"):
         run_sorter_config("/some/recording", "/mnt/out", RESCUE)
+
+
+def test_rescue_rigid_isolates_correction_from_thresholds():
+    """LEGACY_STYLE moves correction and thresholds together; this must not."""
+    from testing.ladder_sorter import LEGACY_STYLE, RESCUE, RESCUE_RIGID
+
+    rigid, rescue = RESCUE_RIGID.params(), RESCUE.params()
+    assert rigid["do_correction"] is True and rigid["nblocks"] == 1
+    for threshold in ("Th_universal", "Th_learned"):
+        assert rigid[threshold] == rescue[threshold]      # unchanged vs rescue
+        assert rigid[threshold] != LEGACY_STYLE.params()[threshold]
+    assert RESCUE_RIGID.digest != RESCUE.digest != LEGACY_STYLE.digest
+
+
+def test_rescue_requests_nblocks_1_but_must_resolve_to_0():
+    """The requested dict proves nothing: KS4 zeroes nblocks when do_correction is off."""
+    from testing.ladder_sorter import EXPECTED_EFFECTIVE, RESCUE
+
+    assert RESCUE.params()["nblocks"] == 1
+    assert RESCUE.params()["do_correction"] is False
+    assert EXPECTED_EFFECTIVE["rescue"]["effective_nblocks"] == 0
+
+
+def test_check_effective_settings_fails_closed_on_a_silent_downgrade():
+    import pytest
+
+    from testing.ladder_sorter import EXPECTED_EFFECTIVE, check_effective_settings
+
+    good = dict(EXPECTED_EFFECTIVE["rescue_rigid"])
+    assert check_effective_settings("rescue_rigid", good) == good
+    downgraded = {**good, "effective_nblocks": 0}   # correction silently off
+    with pytest.raises(RuntimeError, match="effective_nblocks"):
+        check_effective_settings("rescue_rigid", downgraded)

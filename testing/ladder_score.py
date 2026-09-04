@@ -42,6 +42,7 @@ from testing.luke_rescue_unique_units_audit import (
 )
 
 SCORE_SCHEMA = "luke-ladder-score-sort-v3"
+TRUTH_CONTRACT_SCHEMA = "luke-ladder-truth-contract-v1"
 
 # §5 "Explicitly not endpoints". Present in `context` for provenance only; a
 # promotion decision that cites any of these is out of contract.
@@ -58,6 +59,157 @@ CAPTURE_FRAC = 0.05          # §5: "> 5% of the injected train"
 CHANCE_MARGIN = 3.0          # a split/merge participant must beat chance coincidence by this factor
 ACCURACY_GATE = 0.8          # §5 headline
 EDGE_UM = 40.0               # §5 guardrail: "Edge-spike fraction (40 µm)"
+
+
+# --------------------------------------------------------------------------- #
+# truth contract — what the scorer is allowed to score against
+# --------------------------------------------------------------------------- #
+class TruthContractError(ValueError):
+    """A paired-arm comparison whose truth or spatial support is not identical."""
+
+
+def truth_digest(truth: Mapping) -> str:
+    """Content hash of an injected truth train set.
+
+    Canonical over unit id and sample values, so any difference -- a spike
+    added, an admission filter not applied, a train reconstructed from a prespec
+    rather than passed through -- changes the digest.
+    """
+    import hashlib
+
+    digest = hashlib.sha256(TRUTH_CONTRACT_SCHEMA.encode())
+    for unit_id in sorted(map(str, truth)):
+        events = np.sort(np.asarray(truth[unit_id], dtype=np.int64))
+        digest.update(b"\x00" + str(unit_id).encode() + b"\x00")
+        digest.update(np.asarray(events.size, dtype=np.int64).tobytes())
+        digest.update(events.tobytes())
+    return digest.hexdigest()
+
+
+def array_digest(values) -> str:
+    """Content hash of a channel-id or geometry array."""
+    import hashlib
+
+    array = np.ascontiguousarray(values)
+    if array.dtype.kind in "SU O".replace(" ", ""):
+        payload = "\x00".join(map(str, array.ravel().tolist())).encode()
+    else:
+        payload = array.astype(np.float64).tobytes()
+    return hashlib.sha256(
+        f"{array.shape}|".encode() + payload
+    ).hexdigest()
+
+
+def build_truth_contract(
+    truth: Mapping,
+    *,
+    admission: Mapping,
+    channel_ids,
+    geometry,
+    filtered_before_injection: bool,
+    crop: tuple[int, int] | None = None,
+) -> dict:
+    """Bind an admitted train, its provenance and its spatial support together.
+
+    `admission` must carry the schema and parameters that produced the filter,
+    the totals, and the per-level counts, so a reader can tell *which* events
+    were admitted and why without re-deriving them.
+    """
+    if not filtered_before_injection:
+        raise TruthContractError(
+            "truth must be filtered before injection, not merely before scoring: "
+            "excluded events otherwise still shape detection and templates"
+        )
+    for key in ("schema", "rule", "n_total", "n_admitted", "counts_by_level_um"):
+        if key not in admission:
+            raise TruthContractError(f"admission record is missing {key!r}")
+    n_expected = int(sum(np.asarray(v).size for v in truth.values()))
+    if n_expected != int(admission["n_admitted"]):
+        raise TruthContractError(
+            f"truth holds {n_expected} events but admission claims "
+            f"{admission['n_admitted']}"
+        )
+    return {
+        "schema": TRUTH_CONTRACT_SCHEMA,
+        "truth_sha256": truth_digest(truth),
+        "n_expected": n_expected,
+        "units": {
+            str(k): {
+                "n": int(np.asarray(v).size),
+                "sha256": truth_digest({str(k): v}),
+            }
+            for k, v in truth.items()
+        },
+        "admission": dict(admission),
+        "filtered_before_injection": True,
+        "spatial": {
+            "n_channels": int(len(channel_ids)),
+            "channel_ids_sha256": array_digest(np.asarray(channel_ids)),
+            "geometry_sha256": array_digest(np.asarray(geometry, dtype=np.float64)),
+            "crop": list(crop) if crop else None,
+        },
+    }
+
+
+def validate_truth_contract(truth: Mapping, contract: Mapping) -> dict:
+    """Fail closed unless `truth` is exactly the train the contract describes."""
+    if contract.get("schema") != TRUTH_CONTRACT_SCHEMA:
+        raise TruthContractError(f"unknown truth contract schema {contract.get('schema')!r}")
+    if not contract.get("filtered_before_injection"):
+        raise TruthContractError("contract does not attest filtering before injection")
+    observed = truth_digest(truth)
+    if observed != contract["truth_sha256"]:
+        raise TruthContractError(
+            "truth does not match its contract — the scorer was handed a "
+            f"different train (expected {contract['truth_sha256'][:12]}, "
+            f"got {observed[:12]})"
+        )
+    n_observed = int(sum(np.asarray(v).size for v in truth.values()))
+    if n_observed != int(contract["n_expected"]):
+        raise TruthContractError(
+            f"expected {contract['n_expected']} admitted events, got {n_observed}"
+        )
+    return dict(contract)
+
+
+def assert_paired_truth(contracts, *, labels=None) -> dict:
+    """Every paired arm must share one truth and one spatial support.
+
+    A drift penalty is a within-subject Δ; if two arms score different trains,
+    or sort different channels, the Δ is not attributable to the arm.
+    """
+    contracts = list(contracts)
+    labels = list(labels) if labels else [f"arm{i}" for i in range(len(contracts))]
+    if len(contracts) < 2:
+        raise TruthContractError("a paired comparison needs at least two arms")
+    reference = contracts[0]
+    for key, path in (
+        ("truth", ("truth_sha256",)),
+        ("n_expected", ("n_expected",)),
+        ("channel ids", ("spatial", "channel_ids_sha256")),
+        ("geometry", ("spatial", "geometry_sha256")),
+    ):
+        def dig(contract, path=path):
+            value = contract
+            for step in path:
+                value = value[step]
+            return value
+
+        expected = dig(reference)
+        for label, contract in zip(labels[1:], contracts[1:]):
+            if dig(contract) != expected:
+                raise TruthContractError(
+                    f"{key} differs between {labels[0]!r} and {label!r}: "
+                    f"{expected!r} vs {dig(contract)!r}"
+                )
+    return {
+        "arms": labels,
+        "truth_sha256": reference["truth_sha256"],
+        "n_expected": int(reference["n_expected"]),
+        "channel_ids_sha256": reference["spatial"]["channel_ids_sha256"],
+        "geometry_sha256": reference["spatial"]["geometry_sha256"],
+        "identical_denominator": True,
+    }
 
 
 # --------------------------------------------------------------------------- #
@@ -482,6 +634,7 @@ def score_sort(
     runtime_s: float | None = None,
     fs: float | None = None,
     duration_s: float | None = None,
+    truth_contract: Mapping | None = None,
 ) -> dict:
     """The ladder's single scoring endpoint. Identical at L1 and L4.
 
@@ -494,6 +647,14 @@ def score_sort(
         `duration_s`, `truth` and `reference` if those are not passed directly.
     truth
         `{injected_unit_id: array of sample indices}` for the primary metric.
+        This is the *admitted* train and the scorer scores exactly it: it never
+        reconstructs a train from a prespec.
+    truth_contract
+        Optional attestation binding that admitted train, the admission
+        parameters that produced it, and the cropped spatial support. When
+        given it is validated against `truth` and fails closed on any mismatch,
+        and is recorded in the result so paired arms can be checked with
+        `assert_paired_truth`.
     reference
         A comparator sort (path or loaded dict) for the secondary metric.
     runtime_s
@@ -516,9 +677,17 @@ def score_sort(
     if duration_s is None:
         duration_s = (float(sort["st"].max()) + 1.0) / fs if sort["st"].size else 0.0
 
+    validated_contract = (
+        validate_truth_contract(truth, truth_contract)
+        if truth_contract is not None else None
+    )
+    if truth_contract is not None and not truth:
+        raise TruthContractError("a truth contract was given but no truth train")
+
     result = {
         "schema": SCORE_SCHEMA,
         "sorter_output": str(path),
+        "truth_contract": validated_contract,
         "fs": float(fs),
         "duration_s": float(duration_s),
         "primary": None,

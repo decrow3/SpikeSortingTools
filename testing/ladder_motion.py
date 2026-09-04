@@ -124,19 +124,50 @@ def sampled_displacement(
     um_per_channel: float,
     depth_um: float,
     bin_s: float = 0.5,
+    trajectory_units: str = "channels",
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Sample a ladder trajectory (channel offset vs time) into a µm displacement.
+    """Sample a ladder trajectory into a µm displacement.
+
+    `trajectory_units="channels"` (the default, and what every pre-v4 caller
+    uses) treats `trajectory_fn` as returning a channel-index offset and scales
+    by `um_per_channel`. `"um"` takes the returned value as µm directly, which
+    is what the operator actually consumes -- use it when the trajectory must
+    hit an exact physical displacement, since the channel round trip is only
+    exact to floating point.
 
     Returns `(temporal_bins_s, displacement_um, spatial_bins_um)` shaped for
     `spikeinterface.core.motion.Motion`: displacement is `(n_bins, 1)` — the
     trajectory is spatially rigid within the strip; the depth-varying case is a
     separate trajectory, not a separate spatial axis here.
     """
+    if trajectory_units not in ("channels", "um"):
+        raise ValueError(f"unknown trajectory_units {trajectory_units!r}")
     n_bins = max(2, int(round(duration_s / bin_s)))
     centers = (np.arange(n_bins) + 0.5) * (duration_s / n_bins)
-    offset_channels = np.asarray(trajectory_fn(centers), dtype=np.float64)
-    disp_um = (offset_channels * um_per_channel).reshape(-1, 1)
+    sampled = np.asarray(trajectory_fn(centers), dtype=np.float64)
+    scale = 1.0 if trajectory_units == "um" else um_per_channel
+    disp_um = (sampled * scale).reshape(-1, 1)
     return centers, disp_um, np.array([depth_um], dtype=np.float64)
+
+
+def frame_bin_assignment(n_samples: int, fs: float, edges_s, n_bins: int):
+    """Frame -> interpolation-bin boundaries, mirroring the operator exactly.
+
+    `interpolate_motion_on_traces` bins frames by
+    `searchsorted(edges, times, side="right") - 1` on the recording's sample
+    times, then clips to the valid range. Slicing by `round(edge * fs)` instead
+    is off by one sample wherever an edge does not land on a sample, which
+    silently contaminates every bin that neighbours a displacement change. Any
+    code reasoning about which frames sit in which motion bin must use this.
+    """
+    times = np.arange(int(n_samples), dtype=np.float64) / float(fs)
+    frame_bin = np.clip(
+        np.searchsorted(np.asarray(edges_s, dtype=np.float64), times, side="right") - 1,
+        0, int(n_bins) - 1,
+    )
+    which = np.arange(int(n_bins))
+    return (np.searchsorted(frame_bin, which, side="left"),
+            np.searchsorted(frame_bin, which, side="right"))
 
 
 def warp_array_with_known_motion(
@@ -150,6 +181,7 @@ def warp_array_with_known_motion(
     border_mode: str = "force_extrapolate",
     spatial_interpolation_method: str = "kriging",
     sigma_um: float = 20.0,
+    trajectory_units: str = "channels",
 ) -> np.ndarray:
     """Apply a known physical y-motion field to a voltage array.
 
@@ -172,6 +204,7 @@ def warp_array_with_known_motion(
         um_per_channel=signed_um_per_channel(positions),
         depth_um=float(positions[:, 1].mean()),
         bin_s=bin_s,
+        trajectory_units=trajectory_units,
     )
     motion = Motion([sign * disp_um], [centers], spatial, direction="y")
     warped = InterpolateMotionRecording(

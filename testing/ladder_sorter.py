@@ -19,6 +19,13 @@ The only configs with a name are the ones the plan compares directly:
   detection thresholds, on the *same* conditioned input. The controlled
   contrast for "what does representing motion buy?" (`ops.npy`:
   legacy `nblocks=1, Th_universal=9, Th_learned=8` vs rescue `nblocks=0, 12, 9`).
+* `RESCUE_RIGID` — the controlled internal-correction arm C2 v4 needs: the
+  rescue detection thresholds unchanged, with KS4's own *rigid* datashift turned
+  on (`do_correction=True, nblocks=1`). `LEGACY_STYLE` changes correction *and*
+  thresholds together, so it cannot isolate what `nblocks=1` buys; this can.
+  Note the rescue baseline already carries `nblocks=1` but `do_correction=False`,
+  and KS4 forces the effective value to 0 — so the arms must be validated on the
+  *saved effective* settings, never on the requested parameter dict.
 * `NONRIGID` — Phase D candidate 2: KS4's own *non-rigid* datashift
   (`do_correction=True, nblocks=6`) with the rescue detection thresholds
   unchanged. The controlled contrast against `LEGACY_STYLE` isolates
@@ -71,11 +78,43 @@ LEGACY_STYLE = SorterConfig(
     "legacy_style",
     {"do_correction": True, "nblocks": 1, "Th_universal": 9, "Th_learned": 8},
 )
+RESCUE_RIGID = SorterConfig(
+    "rescue_rigid",
+    {"do_correction": True, "nblocks": 1},
+)
 NONRIGID = SorterConfig(
     "nonrigid",
     {"do_correction": True, "nblocks": 6},
 )
-NAMED_CONFIGS = {c.label: c for c in (RESCUE, LEGACY_STYLE, NONRIGID)}
+NAMED_CONFIGS = {
+    c.label: c for c in (RESCUE, LEGACY_STYLE, RESCUE_RIGID, NONRIGID)
+}
+
+# What each config must resolve to *after* KS4 has applied it, checked against
+# `summary.critical_saved_settings` in the sort manifest.
+EXPECTED_EFFECTIVE = {
+    "rescue": {"applied_do_CAR": True, "effective_nblocks": 0,
+               "applied_Th_universal": 12, "applied_Th_learned": 9},
+    "rescue_rigid": {"applied_do_CAR": True, "effective_nblocks": 1,
+                     "applied_Th_universal": 12, "applied_Th_learned": 9},
+    "legacy_style": {"applied_do_CAR": True, "effective_nblocks": 1,
+                     "applied_Th_universal": 9, "applied_Th_learned": 8},
+    "nonrigid": {"applied_do_CAR": True, "effective_nblocks": 6,
+                 "applied_Th_universal": 12, "applied_Th_learned": 9},
+}
+
+
+def check_effective_settings(label: str, saved: dict) -> dict:
+    """Fail closed unless KS4 actually applied what the config asked for."""
+    expected = EXPECTED_EFFECTIVE[label]
+    mismatch = {
+        k: {"expected": v, "saved": saved.get(k)}
+        for k, v in expected.items()
+        if saved.get(k) != v
+    }
+    if mismatch:
+        raise RuntimeError(f"{label} resolved to unexpected settings: {mismatch}")
+    return {k: saved.get(k) for k in expected}
 
 
 def _json_safe(params: dict) -> dict:

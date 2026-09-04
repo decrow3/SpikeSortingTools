@@ -211,3 +211,28 @@ def test_oracle_correction_refuses_mnt(tmp_path):
             rec_dir, "/mnt/x", trajectory_fn=static_trajectory(), duration_s=1.0,
             fs=FS, gain_uv_per_count=1.0,
         )
+
+
+def test_sampled_displacement_um_units_bypass_the_channel_conversion():
+    """v4 trajectories are specified in µm; the channel round trip is optional."""
+    from testing.ladder_motion import sampled_displacement
+
+    def forty_um(t):
+        return np.full_like(np.asarray(t, dtype=float), 40.0)
+
+    _, disp_um, _ = sampled_displacement(
+        forty_um, duration_s=10.0, um_per_channel=9.909, depth_um=1900.0,
+        bin_s=0.5, trajectory_units="um",
+    )
+    assert np.all(disp_um == 40.0)  # exact, not 40.000000001
+
+    _, scaled, _ = sampled_displacement(
+        forty_um, duration_s=10.0, um_per_channel=9.909, depth_um=1900.0, bin_s=0.5,
+    )
+    assert np.allclose(scaled, 40.0 * 9.909)  # default stays channel units
+
+    with pytest.raises(ValueError, match="unknown trajectory_units"):
+        sampled_displacement(
+            forty_um, duration_s=10.0, um_per_channel=1.0, depth_um=0.0,
+            trajectory_units="furlongs",
+        )

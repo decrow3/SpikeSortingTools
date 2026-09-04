@@ -101,10 +101,15 @@ def l1_run(
     curation: CurationConfig | None = None,
     reference: Path | str | None = None,
     truth: dict | None = None,
+    truth_contract: dict | None = None,
     out_root: Path | str | None = None,
     wall_budget_s: float = L1_WALL_BUDGET_S,
 ) -> dict:
     """Run one snippet through sort → curate → score, cached. Returns the score.
+
+    `truth_contract` binds the admitted train, its admission parameters and the
+    cropped spatial support; when passed it is validated against `truth` and the
+    run fails closed on any mismatch (see `ladder_score.build_truth_contract`).
 
     `sorter` defaults to the frozen rescue config (`pipeline.sorting.run_kilosort4`,
     the production path). Pass a `ladder_sorter.SorterConfig` for a comparator or
@@ -179,6 +184,7 @@ def l1_run(
     score = score_sort(
         curated,
         truth=truth,
+        truth_contract=truth_contract,
         reference=reference,
         reference_window=ref_window,
         reference_depth_range=ref_depth,
