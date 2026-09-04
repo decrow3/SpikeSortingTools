@@ -1,4 +1,13 @@
-# C2 v4 result: Luke-scale rigid motion does not cost neuron recovery
+# C2 v4 result: the mechanism is real at 40 µm; the Luke-scale arms are uninformative
+
+> **CORRECTED 2026-09-04.** The first version of this document was headed
+> "Luke-scale rigid motion does not cost neuron recovery" and concluded that
+> rigid motion is not Phase D's target. **Both claims are withdrawn.** The flat
+> 5 and 11 µm arms do not show robustness to Luke-scale motion; they show that
+> at fractional offsets the forward model degenerates into *attenuation* rather
+> than *displacement*, which is the perturbation KS4 is least sensitive to. See
+> "Why the Luke-scale arms cannot answer the question". The staircase result and
+> the stationary-control finding are unaffected.
 
 **Date:** 2026-09-04
 **Status:** first C2 run to survive all controls. Supersedes the void v3 run.
@@ -22,16 +31,18 @@
 Motion penalty is the within-condition, within-config Δ (`moved − static`), on
 the 10-donor common primary cohort.
 
-**At the rigid motion Luke imec0 actually experiences — 4–23 µm per 120 s window,
-median ~11 µm ([decision 0013](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md))
-— imposed rigid motion costs essentially nothing.** The penalty is a threshold
-effect, not a gradient: it appears only at 22 µm and is severe at 40 µm.
+A large penalty appears at 22 µm and above. **The 5 and 11 µm arms — which
+bracket Luke's measured range — are flat, but that is not evidence of
+robustness**, for the reason set out in the next section.
 
-This converges with the
-[within-Luke rigid-motion dose–response](luke_within_rigid_motion_dose_response_result.md),
-whose primary endpoint was also null. Two independent designs — one observational
-across real windows, one causal with injected ground truth — now agree that
-Luke-scale *rigid* motion is not the mechanism behind the neuron loss.
+It does **not** converge with the
+[within-Luke rigid-motion dose–response](luke_within_rigid_motion_dose_response_result.md)
+in the way first claimed here. That study's *primary* endpoint (E3, qualified
+units/mm) was null, but 4 of its 5 endpoints degrade with motion — E6 waveform
+stability ρ = −0.66, E7 qualified firing rate ρ = −0.59, and **E8 fragmentation
+ρ = +0.42**. Fragmentation is precisely what C2 measures, so the observational
+line points *toward* a Luke-scale motion effect on within-unit quality, not away
+from one.
 
 ## Rigid correction
 
@@ -98,27 +109,78 @@ Per-arm exclusion is forbidden and not implemented: it would let each magnitude
 run on a different, progressively easier cohort. Cohorts are built from static
 arms only, so a poor moving arm never removes a donor from its own contrast.
 
+## Why the Luke-scale arms cannot answer the question
+
+The forward model produces a qualitatively different perturbation at
+lattice-commensurate and at fractional offsets:
+
+| offset | peak retention | in-place cosine | what it did |
+|---|---:|---:|---|
+| 5 µm | 0.823 | 0.985 | dimmed in place |
+| 11 µm | **0.638** | **0.897** | dimmed in place |
+| 22 µm | 0.517 | 0.580 | mixed |
+| **40 µm (exact)** | **1.000** | **0.193** | **translated** |
+
+At 40 µm, where the operator is validated exact to 1.1e-6, displacement behaves
+as displacement: amplitude is preserved and the footprint moves off its original
+sites. At 11 µm the simulation does the opposite — it destroys 36 % of the
+amplitude while barely changing the in-place shape. That is the signature of a
+spatial low-pass filter, not of translation, and it follows from the geometry:
+the footprint is compact relative to a 20 µm row pitch, so reconstructing it at a
+half-row offset means interpolating across sites that do not sample it.
+
+This matters because the two perturbations are not interchangeable for a sorter.
+KS4 tolerates dimming — the spike is still detected and still matches its
+template, merely smaller — but fragments on positional change, which is what
+creates a new template. **At Luke scale the forward model supplies the
+perturbation KS4 is least sensitive to and withholds the one it is most
+sensitive to.** A flat penalty is the expected outcome whether or not real
+Luke-scale motion is harmful.
+
+The bias also runs in both directions at once, which is why it cannot be signed
+away: attenuation should make recovery *harder* (conservative), while
+loss of positional change makes it *easier* (anti-conservative). The
+anti-conservative term acts on the mechanism C2 exists to measure.
+
 ## What this does and does not establish
 
 **Does.** Rigid displacement *can* shatter a cleanly-recovered neuron — the
 staircase shows −0.534 with 13/14 donors fragmenting, with no interpolation
-artifact anywhere in the recording. The mechanism is real. Rigid correction
-recovers it almost completely there (+0.508). So both the injury and the repair
-are demonstrable when the displacement is large enough.
+artifact anywhere in the recording, and rigid correction recovers it almost
+completely (+0.508). Both the injury and the repair are demonstrable when the
+displacement is real. It also establishes that `nblocks=1` is not free: it breaks
+two donors outright with no motion present.
 
-**Does not.** That this matters at Luke scale. The 5 and 11 µm arms are flat, and
-those bracket Luke's measured range. The 22 µm penalty cannot be cleanly
-attributed: the operator attenuates compact donors to ~0.68 mean peak retention
-there, so it mixes motion with resampling loss. The staircase is 40 µm — roughly
-twice Luke's largest — and discontinuous, so it bounds the mechanism, not the
-Luke-scale effect.
+**Does not.** Anything about Luke scale, in either direction. The 5 and 11 µm
+arms are uninformative for the reason above; the 22 µm arm mixes motion with
+resampling loss (0.517 peak retention); and the staircase is ~2× Luke's largest
+displacement and discontinuous. C2 v4 gives **no evidence that Luke-scale rigid
+motion is harmless, and none that it is harmful.**
+
+## What would answer it
+
+The forward model must move a donor without dimming it — i.e. generate the
+displaced footprint from a *model* of the donor's spatial field (a monopole or
+dipole fit, or a dense biophysical template) evaluated at shifted positions,
+rather than by resampling an under-sampled recorded field. This is the
+dense-template comparison already listed as an open limit in
+[the operator calibration](luke_20250804_c2_operator_calibration.md). The
+background can continue to be warped by the existing operator, since its errors
+do not touch the injected unit's score — only the motion estimate.
+
+Until then the honest position is that C2 v4 has validated the machinery and
+established the mechanism at large displacement, and the Luke-scale question is
+still open.
 
 ## Consequences for the plan
 
-1. **Rigid motion is not the target.** Two independent lines agree it costs
-   nothing at Luke scale, and `nblocks=1` buys nothing there while actively
-   breaking two donors when stationary. Phase D should not pursue rigid
-   correction on the strength of C2.
+1. **Rigid motion is not ruled out as a target, and C2 v4 does not settle it.**
+   The earlier version of this document concluded the opposite; that conclusion
+   is withdrawn. What stands is narrower: `nblocks=1` buys nothing in the arms
+   where the forward model is trustworthy at Luke scale — but those arms cannot
+   detect a Luke-scale effect in the first place. Separately, `nblocks=1`
+   actively breaks two donors when stationary, which is a real cost independent
+   of any benefit.
 2. **`legacy_style` is not equivalent to `rescue_rigid`.** On D12's staircase arm
    `legacy_style` recovered the neuron (0.991) where `rescue_rigid` did not
    (0.529), despite both running `nblocks=1`. The only remaining difference is
