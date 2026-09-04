@@ -15,6 +15,7 @@
 (`luke-rescue-c2-drift-challenge-v4`, prespec `ff993d2b1b79…`)
 **Analysis:** [`testing/luke_c2_v4_analysis.py`](../testing/luke_c2_v4_analysis.py)
 (`luke-c2-v4-analysis-v1`)
+**Truncation diagnostic:** [`luke_20250804_c2_v4_truncation_diagnostic.md`](luke_20250804_c2_v4_truncation_diagnostic.md)
 **Output:** `testing/outputs/luke_rescue_c2_drift_challenge_v4/`
 **Run:** 14 donors × 28 cells = **392 cells**, 168 sorts, 02:29–07:51 (5 h 21 m).
 **Code:** commit `1ca7458`.
@@ -156,6 +157,14 @@ arms are uninformative for the reason above; the 22 µm arm mixes motion with
 resampling loss (0.517 peak retention); and the staircase is ~2× Luke's largest
 displacement and discontinuous. C2 v4 gives **no evidence that Luke-scale rigid
 motion is harmless, and none that it is harmful.**
+
+The phase-specific amplitude-truncation diagnostic independently sharpens the
+staircase mechanism. In the 13/14 uncorrected-rescue donors that split, the best
+single identity misses a median 50.51% of the full train, while within-position
+truth loss is 1.02% and estimated amplitude truncation is 0.62%. Thus the 40 µm
+failure is predominantly positional identity fragmentation, not a uniform loss
+of low-amplitude spikes. This does not repair the uninformative Luke-scale ramp
+arms.
 
 ## What would answer it
 

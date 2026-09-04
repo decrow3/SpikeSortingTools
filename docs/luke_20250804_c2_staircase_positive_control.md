@@ -1,12 +1,13 @@
 # C2 v4 machinery positive control: the discrete lattice-commensurate staircase
 
 **Date:** 2026-09-04
-**Status:** implemented and verified interpolation-free over the full 120 s.
+**Status:** implemented, sorted in C2 v4, and verified interpolation-free over the full 120 s.
 **Not** a Luke-scale result; reported separately from the 5/11/22 µm dose–response.
 **Code:** [`testing/luke_c2_staircase_control.py`](../testing/luke_c2_staircase_control.py)
 (schema `luke-c2-staircase-control-v1`)
 **Output:** `testing/outputs/luke_c2_staircase_control/summary.json`
 **Companion:** [`luke_20250804_c2_operator_calibration.md`](luke_20250804_c2_operator_calibration.md)
+**Truncation diagnostic:** [`luke_20250804_c2_v4_truncation_diagnostic.md`](luke_20250804_c2_v4_truncation_diagnostic.md)
 **Tests:** `environments/rescue-production/.venv/bin/python -m pytest testing/test_luke_c2_staircase_control.py -q` → 16 pass.
 
 ## What it is for, and what it cannot do
@@ -157,11 +158,12 @@ recall and miss counts; all three arms share one denominator; and truth-hash,
 sample-shift, channel-id, geometry, denominator, miscounted-admission and
 filtered-after-injection mismatches each fail closed.
 
-## Still to do before this arm can be scored
+## Scoring status
 
-- **Sort it.** Everything above verifies the recording handed to KS4, not KS4's
-  response; that is the smoke matrix's job
-  (`testing/luke_c2_staircase_smoke.py`).
+The staircase has now been sorted across all 14 compact donors in C2 v4. The
+amplitude-truncation follow-up uses those retained results and injected truth;
+see the linked diagnostic. The voltage/operator checks above remain the basis
+for treating this as an interpolation-free machinery positive control.
 
 ## Limits
 

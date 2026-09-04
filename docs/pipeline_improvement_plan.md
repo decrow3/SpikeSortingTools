@@ -45,13 +45,15 @@
 > donor enters the primary drift comparison only when its static arm reaches
 > accuracy >= 0.8 under both rescue and `legacy_style`.
 
-> **CURRENT C2 STATUS — 2026-09-03.** The first C2 v3 run is void as a drift
-> result because its pooled-spike scorer let background clusters steal truth
-> events. Decision 0014 fixes scoring per candidate cluster. Because the v3
-> prespec/output namespace is frozen and contains the old trajectories, the next
-> experiment is **C2 v4**. Corrected static rescoring is complete; next freeze
-> and run the Luke-calibrated rigid family (~4–5, 10–12, 20–25 µm). This is not
-> gated by the abandoned Luke/Yates overlap match.
+> **CURRENT C2 STATUS — 2026-09-04.** C2 v4 is complete across 14 compact
+> donors and is the first run to survive the operator, scorer, donor and cache
+> controls ([result](luke_20250804_c2_v4_result.md)). The exact 40 µm staircase
+> establishes that rigid displacement can fragment identity (13/14 donors) and
+> that rigid correction can recover it. The 5/11/22 µm arms do **not** answer the
+> Luke-scale question: fractional resampling dims the compact recorded
+> footprints instead of translating them. A dense spatial donor model is the
+> next requirement. The truncation-vs-truth follow-up supports positional
+> identity splitting at 40 µm and is explicitly diagnostic, not production QC.
 
 > **TWO-OPTION DEVELOPMENT DECISION — 2026-09-03.** “No external voltage
 > warp” is the shared control and current operational reference; it is **not**
@@ -64,7 +66,7 @@
 > promoted. Detailed build instructions:
 > [`luke_two_motion_pipeline_build_instructions.md`](luke_two_motion_pipeline_build_instructions.md).
 
-**Status:** active, updated 2026-09-03
+**Status:** active, updated 2026-09-04
 **Supersedes as a work plan:** the follow-up lists in
 [`decisions/0008`](decisions/0008-amplitude-completeness-gates-promotion.md) and
 [`decisions/0010`](decisions/0010-rescue-yield-is-relabelling-not-detection.md)
@@ -209,8 +211,11 @@ Inject known spike trains with known waveforms into real Luke background, then
 score the sort against truth. The injection, geometry-aware motion operator,
 sorter connection, content-bound caching, and per-cluster exclusive scorer are
 built. Their first end-to-end C2 runs exposed operator, donor, cache, and scorer
-faults; no drift result has yet survived all controls. C2 v4 is the first
-planned run that combines the corrected components.
+faults. C2 v4 is the first run to combine the corrected components and survive
+those controls. Its exact 40 µm staircase establishes the fragmentation
+mechanism; its fractional-offset ramps remain uninformative about Luke-scale
+displacement because the donor forward model attenuates rather than translates
+the compact footprints.
 
 Per injected unit:
 
@@ -672,8 +677,13 @@ post-sort family stitching** — not `nblocks=1`. Curation-threshold tuning stay
 low: the lower-threshold `legacy_style` fragments *more* at baseline, not less.
 
 V4 supplies both polarities and the full compact real-donor amplitude range.
-Still to add: genuinely non-rigid trajectories, truncation-vs-truth, and a
-second window. Static qualification is donor-wise and prespecified; there is no
+The staircase truncation-vs-truth diagnostic is now complete
+([report](luke_20250804_c2_v4_truncation_diagnostic.md)): uncorrected rescue's
+phase-local estimate stays low while its best identity loses about half the
+whole train, supporting temporal/positional fragmentation rather than uniform
+low-amplitude truncation. It is a calibrated 250-spike post-hoc diagnostic, not
+production QC. Still to add: genuinely non-rigid trajectories and a second
+window. Static qualification is donor-wise and prespecified; there is no
 special T06 exception because all pilot T donors are forbidden.
 
 **Checkpoint C.** *Go:* a known-truth score exists for legacy on all 8
@@ -742,9 +752,14 @@ order:
 | Fragments coexist at the same time and motion state | Moving injections stay one identity | **Clustering and curation.** The repartitioning is ordinary over-splitting. |
 | Mixed | Mixed | Split the effort by the measured proportions, and say what the split was. |
 
-**Correction 2026-09-03:** the tree is unresolved because no C2 result has yet
-survived the operator, donor, cache, and scorer controls. A2 remains
-observational evidence; C2 v4 is the next valid test.
+**Correction 2026-09-04:** C2 v4 survived the operator, donor, cache, and scorer
+controls. Its 40 µm staircase follows the first row of the tree — motion creates
+positional identity fragments and correction restores continuity — but that
+displacement is about twice Luke's largest and discontinuous. The 5/11/22 µm
+ramps cannot resolve the Luke-scale branch because their recorded-template
+forward model dims instead of translating the donor. A2 therefore remains
+observational evidence at Luke scale; a dense spatial donor model is the next
+causal test.
 
 **Historical reading (2026-09-02).** A2: fragments are temporally
 complementary, refractory-clean, ~0 % coexisting — **not** over-splitting. C2:
@@ -784,13 +799,16 @@ reports retain the audit trail:
 [`family stitch`](luke_20250804_family_stitch_candidate.md) and
 [`nonrigid motion`](luke_20250804_nonrigid_motion_candidate.md).
 
-The only current stitching evidence is Phase A2 v2: naive unions of the selected
+The current stitching evidence is Phase A2 v2: naive unions of the selected
 fragment clusters are usually refractory-violating. That argues against applying
 an unqualified stitcher now, but it neither proves that all principled family
 tracking will fail nor identifies an upstream cause. The only current
-interpolation evidence comes from bounded real-data interventions showing that
-the tested external warps were harmful; whether a known accurate field can help
-compact injected neurons at Luke-calibrated motion remains a C2 v4 question.
+interpolation evidence also includes C2 v4's exact staircase: rigid correction
+recovers a true 40 µm positional split, but `nblocks=1` breaks two stationary
+donors and the fractional ramp operator cannot adjudicate Luke-scale benefit.
+Whether a known accurate field helps compact neurons at Luke-calibrated motion
+therefore requires a dense spatial donor model, not another reading of those
+ramps.
 
 **Stopping rule.** After C2 v4, any interpolation-policy search must be small,
 prespecified, scored on known truth and waveform preservation, and stopped if it
@@ -818,17 +836,19 @@ before changing architectures.
 
 #### The active sequence
 
-Scientific evaluation and tuning of D2 are **gated on C2 v4** (§9). Interface
-construction, provenance checks, operator round-trip tests and one smoke window
-are active work now so C2 completion can trigger the bakeoff immediately.
+Scientific evaluation and tuning of D2 were **gated on C2 v4** (§9). V4 is now
+complete, but it exposed a narrower upstream gate: a compact donor must be
+translated at fractional offsets without being dimmed into an in-place spatial
+low-pass image. Interface construction may continue, while numeric Luke-scale
+claims wait for that dense-field donor control.
 
 | # | Step | Status |
 |---|---|---|
-| 0 | **C2 v4** — corrected-scorer static qualification, then paired static-vs-moving compact-donor drift penalty (gates everything below) | next — new frozen namespace required |
+| 0 | **C2 v4** — corrected-scorer static qualification, then paired static-vs-moving compact-donor drift penalty | ✅ complete; 40 µm mechanism established, Luke-scale ramps uninformative ([result](luke_20250804_c2_v4_result.md)) |
 | 1 | **D2b-2 donor cohort** — 14 compact imec0 donors, both polarities, 73–295 µV, hash-frozen | ✅ complete ([`d2b2_donor_cohort`](luke_20250804_d2b2_donor_cohort.md)) |
-| 2 | **Oracle positive control** — attainable stabilization benefit and interpolation cost, on the compact cohort | paused — consumes C2 v4 outputs |
-| 3 | **D2b-1 field-error tolerance** — how accurate an estimated field must be | paused — `d2b1` fails closed until a compact-donor focus is frozen from C2 v4 |
-| 4 | **D2b-3 per-stratum interpolation tradeoff** — waveform/SNR-class sensitivity | paused — rerun on the compact cohort after C2 v4 |
+| 2 | **Oracle positive control** — attainable stabilization benefit and interpolation cost, on the compact cohort | ✅ exact 40 µm staircase positive control; fractional-offset dense-donor control next |
+| 3 | **D2b-1 field-error tolerance** — how accurate an estimated field must be | paused — needs the dense spatial donor model exposed by C2 v4 |
+| 4 | **D2b-3 per-stratum interpolation tradeoff** — waveform/SNR-class sensitivity | paused — rerun after the dense donor forward model is qualified |
 | 5 | **D2a full-session external estimation** — best-supported real field | paused — infra built (`ladder_motion_estimate.py`), not run |
 | 6 | **Pre-sort field qualification** — independent support, reproducibility, error evidence | paused — fails closed; numeric envelope to be set by the reruns |
 | 7 | **D2c bounded policy comparison** — none / best full / one simple selective policy | not started |
@@ -1037,9 +1057,10 @@ displacement magnitude, support/confidence, waveform class — **never on
 downstream sorter yield**.
 
 The physical tradeoff motivates this directly, but its magnitude on Luke is
-unresolved: the earlier oracle results were retracted. C2 v4 must first measure
-whether correction benefit exceeds interpolation cost for compact donors at
-Luke-calibrated motion.
+unresolved. C2 v4 measured the large-displacement mechanism, but its compact
+recorded-template operator could not preserve Luke-scale translation. The next
+calibration must generate displaced donors from a dense spatial model before
+asking whether correction benefit exceeds interpolation cost at Luke scale.
 
 #### Runtime accounting — measured during D2, not at Phase E
 
@@ -1261,15 +1282,15 @@ eliminated.
    ([decision 0012](decisions/0012-c2-uses-compact-donor-cohort.md)).
    Doc: [`d2b2_donor_cohort`](luke_20250804_d2b2_donor_cohort.md).
 
-### Next — the gating experiment
+### Completed gate — and the narrower gate it exposed
 
 5. **C2 v4 — paired static-vs-moving injected identity challenge.** All 14
    compact donors, geometry-aware forward motion, exclusive truth scoring,
    content-bound caches; a donor enters the primary drift comparison only if its
    static arm reaches accuracy ≥ 0.8 under both `RESCUE` and `LEGACY_STYLE`.
-   V4 uses a new frozen prespec/output namespace because v3 is an immutable void
-   run with stale trajectories. This is the experiment that reopens everything
-   below it.
+   V4 used a new frozen prespec/output namespace because v3 is an immutable void
+   run with stale trajectories. The 392-cell run is complete
+   ([result](luke_20250804_c2_v4_result.md)).
 
    *First run 2026-09-03 is VOID* — a scorer bug, not a C2 result. All 14
    donors failed static qualification at a near-constant ~0.78 accuracy because
@@ -1277,25 +1298,29 @@ eliminated.
    river and let background clusters steal ~10 % of events
    ([decision 0014](decisions/0014-injected-truth-scoring-is-per-cluster.md),
    [`c2_v3_scorer_validation_failure`](luke_20250804_c2_v3_scorer_validation_failure.md)).
-   Fixed: per-cluster exclusive matching plus chance-null split/merge gates,
-   `SCORE_SCHEMA` → v3, with regression coverage. Static rescoring is complete
-   and the floor is gone. Now freeze and run the v4 Luke-calibrated rigid family
-   (~4–5 / 10–12 / 20–25 µm,
-   [decision 0013](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md)).
-   This is not gated by the failed Luke/Yates overlap match.
+   Fixed in v4: per-cluster exclusive matching plus chance-null split/merge
+   gates, `SCORE_SCHEMA` → v3, with regression coverage. The exact 40 µm arm
+   demonstrates both positional fragmentation and correction. The
+   Luke-calibrated 5/11/22 µm arms are not interpretable as displacement tests,
+   because fractional resampling attenuates the compact recorded donors while
+   leaving them largely in place. The next gate is a dense spatial donor model
+   that can translate a compact waveform at fractional offsets without that
+   attenuation/translation substitution.
 
-### Build now; evaluate after C2 v4
+### Build now; evaluate after the dense-donor control
 
 - **Option A external voltage registration** — build/operator smoke tests may
-  run now; oracle/estimated performance evaluation consumes C2 v4 outputs.
+  run now; Luke-scale oracle/estimated performance waits for the dense donor.
 - **Option B unwarped motion-aware identity** — build/identity-preservation
-  smoke tests may run now; promotion scoring consumes C2 v4 and the same frozen
-  panels.
+  smoke tests may run now and may use the exact staircase mechanism; Luke-scale
+  promotion scoring still uses the same frozen panels and dense-donor control.
 - **D2b** (field-error tolerance, interpolation tradeoff) — `d2b1` fails closed
-  until a compact-donor focus is frozen from the C2 v4 result.
+  until the compact donor can be translated at fractional offsets without
+  being dimmed in place.
 - **D2a** (best-supported full-session field) — infra built
-  (`ladder_motion_estimate.py`), not run. A valid C2 v4 result is required
-  before it becomes a quantifying experiment.
+  (`ladder_motion_estimate.py`), not run. Field estimation can proceed, but
+  correction benefit at Luke scale cannot be quantified before the dense-donor
+  control.
 - **Heavyweight architecture gate** (alternative sorters) — opens only if the
   two-option bakeoff leaves a meaningful deficit after C2 v4 / D2 / L2L.
 
