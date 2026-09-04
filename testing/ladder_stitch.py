@@ -1,14 +1,24 @@
 """Motion-aware family stitching — the first Phase D candidate.
 
-A2 + C2 (`docs/pipeline_improvement_plan.md`): rescue's KS-good deficit against
-legacy is not over-splitting and not detection loss — it is one clean neuron
-whose spikes are partitioned across several templates as it drifts. The
-fragments are **temporally complementary** (they own successive epochs, ~0 %
-co-fire) and **refractory-clean when merged**. Production curation
+**PREMISE CORRECTED 2026-09-04.** This module was written on the A2 anchor
+result that fragment unions are refractory-clean in ~92–95 % of families. That
+figure was retracted: measured on the actual fragment-cluster union, only
+**6–13 %** of merges are clean (`docs/pipeline_improvement_plan.md` §A2). So the
+real-data evidence does **not** say Luke's fragments are one clean neuron
+waiting to be reassembled, and stitching is a **candidate under test**, not a
+supported repair.
+
+What survives: fragments are **temporally complementary** (they own successive
+epochs, ~0 % co-fire), and production curation
 (`pipeline.curation`) will not merge them: its CCG gate *requires* the two units
 to co-fire cleanly, which temporally-complementary fragments do not.
 
-This module adds the missing pass. It merges a group of KS-good units when all
+This module adds the missing pass. Because the union is usually *not*
+refractory-clean on real data, the refractory gate below is load-bearing: it is
+what stops the pass from manufacturing contaminated units, and it is expected to
+reject most real A2 families. Evaluation must therefore report false merges and
+damage to clean units, not only repaired ones, and must select merges blind to
+injected truth. It merges a group of KS-good units when all
 of:
 
 * **spatial** — peak channels within `depth_window_um` (wide enough to span a
