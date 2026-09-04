@@ -129,3 +129,32 @@ def test_the_recorded_operator_matches_the_one_the_arms_use():
     operator = PRESPEC["motion_operator"]
     for key, value in REFERENCE_OPERATOR.items():
         assert operator[key] == value
+
+
+def test_every_condition_carries_its_own_static_baseline():
+    """A shared static baseline would cross truth trains.
+
+    The staircase admits 687 events and the ramps carry all 708, so one
+    standalone static condition cannot serve both: the staircase's moving arms
+    would be scored against a different denominator than their baseline.
+    """
+    assert PRESPEC["arms_per_condition"] == ["static", "moved", "moved_corrected"]
+    assert "within-condition" in PRESPEC["baseline_policy"]
+    # there is no standalone static condition to be shared by mistake
+    assert not any(s["kind"] == "static" for s in PRESPEC["conditions"].values())
+    assert set(PRESPEC["conditions"]) == {
+        "ramp_5um", "ramp_11um", "ramp_22um", "staircase_40um"
+    }
+
+
+def test_the_staircase_and_ramps_use_different_trains_by_design():
+    from testing.luke_c2_staircase_control import STAIRCASE
+
+    staircase = PRESPEC["conditions"]["staircase_40um"]
+    assert staircase["kind"] == "commensurate_staircase"
+    # the staircase filters; the ramps cannot, because every ramp offset is
+    # fractional and no exact subset exists
+    assert STAIRCASE["truth_admission"]["guard_bins"] >= 1
+    for name, spec in PRESPEC["conditions"].items():
+        if spec["kind"] == "rigid_ramp":
+            assert spec["forward_model_confounded"] is True

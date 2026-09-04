@@ -118,7 +118,6 @@ PRESPEC = {
         },
     },
     "conditions": {
-        "static": {"kind": "static", "family": "baseline"},
         "ramp_5um": {"kind": "rigid_ramp", "total_um": 5.0, "family": "luke_calibrated",
                      "forward_model_confounded": True},
         "ramp_11um": {"kind": "rigid_ramp", "total_um": 11.0, "family": "luke_calibrated",
@@ -129,7 +128,17 @@ PRESPEC = {
                            "forward_model_confounded": False,
                            "reported": "separately from the Luke-calibrated dose-response"},
     },
-    "arms_per_condition": ["moved", "moved_corrected"],
+    # Each condition is self-contained: its own static baseline, built from the
+    # same injected voltage and scored against the SAME truth train. A shared
+    # standalone static condition cannot serve them all — the staircase admits
+    # 687 events and the ramps carry all 708, so a shared baseline would compare
+    # the staircase's moving arms against a different denominator, which is the
+    # exact error the truth contract exists to prevent.
+    "arms_per_condition": ["static", "moved", "moved_corrected"],
+    "baseline_policy": (
+        "within-condition: the static arm of a condition shares that condition's "
+        "truth train, injected voltage and crop"
+    ),
     "sorters": {
         "rescue": "primary, no correction",
         "rescue_rigid": "the isolated internal-correction contrast",
@@ -340,18 +349,12 @@ def run(mode: str = "smoke", root: Path | None = None, donors=None,
                 edge_guard_samples=PRESPEC["template_prep"]["edge_guard_samples"],
             )
             labels = ("static", "moved", "moved_corrected")
-            if spec["kind"] == "static":
-                arms = {"static": np.ascontiguousarray(injected_wide[:, crop])}
-                arms.update({"geometry": crop_geometry,
-                             "channel_ids": np.asarray(wide_ids)[crop], "crop": crop})
-                arm_names = ["static"]
-            else:
-                arms = build_arms(
-                    injected_wide, wide_geometry, fs, crop=crop, margin=margin,
-                    wide_channel_ids=wide_ids, trajectory_fn=trajectory_for(name),
-                    labels=labels,
-                )
-                arm_names = ["moved", "moved_corrected"]
+            arms = build_arms(
+                injected_wide, wide_geometry, fs, crop=crop, margin=margin,
+                wide_channel_ids=wide_ids, trajectory_fn=trajectory_for(name),
+                labels=labels,
+            )
+            arm_names = list(labels)
             del injected_wide
 
             contract = build_truth_contract(
@@ -406,6 +409,16 @@ def run(mode: str = "smoke", root: Path | None = None, donors=None,
                 for rec_dir in rec_dirs.values():
                     shutil.rmtree(rec_dir, ignore_errors=True)
 
+        # Checkpoint after every donor: a 10 h unattended run must not lose
+        # everything to a failure in its last hour. Sorts are content-cached, so
+        # a resumed run reuses them, but the warps are not free.
+        pd.DataFrame(rows).to_csv(root / "c2_v4.partial.csv", index=False)
+        (root / "progress.json").write_text(json.dumps({
+            "donors_done": tids[: tids.index(tid) + 1],
+            "donors_remaining": tids[tids.index(tid) + 1:],
+            "cells_so_far": len(rows),
+        }, indent=2) + "\n")
+
     frame = pd.DataFrame(rows)
     frame.to_csv(root / "c2_v4.csv", index=False)
     summary = {
@@ -416,7 +429,9 @@ def run(mode: str = "smoke", root: Path | None = None, donors=None,
         "conditions": names,
         "n_cells": int(len(frame)),
         "paired_truth": {
-            key: assert_paired_truth([contract, contract], labels=["moved", "corrected"])
+            key: assert_paired_truth(
+                [contract] * 3, labels=["static", "moved", "moved_corrected"]
+            )
             for key, contract in contracts.items()
         },
         "rows": rows,
@@ -433,13 +448,15 @@ def main() -> None:
     mode.add_argument("--full", action="store_true", help="all 14 donors")
     ap.add_argument("--out-root", default=None)
     ap.add_argument("--donors", nargs="*", default=None)
+    ap.add_argument("--conditions", nargs="*", default=None)
     ap.add_argument("--keep-recordings", action="store_true")
     args = ap.parse_args()
     if args.verify or not (args.smoke or args.full):
         print(json.dumps(verify(args.out_root), indent=2, default=str))
         return
     summary = run(mode="full" if args.full else "smoke", root=args.out_root,
-                  donors=args.donors, keep_recordings=args.keep_recordings)
+                  donors=args.donors, conditions=args.conditions,
+                  keep_recordings=args.keep_recordings)
     print(json.dumps({k: v for k, v in summary.items()
                       if k not in ("rows", "prespec")}, indent=2, default=str))
 
