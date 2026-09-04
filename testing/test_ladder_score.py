@@ -253,18 +253,31 @@ def test_identity_continuity_match_across_a_bin_edge_never_exceeds_one():
     # bin boundary. TP/FN must be counted on the truth clock and FP only on
     # unmatched output spikes, so per-bin accuracy stays in [0, 1].
     bin_edge = int(30.0 * FS)
-    # a dense run of truth events right at the edge, output shifted +10 samples
+    tol = int(round(0.5 / 1000.0 * FS))  # 15
+    # truth events straddling the edge, each recovered by an output spike on the
+    # OTHER side of the edge: truth at bin_edge-5 -> output at bin_edge+8 (bin 1),
+    # truth at bin_edge+5 -> output at bin_edge-8 (bin 0). The v2 accounting put
+    # the TP in one bin and the output-derived FP in the other -> fp<0, acc>1.
     truth_st = np.concatenate([
-        np.arange(bin_edge - 20 * 300, bin_edge, 300),        # bin 0
-        np.arange(bin_edge, bin_edge + 20 * 300, 300),        # bin 1
+        np.arange(bin_edge - 40 * 300, bin_edge - 300, 300),   # well inside bin 0
+        np.array([bin_edge - 5]),                              # last event in bin 0
+        np.arange(bin_edge + 2 * 300, bin_edge + 40 * 300, 300),  # well inside bin 1
     ])
-    st = truth_st + 10  # every match sits 10 samples late; edge pairs cross
-    cl = np.zeros(st.size, dtype=np.int64)
-    sort = {"st": st.astype(np.int64), "cl": cl, "label": {0: "good"}, "good": {0}}
+    out_st = truth_st.copy()
+    # the bin-0 straddler is recovered by an output spike in bin 1 (asymmetric:
+    # nothing crosses back). Old accounting: TP credited to bin 0, output absent
+    # from bin 0's o_seg -> fp = o_seg.size - best_tp = -1 -> acc = 40/39 > 1.
+    out_st[out_st == bin_edge - 5] = bin_edge + 8
+    order = np.argsort(out_st)
+    sort = {
+        "st": out_st[order].astype(np.int64),
+        "cl": np.zeros(out_st.size, dtype=np.int64),
+        "label": {0: "good"}, "good": {0},
+    }
     out = ground_truth_scores(sort, {"u1": truth_st}, FS, duration_s=61.0)
     u = out["units"][0]
-    assert u["fp"] == 0 and u["accuracy"] == 1.0
-    assert u["min_bin_accuracy"] <= 1.0
+    assert u["fp"] == 0 and u["fn"] == 0 and u["accuracy"] == 1.0
+    assert 0.0 <= u["min_bin_accuracy"] <= 1.0
     assert not np.isnan(u["min_bin_accuracy"])
 
 

@@ -42,17 +42,20 @@ cleared the 0.8 static-qualification gate.
 3. The **best cluster** is chosen by accuracy, then by greater `TP`, then by
    fewer `FP`. Its score is the primary recovery metric.
 4. **Split burden** counts every cluster that satisfies **both**
-   `capture = TP / N_truth > 5 %` **and** `precision = TP / cluster_size > 5 %`.
-   Duplicated capture across clusters is *allowed and expected* — an injected
-   event landing in two genuine fragments is the over-split / duplicate signal
-   this diagnostic exists to detect. The precision clause was added after
-   re-scoring the C2 v3 static arms: on the dense imec1 strip, 3–6 high-rate
-   background clusters clip > 5 % of a 6 Hz injected train by pure chance
-   (precision ~0.5 %), which without it flagged every clean donor as split.
-5. **Merge burden** asks whether the chosen best cluster also captures > 5 % of
-   any *other* injected truth train, with that overlap also > 5 % of the best
-   cluster (the same both-directions gate, so a large best cluster is not
-   spuriously "merged" by chance coincidence with a second train).
+   `capture = TP / N_truth > 5 %` **and** `TP > CHANCE_MARGIN × E[TP]`, where
+   `E[TP] = N_truth × cluster_size × (2·tol+1) / total_samples` is the
+   coincidence expected between two uniform-random trains and `CHANCE_MARGIN = 3`.
+   Duplicated capture across genuine fragments is still allowed. The chance test
+   was added after re-scoring the C2 v3 static arms: on the dense imec1 strip
+   3–6 high-rate background clusters clip > 5 % of a 6 Hz injected train by pure
+   luck, which without it flagged every clean donor as split. It replaces an
+   earlier `precision = TP / cluster_size > 5 %` clause, which would also have
+   suppressed a genuine but contaminated fragment (Codex review).
+5. **Merge burden** asks whether the chosen best cluster captures > 5 % of any
+   *other* injected truth train **and** by more than `CHANCE_MARGIN × E[TP]`.
+   Chance coincidence between the best cluster and a sparse injected train is
+   tiny, so an imbalanced real merge — a small train wholly swallowed by a large
+   best cluster — is still caught.
 
 Exclusivity is enforced only between one truth train and one cluster. It is not
 enforced across clusters; cross-cluster competition is resolved by step 3.

@@ -55,6 +55,7 @@ NOT_ENDPOINTS = (
 DEFAULT_TOL_MS = 0.5
 DEFAULT_BIN_S = 30.0
 CAPTURE_FRAC = 0.05          # §5: "> 5% of the injected train"
+CHANCE_MARGIN = 3.0          # a split/merge participant must beat chance coincidence by this factor
 ACCURACY_GATE = 0.8          # §5 headline
 EDGE_UM = 40.0               # §5 guardrail: "Edge-spike fraction (40 µm)"
 
@@ -176,10 +177,11 @@ def ground_truth_scores(
     Recovery is scored **per candidate output cluster**: each injected train is
     matched exclusively 1:1 against one cluster's spikes at a time, and the best
     cluster (by accuracy, then TP, then fewest FP) is the primary result. The
-    split diagnostic counts every cluster that both captures > 5% of the train
-    and is itself > 5% injected train (the precision clause rejects the
-    chance-coincidence floor from high-rate background); duplicated capture
-    across genuine fragments is still allowed. See docs/decisions/0014.
+    split diagnostic counts every cluster that captures > 5% of the train *and*
+    whose overlap beats chance coincidence by CHANCE_MARGIN — the chance test
+    rejects the dense-background floor without suppressing genuine (even
+    contaminated) fragments. The merge check uses the same chance gate. See
+    docs/decisions/0014.
     """
     tol = int(round(tol_ms / 1000.0 * fs))
     st = np.asarray(sort["st"], dtype=np.int64)
@@ -203,6 +205,16 @@ def ground_truth_scores(
     edges = np.arange(0.0, duration_s * fs + 1.0, bin_s * fs)
     if edges.size < 2:
         edges = np.array([0.0, duration_s * fs])
+    total_samples = max(
+        float(duration_s * fs),
+        float(st[-1] + 1) if st.size else 0.0,
+        *(float(v[-1] + 1) for v in truth.values() if v.size),
+    ) or 1.0
+    window = 2 * tol + 1
+
+    def _chance_tp(n_a: int, n_b: int) -> float:
+        """Expected coincidences within ±tol between two uniform-random trains."""
+        return n_a * n_b * window / total_samples
 
     def _candidate_clusters(tst: np.ndarray) -> list[int]:
         """Clusters with at least one spike within tol of this train."""
@@ -230,10 +242,8 @@ def ground_truth_scores(
                 "fn": fn_c,
                 "accuracy": tp_c / denom_c if denom_c else 0.0,
                 "capture": tp_c / n_truth if n_truth else 0.0,
-                # precision = fraction of the cluster that is the injected train.
-                # A real split fragment / duplicate is mostly injected spikes
-                # (~1.0); a high-rate background cluster clipping the train by
-                # chance is ~0.005 and must not count as a split participant.
+                # informative only: fraction of the cluster that is injected
+                # train (~1.0 for a real fragment, ~0.005 for a chance clip).
                 "precision": tp_c / ost.size if ost.size else 0.0,
                 "matched_truth_times": tst[ta],
                 "unmatched_out_times": unmatched_out,
@@ -255,19 +265,22 @@ def ground_truth_scores(
         else:
             best, tp, fp, fn, accuracy = None, 0, 0, n_truth, 0.0
 
-        # split burden: clusters that both capture > 5% of the train AND are
-        # themselves > 5% injected train. The precision clause rejects the
-        # chance-coincidence floor from high-rate background on a dense real
-        # recording (docs/decisions/0014). Duplicated capture across genuine
-        # fragments is still allowed.
+        # split burden: clusters that capture > 5% of the train AND whose TP
+        # beats chance coincidence by CHANCE_MARGIN. The chance test rejects the
+        # dense-background floor (a high-rate cluster clips >5% of a sparse train
+        # by luck) without suppressing a genuine, even contaminated, fragment
+        # whose overlap is many times chance (docs/decisions/0014).
         capturing = [
             o for o, v in per_cluster.items()
-            if v["capture"] > CAPTURE_FRAC and v["precision"] > CAPTURE_FRAC
+            if v["capture"] > CAPTURE_FRAC
+            and v["tp"] > CHANCE_MARGIN * _chance_tp(n_truth, trains[o].size)
         ]
         n_capturing = len(capturing)
 
-        # merge burden: does the best cluster also capture > 5% of another train,
-        # with that overlap a real fraction of the cluster (not chance)?
+        # merge burden: does the best cluster capture > 5% of another train, by
+        # more than chance? (Chance coincidence between the best cluster and a
+        # sparse injected train is tiny, so an imbalanced real merge — a small
+        # train wholly swallowed by a large cluster — is still caught.)
         merged_with = []
         if best is not None:
             b_train = trains[best]
@@ -277,7 +290,7 @@ def ground_truth_scores(
                 oa, _ = _exclusive_pairs(otst, b_train, tol)
                 if (
                     oa.size / otst.size > CAPTURE_FRAC
-                    and oa.size / max(b_train.size, 1) > CAPTURE_FRAC
+                    and oa.size > CHANCE_MARGIN * _chance_tp(otst.size, b_train.size)
                 ):
                     merged_with.append(otid)
         merge = len(merged_with) > 0
