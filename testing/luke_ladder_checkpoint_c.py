@@ -103,13 +103,22 @@ def run(only: list[str] | None = None) -> pd.DataFrame:
             prim = score["primary"]
             units = {u["truth_unit"]: u for u in prim["units"]}
             accs = [units.get(f"inj{i}", {}).get("accuracy", 0.0) for i in range(len(DONOR_PLAN))]
+            # `n_acc_ge_0.8_raw` is accuracy-only and merge-unfiltered: under the
+            # per-cluster scorer (decisions/0014) one merged output cluster can
+            # give >=0.8 to two truth trains, so it can over-count. The honest
+            # recovery count is `units_recovered` (merge- and split-aware).
+            recovered_flags = [
+                bool(units.get(f"inj{i}", {}).get("recovered", False))
+                for i in range(len(DONOR_PLAN))
+            ]
             rows.append({
                 "snippet": name,
                 "motion_regime": snip.manifest["axes"].get("motion_regime"),
                 "snr": snip.manifest["axes"].get("snr"),
                 "config": cfg.label,
                 "units_recovered": int(prim.get("headline_units_recovered", 0)),
-                "n_acc_ge_0.8": int(sum(a >= SANITY_ACC for a in accs)),
+                "n_donors_recovered": int(sum(recovered_flags)),
+                "n_acc_ge_0.8_raw": int(sum(a >= SANITY_ACC for a in accs)),
                 "median_accuracy": round(float(np.median(accs)), 3),
                 "n_truth": len(truth),
                 **{f"acc_{tid}": round(accs[i], 2) for i, (tid, _) in enumerate(DONOR_PLAN)},
@@ -126,9 +135,9 @@ def run(only: list[str] | None = None) -> pd.DataFrame:
     ).set_index("template_id")
     amps = {tid: float(man.loc[tid, "peak_uv"]) for tid, _ in DONOR_PLAN}
 
-    # accuracy-on-the-best-cluster is the robust readout; the split gate over-counts
-    # `n_output_units_capturing` in dense real background (the ±0.5 ms coincidence
-    # is non-exclusive), so `headline_units_recovered` is reported but not led with.
+    # `headline_units_recovered` (merge- and split-aware, per decisions/0014) is
+    # now the honest headline; per-donor best-cluster accuracy is kept as the
+    # continuous readout alongside it.
     acc_win = {}
     for s, sub in df.groupby("snippet"):
         r = sub[sub.config == "rescue"].iloc[0]
@@ -150,7 +159,8 @@ def run(only: list[str] | None = None) -> pd.DataFrame:
             "legacy_style": [s for s, w in acc_win.items() if sum(w.values()) < -0.1],
             "tied": [s for s, w in acc_win.items() if abs(sum(w.values())) <= 0.1],
         },
-        "headline_units_recovered_total_CAVEATED": df.groupby("config")["units_recovered"].sum().to_dict(),
+        "headline_units_recovered_total": df.groupby("config")["units_recovered"].sum().to_dict(),
+        "donors_recovered_total": df.groupby("config")["n_donors_recovered"].sum().to_dict(),
         "sanity_highest_snr_donor_static": {
             "donor": DONOR_PLAN[-1][0],
             "min_accuracy_by_config": {

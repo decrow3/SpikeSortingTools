@@ -62,13 +62,21 @@ EDGE_UM = 40.0               # §5 guardrail: "Edge-spike fraction (40 µm)"
 # --------------------------------------------------------------------------- #
 # coincidence
 # --------------------------------------------------------------------------- #
-def coincident_mask(a: np.ndarray, b: np.ndarray, tol: int) -> np.ndarray:
-    """Boolean mask over `a`: True where some `b` sample is within `tol`."""
+def coincident_mask(
+    a: np.ndarray, b: np.ndarray, tol: int, *, b_sorted: bool = False
+) -> np.ndarray:
+    """Boolean mask over `a`: True where some `b` sample is within `tol`.
+
+    Pass ``b_sorted=True`` to skip the internal sort when `b` is already
+    ascending (the hot path in `ground_truth_scores`, where `b` is a
+    normalised truth train).
+    """
     a = np.asarray(a, dtype=np.int64)
     b = np.asarray(b, dtype=np.int64)
     if a.size == 0 or b.size == 0:
         return np.zeros(a.shape, dtype=bool)
-    b = np.sort(b)
+    if not b_sorted:
+        b = np.sort(b)
     idx = np.searchsorted(b, a)
     left = b[np.clip(idx - 1, 0, b.size - 1)]
     right = b[np.clip(idx, 0, b.size - 1)]
@@ -113,7 +121,15 @@ def _exclusive_pairs(a: np.ndarray, b: np.ndarray, tol: int):
     return np.asarray(ai, dtype=np.int64), np.asarray(bi, dtype=np.int64)
 
 
-def _identity_continuity(truth_st, trains, matched_times_by_out, edges):
+def _identity_continuity(truth_st, per_cluster, edges):
+    """Per-bin owner and accuracy of an injected train over time.
+
+    `per_cluster[oid]` carries `matched_truth_times` and `unmatched_out_times`
+    from the single global exclusive match against that cluster. A bin's TP/FN
+    are counted on the **truth clock** (a matched pair belongs to the bin of its
+    truth event) and its FP on unmatched output spikes only — so a match that
+    straddles a bin edge can never make FP negative or accuracy exceed 1.
+    """
     labels: list[int | None] = []
     bin_acc: list[float] = []
     n_bins_scored = 0
@@ -123,8 +139,8 @@ def _identity_continuity(truth_st, trains, matched_times_by_out, edges):
             continue
         n_bins_scored += 1
         best, best_tp = None, 0
-        for oid in trains:
-            mt = np.asarray(matched_times_by_out.get(oid, []), dtype=np.int64)
+        for oid, v in per_cluster.items():
+            mt = v["matched_truth_times"]
             tp = int(((mt >= lo) & (mt < hi)).sum())
             if tp > best_tp:
                 best, best_tp = oid, tp
@@ -132,9 +148,9 @@ def _identity_continuity(truth_st, trains, matched_times_by_out, edges):
         if best is None:
             bin_acc.append(0.0)
             continue
-        o_seg = trains[best][(trains[best] >= lo) & (trains[best] < hi)]
+        um = per_cluster[best]["unmatched_out_times"]
+        fp = int(((um >= lo) & (um < hi)).sum())
         fn = seg.size - best_tp
-        fp = o_seg.size - best_tp
         denom = best_tp + fp + fn
         bin_acc.append(best_tp / denom if denom else 0.0)
     seq = [x for x in labels if x is not None]
@@ -166,10 +182,21 @@ def ground_truth_scores(
     docs/decisions/0014.
     """
     tol = int(round(tol_ms / 1000.0 * fs))
-    st, cl = np.asarray(sort["st"]), np.asarray(sort["cl"])
-    order = np.argsort(st, kind="stable")
-    st, cl = st[order], cl[order]
-    trains = {int(c): st[cl == c] for c in np.unique(cl)}  # each already sorted
+    st = np.asarray(sort["st"], dtype=np.int64)
+    cl = np.asarray(sort["cl"])
+    st_order = np.argsort(st, kind="stable")
+    st, cl = st[st_order], cl[st_order]
+    # Group into per-cluster, time-ordered trains in one pass: a stable argsort
+    # by cluster id keeps each cluster's spikes in their existing time order.
+    # (Avoids one full-length `cl == c` scan per cluster — ~700x on a big sort.)
+    cl_order = np.argsort(cl, kind="stable")
+    cl_grouped = cl[cl_order]
+    st_grouped = st[cl_order]
+    uniq, starts = np.unique(cl_grouped, return_index=True)
+    ends = np.append(starts[1:], cl_grouped.size)
+    trains = {
+        int(c): st_grouped[s:e] for c, s, e in zip(uniq, starts, ends)
+    }
     truth = {
         str(k): np.sort(np.asarray(v, dtype=np.int64)) for k, v in truth.items()
     }
@@ -181,7 +208,8 @@ def ground_truth_scores(
         """Clusters with at least one spike within tol of this train."""
         if st.size == 0 or tst.size == 0:
             return []
-        return [int(c) for c in np.unique(cl[coincident_mask(st, tst, tol)])]
+        near = coincident_mask(st, tst, tol, b_sorted=True)  # tst is normalised
+        return [int(c) for c in np.unique(cl[near])]
 
     units = []
     for tid, tst in truth.items():
@@ -190,11 +218,12 @@ def ground_truth_scores(
         per_cluster: dict[int, dict] = {}
         for oid in _candidate_clusters(tst):
             ost = trains[oid]
-            ta, _ = _exclusive_pairs(tst, ost, tol)
+            ta, tb = _exclusive_pairs(tst, ost, tol)
             tp_c = int(ta.size)
             fp_c = int(ost.size - tp_c)
             fn_c = n_truth - tp_c
             denom_c = tp_c + fp_c + fn_c
+            unmatched_out = np.delete(ost, tb) if tb.size else ost
             per_cluster[oid] = {
                 "tp": tp_c,
                 "fp": fp_c,
@@ -202,6 +231,7 @@ def ground_truth_scores(
                 "accuracy": tp_c / denom_c if denom_c else 0.0,
                 "capture": tp_c / n_truth if n_truth else 0.0,
                 "matched_truth_times": tst[ta],
+                "unmatched_out_times": unmatched_out,
             }
 
         if per_cluster:
@@ -236,12 +266,7 @@ def ground_truth_scores(
                     merged_with.append(otid)
         merge = len(merged_with) > 0
 
-        matched_times_by_out = {
-            o: v["matched_truth_times"] for o, v in per_cluster.items()
-        }
-        cont = _identity_continuity(
-            tst, {o: trains[o] for o in per_cluster}, matched_times_by_out, edges
-        )
+        cont = _identity_continuity(tst, per_cluster, edges)
         recovered = (
             accuracy >= ACCURACY_GATE and n_capturing <= 1 and not merge
         )

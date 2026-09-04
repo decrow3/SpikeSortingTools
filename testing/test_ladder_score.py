@@ -142,25 +142,54 @@ def test_ground_truth_two_trains_one_output_event_is_scored_as_a_merge():
 
 
 # --- decisions/0014 regression tests: per-cluster matching ------------------- #
+def _pooled_v2_best_accuracy(sort, truth_st, tol):
+    """The retracted v2 scoring: one global 1:1 match against the whole river,
+    then credit each pair to its cluster and read the best cluster's accuracy.
+    Kept here only to assert the counterfactual the v3 fix must beat."""
+    st = np.asarray(sort["st"], np.int64)
+    cl = np.asarray(sort["cl"], np.int64)
+    o = np.argsort(st, kind="stable")
+    st, cl = st[o], cl[o]
+    t = np.sort(np.asarray(truth_st, np.int64))
+    caught: dict[int, int] = {}
+    i = j = 0
+    while i < t.size and j < st.size:
+        d = int(st[j]) - int(t[i])
+        if d < -tol:
+            j += 1
+        elif d > tol:
+            i += 1
+        else:
+            caught[int(cl[j])] = caught.get(int(cl[j]), 0) + 1
+            i += 1
+            j += 1
+    best = max(caught, key=caught.get)
+    tp = caught[best]
+    fp = int((cl == best).sum()) - tp
+    fn = t.size - tp
+    return tp / (tp + fp + fn)
+
+
 def test_dense_background_does_not_steal_from_the_best_cluster():
-    # The C2 v3 pathology: with global exclusive matching against the pooled
-    # spike river, unrelated spikes near the injected times stole ~10% of
-    # matches, a constant ~0.78 accuracy floor regardless of donor. Per-cluster
-    # matching must be immune: a real recording's background lives in many
-    # low-rate clusters, none of which owns the injected train.
-    truth_st = np.arange(1_000, 300_000, 400)  # 748 spikes over 10 s
-    rng = np.random.default_rng(0)
+    # The C2 v3 pathology: global exclusive matching against the pooled spike
+    # river let a background spike *earlier* than a truth event grab that match,
+    # a constant ~0.78 accuracy floor. Here ~15% of truth events get a guaranteed
+    # steal partner two samples early, spread thin across 40 background clusters
+    # (each well under the 5% capture threshold). v3 per-cluster matching must
+    # score the exact-copy cluster at 1.0 anyway.
+    tol = int(round(0.5 / 1000.0 * FS))  # 15
+    truth_st = np.arange(1_000, 1_000 + 1_000 * 250, 250)  # 1000 spikes
+    steal_at = truth_st[::7] - 2  # ~143 events, within tol and earlier
     st = [truth_st]
     cl = [np.zeros(truth_st.size, dtype=np.int64)]
-    for k in range(1, 60):  # 59 background clusters, ~300 random spikes each
-        bg = np.sort(rng.integers(0, 300_000, 300))
-        st.append(bg)
-        cl.append(np.full(bg.size, k, dtype=np.int64))
-    st = np.concatenate(st)
+    for k, chunk in enumerate(np.array_split(steal_at, 40), start=1):
+        st.append(np.sort(chunk))
+        cl.append(np.full(chunk.size, k, dtype=np.int64))
+    st = np.concatenate(st).astype(np.int64)
     cl = np.concatenate(cl)
     sort = {
-        "st": st.astype(np.int64), "cl": cl,
-        "label": {c: ("good" if c == 0 else "mua") for c in range(60)}, "good": {0},
+        "st": st, "cl": cl,
+        "label": {c: ("good" if c == 0 else "mua") for c in range(41)}, "good": {0},
     }
     out = ground_truth_scores(sort, {"u1": truth_st}, FS, duration_s=10.0)
     u = out["units"][0]
@@ -169,6 +198,8 @@ def test_dense_background_does_not_steal_from_the_best_cluster():
     assert u["accuracy"] == 1.0
     assert u["n_output_units_capturing"] == 1  # no background cluster captures >5%
     assert u["recovered"] is True
+    # ... and confirm this fixture actually exercises the pathology
+    assert _pooled_v2_best_accuracy(sort, truth_st, tol) < 0.8
 
 
 def test_true_split_lowers_accuracy_and_is_flagged():
@@ -199,6 +230,43 @@ def test_duplicate_cluster_is_noticed_while_best_cluster_score_stays_sensible():
     assert u["best_output_unit"] == 0 and u["accuracy"] == 1.0  # clean best cluster
     assert u["n_output_units_capturing"] == 2 and u["split"] is True
     assert u["recovered"] is False  # the duplicate blocks a clean-recovery call
+
+
+def test_identity_continuity_match_across_a_bin_edge_never_exceeds_one():
+    # decisions/0014 review #3: a legitimate +/-tol match can straddle a 30 s
+    # bin boundary. TP/FN must be counted on the truth clock and FP only on
+    # unmatched output spikes, so per-bin accuracy stays in [0, 1].
+    bin_edge = int(30.0 * FS)
+    # a dense run of truth events right at the edge, output shifted +10 samples
+    truth_st = np.concatenate([
+        np.arange(bin_edge - 20 * 300, bin_edge, 300),        # bin 0
+        np.arange(bin_edge, bin_edge + 20 * 300, 300),        # bin 1
+    ])
+    st = truth_st + 10  # every match sits 10 samples late; edge pairs cross
+    cl = np.zeros(st.size, dtype=np.int64)
+    sort = {"st": st.astype(np.int64), "cl": cl, "label": {0: "good"}, "good": {0}}
+    out = ground_truth_scores(sort, {"u1": truth_st}, FS, duration_s=61.0)
+    u = out["units"][0]
+    assert u["fp"] == 0 and u["accuracy"] == 1.0
+    assert u["min_bin_accuracy"] <= 1.0
+    assert not np.isnan(u["min_bin_accuracy"])
+
+
+def test_ground_truth_normalises_unsorted_inputs():
+    # decisions/0014 review #1: _exclusive_pairs needs sorted inputs; the public
+    # entry point must normalise a shuffled sort and a shuffled truth train.
+    rng = np.random.default_rng(3)
+    truth_st = np.arange(1_000, 200_000, 400)
+    st = truth_st.copy()
+    cl = np.zeros(st.size, dtype=np.int64)
+    perm = rng.permutation(st.size)
+    sort = {"st": st[perm], "cl": cl[perm], "label": {0: "good"}, "good": {0}}
+    out = ground_truth_scores(
+        sort, {"u1": rng.permutation(truth_st)}, FS, duration_s=7.0
+    )
+    u = out["units"][0]
+    assert u["tp"] == truth_st.size and u["fp"] == 0 and u["fn"] == 0
+    assert u["accuracy"] == 1.0
 
 
 def test_symmetric_agreement_reports_both_sides_and_withholds_detection_claim(tmp_path):
