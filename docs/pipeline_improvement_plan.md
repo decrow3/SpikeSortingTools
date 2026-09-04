@@ -86,9 +86,12 @@
 > **9/9** is the recovery candidate (13/14 recovered, worst donor 0.891, 97
 > total FP). Production 12/9 recovered 11/14, with a 0.475 worst donor and 289
 > total FP. These are development candidates, not an authorized pipeline
-> change. Both advance to the exact staircase, then surviving candidates to
-> held-out static and matched real-data evaluation. Dense-donor modelling
-> remains background science and does not gate this path.
+> change. Both advance to the exact staircase while the deterministic D10/D14
+> failures are traced to their first divergent sorter stage. Before either is
+> trusted, one spatial/temporal context check must show that candidate ranking
+> survives a wider crop and a longer learning context. Surviving candidates
+> then advance to held-out static and matched real-data evaluation. Dense-donor
+> modelling remains background science and does not gate this path.
 
 **Status:** active, updated 2026-09-04
 **Supersedes as a work plan:** the follow-up lists in
@@ -106,12 +109,16 @@
 
 ## 1. The goal, as a testable claim
 
-> A candidate pipeline is **promotable** when, on data it has never been tuned
-> against, it recovers more known-identity neurons correctly than legacy does,
-> loses no well-supported neuron legacy found, and does not cost materially more
-> runtime.
+> A candidate pipeline is **operationally promotable** when, on data it has
+> never been tuned against, it recovers more known-identity neurons correctly
+> than legacy does, has only prespecified and bounded consequential regressions,
+> preserves its advantage across relevant sorting contexts and a second
+> session, and does not cost materially more runtime.
 
-Four clauses, each independently falsifiable. All four must hold. Yield is not
+Four clauses, each independently falsifiable. All four must hold. A complete
+mechanistic explanation is desirable but is **not** a fifth operational gate;
+mechanistic claims require their own evidence and may remain narrower than the
+adoption claim. Yield is not
 one of them — [`0010`](decisions/0010-rescue-yield-is-relabelling-not-detection.md)
 previously described a +32% KS-good headline as entirely relabelling; that
 empirical decomposition is now retracted by 0011.
@@ -141,6 +148,7 @@ N+1 until it passes tier N.
 |---|---|---|---|
 | **L0** | Unit + contract tests | **< 1 min** | Every commit; use the current test run, not a fixed historical count |
 | **L1** | One snippet, full pipeline, scored | **< 5 min** | Every parameter/code change |
+| **L1C** | One frozen spatial/temporal context-ranking check | **< 2 h** | Once for the surviving candidate pair, before trusting L2 rank |
 | **L2** | 8-snippet development panel | **< 45 min** | Every candidate configuration |
 | **L2L** | One full-duration narrow depth strip | **hours** | Only L2 winners — longitudinal identity only |
 | **L3** | 8-snippet held-out panel + second session | **< 4 h** | Only L2 winners |
@@ -176,6 +184,40 @@ is caught before anything expensive runs.
 
 This also relieves Checkpoint B: the short tiers no longer have to carry a
 phenomenon they are structurally incapable of measuring.
+
+### Context-rank checkpoint — before a cheap winner is trusted
+
+Cropping and duration change more than runtime: reference support, whitening,
+neighbouring-spike competition, the population available for template learning,
+and motion estimation all change. A candidate chosen on a narrow 120 s strip
+therefore needs one bounded **ranking-preservation** check before L2 promotion:
+this uses development data only and does not open the held-out panel.
+
+1. Sort the same representative interval as the usual narrow strip, a wider
+   strip with explicit margins, and full-probe context if affordable; score only
+   the shared central neurons/region.
+2. Sort one short interval alone and score the identical interval inside one
+   longer sort.
+3. Compare the rank of production 12/9, 8/8 and 9/9 on the primary score and
+   consequential guardrails. Exact cluster identity is not required; a change
+   in the preferred configuration is the failure condition.
+
+If ranking changes, the cheap tier is a screening assay only. Candidate
+selection moves to the smallest context that preserves the longer/wider rank;
+do not average incompatible contexts into a winner.
+
+### Artifact learning-context diagnostic
+
+Artifact-proximity scoring tests local damage, but a transient-rich interval
+may also contaminate covariance/whitening estimates or template learning and
+degrade otherwise clean periods. Run one bounded paired diagnostic: score the
+**same clean central interval** while the surrounding learning context either
+includes versus excludes the pathological interval. Hold the scored samples,
+channels and candidate settings fixed. If the clean-interval result changes,
+follow once with a controlled replay using preprocessing statistics learned
+from clean versus contaminated context, and locate the first divergence. This
+distinguishes local voltage corruption from a recording-wide learning effect;
+it is not permission for a broad artifact-preprocessing sweep.
 
 ### Caching contract
 
@@ -258,6 +300,40 @@ amplitude variation, overlapping spikes, both polarities (imec1 is ~59%
 positive-dominant — a negative-only detector is disqualifying), and artifact
 proximity.
 
+**Two denominators, never conflated.** For a motion-mechanism contrast, require
+the donor to be recovered in the relevant static arms: the question is what
+motion changes in a neuron both configurations can sort while stationary. For
+pipeline performance, freeze the neuronal cohort before scoring and retain
+every donor in the denominator, including donors a candidate fails statically.
+Candidate-specific static qualification would hide exactly the losses the
+pipeline comparison is meant to detect. Reports must label every table
+`mechanism-qualified` or `fixed-cohort`; neither may stand in for the other.
+
+**Donor scope.** The 14 compact imec0 KS-derived donors remain a valuable
+regression set, not a representative sample of all neurons Luke needs rescued.
+Before promotion, add a small, independently reviewed extension containing
+several imec1 waveform families and weaker-amplitude examples, including
+waveforms Kilosort does not reliably learn where a defensible waveform source
+exists. Freeze provenance, waveform review, amplitudes and inclusion before any
+candidate result is inspected. This is a bounded cohort extension, not the
+dense spatial donor project needed for fractional-motion mechanism work.
+
+### Condition-dependent missingness — scientific distortion endpoint
+
+Overall recall can conceal errors concentrated around bursts, collisions,
+stimulus onset, eye movements or movement-associated artifacts. On a small
+fixed injected cohort, use a prespecified rate-modulated truth train and score:
+
+- recovered modulation magnitude and timing;
+- recall stratified by firing-rate phase;
+- recall by collision timing and artifact proximity.
+
+On real data, ask whether matched pipeline disagreements concentrate around
+the same experimental events. Never select a pipeline because its tuning curves
+look more plausible; that would use the scientific answer as sorter ground
+truth. The endpoint is whether sorting error or disagreement acquires a
+systematic dependence on condition.
+
 ### Completeness — where the QC truncation estimator fits
 
 The amplitude-truncation estimator measures something **nothing else in this
@@ -298,7 +374,7 @@ complete: `+210 / -137`, with supported overlap for 208/210 and 132/137 and
 seven total unresolved cases. Report “no confirmed difference,” never
 equivalence; see decision 0015.
 
-### Guardrails (any breach blocks promotion)
+### Guardrails (prespecified consequential bounds)
 
 - Similar good–good pairs per good unit (similarity ≥ 0.8 within 100 µm)
 - Refractory violation distribution vs the matched-unit reference
@@ -314,8 +390,11 @@ equivalence; see decision 0015.
 
   Evaluated **by donor / waveform stratum as well as in aggregate**. A candidate
   must not buy a headline identity improvement by systematically degrading the
-  sharp, high-SNR stratum. Thresholds are **frozen from the D2b operator study
-  before L2/L3 promotion testing**, never selected from candidate yield.
+  sharp, high-SNR stratum. Waveform-preservation acceptance bounds are frozen
+  before L2/L3 promotion testing, never selected from candidate yield. Exact
+  peak-amplitude equality is not the scientific objective: a modest bounded
+  change may be acceptable when independently validated identity and recall
+  improve and no waveform class is selectively damaged.
 - **Runtime per unit data**, tracked at every tier — and measured during D2
   (estimation / interpolation / sorting / total), not deferred to Phase E
 
@@ -324,6 +403,14 @@ equivalence; see decision 0015.
 KS-good count. Total spikes. Stable-bin occupancy. Population medians of any
 per-unit metric across sorts with different unit populations
 ([`0009`](decisions/0009-cross-sort-comparisons-must-be-unit-matched.md)).
+
+Guardrails are not required to improve simultaneously. Before a promotion run,
+classify each as **hard** (a safety/identity failure that blocks immediately) or
+**bounded** (a small regression is tolerable within a frozen numerical margin).
+Promotion requires a reproducible net primary benefit with no hard breach and
+no bounded breach outside its margin. This prevents both destructive tradeoffs
+and the impossible rule that every diagnostic must move in the favourable
+direction.
 
 ## 6. Phases, checkpoints, go/no-go
 
@@ -806,6 +893,24 @@ pass may add only 8.5/8, 8.5/8.5 and 9/8.5. Those cells can describe whether a
 stable plateau exists between 8/8 and 9/9, but cannot confirm or nominate a
 pipeline setting without held-out evidence.
 
+**D10/D14 stage trace — immediate diagnostic, run alongside the staircase.**
+The threshold cliffs are more informative than a parameter ranking alone. For
+the same hashed injected recordings, compare each reproducible success/failure
+pair at four boundaries:
+
+1. universal-template detections and their waveform/amplitude composition;
+2. learned templates and when each first appears;
+3. learned-template assignments, residuals and event ownership;
+4. final clustering and merging.
+
+Use D10 12/9 versus 9/9 and D14 9/8 versus 10/8 as the minimum trace, retaining
+D14 12/7 as the high-FP secondary failure. Record the **first substantial
+divergence**, not every downstream difference caused by it. If that divergence
+supports a small stage-local fix, test the fix under the same candidate budget;
+do not automatically prefer a globally lower threshold. This diagnostic may
+explain or improve transfer, but it does not replace staircase or held-out
+pipeline scoring.
+
 **The priority order is a decision tree, not a fixed list** (revised
 2026-09-02). The earlier fixed ordering — curation first, motion last — rested
 on reading [`0010`](decisions/0010-rescue-yield-is-relabelling-not-detection.md)
@@ -921,7 +1026,7 @@ check, or matched real-data evaluation.
 | 6 | **Pre-sort field qualification** — independent support, reproducibility, error evidence | paused — fails closed; numeric envelope to be set by the reruns |
 | 7 | **D2c bounded policy comparison** — none / best full / one simple selective policy | not started |
 | 8 | **L2 → L2L → L3** — injected truth, longitudinal identity, waveform preservation, guardrails | not started |
-| 9 | **Heavyweight architecture gate** — alternative sorters open only if the two-option bakeoff retains a meaningful deficit | not started |
+| 9 | **Alternative-sorter diagnostic / heavyweight architecture gate** — one frozen diagnostic may run early; pipeline development opens only if the two-option bakeoff retains a meaningful deficit | diagnostic optional; development gate closed |
 
 Steps 2–4 come **before** the expensive full-session estimation in step 5. That
 ordering is the point: step 6 can reject a field on cheap evidence before it
@@ -1186,11 +1291,16 @@ and link identities through time only when waveform, trajectory, temporal
 complementarity and union-refractory evidence all pass frozen gates. This
 lightweight candidate is one of the two required options, not a fallback.
 
-The **heavyweight architecture gate** still controls escalation to DARTsort,
-KIASORT, TDC motion-aware template matching or another sorter. Open that gate
-only if the lightweight unwarped option or the best conventional
-motion-corrected KS4 candidate retains a meaningful, reproducible identity
-deficit on injected truth and L2L longitudinal continuity.
+The **heavyweight architecture gate** still controls developing DARTsort,
+KIASORT, TDC motion-aware template matching or another sorter as a new pipeline.
+One bounded comparison with one established alternative sorter is permitted
+earlier as a **diagnostic** on frozen D10/D14 and one representative context:
+does the same deficit survive a materially different implementation? Freeze
+the sorter, defaults, cells and endpoints in advance; do not tune it or turn
+the result into an open bakeoff. Full alternative-sorter development remains
+behind the gate and opens only if the lightweight unwarped option or the best
+conventional motion-corrected KS4 candidate retains a meaningful, reproducible
+identity deficit on injected truth and L2L longitudinal continuity.
 
 The unwarped option and any later architecture must be compared against both
 the **best conventional motion-corrected KS4 pipeline** and the shared
@@ -1229,11 +1339,18 @@ than by inspecting only one direction.
 Any motion handling is judged on **identity continuity at L2L**, never on unit
 counts, and requires a faithful deterministic static arm first.
 
-**Checkpoint D.** *Go:* at least one candidate beats legacy on the primary
-metric on the development panel, with all guardrails intact and runtime within
-budget.
+**Checkpoint D.** *Go:* at least one candidate beats legacy on the fixed-cohort
+primary metric on the development panel, preserves its rank in the bounded
+context check, has no hard guardrail breach or bounded breach outside its
+frozen margin, and remains within runtime budget. Mechanism-qualified analyses
+may explain the result but cannot substitute for the fixed-cohort score.
 
 ### Phase E — held-out, replication, promotion
+
+Before Phase E, freeze the fixed performance cohort and the separate
+mechanism-qualified cohort. The performance denominator includes every donor
+regardless of which candidate recovers it statically, including the bounded
+imec1/weak-waveform extension.
 
 1. Run the L2 winner through **L2L** — one full-duration narrow depth strip, for
    longitudinal identity continuity. A candidate that fragments over the full
@@ -1241,7 +1358,9 @@ budget.
 2. Run on the **held-out panel** (opened once).
 3. Run on a **second session** — the panel construction must be re-run there
    from scratch.
-4. Only then L4 full session.
+4. Check condition-dependent missingness on the prespecified modulated trains
+   and matched real-data event strata.
+5. Only then L4 full session.
 
 **On criterion 3 — revised 2026-09-02.** The original wording, "preserves ≥ 95%
 of legacy good units", quietly made *reproduce the old clustering* an objective.
@@ -1269,16 +1388,25 @@ criterion is a regression safeguard, not the definition of correctness.
 
 | # | Criterion |
 |---|---|
-| 1 | Ground truth: ≥ legacy on units-recovered-at-accuracy-0.8, on held-out **and** second session |
+| 1 | Fixed-cohort ground truth: ≥ legacy on units-recovered-at-accuracy-0.8, on held-out **and** second session; no candidate-specific qualification exclusions |
 | 2 | Strictly better on at least one of {high-motion, low-SNR} subsets |
 | 3 | Preserves ≥ 95% of **high-confidence legacy-supported neuron families**, *or* accounts for each apparent loss by a validated merge/split relationship |
-| 4 | All guardrails ≤ legacy — **including waveform preservation, by stratum**, against thresholds frozen at D2b |
+| 4 | No hard guardrail breach and no bounded guardrail regression beyond its prospectively frozen margin, including waveform preservation by stratum |
 | 5 | Runtime ≤ 1.25× legacy per unit data |
 | 6 | Held-out and second-session results consistent in direction |
+| 7 | Candidate ranking does not reverse in the prespecified wider/longer context check |
+| 8 | No material condition-dependent recovery distortion relative to legacy on the prespecified injected/event strata |
 
 Failure at any point returns to Phase D. It does **not** justify a full-session
 run to "check anyway" — that is exactly the days-long failure mode being
 eliminated.
+
+Passing these criteria licenses an **operational** claim: the pipeline improves
+validated recovery with bounded costs in the tested domain. A causal statement
+about *why* it improves—threshold learning, whitening context, motion
+correction, or identity tracking—requires the corresponding stage trace or
+intervention and must be stated at that evidence's narrower scope. Operational
+adoption need not wait for the dense-donor motion mechanism to be complete.
 
 ## 7. Stop doing
 
@@ -1311,9 +1439,11 @@ eliminated.
 | Risk | Mitigation |
 |---|---|
 | **Overfitting to the panel** | Held-out half opened once; second-session replication required; candidate count logged |
-| **Snippets unrepresentative of full session** | Checkpoint B explicitly tests reproduction of a known full-session result |
-| **Injected truth unrealistic** | Use the 14 compact de-whitened-template donors scaled to bandpass-STA µV, both polarities; qualify every static arm under both pipelines with the corrected scorer; add a second background before promotion |
+| **Snippets change candidate ranking** | Score the shared central region across narrow/wide/full context and the same short interval alone/inside a longer sort; escalate selection context if rank reverses |
+| **Injected benchmark omits Luke's failures** | Keep the 14 compact imec0 donors as regression tests; add a small frozen, independently reviewed imec1/weak-waveform extension; use a fixed performance denominator distinct from mechanism qualification |
+| **Artifacts poison learning outside their local window** | Score one clean interval with versus without pathological surrounding context; if it changes, replay clean- versus contaminated-context preprocessing statistics once |
 | **Ground truth ≠ biological truth** | Hybrid GT scores detection/assignment, not biology. Pair with the real-data symmetric audit; never let GT alone promote |
+| **Benchmark improves while task-relevant spikes worsen** | Measure rate-modulation recovery and stratify recall/disagreement by collisions, artifacts and experimental events without selecting on plausible tuning |
 | **Panel becomes stale** | Version and hash it; a panel change invalidates all cached scores by construction |
 | **Speed encourages more variants than the statistics support** | Pre-register candidate count per checkpoint; treat late candidates as selection artifacts |
 
@@ -1355,8 +1485,9 @@ eliminated.
 
 5. **C2 v4 — paired static-vs-moving injected identity challenge.** All 14
    compact donors, geometry-aware forward motion, exclusive truth scoring,
-   content-bound caches; a donor enters the primary drift comparison only if its
-   static arm reaches accuracy ≥ 0.8 under both `RESCUE` and `LEGACY_STYLE`.
+   content-bound caches; a donor enters a mechanism-qualified drift contrast
+   only if its static arm reaches accuracy ≥ 0.8 under both configurations in
+   that contrast. Pipeline-performance comparisons retain the fixed cohort.
    V4 used a new frozen prespec/output namespace because v3 is an immutable void
    run with stale trajectories. The 392-cell run is complete
    ([result](luke_20250804_c2_v4_result.md)).
@@ -1389,6 +1520,12 @@ eliminated.
   paired static/exact-staircase arms; send survivors to held-out static and
   matched real data. Fractional refinement is optional and capped by the
   preregistered three-cell interpolation above.
+- **Stage/context diagnostics** — trace the first D10/D14 divergence while the
+  staircase runs, then require one narrow/wide and short/long ranking check
+  before trusting the cheap benchmark's preferred configuration.
+- **Bounded donor extension** — freeze a few independently reviewed imec1
+  waveform families and weaker examples for fixed-denominator confirmation;
+  do not replace the 14-donor regression cohort.
 - **D2b** (field-error tolerance, interpolation tradeoff) — `d2b1` fails closed
   until the compact donor can be translated at fractional offsets without
   being dimmed in place; this is background motion-method research.
@@ -1396,10 +1533,12 @@ eliminated.
   (`ladder_motion_estimate.py`), not run. Field estimation can proceed, but
   the causal injected-donor benefit at Luke scale cannot be quantified before
   the dense-donor control.
-- **Heavyweight architecture gate** (alternative sorters) — opens only if the
-  threshold branch and two-option bakeoff leave a meaningful deficit after
-  L2/L2L and matched real-data evaluation. D2 supplies Option A's supporting
-  motion-method evidence; it is not a blanket prerequisite for trying Option B.
+- **Alternative-sorter diagnostic / heavyweight gate** — one frozen,
+  no-tuning alternative-sorter comparison may run early on D10/D14 and one
+  context to localise implementation dependence. Developing an alternative
+  sorter as a pipeline opens only if the threshold branch and two-option
+  bakeoff leave a meaningful deficit after L2/L2L and matched real-data
+  evaluation. D2 supports Option A; it is not a blanket prerequisite for B.
 
 ### The defensible claim now
 
@@ -1412,9 +1551,11 @@ eliminated.
 > rescue pipeline beats legacy. The completed threshold sweep shows that 12/9
 > causes a reproducible static failure and nominates 8/8 and 9/9 as distinct
 > robustness/recovery candidates; it does not authorize either setting. The
-> fastest active route is their exact-staircase comparison, held-out static
-> confirmation, and matched real-data evaluation. Dense-donor modelling
-> remains a parallel scientific task.**
+> fastest active route is their exact-staircase comparison plus D10/D14 stage
+> tracing, followed by one context-rank check, fixed-cohort held-out static
+> confirmation (including bounded imec1/weak examples), and matched real-data
+> evaluation. Operational improvement can be established before its complete
+> mechanism; dense-donor modelling remains a parallel scientific task.**
 
 ### Historical (retracted 2026-09-03 — not active work)
 
