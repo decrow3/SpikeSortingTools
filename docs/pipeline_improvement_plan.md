@@ -75,14 +75,20 @@
 > real-data confirmation. Detailed build instructions:
 > [`luke_two_motion_pipeline_build_instructions.md`](luke_two_motion_pipeline_build_instructions.md).
 
-> **CURRENT FAST ITERATION — 2026-09-04.** The static detection-threshold sweep
-> is running across the 14 compact donors. It holds correction off and varies
-> `Th_universal` × `Th_learned`, including the previously missing legacy
-> thresholds `9/8` without correction. This is development evidence motivated
-> by D10, not confirmation. A winner advances first to the exact staircase and
-> then to matched real-data evaluation. Dense-donor modelling continues only as
-> a background route to the unresolved Luke-scale motion question; it does not
-> gate this faster pipeline path.
+> **CURRENT FAST ITERATION — 2026-09-04.** The 154-cell static
+> detection-threshold sweep is complete across the 14 compact donors, with
+> correction off everywhere. It establishes that D10's 12/9 failure is a
+> threshold effect: 9/8 changes accuracy from 0.475 to 0.976 and FP from 275 to
+> 6. But 9/8 breaks D14 (accuracy 0.744; 229 FP), so it is not a replacement.
+> The response surface has deterministic cliffs: 15 independent re-sorts of
+> three collapse cells and two controls were bit-identical. **8/8** is the
+> robustness candidate (12/14 recovered, no donor below 0.976, 12 total FP);
+> **9/9** is the recovery candidate (13/14 recovered, worst donor 0.891, 97
+> total FP). Production 12/9 recovered 11/14, with a 0.475 worst donor and 289
+> total FP. These are development candidates, not an authorized pipeline
+> change. Both advance to the exact staircase, then surviving candidates to
+> held-out static and matched real-data evaluation. Dense-donor modelling
+> remains background science and does not gate this path.
 
 **Status:** active, updated 2026-09-04
 **Supersedes as a work plan:** the follow-up lists in
@@ -687,13 +693,13 @@ pending rerun:**
    up false positives on the oscillation (FP 874 vs 473). Turning `nblocks` back
    on is **not the fix.**
 
-**Current consequence — not a conclusion from the historical table:** two C2
-v4 stationary/moving exceptions make detection/template-learning thresholds the
-fastest clean lever to test. The active static threshold sweep changes only
-`Th_universal` and `Th_learned`, with correction off. The exact staircase is a
-validated development testbed for any surviving threshold or identity-tracking
-candidate. Unqualified family stitching remains unsupported by A2's real-data
-refractory results.
+**Current consequence — not a conclusion from the historical table:** the
+completed static sweep confirms that detection/template-learning thresholds
+are a real lever and that production 12/9 lies beside a poor region of the
+response surface. It does not identify one universally superior setting: 8/8
+maximises robustness while 9/9 maximises recovered donors. The exact staircase
+is the next development testbed for both. Unqualified family stitching remains
+unsupported by A2's real-data refractory results.
 
 V4 supplies both polarities and the full compact real-donor amplitude range.
 The staircase truncation-vs-truth diagnostic is now complete
@@ -763,14 +769,42 @@ L2, held-out data or full-session yield before its rule is frozen.
 The uncorrected rescue pipeline remains the comparator in every experiment; it
 does not consume a development-option slot.
 
-**Immediate cheap branch — threshold sweep (running 2026-09-04).** Before
-spending more time on motion simulation, test whether rescue's frozen 12/9
-thresholds cost injected-neuron recovery. The static 14-donor grid holds
-correction off, varies the two thresholds independently, and reports FP/FN,
-splits and guardrails alongside accuracy. Because D10 motivated the sweep, this
-cohort selects a candidate but cannot confirm it. Advance at most the best one
-or two settings to the exact staircase, then to the normal L1/L2 and matched
-real-data sequence. Do not choose a setting from KS-good yield alone.
+**Immediate cheap branch — threshold sweep complete; staircase next
+(2026-09-04).** The static 14-donor grid held correction off and varied only
+`Th_universal` and `Th_learned`. D10's 12/9 failure reproduced exactly and is
+removed by lower `Th_universal`, proving that this specific failure is caused
+by thresholds rather than motion correction. The grid also exposed genuine,
+deterministic cliffs rather than a smooth monotone optimum: D14 fails at 9/8
+between much better neighbouring cells. Three repeats each of D10 12/9, D10
+9/9, D14 9/8, D14 12/7 and D14 10/8 produced bit-identical spike times,
+clusters, amplitudes and scores.
+
+Carry exactly two integer candidates forward:
+
+- **8/8 — robustness candidate:** 12/14 recovered, median accuracy 0.987,
+  12 total FP, and no donor below 0.976.
+- **9/9 — recovery candidate:** 13/14 recovered, median accuracy 0.994,
+  97 total FP, and one donor below 0.9 (worst 0.891).
+
+Production 12/9 recovered 11/14, with median accuracy 0.992, 289 total FP and a
+0.475 worst donor. This establishes that 12/9 is brittle on the development
+cohort, but does **not** license changing production: D10 motivated the
+experiment and the same 14 donors selected the candidates. Test 8/8 and 9/9
+against 12/9 on paired static/exact-staircase arms, using the common admitted
+truth and selecting on drift penalty plus FP/FN, splits, label switches and
+truncation. Drop a candidate for a material fragmentation or contamination
+regression. Confirm every survivor on a different static background/donor set,
+then use the normal L1/L2 and matched-real-data sequence. Do not choose from
+KS-good yield alone.
+
+**Fractional thresholds are allowed, but refinement is bounded.** KS4 declares
+both thresholds as floating-point values and compares continuous template
+scores directly; the integer grid was an experimental choice, not an algorithm
+constraint. Do not open a broad fractional search on these 14 donors. If the
+staircase leaves a genuine decision unresolved, one preregistered interpolation
+pass may add only 8.5/8, 8.5/8.5 and 9/8.5. Those cells can describe whether a
+stable plateau exists between 8/8 and 9/9, but cannot confirm or nominate a
+pipeline setting without held-out evidence.
 
 **The priority order is a decision tree, not a fixed list** (revised
 2026-09-02). The earlier fixed ordering — curation first, motion last — rested
@@ -1350,9 +1384,11 @@ eliminated.
 - **Option B unwarped motion-aware identity** — build/identity-preservation
   smoke tests may run now and may use the exact staircase mechanism; promotion
   still requires the same frozen panels and matched real-data checks.
-- **Detection-threshold branch** — the static 14-donor grid is running. Select
-  at most one or two candidates by injected-truth accuracy plus FP/FN and
-  guardrails; test them on the exact staircase before real data.
+- **Detection-threshold branch** — the 154-cell static grid and 15-sort
+  determinism check are complete. Test provisional 8/8 and 9/9 against 12/9 on
+  paired static/exact-staircase arms; send survivors to held-out static and
+  matched real data. Fractional refinement is optional and capped by the
+  preregistered three-cell interpolation above.
 - **D2b** (field-error tolerance, interpolation tradeoff) — `d2b1` fails closed
   until the compact donor can be translated at fractional offsets without
   being dimmed in place; this is background motion-method research.
@@ -1373,9 +1409,12 @@ eliminated.
 > fragment identity and that rigid correction can repair it, but it does not
 > establish a Luke-scale effect because the fractional-offset donor model dims
 > rather than translates compact footprints. No current result shows that the
-> rescue pipeline beats legacy. The fastest active route is the controlled
-> threshold sweep, followed by the exact staircase and matched real-data
-> confirmation; dense-donor modelling remains a parallel scientific task.**
+> rescue pipeline beats legacy. The completed threshold sweep shows that 12/9
+> causes a reproducible static failure and nominates 8/8 and 9/9 as distinct
+> robustness/recovery candidates; it does not authorize either setting. The
+> fastest active route is their exact-staircase comparison, held-out static
+> confirmation, and matched real-data evaluation. Dense-donor modelling
+> remains a parallel scientific task.**
 
 ### Historical (retracted 2026-09-03 — not active work)
 
