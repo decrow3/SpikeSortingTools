@@ -41,13 +41,18 @@ cleared the 0.8 static-qualification gate.
    `TP`, `FP`, `FN`, `accuracy = TP / (TP + FP + FN)`.
 3. The **best cluster** is chosen by accuracy, then by greater `TP`, then by
    fewer `FP`. Its score is the primary recovery metric.
-4. **Split burden** counts every cluster whose independent `TP / N_truth`
-   exceeds 5 %. Duplicated capture across clusters is *allowed and expected*
-   here — an injected event landing in two clusters is precisely the over-split
-   / duplicate signal this diagnostic exists to detect.
+4. **Split burden** counts every cluster that satisfies **both**
+   `capture = TP / N_truth > 5 %` **and** `precision = TP / cluster_size > 5 %`.
+   Duplicated capture across clusters is *allowed and expected* — an injected
+   event landing in two genuine fragments is the over-split / duplicate signal
+   this diagnostic exists to detect. The precision clause was added after
+   re-scoring the C2 v3 static arms: on the dense imec1 strip, 3–6 high-rate
+   background clusters clip > 5 % of a 6 Hz injected train by pure chance
+   (precision ~0.5 %), which without it flagged every clean donor as split.
 5. **Merge burden** asks whether the chosen best cluster also captures > 5 % of
-   any *other* injected truth train (exclusive match, best cluster's spikes vs
-   the other train).
+   any *other* injected truth train, with that overlap also > 5 % of the best
+   cluster (the same both-directions gate, so a large best cluster is not
+   spuriously "merged" by chance coincidence with a second train).
 
 Exclusivity is enforced only between one truth train and one cluster. It is not
 enforced across clusters; cross-cluster competition is resolved by step 3.
@@ -61,17 +66,25 @@ recovery), which is the more useful statement.
 
 ## Guardrail
 
-Three regression tests in `testing/test_ladder_score.py` must pass before any
+These regression tests in `testing/test_ladder_score.py` must pass before any
 injected-truth run:
 
-- `test_dense_background_does_not_steal_from_the_best_cluster` — many low-rate
-  background clusters near the injected times leave the best cluster's TP/FN and
-  accuracy untouched.
+- `test_dense_background_does_not_steal_from_the_best_cluster` — guaranteed
+  early steal partners across 40 sub-threshold background clusters leave the
+  best cluster's TP/FN and accuracy untouched; a v2-style pooled matcher on the
+  same fixture would score < 0.8.
+- `test_split_diagnostic_ignores_chance_coincidence_from_high_rate_background` —
+  7 background clusters at ~67 Hz clip > 5 % of the train by chance; the
+  precision clause flags only the real recovery, `n_capturing == 1`.
 - `test_true_split_lowers_accuracy_and_is_flagged` — one train across two
   clusters drops primary accuracy and sets split count > 1.
 - `test_duplicate_cluster_is_noticed_while_best_cluster_score_stays_sensible` —
   a partial copy of the train in a second cluster is caught by the split
   diagnostic while the clean best cluster still scores accuracy 1.0.
+- `test_identity_continuity_match_across_a_bin_edge_never_exceeds_one` — a
+  match straddling a 30 s bin boundary keeps per-bin accuracy in [0, 1].
+- `test_ground_truth_normalises_unsorted_inputs` — a shuffled sort and truth
+  train are normalised before matching.
 
 ## Consequence
 

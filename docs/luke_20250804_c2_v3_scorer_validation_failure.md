@@ -54,14 +54,28 @@ Full write-up and the fix: [decision 0014](decisions/0014-injected-truth-scoring
 `ground_truth_scores` now scores each candidate cluster independently
 (exclusive match against that cluster's spikes only) and picks the best.
 
-## What happens next (not yet done)
+## What happens next
 
-1. ✅ `ground_truth_scores` fixed, `SCORE_SCHEMA` → v3, three regression tests.
-2. **Re-score the 14 static arms only**, both configs, and confirm the ~0.78
-   floor is gone and recovery is sensible across 73–295 µV before spending
-   compute on moving arms.
-3. Freeze a new **C2 v4** prespec/output namespace with the Luke-calibrated rigid family
-   (~4–5 / 10–12 / 20–25 µm) per
+1. ✅ `ground_truth_scores` fixed (`SCORE_SCHEMA` → v3), Codex-reviewed
+   (commits `dc27ebd`, `c69886a`), then a **second** chance-coincidence bug in
+   the split diagnostic was fixed with a precision clause (`b6b47ff`,
+   [decision 0014](decisions/0014-injected-truth-scoring-is-per-cluster.md)
+   point 4). Under Codex review.
+2. ✅ **Static arms re-scored** with the v3 scorer against the cached C2 v3
+   sorts (no re-sort). **The ~0.78 floor is gone:**
+
+   | | v2 (void) | v3 |
+   |---|---|---|
+   | static accuracy | all 14 at 0.74–0.79 | 12/14 at **0.97–0.99** under both configs |
+   | FP / FN per donor | ~85 / ~87 constant | ~0 / ~6 |
+   | clear the 0.8 gate | 0/14 | **12/14** |
+   | recover under both configs | 0/14 | **10/14** |
+
+   Two genuine single-config failures remain (not scorer artefacts): D01 under
+   `LEGACY_STYLE` (0.57 — `nblocks=1` misses 43 % of the donor) and D10 under
+   `RESCUE` (0.48, 275 FP — rescue fragments this 95 µV positive donor).
+3. Freeze a new **C2 v4** prespec/output namespace with the Luke-calibrated
+   rigid family (~4–5 / 10–12 / 20–25 µm) per
    [decision 0013](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md);
    the `15 / 40 / osc-20` set is stale.
 4. Run the C2 v4 moving arms and compute the drift penalty.
