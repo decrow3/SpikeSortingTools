@@ -22,15 +22,17 @@
 > **V2 RERUN COMPLETE — 2026-09-03.** Phase A (both audits) and Phase A2 have
 > been re-run with exclusive one-to-one matching and a depth-windowed,
 > circular-shift-null detection gate. Results:
-> - **Phase A holds and is firmer.** Cohort is now +210 / −137. **0 legacy-good
->   units absent at detection, 0 removed by curation.** No supported new
->   detection in the +210. The yield gain is relabelling/re-clustering.
-> - **Phase A2's load-bearing finding is reversed.** Not-over-splitting survives
->   (0.0% coexisting fragments, both probes), but when refractory violations are
+> - **Phase A gives a bounded negative result.** Cohort is now +210 / −137.
+>   The audit supports cross-sort detection overlap for 208/210 rescue-side and
+>   132/137 legacy-side units; two and five remain unresolved. No new or lost
+>   detection is confirmed, but equivalence and superiority are not established.
+> - **Phase A2's load-bearing finding is reversed.** The prespecified
+>   coexisting-fragment signature is absent (0.0% both probes), but this does not
+>   rule out every form of over-splitting. When refractory violations are
 >   measured on the actual fragment-cluster union only **6–13%** of merges are
 >   clean (was 92–95% on the anchor). The "fragments are one clean neuron /
->   stitching would recover them" reading is withdrawn — and this now agrees
->   with the Candidate 1 full-session stitching failure.
+>   stitching would recover them" reading is withdrawn. About 90% of families
+>   remain mechanistically ambiguous.
 >
 > The C2 drift challenge and the D2b chain remain retracted pending the
 > geometry-aware rerun. No claim that the new pipeline beats legacy is
@@ -38,18 +40,30 @@
 
 > **C2 DONOR DECISION — 2026-09-03.** Geometry-correct C2 v2 is retired without
 > rerun because it still froze the discredited T01/T04/T06 plateau donors. Per
-> [decision 0012](decisions/0012-c2-uses-compact-donor-cohort.md), C2 v3 uses all
-> 14 hash-frozen D2b-2 compact donors, both polarities and amplitude strata. A
+> [decision 0012](decisions/0012-c2-uses-compact-donor-cohort.md), C2 v3 first
+> introduced all 14 hash-frozen D2b-2 compact donors; C2 v4 retains them. A
 > donor enters the primary drift comparison only when its static arm reaches
 > accuracy >= 0.8 under both rescue and `legacy_style`.
 
-**Status:** proposed 2026-09-02
+> **CURRENT C2 STATUS — 2026-09-03.** The first C2 v3 run is void as a drift
+> result because its pooled-spike scorer let background clusters steal truth
+> events. Decision 0014 fixes scoring per candidate cluster. Because the v3
+> prespec/output namespace is frozen and contains the old trajectories, the next
+> experiment is **C2 v4**: first validate all 14 static arms with the corrected
+> scorer, then run a newly frozen Luke-calibrated rigid family (~4–5, 10–12,
+> 20–25 µm). This is not gated by the abandoned Luke/Yates overlap match.
+
+**Status:** active, updated 2026-09-03
 **Supersedes as a work plan:** the follow-up lists in
 [`decisions/0008`](decisions/0008-amplitude-completeness-gates-promotion.md) and
 [`decisions/0010`](decisions/0010-rescue-yield-is-relabelling-not-detection.md)
 **Related:** [`0006`](decisions/0006-recovery-axis-is-post-sort-mua-reconciliation.md),
 [`0007`](decisions/0007-stage-local-validation.md),
-[`0009`](decisions/0009-cross-sort-comparisons-must-be-unit-matched.md)
+[`0009`](decisions/0009-cross-sort-comparisons-must-be-unit-matched.md),
+[`0011`](decisions/0011-cross-sort-event-matching-and-detection-evidence.md),
+[`0013`](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md),
+[`0014`](decisions/0014-injected-truth-scoring-is-per-cluster.md), and
+[`0015`](decisions/0015-corrected-cross-sort-audits-do-not-establish-equivalence.md)
 
 ## 1. The goal, as a testable claim
 
@@ -86,7 +100,7 @@ N+1 until it passes tier N.
 
 | Tier | Scope | Target wall clock | Runs when |
 |---|---|---|---|
-| **L0** | Unit + contract tests | **< 1 min** | Every commit (exists: 385 tests, ~20 s) |
+| **L0** | Unit + contract tests | **< 1 min** | Every commit; use the current test run, not a fixed historical count |
 | **L1** | One snippet, full pipeline, scored | **< 5 min** | Every parameter/code change |
 | **L2** | 8-snippet development panel | **< 45 min** | Every candidate configuration |
 | **L2L** | One full-duration narrow depth strip | **hours** | Only L2 winners — longitudinal identity only |
@@ -179,12 +193,11 @@ Each snippet is a **time window × depth strip**, not a time window alone.
 ### Primary — hybrid ground truth (the decisive layer)
 
 Inject known spike trains with known waveforms into real Luke background, then
-score the sort against truth. **This is ~70% built already**:
-`testing/luke_injected_ground_truth_benchmark.py` holds the sealed manifest and
-the injection/scoring primitives, validated on synthetic arrays; the pilot
-traces injected deltas through conditioning. Neither has ever been connected to
-a sorter. Connecting them is the single highest-leverage piece of work in this
-plan.
+score the sort against truth. The injection, geometry-aware motion operator,
+sorter connection, content-bound caching, and per-cluster exclusive scorer are
+built. Their first end-to-end C2 runs exposed operator, donor, cache, and scorer
+faults; no drift result has yet survived all controls. C2 v4 is the first
+planned run that combines the corrected components.
 
 Per injected unit:
 
@@ -239,7 +252,9 @@ Automated from `testing/luke_rescue_unique_units_audit.py`: gained and **lost**
 good units, reported as `+N / −M`, never as a net. The implementation now
 uses exclusive event identities; detection classifications additionally require
 spatial agreement and excess above a time-shift null. Corrected v2 output is
-pending, so the old 127 count is not an active result.
+complete: `+210 / -137`, with supported overlap for 208/210 and 132/137 and
+seven total unresolved cases. Report “no confirmed difference,” never
+equivalence; see decision 0015.
 
 ### Guardrails (any breach blocks promotion)
 
@@ -277,11 +292,12 @@ Runs on existing outputs; can proceed in parallel with Phase B.
 **V2 result:** [`luke_20250804_rescue_unique_units_audit.md`](luke_20250804_rescue_unique_units_audit.md)
 + [`luke_20250804_rescue_lost_units_audit.md`](luke_20250804_rescue_lost_units_audit.md).
 Exclusive one-to-one matching, depth-windowed coincidence gated against
-circular-shift nulls. Cohort **+210 / −137** (net +73 unchanged). **0
-legacy-good units absent at detection, 0 removed by curation** (5 of the 137 are
-`detection status unresolved` — 11 µV, 3.6 Hz, 40% RV, marginal everywhere). No
-supported new detection in the +210 (2 unresolved, neither clears the null bar).
-Checkpoint A's regression trigger did not fire.
+circular-shift nulls. Cohort **+210 / −137** (net +73 unchanged). The audit
+supports overlap for 208/210 rescue-side units and 132/137 legacy-side units;
+two and five respectively are `detection status unresolved`. No new or lost
+detection is confirmed, but the unresolved cases cannot be counted as shared
+and the result does not establish equivalence. Checkpoint A's substantial
+confirmed-regression trigger did not fire.
 
 **Historical v1 result — retracted by 0011:** classified 127; same qualitative
 conclusion (0 lost at detection) but via a non-exclusive matcher and a
@@ -293,8 +309,9 @@ is a stage-*localization* claim smuggled in as a *cause* claim, and it is
 exactly the error [`0007`](decisions/0007-stage-local-validation.md) exists to
 prevent. The correct statement:
 
-> The observable discrepancy occurs at assignment/clustering rather than gross
-> detection. **This does not localize its cause.** Different preprocessing or
+> For the 340 null-supported cases, the observable discrepancy occurs at
+> assignment/clustering rather than confirmed gross detection. **This does not
+> resolve the seven other cases or localize the cause.** Different preprocessing or
 > motion representations can preserve the same event pool while changing how a
 > moving neuron is partitioned into identities.
 
@@ -340,9 +357,10 @@ imec0 as stationary. A2 continues to run on imec1 as well.
 2. Apply the same waveform/refractory/amplitude evidence used for the gains.
 
 **Checkpoint A.** *Go:* a symmetric `+N / −M` table with both sides classified.
-*Decision:* if a substantial share of the losses are genuine neurons lost at
-detection or curation, that is a regression the yield narrative hid. **Met
-2026-09-03 (v2): 0 / 137 lost at detection, 0 removed by curation.**
+*Decision:* if a substantial share of the losses are confirmed genuine neurons
+lost at detection or curation, that is a regression the yield narrative hid.
+**Met in the bounded sense 2026-09-03 (v2): no substantial confirmed loss;
+132/137 overlap-supported and 5 unresolved.**
 
 ### Phase A2 — is the repartitioning motion-structured? (no new sort)  ✅ v2 rerun complete 2026-09-03
 
@@ -364,8 +382,9 @@ plausible fragments, refractory violations on the **fragment-cluster union**:
 | ownership flips per hour | 18 | 21 | 18 / 22 |
 | classed `ambiguous` | 92/96 | 41/46 | — |
 
-**Reading (the mix, not a verdict):** the re-partitioning is **not
-over-splitting** (fragments never coexist — this survives v1). But the fragments
+**Reading (the mix, not a verdict):** the prespecified **coexisting-fragment
+signature was not observed**. That does not exclude every form of
+over-splitting. The fragments
 are **not demonstrably one clean neuron** — unioning the fragment clusters'
 trains is refractory-clean in only 6–13% of families. It is **not tracked by the
 rigid motion estimate** and **not slow** — rapid template-ownership flicker
@@ -377,8 +396,8 @@ voltage*. **The corrected C2 would separate them.**
 **Prespecify before looking**, or this becomes story-fitting: freeze the sample
 of legacy↔rescue families and the decision rule first, then run once.
 
-1. Sample the strongly **dispersed** legacy↔rescue families — the 100
-   re-clustered losses and the 85 dispersed gains — stratified by depth and by
+1. Sample the strongly **dispersed** legacy↔rescue families — using the v2
+   cohorts rather than the historical 100-loss/85-gain counts — stratified by depth and by
    estimated motion in the window. Run on **imec0 and imec1**.
 2. For each family, ask whether the rescue fragments are **temporally
    complementary** and whether ownership switches as estimated tissue position
@@ -400,16 +419,16 @@ Both patterns can be present; report the mix, not a verdict.
 are one clean neuron → post-sort family stitching would recover them" — was the
 load-bearing input to the first Phase D target. **V2 retracts it:** the
 fragment-cluster unions are refractory-clean in only 6–13% of families.
-Not-over-splitting still holds (0.0% coexisting), so "fix clustering/curation
-first" is still **not** indicated — but neither is "stitch first". The v2 mix is
-mostly `ambiguous`.
+The coexisting-fragment signature remains absent (0.0%), so that specific
+ordinary-over-peeling branch is not indicated — but broader over-splitting is
+not excluded, and neither is “stitch first” supported. The v2 mix is mostly
+`ambiguous`.
 
-*Superseded 2026-09-02, and now doubly so.* Stitching was built and rejected
-independently — it reconstitutes only 2 of the 127 on the full session and loses
-matches on net (see Phase D Candidate 1). V2 A2 predicts exactly this: stitching
-contaminated partial clusters yields refractory-violating units. **The target is
-to prevent fragmentation upstream, not repair it** — Candidate 2, a non-rigid
-motion representation, pending the geometry-aware C2/D2b reruns.
+*Historical stitching evaluation retracted 2026-09-03.* Its exact 2/127 and
+net-loss accounting inherited the invalid v1 matcher and is not active evidence.
+V2 A2 independently shows that naively unioning the selected fragment clusters
+usually produces refractory-violating trains, so unqualified stitching is not
+supported. It does not establish where the underlying problem must be fixed.
 
 ### Phase B — build the ladder
 
@@ -422,7 +441,7 @@ motion representation, pending the geometry-aware C2/D2b reruns.
    injection view. `verify_snippet` catches a mutated panel; `freeze_panel`
    enforces 8 + 8. Validated end-to-end against the accepted imec0 recording (a
    120 s × 112 ch `quiet`-window strip builds in ~26 s to 770 MB, hash verifies;
-   validation snippets then deleted — the panel is not yet frozen). Snippet root
+   validation snippets then deleted; the panel was subsequently frozen below). Snippet root
    configured in `configs/ladder.toml` (`configs/example.ladder.toml` tracked).
 2. **SNR stratification** to complete the panel axes — the last missing axis
    before `freeze_panel` can seal the real 16-snippet panel. Motion regime
@@ -461,13 +480,13 @@ motion representation, pending the geometry-aware C2/D2b reruns.
    three layers (primary hybrid-GT / secondary symmetric agreement / guardrails)
    + a provenance-only `context` block that flags the non-endpoints. Reuses the
    coincidence machinery from `luke_rescue_unique_units_audit.py` unchanged.
-   Validated on the full imec0 pair: reproduces Phase A exactly (`matched 101,
-   gained 200, lost 127, lost_absent 0`) and the known guardrail numbers (27
-   similar good–good pairs, refractory median 0.10%). ~90 s at full-session
-   scale; sub-second on a snippet. `window_reference_sort` re-bases and
-   depth-cuts a full-session reference so a snippet sort can be compared to it.
-   Still needs: injected-truth wired through (Phase C — the `truth=` path is
-   built and tested, just not fed real injections yet).
+   Its original full-imec0 validation reproduced the now-retracted v1 Phase A
+   counts (`matched 101, gained 200, lost 127`). The implementation has since
+   moved to exclusive identity matching and scorer schema v3; only current v2
+   or later outputs may be cited. The guardrail calculations still reproduce 27
+   similar good-good pairs and a 0.10% median refractory fraction. Hybrid truth
+   is now connected end to end; its first runs exposed the scorer defect fixed
+   by decision 0014.
 4. ~~**L1 runner**~~ — **done 2026-09-02**, `testing/ladder_l1.py`
    (+ `test_ladder_l1.py`, 6 tests). `l1_run(snippet_dir)` →
    `sort → curate → score`, one command, three-layer content cache
@@ -483,9 +502,10 @@ motion representation, pending the geometry-aware C2/D2b reruns.
    snippet does not need shrinking for L1. *Caveat surfaced:* on the **secondary
    KS-good metric** a 120 s snippet does not reproduce the full-session
    direction — the windowed legacy reference has 58 good units in the strip, a
-   fresh snippet-scale rescue sort has 16 (`lost_absent_at_detection = 0`, so
-   the spikes are all detected — it is the Phase A relabelling story, amplified
-   because 120 s is too short for many real units to clear a KS-good bar). The
+   fresh snippet-scale rescue sort has 16. The historical
+   `lost_absent_at_detection = 0` explanation used the invalid v1 matching path
+   and is withdrawn; the discrepancy still demonstrates that short-window
+   KS-good labels are not comparable to full-session labels. The
    **primary injected-truth metric is duration-robust where this is not**; the
    secondary metric on a snippet needs the *same-length legacy sort* as its
    comparator, not the full-session sort — which needs a config-parametrised
@@ -565,19 +585,19 @@ motion:
 Run the trajectories at several amplitudes, including rigid and non-rigid, and
 at both polarities.
 
-**C2 v3 motion families — Luke-calibrated, rigid first (2026-09-03,
+**C2 v4 motion families — Luke-calibrated, rigid first (2026-09-03,
 [decision 0013](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md)).**
 The motion-overlap analysis measured Luke imec0's actual regime: per 120 s
 window, rigid excursion runs ~4–23 µm (median ~11 µm under MEDiCINe, ~4 µm under
 `ks-motion`) with rigid speed ~0.2–0.8 µm/s, while the depth-normalised non-rigid
-gradient is at or below Yates. So the **first and primary** C2 v3 motion family
+gradient is at or below Yates. So the **first and primary** C2 v4 motion family
 is a **pure rigid translation** at three Luke-matched magnitudes —
 **~4–5 µm / ~10–12 µm / ~20–25 µm** rigid excursion — each with a representative
 Luke speed profile (a slow ramp and a moderate within-window drift). Non-rigid
 and oscillatory trajectories are retained as a **secondary** family, not the
 headline, because the empirical comparison says rigid displacement is what most
 separates Luke from the known-good recording at this timescale. The decisive
-question C2 v3 answers first:
+question C2 v4 answers first:
 
 > At the amount of *rigid* motion Luke imec0 actually experiences, how much
 > neuron recovery does no-correction KS4 lose, and how much does standard rigid
@@ -593,10 +613,12 @@ an injected trajectory interacts with it. Either define the trajectory relative
 to the estimated tissue position, or draw the static arm from quiet windows and
 say so. Record which was done.
 
-**Retracted; v2 retired; compact-donor v3 pending 2026-09-03.** The historical
+**Retracted; v2 retired; v3 scorer-validation run void; v4 pending 2026-09-03.** The historical
 run below did not apply mutually inverse forward and correction operators on
 the real probe geometry. Geometry-correct v2 was not run because it retained
-the discredited plateau donors. V3 is the sole active C2 protocol.
+the discredited plateau donors. V3 used the compact donors but failed as a
+scorer validation run. V4 is the next active C2 protocol because the frozen v3
+prespec cannot be silently changed to the Luke-calibrated trajectories.
 
 **Historical first run 2026-09-02** — [`luke_20250804_c2_drift_challenge.md`](luke_20250804_c2_drift_challenge.md).
 `testing/luke_rescue_c2_drift_challenge.py` (historical prespec; reused the
@@ -636,7 +658,7 @@ pending rerun:**
 post-sort family stitching** — not `nblocks=1`. Curation-threshold tuning stays
 low: the lower-threshold `legacy_style` fragments *more* at baseline, not less.
 
-V3 now supplies both polarities and the full compact real-donor amplitude range.
+V4 supplies both polarities and the full compact real-donor amplitude range.
 Still to add: genuinely non-rigid trajectories, truncation-vs-truth, and a
 second window. Static qualification is donor-wise and prespecified; there is no
 special T06 exception because all pilot T donors are forbidden.
@@ -667,7 +689,7 @@ panel yield is actually lost, and it is not a motion problem.
 
 *(Caveat, now resolved: this historical run's `score_sort` used the v2 matcher,
 which both over-counted splits (non-exclusive within a cluster) and — the
-failure C2 v3 exposed — under-counted recovery (global exclusivity let
+failure the C2 v3 run exposed — under-counted recovery (global exclusivity let
 background clusters steal events). Both are fixed in `SCORE_SCHEMA` v3,
 [decision 0014](decisions/0014-injected-truth-scoring-is-per-cluster.md): per
 candidate cluster, exclusive 1:1 within the cluster, best cluster by accuracy.
@@ -690,8 +712,9 @@ order:
 | Fragments coexist at the same time and motion state | Moving injections stay one identity | **Clustering and curation.** The repartitioning is ordinary over-splitting. |
 | Mixed | Mixed | Split the effort by the measured proportions, and say what the split was. |
 
-**Correction 2026-09-03:** the tree is unresolved again because its C2 input is
-retracted pending a geometry-aware rerun. A2 remains observational evidence.
+**Correction 2026-09-03:** the tree is unresolved because no C2 result has yet
+survived the operator, donor, cache, and scorer controls. A2 remains
+observational evidence; C2 v4 is the next valid test.
 
 **Historical reading (2026-09-02).** A2: fragments are temporally
 complementary, refractory-clean, ~0 % coexisting — **not** over-splitting. C2:
@@ -720,89 +743,28 @@ into an open, optimizable one. The order is now:
    motion-aware architectures — behind the architecture gate.
 4. **Curation / MUA-threshold work stays secondary and orthogonal.**
 
-Post-sort stitching remains a **useful negative result**: severe fragmentation
-proved too diffuse to repair reliably after sorting (2 of 127 reconstituted, 4
-matches destroyed, 34 good units absorbed). That strengthens the case for
-*preventing* fragmentation upstream rather than repairing it downstream.
+**Candidates 1 and 2 — historical results retracted.** The Candidate 1
+full-session accounting inherited the invalid v1 cross-sort matcher; its exact
+2/127 recovered, 4 destroyed, and 34 absorbed values are not evidence. The
+Candidate 2 injection/oracle evaluation used non-inverse motion operators,
+discredited plateau donors, non-exclusive scoring, and content-unbound caches.
+Its claimed oracle recovery and SNR/interpolation tradeoff are likewise not
+evidence. The implementations remain available as scaffolds, and the historical
+reports retain the audit trail:
+[`family stitch`](luke_20250804_family_stitch_candidate.md) and
+[`nonrigid motion`](luke_20250804_nonrigid_motion_candidate.md).
 
-**Candidate 1 built, evaluated, and rejected 2026-09-02** —
-[`luke_20250804_family_stitch_candidate.md`](luke_20250804_family_stitch_candidate.md),
-`testing/ladder_stitch.py` (+ tests), `testing/luke_rescue_stitch_c2_eval.py`,
-`testing/luke_rescue_stitch_fullsession_eval.py`.
-`stitch_families` merges mutual-best-partner units that are spatially plausible,
-temporally complementary, not simultaneous, and refractory-clean on merge. On
-the C2 injected-truth pairs it is safe at snippet scale (0 families on every
-static arm) and helps two mild-drift arms (+0.16, +0.23 accuracy). **But the
-decisive full-session test fails.** Run on the whole imec0 rescue sort against
-the 127 legacy-lost units: it reconstitutes **2** of the 127, destroys **4**
-existing legacy matches by over-merging, absorbs **34** genuine rescue good
-units, and takes the legacy-match count from 101 to **99** — a net loss. The 82
-"dispersed" units (the bulk of the 127) are smeared across 5–15
-contamination-dominated clusters each; there is no clean 2–4-member family to
-rejoin. **Verdict: not adopted.** The motion fragmentation must be *prevented*,
-not repaired → Candidate 2 (non-rigid representation). `ladder_stitch.py` stays
-as a tested negative result and family-detection primitive, not a curation
-stage.
+The only current stitching evidence is Phase A2 v2: naive unions of the selected
+fragment clusters are usually refractory-violating. That argues against applying
+an unqualified stitcher now, but it neither proves that all principled family
+tracking will fail nor identifies an upstream cause. The only current
+interpolation evidence comes from bounded real-data interventions showing that
+the tested external warps were harmful; whether a known accurate field can help
+compact injected neurons at Luke-calibrated motion remains a C2 v4 question.
 
-**Candidate 2 result retracted pending rerun 2026-09-03.** The implementation is
-retained, but the old oracle was not the inverse of the injected motion.
-
-**Historical Candidate 2 evaluation 2026-09-02** —
-[`luke_20250804_nonrigid_motion_candidate.md`](luke_20250804_nonrigid_motion_candidate.md),
-`testing/ladder_motion.py` (oracle correction), `ladder_sorter.NONRIGID`
-(`do_correction=True, nblocks=6`), `testing/luke_rescue_c2_nonrigid_eval.py`.
-Three arms on the cached C2 injected recordings — `rescue` (baseline),
-`nonrigid` (KS4 datashift, the estimated case), `oracle` (correct with the
-**exact** injected trajectory, then rescue sort — the ceiling).
-**A non-rigid representation is a real lever** — the first candidate that is.
-Oracle correction closes the severe rigid-drift penalty on both clean donors:
-T04 and T06 at 40 µm go from accuracy ≈ 0.40 back to ≈ 0.99 (static baseline),
-median penalty −0.35 → −0.17. Static arms untouched (0.941→0.941, 0.948→0.948).
-**But** (a) KS4's own `nblocks=6` is *worse than no correction* on a snippet
-(median −0.48) — too few units, too short a window to estimate drift; and (b)
-interpolation blurs the waveform, so it does nothing for 15 µm (sub-channel)
-drift and *hurts* T01, the sharpest/highest-SNR donor (0.40→0.29 at 40 µm).
-#### What Candidate 2 originally claimed — retracted pending rerun
-
-The paragraph below was the original interpretation. It is retained only as
-history; the corrected experiment has not yet established that motion
-representation is a lever or that the oracle closes the penalty.
-
-> **Revised by D2b-3 (2026-09-03).** That 0.40 → 0.99 was measured on the *flat
-> plateau* pilot donors, which are trivially interpolatable. On **compact real
-> donors** a perfectly-known 40 µm field leaves a **0.4–0.6 residual penalty** —
-> only the single highest-SNR/cleanest donor (D02, 274 µV) recovers fully, and
-> the lowest (D08, 73 µV) is *destroyed* by the correction. The lever is real but
-> its ceiling is much lower than the plateau donors implied, and the
-> architecture gate (a sorter that tracks templates instead of resampling
-> voltage) moves up in priority. See
-> [`luke_20250804_d2b3_sharpness_tradeoff.md`](luke_20250804_d2b3_sharpness_tradeoff.md).
-
-Three things follow, and the third is the strategic one:
-
-- `InterpolateMotionRecording` **is a voltage-resampling operator** and belongs
-  to the same general class as the historical DREDGE correction. The oracle
-  result is not a different kind of operation; it is the same operation with a
-  correct field.
-- The oracle result **does not erase our earlier interpolation failures.** Its
-  failures at 15 µm sub-channel drift, on T01 (0.40 → 0.29), and now on every
-  compact donor below ~250 µV (D2b-3) are real and establish a **tradeoff, not a
-  rejection** — but a costlier tradeoff than the plateau donors showed.
-- Those earlier failures therefore most likely placed us at a **poor operating
-  point** in the motion-benefit / interpolation-cost space, not on the wrong
-  side of a categorical question.
-
-The objective is now to **find the best operating point in that tradeoff space
-before changing architectures**. The next external estimate is *not* a
-make-or-break test of voltage interpolation; it is the first sample of a bounded
-search — see D2 below.
-
-**Stopping rule (revised).** Failure of one full-session field/application
-configuration returns to the bounded D2 tradeoff characterization. **Voltage
-interpolation is abandoned only after a prespecified small set of well-supported
-field/application policies fails** to beat the no-motion baseline on
-known-identity metrics, without unacceptable waveform, refractory, duplicate,
-edge, or completeness regressions.
+**Stopping rule.** After C2 v4, any interpolation-policy search must be small,
+prespecified, scored on known truth and waveform preservation, and stopped if it
+does not beat the no-correction baseline without guardrail regressions.
 
 To stop this becoming indefinite, **preregister the candidate budget**: at most
 **6 field/application configurations** across D2a–D2c, logged, before the
@@ -824,16 +786,16 @@ before changing architectures.
 
 #### The active sequence
 
-The whole D2 branch is **gated on C2 v3** (§9). Nothing in this sequence is
-active work until C2 v3 reports.
+The whole D2 branch is **gated on C2 v4** (§9). Nothing in this sequence is
+active work until C2 v4 reports.
 
 | # | Step | Status |
 |---|---|---|
-| 0 | **C2 v3** — paired static-vs-moving compact-donor drift penalty (gates everything below) | active — see §C2 |
+| 0 | **C2 v4** — corrected-scorer static qualification, then paired static-vs-moving compact-donor drift penalty (gates everything below) | next — new frozen namespace required |
 | 1 | **D2b-2 donor cohort** — 14 compact imec0 donors, both polarities, 73–295 µV, hash-frozen | ✅ complete ([`d2b2_donor_cohort`](luke_20250804_d2b2_donor_cohort.md)) |
-| 2 | **Oracle positive control** — attainable stabilization benefit and interpolation cost, on the compact cohort | paused — consumes C2 v3 outputs |
-| 3 | **D2b-1 field-error tolerance** — how accurate an estimated field must be | paused — `d2b1` fails closed until a compact-donor focus is frozen from C2 v3 |
-| 4 | **D2b-3 per-stratum interpolation tradeoff** — waveform/SNR-class sensitivity | paused — rerun on the compact cohort after C2 v3 |
+| 2 | **Oracle positive control** — attainable stabilization benefit and interpolation cost, on the compact cohort | paused — consumes C2 v4 outputs |
+| 3 | **D2b-1 field-error tolerance** — how accurate an estimated field must be | paused — `d2b1` fails closed until a compact-donor focus is frozen from C2 v4 |
+| 4 | **D2b-3 per-stratum interpolation tradeoff** — waveform/SNR-class sensitivity | paused — rerun on the compact cohort after C2 v4 |
 | 5 | **D2a full-session external estimation** — best-supported real field | paused — infra built (`ladder_motion_estimate.py`), not run |
 | 6 | **Pre-sort field qualification** — independent support, reproducibility, error evidence | paused — fails closed; numeric envelope to be set by the reruns |
 | 7 | **D2c bounded policy comparison** — none / best full / one simple selective policy | not started |
@@ -1041,9 +1003,10 @@ Selective correction is gated on **prespecified physical/estimator criteria** �
 displacement magnitude, support/confidence, waveform class — **never on
 downstream sorter yield**.
 
-C2's oracle results motivate this directly: large ~40 µm trajectories can
-benefit enormously, whereas smaller sub-channel motion and sharp, high-SNR
-waveforms may sit on the opposite side of the tradeoff.
+The physical tradeoff motivates this directly, but its magnitude on Luke is
+unresolved: the earlier oracle results were retracted. C2 v4 must first measure
+whether correction benefit exceeds interpolation cost for compact donors at
+Luke-calibrated motion.
 
 #### Runtime accounting — measured during D2, not at Phase E
 
@@ -1066,21 +1029,22 @@ reference per unit data**.
 Runtime does not determine scientific correctness — but an obviously
 non-promotable implementation should not consume later ladder tiers.
 
-#### The role of the 127 legacy-lost units
+#### The role of the 137 legacy-side unmatched units
 
 Resolving an inconsistency between Candidate 2's evaluation and Phase E
 criterion 3, which had been left standing side by side.
 
-The **127** legacy-good / rescue-lost cohort is an **extremely useful, sensitive
-real-data diagnostic**. It exposed the failure of post-sort stitching — 2
-reconstituted, 4 matches destroyed, 34 good units absorbed — which no snippet
-test caught. It should continue to be reported for every candidate.
+The corrected cohort contains **137** legacy-good units without an exclusive
+good-good match. Of these, 132 have null-controlled evidence of overlap with
+the complete rescue sort and five remain unresolved. It is a useful real-data
+diagnostic and should continue to be reported for every candidate, but the
+historical stitching accounting on the old 127-unit cohort is retracted.
 
 **But it is not a promotion endpoint and it is not ground truth.**
 
 | Use | Status |
 |---|---|
-| Reconstitution / accounting of the 127 as a cheap mechanistic diagnostic | ✅ keep, report always |
+| Reconstitution / accounting of the 137, preserving the five unresolved labels | ✅ keep, report always |
 | *Maximizing* recovery of legacy cluster identities | ❌ not an objective |
 | Injected ground truth, matched high-confidence family safeguards, L2L longitudinal identity | ✅ the actual promotion endpoints |
 
@@ -1088,9 +1052,9 @@ test caught. It should continue to be reported for every candidate.
 > better, if injected truth and validated family evidence show the legacy
 > partition was itself wrong.
 
-Phase A already established the ground for this: the −127 contains **zero**
-detection losses, so a "legacy good unit" is as much a labelling and
-partitioning artifact as a fact about a neuron.
+Phase A v2 found no **confirmed** detection loss in this cohort, but five cases
+remain unresolved. A legacy-good label is not ground truth, and neither is an
+unresolved result evidence that the unit was preserved.
 
 ### Architecture gate
 
@@ -1114,21 +1078,22 @@ win against a strawman.
 Voltage interpolation is widely used because in ordinary regimes the benefit of
 stabilizing spike waveforms can exceed the interpolation error. **That does not
 establish that it is optimal** — adoption is not evidence of correctness. But
-our own oracle experiment now independently shows that such a favorable regime
-**exists in Luke**. The working hypothesis is therefore not that voltage
+the favorable regime has **not yet been demonstrated in Luke** because the
+oracle experiment was retracted. The working hypothesis is therefore not that voltage
 interpolation is fundamentally unsuitable, but that the historical
 implementation used a poorly supported field and/or an unfavorable
 correction/interpolation operating point for this probe and motion regime.
 That is a claim we can test cheaply, and should, before abandoning the standard
 solution.
 
-**Orthogonal, and deliberately later:** the MUA threshold question — the 80
-promotions and their 27 mirrored demotions. It is one moved threshold. Changing
+**Orthogonal, and deliberately later:** the MUA threshold question — the v2
+cohorts contain 91 MUA-to-good promotions and 23 good-to-MUA demotions among
+the overlap-supported cases. This is a bidirectional threshold issue. Changing
 `good` versus `mua` labels **will not fix identity fragmentation**, so it should
 not compete for priority with the repartitioning question. It still needs
 [`0006`](decisions/0006-recovery-axis-is-post-sort-mua-reconciliation.md)'s
 reversible family-link evidence, scored on a blinded stratified sample rather
-than by inspecting all 80.
+than by inspecting only one direction.
 
 Any motion handling is judged on **identity continuity at L2L**, never on unit
 counts, and requires a faithful deterministic static arm first.
@@ -1151,9 +1116,10 @@ budget.
 of legacy good units", quietly made *reproduce the old clustering* an objective.
 That is wrong here. If legacy motion correction sometimes held one neuron
 together by damaging the voltage, while rescue preserves the voltage but
-fragments it, **neither set of cluster IDs deserves privileged status** — and
-Phase A already showed the −127 contains zero detection losses, so "legacy good
-unit" is a labelling and partitioning artifact as much as a fact about neurons.
+fragments it, **neither set of cluster IDs deserves privileged status**. Phase
+A v2 found no confirmed detection loss among 137 legacy-side unmatched units,
+but five remain unresolved. Legacy cluster identity is a safeguard, not ground
+truth; unresolved cases cannot be dismissed as partitioning artifacts.
 
 A **high-confidence legacy-supported neuron family** must be defined
 operationally and **frozen before any candidate is scored against it**, or the
@@ -1215,7 +1181,7 @@ eliminated.
 |---|---|
 | **Overfitting to the panel** | Held-out half opened once; second-session replication required; candidate count logged |
 | **Snippets unrepresentative of full session** | Checkpoint B explicitly tests reproduction of a known full-session result |
-| **Injected truth unrealistic** | Injected waveforms drawn from reviewed real events; benchmark validated by requiring both pipelines to solve easy cases |
+| **Injected truth unrealistic** | Use the 14 compact de-whitened-template donors scaled to bandpass-STA µV, both polarities; qualify every static arm under both pipelines with the corrected scorer; add a second background before promotion |
 | **Ground truth ≠ biological truth** | Hybrid GT scores detection/assignment, not biology. Pair with the real-data symmetric audit; never let GT alone promote |
 | **Panel becomes stale** | Version and hash it; a panel change invalidates all cached scores by construction |
 | **Speed encourages more variants than the statistics support** | Pre-register candidate count per checkpoint; treat late candidates as selection artifacts |
@@ -1225,13 +1191,15 @@ eliminated.
 ### Complete
 
 1. **Phase A — symmetric audit (v2).** `+210 / −137` KS-good, net +73. **No
-   supported gross detection difference:** 0 legacy-good units absent at
-   detection, 0 removed by curation; no null-controlled new detection in the
-   +210. Exclusive one-to-one matching + circular-shift-null detection gate.
+   confirmed gross detection difference:** overlap supported for 208/210
+   rescue-side and 132/137 legacy-side units; two and five unresolved. Exclusive
+   one-to-one matching + circular-shift-null detection gate. This does not
+   establish equivalence or superiority.
    Docs: [`rescue_unique_units_audit`](luke_20250804_rescue_unique_units_audit.md),
    [`rescue_lost_units_audit`](luke_20250804_rescue_lost_units_audit.md).
 2. **Phase A2 — repartition audit (v2).** **0% coexisting fragments** on both
-   probes (not over-splitting), but only **6–13% of fragment-cluster unions are
+   probes (the prespecified ordinary-over-peeling signature is absent), but only
+   **6–13% of fragment-cluster unions are
    refractory-clean** (median union RV 8–14%); ~90% of families `ambiguous`. No
    rigid-motion tracking (|r| ≈ 0.13–0.17). **Mechanism is ambiguous** —
    non-rigid/fast motion vs KS4 template competition are not separated here.
@@ -1243,18 +1211,22 @@ eliminated.
    **frozen** (`panel_digest 07d5d808…`), pre-registered position-parity split.
    L1 measured well under the 5-minute budget at 120 s.
 4. **Compact donor cohort (D2b-2).** 14 spatially-compact imec0 donors, both
-   polarities, 73–295 µV, de-whitened KS shape scaled to bandpass-STA µV, 6/6
-   static-sanity pass. Hash-frozen. The pilot `T*` plateau donors are forbidden
+   polarities, 73–295 µV, de-whitened KS shape scaled to bandpass-STA µV.
+   Cohort hash-frozen; corrected-scorer static qualification of all 14 under
+   both configurations is pending. The historical six-donor sanity result is
+   not the C2 qualification. The pilot `T*` plateau donors are forbidden
    ([decision 0012](decisions/0012-c2-uses-compact-donor-cohort.md)).
    Doc: [`d2b2_donor_cohort`](luke_20250804_d2b2_donor_cohort.md).
 
 ### Next — the gating experiment
 
-5. **C2 v3 — paired static-vs-moving injected identity challenge.** All 14
+5. **C2 v4 — paired static-vs-moving injected identity challenge.** All 14
    compact donors, geometry-aware forward motion, exclusive truth scoring,
    content-bound caches; a donor enters the primary drift comparison only if its
    static arm reaches accuracy ≥ 0.8 under both `RESCUE` and `LEGACY_STYLE`.
-   This is the experiment that reopens everything below it.
+   V4 uses a new frozen prespec/output namespace because v3 is an immutable void
+   run with stale trajectories. This is the experiment that reopens everything
+   below it.
 
    *First run 2026-09-03 is VOID* — a scorer bug, not a C2 result. All 14
    donors failed static qualification at a near-constant ~0.78 accuracy because
@@ -1263,33 +1235,34 @@ eliminated.
    ([decision 0014](decisions/0014-injected-truth-scoring-is-per-cluster.md),
    [`c2_v3_scorer_validation_failure`](luke_20250804_c2_v3_scorer_validation_failure.md)).
    Fixed: per-cluster exclusive matching, `SCORE_SCHEMA` → v3, 3 regression
-   tests. **Before the real run:** re-score the 14 static arms under the v3
-   scorer and confirm the floor is gone; then update the trajectory set to the
+   tests. **Before moving arms:** re-score/validate all 14 static arms with the
+   corrected scorer and confirm the floor is gone. Then freeze and run the v4
    Luke-calibrated rigid family (~4–5 / 10–12 / 20–25 µm,
-   [decision 0013](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md));
-   then re-run the moving arms. Held pending the Luke/Yates motion work.
+   [decision 0013](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md)).
+   This is not gated by the failed Luke/Yates overlap match.
 
-### Paused pending C2 v3
+### Paused pending C2 v4
 
 - **Candidate 2** (non-rigid motion representation) — its oracle/estimated
-  evaluation consumes C2 v3 outputs only.
+  evaluation consumes C2 v4 outputs only.
 - **D2b** (field-error tolerance, interpolation tradeoff) — `d2b1` fails closed
-  until a compact-donor focus is frozen from the C2 v3 result.
+  until a compact-donor focus is frozen from the C2 v4 result.
 - **D2a** (best-supported full-session field) — infra built
-  (`ladder_motion_estimate.py`), not run. A reproduced C2 v3 result is required
+  (`ladder_motion_estimate.py`), not run. A valid C2 v4 result is required
   before it becomes a quantifying experiment.
 - **Architecture gate** (motion-aware template matching, no voltage resampling)
   — opens only if the best conventional correction remains meaningfully
-  deficient *after* C2 v3 / D2.
+  deficient *after* C2 v4 / D2.
 
 ### The defensible claim now
 
-> **Existing observational audits are consistent with motion-related identity
-> instability, and post-sort family stitching did not recover the legacy
-> losses. The intervention tests do not currently establish that imposed motion
+> **Existing observational audits are consistent with identity instability;
+> Phase A2 shows that naive unions of selected fragments are usually
+> refractory-violating. The intervention tests do not currently establish that
+> imposed motion
 > caused the measured loss, that rescue handles motion better than legacy, or
 > that voltage interpolation has an intrinsic SNR-dependent ceiling. Those
-> questions are what C2 v3 and the experiments gated on it exist to answer.**
+> questions are what C2 v4 and the experiments gated on it exist to answer.**
 
 ### Historical (retracted 2026-09-03 — not active work)
 

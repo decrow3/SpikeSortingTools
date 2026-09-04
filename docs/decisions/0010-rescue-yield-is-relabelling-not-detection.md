@@ -1,12 +1,21 @@
 # 0010 — The rescue pipeline's yield difference is relabelling, not detection
 
-**Status:** **Retracted 2026-09-03** by [0011](0011-cross-sort-event-matching-and-detection-evidence.md); corrected rerun pending
+**Status:** **Empirical v1 result retracted 2026-09-03** by
+[0011](0011-cross-sort-event-matching-and-detection-evidence.md). Corrected v2
+interpretation is recorded in
+[0015](0015-corrected-cross-sort-audits-do-not-establish-equivalence.md).
 **Evidence:** [`luke_20250804_rescue_unique_units_audit.md`](../luke_20250804_rescue_unique_units_audit.md)
 **Bears on:** [0001](0001-ks4-unwarped-is-the-production-sorter.md),
 [0006](0006-recovery-axis-is-post-sort-mua-reconciliation.md),
 [0009](0009-cross-sort-comparisons-must-be-unit-matched.md)
 
 ## Finding
+
+> **CURRENT STATUS:** v2 found supported cross-sort overlap for 208/210
+> rescue-side and 132/137 legacy-side unmatched-good units, with two and five
+> unresolved. It found no *confirmed* new or lost detections, but does not
+> authorize the title's categorical “not detection” claim or establish pipeline
+> equivalence. Everything below is the withdrawn v1 record.
 
 > **Withdrawn:** the identity matcher reused target events, and “found anywhere
 > on the probe” had an 87–89% chance-coverage baseline. The +200/-127

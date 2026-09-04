@@ -5,14 +5,22 @@
 **Modules:** `testing/ladder_donors.py`, `testing/luke_d2b2_donor_cohort.py`,
 `testing/luke_d2b2_donor_sanity.py`
 **Output:** `testing/outputs/luke_d2b2_donor_cohort/donor_templates.npz` — 14
-compact imec0 donors, 73–295 µV, both polarities, all sanity-passing
+compact imec0 donors, 73–295 µV, both polarities
+
+> **QUALIFICATION UPDATE — 2026-09-03.** The cohort construction and waveform
+> measurements stand. Only six donors were included in the original static
+> sanity sample, and that scoring predates decision 0014's per-cluster scorer.
+> Therefore neither “all 14 sanity-passing” nor the six historical accuracies is
+> a current qualification result. All 14 must pass static qualification under
+> both sorter configurations with the corrected scorer before entering C2.
 
 ## TL;DR
 
 The pilot injected-truth cohort was 10 flat plateaus from 3 imec1 units. The
 replacement is 14 spatially-compact real neurons from the imec0 sort, built as
-de-whitened Kilosort template shapes scaled to their true bandpass-STA µV, all
-recovering at accuracy ≥ 0.92 when injected static. A sanity check on the way
+de-whitened Kilosort template shapes scaled to their true bandpass-STA µV. Six
+sampled donors appeared to recover at accuracy ≥ 0.92 under the historical
+scorer; corrected qualification is pending. A sanity check on the way
 caught that `cluster_Amplitude` is not µV (≈ 4–7× small). The sharp very-high-SNR
 stratum still needs synthetic templates (D2b-3).
 
@@ -67,7 +75,7 @@ manual review.
 Compact, correctly scaled, both polarities, on the probe the promotion question
 is about.
 
-## What the sanity check found
+## What the historical sanity check found
 
 `luke_d2b2_donor_sanity.py` injects each donor static into the C2 quiet
 background and checks it recovers at accuracy ≥ 0.8 (the plan-C bar). The **first
@@ -83,8 +91,9 @@ caught. With the bandpass-STA scaling, **6/6 pass**:
 | D12 | 295 | pos | 0.99 |
 | D14 | 255 | neg | 0.99 |
 
-Median 0.99, spanning the full 73–295 µV range and both polarities. The cohort
-is a valid ground-truth set.
+Median 0.99, spanning the full 73–295 µV range and both polarities. This
+demonstrated that the amplitude-scaling fix was directionally sensible, but it
+does not qualify the full cohort under the corrected scorer.
 
 ## The injectable dynamic range on Luke imec0
 

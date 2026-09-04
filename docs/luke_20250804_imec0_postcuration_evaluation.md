@@ -5,6 +5,17 @@
 **Rescue sort identity:** `22ded4d503b6de8edf4851a08797ae4e594fe41118b913451365727ffbd616ac`
 **Assessment:** Do not promote the rescue configuration as a universal production default.
 
+> **CURRENT CORRECTION — 2026-09-03.** This report does not establish an
+> amplitude-completeness deficit or equality between pipelines. The original
+> population comparison was composition-confounded; the first correction below
+> then used a non-exclusive matcher that could reuse target events. Its
+> 43/47/42 matched-unit counts, paired estimates, and “50 additional units”
+> decomposition are withdrawn under
+> [decision 0011](decisions/0011-cross-sort-event-matching-and-detection-evidence.md).
+> The exclusive v2 completeness comparison has not yet been run. The assessment
+> above remains justified only by the original frozen gates that failed. The
+> body below is retained as historical audit context, not as a current finding.
+
 > **CORRECTION, 2026-09-02 (same day).** The amplitude-completeness finding
 > below is a unit-composition artifact and is retracted. Matched on the same
 > neurons the three configurations are indistinguishable (rescue 0.63% vs
@@ -26,6 +37,9 @@
 > [`decisions/0008-amplitude-completeness-gates-promotion.md`](decisions/0008-amplitude-completeness-gates-promotion.md).
 
 ## Executive summary
+
+> **Historical interpretation, withdrawn.** This section predates the matcher
+> correction above.
 
 The new rescue pipeline increases nominal unit yield and improves several
 conventional quality metrics, including median contamination and refractory
@@ -230,12 +244,13 @@ The latest pre-curation edge-spike fraction was 2.004%, narrowly above the 2.0%
 threshold. After curation it increased to approximately 2.066%.
 
 These failures already required `reject_universal_default`. The
-amplitude-truncation result is an additional independent reason not to promote
-the pipeline.
+amplitude-truncation comparison is not an additional independent reason: both
+its original population inference and its first matched-unit correction are
+withdrawn pending an exclusive rerun.
 
-## Decision
+## Historical decision section
 
-### Current decision: reject universal promotion
+### Durable decision: reject universal promotion on the original failed gates
 
 The rescue pipeline should not become the universal default based on this imec0
 result.
@@ -260,9 +275,10 @@ good-unit yield?" to:
 > or claim-mask amplitude completeness and controlling similar-unit
 > proliferation?
 
-The current answer is no.
+This report cannot answer that question; an exclusive matched-unit
+completeness rerun and known-truth pipeline comparison are still required.
 
-## Required follow-up before reconsidering promotion
+## Historical follow-up list — superseded by the active plan
 
 1. **Make amplitude completeness a formal acceptance gate.** Add a
    unit-balanced truncation criterion, preferably within the >1 Hz good-unit

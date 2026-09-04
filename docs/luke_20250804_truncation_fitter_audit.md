@@ -6,13 +6,22 @@
 > reweighted empirical result are withdrawn because the matcher reused target
 > events. Rerun `luke_truncation_matched_units.py` to create
 > `matched_units_v2.csv` before citing a cross-sort numerical result.
+>
+> **MOTION CORRECTION — 2026-09-03.** The 1.279 µm motion reading in section 5
+> came from a QC-unqualified sidecar and is withdrawn by
+> [decision 0013](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md).
+> Accepted full-session estimates span approximately 6.6–29.5 µm. This document
+> therefore supports the synthetic fitter characterization and the general
+> population-composition warning only; it supplies no current cross-sort
+> numerical result and no evidence against motion on this recording.
 
 **Date:** 2026-09-02
 **Scope:** follow-up items 2 and 3 of
 [`decisions/0008`](decisions/0008-amplitude-completeness-gates-promotion.md),
 which gate item 1 (formalizing an amplitude-completeness acceptance gate).
-**Headline:** the reported rescue completeness deficit is a **unit-composition
-artifact**. On matched neurons the three configurations are indistinguishable.
+**Current headline:** the population comparison cannot identify a pipeline
+completeness difference because unit composition differs. Whether matched
+neurons differ is unresolved pending the exclusive v2 rerun.
 
 Reproduce with:
 
@@ -128,7 +137,7 @@ from 0.82 / 1.16 / 3.07 (claim-mask / legacy / rescue) to **1.79 / 6.90 / 5.72**
 — legacy becomes worse than rescue. The direction of the reported result is not
 robust to composition adjustment.
 
-## 4. Decisive test: the same neurons across sorts
+## 4. Retracted historical test: the same neurons across sorts
 
 Units matched by spike-time coincidence (mutual best match, coincident fraction
 of the smaller unit ≥ 0.5), good and eligible and >1 Hz in both sorts.
@@ -142,8 +151,8 @@ of the smaller unit ≥ 0.5), good and eligible and >1 Hz in both sorts.
 Stable across coincidence tolerances of 0.25, 0.5 and 1.0 ms and match
 thresholds of 0.3, 0.5 and 0.7 (n = 42–44, Δ = −0.02 to −0.03 pp, p = 0.59–0.80).
 
-**On neurons that both pipelines find, the rescue pipeline detects them exactly
-as completely as the comparators.**
+> **Withdrawn:** the matcher used for this table could reuse target events. Do
+> not cite the table or the equality statement; it is retained for audit history.
 
 ### The population statistic decomposed
 
@@ -156,7 +165,7 @@ The entire reported gap is the extra units rescue recovers. They are smaller and
 therefore closer to the detection floor. Legacy's own unique units show the same
 direction (3.01% against its shared 0.63%).
 
-## 5. Motion is not the explanation for this recording
+## 5. Retracted historical motion reading
 
 The rescue run's DREDGE rigid sidecar reports a total motion range of
 **1.279 µm** over the full 10,473 s (std 0.111 µm, median per-bin change
@@ -168,19 +177,17 @@ and `extra_summary.json` shows `weights_thresh` entirely non-finite, so the
 estimate is unqualified and non-rigid motion is unmeasured. It is evidence
 against the motion hypothesis for this session, not proof.
 
-## 6. What this does and does not establish
+## 6. What this does and does not establish now
 
-**Establishes.** The post-curation comparison does not show a detection-quality
-difference between the configurations. It shows that they admit different unit
-populations. The completeness statistic is confounded by unit amplitude, and
-firing-rate stratification does not control for it, because rate and amplitude
-are largely independent.
+**Establishes.** The post-curation population comparison does not identify a
+detection-quality difference between configurations because they admit
+different unit populations. The completeness statistic depends on unit
+amplitude, and firing-rate stratification does not control for amplitude.
 
-**Does not establish.** Whether rescue's 50 additional units are genuine
-neurons, fragments, or noise. The truncation metric cannot answer that: high
-missingness for a small unit is expected in every pipeline. That question needs
-waveform, refractory, CCG and spatial evidence on those specific units, which is
-tracked separately.
+**Does not establish.** Equality on matched neurons; the withdrawn 50-unit
+decomposition; whether rescue-only units are genuine neurons, fragments, or
+noise; or whether motion explains the difference. Those require the exclusive
+matched-unit rerun and known-truth motion experiments.
 
 **Does not overturn.** The original `reject_universal_default` verdict, which
 rests on the prespecified gates that actually failed — similar good–good pairs
@@ -193,9 +200,9 @@ pre-curation, ~2.066% post-curation, against a 2.000% threshold).
   **unit-matched** or amplitude-stratified comparisons. A population-median gate
   would penalize any configuration that recovers additional small units, which
   is the opposite of the intent.
-- Item 2 (frozen matched recomputation) remains worthwhile for provenance, but
-  is no longer urgent: the discrepancy it was meant to test is explained.
+- Item 2 (frozen exclusive matched recomputation) is required before any
+  cross-sort numerical completeness claim.
 - Item 3 (validate the fitter) is **complete**; see section 2. Censored windows
   must be filtered, and the ceiling must never be treated as a measurement.
-- Items 4–6 should be re-aimed at the 50 rescue-unique units rather than at a
-  population-level completeness deficit that does not exist.
+- Items 4–6 should use the corrected exclusive cohorts rather than the
+  withdrawn 50-unit cohort or a population-level completeness ranking.

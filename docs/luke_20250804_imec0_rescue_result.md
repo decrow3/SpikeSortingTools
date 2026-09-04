@@ -1,17 +1,20 @@
 # Luke imec0 frozen-rescue control result
 
-> **Superseded in interpretation, 2026-09-02.** These pre-curation measurements
-> stand. The post-curation evaluation in
-> [`luke_20250804_imec0_postcuration_evaluation.md`](luke_20250804_imec0_postcuration_evaluation.md)
-> adds an amplitude-completeness analysis showing rescue units are typically
-> *less* completely detected than both the legacy and claim-mask comparators,
-> and reports 0 strong duplicate hypotheses among the 27 similar pairs surviving
-> curation. Read it before citing the yield results below.
+> **HISTORICAL RESULT — interpretation superseded through 2026-09-03.** These
+> pre-curation measurements stand, but neither their higher yield nor the later
+> amplitude analysis establishes that rescue is better or worse at detection.
+> The post-curation completeness deficit and its first matched-unit correction
+> were both retracted after a non-exclusive matcher was found. Read
+> [`validation-summary.md`](validation-summary.md) and
+> [decision 0015](decisions/0015-corrected-cross-sort-audits-do-not-establish-equivalence.md)
+> before citing this report. The frozen `reject_universal_default` verdict still
+> stands on the gates that actually failed.
 
-The cross-probe control supports the frozen rescue graph as a substantial
-improvement on imec0. It is now locked operationally as the downstream Luke
-reference graph, while the prespecified universal-adoption result remains the
-original `reject_universal_default` rather than being waived retrospectively.
+The cross-probe control established favorable conventional metrics and higher
+nominal yield on imec0. It was locked operationally as the downstream Luke
+reference graph, while the prespecified universal-adoption result remained
+`reject_universal_default`. “Reference” is an experimental baseline, not a
+claim of biological or detection superiority.
 
 The rescue produced 30,494,981 spikes, 727 units and 301 KS-good units, versus
 34,721,074 spikes, 602 units and 260 KS-good units in the legacy imec0 pipeline.

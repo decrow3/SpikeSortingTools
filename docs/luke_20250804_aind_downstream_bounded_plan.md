@@ -1,5 +1,11 @@
 # Luke bounded pinned-AIND downstream comparison
 
+> **COMPLETED HISTORICAL PLAN.** The bounded design and its measurements remain
+> usable. Describing rescue as the “locked reference” identifies the comparator
+> chosen for this experiment; it is not a claim that rescue is biologically or
+> detection-wise superior to legacy. Current interpretation is in
+> [`pipeline_improvement_plan.md`](pipeline_improvement_plan.md).
+
 ## Decision being tested
 
 The frozen rescue graph is the locked downstream Luke reference. The historical

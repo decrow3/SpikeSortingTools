@@ -1,5 +1,13 @@
 # Luke 2025-08-04 rescue status and test plan
 
+> **HISTORICAL STATUS SNAPSHOT — superseded 2026-09-03.** This document records
+> the 2026-08-31 state and should not be used as the active work plan. Current
+> priorities and evidentiary limits are in
+> [`pipeline_improvement_plan.md`](pipeline_improvement_plan.md) and decisions
+> 0011–0015. In particular, “production/downstream reference” means an
+> operational comparator, not evidence that rescue is biologically or
+> detection-wise superior to legacy.
+
 **Evidence snapshot:** 2026-08-31
 
 **Scope:** both Luke probes unless a result is explicitly probe-specific

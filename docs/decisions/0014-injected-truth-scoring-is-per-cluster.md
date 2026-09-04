@@ -76,7 +76,8 @@ injected-truth run:
 ## Consequence
 
 The failed C2 v3 run is retained as a **scorer validation failure**, not a C2
-result. C2 v3 must be re-scored (static arms first, both configs, 73–295 µV
-donors) and shown sane before it consumes compute on moving arms, and the
-trajectory set must be updated to the Luke-calibrated rigid family per
-[0013](0013-luke-imec0-has-appreciable-rigid-motion.md) before the moving rerun.
+result. Its static arms must be re-scored or equivalently validated first under
+both configs for all 14 donors. Because the v3 prespec/output namespace is
+frozen with stale trajectories, the moving rerun is C2 v4: a new frozen
+Luke-calibrated rigid family per
+[0013](0013-luke-imec0-has-appreciable-rigid-motion.md).

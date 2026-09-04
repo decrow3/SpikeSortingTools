@@ -1,5 +1,11 @@
 # Luke pipeline development strategy: stage-local validation
 
+> **PRINCIPLE RETAINED; ACTIVE SEQUENCE SUPERSEDED 2026-09-03.** Stage-local
+> validation remains the governing method. The specific priority order and
+> status statements below are the 2026-08-31 snapshot; use
+> [`pipeline_improvement_plan.md`](pipeline_improvement_plan.md) for current
+> execution and decisions 0011–0015 for current evidence limits.
+
 **Decision date:** 2026-08-31
 
 **Applies to:** Luke pipeline development after the replicated full-session

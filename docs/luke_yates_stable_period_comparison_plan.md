@@ -1,6 +1,6 @@
 # Prespec: the Luke–Yates stable-period comparison
 
-**Status:** proposed 2026-09-03. Runs **in parallel with C2 v3** (§9 of
+**Status:** historical failed prespec, 2026-09-03. It ran in parallel with the C2 work (§9 of
 [`pipeline_improvement_plan.md`](pipeline_improvement_plan.md)); it is not gated
 by it and does not gate it.
 
@@ -20,7 +20,7 @@ by it and does not gate it.
 >   (§B below) — an engineering upper bound, explicitly *not* the causal test.
 > - The 1.28 µm premise error is corrected in
 >   [decision 0013](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md);
->   the measured Luke rigid-motion distribution feeds C2 v3 (`pipeline_improvement_plan.md` §C2).
+>   the measured Luke rigid-motion distribution feeds C2 v4 (`pipeline_improvement_plan.md` §C2).
 >
 > Sections 1–5 below are **historical** — the original matched design, kept for
 > the reasoning trail. Increment 1 (§3) is the part that ran.
@@ -53,7 +53,7 @@ controlled. Three pre-committed readings:
 
 | Result | Reading |
 |---|---|
-| Luke-stable ≈ Yates-stable on compact-event/mm, units/mm, waveform/refractory quality; Luke-high-motion collapses | Recording is fundamentally viable; motion/sorting is the dominant recoverable problem — the C2 v3 / D2 line is aimed correctly. |
+| Luke-stable ≈ Yates-stable on compact-event/mm, units/mm, waveform/refractory quality; Luke-high-motion collapses | Recording is fundamentally viable; motion/sorting is the dominant recoverable problem — the C2 v4 / D2 line is aimed correctly. |
 | Luke-stable deficient versus Yates-stable **even motion-matched at matched depth** | Stop attributing the deficit to motion. Investigate penetration history, anatomy, acquisition/reference — in particular the stream-fixed imec1 positive-excess / negative-deficit finding ([`luke_yates_raw_voltage_audit_notes.md`](luke_yates_raw_voltage_audit_notes.md), cross-session recurrence). |
 | A known injected donor recovers equally well in Luke-stable and Yates-stable backgrounds, but real units/mm is still lower in Luke-stable | Signal-content deficit, not sorting tractability — the background is hospitable, there are simply fewer neurons in the sampled tissue. |
 

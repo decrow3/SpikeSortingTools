@@ -1,16 +1,17 @@
 # 0008 — Amplitude completeness gates promotion, and yield alone never does
 
-**Status:** Adopted 2026-09-02. **Central empirical claim CORRECTED the same day
-by [0009](0009-cross-sort-comparisons-must-be-unit-matched.md).**
+**Status:** Method rule retained; empirical claims retracted through 2026-09-03
+by [0009](0009-cross-sort-comparisons-must-be-unit-matched.md) and
+[0011](0011-cross-sort-event-matching-and-detection-evidence.md).
 **Supersedes the yield-centred reading of:** [0001](0001-ks4-unwarped-is-the-production-sorter.md)
 **Evidence:** [`luke_20250804_imec0_postcuration_evaluation.md`](../luke_20250804_imec0_postcuration_evaluation.md)
 
-> **RETRACTED: the completeness deficit below is a unit-composition artifact.**
-> Matched on the same neurons, the three configurations are indistinguishable
-> (rescue 0.63% vs legacy 0.63% on 43 shared units, p = 0.80). The population
-> gap is entirely the 50 additional, smaller units rescue recovers; small units
-> sit closer to the detection floor in every pipeline. See
-> [0009](0009-cross-sort-comparisons-must-be-unit-matched.md) and
+> **CURRENT CORRECTION:** the completeness deficit below is composition-
+> confounded, and the first matched-unit correction was also invalid because its
+> matcher could reuse target events. The 43-unit, 0.63%, and 50-additional-unit
+> results are withdrawn pending an exclusive v2 completeness rerun. Current
+> evidence establishes neither a deficit nor equality. See
+> [0011](0011-cross-sort-event-matching-and-detection-evidence.md) and
 > [`luke_20250804_truncation_fitter_audit.md`](../luke_20250804_truncation_fitter_audit.md).
 >
 > What survives: amplitude completeness is still a missing acceptance
@@ -19,6 +20,9 @@ by [0009](0009-cross-sort-comparisons-must-be-unit-matched.md).**
 > failed, not on completeness.
 
 ## Decision
+
+> The empirical rationale below is historical. Only the method rule in the
+> correction banner remains active.
 
 The rescue configuration is **not** promoted to a universal production default.
 The formal `reject_universal_default` verdict remains in force, and it now rests

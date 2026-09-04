@@ -1,5 +1,12 @@
 # Luke imec0 frozen rescue control
 
+> **COMPLETED HISTORICAL PLAN — interpretation updated 2026-09-03.** The frozen
+> gate result and raw measurements remain valid. Higher yield and favorable
+> conventional metrics do not establish detection or biological superiority.
+> The later completeness comparison and its first matched-unit correction were
+> both retracted; see [`validation-summary.md`](validation-summary.md) and
+> [decision 0015](decisions/0015-corrected-cross-sort-audits-do-not-establish-equivalence.md).
+
 ## Purpose
 
 imec0 is the prespecified negative control for the full-probe rescue pipeline.

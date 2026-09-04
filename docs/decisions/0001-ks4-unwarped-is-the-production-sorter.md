@@ -4,10 +4,11 @@
 **Qualified 2026-09-02 by [0008](0008-amplitude-completeness-gates-promotion.md)
 and [0009](0009-cross-sort-comparisons-must-be-unit-matched.md)** — read both
 before citing any yield result below.
-**Further qualified 2026-09-03 by [0011](0011-cross-sort-event-matching-and-detection-evidence.md):**
-the empirical matched-unit and “yield is relabelling” claims are retracted;
-there is currently no validated evidence that rescue detects the same neurons
-as legacy or performs better.
+**Further qualified 2026-09-03 by [0011](0011-cross-sort-event-matching-and-detection-evidence.md)
+and [0015](0015-corrected-cross-sort-audits-do-not-establish-equivalence.md):**
+the empirical matched-unit completeness result is retracted. Corrected Phase A
+found no confirmed new/lost detection but left seven units unresolved; it does
+not establish equivalence or that rescue performs better.
 **Applies to:** every production sort
 
 > **The interpretation in this record is narrowed by
@@ -17,8 +18,8 @@ as legacy or performs better.
 > assigned spikes demonstrate the improvement is not detection inflation remains
 > insufficient — aggregate spike count is a contamination-side check, not a
 > per-unit recall measure. But the completeness deficit 0008 originally reported
-> was a unit-composition artifact and is retracted: matched on the same neurons,
-> rescue detects units exactly as completely as the comparators. This record is
+> was composition-confounded and is retracted; the first matched-neuron equality
+> result was also retracted because its matcher reused target events. This record is
 > still not by itself a basis for promotion; the failed gates are.
 
 ## Decision
@@ -79,8 +80,8 @@ as evidence that the frozen gates passed.
 
 The post-curation evaluation initially appeared to add a second, independent
 ground for that verdict — worse amplitude completeness than either comparator —
-but that finding was a composition artifact and is retracted
-([0009](0009-cross-sort-comparisons-must-be-unit-matched.md)). The verdict rests
+but that population inference is confounded and its first matched correction is
+also retracted ([0011](0011-cross-sort-event-matching-and-detection-evidence.md)). The verdict rests
 on the failed gates alone. The evaluation did reframe the pair evidence: after curation, 27 similar good–good pairs remain (against 8 legacy
 and 11 claim-mask) while the artifact-aware audit finds *zero* strong duplicate
 hypotheses. The pre-curation 184/191 and 164/165 hypotheses recorded above were

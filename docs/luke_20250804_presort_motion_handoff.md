@@ -1,5 +1,12 @@
 # Luke 2025-08-04 pre-sort conditioning and motion investigation
 
+> **HISTORICAL HANDOFF — superseded 2026-09-03.** The measurements remain part
+> of the investigation record, but the active sequence is now defined in
+> [`pipeline_improvement_plan.md`](pipeline_improvement_plan.md) and decisions
+> 0011–0015. The accepted motion estimates and within-Luke dose-response design
+> supersede the earlier estimator-priority language here. No statement in this
+> handoff establishes that rescue is better than legacy.
+
 ## 2026-08-31 active handoff update
 
 The conditioning question that motivated this handoff is now sufficiently

@@ -20,8 +20,8 @@ apparent yield out of fragmentation or duplication. Unit count is therefore not 
 valid acceptance observable for an upstream stage.
 
 This is also why [0001](0001-ks4-unwarped-is-the-production-sorter.md) reports
-yield gains *alongside reduced assigned spikes* — the second number is what makes
-the first interpretable.
+yield gains alongside reduced assigned spikes. Even together those aggregate
+numbers do not establish per-unit recall or biological-unit recovery.
 
 ## The rule applies to the gate set itself
 
@@ -31,8 +31,11 @@ same failure occurred one layer up, in the **acceptance criteria**.
 The frozen gate set measured yield, contamination, refractory violations,
 presence, coincidence and edge burden — and contained no measure of per-unit
 detection completeness. A configuration could therefore improve every gate it
-was scored on while degrading a dimension nobody was scoring. It did:
-[0008](0008-amplitude-completeness-gates-promotion.md).
+was scored on while degrading a dimension nobody was scoring. The first report
+claimed that had occurred, but both its population inference and first
+matched-unit correction were later retracted. The observability gap remains;
+the claimed regression does not. See
+[0011](0011-cross-sort-event-matching-and-detection-evidence.md).
 
 Three specific substitutions that this proved invalid:
 

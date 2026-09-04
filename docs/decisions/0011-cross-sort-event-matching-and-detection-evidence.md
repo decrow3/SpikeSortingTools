@@ -8,6 +8,14 @@ and full-session stitching reports.
 228 KS-good counts, or the synthetic logistic-model characterization of the
 truncation fitter.
 
+> **FOLLOW-UP — 2026-09-03.** Phase A/A2 v2 have now been regenerated. Their
+> bounded interpretation is recorded in
+> [0015](0015-corrected-cross-sort-audits-do-not-establish-equivalence.md): no
+> confirmed new/lost detection was found, but seven units remain unresolved and
+> neither equivalence nor pipeline superiority is established. The exclusive
+> matched-unit *completeness* rerun required by 0009 remains outstanding. The
+> “currently” language below records the state when this decision was adopted.
+
 ## Problem found
 
 The earlier cross-sort matcher assigned each source spike its nearest target

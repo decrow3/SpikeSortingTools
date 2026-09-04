@@ -60,10 +60,11 @@ Full write-up and the fix: [decision 0014](decisions/0014-injected-truth-scoring
 2. **Re-score the 14 static arms only**, both configs, and confirm the ~0.78
    floor is gone and recovery is sensible across 73–295 µV before spending
    compute on moving arms.
-3. **Update the C2 v3 trajectories** to the Luke-calibrated rigid family
+3. Freeze a new **C2 v4** prespec/output namespace with the Luke-calibrated rigid family
    (~4–5 / 10–12 / 20–25 µm) per
    [decision 0013](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md);
    the `15 / 40 / osc-20` set is stale.
-4. Re-run C2 v3 moving arms and compute the drift penalty.
+4. Run the C2 v4 moving arms and compute the drift penalty.
 
-Held pending the Luke/Yates motion comparison work.
+This is not gated by the Luke/Yates comparison; decision 0013 and the frozen
+within-Luke dose-response windows provide the current calibration path.

@@ -1,8 +1,14 @@
 # Luke 2025-08-04 imec1 upstream ablation
 
+> **SCOPE NOTE — 2026-09-03.** The intervention result remains valid for the
+> tested external DREDGE warp in the prespecified 120 s imec1 window: removing
+> that warp improved the measured outcomes. It does not show that motion
+> correction as a class is harmful, that unwarped rescue is globally better
+> than legacy, or that the present pipeline handles motion correctly.
+
 ## Technical summary
 
-External DREDGE correction is the leading verified upstream cause of the
+The tested external DREDGE correction is the leading verified upstream cause of the
 pathological claim-off peeling behavior in the 8,160--8,280 s imec1 window.
 Removing external motion correction reduced learned-template detections by
 57%, reduced the cross-unit near-coincident spike fraction from 0.770 to

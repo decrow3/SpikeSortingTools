@@ -66,10 +66,10 @@ percentile.
 - The Phase A2 "tension" (imec0 re-clustering must be non-rigid *or* the estimate
   is wrong) resolves toward **the estimate was wrong**. Rigid motion on imec0 is
   a live candidate mechanism for the re-clustered losses, not an excluded one.
-- This makes the conventional rigid motion-correction route (C2 v3 / D2) more
+- This makes the conventional rigid motion-correction route (C2 v4 / D2) more
   promising, not less: rigid displacement is the regime standard correction
   handles best.
-- C2 v3's first motion family is set to **rigid, Luke-calibrated** (~4–5 →
+- C2 v4's first motion family is set to **rigid, Luke-calibrated** (~4–5 →
   ~10–12 → ~20–25 µm rigid excursion, with representative speed profiles) rather
   than elaborate non-rigid trajectories. See `../pipeline_improvement_plan.md`
   §C2.

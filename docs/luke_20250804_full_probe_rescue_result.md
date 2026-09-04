@@ -1,22 +1,32 @@
 # Luke imec1 full-probe rescue result
 
+> **HISTORICAL YIELD REPORT — interpretation narrowed 2026-09-03.** The run
+> completion, counts, and conventional QC measurements stand. They establish an
+> engineering reference, not detection or biological superiority: aggregate
+> yield and fewer assigned spikes cannot show that more neurons were recovered.
+> Cross-sort identity/completeness results were subsequently retracted, and C2
+> has not yet shown that rescue handles motion better. Use
+> [`validation-summary.md`](validation-summary.md) and
+> [decision 0015](decisions/0015-corrected-cross-sort-audits-do-not-establish-equivalence.md)
+> for the current evidentiary boundary.
+
 ## Technical summary
 
-The new rescue pipeline is a **strong provisional sorting success and a clear
-engineering success**. It completed the 10,473.6 s imec1 recording with the
+The new rescue pipeline is a **completed engineering reference with favorable
+conventional QC metrics**. It completed the 10,473.6 s imec1 recording with the
 frozen settings, produced 583 units and 216 KS-good units, and improved the
 best prior full-probe KS-good yield by 65 units (43.0%). Relative to
 `pipeline_an5`, it produced 70 more KS-good units (47.9%) while assigning 6.7%
-fewer spikes. The gain therefore is not explained by indiscriminate detection
-inflation.
+fewer spikes. This argues against indiscriminate aggregate spike inflation but
+does not establish per-neuron recall or correctness.
 
 This result does **not** yet establish that Luke matches the full quality of
 the Yates sessions. It exceeds the available Yates sampled comparator on raw
 and KS-good units per millimetre, but that comparison is confounded by anatomy,
 depth, preprocessing, duration and the unusually high contamination of the
-available Yates sort. The defensible conclusion is that the rescue pipeline
-has moved Luke into a substantially better operating regime and is ready for
-targeted curation/validation, not that Yates parity has been proven.
+available Yates sort. The defensible conclusion is that the run is a useful
+operational baseline for targeted validation, not that it is biologically
+better or that Yates parity has been proven.
 
 ![Diagnostic overview](../testing/outputs/luke_full_probe_rescue_diagnostics/diagnostic_overview.png)
 
@@ -65,7 +75,7 @@ proximity, perform manual curation, or establish cross-session generalization.
 Those are the remaining validation layers. None is a reason to rerun this sort;
 they can be performed on the accepted output.
 
-## Recommendation
+## Historical recommendation
 
 Keep this run as the rescue pipeline's first full-session reference result.
 Do not launch another parameter sweep. First review the middle-depth holdout
@@ -86,4 +96,3 @@ replication plus an anatomically and technically matched comparison.
 - The accepted sorter parameters and Kilosort `ops.npy` independently establish
   that motion correction was disabled (`do_correction=false`, native
   `nblocks=0`).
-

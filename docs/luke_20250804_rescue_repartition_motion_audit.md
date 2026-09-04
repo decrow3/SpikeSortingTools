@@ -1,4 +1,4 @@
-# Phase A2: rescue's re-partitioning is contaminated template flicker — not over-splitting, and not clean motion fragmentation
+# Phase A2: no coexisting-fragment signature; mechanism remains ambiguous
 
 > **V1 RESULT RETRACTED — 2026-09-03.** The original report inherited the invalid
 > cross-sort cohorts and measured "merged" refractory violations on the anchor
@@ -9,7 +9,8 @@
 > **V2 RESULT — 2026-09-03 (below).** Corrected run: exclusive cross-sort
 > identities, spatially-plausible fragment selection, and refractory violations
 > measured on the actual union of the fragment clusters' full trains. The
-> not-over-splitting finding survives (0% coexisting on both probes). The
+> absence of the prespecified coexisting-fragment signature survives (0% on
+> both probes). This does not exclude every form of over-splitting. The
 > "one clean neuron / stitching would recover it" finding **does not** — only
 > 6–13% of fragment unions are refractory-clean. Almost every family is now
 > `ambiguous`: neither classic over-splitting nor clean motion fragmentation.
@@ -65,7 +66,7 @@ clean but no trajectory — reported as its own bucket, forced into neither),
 Reproduce: `python testing/luke_rescue_repartition_motion_audit.py --probe both`.
 Outputs to `testing/outputs/luke_rescue_repartition_motion_audit_v2/<probe>/`.
 
-## V2 result — the not-over-splitting finding holds; the clean-merge finding does not
+## V2 result — no coexisting-fragment signature; the clean-merge finding fails
 
 | | imec0 | imec1 | (v1, retracted) |
 |---|---:|---:|---|
@@ -86,10 +87,10 @@ the KS-good filter for family selection does. Noted as an asymmetry.)
 
 ### What survives, what falls
 
-1. **It is not over-splitting.** Coexisting fragments — the signature of ordinary
+1. **The prespecified over-peeling signature was not observed.** Coexisting fragments — the signature of ordinary
    over-peeling, where two templates both fire for one neuron at the same time —
-   are **absent** on both probes (0.0%). The Phase D branch "the repartitioning
-   is ordinary over-splitting → fix clustering and curation" is **not indicated**.
+   are **absent** on both probes (0.0%). That branch is not indicated by this
+   test, but broader forms of over-splitting are not ruled out.
    *This finding is unchanged from v1.*
 
 2. **The fragments are NOT demonstrably one clean neuron.** When the fragment
@@ -100,9 +101,10 @@ the KS-good filter for family selection does. Noted as an asymmetry.)
    fragment clusters are frequently large contaminated clusters that merely clip
    the anchor. **Post-sort family stitching of these would produce
    refractory-violating units, not recover clean ones.** This directly
-   anticipates the Candidate 1 full-session stitching failure
+   is qualitatively consistent with the historical Candidate 1 stitching run
    ([`luke_20250804_family_stitch_candidate.md`](luke_20250804_family_stitch_candidate.md):
-   2/127 reconstituted, 4 matches destroyed, 34 good units absorbed, net loss).
+   whose exact 2/127, 4-destroyed and 34-absorbed accounting was later retracted
+   by [decision 0011](decisions/0011-cross-sort-event-matching-and-detection-evidence.md)).
    *This reverses the load-bearing v1 finding.*
 
 3. **It is not tracked by the rigid motion estimate, and it is not slow.**
@@ -144,8 +146,8 @@ rerun is still pending.
 fragments" recommendation is withdrawn.** V2 shows the fragment unions are
 *not* refractory-clean (6–13%), so stitching them reconstructs contaminated
 units — which is exactly what the Candidate 1 full-session evaluation went on to
-observe. This *strengthens* the case that fragmentation must be **prevented
-upstream**, not repaired downstream.
+   suggest. It does not establish that fragmentation must be prevented upstream;
+   the mechanism remains unresolved.
 
 **C2 still decides the framing** — whether this is "the cost of the no-motion
 strategy" (motion) or "KS4 template competition on preserved voltage" (not

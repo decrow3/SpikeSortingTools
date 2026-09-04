@@ -1,5 +1,11 @@
 # Luke bounded pinned-AIND downstream result
 
+> **SCOPE NOTE — 2026-09-03.** This bounded comparison supports retaining rescue
+> as the operational comparator instead of advancing the tested AIND branch. It
+> does not establish that rescue is better than the historical legacy pipeline,
+> that its extra KS-good units are biological neurons, or that it handles motion
+> better. Those questions require the current known-truth plan.
+
 ## Technical summary
 
 The bounded downstream experiment does **not** support replacing the frozen

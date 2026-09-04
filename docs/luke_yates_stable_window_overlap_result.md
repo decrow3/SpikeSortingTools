@@ -83,7 +83,7 @@ run within Luke, because Luke has only the one regime.
   recording behaves itself" — the recording never behaves itself at the
   Yates-quiet level, so quiet-window selection cannot isolate that question.
 - It **does** strengthen the case that motion handling is on the critical path
-  for essentially all of Luke's data (C2 v3 / D2), not a secondary lever that
+  for essentially all of Luke's data (C2 v4 / D2), not a secondary lever that
   window selection could sidestep.
 - Non-rigid deformation is not the issue at 120 s scale; **rigid translation
   magnitude and rate** are. That is squarely in scope for a rigid or

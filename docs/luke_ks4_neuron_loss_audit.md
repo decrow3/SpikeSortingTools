@@ -1,5 +1,11 @@
 # Where the repaired unwarped KS4 pipeline loses supported neural events
 
+> **SCOPE NOTE — 2026-09-03.** This event-level audit remains valid for its
+> reused reviewed cohort. It does not establish cross-sort neuron identity,
+> explain the rescue-versus-legacy yield difference, or authorize wholesale MUA
+> promotion. The later v1 cross-sort MUA counts were retracted; see decisions
+> 0011 and 0015.
+
 ## Answer
 
 The dominant measured exclusion is **not** KS4 duplicate removal and is not a

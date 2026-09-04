@@ -6,7 +6,9 @@ established. The reasoning behind each choice is in
 [`decisions/`](decisions/README.md); the full investigative record stays in
 this research repository.
 
-Research repository baseline for this summary: commit `efc873c`.
+**Evidence status:** current through decisions 0011–0015 and the first C2 v3
+scorer-validation failure on 2026-09-03. Historical measurements below remain
+useful only within the qualifications stated here.
 
 ## Datasets
 
@@ -44,12 +46,10 @@ acceptance.
 bounded challengers. That is a weaker claim than universal adoption, and the two
 should not be conflated.
 
-**Second, independent ground for the verdict (2026-09-02).** The post-curation
-evaluation added a concern the frozen gate set never measured: per-unit
-amplitude completeness. See *Amplitude completeness* below and
-[0008](decisions/0008-amplitude-completeness-gates-promotion.md). The
-post-curation edge-spike fraction also rose to approximately 2.066%, from the
-2.004% recorded pre-curation against a 2.000% threshold.
+The post-curation edge-spike fraction rose to approximately 2.066%, from the
+2.004% recorded pre-curation against a 2.000% threshold. Amplitude completeness
+remains a missing acceptance dimension, but no cross-sort completeness
+difference is currently established; see *Amplitude completeness* below.
 
 ## Headline results
 
@@ -103,20 +103,13 @@ difference.** They reproduce exactly, but the three configurations admit
 different unit populations, and estimated missingness depends strongly on unit
 amplitude (within-method Spearman −0.44 rescue, −0.56 legacy).
 
-Matched on the same neurons, the configurations are indistinguishable:
-
-| Matched pair | n | A | B | Paired Δ | p |
-|---|---:|---:|---:|---:|---:|
-| rescue vs legacy | 43 | 0.63% | 0.63% | −0.02 pp | 0.797 |
-| rescue vs claim-mask | 47 | 0.75% | 0.73% | +0.03 pp | 0.193 |
-| legacy vs claim-mask | 42 | 0.60% | 0.76% | +0.01 pp | 1.000 |
-
-The population gap decomposes entirely into the units each sort uniquely finds:
-rescue is 43 shared units at 0.63% plus **50 unique units at 9.45%**; legacy is
-the same 43 at 0.63% plus 25 unique at 3.01%. Rescue's extra units are smaller
-(amplitude 15.8 vs 19.0) and small units sit closer to the detection floor in
-every pipeline. See
-[0009](decisions/0009-cross-sort-comparisons-must-be-unit-matched.md).
+The first matched-unit comparison reported no difference, but its matcher could
+reuse target events. Its 43/47/42 match counts, paired estimates, and
+shared-versus-unique decomposition are withdrawn under
+[0011](decisions/0011-cross-sort-event-matching-and-detection-evidence.md).
+Until the exclusive v2 completeness matcher is rerun, the correct result is
+**unknown**, not “worse” and not “equivalent.” The population-composition
+confound remains real because missingness depends strongly on unit amplitude.
 
 **Estimator status:** validated. Unbiased to under 0.5 pp for true missing
 fractions of 0.5–40%, which covers every KS-good cohort (0.6–3%). Hard-censored
@@ -146,23 +139,20 @@ KS-good windows.
    firing-rate-bin occupancy ("stable" units) is not a substitute for
    amplitude-based missing-spike estimation. But the specific claim that rescue
    detects units *less* completely is retracted — see above.
-8. **Retracted pending corrected rerun.** The earlier claim that the yield
-   difference was relabelling rather than detection is unsupported. None of the 200
-   KS-good units rescue has and legacy does not is a new detection; every one is
-   built from spikes legacy already detected (80 legacy-MUA promotions, 85
-   dispersed across many legacy clusters, 35 splits of legacy good units). The
-   headline +73 is really +200/−127 — rescue also fails to reproduce 127 legacy
-   good units, which no gate measures. See
-   [0010](decisions/0010-rescue-yield-is-relabelling-not-detection.md), retracted
-   by [0011](decisions/0011-cross-sort-event-matching-and-detection-evidence.md).
-   Its matcher reused target events, while “found anywhere” had an 87–89%
-   whole-probe chance baseline. Treat every number in this item as historical
-   until the exclusive, spatial, null-controlled v2 output exists.
+8. **Corrected cross-sort audit, bounded conclusion.** Exclusive matching gives
+   `+210 / -137`, not the historical `+200 / -127`. The null-controlled spatial
+   audit supports overlap with the other complete sort for 208/210 rescue-side
+   units and 132/137 legacy-side units. Two and five units respectively remain
+   unresolved. Thus there is no *confirmed* rescue-only detection or confirmed
+   legacy detection loss, but equivalence and pipeline superiority are not
+   established. See
+   [0015](decisions/0015-corrected-cross-sort-audits-do-not-establish-equivalence.md).
 9. **A tension is unresolved:** the artifact-aware audit finds zero strong
    duplicate hypotheses, yet 27 similar good–good pairs survive curation against
    8 and 11 for the comparators. The 27 are not attributable to the extra units
-   — involvement is 20.0% for splits, 14.9% for units shared with legacy, 13.8%
-   for MUA promotions, 10.6% for dispersed units (odds ratio 0.66, p = 0.36).
+   — in v2, involvement is 20.0% for legacy-good relabelled units, 15.4% for
+   units matched to legacy good, 15.4% for MUA promotions, and 9.2% for
+   dispersed units (dispersed versus rest odds ratio 0.54, p = 0.145).
    The cause is still unknown.
 
 ## Not yet validated
@@ -199,5 +189,8 @@ ported alongside the pipeline.
 
 ## Test suite
 
-307 tests pass under the locked runtime (`environments/rescue-production`,
-Python 3.12.4).
+Most recent verified run (2026-09-03): **543 tests passed** with
+`environments/rescue-production/.venv/bin/python -m pytest -q testing/test_*.py`
+under Python 3.12.4. The unrestricted `pytest -q` also collects the data-bound
+`curation_single_run_test.py`, which requires an external recording cache and is
+not part of this portable unit/contract suite.

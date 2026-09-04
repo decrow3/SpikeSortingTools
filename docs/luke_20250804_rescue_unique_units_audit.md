@@ -7,16 +7,18 @@
 > **V2 RESULT — 2026-09-03 (below).** Corrected run: maximum-cardinality
 > one-to-one event matching, plus a depth-windowed coincidence statistic gated
 > against fixed circular-shift nulls before any shared-detection call. Cohort
-> counts shift (+210 / −137) but the conclusion is unchanged: **the rescue
-> yield gain is relabelling and re-clustering of an already-detected spike
-> population, not new detection.**
+> counts shift (+210 / −137). The bounded result is: **208/210 rescue-side units
+> have null-controlled evidence of overlap with legacy detections; two remain
+> unresolved. No rescue-only detection is confirmed, but detection equivalence
+> and pipeline superiority are not established.** See
+> [decision 0015](decisions/0015-corrected-cross-sort-audits-do-not-establish-equivalence.md).
 
 **V1 date:** 2026-09-02 · **V2 rerun:** 2026-09-03
 **Question left open by** [`decisions/0009`](decisions/0009-cross-sort-comparisons-must-be-unit-matched.md):
 rescue reports 301 KS-good units against legacy's 228. Are the extra units
 genuine neurons, promoted MUA, fragments, or noise?
-**Answer:** none of the difference is a supported new detection. Every
-rescue-unique good unit is built from spikes the legacy sort already detected.
+**Answer:** no rescue-only detection is confirmed. The audit supports shared
+detection for 208 units and leaves two unresolved.
 
 Reproduce with `python testing/luke_rescue_unique_units_audit.py`. Outputs to
 `testing/outputs/luke_rescue_unique_units_audit_v2/` (untracked, local). Nothing
@@ -50,7 +52,7 @@ matcher, so both the gained and lost cohorts grow while the net is unchanged.)
 The −137 lost legacy-good units are examined in
 [`luke_20250804_rescue_lost_units_audit.md`](luke_20250804_rescue_lost_units_audit.md).
 
-## None of the 210 are supported new detections
+## No confirmed new detections; two unresolved
 
 | Classification | n | median found in legacy | best legacy partner | median rate | median refractory | frac rv > 1% |
 |---|---:|---:|---:|---:|---:|---:|
@@ -64,10 +66,12 @@ for a genuine new detection; they are simply cases the whole-probe statistic
 cannot adjudicate. There is no unit in the +210 that the null-controlled test
 supports as detected-by-rescue-only.
 
-**The rescue pipeline detects no spikes the legacy pipeline did not detect that
-this test can confirm.** Its entire yield difference is re-clustering and
-re-labelling of an already-detected spike population — a statement about the
-*curation and clustering* stages, not about preprocessing or detection.
+**This test confirms no rescue-only detection.** For 208 units, the observed
+difference is expressed as re-clustering or re-labelling of a supported shared
+event population; two units remain unadjudicated. This localizes the observable
+output difference for the supported cases. It does not rule out an upstream
+preprocessing or motion-representation cause and does not show which pipeline's
+grouping is biologically correct.
 
 ### The classes
 
@@ -108,11 +112,11 @@ not of the extra units.
 
 ## Consequences
 
-1. **A preprocessing sweep would target the wrong stage.** Since rescue detects
-   nothing legacy did not, differences between the configurations are produced
-   by clustering and curation. Preprocessing variants can only change what is
-   available to detect, and detection is not where these two differ.
-2. **The MUA promotions deserve a decision.** 80 units are automatic promotions
+1. **Do not select preprocessing from this audit alone.** Most supported cases
+   differ in clustering or curation, but that does not identify the upstream
+   cause. A preprocessing or motion representation can change the partition of
+   an overlapping event pool.
+2. **The MUA promotions deserve a decision.** 91 units are automatic promotions
    of clusters legacy called MUA. [`0006`](decisions/0006-recovery-axis-is-post-sort-mua-reconciliation.md)
    concluded that under a conservative screen *no* unit was safe to promote and
    that promotion should be reversible and evidence-backed. The rescue
@@ -121,9 +125,9 @@ not of the extra units.
    reassuring but it is not the screen 0006 specified.
 3. **The 137 lost legacy good units** — examined in
    [`luke_20250804_rescue_lost_units_audit.md`](luke_20250804_rescue_lost_units_audit.md):
-   none is lost at detection or by curation (0 absent at detection, 0 removed by
-   curation under the null-controlled test); the −137 is a symmetric mirror of
-   the +210 — MUA demotions plus re-clustering.
+   132 have supported overlap with rescue detections and five remain unresolved;
+   there is no confirmed detection or curation loss, but “none lost” is not
+   established.
 4. **The similar-pair gate failure remains unexplained** and is not attributable
    to the extra units.
 

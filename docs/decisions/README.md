@@ -24,6 +24,7 @@ this research repository and is not duplicated here.
 | [0012](0012-c2-uses-compact-donor-cohort.md) | C2 uses compact D2b-2 donors; pilot plateau donors are forbidden |
 | [0013](0013-luke-imec0-has-appreciable-rigid-motion.md) | Luke imec0 has appreciable rigid motion; the 1.28 µm sidecar is withdrawn |
 | [0014](0014-injected-truth-scoring-is-per-cluster.md) | Injected-truth recovery is scored per output cluster, not against the pooled spike river |
+| [0015](0015-corrected-cross-sort-audits-do-not-establish-equivalence.md) | Corrected cross-sort audits show no confirmed detection difference, not equivalence |
 
 The active work plan derived from these records is
 [`../pipeline_improvement_plan.md`](../pipeline_improvement_plan.md).
@@ -32,9 +33,9 @@ Each record states the evidence commit or artifact it rests on. When a record is
 superseded, add a new record and mark the old one superseded rather than editing
 its conclusion — the point is to keep the reasoning trail intact.
 
-[0008](0008-amplitude-completeness-gates-promotion.md) and
-[0009](0009-cross-sort-comparisons-must-be-unit-matched.md) are the worked
-example. 0008 narrowed [0001](0001-ks4-unwarped-is-the-production-sorter.md);
-0009 then retracted 0008's own central claim after a unit-matched re-analysis.
-Nothing was edited away — each record keeps its measurements, and the
-corrections are additive. Read 0008 and 0009 together.
+The correction chain is itself part of the record. 0008's population-level
+completeness claim was challenged by 0009, but 0009's empirical matched-unit
+result was then retracted by 0011 because the matcher was not exclusive. The
+corrected Phase A/A2 interpretation is recorded in 0015. Nothing is edited out
+of the older decisions; read the newer record before citing their empirical
+claims.

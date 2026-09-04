@@ -2,6 +2,14 @@
 
 **Status:** Adopted as the direction of work. No promotion is currently authorized.
 
+> **CROSS-SORT UPDATE — 2026-09-03.** The 80/200 automatic-promotion account
+> below came from the retracted v1 matcher. The v2 cohort contains 91
+> MUA-to-good and 23 good-to-MUA cases among units with null-supported cross-sort
+> overlap, plus seven unresolved detection cases across both directions. This
+> remains a bidirectional curation-boundary question, not evidence that rescue is
+> better or that every apparent gain/loss was detected by both pipelines. See
+> [0015](0015-corrected-cross-sort-audits-do-not-establish-equivalence.md).
+
 ## The finding
 
 Lost neurons are mostly **not** lost at detection. Of 128 reused, manually
@@ -43,7 +51,7 @@ and preservation of already-good neighbouring units.
 Each would create new events or identities where the evidence only supports
 targeted reconciliation.
 
-## The rescue configuration is already doing this automatically
+## Historical v1 cross-sort interpretation — retracted
 
 Recorded 2026-09-02. On Luke0804 imec0, 80 of the 200 KS-good units that rescue
 has and legacy does not are legacy `mua` clusters relabelled good — roughly two

@@ -1,5 +1,13 @@
 # Luke Neuropixels preprocessing and motion rescue: literature-informed debugging plan
 
+> **HISTORICAL STRATEGY DOCUMENT — superseded 2026-09-03.** Its stage-local
+> benchmarking principles and bounded measurements remain useful, but its
+> working model and next-step sequence are not the active plan. Use
+> [`pipeline_improvement_plan.md`](pipeline_improvement_plan.md) and decisions
+> 0011–0015. Current evidence does not establish that the new pipeline is better
+> than legacy or that any one upstream mechanism explains the remaining
+> difference.
+
 ## Executive working model
 
 The Luke recordings contain substantial recoverable neural voltage and genuine electrode–tissue motion. The central unresolved problem is increasingly upstream of spike sorting:

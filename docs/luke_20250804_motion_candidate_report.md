@@ -1,5 +1,12 @@
 # Luke 2025-08-04 motion-correction candidate and spike-recovery test
 
+> **SCOPE NOTE — 2026-09-03.** These bounded real-data interventions remain
+> evidence about the tested external fields, kernels, gains, and windows. They
+> show that those voltage-warp implementations were not production winners.
+> They do not establish that no motion correction can help, that rescue handles
+> motion better than legacy, or that the newer C2 drift penalty has already been
+> measured.
+
 ## Technical summary
 
 The best-supported non-rigid estimate for the 8,160--8,280 s pathological

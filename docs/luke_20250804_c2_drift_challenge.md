@@ -11,7 +11,8 @@
 > **DONOR CORRECTION — 2026-09-03.** C2 v2 is retired without rerun. Although
 > its operator was fixed, it still specified T01/T04/T06, which D2b-2 showed are
 > common-mode plateaus or noise rather than compact neuron footprints. C2 v3
-> uses all 14 hash-frozen compact donors and statically qualifies each under
+> introduced all 14 hash-frozen compact donors but its run was void because of
+> the scorer defect in decision 0014. C2 v4 retains the cohort and qualifies each under
 > both rescue and `legacy_style`. See [decision 0012](decisions/0012-c2-uses-compact-donor-cohort.md).
 
 **Date:** 2026-09-02
