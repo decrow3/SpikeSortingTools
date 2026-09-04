@@ -103,22 +103,36 @@ def array_digest(values) -> str:
 def build_truth_contract(
     truth: Mapping,
     *,
+    injected: Mapping,
     admission: Mapping,
     channel_ids,
     geometry,
-    filtered_before_injection: bool,
     crop: tuple[int, int] | None = None,
 ) -> dict:
     """Bind an admitted train, its provenance and its spatial support together.
+
+    `injected` is the train the caller actually handed to the injector. The
+    "filtered before injection" claim is **derived** from it, by requiring it to
+    hash identically to `truth` -- it is deliberately not a boolean the caller
+    asserts. An earlier version took that boolean, and a runner that injected the
+    unfiltered 708-event train and filtered to 687 only for scoring certified
+    itself as correct: the 21 excluded events were still in the voltage, shaping
+    KS4's detection and templates. Passing the array you injected makes that
+    ordering error fail closed instead.
 
     `admission` must carry the schema and parameters that produced the filter,
     the totals, and the per-level counts, so a reader can tell *which* events
     were admitted and why without re-deriving them.
     """
-    if not filtered_before_injection:
+    injected_sha256 = truth_digest(injected)
+    if injected_sha256 != truth_digest(truth):
+        n_injected = int(sum(np.asarray(v).size for v in injected.values()))
+        n_truth = int(sum(np.asarray(v).size for v in truth.values()))
         raise TruthContractError(
-            "truth must be filtered before injection, not merely before scoring: "
-            "excluded events otherwise still shape detection and templates"
+            "the injected train is not the admitted train: injected "
+            f"{n_injected} events, scoring {n_truth}. Filter before injection — "
+            "excluded events left in the voltage still shape detection and "
+            "template formation, whatever the scorer counts."
         )
     for key in ("schema", "rule", "n_total", "n_admitted", "counts_by_level_um"):
         if key not in admission:
@@ -141,6 +155,8 @@ def build_truth_contract(
             for k, v in truth.items()
         },
         "admission": dict(admission),
+        "injected_sha256": injected_sha256,
+        # derived from `injected`, never asserted by the caller
         "filtered_before_injection": True,
         "spatial": {
             "n_channels": int(len(channel_ids)),

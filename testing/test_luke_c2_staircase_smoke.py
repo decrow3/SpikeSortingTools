@@ -7,12 +7,18 @@ from testing.luke_c2_staircase_control import STAIRCASE, expected_shift_channels
 
 def test_smoke_covers_the_four_required_cells():
     cells = {(c["arm"], c["sorter"]) for c in SMOKE["cells"]}
-    assert cells == {
+    assert cells >= {
         ("static", "rescue"),
         ("staircase", "rescue"),
         ("staircase", "rescue_rigid"),
         ("staircase_corrected", "rescue"),
     }
+
+
+def test_smoke_includes_the_stationary_rescue_rigid_control():
+    """Without it, a rescue_rigid gain cannot be attributed to motion recovery."""
+    cells = {(c["arm"], c["sorter"]) for c in SMOKE["cells"]}
+    assert ("static", "rescue_rigid") in cells
 
 
 def test_smoke_is_labelled_engineering_only():

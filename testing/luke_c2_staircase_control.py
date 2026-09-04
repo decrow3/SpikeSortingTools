@@ -260,8 +260,13 @@ def load_wide_background(margin: int | None = None):
 
 
 def build_arms(wide_uv, wide_geometry, fs, *, duration_s=None, crop=None,
-               margin=None, wide_channel_ids=None):
-    """Static / staircase / exactly-corrected arms, cropped identically.
+               margin=None, wide_channel_ids=None, trajectory_fn=None,
+               labels=("static", "staircase", "staircase_corrected")):
+    """Static / moved / exactly-corrected arms, cropped identically.
+
+    `trajectory_fn` returns µm of displacement against time and defaults to the
+    staircase; C2 v4 passes its Luke-calibrated ramps through the same builder,
+    so every condition gets the same identical-support guarantee.
 
     All three come from the same wide strip and the same crop, so they have
     byte-identical spatial support and channel geometry; the caller injects the
@@ -272,17 +277,19 @@ def build_arms(wide_uv, wide_geometry, fs, *, duration_s=None, crop=None,
     if duration_s is not None:
         wide_uv = np.ascontiguousarray(wide_uv[: int(round(duration_s * fs))])
 
+    trajectory_fn = trajectory_fn or staircase_um
+    static_label, moved_label, corrected_label = labels
     warp = dict(fs=fs, bin_s=STAIRCASE["bin_s"], trajectory_units="um")
-    staircase_wide = warp_array_with_known_motion(
-        wide_uv, wide_geometry, trajectory_fn=staircase_um, sign=-1.0, **warp
+    moved_wide = warp_array_with_known_motion(
+        wide_uv, wide_geometry, trajectory_fn=trajectory_fn, sign=-1.0, **warp
     )
     corrected_wide = warp_array_with_known_motion(
-        staircase_wide, wide_geometry, trajectory_fn=staircase_um, sign=+1.0, **warp
+        moved_wide, wide_geometry, trajectory_fn=trajectory_fn, sign=+1.0, **warp
     )
     return {
-        "static": np.ascontiguousarray(wide_uv[:, crop]),
-        "staircase": np.ascontiguousarray(staircase_wide[:, crop]),
-        "staircase_corrected": np.ascontiguousarray(corrected_wide[:, crop]),
+        static_label: np.ascontiguousarray(wide_uv[:, crop]),
+        moved_label: np.ascontiguousarray(moved_wide[:, crop]),
+        corrected_label: np.ascontiguousarray(corrected_wide[:, crop]),
         "geometry": np.ascontiguousarray(wide_geometry[crop]),
         "channel_ids": (
             np.asarray(wide_channel_ids)[crop] if wide_channel_ids is not None
@@ -373,40 +380,42 @@ def _reference_full(wide, crop, table, starts, stops, n_channels):
     return out
 
 
-def staircase_truth_contract(train, fs, arms, *, unit_id: str = "inj0"):
-    """The admitted train plus the attestation the scorer validates against.
+def staircase_admitted_truth(train, fs, *, unit_id: str = "inj0"):
+    """Filter the train **first**. The result is what must be injected.
 
-    The filter runs here, before injection, and the same `(truth, contract)`
-    pair goes to every arm and every sorter config -- so a paired score cannot
-    silently use a different denominator, and no caller can reconstruct the
-    unfiltered regular train from the prespec and have it accepted.
+    Returns `(truth, admission)`. Callers inject exactly `truth[unit_id]`; the
+    contract is then built from the array that was actually injected, so an
+    inject-then-filter ordering fails closed rather than certifying itself.
     """
     rule = STAIRCASE["truth_admission"]
     admission = admissible_train(np.asarray(train, dtype=np.int64), fs)
     admitted = np.asarray(train, dtype=np.int64)[admission["keep"]]
-    truth = {unit_id: admitted}
-    contract = build_truth_contract(
+    return {unit_id: admitted}, {
+        "schema": STAIRCASE["schema"],
+        "rule": rule["rule"],
+        "guard_bins": rule["guard_bins"],
+        "template_pre_samples": rule["template_pre_samples"],
+        "template_post_samples": rule["template_post_samples"],
+        "bin_s": STAIRCASE["bin_s"],
+        "levels_um": STAIRCASE["levels_um"],
+        "plateau_s": STAIRCASE["plateau_s"],
+        "transition_s": STAIRCASE["transition_s"],
+        "n_total": admission["n_total"],
+        "n_admitted": admission["n_admitted"],
+        "counts_by_level_um": admission["n_by_level"],
+    }
+
+
+def staircase_truth_contract(truth, injected, arms, admission):
+    """Bind the admitted train to the array injected and the cropped support."""
+    return build_truth_contract(
         truth,
-        admission={
-            "schema": STAIRCASE["schema"],
-            "rule": rule["rule"],
-            "guard_bins": rule["guard_bins"],
-            "template_pre_samples": rule["template_pre_samples"],
-            "template_post_samples": rule["template_post_samples"],
-            "bin_s": STAIRCASE["bin_s"],
-            "levels_um": STAIRCASE["levels_um"],
-            "plateau_s": STAIRCASE["plateau_s"],
-            "transition_s": STAIRCASE["transition_s"],
-            "n_total": admission["n_total"],
-            "n_admitted": admission["n_admitted"],
-            "counts_by_level_um": admission["n_by_level"],
-        },
+        injected=injected,
+        admission=dict(admission),
         channel_ids=arms["channel_ids"],
         geometry=arms["geometry"],
-        filtered_before_injection=True,
         crop=(arms["crop"].start, arms["crop"].stop),
     )
-    return truth, contract
 
 
 # --------------------------------------------------------------------------- #
@@ -428,7 +437,10 @@ def run(full: bool = False) -> dict:
         int(round(fs / PRESPEC["train"]["rate_hz"])),
         dtype=np.int64,
     )
-    truth, contract = staircase_truth_contract(train, fs, arms)
+    truth, admission_record = staircase_admitted_truth(train, fs)
+    # the control verifies voltage only, but it must model the real order:
+    # filter first, then treat that array as the one injected
+    contract = staircase_truth_contract(truth, truth, arms, admission_record)
     admission = admissible_train(train, fs)
     paired = assert_paired_truth([contract, contract, contract],
                                  labels=list(STAIRCASE["arms"]))

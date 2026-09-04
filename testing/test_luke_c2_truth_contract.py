@@ -33,10 +33,10 @@ def admission_record(n_total: int, n_admitted: int, by_level: dict) -> dict:
 def contract_for(truth, **overrides) -> dict:
     n = int(sum(np.asarray(v).size for v in truth.values()))
     kwargs = dict(
+        injected=truth,                      # the correct order, by default
         admission=admission_record(n + 3, n, {"0.0": n // 2, "40.0": n - n // 2}),
         channel_ids=CHANNEL_IDS,
         geometry=GEOMETRY,
-        filtered_before_injection=True,
     )
     kwargs.update(overrides)
     return build_truth_contract(truth, **kwargs)
@@ -141,10 +141,38 @@ def test_differing_denominators_fail_closed():
         assert_paired_truth([a, b], labels=["static", "staircase"])
 
 
-def test_filtering_after_injection_is_refused():
-    with pytest.raises(TruthContractError, match="before injection"):
-        contract_for({"inj0": np.arange(5, dtype=np.int64)},
-                     filtered_before_injection=False)
+def test_injecting_the_unfiltered_train_is_refused():
+    """The exact bug that shipped: inject 708, score 687, certify as correct.
+
+    The attestation is derived from the array actually injected, so an
+    inject-then-filter runner cannot certify itself.
+    """
+    full = np.arange(708, dtype=np.int64) * 5_000
+    admitted = np.delete(full, np.arange(21))     # the 21 boundary straddlers
+    with pytest.raises(TruthContractError, match="injected 708 events, scoring 687"):
+        contract_for({"inj0": admitted}, injected={"inj0": full})
+
+
+def test_the_attestation_is_derived_not_declared():
+    admitted = np.arange(20, dtype=np.int64) * 5_000
+    contract = contract_for({"inj0": admitted})
+    assert contract["filtered_before_injection"] is True
+    assert contract["injected_sha256"] == contract["truth_sha256"]
+    # there is no boolean a caller can set to claim this
+    with pytest.raises(TypeError):
+        build_truth_contract(
+            {"inj0": admitted}, injected={"inj0": admitted},
+            admission=admission_record(23, 20, {"0.0": 20}),
+            channel_ids=CHANNEL_IDS, geometry=GEOMETRY,
+            filtered_before_injection=True,
+        )
+
+
+def test_one_extra_injected_event_is_refused():
+    admitted = np.arange(20, dtype=np.int64) * 5_000
+    extra = np.append(admitted, admitted[-1] + 5_000)
+    with pytest.raises(TruthContractError, match="not the admitted train"):
+        contract_for({"inj0": admitted}, injected={"inj0": extra})
 
 
 def test_a_miscounted_admission_record_is_refused():
@@ -152,9 +180,9 @@ def test_a_miscounted_admission_record_is_refused():
     with pytest.raises(TruthContractError, match="admission claims"):
         build_truth_contract(
             {"inj0": admitted},
+            injected={"inj0": admitted},
             admission=admission_record(30, 25, {"0.0": 25}),  # claims 25, holds 20
             channel_ids=CHANNEL_IDS, geometry=GEOMETRY,
-            filtered_before_injection=True,
         )
 
 
@@ -162,9 +190,9 @@ def test_an_incomplete_admission_record_is_refused():
     with pytest.raises(TruthContractError, match="missing"):
         build_truth_contract(
             {"inj0": np.arange(5, dtype=np.int64)},
+            injected={"inj0": np.arange(5, dtype=np.int64)},
             admission={"schema": "x", "rule": "y", "n_admitted": 5},  # no n_total
             channel_ids=CHANNEL_IDS, geometry=GEOMETRY,
-            filtered_before_injection=True,
         )
 
 

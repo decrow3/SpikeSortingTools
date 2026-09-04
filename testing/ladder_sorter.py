@@ -90,31 +90,82 @@ NAMED_CONFIGS = {
     c.label: c for c in (RESCUE, LEGACY_STYLE, RESCUE_RIGID, NONRIGID)
 }
 
-# What each config must resolve to *after* KS4 has applied it, checked against
-# `summary.critical_saved_settings` in the sort manifest.
+# What each config must resolve to once KS4 has applied it.
 EXPECTED_EFFECTIVE = {
-    "rescue": {"applied_do_CAR": True, "effective_nblocks": 0,
-               "applied_Th_universal": 12, "applied_Th_learned": 9},
-    "rescue_rigid": {"applied_do_CAR": True, "effective_nblocks": 1,
-                     "applied_Th_universal": 12, "applied_Th_learned": 9},
-    "legacy_style": {"applied_do_CAR": True, "effective_nblocks": 1,
-                     "applied_Th_universal": 9, "applied_Th_learned": 8},
-    "nonrigid": {"applied_do_CAR": True, "effective_nblocks": 6,
-                 "applied_Th_universal": 12, "applied_Th_learned": 9},
+    "rescue": {"effective_nblocks": 0, "do_CAR": True,
+               "Th_universal": 12, "Th_learned": 9},
+    "rescue_rigid": {"effective_nblocks": 1, "do_CAR": True,
+                     "Th_universal": 12, "Th_learned": 9},
+    "legacy_style": {"effective_nblocks": 1, "do_CAR": True,
+                     "Th_universal": 9, "Th_learned": 8},
+    "nonrigid": {"effective_nblocks": 6, "do_CAR": True,
+                 "Th_universal": 12, "Th_learned": 9},
 }
 
 
-def check_effective_settings(label: str, saved: dict) -> dict:
+def effective_settings(sort_manifest: dict) -> dict:
+    """Canonical applied settings, from either sort path's manifest shape.
+
+    The two paths record different things. `pipeline.sorting.run_kilosort4` (the
+    `rescue` arm) writes `summary.critical_saved_settings` -- `do_correction`,
+    `effective_nblocks`, `do_CAR`, `artifact_threshold` -- and does not save the
+    detection thresholds. `run_sorter_config` (every comparator arm) writes flat
+    `effective_nblocks` / `applied_*` keys read back out of `ops.npy`.
+
+    `effective_nblocks` is the one KS4 rewrites (`do_correction=False` forces it
+    to 0 whatever was requested), so it must come from the saved ops and this
+    raises if it is absent. KS4 does not alter the detection thresholds, so when
+    a path does not save them they are taken from the request -- recorded in
+    `_sources` so a reader can see which is which.
+    """
+    summary = dict(sort_manifest.get("summary", {}))
+    merged = {**dict(summary.get("critical_saved_settings", {})), **summary}
+    requested = dict(sort_manifest.get("sorter_params", {}))
+    sources: dict[str, str] = {}
+
+    def applied(canonical: str, *names):
+        for name in names:
+            if name in merged and merged[name] is not None:
+                sources[canonical] = f"applied:{name}"
+                return merged[name]
+        return None
+
+    nblocks = applied("effective_nblocks", "effective_nblocks")
+    if nblocks is None:
+        raise RuntimeError(
+            "sort manifest records no effective nblocks; correction cannot be "
+            "validated from the requested parameters alone"
+        )
+    values = {
+        "effective_nblocks": int(nblocks),
+        "do_CAR": applied("do_CAR", "applied_do_CAR", "do_CAR"),
+        "Th_universal": applied("Th_universal", "applied_Th_universal"),
+        "Th_learned": applied("Th_learned", "applied_Th_learned"),
+    }
+    for canonical, request_key in (("Th_universal", "Th_universal"),
+                                   ("Th_learned", "Th_learned")):
+        if values[canonical] is None and request_key in requested:
+            values[canonical] = requested[request_key]
+            sources[canonical] = f"requested:{request_key}"
+    missing = [k for k, v in values.items() if v is None]
+    if missing:
+        raise RuntimeError(f"sort manifest records no value for {missing}")
+    values["_sources"] = sources
+    return values
+
+
+def check_effective_settings(label: str, sort_manifest: dict) -> dict:
     """Fail closed unless KS4 actually applied what the config asked for."""
+    observed = effective_settings(sort_manifest)
     expected = EXPECTED_EFFECTIVE[label]
     mismatch = {
-        k: {"expected": v, "saved": saved.get(k)}
+        k: {"expected": v, "observed": observed[k]}
         for k, v in expected.items()
-        if saved.get(k) != v
+        if observed[k] != v
     }
     if mismatch:
         raise RuntimeError(f"{label} resolved to unexpected settings: {mismatch}")
-    return {k: saved.get(k) for k in expected}
+    return observed
 
 
 def _json_safe(params: dict) -> dict:

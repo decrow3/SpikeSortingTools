@@ -86,7 +86,10 @@ def _amplitude_observables(sorter_output: Path) -> dict:
 def _stage_observables(sort_dir: Path, curated: Path) -> dict:
     """Cheap per-stage diagnostics, recorded on every run (plan §3 rule 2)."""
     sort_manifest = json.loads((sort_dir / SORT_MANIFEST).read_text())
-    obs = {"sort_summary": sort_manifest.get("summary", {})}
+    obs = {
+        "sort_summary": sort_manifest.get("summary", {}),
+        "sort_request": sort_manifest.get("sorter_params", {}),
+    }
     obs.update(_amplitude_observables(sort_dir / "sorter_output"))
     clu = np.load(curated / "spike_clusters.npy", mmap_mode="r").reshape(-1)
     obs["curated_spike_count"] = int(clu.size)

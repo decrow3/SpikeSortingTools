@@ -49,9 +49,20 @@
 > result because its pooled-spike scorer let background clusters steal truth
 > events. Decision 0014 fixes scoring per candidate cluster. Because the v3
 > prespec/output namespace is frozen and contains the old trajectories, the next
-> experiment is **C2 v4**: first validate all 14 static arms with the corrected
-> scorer, then run a newly frozen Luke-calibrated rigid family (~4–5, 10–12,
-> 20–25 µm). This is not gated by the abandoned Luke/Yates overlap match.
+> experiment is **C2 v4**. Corrected static rescoring is complete; next freeze
+> and run the Luke-calibrated rigid family (~4–5, 10–12, 20–25 µm). This is not
+> gated by the abandoned Luke/Yates overlap match.
+
+> **TWO-OPTION DEVELOPMENT DECISION — 2026-09-03.** “No external voltage
+> warp” is the shared control and current operational reference; it is **not**
+> one of the two development bets. The candidate programme must build and test
+> both (A) a physically validated external voltage-registration pipeline and
+> (B) an unwarped, motion-aware identity pipeline. Historical external-warp
+> failures reject those implementations, fields and operating points—not the
+> standard approach as a class. Implementation and smoke testing may proceed in
+> parallel; C2 v4 supplies the common causal calibration before either option is
+> promoted. Detailed build instructions:
+> [`luke_two_motion_pipeline_build_instructions.md`](luke_two_motion_pipeline_build_instructions.md).
 
 **Status:** active, updated 2026-09-03
 **Supersedes as a work plan:** the follow-up lists in
@@ -63,7 +74,9 @@
 [`0011`](decisions/0011-cross-sort-event-matching-and-detection-evidence.md),
 [`0013`](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md),
 [`0014`](decisions/0014-injected-truth-scoring-is-per-cluster.md), and
-[`0015`](decisions/0015-corrected-cross-sort-audits-do-not-establish-equivalence.md)
+[`0015`](decisions/0015-corrected-cross-sort-audits-do-not-establish-equivalence.md).
+**Implementation companion:**
+[`luke_two_motion_pipeline_build_instructions.md`](luke_two_motion_pipeline_build_instructions.md).
 
 ## 1. The goal, as a testable claim
 
@@ -700,6 +713,23 @@ Any Checkpoint C rerun uses the v3 scorer.)*
 Only now does pipeline variation begin. Each candidate: L1 on one snippet, then
 L2 on the panel, then stop. Log every candidate and its score.
 
+The search has **two required development options**, evaluated against one
+shared no-correction control:
+
+1. **External voltage registration (Option A).** A full-duration,
+   independently qualified motion field is applied on the full supported probe
+   geometry with a validated interpolation/boundary policy before any spatial
+   crop. KS4 internal motion correction is disabled so the intervention is
+   identifiable.
+2. **Unwarped motion-aware identity (Option B).** Original accepted voltages
+   are never spatially resampled. Motion enters only through coordinates,
+   template/identity tracking or evidence-gated longitudinal family links.
+
+Both options may be implemented and smoke-tested while C2 v4 runs. Neither may
+be tuned on L2, held-out data or full-session yield before its rule is frozen.
+The uncorrected rescue pipeline remains the comparator in every experiment; it
+does not consume a development-option slot.
+
 **The priority order is a decision tree, not a fixed list** (revised
 2026-09-02). The earlier fixed ordering — curation first, motion last — rested
 on reading [`0010`](decisions/0010-rescue-yield-is-relabelling-not-detection.md)
@@ -770,10 +800,12 @@ To stop this becoming indefinite, **preregister the candidate budget**: at most
 **6 field/application configurations** across D2a–D2c, logged, before the
 branch is either adopted or closed.
 
-### D2 — Conventional motion-correction optimization
+### D2 / Option A — conventional external voltage-registration optimization
 
-**The next active branch**, before DARTsort, KIASORT, TDC motion-aware matching,
-post-sort tracking, or any other architectural alternative.
+**A required primary development branch**, tested fairly rather than inferred
+from the rejected historical warp. It is developed alongside the lightweight
+Option B implementation. Expensive alternative-sorter work remains behind the
+architecture gate.
 
 The question is no longer *"does voltage interpolation work?"* It is:
 
@@ -786,8 +818,9 @@ before changing architectures.
 
 #### The active sequence
 
-The whole D2 branch is **gated on C2 v4** (§9). Nothing in this sequence is
-active work until C2 v4 reports.
+Scientific evaluation and tuning of D2 are **gated on C2 v4** (§9). Interface
+construction, provenance checks, operator round-trip tests and one smoke window
+are active work now so C2 completion can trigger the bakeoff immediately.
 
 | # | Step | Status |
 |---|---|---|
@@ -800,7 +833,7 @@ active work until C2 v4 reports.
 | 6 | **Pre-sort field qualification** — independent support, reproducibility, error evidence | paused — fails closed; numeric envelope to be set by the reruns |
 | 7 | **D2c bounded policy comparison** — none / best full / one simple selective policy | not started |
 | 8 | **L2 → L2L → L3** — injected truth, longitudinal identity, waveform preservation, guardrails | not started |
-| 9 | **Architecture gate** — opened only if the best conventional correction remains meaningfully deficient | not started |
+| 9 | **Heavyweight architecture gate** — alternative sorters open only if the two-option bakeoff retains a meaningful deficit | not started |
 
 Steps 2–4 come **before** the expensive full-session estimation in step 5. That
 ordering is the point: step 6 can reject a field on cheap evidence before it
@@ -1056,15 +1089,23 @@ Phase A v2 found no **confirmed** detection loss in this cohort, but five cases
 remain unresolved. A legacy-good label is not ground truth, and neither is an
 unresolved result evidence that the unit was preserved.
 
-### Architecture gate
+### Option B — unwarped motion-aware identity, and the architecture gate
 
-> Compare DARTsort, KIASORT, motion-aware template matching/tracking, or other
-> non-voltage-warp approaches **only if** the best conventional motion-corrected
-> KS4 candidate still has a meaningful, reproducible identity deficit on
-> injected truth and L2L longitudinal continuity.
+Build the minimum viable unwarped option in parallel: retain the accepted
+voltage exactly, transform only spike/template coordinates into a tissue frame,
+and link identities through time only when waveform, trajectory, temporal
+complementarity and union-refractory evidence all pass frozen gates. This
+lightweight candidate is one of the two required options, not a fallback.
 
-These alternatives must be compared against the **best conventional
-motion-corrected KS4 pipeline** — not against:
+The **heavyweight architecture gate** still controls escalation to DARTsort,
+KIASORT, TDC motion-aware template matching or another sorter. Open that gate
+only if the lightweight unwarped option or the best conventional
+motion-corrected KS4 candidate retains a meaningful, reproducible identity
+deficit on injected truth and L2L longitudinal continuity.
+
+The unwarped option and any later architecture must be compared against both
+the **best conventional motion-corrected KS4 pipeline** and the shared
+uncorrected control. It must not be judged solely against:
 
 - the pathological historical DREDGE warp;
 - the intentionally uncorrected rescue baseline; or
@@ -1212,9 +1253,11 @@ eliminated.
    L1 measured well under the 5-minute budget at 120 s.
 4. **Compact donor cohort (D2b-2).** 14 spatially-compact imec0 donors, both
    polarities, 73–295 µV, de-whitened KS shape scaled to bandpass-STA µV.
-   Cohort hash-frozen; corrected-scorer static qualification of all 14 under
-   both configurations is pending. The historical six-donor sanity result is
-   not the C2 qualification. The pilot `T*` plateau donors are forbidden
+   Cohort hash-frozen. Corrected static rescoring removes the artificial ~0.78
+   floor: 12/14 donors score 0.97–0.99 under both configurations and satisfy the
+   accuracy qualification; 10/14 are also cleanly recovered under both. D01
+   fails only under legacy-style, D10 only under rescue, and D05/D14 retain a
+   real chance-null-supported second cluster. The pilot `T*` plateau donors are forbidden
    ([decision 0012](decisions/0012-c2-uses-compact-donor-cohort.md)).
    Doc: [`d2b2_donor_cohort`](luke_20250804_d2b2_donor_cohort.md).
 
@@ -1234,25 +1277,27 @@ eliminated.
    river and let background clusters steal ~10 % of events
    ([decision 0014](decisions/0014-injected-truth-scoring-is-per-cluster.md),
    [`c2_v3_scorer_validation_failure`](luke_20250804_c2_v3_scorer_validation_failure.md)).
-   Fixed: per-cluster exclusive matching, `SCORE_SCHEMA` → v3, 3 regression
-   tests. **Before moving arms:** re-score/validate all 14 static arms with the
-   corrected scorer and confirm the floor is gone. Then freeze and run the v4
-   Luke-calibrated rigid family (~4–5 / 10–12 / 20–25 µm,
+   Fixed: per-cluster exclusive matching plus chance-null split/merge gates,
+   `SCORE_SCHEMA` → v3, with regression coverage. Static rescoring is complete
+   and the floor is gone. Now freeze and run the v4 Luke-calibrated rigid family
+   (~4–5 / 10–12 / 20–25 µm,
    [decision 0013](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md)).
    This is not gated by the failed Luke/Yates overlap match.
 
-### Paused pending C2 v4
+### Build now; evaluate after C2 v4
 
-- **Candidate 2** (non-rigid motion representation) — its oracle/estimated
-  evaluation consumes C2 v4 outputs only.
+- **Option A external voltage registration** — build/operator smoke tests may
+  run now; oracle/estimated performance evaluation consumes C2 v4 outputs.
+- **Option B unwarped motion-aware identity** — build/identity-preservation
+  smoke tests may run now; promotion scoring consumes C2 v4 and the same frozen
+  panels.
 - **D2b** (field-error tolerance, interpolation tradeoff) — `d2b1` fails closed
   until a compact-donor focus is frozen from the C2 v4 result.
 - **D2a** (best-supported full-session field) — infra built
   (`ladder_motion_estimate.py`), not run. A valid C2 v4 result is required
   before it becomes a quantifying experiment.
-- **Architecture gate** (motion-aware template matching, no voltage resampling)
-  — opens only if the best conventional correction remains meaningfully
-  deficient *after* C2 v4 / D2.
+- **Heavyweight architecture gate** (alternative sorters) — opens only if the
+  two-option bakeoff leaves a meaningful deficit after C2 v4 / D2 / L2L.
 
 ### The defensible claim now
 

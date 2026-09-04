@@ -42,6 +42,7 @@ from testing.luke_c2_staircase_control import (
     build_arms,
     expected_shift_channels,
     load_wide_background,
+    staircase_admitted_truth,
     staircase_truth_contract,
 )
 from testing.luke_rescue_c2_drift_challenge import (
@@ -70,12 +71,24 @@ SMOKE = {
         {"arm": "staircase", "sorter": "rescue"},
         {"arm": "staircase", "sorter": "rescue_rigid"},
         {"arm": "staircase_corrected", "sorter": "rescue"},
+        # Required control, not optional. `rescue_rigid` differs from `rescue`
+        # in more than motion handling -- datashift re-registers the recording
+        # and changes clustering even with no motion present. Without this cell,
+        # "rigid correction rescued the moving arm" cannot be separated from
+        # "rigid correction sorts this donor better regardless". Run 1 made that
+        # concrete: D10 scored 0.956 on staircase+rescue_rigid but only 0.470 on
+        # static+rescue, so the gain cannot all be motion recovery.
+        {"arm": "static", "sorter": "rescue_rigid"},
     ],
     "expected_qualitative": {
         "static_rescue": "recovered",
         "staircase_rescue": "degraded or fragmented vs static",
         "staircase_rescue_rigid": "better than staircase+rescue if rigid correction works",
         "staircase_corrected_rescue": "close to static; the machinery's ceiling",
+        "static_rescue_rigid": (
+            "the control: how much of rescue_rigid's gain is motion recovery "
+            "rather than a different sort of the same stationary neuron"
+        ),
     },
 }
 
@@ -117,6 +130,9 @@ def build_donor_arms(tid, wide_uv, wide_geometry, wide_ids, fs, crop, margin,
         "base_channel_wide": int(base_wide), "base_channel_crop": int(base_crop),
         "peak_channel_crop": int(peak_crop), "template_width": int(template.shape[1]),
     }
+    # the array that actually went into the voltage — the contract is built from
+    # this, so injecting anything but the admitted train fails closed
+    arms["injected_train"] = np.asarray(train, dtype=np.int64)
     return arms
 
 
@@ -143,14 +159,20 @@ def run(donors_requested=None, out_root=None, keep_recordings=False) -> dict:
         dtype=np.int64,
     )
 
+    # Filter FIRST. Only the admitted array exists below this line, so the
+    # boundary-straddling events never enter the voltage at all — they cannot
+    # shape detection or template formation, not merely go unscored.
+    truth, admission_record = staircase_admitted_truth(regular, fs)
+    unit_id, admitted = next(iter(truth.items()))
+
     rows, contracts = [], {}
     for tid in tids:
         arms = build_donor_arms(tid, wide_uv, wide_geometry, wide_ids, fs, crop,
                                 margin, donors, donor_meta, source_geometry,
-                                regular)
-        # the admitted train is filtered here, before injection reaches a sorter,
-        # and the identical (truth, contract) pair goes to every cell
-        truth, contract = staircase_truth_contract(regular, fs, arms)
+                                admitted)
+        contract = staircase_truth_contract(
+            truth, {unit_id: arms["injected_train"]}, arms, admission_record
+        )
         contracts[tid] = contract
 
         rec_dirs = {}
@@ -173,10 +195,11 @@ def run(donors_requested=None, out_root=None, keep_recordings=False) -> dict:
                 truth=truth, truth_contract=contract,
                 out_root=out_root / "_l1",
             )
-            saved = result["stage_observables"]["sort_summary"].get(
-                "critical_saved_settings", {}
-            )
-            effective = check_effective_settings(label, saved)
+            observables = result["stage_observables"]
+            effective = check_effective_settings(label, {
+                "summary": observables["sort_summary"],
+                "sorter_params": observables.get("sort_request", {}),
+            })
             unit = result["score"]["primary"]["units"][0]
             rows.append({
                 "template": tid,
@@ -190,7 +213,7 @@ def run(donors_requested=None, out_root=None, keep_recordings=False) -> dict:
                 "label_switches": unit["label_switches"],
                 "recovered": unit["recovered"],
                 "truth_sha256": result["score"]["truth_contract"]["truth_sha256"][:12],
-                **{f"eff_{k}": v for k, v in effective.items()},
+                **{f"eff_{k}": v for k, v in effective.items() if k != "_sources"},
             })
         if not keep_recordings:
             for rec_dir in rec_dirs.values():

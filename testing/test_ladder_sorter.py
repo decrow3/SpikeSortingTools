@@ -72,13 +72,59 @@ def test_rescue_requests_nblocks_1_but_must_resolve_to_0():
     assert EXPECTED_EFFECTIVE["rescue"]["effective_nblocks"] == 0
 
 
+def _ladder_manifest(**summary):
+    """The flat `applied_*` shape `run_sorter_config` writes."""
+    return {"summary": {"effective_nblocks": 1, "applied_do_CAR": True,
+                        "applied_Th_universal": 12, "applied_Th_learned": 9,
+                        **summary},
+            "sorter_params": {}}
+
+
+def _production_manifest(**saved):
+    """The `critical_saved_settings` shape `run_kilosort4` writes: no thresholds."""
+    return {"summary": {"critical_saved_settings": {
+                "do_correction": False, "effective_nblocks": 0,
+                "do_CAR": True, **saved}},
+            "sorter_params": {"Th_universal": 12, "Th_learned": 9}}
+
+
+def test_check_effective_settings_reads_both_manifest_shapes():
+    from testing.ladder_sorter import check_effective_settings
+
+    rigid = check_effective_settings("rescue_rigid", _ladder_manifest())
+    rescue = check_effective_settings("rescue", _production_manifest())
+    assert rigid["effective_nblocks"] == 1 and rescue["effective_nblocks"] == 0
+    # thresholds come from ops on the ladder path, from the request on the other
+    assert rigid["_sources"]["Th_universal"].startswith("applied:")
+    assert rescue["_sources"]["Th_universal"] == "requested:Th_universal"
+
+
 def test_check_effective_settings_fails_closed_on_a_silent_downgrade():
     import pytest
 
-    from testing.ladder_sorter import EXPECTED_EFFECTIVE, check_effective_settings
+    from testing.ladder_sorter import check_effective_settings
 
-    good = dict(EXPECTED_EFFECTIVE["rescue_rigid"])
-    assert check_effective_settings("rescue_rigid", good) == good
-    downgraded = {**good, "effective_nblocks": 0}   # correction silently off
     with pytest.raises(RuntimeError, match="effective_nblocks"):
-        check_effective_settings("rescue_rigid", downgraded)
+        check_effective_settings("rescue_rigid", _ladder_manifest(effective_nblocks=0))
+
+
+def test_correction_state_may_never_be_taken_from_the_request():
+    """No saved nblocks means the arm is unverifiable, not assumed correct."""
+    import pytest
+
+    from testing.ladder_sorter import check_effective_settings
+
+    manifest = {"summary": {}, "sorter_params": {"do_correction": True, "nblocks": 1,
+                                                 "Th_universal": 12, "Th_learned": 9}}
+    with pytest.raises(RuntimeError, match="no effective nblocks"):
+        check_effective_settings("rescue_rigid", manifest)
+
+
+def test_a_manifest_missing_thresholds_entirely_fails_closed():
+    import pytest
+
+    from testing.ladder_sorter import check_effective_settings
+
+    manifest = {"summary": {"effective_nblocks": 0, "do_CAR": True}, "sorter_params": {}}
+    with pytest.raises(RuntimeError, match="no value for"):
+        check_effective_settings("rescue", manifest)
