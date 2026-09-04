@@ -5,7 +5,7 @@
 **Motivated by:** [`luke_yates_stable_window_overlap_result.md`](luke_yates_stable_window_overlap_result.md)
 — the Luke↔Yates matched design failed because Luke imec0 has no motion-quiet
 subset. This replaces it as the primary analysis.
-**Runs parallel to** C2 v3; gates nothing, gated by nothing.
+**Runs parallel to** C2 v4; gates nothing, gated by nothing.
 
 ## 1. The question — and what this design can and cannot answer
 
@@ -18,13 +18,13 @@ removes fixed animal / probe / anatomy differences. It does **not** remove
 time-varying neural state, stimulus regime, behaviour, noise/artifact structure,
 or electrode settling, and there is **no normal reference** in this design (Luke's
 quietest window is still above the intended quiet regime — see the failed
-overlap gate). The interventional counterpart is **C2 v3**.
+overlap gate). The interventional counterpart is **C2 v4**.
 
 ### Pre-committed readings (revised — no causal or baseline claims)
 
 | Observation | Reading |
 |---|---|
-| The **primary** metric (E3, QC-qualified units/mm) declines monotonically with the consensus rigid-excursion dose, the decline **survives the session-time partial and the nonlinear session-time sensitivity**, and the sign **agrees across the three concordant estimators** | Sorting quality covaries with estimated rigid motion within this session. **Consistent with** motion being a live limiting factor; does **not** establish it as the main one, and does **not** establish that quiet windows are healthy — C2 v3 is the test for both. |
+| The **primary** metric (E3, QC-qualified units/mm) declines monotonically with the consensus rigid-excursion dose, the decline **survives the session-time partial and the nonlinear session-time sensitivity**, and the sign **agrees across the three concordant estimators** | Sorting quality covaries with estimated rigid motion within this session. **Consistent with** motion being a live limiting factor; does **not** establish it as the main one, and does **not** establish that quiet windows are healthy — C2 v4 is the test for both. |
 | No covariation across the full dose range | **Not** evidence that motion is unimportant. Compatible with: every window already past a failure threshold; exposure measurement too noisy (the estimators disagree — §2); 120 s giving too few units for power; the effect being non-monotonic. |
 | The consensus dose and the MEDiCINe sensitivity dose **disagree in sign** on the primary metric | **Exposure unresolved.** Report as such; draw no motion conclusion. |
 | Degradation tracks `window_start_recording_s` more than the dose in the partials | The association is drift-accumulation / settling / a session-time-locked state change, not rigid motion per se. |
@@ -54,10 +54,14 @@ windows joined on `time_interval_id`:
 - **MEDiCINe is a sensitivity arm only.** Its per-window excursion is also
   reported; a primary result whose sign flips under the MEDiCINe dose is
   **"exposure unresolved"**, not a finding.
-- **Exposure-validity rule (frozen):** a motion-covariation claim for any
-  endpoint requires the Spearman sign vs the consensus dose to **agree with the
-  sign vs each of the three concordant estimators' individual excursion**. The
-  cross-estimator sign table is reported for every endpoint.
+- **Exposure-validity rule (frozen), per endpoint:**
+  - `no_association` if \|ρ(endpoint, consensus dose)\| < 0.10 — the sign is noise;
+  - `unresolved` if the sign vs the consensus dose does **not** agree with the
+    sign vs **every** one of the four estimators' individual excursion (including
+    MEDiCINe);
+  - `resolved` otherwise.
+  A motion-covariation claim requires `resolved`. The per-estimator ρ values (not
+  just signs) are reported for every endpoint.
 
 ## 3. Window selection — frozen
 
@@ -109,7 +113,7 @@ A cluster qualifies iff **all** of:
 | Criterion | Frozen value | Source / rationale |
 |---|---|---|
 | spike count | ≥ **150** in the 120 s window | below this the RV fraction is not estimable (<150 ISIs); also the floor for E6 half-splits (≥ 60 per half) |
-| bandpass amplitude | ≥ **15 µV** peak\|·\| of the KS template row mapped to µV via `whitening_mat_inv` and the unit's bandpass spike-triggered-average peak (the D2b-2 `ladder_donors` scaling), computed once per cluster | `ladder_donors` scaling is the repo's only validated template→µV path; 15 µV ≈ the rescue detection floor |
+| bandpass amplitude | ≥ **15 µV**. Peak channel = argmax\|·\| of the **de-whitened** KS template (`templates[c] @ whitening_mat_inv`). Amplitude = peak \|·\| of the bandpass (300–6000 Hz + CAR) spike-triggered average over ±4 channels around that peak, **× `gain_uv_per_count`** (the `ladder_donors` path). Fails closed to NaN (→ not qualified) if the calibrated STA is not estimable — **never** a template-unit fallback | 15 µV ≈ the rescue detection floor; whitened/`cluster_Amplitude` values are ~4–7× short of µV |
 | refractory-violation fraction | ≤ **0.01** (ISI < 1.5 ms) | a flat 1 % contamination ceiling — not "2× an unfrozen reference"; the Phase A v2 matched-unit cohort sits at ~0.1–0.5 % |
 | presence | spikes in ≥ **9 of 12** 10 s sub-bins | 10 s bins (not 20 s) so the rule means "roughly continuous", not "present in 4 of 6" |
 
@@ -146,10 +150,24 @@ validate a single-event compactness gate and promote a compact-event metric.
 > **Spearman ρ of E3 (`E3_qualified_units_per_mm`) vs the consensus
 > rigid-excursion dose**, across the 24 windows, with a 2000-sample bootstrap CI.
 > Pre-registered expected sign: **negative** (more motion → fewer qualified
-> units/mm). Supported only if: ρ < 0, the bootstrap CI excludes 0, the sign
-> survives the **partial** given `window_start_recording_s` **and** a
-> LOESS/quadratic session-time detrend, **and** the cross-estimator sign table
-> (§2) agrees.
+> units/mm).
+
+`primary_supported` is a single boolean = the conjunction of the frozen
+`primary_decision_reasons` (all must hold):
+
+| Reason | Condition |
+|---|---|
+| `rho_negative` | ρ(E3, consensus excursion) < 0 |
+| `ci_excludes_zero` | the 2000-sample bootstrap CI is entirely below 0 |
+| `linear_partial_survives` | partial ρ given `window_start_recording_s` has the same sign **and** \|partial\| ≥ 0.10 |
+| `quadratic_partial_survives` | same, detrending session time with a **quadratic** (the frozen nonlinear sensitivity — not LOESS) |
+| `exposure_resolved` | `exposure_validity == "resolved"` — \|ρ\| ≥ 0.10, and the sign agrees across all three concordant estimators **and** MEDiCINe (§2) |
+| `not_low_power` | no window has `n_qualified` < 8 |
+
+`exposure_validity` is `no_association` when \|ρ\| < 0.10, `unresolved` when any
+of the four estimators disagrees in sign, `resolved` otherwise. A `no_association`
+or `unresolved` primary result is reported as such and draws **no** motion
+conclusion.
 
 ### Supportive / diagnostic — everything else
 
@@ -164,19 +182,23 @@ prediction; C1 ambiguous; C2 ↓.
 
 ### Confound handling
 
-- Session time: linear-rank partial **and** a nonlinear (quadratic) detrend
-  sensitivity. Both reported.
-- Independent state covariates (stimulus block, running/pupil) folded in **only
-  if** an independent source exists for this session; sorted firing rate is
-  **not** used as a covariate.
-- MK and bootstrap CIs assume window-level independence; a block-bootstrap
-  (adjacent-window blocks) robustness check is reported.
+- Session time: linear-rank partial **and** a quadratic detrend sensitivity.
+  Both reported; both must survive for `primary_supported`.
+- **Independent state covariates: none.** There is no independent stimulus-block
+  / running / pupil source for 20250804, so none is used (`COVARIATES_AVAILABLE
+  = ()`, frozen). Sorted firing rate is **not** a covariate (it can be an effect
+  of motion).
+- MK and bootstrap CIs assume window-level independence; an adjacent-window
+  block-bootstrap CI is reported for every endpoint.
 
 ### Estimator sensitivity
 
-Repeat the primary and every supportive Spearman with the dose taken from each of
-the 4 estimators individually (joined on `time_interval_id`). Emit the
-sign-agreement / rank-correlation table. This is the §2 exposure-validity gate.
+Every endpoint block reports `per_estimator_excursion_rho` and
+`per_estimator_excursion_sign` — the Spearman of the endpoint vs each of the four
+estimators' own per-window excursion (joined on `time_interval_id`). The
+top-level `dose_rank_cross_estimator` gives the six pairwise rank correlations of
+the estimators' excursion on the frozen 24 windows. `exposure_validity` (§6
+primary test) is the frozen gate built from these.
 
 ## 7. Deliberately excluded
 
@@ -187,11 +209,9 @@ of the RESCUE graph or curation against these endpoints; cross-animal comparison
 
 ## 8. Reproducibility
 
-- `testing/luke_within_rigid_motion_dose_response.py` — phase 1 (consensus-dose
-  selection) + phase 4 (statistics) implemented + tested; phases 2–3
-  (build/sort, endpoint extraction) implemented against the frozen §5 defs, with
-  the trace-level parts (E1/C1, E6) exercised only on synthetic data until the
-  pilot.
-- `testing/test_luke_within_rigid_motion_dose_response.py`
+- `testing/luke_within_rigid_motion_dose_response.py` — all phases implemented
+  against the frozen §5–§6 defs; Codex-reviewed twice (v1 + v2), both rounds
+  applied. Trace-level endpoints exercised on synthetic `NumpyRecording`s.
+- `testing/test_luke_within_rigid_motion_dose_response.py` — 23 tests
 - `docs/luke_within_rigid_motion_windows.frozen.json` (written once by `--select`)
 - Outputs: `testing/outputs/luke_within_rigid_motion_dose_response/`

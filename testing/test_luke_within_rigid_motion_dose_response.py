@@ -20,9 +20,12 @@ from testing.luke_within_rigid_motion_dose_response import (
     select_windows,
     spearman_ci,
     write_frozen_list,
+    _cluster_amp_and_depth,
+    _context_event_metrics,
     _fragmentation,
     _similar_pairs,
     _spec_for,
+    _waveform_stability_median,
 )
 
 
@@ -189,6 +192,63 @@ def test_similar_pairs_and_fragmentation_are_label_free():
 
 
 # --------------------------------------------------------------------------- #
+# phase 3 -- trace-level endpoints on a small synthetic recording
+# --------------------------------------------------------------------------- #
+def _rec_with_spikes(fs=30000.0, n_ch=16, dur_s=8.0, spike_channels=(4,), rate_hz=20.0):
+    from spikeinterface.core import NumpyRecording
+
+    rng = np.random.default_rng(0)
+    n = int(fs * dur_s)
+    tr = rng.normal(0, 3.0, size=(n, n_ch)).astype("float32")
+    times = np.arange(300, n - 300, int(fs / rate_hz))
+    for t in times:
+        for c in spike_channels:
+            tr[t, c] -= 90.0
+            tr[t - 1, c] -= 45.0
+            tr[t + 1, c] -= 45.0
+    rec = NumpyRecording([tr], sampling_frequency=fs)
+    rec.set_dummy_probe_from_locations(
+        np.column_stack([np.zeros(n_ch), np.arange(n_ch) * 20.0]).astype(float)
+    )
+    return rec, times, np.column_stack([np.zeros(n_ch), np.arange(n_ch) * 20.0])
+
+
+def test_cluster_amplitude_is_microvolts_with_gain():
+    rec, times, geom = _rec_with_spikes(spike_channels=(4,))
+    templates = np.zeros((1, 60, 16))
+    templates[0, 30, 4] = -1.0                       # peak on channel 4
+    cl = np.zeros(times.size, dtype=int)
+    gain = 2.0
+    amp, depth, peak_ch = _cluster_amp_and_depth(
+        cl, times, templates, None, geom, rec, gain, 30000.0
+    )
+    assert peak_ch[0] == 4 and depth[0] == 80.0
+    # STA trough ~ -90 counts on the peak channel -> ~180 uV at gain 2
+    assert 120.0 < amp[0] < 240.0
+
+
+def test_context_c2_requires_spatial_proximity():
+    rec, times, geom = _rec_with_spikes(spike_channels=(4,))
+    fs = 30000.0
+    # qualified unit near channel 4 (depth 80) vs one far away (depth 280)
+    near = {0: times}
+    depth_near = {0: 80.0}
+    depth_far = {0: 280.0}
+    _c1, c2_near = _context_event_metrics(rec, near, depth_near, geom, 0.34, fs)
+    _c1, c2_far = _context_event_metrics(rec, near, depth_far, geom, 0.34, fs)
+    assert c2_near > 0.3           # the real events (on/near channel 4) are counted
+    assert c2_far < 0.08           # same spikes in time, but > 40 um away -> not counted
+    assert c2_near > 4 * c2_far
+
+
+def test_waveform_stability_uses_one_channel_set_per_unit():
+    rec, times, geom = _rec_with_spikes(spike_channels=(4,), dur_s=12.0, rate_hz=30.0)
+    peak_ch = {0: 4}
+    stab = _waveform_stability_median([0], {0: times}, peak_ch, rec, geom, 30000.0)
+    assert 0.8 < stab <= 1.0       # a stationary synthetic waveform is highly self-similar
+
+
+# --------------------------------------------------------------------------- #
 # phase 4 -- statistics
 # --------------------------------------------------------------------------- #
 def test_spearman_ci_monotone_and_degenerate():
@@ -206,7 +266,22 @@ def test_mann_kendall_tie_corrected_matches_reference():
     # 6 tie groups of 2 -> 6 ties; S = 66 - 6 = 60
     assert mk["S"] == 60
     assert 0.9 < mk["tau_b"] <= 1.0
-    assert mk["p_perm"] < 0.01
+    assert 0 < mk["p_perm"] < 0.01           # (k+1)/(n_perm+1) can never be 0
+    assert mk["x_has_ties"] is False
+
+
+def test_mann_kendall_handles_tied_dose():
+    # tied x values must be treated as x ties, not arbitrarily ordered
+    x = np.array([0, 0, 1, 1, 2, 2, 3, 3], float)
+    y = np.array([1, 2, 2, 3, 3, 4, 4, 5], float)
+    mk = mann_kendall(x, y, n_perm=1000)
+    assert mk["x_has_ties"] is True
+    assert mk["tau_b"] > 0
+    # pairs within the same x group contribute sign(0)=0
+    assert mk["S"] == sum(
+        np.sign(x[j] - x[i]) * np.sign(y[j] - y[i])
+        for i in range(8) for j in range(i + 1, 8)
+    )
 
 
 def test_partial_corr_spearman_matches_manual_formula():
@@ -263,17 +338,61 @@ def _endpoint_frame(n=24, seed=0, e3_slope=-3.0, medicine_flips=False):
 def test_dose_response_primary_and_concordance():
     out = dose_response(_endpoint_frame(e3_slope=-3.0))
     assert out["primary_endpoint"] == "E3_qualified_units_per_mm"
-    assert out["primary"]["spearman_vs_excursion"]["rho"] < -0.8
-    assert out["primary"]["exposure_validity"] == "resolved"
-    assert out["primary"]["matches_prereg_direction"] is True
-    # E4/E5/E8 up, E6/C2 down -> 5/5 predicted supportive endpoints move right
+    pb = out["primary"]
+    assert pb["spearman_vs_excursion"]["rho"] < -0.8
+    assert pb["exposure_validity"] == "resolved"
+    assert pb["matches_prereg_direction"] is True
+    # full pre-committed decision, not just the marginal sign
+    r = pb["primary_decision_reasons"]
+    assert set(r) == {"rho_negative", "ci_excludes_zero", "linear_partial_survives",
+                      "quadratic_partial_survives", "exposure_resolved", "not_low_power"}
+    assert pb["primary_supported"] == all(r.values())
     assert out["concordance_summary"].startswith("5/5")
+    assert "dose_rank_cross_estimator" in out
 
 
-def test_dose_response_flags_exposure_unresolved_when_medicine_flips():
+def test_dose_response_exposure_unresolved_when_medicine_flips():
     out = dose_response(_endpoint_frame(medicine_flips=True))
-    # concordant three still agree -> primary "resolved", but medicine disagrees
-    assert out["primary"]["medicine_sign_agrees"] is False
+    pb = out["primary"]
+    # concordant three still agree, but MEDiCINe flips -> unresolved, per prespec
+    assert pb["medicine_sign_agrees"] is False
+    assert pb["exposure_validity"] == "unresolved"
+    assert pb["primary_supported"] is False
+
+
+def test_dose_response_no_association_when_flat():
+    df = _endpoint_frame(e3_slope=0.0, seed=7)
+    df["E3_qualified_units_per_mm"] = 8.0        # exactly flat -> no rank signal
+    out = dose_response(df)
+    assert out["primary"]["exposure_validity"] == "no_association"
+    assert out["primary"]["primary_supported"] is False
+
+
+def test_dose_response_low_power_blocks_primary():
+    df = _endpoint_frame(e3_slope=-3.0)
+    df.loc[0, "n_qualified"] = 2   # one underpowered window
+    out = dose_response(df)
+    assert out["low_power"] is True
+    assert out["primary"]["primary_decision_reasons"]["not_low_power"] is False
+    assert out["primary"]["primary_supported"] is False
+
+
+def test_dose_response_validates_frozen_cohort():
+    windows = [
+        SelectedWindow(time_interval_id=i * 120, snippet_start_s=i * 120.0,
+                       exc_consensus_rank=i / 23, spd_consensus_rank=i / 23,
+                       exc_by_estimator={e: float(i) for e in ALL_ESTIMATORS},
+                       spd_by_estimator={e: float(i) for e in ALL_ESTIMATORS})
+        for i in range(24)
+    ]
+    df = _endpoint_frame()
+    df["time_interval_id"] = [i * 120 for i in range(24)]
+    df["snippet_start_s"] = [i * 120.0 for i in range(24)]
+    df["exc_consensus_rank"] = [i / 23 for i in range(24)]
+    dose_response(df, frozen_windows=windows)  # matches -> ok
+
+    with pytest.raises(ValueError, match="!= frozen set|expected 24"):
+        dose_response(df.iloc[:23], frozen_windows=windows)
 
 
 def test_dose_response_requires_all_endpoints():

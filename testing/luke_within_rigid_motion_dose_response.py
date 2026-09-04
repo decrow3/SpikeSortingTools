@@ -8,7 +8,7 @@ whether sorting metrics *covary* with estimated rigid motion within Luke's own
 ~2-25 um / 120 s range.
 
 Motion is an OBSERVED EXPOSURE, not a manipulation. No causal or "quiet windows
-are healthy" claims -- that is C2 v3. The four motion estimators disagree on
+are healthy" claims -- that is C2 v4. The four motion estimators disagree on
 which windows are quiet (MEDiCINe vs the others: rank rho ~0.1), so the primary
 dose is the consensus percentile rank across the three mutually concordant
 estimators {ks-motion, dredge-motion, decentralized-motion}; MEDiCINe is a
@@ -22,7 +22,7 @@ Phases (run separately):
 * ``--endpoints`` the 8 KSLabel-free endpoints (prespec §5) per window.
 * ``--analyze`` the dose-response (prespec §6): one primary test (E3 vs consensus
                 excursion), the rest supportive; session-time partials;
-                cross-estimator sign table.
+                cross-estimator exposure validity.
 
 No endpoint reads ``KSLabel``. Nothing here tunes the pipeline.
 """
@@ -81,6 +81,11 @@ ASSIGN_TOL_UM = 40.0
 
 BOOTSTRAP = 2000
 BOOTSTRAP_SEED = 20260903
+EXPOSURE_NEGLIGIBLE_RHO = 0.10   # |consensus rho| below this -> 'no_association'
+PARTIAL_SURVIVES_MIN = 0.10      # a partial 'survives' iff same sign as rho and |.| >= this
+STA_NEIGHBOURHOOD_CH = 4         # +/- channels around the dewhitened peak for the bandpass STA
+PERM_P_LAPLACE = True            # Monte-Carlo p = (k+1)/(n_perm+1)
+COVARIATES_AVAILABLE = ()        # frozen: no independent stimulus/running/pupil source for 20250804
 
 ENDPOINT_KEYS = (
     "E3_qualified_units_per_mm",     # primary
@@ -230,18 +235,51 @@ def write_frozen_list(windows: list[SelectedWindow], csv_path: Path = INCREMENT1
 
 def load_frozen_list(path: Path = FROZEN_WINDOWS, csv_path: Path = INCREMENT1_CSV,
                      *, verify_source: bool = True) -> list[SelectedWindow]:
+    """Load the frozen window list and revalidate every contract field.
+
+    With ``verify_source`` (default), the source CSV must be present, its SHA-256
+    must match, and re-running the selection from it must reproduce the frozen
+    records exactly. Snippet starts must be whole 120 s boundaries.
+    """
     payload = json.loads(path.read_text())
     if payload.get("schema") != SCHEMA:
         raise RuntimeError(f"frozen list schema {payload.get('schema')!r} != {SCHEMA!r}")
+    for k in ("git_commit", "source_csv", "source_csv_sha256", "primary_dose",
+              "concordant_estimators", "window_s", "time_interval_ids", "windows"):
+        if k not in payload:
+            raise RuntimeError(f"frozen list missing field {k!r}")
+    if payload["primary_dose"] != PRIMARY_DOSE:
+        raise RuntimeError(f"frozen primary_dose {payload['primary_dose']!r} != {PRIMARY_DOSE!r}")
+    if tuple(payload["concordant_estimators"]) != CONCORDANT_ESTIMATORS:
+        raise RuntimeError("frozen concordant_estimators != current")
+    if payload["window_s"] != WINDOW_S:
+        raise RuntimeError("frozen window_s != current")
     if not (payload["n_windows"] == len(payload["windows"]) == N_WINDOWS):
         raise RuntimeError("frozen list N mismatch")
     ids = [w["time_interval_id"] for w in payload["windows"]]
     if ids != payload["time_interval_ids"] or len(set(ids)) != len(ids):
         raise RuntimeError("frozen list interval ids inconsistent / duplicated")
-    if verify_source and Path(csv_path).exists():
+
+    frozen = [SelectedWindow(**w) for w in payload["windows"]]
+    for w in frozen:
+        if abs(w.snippet_start_s / WINDOW_S - round(w.snippet_start_s / WINDOW_S)) > 1e-6:
+            raise RuntimeError(f"iv {w.time_interval_id}: snippet_start_s not a 120 s boundary")
+
+    if verify_source:
+        if not Path(csv_path).exists():
+            raise RuntimeError(f"source CSV {csv_path} not found; pass verify_source=False to skip")
         if _sha256(csv_path) != payload["source_csv_sha256"]:
             raise RuntimeError("source CSV changed since the window list was frozen")
-    return [SelectedWindow(**w) for w in payload["windows"]]
+        recomputed = {w.time_interval_id: w for w in select_windows(csv_path)}
+        if set(recomputed) != {w.time_interval_id for w in frozen}:
+            raise RuntimeError("re-running selection from the source does not reproduce the frozen id set")
+        for w in frozen:
+            r = recomputed[w.time_interval_id]
+            if (abs(r.snippet_start_s - w.snippet_start_s) > 1e-3
+                    or abs(r.exc_consensus_rank - w.exc_consensus_rank) > 1e-9
+                    or abs(r.spd_consensus_rank - w.spd_consensus_rank) > 1e-9):
+                raise RuntimeError(f"iv {w.time_interval_id}: frozen record != recomputed")
+    return frozen
 
 
 # ======================================================================= #
@@ -292,30 +330,38 @@ def block_bootstrap_spearman(x, y, order, block: int = 3, n_boot: int = 1000,
 
 
 def mann_kendall(x, y, n_perm: int = 5000, seed: int = BOOTSTRAP_SEED) -> dict:
-    """Tie-corrected Mann-Kendall on y ordered by x; tau_b + permutation p."""
+    """Mann-Kendall trend of y against x. S from pairwise sign(dx)*sign(dy) so x
+    ties are handled; tau_b with both tie terms; permutation p = (k+1)/(n_perm+1).
+    """
     x, y = np.asarray(x, float), np.asarray(y, float)
     ok = np.isfinite(x) & np.isfinite(y)
-    y = y[ok][np.argsort(x[ok], kind="stable")]
+    x, y = x[ok], y[ok]
     n = y.size
     if n < 4:
-        return {"tau_b": float("nan"), "p_perm": float("nan"), "S": float("nan"), "n": int(n)}
+        return {"tau_b": float("nan"), "p_perm": float("nan"), "S": float("nan"),
+                "n": int(n), "x_has_ties": bool(np.unique(x).size < n)}
 
-    def _S(v):
-        return int(sum(np.sum(np.sign(v[i + 1:] - v[i])) for i in range(v.size - 1)))
+    def _S(xx, yy):
+        tot = 0.0
+        for i in range(xx.size - 1):
+            tot += np.sum(np.sign(xx[i + 1:] - xx[i]) * np.sign(yy[i + 1:] - yy[i]))
+        return float(tot)
 
-    s = _S(y)
-    # tau_b denominator with tie correction on both the (ordered) x index and y
     def _ties(v):
         _, c = np.unique(v, return_counts=True)
-        return np.sum(c * (c - 1) / 2)
+        return float(np.sum(c * (c - 1) / 2.0))
 
-    n0 = n * (n - 1) / 2
-    tau_b = s / np.sqrt((n0 - _ties(np.arange(n))) * (n0 - _ties(y))) if n0 > 0 else float("nan")
+    s = _S(x, y)
+    n0 = n * (n - 1) / 2.0
+    denom = np.sqrt((n0 - _ties(x)) * (n0 - _ties(y)))
+    tau_b = s / denom if denom > 0 else float("nan")
 
     rng = np.random.default_rng(seed)
-    null = np.array([_S(rng.permutation(y)) for _ in range(n_perm)])
-    p = float((np.abs(null) >= abs(s)).mean())
-    return {"tau_b": float(tau_b), "p_perm": p, "S": int(s), "n": int(n)}
+    null = np.array([_S(x, rng.permutation(y)) for _ in range(n_perm)])
+    k = int(np.sum(np.abs(null) >= abs(s)))
+    p = (k + 1) / (n_perm + 1) if PERM_P_LAPLACE else k / n_perm
+    return {"tau_b": float(tau_b), "p_perm": float(p), "S": float(s), "n": int(n),
+            "x_has_ties": bool(np.unique(x).size < n)}
 
 
 def _rank(v):
@@ -368,19 +414,56 @@ def partial_corr_quadratic(y, x, z) -> float:
     return float(pearsonr(r_y, r_x).statistic)
 
 
-def _dose_frame(endpoints: pd.DataFrame) -> pd.DataFrame:
+def _validate_cohort(endpoints: pd.DataFrame, frozen: "list | None") -> None:
     required = {"time_interval_id", "snippet_start_s", PRIMARY_DOSE, "spd_consensus_rank"}
     missing = required - set(endpoints.columns)
     if missing:
         raise ValueError(f"endpoints frame missing columns: {sorted(missing)}")
     if endpoints["time_interval_id"].duplicated().any():
         raise ValueError("duplicate time_interval_id in endpoints frame")
-    return endpoints
+    for e in ALL_ESTIMATORS:
+        if f"exc_{e}" not in endpoints.columns:
+            raise ValueError(f"endpoints frame missing estimator column exc_{e}")
+        if not np.isfinite(endpoints[f"exc_{e}"].to_numpy(float)).all():
+            raise ValueError(f"non-finite values in exc_{e}")
+    if not np.isfinite(endpoints[PRIMARY_DOSE].to_numpy(float)).all():
+        raise ValueError(f"non-finite {PRIMARY_DOSE}")
+    if not np.isfinite(endpoints[PRIMARY_ENDPOINT].to_numpy(float)).all():
+        raise ValueError(f"non-finite {PRIMARY_ENDPOINT}")
+    if frozen is None:
+        return
+    if len(endpoints) != N_WINDOWS:
+        raise ValueError(f"expected {N_WINDOWS} windows, got {len(endpoints)}")
+    want = {w.time_interval_id for w in frozen}
+    got = set(endpoints["time_interval_id"].astype(int))
+    if want != got:
+        raise ValueError(f"endpoint interval-id set != frozen set (missing {want - got}, extra {got - want})")
+    by_iv = {w.time_interval_id: w for w in frozen}
+    for _, row in endpoints.iterrows():
+        w = by_iv[int(row["time_interval_id"])]
+        if abs(float(row["snippet_start_s"]) - w.snippet_start_s) > 1e-3:
+            raise ValueError(f"iv {w.time_interval_id}: snippet_start_s drift")
+        if abs(float(row[PRIMARY_DOSE]) - w.exc_consensus_rank) > 1e-6:
+            raise ValueError(f"iv {w.time_interval_id}: consensus dose != frozen value")
 
 
-def dose_response(endpoints: pd.DataFrame, *, require_all_endpoints: bool = True) -> dict:
-    """Prespec §6. One primary test; the rest supportive; cross-estimator sign table."""
-    endpoints = _dose_frame(endpoints)
+def _dose_rank_cross_estimator(endpoints: pd.DataFrame) -> dict:
+    from scipy.stats import spearmanr
+
+    out = {}
+    for i, a in enumerate(ALL_ESTIMATORS):
+        for b in ALL_ESTIMATORS[i + 1:]:
+            out[f"{a}~{b}"] = float(spearmanr(endpoints[f"exc_{a}"], endpoints[f"exc_{b}"]).statistic)
+    return out
+
+
+def dose_response(endpoints: pd.DataFrame, *, frozen_windows: "list | Path | None" = None,
+                  require_all_endpoints: bool = True) -> dict:
+    """Prespec §6. One primary test with a full pre-committed decision; the rest
+    supportive/descriptive; cross-estimator exposure-validity."""
+    if isinstance(frozen_windows, (str, Path)):
+        frozen_windows = load_frozen_list(Path(frozen_windows))
+    _validate_cohort(endpoints, frozen_windows)
     present = [k for k in ENDPOINT_KEYS if k in endpoints.columns]
     if require_all_endpoints and set(present) != set(ENDPOINT_KEYS):
         raise ValueError(f"missing endpoint columns: {sorted(set(ENDPOINT_KEYS) - set(present))}")
@@ -388,50 +471,82 @@ def dose_response(endpoints: pd.DataFrame, *, require_all_endpoints: bool = True
     tcol = endpoints["snippet_start_s"].to_numpy(float)
     exc = endpoints[PRIMARY_DOSE].to_numpy(float)
     spd = endpoints["spd_consensus_rank"].to_numpy(float)
-    est_exc = {e: endpoints[f"exc_{e}"].to_numpy(float)
-               for e in ALL_ESTIMATORS if f"exc_{e}" in endpoints.columns}
+    est_exc = {e: endpoints[f"exc_{e}"].to_numpy(float) for e in ALL_ESTIMATORS}
+    low_power = bool(("n_qualified" in endpoints.columns)
+                     and (endpoints["n_qualified"] < LOW_POWER_QUALIFIED_UNITS).any())
 
     out: dict = {"schema": SCHEMA, "n_windows": int(len(endpoints)),
                  "primary_endpoint": PRIMARY_ENDPOINT, "primary_dose": PRIMARY_DOSE,
-                 "low_power": bool(("n_qualified" in endpoints.columns)
-                                   and (endpoints["n_qualified"] < LOW_POWER_QUALIFIED_UNITS).any())}
+                 "low_power": low_power,
+                 "dose_rank_cross_estimator": _dose_rank_cross_estimator(endpoints)}
 
     def _endpoint_block(y, expected_sign):
         from scipy.stats import spearmanr
         sp = spearman_ci(exc, y)
+        rho = sp["rho"]
+        primary_sign = int(np.sign(rho)) if np.isfinite(rho) else 0
+        per_est_rho, per_est_sign = {}, {}
+        for e, v in est_exc.items():
+            r = spearmanr(v, y).statistic
+            per_est_rho[e] = float(r) if np.isfinite(r) else float("nan")
+            per_est_sign[e] = int(np.sign(r)) if np.isfinite(r) else 0
+
+        concordant_signs = {per_est_sign[e] for e in CONCORDANT_ESTIMATORS}
+        medicine_agrees = per_est_sign[SENSITIVITY_ESTIMATOR] == primary_sign and primary_sign != 0
+        if not np.isfinite(rho) or abs(rho) < EXPOSURE_NEGLIGIBLE_RHO:
+            validity = "no_association"
+        elif len(concordant_signs) == 1 and primary_sign in concordant_signs and medicine_agrees:
+            validity = "resolved"
+        else:
+            validity = "unresolved"
+
+        lin = partial_corr_spearman(y, exc, tcol)
+        quad = partial_corr_quadratic(y, exc, tcol)
+
+        def _survives(pv):
+            return bool(np.isfinite(pv) and np.sign(pv) == primary_sign
+                        and abs(pv) >= PARTIAL_SURVIVES_MIN and primary_sign != 0)
+
         block = {
             "spearman_vs_excursion": sp,
             "spearman_vs_speed": spearman_ci(spd, y),
             "mann_kendall_excursion": mann_kendall(exc, y),
-            "partial_given_session_time_linear": partial_corr_spearman(y, exc, tcol),
-            "partial_given_session_time_quadratic": partial_corr_quadratic(y, exc, tcol),
+            "partial_session_time_linear": lin,
+            "partial_session_time_quadratic": quad,
             "session_time_partial_given_dose": partial_corr_spearman(y, tcol, exc),
             "block_bootstrap_ci": block_bootstrap_spearman(exc, y, tcol),
-            "per_estimator_excursion_sign": {
-                e: int(np.sign(spearmanr(v, y).statistic)) if np.isfinite(spearmanr(v, y).statistic) else 0
-                for e, v in est_exc.items()
-            },
+            "per_estimator_excursion_rho": per_est_rho,
+            "per_estimator_excursion_sign": per_est_sign,
+            "exposure_validity": validity,
+            "medicine_sign_agrees": bool(medicine_agrees),
+            "linear_partial_survives": _survives(lin),
+            "quadratic_partial_survives": _survives(quad),
         }
-        concordant_signs = {block["per_estimator_excursion_sign"].get(e, 0) for e in CONCORDANT_ESTIMATORS}
-        primary_sign = int(np.sign(sp["rho"])) if np.isfinite(sp["rho"]) else 0
-        block["exposure_validity"] = (
-            "resolved" if (len(concordant_signs) == 1 and primary_sign in concordant_signs and primary_sign != 0)
-            else "unresolved"
-        )
-        block["medicine_sign_agrees"] = bool(
-            block["per_estimator_excursion_sign"].get(SENSITIVITY_ESTIMATOR, 0) == primary_sign and primary_sign != 0
-        )
         if expected_sign is not None:
             block["matches_prereg_direction"] = bool(primary_sign == expected_sign)
         return block
 
-    out["primary"] = _endpoint_block(endpoints[PRIMARY_ENDPOINT].to_numpy(float), expected_sign=-1)
+    pb = _endpoint_block(endpoints[PRIMARY_ENDPOINT].to_numpy(float), expected_sign=-1)
+    sp = pb["spearman_vs_excursion"]
+    reasons = {
+        "rho_negative": bool(np.isfinite(sp["rho"]) and sp["rho"] < 0),
+        "ci_excludes_zero": bool(np.isfinite(sp["ci_lo"]) and np.isfinite(sp["ci_hi"])
+                                 and sp["ci_lo"] < 0 and sp["ci_hi"] < 0),
+        "linear_partial_survives": pb["linear_partial_survives"],
+        "quadratic_partial_survives": pb["quadratic_partial_survives"],
+        "exposure_resolved": pb["exposure_validity"] == "resolved",
+        "not_low_power": not low_power,
+    }
+    pb["primary_decision_reasons"] = reasons
+    pb["primary_supported"] = bool(all(reasons.values()))
+    out["primary"] = pb
+
     out["supportive"] = {
         k: _endpoint_block(endpoints[k].to_numpy(float), SUPPORTIVE_EXPECTED_SIGN.get(k))
         for k in present if k != PRIMARY_ENDPOINT
     }
     moved = [k for k, b in out["supportive"].items() if b.get("matches_prereg_direction")]
-    predicted = [k for k, s in SUPPORTIVE_EXPECTED_SIGN.items() if s is not None and k in present]
+    predicted = [k for k, sgn in SUPPORTIVE_EXPECTED_SIGN.items() if sgn is not None and k in present]
     out["concordance_summary"] = f"{len(moved)}/{len(predicted)} predicted-direction supportive endpoints"
     return out
 
@@ -559,24 +674,153 @@ def _fragmentation(qualified: list[int], trains: dict[int, np.ndarray],
             "n_fragment_pairs": pairs}
 
 
+def _frozen_conditioned(snippet):
+    """The frozen 300-6000 Hz bandpass + whole-probe common-median reference
+    (prespec §5). Fails closed -- callers must not substitute other units."""
+    from spikeinterface.preprocessing import bandpass_filter, common_reference
+
+    rec = bandpass_filter(snippet.recording(), freq_min=300.0, freq_max=6000.0, dtype="float32")
+    return common_reference(rec, reference="global", operator="median", dtype="float32")
+
+
+def _dewhitened_peak_channel(t_row: np.ndarray, winv: "np.ndarray | None") -> int:
+    dw = t_row @ winv if winv is not None else t_row
+    return int(np.argmax(np.abs(dw).max(axis=0)))
+
+
+def _sta(band, samples: np.ndarray, channels, fs: float, cap: int = 400) -> "np.ndarray | None":
+    win = int(round(1.3e-3 * fs))
+    n = band.get_num_samples()
+    take = np.sort(samples[(samples - win >= 0) & (samples + win < n)])
+    if take.size < 30:
+        return None
+    if take.size > cap:
+        take = take[np.linspace(0, take.size - 1, cap).astype(int)]
+    ids = [band.channel_ids[c] for c in channels]
+    acc = np.zeros((2 * win, len(ids)))
+    for x in take:
+        acc += band.get_traces(start_frame=int(x) - win, end_frame=int(x) + win, channel_ids=ids)
+    return acc / take.size
+
+
+def _cluster_amp_and_depth(cl, st, templates, winv, geom, band, gain, fs):
+    """Depth = y of the de-whitened template peak channel. Amplitude = bandpass
+    STA peak on +/- STA_NEIGHBOURHOOD_CH channels around that peak, x gain -> uV.
+    NaN amplitude (fails the E3 gate) when the STA is not estimable."""
+    n_ch = geom.shape[0]
+    depth, amp, peak_ch = {}, {}, {}
+    for c in np.unique(cl):
+        c = int(c)
+        if templates is None or c >= templates.shape[0]:
+            depth[c] = amp[c] = float("nan")
+            continue
+        pc = _dewhitened_peak_channel(np.asarray(templates[c], float), winv)
+        peak_ch[c] = pc
+        depth[c] = float(geom[pc, 1])
+    if band is None:
+        for c in peak_ch:
+            amp[c] = float("nan")
+        return amp, depth, peak_ch
+    for c, pc in peak_ch.items():
+        lo, hi = max(0, pc - STA_NEIGHBOURHOOD_CH), min(n_ch, pc + STA_NEIGHBOURHOOD_CH + 1)
+        sta = _sta(band, np.sort(st[cl == c]), range(lo, hi), fs)
+        amp[c] = float(np.abs(sta).max() * gain) if sta is not None else float("nan")
+    return amp, depth, peak_ch
+
+
+def _waveform_stability_median(qualified, trains, peak_ch, band, geom, fs) -> float:
+    """E6 -- cosine of first-half vs second-half mean waveform on ONE frozen
+    channel set per unit (top 8 |amplitude| channels of the full-window STA)."""
+    if band is None:
+        return float("nan")
+    half = None
+    vals = []
+    n_ch = geom.shape[0]
+    for c in qualified:
+        tr = trains[c]
+        if half is None:
+            half = tr.max() / 2.0 if tr.size else 0.0
+        a, b = tr[tr < half], tr[tr >= half]
+        if a.size < E6_MIN_SPIKES_PER_HALF or b.size < E6_MIN_SPIKES_PER_HALF:
+            continue
+        pc = peak_ch.get(c, 0)
+        lo, hi = max(0, pc - 8), min(n_ch, pc + 9)
+        full = _sta(band, tr, range(lo, hi), fs)
+        if full is None:
+            continue
+        keep = np.argsort(np.abs(full).max(axis=0))[::-1][:8]
+        chan = [list(range(lo, hi))[k] for k in keep]
+        wa, wb = _sta(band, a, chan, fs), _sta(band, b, chan, fs)
+        if wa is None or wb is None:
+            continue
+        vals.append(_cosine(wa, wb))
+    return float(np.median(vals)) if vals else float("nan")
+
+
+def _cosine(a: np.ndarray, b: np.ndarray) -> float:
+    a, b = np.asarray(a).ravel(), np.asarray(b).ravel()
+    d = np.linalg.norm(a) * np.linalg.norm(b)
+    return float(np.dot(a, b) / d) if d > 0 else float("nan")
+
+
+def _context_event_metrics(band, qualified_trains, qualified_depths, geom, probe_mm, fs):
+    """C1 detected-event density /mm/s on the frozen conditioning; C2 fraction of
+    detected events within +/-0.5 ms AND <= ASSIGN_TOL_UM of an E3-qualified unit."""
+    from testing.ladder_score import coincident_mask
+    from spikeinterface.sortingcomponents.peak_detection import detect_peaks
+
+    if band is None:
+        return float("nan"), float("nan")
+    peaks = detect_peaks(band, method="locally_exclusive", peak_sign="both",
+                         detect_threshold=4.0, n_jobs=8, progress_bar=False)
+    p_s = np.asarray(peaks["sample_index"], np.int64)
+    p_ch = np.asarray(peaks["channel_index"], np.int64)
+    dur = band.get_num_samples() / fs
+    c1 = float(p_s.size / dur / probe_mm) if probe_mm else float("nan")
+    if p_s.size == 0 or not qualified_trains:
+        return c1, float("nan")
+    p_depth = geom[p_ch, 1]
+    near = np.zeros(p_s.size, dtype=bool)
+    tol = int(round(ASSIGN_TOL_MS * fs / 1000.0))
+    for c, tr in qualified_trains.items():
+        ud = qualified_depths.get(c, np.nan)
+        if not np.isfinite(ud):
+            continue
+        near |= coincident_mask(p_s, np.sort(tr), tol) & (np.abs(p_depth - ud) <= ASSIGN_TOL_UM)
+    return c1, float(near.mean())
+
+
+def _depth_stratified_e3(qualified, depth, geom):
+    y = geom[:, 1]
+    edges = np.quantile(y, [0.0, 1 / 3, 2 / 3, 1.0])
+    span_mm = np.diff(edges) / 1000.0
+    out = {}
+    for name, lo, hi, mm in zip(("shallow", "mid", "deep"), edges[:-1], edges[1:], span_mm):
+        n = sum(1 for c in qualified if lo <= depth.get(c, np.nan) < hi
+                or (hi == edges[-1] and depth.get(c, np.nan) == hi))
+        out[f"E3_{name}_per_mm"] = float(n / mm) if mm > 0 else float("nan")
+    return out
+
+
 def window_endpoints(run_record: dict) -> dict:
     """E3-E8 + C1/C2 for one window (prespec §5). Requires the built snippet + curated sort."""
     from testing.ladder_snippets import load_snippet
-    from testing.luke_rescue_unique_units_audit import load_sort
 
     snippet = load_snippet(run_record["snippet_dir"])
     fs, dur = snippet.fs, snippet.duration_s
+    gain = float(snippet.gain_uv_per_count)
     curated = Path(run_record["l1"]["score"]["sorter_output"])
 
     st = np.load(curated / "spike_times.npy").reshape(-1).astype(np.int64)
     cl = np.load(curated / "spike_clusters.npy").reshape(-1).astype(np.int64)
     templates = np.load(curated / "templates.npy") if (curated / "templates.npy").exists() else None
-    pos = np.load(curated / "spike_positions.npy") if (curated / "spike_positions.npy").exists() else None
-
+    winv = np.load(curated / "whitening_mat_inv.npy") if (curated / "whitening_mat_inv.npy").exists() else None
     geom = np.load(snippet.dir / "channel_positions.npy")
     probe_mm = (float(geom[:, 1].ptp()) + _site_pitch(geom)) / 1000.0
 
-    amp_uv, depth = _cluster_amp_and_depth(cl, st, templates, pos, snippet)
+    band = _frozen_conditioned(snippet)  # fail closed: no template-unit fallback
+
+    amp_uv, depth, peak_ch = _cluster_amp_and_depth(cl, st, templates, winv, geom, band, gain, fs)
     trains = {int(c): np.sort(st[cl == c]) for c in np.unique(cl)}
     qual = qualify_units(st, cl, amp_uv, depth, fs, dur)
     q = qual["qualified"]
@@ -584,14 +828,15 @@ def window_endpoints(run_record: dict) -> dict:
 
     e4 = float(np.nanmedian([by_c[c]["rv_fraction"] for c in q])) if q else float("nan")
     e5 = float(_similar_pairs(q, templates, depth) / len(q)) if (q and templates is not None) else float("nan")
-    e6 = _waveform_stability_median(q, trains, snippet)
+    e6 = _waveform_stability_median(q, {c: trains[c] for c in q}, peak_ch, band, geom, fs)
     rates = np.array([by_c[c]["rate_hz"] for c in q], float)
     e7 = float(np.median(rates)) if rates.size else float("nan")
+    e7_iqr = float(np.subtract(*np.percentile(rates, [75, 25]))) if rates.size else float("nan")
     e8 = _fragmentation(q, {c: trains[c] for c in q}, depth, fs)
+    c1, c2 = _context_event_metrics(band, {c: trains[c] for c in q},
+                                    {c: depth.get(c, np.nan) for c in q}, geom, probe_mm, fs)
 
-    c1, c2 = _context_event_metrics(snippet, st, probe_mm, fs)
-
-    return {
+    row = {
         "time_interval_id": run_record["window"]["time_interval_id"],
         "snippet_start_s": run_record["window"]["snippet_start_s"],
         "exc_consensus_rank": run_record["window"]["exc_consensus_rank"],
@@ -604,144 +849,18 @@ def window_endpoints(run_record: dict) -> dict:
         "E5_similar_pairs_per_qualified_unit": e5,
         "E6_waveform_stability_median": e6,
         "E7_qualified_rate_hz_median": e7,
+        "E7_qualified_rate_hz_iqr": e7_iqr,
         "E8_fragmentation_index": e8["E8_fragmentation_index"],
         "C1_detected_events_per_mm_per_s": c1,
         "C2_fraction_events_near_qualified": c2,
     }
+    row.update(_depth_stratified_e3(q, depth, geom))
+    return row
 
 
 def _site_pitch(geom: np.ndarray) -> float:
     ys = np.unique(geom[:, 1])
     return float(np.min(np.diff(ys))) if ys.size > 1 else 20.0
-
-
-def _cluster_amp_and_depth(cl, st, templates, pos, snippet):
-    """Bandpass spike-triggered-average peak |µV| and peak-channel depth per cluster.
-
-    `cluster_Amplitude` / whitened template rows are NOT µV (ladder_donors: they
-    run ~4-7x small), so amplitude is the true bandpass STA peak on the cluster's
-    detected peak channel, over up to `_STA_SPIKES` spikes. Depth is the y of the
-    template's peak channel. Falls back to the raw template peak (no µV meaning)
-    only when the recording is unavailable (tests).
-    """
-    geom = np.load(snippet.dir / "channel_positions.npy")
-    depth, amp = {}, {}
-    peak_ch = {}
-    for c in np.unique(cl):
-        c = int(c)
-        if templates is not None and c < templates.shape[0]:
-            t = np.asarray(templates[c], float)
-            pc = int(np.argmax(np.abs(t).max(axis=0)))
-            peak_ch[c] = pc
-            depth[c] = float(geom[pc, 1])
-        else:
-            depth[c] = float("nan")
-
-    band = _bandpassed(snippet)
-    for c, pc in peak_ch.items():
-        tr = np.sort(st[cl == c])
-        amp[c] = _bandpass_sta_peak_uv(band, tr, pc, snippet.fs) if band is not None \
-            else float(np.abs(templates[c]).max())
-    for c in np.unique(cl):
-        amp.setdefault(int(c), float("nan"))
-    return amp, depth
-
-
-_STA_SPIKES = 300
-
-
-def _bandpassed(snippet):
-    try:
-        from spikeinterface.preprocessing import bandpass_filter, common_reference
-
-        rec = bandpass_filter(snippet.recording(), freq_min=300.0, freq_max=6000.0, dtype="float32")
-        return common_reference(rec, reference="global", operator="median", dtype="float32")
-    except Exception:
-        return None
-
-
-def _bandpass_sta_peak_uv(rec, samples: np.ndarray, channel: int, fs: float) -> float:
-    win = int(round(1.3e-3 * fs))
-    n = rec.get_num_samples()
-    take = samples[(samples - win >= 0) & (samples + win < n)]
-    if take.size == 0:
-        return float("nan")
-    if take.size > _STA_SPIKES:
-        take = take[np.linspace(0, take.size - 1, _STA_SPIKES).astype(int)]
-    acc = np.zeros(2 * win)
-    for s in take:
-        acc += rec.get_traces(start_frame=int(s) - win, end_frame=int(s) + win,
-                              channel_ids=[rec.channel_ids[channel]]).ravel()
-    return float(np.abs(acc / take.size).max())
-
-
-def _waveform_stability_median(qualified, trains, snippet) -> float:
-    """E6 -- first-half vs second-half mean-waveform cosine (prespec §5).
-
-    SKELETON on real traces: needs a spike-triggered extraction from the snippet
-    recording. Exercised on synthetic data via _halfsplit_cosine.
-    """
-    rec = None
-    try:
-        rec = snippet.recording()
-    except Exception:
-        return float("nan")
-    fs = snippet.fs
-    half = snippet.duration_s * fs / 2.0
-    win = int(round(1.3e-3 * fs))
-    vals = []
-    for c in qualified:
-        tr = trains[c]
-        a, b = tr[tr < half], tr[tr >= half]
-        if a.size < E6_MIN_SPIKES_PER_HALF or b.size < E6_MIN_SPIKES_PER_HALF:
-            continue
-        wa, wb = _mean_waveform(rec, a, win), _mean_waveform(rec, b, win)
-        vals.append(_cosine(wa, wb))
-    return float(np.median(vals)) if vals else float("nan")
-
-
-def _mean_waveform(rec, samples, win) -> np.ndarray:
-    n = rec.get_num_samples()
-    acc = None
-    used = 0
-    for s in samples:
-        s = int(s)
-        if s - win < 0 or s + win >= n:
-            continue
-        w = rec.get_traces(start_frame=s - win, end_frame=s + win)
-        acc = w if acc is None else acc + w
-        used += 1
-    if acc is None or used == 0:
-        return np.zeros((2 * win, rec.get_num_channels()))
-    mean = acc / used
-    order = np.argsort(np.abs(mean).max(axis=0))[::-1][:8]
-    return mean[:, order]
-
-
-def _cosine(a: np.ndarray, b: np.ndarray) -> float:
-    a, b = a.ravel(), b.ravel()
-    d = np.linalg.norm(a) * np.linalg.norm(b)
-    return float(np.dot(a, b) / d) if d > 0 else float("nan")
-
-
-def _context_event_metrics(snippet, all_st, probe_mm, fs):
-    """C1 detected-event density /mm/s, C2 fraction near a qualified unit."""
-    from testing.ladder_score import coincident_mask
-    from testing.ladder_snr import SnrConfig, _conditioned_recording
-    from spikeinterface.sortingcomponents.peak_detection import detect_peaks
-
-    try:
-        rec = _conditioned_recording(snippet, SnrConfig())
-        peaks = detect_peaks(rec, method="locally_exclusive", peak_sign="both",
-                             detect_threshold=4.0, n_jobs=8, progress_bar=False)
-    except Exception:
-        return float("nan"), float("nan")
-    p = np.asarray(peaks["sample_index"], np.int64)
-    dur = rec.get_num_samples() / fs
-    c1 = float(p.size / dur / probe_mm) if probe_mm else float("nan")
-    tol = int(round(ASSIGN_TOL_MS * fs / 1000.0))
-    c2 = float(coincident_mask(p, np.sort(all_st), tol).mean()) if p.size else float("nan")
-    return c1, c2
 
 
 # ======================================================================= #
@@ -806,7 +925,7 @@ def main(argv=None) -> int:
 
     if args.analyze:
         ep = pd.read_csv(args.out_dir / "window_endpoints.csv")
-        result = dose_response(ep)
+        result = dose_response(ep, frozen_windows=FROZEN_WINDOWS)
         (args.out_dir / "dose_response.json").write_text(json.dumps(result, indent=2))
         print(json.dumps(result, indent=2))
         return 0
