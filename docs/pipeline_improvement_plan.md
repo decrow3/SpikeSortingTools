@@ -1,15 +1,19 @@
 # Plan: beat the legacy pipeline, and find out fast
 
-> **EVIDENCE CORRECTION — 2026-09-03.** C2, Candidate 2, D2b-1, D2b-3, and the
-> Checkpoint C panel comparison are **retracted pending rerun**. The motion
+> **HISTORICAL EVIDENCE CORRECTION — 2026-09-03.** The original C2,
+> Candidate 2, D2b-1, D2b-3, and Checkpoint C panel comparisons are
+> **retracted**. Their motion
 > injection used contiguous channel-index shifts on a four-column probe while
 > oracle correction used continuous physical y-motion; the operators were not
 > inverses. Ground-truth matching was non-exclusive, and injected-recording
 > cache identity did not include voltage content. The donor cohort and ladder
 > infrastructure remain useful, but no drift penalty, interpolation ceiling,
 > field-tolerance envelope, kernel conclusion, or rescue-versus-legacy panel
-> direction from those runs is currently established. D2a is paused until the
-> corrected geometry-aware and content-bound reruns report.
+> direction from those runs is established. Those historical results remain
+> withdrawn. The separately frozen C2 v4 has since supplied a valid exact
+> 40 µm control, described below; it does not rehabilitate the old runs or
+> establish a Luke-scale result. D2a implementation is no longer waiting on
+> C2, while quantitative Luke-scale simulation awaits a suitable dense donor.
 
 > **EARLIER-EVIDENCE CORRECTION — 2026-09-03.** Phase A, Phase A2, the
 > matched-unit truncation comparison, and full-session stitching were
@@ -34,16 +38,19 @@
 >   stitching would recover them" reading is withdrawn. About 90% of families
 >   remain mechanistically ambiguous.
 >
-> The C2 drift challenge and the D2b chain remain retracted pending the
-> geometry-aware rerun. No claim that the new pipeline beats legacy is
-> currently supported.
+> The historical D2b chain remains retracted. Historical C2 is superseded only
+> by the separately frozen v4 result and only within v4's stated scope. No
+> claim that the new pipeline beats legacy is currently supported.
 
 > **C2 DONOR DECISION — 2026-09-03.** Geometry-correct C2 v2 is retired without
 > rerun because it still froze the discredited T01/T04/T06 plateau donors. Per
 > [decision 0012](decisions/0012-c2-uses-compact-donor-cohort.md), C2 v3 first
 > introduced all 14 hash-frozen D2b-2 compact donors; C2 v4 retains them. A
-> donor enters the primary drift comparison only when its static arm reaches
-> accuracy >= 0.8 under both rescue and `legacy_style`.
+> donor enters an inferential contrast only when its static arm reaches the
+> prespecified accuracy floor under both configurations in that contrast.
+> Consequently the primary correction comparison (`rescue` versus
+> `rescue_rigid`) uses the common qualified cohort reported in the v4 result;
+> the `legacy_style` comparison has its own qualified cohort.
 
 > **CURRENT C2 STATUS — 2026-09-04.** C2 v4 is complete across 14 compact
 > donors and is the first run to survive the operator, scorer, donor and cache
@@ -52,7 +59,8 @@
 > that rigid correction can recover it. The 5/11/22 µm arms do **not** answer the
 > Luke-scale question: fractional resampling dims the compact recorded
 > footprints instead of translating them. A dense spatial donor model is the
-> next requirement. The truncation-vs-truth follow-up supports positional
+> next requirement for that causal question, but not a pipeline-development
+> gate. The truncation-vs-truth follow-up supports positional
 > identity splitting at 40 µm and is explicitly diagnostic, not production QC.
 
 > **TWO-OPTION DEVELOPMENT DECISION — 2026-09-03.** “No external voltage
@@ -62,9 +70,19 @@
 > (B) an unwarped, motion-aware identity pipeline. Historical external-warp
 > failures reject those implementations, fields and operating points—not the
 > standard approach as a class. Implementation and smoke testing may proceed in
-> parallel; C2 v4 supplies the common causal calibration before either option is
-> promoted. Detailed build instructions:
+> parallel. C2 v4 now supplies a validated 40 µm machinery control, but not a
+> Luke-scale causal calibration; promotion still requires the shared ladder and
+> real-data confirmation. Detailed build instructions:
 > [`luke_two_motion_pipeline_build_instructions.md`](luke_two_motion_pipeline_build_instructions.md).
+
+> **CURRENT FAST ITERATION — 2026-09-04.** The static detection-threshold sweep
+> is running across the 14 compact donors. It holds correction off and varies
+> `Th_universal` × `Th_learned`, including the previously missing legacy
+> thresholds `9/8` without correction. This is development evidence motivated
+> by D10, not confirmation. A winner advances first to the exact staircase and
+> then to matched real-data evaluation. Dense-donor modelling continues only as
+> a background route to the unresolved Luke-scale motion question; it does not
+> gate this faster pipeline path.
 
 **Status:** active, updated 2026-09-04
 **Supersedes as a work plan:** the follow-up lists in
@@ -603,40 +621,37 @@ motion:
 Run the trajectories at several amplitudes, including rigid and non-rigid, and
 at both polarities.
 
-**C2 v4 motion families — Luke-calibrated, rigid first (2026-09-03,
-[decision 0013](decisions/0013-luke-imec0-has-appreciable-rigid-motion.md)).**
+**C2 v4 result — mechanism established at 40 µm; Luke-scale arms
+uninformative (2026-09-04; [full result](luke_20250804_c2_v4_result.md)).**
 The motion-overlap analysis measured Luke imec0's actual regime: per 120 s
 window, rigid excursion runs ~4–23 µm (median ~11 µm under MEDiCINe, ~4 µm under
 `ks-motion`) with rigid speed ~0.2–0.8 µm/s, while the depth-normalised non-rigid
-gradient is at or below Yates. So the **first and primary** C2 v4 motion family
-is a **pure rigid translation** at three Luke-matched magnitudes —
-**~4–5 µm / ~10–12 µm / ~20–25 µm** rigid excursion — each with a representative
-Luke speed profile (a slow ramp and a moderate within-window drift). Non-rigid
-and oscillatory trajectories are retained as a **secondary** family, not the
-headline, because the empirical comparison says rigid displacement is what most
-separates Luke from the known-good recording at this timescale. The decisive
-question C2 v4 answers first:
+gradient is at or below Yates. C2 v4 therefore tested 5/11/22 µm rigid ramps
+plus an exact lattice-commensurate 40 µm staircase. The staircase is the first
+C2 result to survive every control: uncorrected rescue fragments 13/14 donors,
+and rigid correction largely restores them. But the 5/11/22 µm recorded-template
+operator attenuates compact footprints in place instead of faithfully
+translating them, so those arms cannot answer whether Luke-scale motion is
+harmful or whether correction helps there. The original Luke-scale question
+remains open in both directions.
 
-> At the amount of *rigid* motion Luke imec0 actually experiences, how much
-> neuron recovery does no-correction KS4 lose, and how much does standard rigid
-> correction (`nblocks=1`) recover?
+Because the injected train is known, the staircase also **calibrates the
+truncation estimator against truth** for the first time. The completed
+diagnostic finds the predicted temporal-fragmentation signature: phase-local
+truncation stays low while the best full-duration identity loses about half the
+train. This is mechanistic evidence at 40 µm, not a Luke-scale result.
 
-Because the injected train is known, C2 also **calibrates the truncation
-estimator against truth** for the first time, and separates the two
-fragmentation modes: temporal splitting should leave per-fragment truncation
-flat, amplitude splitting should elevate it.
+*Remaining simulation work:* a dense spatial donor model could answer the
+Luke-scale causal question by translating a compact waveform without the
+attenuation/translation degeneracy. It is scientifically useful but is now a
+background task, not a gate on threshold, staircase, or real-data pipeline
+testing.
 
-*Confound to control:* the background contains real tissue motion of its own, so
-an injected trajectory interacts with it. Either define the trajectory relative
-to the estimated tissue position, or draw the static arm from quiet windows and
-say so. Record which was done.
-
-**Retracted; v2 retired; v3 scorer-validation run void; v4 pending 2026-09-03.** The historical
-run below did not apply mutually inverse forward and correction operators on
-the real probe geometry. Geometry-correct v2 was not run because it retained
-the discredited plateau donors. V3 used the compact donors but failed as a
-scorer validation run. V4 is the next active C2 protocol because the frozen v3
-prespec cannot be silently changed to the Luke-calibrated trajectories.
+**Historical C2 runs — retracted/retired; retained for audit only.** The run
+below did not apply mutually inverse forward and correction operators on the
+real probe geometry. Geometry-correct v2 was not run because it retained the
+discredited plateau donors. V3 used the compact donors but failed as a scorer
+validation run. C2 v4 supersedes them only within the limits above.
 
 **Historical first run 2026-09-02** — [`luke_20250804_c2_drift_challenge.md`](luke_20250804_c2_drift_challenge.md).
 `testing/luke_rescue_c2_drift_challenge.py` (historical prespec; reused the
@@ -672,9 +687,13 @@ pending rerun:**
    up false positives on the oscillation (FP 874 vs 473). Turning `nblocks` back
    on is **not the fix.**
 
-→ Phase D's motion target is **non-rigid handling, a better estimate, or
-post-sort family stitching** — not `nblocks=1`. Curation-threshold tuning stays
-low: the lower-threshold `legacy_style` fragments *more* at baseline, not less.
+**Current consequence — not a conclusion from the historical table:** two C2
+v4 stationary/moving exceptions make detection/template-learning thresholds the
+fastest clean lever to test. The active static threshold sweep changes only
+`Th_universal` and `Th_learned`, with correction off. The exact staircase is a
+validated development testbed for any surviving threshold or identity-tracking
+candidate. Unqualified family stitching remains unsupported by A2's real-data
+refractory results.
 
 V4 supplies both polarities and the full compact real-donor amplitude range.
 The staircase truncation-vs-truth diagnostic is now complete
@@ -682,19 +701,23 @@ The staircase truncation-vs-truth diagnostic is now complete
 phase-local estimate stays low while its best identity loses about half the
 whole train, supporting temporal/positional fragmentation rather than uniform
 low-amplitude truncation. It is a calibrated 250-spike post-hoc diagnostic, not
-production QC. Still to add: genuinely non-rigid trajectories and a second
-window. Static qualification is donor-wise and prespecified; there is no
+production QC. Genuinely non-rigid trajectories, a second window, and the dense
+donor model are optional background science rather than gates on the active
+threshold-to-real-data path. Static qualification is donor-wise and
+prespecified; there is no
 special T06 exception because all pilot T donors are forbidden.
 
-**Checkpoint C.** *Go:* a known-truth score exists for legacy on all 8
-development snippets with the sanity condition met, **and** a measured drift
-penalty for both legacy and rescue. This is the first point at which "better"
-becomes measurable, and together with A2 it sets Phase D's target.
+**Checkpoint C status.** C2 v4 supplies valid known-truth scoring and an exact
+40 µm drift/control result for rescue, `rescue_rigid`, and `legacy_style`. It
+does not supply the intended Luke-scale causal calibration because the
+fractional-offset donor perturbation is not a faithful translation. That open
+scientific question no longer blocks cheap pipeline candidates: threshold
+settings can be tested statically, then on the exact staircase, before matched
+real-data confirmation.
 
-*Historical status recorded 2026-09-02; withdrawn 2026-09-03.* The
-drift-penalty half was initially marked done. It is now pending because the
-forward injection and inverse correction did not implement the same physical
-motion and scoring was non-exclusive.
+*Historical checkpoint status, withdrawn 2026-09-03.* The v1 drift-penalty half
+was initially marked done, but its forward injection and inverse correction did
+not implement the same physical motion and its scoring was non-exclusive.
 
 **Retracted pending rerun 2026-09-03.** The historical result below used a
 content-unbound cache and non-exclusive scorer; Checkpoint C is not reached.
@@ -735,10 +758,19 @@ shared no-correction control:
    are never spatially resampled. Motion enters only through coordinates,
    template/identity tracking or evidence-gated longitudinal family links.
 
-Both options may be implemented and smoke-tested while C2 v4 runs. Neither may
-be tuned on L2, held-out data or full-session yield before its rule is frozen.
+Both options may be implemented and smoke-tested now. Neither may be tuned on
+L2, held-out data or full-session yield before its rule is frozen.
 The uncorrected rescue pipeline remains the comparator in every experiment; it
 does not consume a development-option slot.
+
+**Immediate cheap branch — threshold sweep (running 2026-09-04).** Before
+spending more time on motion simulation, test whether rescue's frozen 12/9
+thresholds cost injected-neuron recovery. The static 14-donor grid holds
+correction off, varies the two thresholds independently, and reports FP/FN,
+splits and guardrails alongside accuracy. Because D10 motivated the sweep, this
+cohort selects a candidate but cannot confirm it. Advance at most the best one
+or two settings to the exact staircase, then to the normal L1/L2 and matched
+real-data sequence. Do not choose a setting from KS-good yield alone.
 
 **The priority order is a decision tree, not a fixed list** (revised
 2026-09-02). The earlier fixed ordering — curation first, motion last — rested
@@ -758,8 +790,9 @@ positional identity fragments and correction restores continuity — but that
 displacement is about twice Luke's largest and discontinuous. The 5/11/22 µm
 ramps cannot resolve the Luke-scale branch because their recorded-template
 forward model dims instead of translating the donor. A2 therefore remains
-observational evidence at Luke scale; a dense spatial donor model is the next
-causal test.
+observational evidence at Luke scale. A dense spatial donor model is the next
+causal test of that scientific question, but it does not block the threshold,
+staircase, or matched-real-data pipeline path.
 
 **Historical reading (2026-09-02).** A2: fragments are temporally
 complementary, refractory-clean, ~0 % coexisting — **not** over-splitting. C2:
@@ -834,21 +867,22 @@ The question is no longer *"does voltage interpolation work?"* It is:
 That is the conventional motion-correction question, and it should be answered
 before changing architectures.
 
-#### The active sequence
+#### Motion-correction research sequence — no longer the pipeline-critical path
 
-Scientific evaluation and tuning of D2 were **gated on C2 v4** (§9). V4 is now
-complete, but it exposed a narrower upstream gate: a compact donor must be
-translated at fractional offsets without being dimmed into an in-place spatial
-low-pass image. Interface construction may continue, while numeric Luke-scale
-claims wait for that dense-field donor control.
+C2 v4 is complete, but it exposed a narrower simulation requirement: a compact
+donor must be translated at fractional offsets without being dimmed into an
+in-place spatial low-pass image. Numeric Luke-scale motion-correction claims
+wait for that dense-field donor control. This sequence continues in the
+background; it does **not** block the threshold sweep, exact-staircase candidate
+check, or matched real-data evaluation.
 
 | # | Step | Status |
 |---|---|---|
 | 0 | **C2 v4** — corrected-scorer static qualification, then paired static-vs-moving compact-donor drift penalty | ✅ complete; 40 µm mechanism established, Luke-scale ramps uninformative ([result](luke_20250804_c2_v4_result.md)) |
 | 1 | **D2b-2 donor cohort** — 14 compact imec0 donors, both polarities, 73–295 µV, hash-frozen | ✅ complete ([`d2b2_donor_cohort`](luke_20250804_d2b2_donor_cohort.md)) |
-| 2 | **Oracle positive control** — attainable stabilization benefit and interpolation cost, on the compact cohort | ✅ exact 40 µm staircase positive control; fractional-offset dense-donor control next |
-| 3 | **D2b-1 field-error tolerance** — how accurate an estimated field must be | paused — needs the dense spatial donor model exposed by C2 v4 |
-| 4 | **D2b-3 per-stratum interpolation tradeoff** — waveform/SNR-class sensitivity | paused — rerun after the dense donor forward model is qualified |
+| 2 | **Oracle positive control** — attainable stabilization benefit and interpolation cost, on the compact cohort | ✅ exact 40 µm staircase positive control; fractional-offset dense-donor control is background work |
+| 3 | **D2b-1 field-error tolerance** — how accurate an estimated field must be | background/paused — needs the dense spatial donor model exposed by C2 v4 |
+| 4 | **D2b-3 per-stratum interpolation tradeoff** — waveform/SNR-class sensitivity | background/paused — rerun after the dense donor forward model is qualified |
 | 5 | **D2a full-session external estimation** — best-supported real field | paused — infra built (`ladder_motion_estimate.py`), not run |
 | 6 | **Pre-sort field qualification** — independent support, reproducibility, error evidence | paused — fails closed; numeric envelope to be set by the reruns |
 | 7 | **D2c bounded policy comparison** — none / best full / one simple selective policy | not started |
@@ -1140,15 +1174,16 @@ win against a strawman.
 Voltage interpolation is widely used because in ordinary regimes the benefit of
 stabilizing spike waveforms can exceed the interpolation error. **That does not
 establish that it is optimal** — adoption is not evidence of correctness. But
-the favorable regime has **not yet been demonstrated in Luke** because the
-oracle experiment was retracted. The working hypothesis is therefore not that voltage
-interpolation is fundamentally unsuitable, but that the historical
-implementation used a poorly supported field and/or an unfavorable
-correction/interpolation operating point for this probe and motion regime.
-That is a claim we can test cheaply, and should, before abandoning the standard
-solution.
+the favorable regime has **not yet been demonstrated at Luke's measured motion
+scale**. C2 v4 demonstrates successful correction only at the exact 40 µm
+staircase; its 5/11/22 µm donor arms are uninformative. The working hypothesis
+is therefore not that voltage interpolation is fundamentally unsuitable, but
+that benefit depends on the motion field, spatial support and
+correction/interpolation operating point. That remains worth testing, without
+blocking the cheaper threshold and real-data comparisons.
 
-**Orthogonal, and deliberately later:** the MUA threshold question — the v2
+**Orthogonal, and deliberately later:** the post-sort MUA-labelling threshold
+question (not the active detection-threshold sweep) — the v2
 cohorts contain 91 MUA-to-good promotions and 23 good-to-MUA demotions among
 the overlap-supported cases. This is a bidirectional threshold issue. Changing
 `good` versus `mua` labels **will not fix identity fragmentation**, so it should
@@ -1282,7 +1317,7 @@ eliminated.
    ([decision 0012](decisions/0012-c2-uses-compact-donor-cohort.md)).
    Doc: [`d2b2_donor_cohort`](luke_20250804_d2b2_donor_cohort.md).
 
-### Completed gate — and the narrower gate it exposed
+### Completed C2 gate — useful control, not another pipeline blocker
 
 5. **C2 v4 — paired static-vs-moving injected identity challenge.** All 14
    compact donors, geometry-aware forward motion, exclusive truth scoring,
@@ -1303,36 +1338,44 @@ eliminated.
    demonstrates both positional fragmentation and correction. The
    Luke-calibrated 5/11/22 µm arms are not interpretable as displacement tests,
    because fractional resampling attenuates the compact recorded donors while
-   leaving them largely in place. The next gate is a dense spatial donor model
-   that can translate a compact waveform at fractional offsets without that
-   attenuation/translation substitution.
+   leaving them largely in place. A dense spatial donor model is needed to
+   finish that causal question, but is not required to test threshold or
+   identity-handling candidates against the exact staircase and real data.
 
-### Build now; evaluate after the dense-donor control
+### Build and test now
 
 - **Option A external voltage registration** — build/operator smoke tests may
-  run now; Luke-scale oracle/estimated performance waits for the dense donor.
+  run now; its specific Luke-scale causal interpretation waits for the dense
+  donor, but real-data pipeline performance does not.
 - **Option B unwarped motion-aware identity** — build/identity-preservation
-  smoke tests may run now and may use the exact staircase mechanism; Luke-scale
-  promotion scoring still uses the same frozen panels and dense-donor control.
+  smoke tests may run now and may use the exact staircase mechanism; promotion
+  still requires the same frozen panels and matched real-data checks.
+- **Detection-threshold branch** — the static 14-donor grid is running. Select
+  at most one or two candidates by injected-truth accuracy plus FP/FN and
+  guardrails; test them on the exact staircase before real data.
 - **D2b** (field-error tolerance, interpolation tradeoff) — `d2b1` fails closed
   until the compact donor can be translated at fractional offsets without
-  being dimmed in place.
+  being dimmed in place; this is background motion-method research.
 - **D2a** (best-supported full-session field) — infra built
   (`ladder_motion_estimate.py`), not run. Field estimation can proceed, but
-  correction benefit at Luke scale cannot be quantified before the dense-donor
-  control.
+  the causal injected-donor benefit at Luke scale cannot be quantified before
+  the dense-donor control.
 - **Heavyweight architecture gate** (alternative sorters) — opens only if the
-  two-option bakeoff leaves a meaningful deficit after C2 v4 / D2 / L2L.
+  threshold branch and two-option bakeoff leave a meaningful deficit after
+  L2/L2L and matched real-data evaluation. D2 supplies Option A's supporting
+  motion-method evidence; it is not a blanket prerequisite for trying Option B.
 
 ### The defensible claim now
 
 > **Existing observational audits are consistent with identity instability;
 > Phase A2 shows that naive unions of selected fragments are usually
-> refractory-violating. The intervention tests do not currently establish that
-> imposed motion
-> caused the measured loss, that rescue handles motion better than legacy, or
-> that voltage interpolation has an intrinsic SNR-dependent ceiling. Those
-> questions are what C2 v4 and the experiments gated on it exist to answer.**
+> refractory-violating. C2 v4 establishes that exact 40 µm displacement can
+> fragment identity and that rigid correction can repair it, but it does not
+> establish a Luke-scale effect because the fractional-offset donor model dims
+> rather than translates compact footprints. No current result shows that the
+> rescue pipeline beats legacy. The fastest active route is the controlled
+> threshold sweep, followed by the exact staircase and matched real-data
+> confirmation; dense-donor modelling remains a parallel scientific task.**
 
 ### Historical (retracted 2026-09-03 — not active work)
 
