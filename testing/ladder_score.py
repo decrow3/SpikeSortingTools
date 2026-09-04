@@ -176,10 +176,10 @@ def ground_truth_scores(
     Recovery is scored **per candidate output cluster**: each injected train is
     matched exclusively 1:1 against one cluster's spikes at a time, and the best
     cluster (by accuracy, then TP, then fewest FP) is the primary result. The
-    split diagnostic counts every cluster that captures > 5% of the train —
-    duplicated capture across clusters is allowed there, because that is exactly
-    the over-split / duplicate signal it exists to detect. See
-    docs/decisions/0014.
+    split diagnostic counts every cluster that both captures > 5% of the train
+    and is itself > 5% injected train (the precision clause rejects the
+    chance-coincidence floor from high-rate background); duplicated capture
+    across genuine fragments is still allowed. See docs/decisions/0014.
     """
     tol = int(round(tol_ms / 1000.0 * fs))
     st = np.asarray(sort["st"], dtype=np.int64)
@@ -230,6 +230,11 @@ def ground_truth_scores(
                 "fn": fn_c,
                 "accuracy": tp_c / denom_c if denom_c else 0.0,
                 "capture": tp_c / n_truth if n_truth else 0.0,
+                # precision = fraction of the cluster that is the injected train.
+                # A real split fragment / duplicate is mostly injected spikes
+                # (~1.0); a high-rate background cluster clipping the train by
+                # chance is ~0.005 and must not count as a split participant.
+                "precision": tp_c / ost.size if ost.size else 0.0,
                 "matched_truth_times": tst[ta],
                 "unmatched_out_times": unmatched_out,
             }
@@ -250,19 +255,30 @@ def ground_truth_scores(
         else:
             best, tp, fp, fn, accuracy = None, 0, 0, n_truth, 0.0
 
-        # split burden: every cluster that captures > 5% of the train, counted
-        # independently (a truth event may contribute to more than one cluster)
-        capturing = [o for o, v in per_cluster.items() if v["capture"] > CAPTURE_FRAC]
+        # split burden: clusters that both capture > 5% of the train AND are
+        # themselves > 5% injected train. The precision clause rejects the
+        # chance-coincidence floor from high-rate background on a dense real
+        # recording (docs/decisions/0014). Duplicated capture across genuine
+        # fragments is still allowed.
+        capturing = [
+            o for o, v in per_cluster.items()
+            if v["capture"] > CAPTURE_FRAC and v["precision"] > CAPTURE_FRAC
+        ]
         n_capturing = len(capturing)
 
-        # merge burden: does the best cluster also capture > 5% of another train?
+        # merge burden: does the best cluster also capture > 5% of another train,
+        # with that overlap a real fraction of the cluster (not chance)?
         merged_with = []
         if best is not None:
+            b_train = trains[best]
             for otid, otst in truth.items():
                 if otid == tid or otst.size == 0:
                     continue
-                oa, _ = _exclusive_pairs(otst, trains[best], tol)
-                if oa.size / otst.size > CAPTURE_FRAC:
+                oa, _ = _exclusive_pairs(otst, b_train, tol)
+                if (
+                    oa.size / otst.size > CAPTURE_FRAC
+                    and oa.size / max(b_train.size, 1) > CAPTURE_FRAC
+                ):
                     merged_with.append(otid)
         merge = len(merged_with) > 0
 

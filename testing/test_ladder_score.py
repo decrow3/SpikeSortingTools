@@ -170,6 +170,22 @@ def _pooled_v2_best_accuracy(sort, truth_st, tol):
     return tp / (tp + fp + fn)
 
 
+def _capture_only_count(sort, truth_st, tol):
+    """Clusters clipping >5% of the train under capture alone (no precision
+    clause) — the pre-fix behaviour the precision gate must suppress."""
+    from testing.ladder_score import _exclusive_pairs
+    st = np.asarray(sort["st"], np.int64)
+    cl = np.asarray(sort["cl"], np.int64)
+    t = np.sort(np.asarray(truth_st, np.int64))
+    n = 0
+    for c in np.unique(cl):
+        ost = np.sort(st[cl == c])
+        ta, _ = _exclusive_pairs(t, ost, tol)
+        if ta.size / t.size > 0.05:
+            n += 1
+    return n
+
+
 def test_dense_background_does_not_steal_from_the_best_cluster():
     # The C2 v3 pathology: global exclusive matching against the pooled spike
     # river let a background spike *earlier* than a truth event grab that match,
@@ -267,6 +283,34 @@ def test_ground_truth_normalises_unsorted_inputs():
     u = out["units"][0]
     assert u["tp"] == truth_st.size and u["fp"] == 0 and u["fn"] == 0
     assert u["accuracy"] == 1.0
+
+
+def test_split_diagnostic_ignores_chance_coincidence_from_high_rate_background():
+    # decisions/0014: on a dense real strip several high-rate background clusters
+    # clip >5% of a 6 Hz injected train by pure chance. Without a precision
+    # clause every clean donor reads as split. A capturing cluster must also be
+    # >5% injected train.
+    tol = int(round(0.5 / 1000.0 * FS))
+    dur_s = 120.0
+    n_samp = int(dur_s * FS)
+    truth_st = np.arange(1_000, n_samp - 1_000, 5_000)  # ~720 spikes, 6 Hz
+    rng = np.random.default_rng(1)
+    st = [truth_st]                                   # cluster 0: exact copy
+    cl = [np.zeros(truth_st.size, dtype=np.int64)]
+    for k in range(1, 8):  # 7 background clusters at ~67 Hz over the whole window
+        bg = np.sort(rng.integers(0, n_samp, 8_000))
+        st.append(bg)
+        cl.append(np.full(bg.size, k, dtype=np.int64))
+    st = np.concatenate(st).astype(np.int64)
+    cl = np.concatenate(cl)
+    sort = {"st": st, "cl": cl,
+            "label": {c: ("good" if c == 0 else "mua") for c in range(8)}, "good": {0}}
+    out = ground_truth_scores(sort, {"u1": truth_st}, FS, duration_s=dur_s)
+    u = out["units"][0]
+    assert _capture_only_count(sort, truth_st, tol) > 1  # chance clip really happens
+    assert u["best_output_unit"] == 0 and u["accuracy"] == 1.0
+    assert u["n_output_units_capturing"] == 1           # precision gate removes it
+    assert u["split"] is False and u["recovered"] is True
 
 
 def test_symmetric_agreement_reports_both_sides_and_withholds_detection_claim(tmp_path):
