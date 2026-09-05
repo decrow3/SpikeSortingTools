@@ -59,11 +59,13 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import sys
 from math import comb
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from scipy import __version__ as scipy_version
 from scipy.stats import t as student_t
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -223,8 +225,21 @@ def validate_cells(cells: pd.DataFrame) -> dict:
 # --------------------------------------------------------------------------- #
 # classification
 # --------------------------------------------------------------------------- #
-def classify(cells: pd.DataFrame, threshold: float = FAILURE_THRESHOLD,
-             systematic_min: int = SYSTEMATIC_MIN_FAILURES) -> pd.DataFrame:
+def classify(cells: pd.DataFrame, threshold: float | None = None,
+             systematic_min: int | None = None) -> pd.DataFrame:
+    """[rev8] Constants resolved at CALL time, never captured as defaults.
+
+    Python evaluates default arguments once, when the function is defined. These
+    defaults were `threshold=FAILURE_THRESHOLD`, so they froze the import-time
+    values while decision_protocol() reported the live ones -- the verified
+    protocol could say 0.1 while classify() still used the 0.9 it captured. That
+    is the third appearance of the same import-time/live split, so every
+    protocol-derived default in this module is now resolved from the globals in
+    force at the moment of the call.
+    """
+    threshold = FAILURE_THRESHOLD if threshold is None else threshold
+    systematic_min = (SYSTEMATIC_MIN_FAILURES if systematic_min is None
+                      else systematic_min)
     out = cells.copy()
     out["failed"] = out.accuracy < threshold
     flags = out.groupby(["template", "candidate"]).failed.agg(
@@ -365,14 +380,17 @@ def _draw_interval(draws: np.ndarray, alpha: float, n_defined_donors: int,
 
 
 def paired_donor_bootstrap(tagged, baseline: str, candidate: str, statistic,
-                           donors: list, alpha: float = PER_COMPARISON_ALPHA,
-                           n: int = N_BOOTSTRAP, seed: int = BOOTSTRAP_SEED) -> dict:
+                           donors: list, alpha: float | None = None,
+                           n: int | None = None, seed: int | None = None) -> dict:
     """CI for `statistic(candidate) - statistic(baseline)`, resampling donors.
 
     Donors are the independent unit; all of a resampled donor's realisations
     travel together, so within-donor dependence is preserved. Both arms are
     computed on the *same* resampled donors, which is what makes it paired.
     """
+    alpha = PER_COMPARISON_ALPHA if alpha is None else alpha
+    n = N_BOOTSTRAP if n is None else n
+    seed = BOOTSTRAP_SEED if seed is None else seed
     if not donors:
         return {"point": float("nan"), "ci": [float("nan")] * 2, "n_donors": 0,
                 "excludes_zero": False}
@@ -391,8 +409,11 @@ def paired_donor_bootstrap(tagged, baseline: str, candidate: str, statistic,
 
 
 def marginal_bootstrap(tagged, config: str, statistic, donors: list,
-                       alpha: float = PER_COMPARISON_ALPHA, n: int = N_BOOTSTRAP,
-                       seed: int = BOOTSTRAP_SEED) -> dict:
+                       alpha: float | None = None, n: int | None = None,
+                       seed: int | None = None) -> dict:
+    alpha = PER_COMPARISON_ALPHA if alpha is None else alpha
+    n = N_BOOTSTRAP if n is None else n
+    seed = BOOTSTRAP_SEED if seed is None else seed
     if not donors:
         return {"point": float("nan"), "ci": [float("nan")] * 2}
     blocks = _blocks(tagged, config, donors)
@@ -403,10 +424,9 @@ def marginal_bootstrap(tagged, config: str, statistic, donors: list,
     interval = _draw_interval(draws, alpha,
                               _defined_donors(statistic, donors, blocks),
                               len(donors))
-    return {"point": round(float(point), 5), "ci": interval["ci"],
-            "n_usable_draws": interval["n_usable_draws"],
-            "n_defined_donors": interval["n_defined_donors"],
-            "undefined_interval": interval["undefined_interval"]}
+    # carry the interval's full provenance; rev7 dropped the conditional flag
+    # and the refusal reason here, contradicting what the prespec promises
+    return {"point": round(float(point), 5), **interval}
 
 
 # --------------------------------------------------------------------------- #
@@ -443,6 +463,31 @@ SMOOTH_ENDPOINTS = ("failure_rate", "split_rate")
 # freeze it into prespec.json alongside the protocol. Without this the caps lived
 # only here and could be changed after data collection without the frozen
 # manifest noticing.
+def runtime_identity() -> dict:
+    """The numerical runtime the verdict is computed in.
+
+    [rev8] The source digest binds this module, but the endpoints are numpy,
+    pandas and scipy calls: percentile behaviour, median tie handling and the t
+    quantile all live in those libraries. Replacing np.percentile changed an
+    endpoint while the protocol stayed byte-for-byte equal. The repo already
+    pins the runtime and ships a validator, so the identity is recorded from the
+    same source of truth rather than invented here.
+    """
+    identity = {"python": ".".join(str(v) for v in sys.version_info[:3])}
+    for module in (np, pd):
+        identity[module.__name__] = module.__version__
+    identity["scipy"] = scipy_version
+    try:
+        from pipeline.runtime import production_environment_receipt
+
+        identity["uv_lock_sha256"] = production_environment_receipt(
+            check_cuda=False)["uv_lock_sha256"]
+    except Exception as error:                       # never fail the analysis here
+        identity["uv_lock_sha256"] = None
+        identity["lock_read_error"] = f"{type(error).__name__}: {error}"
+    return identity
+
+
 def _analysis_source_digest() -> str:
     """SHA-256 of this module.
 
@@ -467,6 +512,7 @@ def decision_protocol() -> dict:
     return {
         "analysis_schema": ANALYSIS_SCHEMA,
         "analysis_source_sha256": _analysis_source_digest(),
+        "runtime": runtime_identity(),
         "failure_threshold": FAILURE_THRESHOLD,
         "systematic_min_failures": SYSTEMATIC_MIN_FAILURES,
         "absolute_failure_cap": ABSOLUTE_FAILURE_CAP,
@@ -485,12 +531,13 @@ def decision_protocol() -> dict:
 
 
 def donor_paired_t(tagged, baseline: str, candidate: str, statistic,
-                   donors: list, alpha: float = PER_COMPARISON_ALPHA) -> dict:
+                   donors: list, alpha: float | None = None) -> dict:
     """Student-t interval on the 14 donor-level paired differences.
 
     A prespecified sensitivity check on the percentile bootstrap for the smooth
     endpoints only. Reported, never decisive.
     """
+    alpha = PER_COMPARISON_ALPHA if alpha is None else alpha
     base_blocks = _blocks(tagged, baseline, donors)
     cand_blocks = _blocks(tagged, candidate, donors)
     per_donor = np.array([statistic(_pool(cand_blocks, [d]))
@@ -523,7 +570,7 @@ def exact_mcnemar(b: int, c: int) -> float:
 
 
 def contrast(tagged: pd.DataFrame, baseline: str, candidate: str,
-             n_bootstrap: int = N_BOOTSTRAP) -> dict:
+             n_bootstrap: int | None = None) -> dict:
     """Every prespecified endpoint for one contrast.
 
     [rev3] The primary population is *all* frozen donors. Outcome-dependent
@@ -532,6 +579,7 @@ def contrast(tagged: pd.DataFrame, baseline: str, candidate: str,
     candidates rankable against each other, which the per-contrast union set did
     not — each candidate could otherwise be scored on a different donor set.
     """
+    n_bootstrap = N_BOOTSTRAP if n_bootstrap is None else n_bootstrap
     donors = sorted(set(tagged.template))
     pair = tagged
     sporadic_only = eligible_donors(tagged, baseline, candidate)
@@ -743,7 +791,15 @@ def assert_frozen_protocol(root: Path) -> dict:
             f"{path} is missing; a stage-2 dataset is analysed only under the "
             "protocol frozen with it, and that protocol cannot be recovered"
         )
-    stored = json.loads(path.read_text()).get("decision_protocol")
+    try:
+        document = json.loads(path.read_text())
+    except json.JSONDecodeError as error:
+        raise ValueError(f"{path} is not readable JSON: {error}") from error
+    if not isinstance(document, dict):
+        raise ValueError(
+            f"{path} holds {type(document).__name__}, not a manifest object"
+        )
+    stored = document.get("decision_protocol")
     if stored is None:
         raise ValueError(
             f"{path} records no decision_protocol; it predates the frozen "

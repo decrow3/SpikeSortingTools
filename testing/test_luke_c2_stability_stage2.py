@@ -1037,3 +1037,98 @@ def test_the_freeze_binds_the_live_constants_not_an_import_time_snapshot(tmp_pat
     monkeypatch.setattr(A, "MIN_DEFINED_DONORS", 2)
     with pytest.raises(ValueError, match="min_defined_donors"):
         A.analyse(root)
+
+
+# --------------------------------------------------------------------------- #
+# [rev8] the certified protocol must be the one that actually executes
+# --------------------------------------------------------------------------- #
+@pytest.mark.parametrize("constant,value,probe", [
+    ("FAILURE_THRESHOLD", 0.1, "classify"),
+    ("SYSTEMATIC_MIN_FAILURES", 2, "classify"),
+    ("PER_COMPARISON_ALPHA", 0.4, "bootstrap"),
+    ("N_BOOTSTRAP", 37, "bootstrap"),
+    ("BOOTSTRAP_SEED", 12345, "bootstrap"),
+])
+def test_no_protocol_constant_is_captured_in_a_default_argument(monkeypatch,
+                                                                constant, value,
+                                                                probe):
+    """[rev8] Python evaluates defaults once, at definition time.
+
+    `classify(cells, threshold=FAILURE_THRESHOLD)` froze 0.9 at import, so the
+    verified protocol could report 0.1 while the executed classification still
+    used 0.9 -- the object being certified was not the one in force. Each
+    constant is changed after import and the *behaviour* is checked, not just
+    what decision_protocol() reports.
+    """
+    import testing.luke_c2_stability_stage2_analysis as A
+
+    monkeypatch.setattr(A, constant, value)
+    assert A.decision_protocol()[constant.lower()] == value
+
+    if probe == "classify":
+        cells = matrix({("D01", BASELINE): fails(3)})
+        tagged = A.classify(cells)
+        if constant == "FAILURE_THRESHOLD":
+            # at 0.1 nothing fails: the 0.45 cells are now above the line
+            assert not tagged.failed.any()
+        else:
+            # at a minimum of 2, three failures make the donor systematic
+            assert tagged.loc[(tagged.template == "D01")
+                              & (tagged.candidate == BASELINE), "systematic"].all()
+    else:
+        out = A.paired_donor_bootstrap(A.classify(matrix()), BASELINE, "th_8_8",
+                                       A.STATISTICS["failure_rate"], DONORS)
+        if constant == "N_BOOTSTRAP":
+            assert out["n_draws"] == 37
+        elif constant == "PER_COMPARISON_ALPHA":
+            assert out["ci_level"] == pytest.approx(0.6)
+        else:
+            assert out["n_draws"] == A.N_BOOTSTRAP        # seed changed, not size
+
+
+def test_the_protocol_records_the_numerical_runtime(tmp_path, monkeypatch):
+    """The endpoints are numpy/pandas/scipy calls, so the library is protocol."""
+    import testing.luke_c2_stability_stage2_analysis as A
+
+    runtime = A.decision_protocol()["runtime"]
+    for key in ("python", "numpy", "pandas", "scipy"):
+        assert runtime[key], key
+    assert runtime["numpy"] == np.__version__
+
+    # a dataset frozen under one runtime is refused under another
+    root = stage2_root(tmp_path)
+    import json
+    manifest = json.loads((tmp_path / "prespec.json").read_text())
+    manifest["decision_protocol"]["runtime"] = {**runtime, "numpy": "0.0.0"}
+    (tmp_path / "prespec.json").write_text(json.dumps(manifest))
+    with pytest.raises(ValueError, match="decision protocol has changed"):
+        A.analyse(root)
+
+
+def test_a_prespec_that_is_valid_json_but_not_a_manifest_fails_with_context(tmp_path):
+    from testing.luke_c2_stability_stage2_analysis import analyse
+
+    matrix().to_csv(tmp_path / "stage2.csv", index=False)
+    (tmp_path / "prespec.json").write_text("[]")
+    with pytest.raises(ValueError, match="not a manifest object"):
+        analyse(tmp_path)
+    (tmp_path / "prespec.json").write_text("{not json")
+    with pytest.raises(ValueError, match="not readable JSON"):
+        analyse(tmp_path)
+
+
+def test_marginal_intervals_carry_their_own_provenance():
+    """rev7 dropped the conditional flag and refusal reason from marginals."""
+    from testing.luke_c2_stability_stage2_analysis import marginal_bootstrap
+
+    refused = marginal_bootstrap(classify(undefined_matrix(["D01"])), "th_9_9",
+                                 STATISTICS["refractory_violation_median"],
+                                 DONORS, n=200)
+    assert refused["undefined_interval"] is True
+    assert "below the prespecified minimum" in refused["interval_refused_reason"]
+    assert refused["n_defined_donors"] == 1
+
+    ok = marginal_bootstrap(classify(matrix()), "th_9_9",
+                            STATISTICS["refractory_violation_median"],
+                            DONORS, n=200)
+    assert ok["conditional_on_definedness"] is False
