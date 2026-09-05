@@ -1,0 +1,62 @@
+{
+  "schema": "luke-amplitude-dropout-audit-v1",
+  "selection": {
+    "windows_per_case": 4,
+    "required_nominal_count": 1000,
+    "reference_max_missing_pct": 5.0,
+    "failing_min_missing_pct": 15.0,
+    "min_median_difference_pp": 10.0,
+    "max_span_s": 600.0,
+    "control_max_missing_pct": 5.0,
+    "control_max_range_pp": 3.0,
+    "max_failure_cases_per_sort": 2,
+    "max_control_cases_per_sort": 1,
+    "units": {
+      "windows_per_case": "windows (count); also the control's 'at least four consecutive valid windows'",
+      "required_nominal_count": "spikes per window (count; i1 - i0 + 1)",
+      "reference_max_missing_pct": "percent missing (inclusive upper bound, <=)",
+      "failing_min_missing_pct": "percent missing (inclusive lower bound, >=)",
+      "min_median_difference_pp": "percentage points (inclusive lower bound, >=)",
+      "max_span_s": "seconds (inclusive upper bound, <=; first window start_s to last window end_s)",
+      "control_max_missing_pct": "percent missing (inclusive upper bound, <=)",
+      "control_max_range_pp": "percentage points (inclusive upper bound, <=; max - min)",
+      "max_failure_cases_per_sort": "cases (count)",
+      "max_control_cases_per_sort": "cases (count)"
+    }
+  },
+  "sorts": [
+    {
+      "sort_id": "rescue_luke0804_v2v1_g0_imec0",
+      "curated": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output",
+      "qc_dir": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/qc",
+      "source_recording": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording",
+      "sampling_frequency_hz": 29999.835983263598,
+      "selected_start_sample": 0,
+      "duration_s": 10473.5537279367,
+      "channel_geometry": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output/channel_positions.npy",
+      "provenance": {
+        "recording_manifest": "recording/rescue_recording_manifest.json",
+        "recording_manifest_schema": "rescue-recording-manifest-v2",
+        "num_samples_source": "rescue_recording_manifest.json:num_samples (314204894)",
+        "decision_context": "docs/decisions/0009-*, docs/luke_20250804_truncation_fitter_audit.md"
+      }
+    },
+    {
+      "sort_id": "legacy_luke0804_v2v1_g0_imec0",
+      "curated": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output",
+      "qc_dir": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/qc",
+      "source_recording": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/preprocessed_recording",
+      "sampling_frequency_hz": 29999.835983263598,
+      "selected_start_sample": 0,
+      "duration_s": 10473.5537279367,
+      "channel_geometry": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output/channel_positions.npy",
+      "provenance": {
+        "recording_manifest": "preprocessed_recording/binary.json",
+        "recording_manifest_schema": "spikeinterface-binary-recording (pre-dates rescue_recording_manifest)",
+        "num_samples_source": "NOT independently available: traces_cached_seg0.raw has been deleted from disk. duration_s and selected_start_sample are estimated from this sort's own curated spike_times.npy extent (max sample 314204877, matching rescue's max sample exactly), not from an authoritative recording manifest. inventory's recording-metadata check marks duration_validated=false for this sort.",
+        "t_starts_annotation_s": 3057.677050340359,
+        "decision_context": "docs/decisions/0009-*, docs/luke_20250804_truncation_fitter_audit.md"
+      }
+    }
+  ]
+}
