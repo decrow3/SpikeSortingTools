@@ -17,21 +17,27 @@ until every one of them is set. :func:`validate` therefore takes a ``mode``:
 
 * ``authoring``  -- report the unset fields, refuse only the things that are
   wrong regardless of when you look (bad output root, missing comparator
-  identity, a tampered requirement registry, an acceptance block edited after
-  results exist, a corrupt set/unset node).
+  identity, a tampered requirement registry, a set value that does not match
+  its declared shape, an execution-defining field edited after results exist,
+  a corrupt set/unset node).
 * ``execution``  -- all of the above, plus: refuse while any required field is
-  unset, refuse an unfrozen or stale acceptance freeze, refuse a required
+  unset, refuse an unfrozen or stale freeze receipt, refuse a required
   implementation dependency that is not resolved, and refuse a failure interval
   that does not lie inside a development window.
 
-The five paths in :data:`MANDATORY_REQUIRED_PATHS` are the ones the plan names.
-They must appear in the contract's own ``required_before_execution`` list; a
-contract that drops one to make itself executable is refused in every mode.
+:data:`MANDATORY_REQUIRED_PATHS` must appear in the contract's own
+``required_before_execution`` list; a contract that drops one to make itself
+executable is refused in every mode. A set value is checked against its
+declared shape (:func:`check_required_value_shapes`) before it can be frozen or
+executed: being non-null is not being usable.
 
-Margins must be frozen *before* results exist. :func:`freeze_acceptance` writes
-``acceptance_freeze.json`` into the output root, recording the acceptance
-block's digest together with the git commit AND the on-disk working-tree source
-hashes (the tree is dirty; a commit alone does not identify what ran).
+The contract must be frozen *before* results exist. :func:`freeze_acceptance`
+writes ``acceptance_freeze.json`` into the output root, recording a digest of
+the whole execution-defining contract (:data:`EXECUTION_DIGEST_PATHS`) -- not
+the acceptance block alone, or results from incompatible configurations could
+accumulate under one freeze -- together with the git commit AND the on-disk
+working-tree source hashes (the tree is dirty; a commit alone does not identify
+what ran).
 
 This module reads the contract, the freeze receipt and directory listings only.
 It never sorts, fits, extracts voltage, or touches an input directory.
@@ -54,26 +60,76 @@ SCHEMA = "luke-first-pipeline-candidate-v1"
 DEFAULT_CONTRACT = REPO_ROOT / "configs/first_pipeline_candidate.v1.json"
 
 FREEZE_RECEIPT = "acceptance_freeze.json"
-FREEZE_SCHEMA = "luke-first-pipeline-candidate-acceptance-freeze-v1"
+FREEZE_SCHEMA = "luke-first-pipeline-candidate-contract-freeze-v1"
 
 MODE_AUTHORING = "authoring"
 MODE_EXECUTION = "execution"
 MODES = (MODE_AUTHORING, MODE_EXECUTION)
 
-#: The requirements the plan itself names. The contract may add more; it may
-#: never drop one of these.
+#: Requirements a contract may add to but never drop. The first five are the
+#: ones the plan itself names. ``candidate.settings`` and
+#: ``candidate.dependency_requirements_resolved`` are equally execution-defining
+#: -- an execution with no selected candidate configuration, or with no
+#: statement of which unresolved implementation dependencies it needs, is not a
+#: comparison anybody can interpret -- and neither can be known before Step 2
+#: chooses the candidate. So they are mandatory too: an *unset* dependency node
+#: never means "this candidate needs nothing", it means the question has not
+#: been answered, and execution refuses until it is.
 MANDATORY_REQUIRED_PATHS = (
     "acceptance.practical_failure",
     "acceptance.margins.completeness",
     "acceptance.margins.identity",
     "acceptance.margins.contamination",
     "acceptance.margins.healthy_interval_preservation",
+    "candidate.settings",
+    "candidate.dependency_requirements_resolved",
+)
+
+#: The contract subtrees the freeze receipt binds. Freezing the acceptance
+#: block alone is not enough: swapping the candidate settings, the dependency
+#: declaration, either comparator, the intervals, the recording identity or the
+#: output root after freezing would let results produced under one configuration
+#: accumulate in an output root receipted for another. Deliberately excluded are
+#: the prose fields that carry no execution meaning -- ``status``, ``purpose``,
+#: ``non_goals``, ``governing_documents``, ``output_root_rules`` and ``notes``
+#: -- so wording may be repaired after a freeze.
+EXECUTION_DIGEST_PATHS = (
+    "schema",
+    "contract_id",
+    "recording",
+    "comparators",
+    "intervals",
+    "output_root",
+    "candidate",
+    "runtime_budget",
+    "evaluation",
+    "required_before_execution",
+    "acceptance",
 )
 
 #: Both comparator roles must be identified before anything is comparable.
 REQUIRED_COMPARATORS = ("legacy", "rescue_control")
 #: A comparator identity that is not a path or a free-text note.
 REQUIRED_COMPARATOR_FIELDS = ("role", "sort_id", "curated", "qc_dir", "source_recording")
+
+#: Every margin declares which way improvement runs and what kind of magnitude
+#: its number is. A ``minimum_improvement`` margin is the smallest improvement
+#: that would justify adoption, so it must be strictly positive -- zero would be
+#: exactly the "statistically detectable tiny change" the plan rejects. A
+#: ``maximum_tolerated_degradation`` margin is a tolerance, so zero (tolerate
+#: nothing) is meaningful and negative is not.
+MARGIN_DIRECTIONS = ("increase_is_improvement", "decrease_is_improvement")
+MARGIN_MAGNITUDE_KINDS = ("minimum_improvement", "maximum_tolerated_degradation")
+MARGIN_DECLARATION_FIELDS = ("unit", "direction", "comparison", "magnitude_kind", "set_from")
+
+#: A resolved candidate configuration names one intervention family and one
+#: execution mode; the placeholder in the contract lists the same values.
+CANDIDATE_INTERVENTION_FAMILIES = (
+    "targeted_curation_repair",
+    "option_b_unwarped_identity",
+    "option_a_external_voltage_registration",
+)
+CANDIDATE_EXECUTION_MODES = ("retained_sort_replay", "resort")
 
 STATE_SET = "set"
 STATE_UNSET = "unset"
@@ -257,7 +313,8 @@ class ValidationReport:
     unset_required_fields: tuple[str, ...]
     results_present: tuple[str, ...]
     acceptance_digest: str
-    acceptance_frozen: bool
+    contract_digest: str
+    contract_frozen: bool
     required_dependencies: tuple[str, ...]
     unresolved_required_dependencies: tuple[str, ...]
     provenance: dict[str, Any] = field(default_factory=dict)
@@ -274,7 +331,8 @@ class ValidationReport:
             "unset_required_fields": list(self.unset_required_fields),
             "results_present": list(self.results_present),
             "acceptance_digest": self.acceptance_digest,
-            "acceptance_frozen": self.acceptance_frozen,
+            "contract_digest": self.contract_digest,
+            "contract_frozen": self.contract_frozen,
             "required_implementation_dependencies": list(self.required_dependencies),
             "unresolved_required_dependencies": list(self.unresolved_required_dependencies),
             "provenance": self.provenance,
@@ -402,7 +460,13 @@ def check_failure_interval_in_development_window(payload: dict) -> None:
 
 
 def check_required_dependencies(payload: dict) -> tuple[tuple[str, ...], tuple[str, ...]]:
-    """Return (required ids, required-but-unresolved ids)."""
+    """Return (required ids, required-but-unresolved ids).
+
+    An unset ``candidate.dependency_requirements_resolved`` returns empty
+    tuples, which is *not* the same as "this candidate requires nothing": the
+    path is in :data:`MANDATORY_REQUIRED_PATHS`, so execution refuses while it
+    is unset and this branch is only ever reached while authoring.
+    """
     catalog = get_path(payload, "candidate.unresolved_implementation_dependencies")
     if not isinstance(catalog, list):
         raise ContractRefusal("candidate.unresolved_implementation_dependencies must be a list")
@@ -430,10 +494,142 @@ def check_required_dependencies(payload: dict) -> tuple[tuple[str, ...], tuple[s
 
 
 # --------------------------------------------------------------------------- #
+# value shapes: a non-null value is not yet a usable value
+# --------------------------------------------------------------------------- #
+def _finite_number(value: Any, label: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ContractRefusal(f"{label} must be a finite number, got {value!r}")
+    number = float(value)
+    if number != number or number in (float("inf"), float("-inf")):
+        raise ContractRefusal(f"{label} must be a finite number, got {value!r}")
+    return number
+
+
+def check_margin_declarations(payload: dict) -> dict[str, dict]:
+    """Every margin declares its unit, direction, magnitude kind and source.
+
+    These are knowable at authoring time, so they are checked whether or not a
+    value has been set: a number without them cannot be interpreted, and there
+    is no honest way to check a value against a declaration that is missing.
+    """
+    margins = get_path(payload, "acceptance.margins")
+    if not isinstance(margins, dict) or not margins:
+        raise ContractRefusal("acceptance.margins must be a non-empty object")
+    for name, node in margins.items():
+        label = f"acceptance.margins.{name}"
+        if not isinstance(node, dict):
+            raise ContractRefusal(f"{label} must be an object")
+        for key in MARGIN_DECLARATION_FIELDS:
+            value = node.get(key)
+            if not isinstance(value, str) or not value.strip():
+                raise ContractRefusal(f"{label} must declare a non-empty {key!r}")
+        if node["direction"] not in MARGIN_DIRECTIONS:
+            raise ContractRefusal(
+                f"{label}.direction must be one of {MARGIN_DIRECTIONS}, got {node['direction']!r}"
+            )
+        if node["magnitude_kind"] not in MARGIN_MAGNITUDE_KINDS:
+            raise ContractRefusal(
+                f"{label}.magnitude_kind must be one of {MARGIN_MAGNITUDE_KINDS}, "
+                f"got {node['magnitude_kind']!r}"
+            )
+    return margins
+
+
+def check_margin_value(name: str, node: dict) -> None:
+    label = f"acceptance.margins.{name}"
+    number = _finite_number(node["value"], f"{label}.value")
+    kind = node["magnitude_kind"]
+    if kind == "minimum_improvement" and not number > 0:
+        raise ContractRefusal(
+            f"{label}.value is a minimum_improvement in {node['unit']!r} "
+            f"({node['direction']}), so it must be strictly positive; got {number!r}. "
+            "A zero or negative margin accepts a statistically detectable tiny change."
+        )
+    if kind == "maximum_tolerated_degradation" and number < 0:
+        raise ContractRefusal(
+            f"{label}.value is a maximum_tolerated_degradation in {node['unit']!r}, "
+            f"so it must be >= 0; got {number!r}"
+        )
+
+
+def check_practical_failure_value(payload: dict, node: dict) -> None:
+    label = "acceptance.practical_failure.value"
+    value = node["value"]
+    if not isinstance(value, dict):
+        raise ContractRefusal(f"{label} must be an object naming the case, got {type(value).__name__}")
+    if "interval_s" not in value:
+        raise ContractRefusal(f"{label} must carry an interval_s once it is set")
+    for key in ("name", "sort_id", "cluster_id"):
+        if key not in value:
+            raise ContractRefusal(f"{label} must carry {key!r} once it is set")
+    for key in ("name", "sort_id"):
+        if not isinstance(value[key], str) or not value[key].strip():
+            raise ContractRefusal(f"{label}.{key} must be a non-empty string, got {value[key]!r}")
+    known = {entry["sort_id"] for entry in check_comparators(payload).values()}
+    if value["sort_id"] not in known:
+        raise ContractRefusal(
+            f"{label}.sort_id {value['sort_id']!r} does not name a declared comparator {sorted(known)}"
+        )
+    cluster_id = value["cluster_id"]
+    if isinstance(cluster_id, bool) or not isinstance(cluster_id, int):
+        # A cluster id is a value, never an array position, and never a float:
+        # 17.0 and "17" both hide which array they were read out of.
+        raise ContractRefusal(f"{label}.cluster_id must be an integer id, got {cluster_id!r}")
+
+
+def check_candidate_settings_value(node: dict) -> None:
+    label = "candidate.settings.value"
+    value = node["value"]
+    if not isinstance(value, dict) or not value:
+        raise ContractRefusal(f"{label} must be a non-empty resolved configuration object")
+    family = value.get("intervention_family")
+    if family not in CANDIDATE_INTERVENTION_FAMILIES:
+        raise ContractRefusal(
+            f"{label}.intervention_family must be one of {CANDIDATE_INTERVENTION_FAMILIES}, "
+            f"got {family!r}"
+        )
+    mode = value.get("execution_mode")
+    if mode not in CANDIDATE_EXECUTION_MODES:
+        raise ContractRefusal(
+            f"{label}.execution_mode must be one of {CANDIDATE_EXECUTION_MODES}, got {mode!r}"
+        )
+
+
+def check_required_value_shapes(payload: dict) -> None:
+    """Check every *set* required value against its declared shape.
+
+    Being non-null is not being usable. A margin that is a string, an empty
+    settings object, or a failure case with no cluster id would otherwise
+    freeze and report executable.
+    """
+    margins = check_margin_declarations(payload)
+    for name, node in margins.items():
+        if not is_unset(node, f"acceptance.margins.{name}"):
+            check_margin_value(name, node)
+
+    failure = get_path(payload, "acceptance.practical_failure")
+    if not is_unset(failure, "acceptance.practical_failure"):
+        check_practical_failure_value(payload, failure)
+
+    settings = get_path(payload, "candidate.settings")
+    if not is_unset(settings, "candidate.settings"):
+        check_candidate_settings_value(settings)
+
+
+# --------------------------------------------------------------------------- #
 # freeze receipt
 # --------------------------------------------------------------------------- #
 def acceptance_digest(payload: dict) -> str:
+    """Digest of the acceptance block alone, for reporting which half moved."""
     return canonical_digest(get_path(payload, "acceptance"))
+
+
+def contract_digest(payload: dict) -> str:
+    """Digest of the whole execution-defining contract.
+
+    This is what the freeze receipt binds; see :data:`EXECUTION_DIGEST_PATHS`.
+    """
+    return canonical_digest({p: get_path(payload, p) for p in EXECUTION_DIGEST_PATHS})
 
 
 def read_freeze_receipt(out_root: Path) -> dict[str, Any] | None:
@@ -446,36 +642,49 @@ def read_freeze_receipt(out_root: Path) -> dict[str, Any] | None:
         raise ContractRefusal(f"acceptance freeze receipt {path} is not readable JSON: {exc}")
     if not isinstance(receipt, dict) or receipt.get("schema") != FREEZE_SCHEMA:
         raise ContractRefusal(f"acceptance freeze receipt {path} has the wrong schema")
-    if not receipt.get("acceptance_digest"):
-        raise ContractRefusal(f"acceptance freeze receipt {path} carries no acceptance_digest")
+    for key in ("acceptance_digest", "contract_digest"):
+        if not receipt.get(key):
+            raise ContractRefusal(f"acceptance freeze receipt {path} carries no {key}")
     return receipt
 
 
-def check_acceptance_not_edited_after_results(payload: dict, out_root: Path) -> tuple[list[str], bool]:
-    """Refuse a margin edited once results exist. Returns (results, frozen)."""
+def check_contract_not_edited_after_results(payload: dict, out_root: Path) -> tuple[list[str], bool]:
+    """Refuse an execution-defining edit once results exist.
+
+    The receipt binds :data:`EXECUTION_DIGEST_PATHS`, not the acceptance block
+    alone, so swapping the candidate settings, a comparator, the intervals, the
+    recording identity or the output root is caught here too. Returns
+    ``(results, frozen)``.
+    """
     found = results_present(out_root)
     receipt = read_freeze_receipt(out_root)
-    digest = acceptance_digest(payload)
+    digest = contract_digest(payload)
     if found and receipt is None:
         raise ContractRefusal(
             f"{len(found)} result file(s) already exist in {out_root} with no {FREEZE_RECEIPT}; "
             "acceptance margins cannot be set or frozen after results exist"
         )
-    if receipt is not None and receipt["acceptance_digest"] != digest and found:
+    if receipt is not None and receipt["contract_digest"] != digest and found:
+        moved = (
+            "the acceptance block"
+            if receipt["acceptance_digest"] != acceptance_digest(payload)
+            else "an execution-defining field outside the acceptance block"
+        )
         raise ContractRefusal(
-            "the acceptance block was edited after results exist in the output root "
-            f"(frozen {receipt['acceptance_digest'][:12]}, now {digest[:12]}); "
+            f"{moved} was edited after results exist in the output root "
+            f"(frozen {receipt['contract_digest'][:12]}, now {digest[:12]}); "
             f"first result seen: {found[0]}"
         )
-    return found, receipt is not None and receipt["acceptance_digest"] == digest
+    return found, receipt is not None and receipt["contract_digest"] == digest
 
 
 def freeze_acceptance(contract_path: Path, out_root: Path | None = None) -> dict[str, Any]:
-    """Freeze the acceptance block into the output root.
+    """Freeze the execution-defining contract into the output root.
 
-    Refuses unless every required field is set and no results exist yet: the
-    whole purpose is that the margins are fixed from baseline evidence before
-    anybody looks at a candidate result.
+    Refuses unless every required field is set, every set value matches its
+    declared shape, and no results exist yet: the whole purpose is that the
+    margins are fixed from baseline evidence before anybody looks at a
+    candidate result.
     """
     payload = load_contract(contract_path)
     declared = required_paths(payload)
@@ -487,7 +696,9 @@ def freeze_acceptance(contract_path: Path, out_root: Path | None = None) -> dict
     unset = tuple(p for p in declared if is_unset(get_path(payload, p), p))
     if unset:
         raise ContractRefusal(f"cannot freeze acceptance while these fields are unset: {list(unset)}")
+    check_required_value_shapes(payload)
     check_failure_interval_in_development_window(payload)
+    check_required_dependencies(payload)
     found = results_present(root)
     if found:
         raise ContractRefusal(
@@ -495,17 +706,19 @@ def freeze_acceptance(contract_path: Path, out_root: Path | None = None) -> dict
             f"(first: {found[0]})"
         )
     existing = read_freeze_receipt(root)
-    digest = acceptance_digest(payload)
-    if existing is not None and existing["acceptance_digest"] != digest:
+    digest = contract_digest(payload)
+    if existing is not None and existing["contract_digest"] != digest:
         raise ContractRefusal(
             f"{root / FREEZE_RECEIPT} already froze a different acceptance block "
-            f"({existing['acceptance_digest'][:12]} != {digest[:12]})"
+            f"({existing['contract_digest'][:12]} != {digest[:12]})"
         )
     receipt = {
         "schema": FREEZE_SCHEMA,
         "contract_id": payload.get("contract_id"),
         "contract_path": str(Path(contract_path).resolve()),
-        "acceptance_digest": digest,
+        "contract_digest": digest,
+        "contract_digest_covers": list(EXECUTION_DIGEST_PATHS),
+        "acceptance_digest": acceptance_digest(payload),
         "required_before_execution": list(declared),
         "frozen_at": datetime.now(timezone.utc).isoformat(),
         "provenance": {
@@ -542,9 +755,10 @@ def validate(
     development_windows(payload)
 
     unset = tuple(p for p in declared if is_unset(get_path(payload, p), p))
+    check_required_value_shapes(payload)
     check_failure_interval_in_development_window(payload)
     required_deps, unresolved_deps = check_required_dependencies(payload)
-    found, frozen = check_acceptance_not_edited_after_results(payload, root)
+    found, frozen = check_contract_not_edited_after_results(payload, root)
 
     if mode == MODE_EXECUTION:
         if unset:
@@ -555,8 +769,9 @@ def validate(
             )
         if not frozen:
             raise ContractRefusal(
-                f"refusing execution: acceptance is not frozen in {root}. Run `freeze` first so "
-                "the margins are receipted before any candidate result exists."
+                f"refusing execution: the contract is not frozen in {root} (or was edited since "
+                "the freeze). Run `freeze` first so the margins and the rest of the "
+                "execution-defining contract are receipted before any candidate result exists."
             )
         if unresolved_deps:
             raise ContractRefusal(
@@ -574,7 +789,8 @@ def validate(
         unset_required_fields=unset,
         results_present=tuple(found),
         acceptance_digest=acceptance_digest(payload),
-        acceptance_frozen=frozen,
+        contract_digest=contract_digest(payload),
+        contract_frozen=frozen,
         required_dependencies=required_deps,
         unresolved_required_dependencies=unresolved_deps,
         provenance={

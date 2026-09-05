@@ -15,6 +15,7 @@ import pytest
 
 from testing.first_pipeline_candidate_contract import (
     DEFAULT_CONTRACT,
+    EXECUTION_DIGEST_PATHS,
     FREEZE_RECEIPT,
     FREEZE_SCHEMA,
     MANDATORY_REQUIRED_PATHS,
@@ -221,7 +222,7 @@ def test_execution_passes_once_set_and_frozen(tmp_path, base):
     report = validate(path, mode=MODE_EXECUTION, out_root=out)
     assert report.executable is True
     assert report.unset_required_fields == ()
-    assert report.acceptance_frozen is True
+    assert report.contract_frozen is True
 
 
 def test_execution_refuses_when_set_but_never_frozen(tmp_path, base):
@@ -338,7 +339,7 @@ def test_editing_a_margin_before_results_exist_is_allowed_but_unfreezes(tmp_path
     edited["acceptance"]["margins"]["identity"]["value"] = 0.9
     edited_path = _write(tmp_path, edited, name="edited.json")
     report = validate(edited_path, mode=MODE_AUTHORING, out_root=out)
-    assert report.acceptance_frozen is False
+    assert report.contract_frozen is False
     with pytest.raises(ContractRefusal, match="not frozen"):
         validate(edited_path, mode=MODE_EXECUTION, out_root=out)
 
@@ -600,3 +601,289 @@ def test_comparator_paths_exist_on_this_host(base, role, key):
     if not Path("/mnt/NPX/Luke/20250804").exists():
         pytest.skip("/mnt/NPX/Luke/20250804 is not mounted on this host")
     assert Path(base["comparators"][role][key]).exists()
+
+
+# --------------------------------------------------------------------------- #
+# review finding 1 -- candidate.settings and the dependency declaration were
+# required-but-unset yet absent from the mandatory registry, so a contract could
+# drop them from required_before_execution and then freeze and execute with no
+# selected candidate and no dependency statement at all.
+# --------------------------------------------------------------------------- #
+@pytest.mark.parametrize(
+    "dotted", ["candidate.settings", "candidate.dependency_requirements_resolved"]
+)
+def test_f1_dropping_a_candidate_requirement_is_refused(tmp_path, base, dotted):
+    tampered = copy.deepcopy(base)
+    tampered["required_before_execution"] = [
+        p for p in tampered["required_before_execution"] if p != dotted
+    ]
+    with pytest.raises(ContractRefusal, match="never drop"):
+        validate(_write(tmp_path, tampered), mode=MODE_AUTHORING, out_root=tmp_path / "out")
+
+
+@pytest.mark.parametrize(
+    "dotted", ["candidate.settings", "candidate.dependency_requirements_resolved"]
+)
+def test_f1_cannot_execute_by_deregistering_an_unset_candidate_field(tmp_path, base, dotted):
+    """The whole exploit path: leave the field unset AND drop it from the
+    registry, then freeze and execute."""
+    payload = _fully_set(base)
+    parent, _, leaf = dotted.rpartition(".")
+    get_path(payload, parent)[leaf] = get_path(base, dotted)  # back to unset
+    payload["required_before_execution"] = [
+        p for p in payload["required_before_execution"] if p != dotted
+    ]
+    path = _write(tmp_path, payload)
+    with pytest.raises(ContractRefusal, match="never drop"):
+        freeze_acceptance(path, tmp_path / "out")
+    with pytest.raises(ContractRefusal, match="never drop"):
+        validate(path, mode=MODE_EXECUTION, out_root=tmp_path / "out")
+
+
+def test_f1_mandatory_registry_covers_every_required_but_unset_field(base):
+    assert set(MANDATORY_REQUIRED_PATHS) == set(base["required_before_execution"])
+
+
+def test_f1_unset_dependency_node_never_means_no_dependencies(tmp_path, base):
+    """An unset dependency declaration reports nothing required, but that is a
+    missing answer, not `this candidate needs nothing`: execution refuses."""
+    payload = _fully_set(base)
+    payload["candidate"]["dependency_requirements_resolved"] = copy.deepcopy(
+        base["candidate"]["dependency_requirements_resolved"]
+    )
+    path = _write(tmp_path, payload)
+    report = validate(path, mode=MODE_AUTHORING, out_root=tmp_path / "out")
+    assert report.required_dependencies == ()
+    assert report.executable is False
+    with pytest.raises(ContractRefusal, match="candidate.dependency_requirements_resolved"):
+        validate(path, mode=MODE_EXECUTION, out_root=tmp_path / "out")
+
+
+# --------------------------------------------------------------------------- #
+# review finding 2 -- the freeze receipt bound only the acceptance subtree, so
+# the candidate, comparators, intervals, recording identity and output root
+# could all be swapped after freezing while `frozen` stayed true.
+# --------------------------------------------------------------------------- #
+def _freeze_then_edit(tmp_path, base, mutate, *, with_results: bool):
+    path = _write(tmp_path, _fully_set(base))
+    out = tmp_path / "out"
+    freeze_acceptance(path, out)
+    if with_results:
+        (out / "scores.csv").write_text("unit,score\n1,0.5\n")
+    edited = _fully_set(base)
+    mutate(edited)
+    return _write(tmp_path, edited, name="edited.json"), out
+
+
+def _swap_candidate_settings(payload):
+    payload["candidate"]["settings"]["value"]["intervention_family"] = "option_b_unwarped_identity"
+
+
+def _swap_dependency_declaration(payload):
+    payload["candidate"]["dependency_requirements_resolved"]["value"] = ["legacy_raw_voltage"]
+
+
+def _swap_comparator(payload):
+    payload["comparators"]["legacy"]["curated"] = "/mnt/NPX/Luke/20250804/somewhere_else"
+
+
+def _swap_intervals(payload):
+    payload["intervals"]["healthy_control_intervals"]["windows"][0]["stop_s"] = 3300.0
+
+
+def _swap_recording_identity(payload):
+    payload["recording"]["raw_ap_sha256_imec0"] = "0" * 64
+
+
+def _swap_output_root(payload):
+    payload["output_root"] = "/media/huklab/Data/NPX/Ryansorting/Luke/somewhere_else"
+
+
+NON_ACCEPTANCE_EDITS = [
+    _swap_candidate_settings,
+    _swap_dependency_declaration,
+    _swap_comparator,
+    _swap_intervals,
+    _swap_recording_identity,
+    _swap_output_root,
+]
+
+
+@pytest.mark.parametrize("mutate", NON_ACCEPTANCE_EDITS, ids=lambda f: f.__name__)
+def test_f2_execution_defining_edit_after_results_is_refused(tmp_path, base, mutate):
+    edited_path, out = _freeze_then_edit(tmp_path, base, mutate, with_results=True)
+    with pytest.raises(ContractRefusal, match="edited after results exist"):
+        validate(edited_path, mode=MODE_AUTHORING, out_root=out)
+    with pytest.raises(ContractRefusal, match="edited after results exist"):
+        validate(edited_path, mode=MODE_EXECUTION, out_root=out)
+
+
+@pytest.mark.parametrize("mutate", NON_ACCEPTANCE_EDITS, ids=lambda f: f.__name__)
+def test_f2_execution_defining_edit_before_results_unfreezes(tmp_path, base, mutate):
+    edited_path, out = _freeze_then_edit(tmp_path, base, mutate, with_results=False)
+    assert validate(edited_path, mode=MODE_AUTHORING, out_root=out).contract_frozen is False
+    with pytest.raises(ContractRefusal, match="not frozen"):
+        validate(edited_path, mode=MODE_EXECUTION, out_root=out)
+
+
+def test_f2_non_acceptance_edit_is_named_as_such(tmp_path, base):
+    edited_path, out = _freeze_then_edit(tmp_path, base, _swap_comparator, with_results=True)
+    with pytest.raises(ContractRefusal, match="outside the acceptance block"):
+        validate(edited_path, mode=MODE_AUTHORING, out_root=out)
+
+
+def test_f2_receipt_binds_the_named_execution_defining_paths(tmp_path, base):
+    receipt = freeze_acceptance(_write(tmp_path, _fully_set(base)), tmp_path / "out")
+    assert receipt["contract_digest_covers"] == list(EXECUTION_DIGEST_PATHS)
+    assert receipt["contract_digest"] != receipt["acceptance_digest"]
+    for required in ("acceptance", "candidate", "comparators", "intervals", "recording", "output_root"):
+        assert required in EXECUTION_DIGEST_PATHS
+
+
+def test_f2_receipt_without_a_contract_digest_is_refused(tmp_path, base):
+    out = tmp_path / "out"
+    path = _write(tmp_path, _fully_set(base))
+    freeze_acceptance(path, out)
+    receipt = json.loads((out / FREEZE_RECEIPT).read_text())
+    receipt.pop("contract_digest")
+    (out / FREEZE_RECEIPT).write_text(json.dumps(receipt))
+    with pytest.raises(ContractRefusal, match="carries no contract_digest"):
+        validate(path, mode=MODE_AUTHORING, out_root=out)
+
+
+def test_f2_prose_edits_after_a_freeze_are_still_allowed(tmp_path, base):
+    """The digest is deliberately scoped: wording may be repaired."""
+    path = _write(tmp_path, _fully_set(base))
+    out = tmp_path / "out"
+    freeze_acceptance(path, out)
+    (out / "scores.csv").write_text("unit,score\n1,0.5\n")
+    edited = _fully_set(base)
+    edited["purpose"] = edited["purpose"] + " (typo fixed)"
+    edited["notes"].append("a clarifying note added after the run started")
+    edited_path = _write(tmp_path, edited, name="edited.json")
+    assert validate(edited_path, mode=MODE_EXECUTION, out_root=out).executable is True
+
+
+# --------------------------------------------------------------------------- #
+# review finding 3 -- a required field counted as satisfied purely because its
+# value was non-null, so margins could be strings, settings arbitrary data, and
+# the failure case could omit its name, sort_id and cluster_id.
+# --------------------------------------------------------------------------- #
+@pytest.mark.parametrize("name", ["completeness", "identity", "contamination", "healthy_interval_preservation"])
+@pytest.mark.parametrize(
+    "bad", ["5.0", {}, {"pp": 5.0}, [5.0], True, float("nan"), float("inf")],
+    ids=["string", "empty_object", "object", "list", "bool", "nan", "inf"],
+)
+def test_f3_non_numeric_margin_is_refused(tmp_path, base, name, bad):
+    payload = _fully_set(base)
+    payload["acceptance"]["margins"][name]["value"] = bad
+    path = _write(tmp_path, payload)
+    with pytest.raises(ContractRefusal, match="must be a finite number"):
+        validate(path, mode=MODE_AUTHORING, out_root=tmp_path / "out")
+    with pytest.raises(ContractRefusal, match="must be a finite number"):
+        freeze_acceptance(path, tmp_path / "out")
+
+
+@pytest.mark.parametrize("name", ["completeness", "identity"])
+@pytest.mark.parametrize("bad", [0.0, -0.5])
+def test_f3_non_positive_minimum_improvement_margin_is_refused(tmp_path, base, name, bad):
+    payload = _fully_set(base)
+    payload["acceptance"]["margins"][name]["value"] = bad
+    with pytest.raises(ContractRefusal, match="strictly positive"):
+        validate(_write(tmp_path, payload), mode=MODE_AUTHORING, out_root=tmp_path / "out")
+
+
+@pytest.mark.parametrize("name", ["contamination", "healthy_interval_preservation"])
+def test_f3_negative_tolerance_margin_is_refused_but_zero_is_allowed(tmp_path, base, name):
+    payload = _fully_set(base)
+    payload["acceptance"]["margins"][name]["value"] = -0.001
+    with pytest.raises(ContractRefusal, match="must be >= 0"):
+        validate(_write(tmp_path, payload), mode=MODE_AUTHORING, out_root=tmp_path / "out")
+    payload["acceptance"]["margins"][name]["value"] = 0.0
+    report = validate(_write(tmp_path, payload, name="zero.json"), out_root=tmp_path / "out")
+    assert report.unset_required_fields == ()
+
+
+def test_f3_margin_must_declare_its_unit_direction_and_magnitude_kind(tmp_path, base):
+    for key in ("unit", "direction", "comparison", "magnitude_kind", "set_from"):
+        payload = copy.deepcopy(base)
+        payload["acceptance"]["margins"]["identity"].pop(key)
+        with pytest.raises(ContractRefusal, match=f"must declare a non-empty {key!r}"):
+            validate(_write(tmp_path, payload), mode=MODE_AUTHORING, out_root=tmp_path / "out")
+
+
+@pytest.mark.parametrize("key, bad", [("direction", "sideways"), ("magnitude_kind", "vibes")])
+def test_f3_unknown_margin_declaration_value_is_refused(tmp_path, base, key, bad):
+    payload = copy.deepcopy(base)
+    payload["acceptance"]["margins"]["contamination"][key] = bad
+    with pytest.raises(ContractRefusal, match=f"{key} must be one of"):
+        validate(_write(tmp_path, payload), mode=MODE_AUTHORING, out_root=tmp_path / "out")
+
+
+def test_f3_shipped_margins_declare_their_magnitude_kinds(base):
+    kinds = {n: m["magnitude_kind"] for n, m in base["acceptance"]["margins"].items()}
+    assert kinds == {
+        "completeness": "minimum_improvement",
+        "identity": "minimum_improvement",
+        "contamination": "maximum_tolerated_degradation",
+        "healthy_interval_preservation": "maximum_tolerated_degradation",
+    }
+
+
+@pytest.mark.parametrize("key", ["name", "sort_id", "cluster_id"])
+def test_f3_practical_failure_missing_an_identity_field_is_refused(tmp_path, base, key):
+    payload = _fully_set(base)
+    payload["acceptance"]["practical_failure"]["value"].pop(key)
+    path = _write(tmp_path, payload)
+    with pytest.raises(ContractRefusal, match=f"must carry {key!r}"):
+        validate(path, mode=MODE_AUTHORING, out_root=tmp_path / "out")
+    with pytest.raises(ContractRefusal, match=f"must carry {key!r}"):
+        freeze_acceptance(path, tmp_path / "out")
+
+
+@pytest.mark.parametrize("bad", ["legacy", "", "  ", "some_other_sort"])
+def test_f3_practical_failure_sort_id_must_name_a_declared_comparator(tmp_path, base, bad):
+    payload = _fully_set(base)
+    payload["acceptance"]["practical_failure"]["value"]["sort_id"] = bad
+    with pytest.raises(ContractRefusal, match="non-empty string|does not name a declared comparator"):
+        validate(_write(tmp_path, payload), mode=MODE_AUTHORING, out_root=tmp_path / "out")
+
+
+@pytest.mark.parametrize("bad", [17.5, "17", True, None, [17]], ids=["float", "string", "bool", "null", "list"])
+def test_f3_practical_failure_cluster_id_must_be_an_integer(tmp_path, base, bad):
+    payload = _fully_set(base)
+    payload["acceptance"]["practical_failure"]["value"]["cluster_id"] = bad
+    with pytest.raises(ContractRefusal, match="cluster_id must be an integer id"):
+        validate(_write(tmp_path, payload), mode=MODE_AUTHORING, out_root=tmp_path / "out")
+
+
+@pytest.mark.parametrize(
+    "bad",
+    ["anything", 3, [], {}, {"intervention_family": "hand_tuning", "execution_mode": "resort"},
+     {"intervention_family": "targeted_curation_repair", "execution_mode": "whatever"},
+     {"intervention_family": "targeted_curation_repair"}],
+    ids=["string", "int", "empty_list", "empty_object", "unknown_family", "unknown_mode", "no_mode"],
+)
+def test_f3_candidate_settings_must_be_a_resolved_configuration(tmp_path, base, bad):
+    payload = _fully_set(base)
+    payload["candidate"]["settings"]["value"] = bad
+    path = _write(tmp_path, payload)
+    with pytest.raises(ContractRefusal, match="candidate.settings.value"):
+        validate(path, mode=MODE_AUTHORING, out_root=tmp_path / "out")
+    with pytest.raises(ContractRefusal, match="candidate.settings.value"):
+        freeze_acceptance(path, tmp_path / "out")
+
+
+def test_f3_a_shapeless_but_non_null_contract_never_reports_executable(tmp_path, base):
+    """The pre-fix failure in one shot: every required field non-null, none of
+    them usable."""
+    payload = _fully_set(base)
+    for name in payload["acceptance"]["margins"]:
+        payload["acceptance"]["margins"][name]["value"] = "as small as possible"
+    payload["acceptance"]["practical_failure"]["value"] = {"interval_s": [3000.0, 3100.0]}
+    payload["candidate"]["settings"]["value"] = "TBD"
+    path = _write(tmp_path, payload)
+    with pytest.raises(ContractRefusal):
+        validate(path, mode=MODE_EXECUTION, out_root=tmp_path / "out")
+    with pytest.raises(ContractRefusal):
+        freeze_acceptance(path, tmp_path / "out")

@@ -15,7 +15,6 @@
     "It invents no downstream endpoints; Step 6 takes those from actual analysis requirements.",
     "It does not waive frozen experiment decisions, operator integrity checks, or the Phase E promotion criteria."
   ],
-
   "recording": {
     "subject_session": "Luke 2025-08-04",
     "data_dir": "/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0",
@@ -27,7 +26,6 @@
     "raw_ap_sha256_imec0": "1e3a89ec68e0ad23b6dcd95225f48db49ab5897d9a0966e276c4ec191fef6833",
     "identity_source": "testing/configs/luke_aind_downstream_bounded_v1.json and testing/configs/luke_amplitude_dropout_audit_v1.json; not re-derived here"
   },
-
   "comparators": {
     "legacy": {
       "role": "pre-existing legacy comparator",
@@ -59,7 +57,6 @@
       }
     }
   },
-
   "intervals": {
     "clock": "seconds from the start of the selected imec0 stream (selected_start_sample = 0)",
     "sealed_panel": {
@@ -69,12 +66,30 @@
       "manifest_sha256_v2": "01643baa20fd9ee4905a9bd6e9282ab25e1365dd4899bd69244ea63a4a7fcc9b",
       "exclusion_buffer_s": 300.0,
       "windows_s": [
-        [1200.0, 1320.0],
-        [2400.0, 2520.0],
-        [4680.0, 4800.0],
-        [4800.0, 4920.0],
-        [9000.0, 9120.0],
-        [9120.0, 9240.0]
+        [
+          1200.0,
+          1320.0
+        ],
+        [
+          2400.0,
+          2520.0
+        ],
+        [
+          4680.0,
+          4800.0
+        ],
+        [
+          4800.0,
+          4920.0
+        ],
+        [
+          9000.0,
+          9120.0
+        ],
+        [
+          9120.0,
+          9240.0
+        ]
       ]
     },
     "healthy_control_intervals": {
@@ -83,37 +98,77 @@
       "source": "testing/outputs/luke_prospective_holdout/candidate_window_motion_metrics_v2.csv",
       "source_sha256": "810e5187e06ef1ee3c8467b71fe3450d0be3def1b03fa17b0c1cdfdc10398ecf",
       "windows": [
-        {"name": "H1_third0_quiet", "start_s": 3120.0, "stop_s": 3240.0, "time_third": 0, "combined_motion_score": 0.5094339622641509},
-        {"name": "H2_third1_quiet", "start_s": 5640.0, "stop_s": 5760.0, "time_third": 1, "combined_motion_score": 0.660377358490566},
-        {"name": "H3_third2_quiet", "start_s": 9600.0, "stop_s": 9720.0, "time_third": 2, "combined_motion_score": 0.8490566037735849}
+        {
+          "name": "H1_third0_quiet",
+          "start_s": 3120.0,
+          "stop_s": 3240.0,
+          "time_third": 0,
+          "combined_motion_score": 0.5094339622641509
+        },
+        {
+          "name": "H2_third1_quiet",
+          "start_s": 5640.0,
+          "stop_s": 5760.0,
+          "time_third": 1,
+          "combined_motion_score": 0.660377358490566
+        },
+        {
+          "name": "H3_third2_quiet",
+          "start_s": 9600.0,
+          "stop_s": 9720.0,
+          "time_third": 2,
+          "combined_motion_score": 0.8490566037735849
+        }
       ]
     },
     "development_windows": {
       "purpose": "The only intervals in which the candidate may be developed, tuned or inspected, and the only intervals a selected failure case may come from.",
       "derivation": "Full selected stream [0, duration_s], minus every sealed window expanded by exclusion_buffer_s, minus the healthy control intervals. Recomputable from this file; the validator does not need it to be trusted.",
       "windows_s": [
-        [0.0, 900.0],
-        [1620.0, 2100.0],
-        [2820.0, 3120.0],
-        [3240.0, 4380.0],
-        [5220.0, 5640.0],
-        [5760.0, 8700.0],
-        [9540.0, 9600.0],
-        [9720.0, 10473.5537279367]
+        [
+          0.0,
+          900.0
+        ],
+        [
+          1620.0,
+          2100.0
+        ],
+        [
+          2820.0,
+          3120.0
+        ],
+        [
+          3240.0,
+          4380.0
+        ],
+        [
+          5220.0,
+          5640.0
+        ],
+        [
+          5760.0,
+          8700.0
+        ],
+        [
+          9540.0,
+          9600.0
+        ],
+        [
+          9720.0,
+          10473.5537279367
+        ]
       ]
     }
   },
-
   "output_root": "/media/huklab/Data/NPX/Ryansorting/Luke/Luke0804_first_pipeline_candidate_v1",
   "output_root_rules": [
     "One local output root; never under /mnt and never under or over any input directory.",
     "Atomic writes; existing incompatible outputs are refused; no automatic cache repair and no `latest run` discovery.",
     "All outputs stay separate from accepted production results."
   ],
-
   "candidate": {
     "candidate_id": "luke0804_imec0_first_candidate_v1",
-    "selected_in_step": "Step 2 — chosen when the bounded amplitude-completeness audit ends",
+    "selected_in_step": "Step 2 \u2014 chosen when the bounded amplitude-completeness audit ends",
     "settings": {
       "state": "unset",
       "value": null,
@@ -158,7 +213,7 @@
       {
         "id": "option_a_external_voltage_registration",
         "status": "unresolved",
-        "description": "External voltage-registration stage graph, field qualification and application contract (motion build instructions §5).",
+        "description": "External voltage-registration stage graph, field qualification and application contract (motion build instructions \u00a75).",
         "blocks": "an Option A candidate"
       },
       {
@@ -175,9 +230,8 @@
       }
     ]
   },
-
   "runtime_budget": {
-    "basis": "Existing evaluation-ladder tier budgets (docs/pipeline_improvement_plan.md §3). No new budget is created by this contract.",
+    "basis": "Existing evaluation-ladder tier budgets (docs/pipeline_improvement_plan.md \u00a73). No new budget is created by this contract.",
     "l1_wall_clock_minutes_max": 5,
     "l2_wall_clock_minutes_max": 45,
     "l1c_wall_clock_hours_max": 2,
@@ -186,7 +240,6 @@
     "candidate_screen_wall_clock_hours_max": 4,
     "note": "L4 full-session scale runs only after Step 5's gates, under the existing L4 budget."
   },
-
   "evaluation": {
     "reuse": "The existing ladder, data, QC and frozen evaluation gates are reused unchanged.",
     "comparison_unit": "the same supported neuron identity over the same physical-time interval; population-composition comparisons are reported separately",
@@ -198,7 +251,6 @@
     ],
     "guardrails": "Contamination/refractory guardrails and the common truth scores from the frozen gates; a hard integrity failure is fixed before any scientific interpretation."
   },
-
   "required_before_execution": [
     "acceptance.practical_failure",
     "acceptance.margins.completeness",
@@ -208,9 +260,8 @@
     "candidate.settings",
     "candidate.dependency_requirements_resolved"
   ],
-
   "acceptance": {
-    "freeze_rule": "Every field in required_before_execution is set from BASELINE evidence and frozen before any candidate result is inspected. `Better looking` or a statistically detectable tiny change is insufficient. Freezing writes acceptance_freeze.json into the output root; after any results file exists there, the acceptance block may not change.",
+    "freeze_rule": "Every field in required_before_execution is set from BASELINE evidence and frozen before any candidate result is inspected. `Better looking` or a statistically detectable tiny change is insufficient. Freezing writes acceptance_freeze.json into the output root; after any results file exists there, the acceptance block may not change. The freeze receipt binds the whole execution-defining contract (recording, comparators, intervals, output root, candidate, runtime budget, evaluation, the requirement registry and acceptance), not the acceptance block alone.",
     "receipt_filename": "acceptance_freeze.json",
     "practical_failure": {
       "state": "unset",
@@ -218,8 +269,8 @@
       "description": "The named practical recovery failure this candidate must fix: which neuron, in which sort, over which interval, and what the failure is.",
       "value_shape": {
         "name": "short stable name",
-        "sort_id": "legacy_luke0804_v2v1_g0_imec0 | rescue_luke0804_v2v1_g0_imec0",
-        "cluster_id": "integer cluster id, a value and never an array position",
+        "sort_id": "must equal the sort_id of a comparator declared in comparators (legacy_luke0804_v2v1_g0_imec0 | rescue_luke0804_v2v1_g0_imec0)",
+        "cluster_id": "integer cluster id, a value and never an array position; never a float or a string",
         "interval_s": "[start_s, stop_s], which must lie inside one development window"
       },
       "set_from": "the amplitude-completeness audit's selected case and its BASELINE evidence",
@@ -233,6 +284,8 @@
         "value": null,
         "unit": "percentage points of estimated missing-spike percentage",
         "direction": "decrease_is_improvement",
+        "magnitude_kind": "minimum_improvement",
+        "value_shape": "a finite, strictly positive number in the declared unit: the smallest improvement that would justify adoption",
         "comparison": "same cluster, same physical-time interval, candidate versus the named baseline",
         "set_from": "baseline amplitude-completeness evidence for the selected case",
         "set_before": "any inspection of candidate results",
@@ -244,6 +297,8 @@
         "value": null,
         "unit": "to be declared with the value (e.g. fraction of the baseline train retained under a supported same-neuron link)",
         "direction": "increase_is_improvement",
+        "magnitude_kind": "minimum_improvement",
+        "value_shape": "a finite, strictly positive number in the declared unit: the smallest improvement that would justify adoption",
         "comparison": "supported same-neuron comparison over the failure interval; ambiguous links stay separate",
         "set_from": "baseline identity evidence for the selected case",
         "set_before": "any inspection of candidate results",
@@ -255,6 +310,8 @@
         "value": null,
         "unit": "to be declared with the value (e.g. maximum allowed increase in refractory-violation fraction on the actual train used downstream)",
         "direction": "decrease_is_improvement",
+        "magnitude_kind": "maximum_tolerated_degradation",
+        "value_shape": "a finite number >= 0 in the declared unit: the largest degradation that is still acceptable",
         "comparison": "candidate versus baseline on the same train, scored on the union actually used downstream, not on an anchor",
         "set_from": "baseline contamination/refractory evidence for the selected case",
         "set_before": "any inspection of candidate results",
@@ -266,6 +323,8 @@
         "value": null,
         "unit": "to be declared with the value (maximum tolerated degradation on the healthy control intervals)",
         "direction": "decrease_is_improvement",
+        "magnitude_kind": "maximum_tolerated_degradation",
+        "value_shape": "a finite number >= 0 in the declared unit: the largest degradation that is still acceptable",
         "comparison": "the healthy control intervals in intervals.healthy_control_intervals, candidate versus baseline",
         "set_from": "baseline evidence on those healthy control intervals",
         "set_before": "any inspection of candidate results",
@@ -274,7 +333,6 @@
       }
     }
   },
-
   "notes": [
     "Contract omissions block execution, not planning or the implementation of independent components: this file is authorable and reviewable while every required field is unset.",
     "A single validator enforces the refusals; see testing/first_pipeline_candidate_contract.py."
