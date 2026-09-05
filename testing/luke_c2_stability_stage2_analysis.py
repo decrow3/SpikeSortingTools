@@ -57,6 +57,7 @@ cannot manufacture more than 14 independent clusters.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from math import comb
 from pathlib import Path
@@ -310,25 +311,57 @@ def _draws(n: int, n_donors: int, seed: int):
 
 
 
-# A resample can legitimately contain no defined cell for a nullable endpoint
-# (every drawn donor undefined), in which case that draw's statistic is NaN.
-# np.percentile propagates one NaN to the whole interval, so the CI collapsed to
-# [nan, nan] for an endpoint the prespec promises a CI for. Percentiles are taken
-# over the defined draws, and how many were usable is reported.
-MIN_USABLE_DRAW_FRACTION = 0.5
+# A resample can legitimately contain no defined cell for a nullable endpoint,
+# making that draw's statistic NaN. rev6 dropped those draws and took percentiles
+# over the survivors, which fixed the [nan, nan] collapse but bought it with
+# something worse: a percentile over surviving draws is conditional on the
+# statistic being defined, and with one defined donor out of 14 it reported
+# ci=[0.0, 0.0] with undefined_interval=False -- a zero-width interval presented
+# as an ordinary CI, from a single independent unit. A loud NaN was replaced by
+# quiet false precision.
+#
+# [rev7] Support is therefore judged on the data, not on how many resamples
+# happened to succeed. The draw-survival fraction measures the probability of
+# drawing at least one defined donor, which is not donor support: a single
+# defined donor survives about 65% of 14-donor resamples and so passed the old
+# 0.5 rule. The gate is now the number of DISTINCT donors contributing a defined
+# observation. Below it there is no donor-generalising CI at all -- the point
+# estimate and the missingness are reported instead.
+MIN_DEFINED_DONORS = 10          # of 14; a frozen judgement call, not fitted
 
 
-def _draw_interval(draws: np.ndarray, alpha: float) -> dict:
-    """Percentile interval over the defined draws, with its own provenance."""
+def _defined_donors(statistic, donors: list, *blocks) -> int:
+    """Donors for which the statistic is defined in every arm supplied."""
+    n = 0
+    for d in donors:
+        values = [statistic(_pool(b, [d])) for b in blocks]
+        if all(np.isfinite(v) for v in values):
+            n += 1
+    return n
+
+
+def _draw_interval(draws: np.ndarray, alpha: float, n_defined_donors: int,
+                   n_donors: int) -> dict:
+    """Percentile interval, refused outright when donor support is inadequate."""
     finite = draws[np.isfinite(draws)]
-    usable = {"n_draws": int(draws.size), "n_usable_draws": int(finite.size)}
-    if finite.size < max(2, MIN_USABLE_DRAW_FRACTION * draws.size):
+    provenance = {"n_draws": int(draws.size), "n_usable_draws": int(finite.size),
+                  "n_defined_donors": int(n_defined_donors),
+                  "min_defined_donors": MIN_DEFINED_DONORS}
+    if n_defined_donors < MIN_DEFINED_DONORS or finite.size < 2:
         return {"ci": [float("nan")] * 2, "excludes_zero": False,
-                "undefined_interval": True, **usable}
+                "undefined_interval": True,
+                "interval_refused_reason": (
+                    f"only {n_defined_donors} of {n_donors} donors contribute a "
+                    f"defined value; below the prespecified minimum of "
+                    f"{MIN_DEFINED_DONORS}, no donor-generalising CI is quoted"),
+                **provenance}
     lo, hi = np.percentile(finite, [100 * alpha / 2, 100 * (1 - alpha / 2)])
     return {"ci": [round(float(lo), 5), round(float(hi), 5)],
             "excludes_zero": bool(lo > 0 or hi < 0),
-            "undefined_interval": False, **usable}
+            "undefined_interval": False,
+            # honest about what the interval is when any draw was dropped
+            "conditional_on_definedness": bool(finite.size < draws.size),
+            **provenance}
 
 
 def paired_donor_bootstrap(tagged, baseline: str, candidate: str, statistic,
@@ -351,9 +384,10 @@ def paired_donor_bootstrap(tagged, baseline: str, candidate: str, statistic,
         selection = [donors[j] for j in picks]
         draws[i] = (statistic(_pool(cand_blocks, selection))
                     - statistic(_pool(base_blocks, selection)))
+    defined = _defined_donors(statistic, donors, cand_blocks, base_blocks)
     return {"point": round(float(point), 5),
             "ci_level": round(1 - alpha, 4), "n_donors": len(donors),
-            **_draw_interval(draws, alpha)}
+            **_draw_interval(draws, alpha, defined, len(donors))}
 
 
 def marginal_bootstrap(tagged, config: str, statistic, donors: list,
@@ -366,9 +400,12 @@ def marginal_bootstrap(tagged, config: str, statistic, donors: list,
     draws = np.empty(n)
     for i, picks in enumerate(_draws(n, len(donors), seed)):
         draws[i] = statistic(_pool(blocks, [donors[j] for j in picks]))
-    interval = _draw_interval(draws, alpha)
+    interval = _draw_interval(draws, alpha,
+                              _defined_donors(statistic, donors, blocks),
+                              len(donors))
     return {"point": round(float(point), 5), "ci": interval["ci"],
             "n_usable_draws": interval["n_usable_draws"],
+            "n_defined_donors": interval["n_defined_donors"],
             "undefined_interval": interval["undefined_interval"]}
 
 
@@ -406,23 +443,45 @@ SMOOTH_ENDPOINTS = ("failure_rate", "split_rate")
 # freeze it into prespec.json alongside the protocol. Without this the caps lived
 # only here and could be changed after data collection without the frozen
 # manifest noticing.
-DECISION_PROTOCOL = {
-    "analysis_schema": ANALYSIS_SCHEMA,
-    "failure_threshold": FAILURE_THRESHOLD,
-    "systematic_min_failures": SYSTEMATIC_MIN_FAILURES,
-    "absolute_failure_cap": ABSOLUTE_FAILURE_CAP,
-    "donor_deterioration_cap": DONOR_DETERIORATION_CAP,
-    "baseline": BASELINE,
-    "candidates": list(CANDIDATES),
-    "decision_endpoints": list(DECISION_ENDPOINTS),
-    "smooth_endpoints": list(SMOOTH_ENDPOINTS),
-    "family_alpha": FAMILY_ALPHA,
-    "per_comparison_alpha": PER_COMPARISON_ALPHA,
-    "n_bootstrap": N_BOOTSTRAP,
-    "bootstrap_seed": BOOTSTRAP_SEED,
-    "min_usable_draw_fraction": MIN_USABLE_DRAW_FRACTION,
-    "tie_break": ["failure_rate", "fp_p90", "split_rate"],
-}
+def _analysis_source_digest() -> str:
+    """SHA-256 of this module.
+
+    [rev7] The named constants are not the whole protocol: the statistic
+    implementations, the comparison semantics and the tie-break are code, and the
+    schema string only protects them if someone remembers to bump it. Hashing the
+    source binds them too. After the prespec is frozen, changing this file is
+    exactly the thing that must stop an analysis and force an explicit re-freeze.
+    """
+    return hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+
+
+def decision_protocol() -> dict:
+    """The protocol as it is RIGHT NOW, not as it was at import.
+
+    [rev7] This was a module-level dict built once at import. A constant changed
+    afterwards -- by a monkeypatch, a REPL, a wrapper script -- diverged from the
+    snapshot silently: decide_contrast() read the live global while the frozen
+    comparison still saw the old value and passed. Reading the constants at call
+    time is what makes the freeze bind the rules actually in force.
+    """
+    return {
+        "analysis_schema": ANALYSIS_SCHEMA,
+        "analysis_source_sha256": _analysis_source_digest(),
+        "failure_threshold": FAILURE_THRESHOLD,
+        "systematic_min_failures": SYSTEMATIC_MIN_FAILURES,
+        "absolute_failure_cap": ABSOLUTE_FAILURE_CAP,
+        "donor_deterioration_cap": DONOR_DETERIORATION_CAP,
+        "baseline": BASELINE,
+        "candidates": list(CANDIDATES),
+        "decision_endpoints": list(DECISION_ENDPOINTS),
+        "smooth_endpoints": list(SMOOTH_ENDPOINTS),
+        "family_alpha": FAMILY_ALPHA,
+        "per_comparison_alpha": PER_COMPARISON_ALPHA,
+        "n_bootstrap": N_BOOTSTRAP,
+        "bootstrap_seed": BOOTSTRAP_SEED,
+        "min_defined_donors": MIN_DEFINED_DONORS,
+        "tie_break": ["failure_rate", "fp_p90", "split_rate"],
+    }
 
 
 def donor_paired_t(tagged, baseline: str, candidate: str, statistic,
@@ -590,12 +649,13 @@ def decide_contrast(result: dict) -> dict:
                 "be evaluated and a verdict will not be issued without them"
             )
     absolute = result["absolute_failure_rate"]
-    upper = absolute["ci"][1]
-    if not np.isfinite(upper):
+    if not np.isfinite([absolute["point"], *absolute["ci"]]).all():
         raise ValueError(
-            "absolute failure-rate CI is undefined; acceptability cannot be "
-            f"established (got {absolute['ci']})"
+            "absolute failure-rate estimate or CI is undefined; acceptability "
+            f"cannot be established (point {absolute['point']}, "
+            f"ci {absolute['ci']})"
         )
+    upper = absolute["ci"][1]
     too_bad_outright = bool(upper >= ABSOLUTE_FAILURE_CAP)
     worst = result["worst_donor_deterioration"]
     donor_regression = bool(worst["exceeds_cap"])
@@ -668,8 +728,44 @@ def decide(contrasts: dict) -> dict:
     }
 
 
+def assert_frozen_protocol(root: Path) -> dict:
+    """Refuse to analyse a dataset under rules other than the ones it was run under.
+
+    [rev7] The runner froze decision_protocol() into prespec.json at collection,
+    but analyse() read only stage2.csv, so nothing compared them: a completed
+    dataset could be analysed under changed constants -- or changed analysis
+    code -- without any refusal. Freezing a protocol that is never checked is
+    documentation, not a control.
+    """
+    path = root / "prespec.json"
+    if not path.exists():
+        raise FileNotFoundError(
+            f"{path} is missing; a stage-2 dataset is analysed only under the "
+            "protocol frozen with it, and that protocol cannot be recovered"
+        )
+    stored = json.loads(path.read_text()).get("decision_protocol")
+    if stored is None:
+        raise ValueError(
+            f"{path} records no decision_protocol; it predates the frozen "
+            "protocol and cannot be analysed under these rules"
+        )
+    if stored != decision_protocol():
+        differing = sorted(
+            k for k in set(stored) | set(decision_protocol())
+            if stored.get(k) != decision_protocol().get(k))
+        detail = {k: {"frozen": stored.get(k), "current": decision_protocol().get(k)}
+                  for k in differing if k != "analysis_source_sha256"}
+        raise ValueError(
+            f"the decision protocol has changed since collection: {differing}. "
+            f"{detail or 'the analysis source itself differs'}. Re-freezing is a "
+            "deliberate act, not a side effect of editing."
+        )
+    return stored
+
+
 def analyse(root: Path | str = DEFAULT_ROOT) -> dict:
     root = Path(root)
+    frozen = assert_frozen_protocol(root)
     cells = pd.read_csv(root / "stage2.csv")
     counts = validate_cells(cells)
     tagged = classify(cells)
@@ -694,9 +790,15 @@ def analyse(root: Path | str = DEFAULT_ROOT) -> dict:
         },
         "interval_caveat": (
             "percentile bootstrap over 14 clusters; tail endpoints are ties-heavy "
-            "order statistics with discrete, possibly zero-width intervals"
+            "order statistics with discrete, possibly zero-width intervals. An "
+            "endpoint undefined for some cells is quoted only when at least "
+            f"{MIN_DEFINED_DONORS} of 14 donors contribute a defined value; where "
+            "any resample was dropped the interval is flagged "
+            "conditional_on_definedness, meaning it is conditional on the "
+            "statistic existing rather than an ordinary unconditional bootstrap"
         ),
         "decision_endpoints": list(DECISION_ENDPOINTS),
+        "frozen_protocol_verified": frozen,
         "disqualifying_guardrails": {
             "systematic_min_failures": SYSTEMATIC_MIN_FAILURES,
             "absolute_failure_cap": ABSOLUTE_FAILURE_CAP,

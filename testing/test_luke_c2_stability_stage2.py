@@ -743,39 +743,65 @@ def undefined_matrix(defined_donors):
     return cells
 
 
-def test_an_all_undefined_resample_does_not_destroy_the_whole_interval():
-    """One undefined draw used to poison np.percentile for every draw.
+def refractory_interval(defined_donors, n=200):
+    from testing.luke_c2_stability_stage2_analysis import paired_donor_bootstrap
 
-    With a single defined donor, most resamples contain no defined cell at all,
-    so that endpoint's statistic is NaN for those draws. Ordinary np.percentile
-    propagates one NaN to both bounds, collapsing the CI to [nan, nan] for an
-    endpoint the prespec promises an interval for.
+    return paired_donor_bootstrap(
+        classify(undefined_matrix(defined_donors)), BASELINE, "th_9_9",
+        STATISTICS["refractory_violation_median"], DONORS, n=n)
+
+
+def test_one_defined_donor_does_not_buy_a_zero_width_interval():
+    """[rev7] The rev6 fix traded a loud NaN for quiet false precision.
+
+    Dropping undefined draws and taking percentiles over the survivors returned
+    ci=[0.0, 0.0] with undefined_interval=False from a SINGLE defined donor,
+    presented as an ordinary CI. The survival fraction measures the chance of
+    drawing at least one defined donor -- about 65% for one donor in 14 -- not
+    donor support, so it passed the old 0.5 rule comfortably.
     """
-    from testing.luke_c2_stability_stage2_analysis import paired_donor_bootstrap
-
-    tagged = classify(undefined_matrix(["D01"]))
-    out = paired_donor_bootstrap(tagged, BASELINE, "th_9_9",
-                                 STATISTICS["refractory_violation_median"],
-                                 DONORS, n=200)
-    assert out["n_usable_draws"] < out["n_draws"]        # draws really are lost
-    if out["undefined_interval"]:
-        # too few survived to quote an interval -- then it must say so, not
-        # report a silent [nan, nan] as though it were a computed CI
-        assert np.isnan(out["ci"]).all()
-    else:
-        assert np.isfinite(out["ci"]).all()
+    out = refractory_interval(["D01"])
+    assert out["n_defined_donors"] == 1
+    assert out["n_usable_draws"] > 0.5 * out["n_draws"]   # the old rule passed it
+    assert out["undefined_interval"] is True              # the donor gate does not
+    assert np.isnan(out["ci"]).all()
+    assert "below the prespecified minimum" in out["interval_refused_reason"]
 
 
-def test_a_partly_undefined_endpoint_still_yields_a_real_interval():
-    """The realistic case: some donors undefined, most not."""
-    from testing.luke_c2_stability_stage2_analysis import paired_donor_bootstrap
+def test_the_donor_support_gate_is_on_donors_not_on_surviving_draws():
+    """Exactly at the boundary, and on the quantity that actually matters."""
+    from testing.luke_c2_stability_stage2_analysis import MIN_DEFINED_DONORS
 
-    tagged = classify(undefined_matrix(DONORS[:11]))
-    out = paired_donor_bootstrap(tagged, BASELINE, "th_9_9",
-                                 STATISTICS["refractory_violation_median"],
-                                 DONORS, n=200)
-    assert out["undefined_interval"] is False
-    assert np.isfinite(out["ci"]).all() and out["n_usable_draws"] == out["n_draws"]
+    assert MIN_DEFINED_DONORS == 10
+    just_under = refractory_interval(DONORS[:MIN_DEFINED_DONORS - 1])
+    assert just_under["n_defined_donors"] == 9
+    assert just_under["undefined_interval"] is True
+
+    just_over = refractory_interval(DONORS[:MIN_DEFINED_DONORS])
+    assert just_over["n_defined_donors"] == 10
+    assert just_over["undefined_interval"] is False
+    assert np.isfinite(just_over["ci"]).all()
+
+
+def test_a_survivor_only_interval_is_labelled_conditional():
+    """It is not an unconditional bootstrap, and must not be reported as one."""
+    partial = refractory_interval(DONORS[:12])
+    assert partial["undefined_interval"] is False
+    if partial["n_usable_draws"] < partial["n_draws"]:
+        assert partial["conditional_on_definedness"] is True
+
+    complete = refractory_interval(DONORS)
+    assert complete["n_usable_draws"] == complete["n_draws"]
+    assert complete["conditional_on_definedness"] is False
+
+
+def test_the_decision_endpoints_are_never_gated_by_donor_support():
+    """Accuracy is always defined, so the gate must never fire on a decision."""
+    out = paired_donor_bootstrap(classify(undefined_matrix([])), BASELINE,
+                                 "th_9_9", STATISTICS["failure_rate"], DONORS,
+                                 n=200)
+    assert out["n_defined_donors"] == 14 and out["undefined_interval"] is False
+    assert np.isfinite(out["ci"]).all()
 
 
 def test_an_entirely_undefined_endpoint_is_declared_not_faked():
@@ -872,16 +898,16 @@ def test_the_decision_protocol_is_frozen_with_the_data(tmp_path):
     collection and freeze_manifest() would still accept the stored prespec.
     """
     from testing.luke_c2_stability_stage2 import (
-        DECISION_PROTOCOL, STAGE2, freeze_manifest,
+        STAGE2, decision_protocol, freeze_manifest,
     )
 
     for key in ("absolute_failure_cap", "donor_deterioration_cap",
                 "failure_threshold", "systematic_min_failures", "bootstrap_seed",
                 "n_bootstrap", "analysis_schema", "per_comparison_alpha"):
-        assert key in DECISION_PROTOCOL, key
+        assert key in decision_protocol(), key
 
     path = tmp_path / "prespec.json"
-    manifest = {**STAGE2, "plan": {}, "decision_protocol": DECISION_PROTOCOL}
+    manifest = {**STAGE2, "plan": {}, "decision_protocol": decision_protocol()}
     freeze_manifest(path, manifest)
     freeze_manifest(path, manifest)                       # identical rerun is fine
 
@@ -889,7 +915,7 @@ def test_the_decision_protocol_is_frozen_with_the_data(tmp_path):
     for key in ("absolute_failure_cap", "donor_deterioration_cap",
                 "failure_threshold", "bootstrap_seed", "analysis_schema"):
         altered = {**manifest, "decision_protocol":
-                   {**DECISION_PROTOCOL, key: "CHANGED"}}
+                   {**decision_protocol(), key: "CHANGED"}}
         with pytest.raises(SystemExit, match="differs from the frozen"):
             freeze_manifest(path, altered)
 
@@ -903,3 +929,111 @@ def test_the_per_donor_distribution_is_complete_for_both_arms():
         assert all(isinstance(v, int) for v in counts[config].values())
         assert all(counts[config][d] == expected for d in DONORS if d != "D09")
     assert counts["th_8_8"]["D09"] == 13 and counts[BASELINE]["D09"] == 6
+
+
+# --------------------------------------------------------------------------- #
+# [rev7] the frozen protocol must be enforced where the verdict is produced
+# --------------------------------------------------------------------------- #
+def stage2_root(tmp_path, protocol=None):
+    """A complete synthetic dataset with its frozen prespec beside it."""
+    import json
+
+    from testing.luke_c2_stability_stage2_analysis import decision_protocol
+
+    matrix().to_csv(tmp_path / "stage2.csv", index=False)
+    manifest = {"decision_protocol": protocol if protocol is not None
+                else decision_protocol()}
+    (tmp_path / "prespec.json").write_text(json.dumps(manifest, indent=2))
+    return tmp_path
+
+
+def test_analysis_refuses_a_dataset_without_its_frozen_protocol(tmp_path):
+    """[rev7] rev6 froze the protocol at collection and never checked it.
+
+    analyse() read only stage2.csv, so a completed six-hour dataset could be
+    scored under changed constants -- or changed analysis code -- with no
+    refusal anywhere. A frozen protocol that nothing compares against is
+    documentation, not a control.
+    """
+    from testing.luke_c2_stability_stage2_analysis import analyse
+
+    matrix().to_csv(tmp_path / "stage2.csv", index=False)
+    with pytest.raises(FileNotFoundError, match="prespec.json is missing"):
+        analyse(tmp_path)
+
+    import json
+    (tmp_path / "prespec.json").write_text(json.dumps({"plan": {}}))
+    with pytest.raises(ValueError, match="records no decision_protocol"):
+        analyse(tmp_path)
+
+
+@pytest.mark.parametrize("key", ["absolute_failure_cap", "donor_deterioration_cap",
+                                 "failure_threshold", "bootstrap_seed",
+                                 "min_defined_donors", "analysis_source_sha256"])
+def test_analysis_refuses_a_protocol_that_changed_after_collection(tmp_path, key):
+    from testing.luke_c2_stability_stage2_analysis import (
+        analyse, decision_protocol,
+    )
+
+    altered = {**decision_protocol(), key: "CHANGED-AFTER-THE-FACT"}
+    root = stage2_root(tmp_path, protocol=altered)
+    with pytest.raises(ValueError, match="decision protocol has changed"):
+        analyse(root)
+
+
+def test_the_source_digest_binds_the_implementation_not_just_the_constants(tmp_path):
+    """Statistics, comparisons and the tie-break are code, not named constants."""
+    from testing.luke_c2_stability_stage2_analysis import (
+        _analysis_source_digest, decision_protocol,
+    )
+
+    assert decision_protocol()["analysis_source_sha256"] == _analysis_source_digest()
+    assert len(decision_protocol()["analysis_source_sha256"]) == 64
+
+
+def test_a_matching_protocol_analyses_end_to_end(tmp_path):
+    """And the happy path must still work, producing a real decision."""
+    from testing.luke_c2_stability_stage2_analysis import analyse
+
+    result = analyse(stage2_root(tmp_path))
+    assert result["decision"]["outcome"] in {
+        "no_threshold_change", "candidate_replaces_baseline",
+        "multiple_candidates_tied_escalate"}
+    assert result["frozen_protocol_verified"]["min_defined_donors"] == 10
+    assert (tmp_path / "analysis.json").exists()
+    assert (tmp_path / "analysis_cells.csv").exists()
+
+
+def test_an_undefined_absolute_estimate_is_refused_on_either_bound():
+    """rev6 checked only the upper bound, so ci=[nan, 0.1] qualified."""
+    differences = {"failure_rate": diff(-0.05, True), "fp_p90": diff(0.0, False),
+                   "split_rate": diff(0.0, False)}
+    for bad in ({"point": 0.1, "ci": [float("nan"), 0.1]},
+                {"point": 0.1, "ci": [0.0, float("inf")]},
+                {"point": float("nan"), "ci": [0.0, 0.1]}):
+        with pytest.raises(ValueError, match="cannot be established"):
+            verdict_from(differences, absolute={**bad, "cap": 0.5})
+
+
+def test_the_freeze_binds_the_live_constants_not_an_import_time_snapshot(tmp_path,
+                                                                         monkeypatch):
+    """[rev7] The protocol was a dict built once at import.
+
+    A constant changed after import diverged from that snapshot silently:
+    decide_contrast() read the live module global while the frozen comparison
+    still saw the value captured at import, and passed. This test tampers the
+    way the reviewer did -- with the constant, not the stored file.
+    """
+    import testing.luke_c2_stability_stage2_analysis as A
+
+    root = stage2_root(tmp_path)                       # frozen at the true values
+    assert A.analyse(root)["decision"]["outcome"] == "no_threshold_change"
+
+    monkeypatch.setattr(A, "ABSOLUTE_FAILURE_CAP", -1.0)
+    with pytest.raises(ValueError, match="absolute_failure_cap"):
+        A.analyse(root)
+
+    monkeypatch.undo()
+    monkeypatch.setattr(A, "MIN_DEFINED_DONORS", 2)
+    with pytest.raises(ValueError, match="min_defined_donors"):
+        A.analyse(root)

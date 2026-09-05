@@ -155,6 +155,20 @@ sensitivity check. Neither sensitivity is decisive.
    rules can only ever **disqualify** a candidate — neither can promote one, so
    neither can manufacture a false positive.
 
+2c. **[rev7] Endpoints that are undefined for some cells.** An endpoint whose
+   value does not exist for every cell — currently only the refractory median,
+   undefined where no good unit has two spikes — is quoted with a
+   donor-generalising CI **only when at least 10 of the 14 donors contribute a
+   defined value**. Below that the point estimate and the missingness count are
+   reported without an interval. The gate is on *donors*, not on how many
+   bootstrap resamples happened to succeed: the survival fraction measures the
+   chance of drawing at least one defined donor — about 65 % for a single donor
+   in 14 — and an earlier draft using it reported a zero-width CI from one
+   donor. Where any resample was dropped the interval is flagged
+   `conditional_on_definedness`, because a percentile over surviving draws is
+   conditional on the statistic existing and is not an ordinary unconditional
+   bootstrap. Decision endpoints are never affected: accuracy is always defined.
+
 3. If no candidate satisfies (1), the outcome is **no threshold change**, and
    the benchmark's realisation sensitivity becomes the finding.
 4. **[rev2] If both candidates qualify**, they are ranked by a prespecified
