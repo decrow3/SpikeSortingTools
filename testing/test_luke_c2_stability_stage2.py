@@ -1,3 +1,5 @@
+import hashlib
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -84,9 +86,14 @@ def matrix(fail_map=None, fp_map=None, split_map=None):
                     "fp": fp_map.get((d, c), 500 if failed else 2),
                     "n_output_units_capturing": split_map.get((d, c), 2 if failed else 1),
                     "refractory_violation_median": 0.001,
-                    "truth_sha256": f"sha-{d}-{r}",
+                    "truth_sha256": digest_for(d, r),
                 })
     return pd.DataFrame(rows)
+
+
+def digest_for(donor, realisation):
+    """A realistic 12-hex digest: the runner writes contract[...][:12]."""
+    return hashlib.sha256(f"{donor}-{realisation}".encode()).hexdigest()[:12]
 
 
 def fails(n):
@@ -455,10 +462,9 @@ def test_the_right_number_of_configurations_is_not_the_right_configurations():
         validate_cells(renamed)
 
 
-def test_a_null_endpoint_is_refused_rather_than_counted_as_a_success():
+def test_a_null_decision_endpoint_is_refused_rather_than_counted_as_a_success():
     """`NaN < FAILURE_THRESHOLD` is False, so an unchecked null passes as a win."""
-    for column in ("accuracy", "fp", "n_output_units_capturing",
-                   "refractory_violation_median"):
+    for column in ("accuracy", "fp", "n_output_units_capturing"):
         bad = matrix()
         bad.loc[0, column] = np.nan
         with pytest.raises(ValueError, match=f"non-finite {column}"):
@@ -474,6 +480,30 @@ def test_a_null_endpoint_is_refused_rather_than_counted_as_a_success():
     assert not classify(masked).loc[0, "failed"]
 
 
+def test_an_undefined_guardrail_is_permitted_counted_and_not_contagious():
+    """A cell where the sorter found nothing has no refractory median.
+
+    guardrails() reports NaN there by design, and those cells are exactly what a
+    stability experiment produces. Refusing them would reject the completed
+    matrix; letting np.median see them would poison the endpoint for every donor
+    in the resample. Both are wrong, so it is counted and skipped.
+    """
+    from testing.luke_c2_stability_stage2_analysis import _nanmedian
+
+    cells = matrix()
+    cells["refractory_violation_median"] = cells.refractory_violation_median.astype(float)
+    cells.loc[0, "refractory_violation_median"] = np.nan
+    counts = validate_cells(cells)                       # permitted ...
+    assert counts["undefined_refractory_violation_median"] == 1     # ... and counted
+
+    # and the surviving 587 cells still produce a real number
+    d = contrast(classify(cells), BASELINE, "th_9_9",
+                 n_bootstrap=25)["differences"]["refractory_violation_median"]
+    assert np.isfinite(d["point"])
+    assert _nanmedian([np.nan, 1.0, 3.0]) == 2.0
+    assert np.isnan(_nanmedian([np.nan, np.nan]))
+
+
 def test_configurations_must_be_proved_to_have_seen_the_identical_train():
     """Matching labels are not evidence; the recorded hashes are."""
     ok = matrix()
@@ -481,9 +511,25 @@ def test_configurations_must_be_proved_to_have_seen_the_identical_train():
     drifted = matrix()
     row = (drifted.template.eq("D04") & drifted.realisation.eq("r05")
            & drifted.candidate.eq("th_8_8"))
-    drifted.loc[row, "truth_sha256"] = "sha-somethingelse"
+    drifted.loc[row, "truth_sha256"] = digest_for("D04", "OTHER")
     with pytest.raises(ValueError, match="not hash-paired"):
         validate_cells(drifted)
+
+    # a *null* hash beside two matching ones used to pass: nunique() drops NaN,
+    # so the triplet looked unanimous while one config's train was unrecorded
+    null = matrix()
+    null.loc[row, "truth_sha256"] = np.nan
+    with pytest.raises(ValueError, match="record no truth hash"):
+        validate_cells(null)
+    blank = matrix()
+    blank.loc[row, "truth_sha256"] = "   "
+    with pytest.raises(ValueError, match="record no truth hash"):
+        validate_cells(blank)
+    # and a digest that is not a digest
+    junk = matrix()
+    junk.loc[row, "truth_sha256"] = "not-a-hash!!"
+    with pytest.raises(ValueError, match="malformed truth hash"):
+        validate_cells(junk)
 
 
 def test_thresholds_must_be_proved_applied_not_inferred_from_the_request():
@@ -535,12 +581,61 @@ def test_frozen_outputs_are_written_atomically(tmp_path):
 
 
 def test_the_prespec_manifest_is_frozen_by_comparison_not_by_trust(tmp_path):
-    """A changed protocol must stop the run, not overwrite the manifest."""
+    """A changed protocol must stop the run, not overwrite the manifest.
+
+    The rev3 version of this test compared two dictionaries in the test body and
+    never reached the refusal branch at all; it would have passed with the
+    refusal deleted.
+    """
     import json
 
-    from testing.luke_c2_stability_stage2 import STAGE2
+    from testing.luke_c2_stability_stage2 import STAGE2, freeze_manifest
 
-    manifest = tmp_path / "prespec.json"
-    manifest.write_text(json.dumps({**STAGE2, "plan": {}}, indent=2) + "\n")
-    assert json.loads(manifest.read_text())["n_donors"] == EXPECTED_DONORS
-    assert json.loads(manifest.read_text()) != {**STAGE2, "plan": {"cells": 588}}
+    path = tmp_path / "prespec.json"
+    frozen = {**STAGE2, "plan": {"cells": 588}}
+
+    freeze_manifest(path, frozen)                       # first run writes it
+    assert json.loads(path.read_text()) == frozen
+    freeze_manifest(path, frozen)                       # an identical rerun is fine
+
+    with pytest.raises(SystemExit, match="differs from the frozen"):
+        freeze_manifest(path, {**frozen, "plan": {"cells": 587}})
+    # and the refusal must not have rewritten the frozen file
+    assert json.loads(path.read_text()) == frozen
+
+
+def test_statistics_sharing_one_column_are_not_interchangeable():
+    """The responsiveness sweep cannot separate endpoints driven by one column.
+
+    A 0.45 accuracy shift moves failure_rate *and* p10_accuracy, so p10 could be
+    miswired to failure_rate and still pass; likewise fp_p90 to fp_max. These
+    perturbations are sized to move exactly one of each same-column pair.
+    """
+    flat = contrast(classify(matrix()), BASELINE, "th_9_9",
+                    n_bootstrap=25)["differences"]
+
+    # 0.95 is above the 0.9 line: the accuracy tail moves, the failure rate cannot
+    d = perturbed("accuracy", 0.95, DONORS[:8])
+    assert d["p10_accuracy"]["point"] != flat["p10_accuracy"]["point"]
+    assert d["failure_rate"]["point"] == flat["failure_rate"]["point"]
+
+    # one donor is 7% of the arm, below the p10 breakpoint: only the rate moves
+    d = perturbed("accuracy", 0.45, DONORS[:1])
+    assert d["failure_rate"]["point"] != flat["failure_rate"]["point"]
+    assert d["p10_accuracy"]["point"] == flat["p10_accuracy"]["point"]
+
+    # one donor moves the FP maximum but sits below the p90 breakpoint
+    d = perturbed("fp", 900, DONORS[:1])
+    assert d["fp_max"]["point"] != flat["fp_max"]["point"]
+    assert d["fp_p90"]["point"] == flat["fp_p90"]["point"]
+
+    # a ceiling shared by both arms pins the max, so only the p90 can move
+    cells = matrix()
+    cells["fp"] = cells.fp.astype(float)
+    cells.loc[cells.realisation.eq("r00"), "fp"] = 9999.0          # both arms
+    cells.loc[cells.candidate.eq("th_9_9")
+              & cells.template.isin(DONORS[:3]), "fp"] = 50.0
+    d = contrast(classify(cells), BASELINE, "th_9_9",
+                 n_bootstrap=25)["differences"]
+    assert d["fp_max"]["point"] == 0.0
+    assert d["fp_p90"]["point"] != 0.0

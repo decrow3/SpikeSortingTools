@@ -36,20 +36,31 @@ can trigger a collapse independently, so neither may be held fixed.
 
 ## Endpoints, prespecified
 
-Primary is the **sporadic failure rate**; a cell fails if accuracy < 0.9.
+Primary is the **failure rate over all frozen donors**; a cell fails if
+accuracy < 0.9. The endpoint is deliberately *not* called a "sporadic" rate: no
+donor is filtered out of it.
 
 * **Systematic** — a donor × configuration failing on ≥ 12 of 14 realisations.
   A different mechanism with a different remedy (stage 1's D10 loses events
-  before clustering; a lower threshold is the only fix), so it is reported
-  separately.
-* **[rev2] Eligibility is common to a contrast.** A donor is excluded from a
-  baseline-versus-candidate contrast if it is systematic under **either** arm.
-  Conditioning each configuration on its own systematic set is biased in both
-  directions: at 11 failures all 14 cells stay in the denominator, at 12 the
-  donor vanishes, so a configuration could improve its reported rate *by failing
-  once more*. The union rule makes both arms describe the same donors, and the
-  exclusion applies to the paired test as well as to the descriptive rate.
-* **Sporadic** — everything else, on that common population.
+  before clustering; a lower threshold is the only fix). Under rev3 this is a
+  **disqualifying guardrail** (rule 2) and a reported descriptive, *not* a
+  filter on the primary population.
+* ~~**[rev2] Eligibility is common to a contrast.**~~ **SUPERSEDED by rev3 —
+  do not apply.** Rev2 excluded a donor from a contrast when it was systematic
+  under either arm. The union equalised the two arms' denominators, but
+  membership of that set is itself a Stage-2 outcome, so the estimand stayed
+  conditioned on the result: crossing a donor from 11 to 12 failures drops it
+  from both arms and moves the reported difference from +0.05612 to exactly
+  0.00000, rewarding a candidate for failing more. This bullet is struck rather
+  than deleted so the superseded rule stays auditable. See the rev3 note below,
+  which is the operative definition.
+* **Undefined guardrails [rev3].** `refractory_violation_median` is undefined
+  for a cell in which no good unit has two spikes — the scorer reports NaN by
+  design, and those cells are exactly what an instability produces. Such cells
+  are **counted and reported**, excluded from that endpoint's median only, and
+  never coerced to zero. Missingness is confined to this non-decision endpoint:
+  a null in accuracy, FP or the split count is corruption and refuses the
+  matrix, because `NaN < 0.9` is False and would otherwise read as a pass.
 
 **[rev2] Inference is a paired donor bootstrap, not McNemar.** The 14
 realisations within a donor share that donor's waveform, amplitude and

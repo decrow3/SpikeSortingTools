@@ -93,8 +93,20 @@ PER_COMPARISON_ALPHA = FAMILY_ALPHA / len(CANDIDATES)   # Bonferroni
 # --------------------------------------------------------------------------- #
 # validation — the analysis must refuse an incomplete or duplicated matrix
 # --------------------------------------------------------------------------- #
-NUMERIC_ENDPOINTS = ("accuracy", "fp", "n_output_units_capturing",
-                     "refractory_violation_median")
+# Decision-critical endpoints. score_sort() returns 0.0, not NaN, when nothing
+# captures the train (ladder_score: `best, tp, fp, fn, accuracy = None, 0, 0,
+# n_truth, 0.0`), so a null here is corruption, never a legitimate result -- and
+# an unchecked one would silently pass, because `NaN < FAILURE_THRESHOLD` is
+# False.
+FINITE_ENDPOINTS = ("accuracy", "fp", "n_output_units_capturing")
+# Guardrails that are *legitimately undefined* for some cells: guardrails() sets
+# rv = [nan] when no good unit has two spikes, so a cell where the sorter found
+# nothing has no refractory median to report. Those are exactly the cells a
+# stability experiment is about, so requiring finiteness here would refuse the
+# completed matrix. They are counted and reported instead, and their endpoint
+# statistic is nan-aware.
+NULLABLE_ENDPOINTS = ("refractory_violation_median",)
+NUMERIC_ENDPOINTS = FINITE_ENDPOINTS + NULLABLE_ENDPOINTS
 REQUIRED_COLUMNS = ("template", "realisation", "candidate", "n_events",
                     "truth_sha256") + NUMERIC_ENDPOINTS
 
@@ -137,7 +149,7 @@ def validate_cells(cells: pd.DataFrame) -> dict:
         )
     # a NaN accuracy is not a success: `NaN < FAILURE_THRESHOLD` is False, so an
     # unchecked null would silently count as a passing cell in classify().
-    for col in NUMERIC_ENDPOINTS:
+    for col in FINITE_ENDPOINTS:
         values = pd.to_numeric(cells[col], errors="coerce")
         bad = ~np.isfinite(values.to_numpy(dtype=float))
         if bad.any():
@@ -147,8 +159,21 @@ def validate_cells(cells: pd.DataFrame) -> dict:
     per_pair = cells.groupby(["template", "realisation"]).candidate.nunique()
     if not (per_pair == 1 + len(CANDIDATES)).all():
         raise ValueError("some donor/realisation pairs lack a complete config triplet")
-    # identical labels do not prove the three configs saw the identical train
-    hashes = cells.groupby(["template", "realisation"]).truth_sha256.nunique()
+    # identical labels do not prove the three configs saw the identical train.
+    # nunique() defaults to dropna=True, so a null hash beside two matching ones
+    # counted as agreement; reject nulls and malformed digests before grouping.
+    digests = cells.truth_sha256.astype("string")
+    blank = digests.isna() | digests.str.strip().eq("")
+    if blank.any():
+        raise ValueError(f"{int(blank.sum())} cells record no truth hash")
+    malformed = ~digests.str.fullmatch(r"[0-9a-f]{12}|[0-9a-f]{64}")
+    if malformed.any():
+        raise ValueError(
+            f"{int(malformed.sum())} cells record a malformed truth hash, e.g. "
+            f"{digests[malformed].iloc[0]!r}"
+        )
+    hashes = cells.groupby(["template", "realisation"]).truth_sha256.nunique(
+        dropna=False)
     if not (hashes == 1).all():
         disagree = sorted(hashes[hashes != 1].index)
         raise ValueError(
@@ -156,6 +181,10 @@ def validate_cells(cells: pd.DataFrame) -> dict:
             f"configurations: {disagree[:5]}"
         )
     counts["truth_hashes"] = int(cells.truth_sha256.nunique())
+    # undefined guardrails are permitted, but never silent
+    for col in NULLABLE_ENDPOINTS:
+        values = pd.to_numeric(cells[col], errors="coerce").to_numpy(dtype=float)
+        counts[f"undefined_{col}"] = int((~np.isfinite(values)).sum())
     return counts
 
 
@@ -279,10 +308,19 @@ STATISTICS = {
     "fp_p90": lambda a: float(np.percentile(a["fp"], 90)),
     "fp_max": lambda a: float(a["fp"].max()),
     "split_rate": lambda a: float((a["n_output_units_capturing"] > 1).mean()),
-    "refractory_violation_median": lambda a: float(
-        np.median(a["refractory_violation_median"]))
+    # nan-aware: one cell with no scoreable good unit must not poison the
+    # pooled endpoint for every donor in the resample
+    "refractory_violation_median": lambda a: _nanmedian(
+        a["refractory_violation_median"])
     if "refractory_violation_median" in a else float("nan"),
 }
+def _nanmedian(values) -> float:
+    """Median over the defined cells; NaN only if every cell is undefined."""
+    values = np.asarray(values, dtype=float)
+    defined = values[np.isfinite(values)]
+    return float(np.median(defined)) if defined.size else float("nan")
+
+
 DECISION_ENDPOINTS = ("failure_rate", "fp_p90", "split_rate")
 # endpoints that are means, so a donor-level t-interval is meaningful; the tail
 # order statistics are deliberately excluded (see the module docstring)
@@ -501,6 +539,9 @@ def analyse(root: Path | str = DEFAULT_ROOT) -> dict:
             "guardrail, and the union-excluded population is reported only as a "
             "labelled sensitivity analysis"
         ),
+        "undefined_guardrail_cells": {
+            col: counts.get(f"undefined_{col}", 0) for col in NULLABLE_ENDPOINTS
+        },
         "interval_caveat": (
             "percentile bootstrap over 14 clusters; tail endpoints are ties-heavy "
             "order statistics with discrete, possibly zero-width intervals"

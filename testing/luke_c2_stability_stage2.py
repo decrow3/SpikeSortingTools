@@ -185,6 +185,24 @@ def assert_applied_settings(label: str, eff: dict, requested: dict) -> dict:
     return eff
 
 
+def freeze_manifest(manifest_path: Path, manifest: dict) -> Path:
+    """Write the prespec once; afterwards refuse any run whose protocol differs.
+
+    A prespecified experiment may not quietly adopt an edited protocol, so a
+    mismatch stops the run rather than overwriting the frozen file.
+    """
+    if manifest_path.exists():
+        if json.loads(manifest_path.read_text()) != manifest:
+            raise SystemExit(
+                f"{manifest_path} differs from the frozen stage-2 manifest. This "
+                "run is prespecified; a changed protocol needs a new schema, not "
+                "an edited file."
+            )
+    else:
+        _atomic_write(manifest_path, json.dumps(manifest, indent=2) + "\n")
+    return manifest_path
+
+
 def output_root(explicit=None) -> Path:
     root = Path(explicit or os.environ.get("LUKE_STAGE2_ROOT") or DEFAULT_OUTPUT)
     if str(root.resolve()).startswith("/mnt/"):
@@ -244,16 +262,7 @@ def run(donors=None, root=None, keep_recordings: bool = False,
     if len({v["sha256"] for v in frozen.values()}) != len(frozen):
         raise RuntimeError("two realisations are identical; the pairing would be degenerate")
     manifest = {**STAGE2, "plan": budget, "frozen_realisations": frozen}
-    manifest_path = root / "prespec.json"
-    if manifest_path.exists():
-        if json.loads(manifest_path.read_text()) != manifest:
-            raise SystemExit(
-                f"{manifest_path} differs from the frozen stage-2 manifest. This "
-                "run is prespecified; a changed protocol needs a new schema, not "
-                "an edited file."
-            )
-    else:
-        _atomic_write(manifest_path, json.dumps(manifest, indent=2) + "\n")
+    freeze_manifest(root / "prespec.json", manifest)
 
     rows = []
     for tid in tids:
