@@ -21,6 +21,7 @@ from testing.luke_amplitude_dropout_audit import (
     STATUS_INVALID_INPUT,
     STATUS_NONFINITE_FIT,
     STATUS_NO_FIT,
+    WINDOWS_COLUMNS,
     _reject_unsafe_out_root,
     _validate_kept_spikes,
     build_windows_table,
@@ -1255,7 +1256,13 @@ def test_selection_constants_cannot_be_overridden_on_the_command_line(tmp_path):
 def _completed_inventory(tmp_path: Path, windows: pd.DataFrame | None = None):
     """Run a real `inventory` on synthetic fixtures, then (optionally) replace
     windows.csv with a hand-built table so selection can be exercised without
-    fabricating a 4,000-spike cluster."""
+    fabricating a 4,000-spike cluster.
+
+    The manifest's recorded windows.csv hash is re-stamped to match, i.e. the
+    result stands in for an inventory that genuinely produced that table. The
+    guard against a windows.csv changing *behind* the manifest is exercised
+    separately, by the tests that tamper without re-stamping.
+    """
     curated = _write_curated(tmp_path, n=10)
     qc_dir = tmp_path / "qc"
     _write_cached_qc(
@@ -1267,7 +1274,15 @@ def _completed_inventory(tmp_path: Path, windows: pd.DataFrame | None = None):
     run_inventory(config_path, out_root)
     if windows is not None:
         windows.to_csv(out_root / "windows.csv", index=False)
+        _restamp_windows_hash(out_root)
     return config_path, out_root
+
+
+def _restamp_windows_hash(out_root: Path) -> None:
+    manifest_path = out_root / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest["windows_csv_sha256"] = sha256_file(out_root / "windows.csv")
+    manifest_path.write_text(json.dumps(manifest))
 
 
 def test_run_select_end_to_end_freezes_cases_and_updates_the_manifest(tmp_path):
@@ -1397,6 +1412,196 @@ def test_select_cli_reports_the_frozen_case_ids(tmp_path, capsys):
     assert printed["case_ids"] == ["synthetic__c1__failure1"]
     assert printed["selection_sha256"] == json.loads(
         (out_root / "selection.json").read_text())["selection_sha256"]
+
+
+# --------------------------------------------------------------------------- #
+# layer 3 regressions: windows.csv provenance between inventory and select
+# --------------------------------------------------------------------------- #
+def test_run_inventory_records_the_windows_csv_hash(tmp_path):
+    """The inventory must attest the table it produced, not just the arrays it
+    read: otherwise select can only re-hash whatever windows.csv it finds."""
+    config_path, out_root = _completed_inventory(tmp_path)
+    manifest = json.loads((out_root / "manifest.json").read_text())
+    assert manifest["windows_csv_sha256"] == sha256_file(out_root / "windows.csv")
+
+
+def test_select_refuses_a_windows_csv_altered_since_the_inventory(tmp_path):
+    """A windows.csv modified, corrupted or replaced between the two stages
+    must be refused. Without the inventory-time hash, select would rank the
+    substituted rows and selection.json's own hash would merely authenticate
+    the replacement, letting arbitrary case IDs claim to come from a completed
+    inventory."""
+    table = _table(_failing_run(sort_id="synthetic", cluster_id=1))
+    config_path, out_root = _completed_inventory(tmp_path, table)
+
+    swapped = _table(_failing_run(sort_id="synthetic", cluster_id=4242))
+    swapped.to_csv(out_root / "windows.csv", index=False)   # manifest NOT re-stamped
+
+    with pytest.raises(RuntimeError, match="windows.csv sha256 mismatch"):
+        run_select(config_path, out_root)
+    assert not (out_root / "selection.json").exists()
+
+
+def test_select_refuses_a_windows_csv_edited_in_place_since_the_inventory(tmp_path):
+    """Even a one-value edit that leaves the row count identical is refused."""
+    table = _table(_failing_run(sort_id="synthetic", cluster_id=1))
+    config_path, out_root = _completed_inventory(tmp_path, table)
+
+    edited = pd.read_csv(out_root / "windows.csv")
+    edited.loc[0, "missing_pct"] = 4.9
+    edited.to_csv(out_root / "windows.csv", index=False)
+
+    with pytest.raises(RuntimeError, match="windows.csv sha256 mismatch"):
+        run_select(config_path, out_root)
+
+
+def test_select_refuses_a_manifest_that_never_attested_windows_csv(tmp_path):
+    """An inventory manifest predating the attestation cannot be trusted to
+    have produced the windows.csv sitting next to it."""
+    table = _table(_failing_run(sort_id="synthetic", cluster_id=1))
+    config_path, out_root = _completed_inventory(tmp_path, table)
+    manifest_path = out_root / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest.pop("windows_csv_sha256")
+    manifest_path.write_text(json.dumps(manifest))
+
+    with pytest.raises(RuntimeError, match="records no windows_csv_sha256"):
+        run_select(config_path, out_root)
+
+
+# --------------------------------------------------------------------------- #
+# layer 3 regressions: a sort that yields nothing must still be reported
+# --------------------------------------------------------------------------- #
+def test_a_sort_whose_inventory_is_entirely_no_fit_still_reports_zero_cases():
+    """`window_records` drops no_fit placeholders, so a sort with nothing but
+    no_fit clusters has no entry there. It must not therefore vanish from
+    per_sort -- that would hide exactly the insufficient-data condition this
+    audit exists to report."""
+    no_fit_rows = []
+    for cluster_id in (11, 12):
+        row = _wrow(sort_id="legacy", cluster_id=cluster_id, source_row=-1)
+        row.update({"i0": np.nan, "i1": np.nan, "first_sample": np.nan,
+                    "last_sample": np.nan, "start_s": np.nan, "end_s": np.nan,
+                    "historical_count": np.nan, "nominal_count": np.nan,
+                    "missing_pct": np.nan, "status": STATUS_NO_FIT})
+        no_fit_rows.append(row)
+
+    result = select_cases(
+        _table(_failing_run(sort_id="rescue", cluster_id=1), no_fit_rows), CONSTANTS
+    )
+    assert _ids(result) == ["rescue__c1__failure1"]
+    assert set(result["per_sort"]) == {"rescue", "legacy"}
+    legacy = result["per_sort"]["legacy"]
+    assert legacy["n_clusters_with_stored_windows"] == 0
+    assert legacy["n_failure_eligible_clusters"] == 0
+    assert legacy["n_failure_cases_selected"] == 0
+    assert legacy["n_eligible_control_runs"] == 0
+    assert legacy["n_control_cases_selected"] == 0
+    assert legacy["first_failure_span_s"] is None
+    assert legacy["failure_cap"] == CONSTANTS.max_failure_cases_per_sort
+
+
+def test_a_configured_sort_with_no_inventory_rows_at_all_still_reports_zero_cases():
+    result = select_cases(
+        _table(_failing_run(sort_id="rescue", cluster_id=1)), CONSTANTS,
+        configured_sort_ids=["rescue", "legacy"],
+    )
+    assert set(result["per_sort"]) == {"rescue", "legacy"}
+    assert result["per_sort"]["legacy"]["n_failure_cases_selected"] == 0
+
+
+def test_run_select_reports_every_configured_sort_even_when_it_yields_nothing(tmp_path):
+    """End to end: the configured sort id survives into selection.json."""
+    no_fit = _wrow(sort_id="synthetic", cluster_id=3, source_row=-1)
+    no_fit.update({"i0": np.nan, "i1": np.nan, "first_sample": np.nan, "last_sample": np.nan,
+                   "start_s": np.nan, "end_s": np.nan, "historical_count": np.nan,
+                   "nominal_count": np.nan, "missing_pct": np.nan, "status": STATUS_NO_FIT})
+    config_path, out_root = _completed_inventory(tmp_path, _table([no_fit]))
+
+    payload = run_select(config_path, out_root)
+    assert payload["cases"] == []
+    assert set(payload["per_sort"]) == {"synthetic"}   # the only configured sort
+    assert payload["per_sort"]["synthetic"]["n_failure_cases_selected"] == 0
+    assert payload["per_sort"]["synthetic"]["n_control_cases_selected"] == 0
+
+
+# --------------------------------------------------------------------------- #
+# layer 3 regressions: the attestation must survive a race, and an empty
+# inventory must still be reportable
+# --------------------------------------------------------------------------- #
+def test_select_cannot_be_raced_between_hashing_and_parsing_windows_csv(tmp_path, monkeypatch):
+    """Hashing the path and separately parsing the path is two reads: a file
+    swapped in between would be ranked although the inventory never attested
+    it, and selection.json's hash would not catch it either. The parse must
+    come from the very bytes that were hashed."""
+    attested = _table(_failing_run(sort_id="synthetic", cluster_id=1))
+    config_path, out_root = _completed_inventory(tmp_path, attested)
+    recorded = json.loads((out_root / "manifest.json").read_text())["windows_csv_sha256"]
+    swapped = _table(_failing_run(sort_id="synthetic", cluster_id=4242))
+
+    real_read_csv = pd.read_csv
+    races = {"n": 0}
+
+    def racing_read_csv(source, *args, **kwargs):
+        # fires in the gap the old code left between hashing and parsing
+        if races["n"] == 0:
+            races["n"] += 1
+            swapped.to_csv(out_root / "windows.csv", index=False)
+        return real_read_csv(source, *args, **kwargs)
+
+    monkeypatch.setattr(pd, "read_csv", racing_read_csv)
+    payload = run_select(config_path, out_root)
+
+    assert races["n"] == 1                                        # the race really fired
+    assert sha256_file(out_root / "windows.csv") != recorded      # the file really changed
+    # the attested rows were ranked, not the substituted ones
+    assert [c["case_id"] for c in payload["cases"]] == ["synthetic__c1__failure1"]
+    assert payload["windows_csv_sha256"] == recorded
+
+
+def test_an_all_empty_inventory_reports_every_configured_sort_with_zero_cases(tmp_path):
+    """The most complete form of the insufficient-data condition: no spikes, no
+    clusters, no cached QC rows. It must reach a zero-case selection, not crash
+    on an unparseable windows.csv before `select_cases` is ever called."""
+    curated = _write_curated(tmp_path, n=0)
+    qc_dir = tmp_path / "qc"
+    _write_cached_qc(
+        qc_dir, cid=np.zeros(0), window_blocks=np.zeros((0, 2)),
+        popts=np.zeros((0, 3)), mpcts=np.zeros(0),
+    )
+    config_path = _write_config(tmp_path, curated, qc_dir, tmp_path / "recording")
+    out_root = tmp_path / "out"
+
+    manifest = run_inventory(config_path, out_root)
+    assert manifest["status"] == "complete"
+    assert manifest["row_counts"]["windows_total"] == 0
+    # the empty table still carries its header, so it round-trips as a table
+    assert list(pd.read_csv(out_root / "windows.csv").columns) == list(WINDOWS_COLUMNS)
+
+    payload = run_select(config_path, out_root)
+    assert payload["cases"] == []
+    assert set(payload["per_sort"]) == {"synthetic"}
+    zero = payload["per_sort"]["synthetic"]
+    assert zero["n_clusters_with_stored_windows"] == 0
+    assert zero["n_failure_eligible_clusters"] == 0
+    assert zero["n_failure_cases_selected"] == 0
+    assert zero["n_eligible_control_runs"] == 0
+    assert zero["n_control_cases_selected"] == 0
+    assert zero["first_failure_span_s"] is None
+    assert payload["exclusion_counts"]["failure_runs_excluded_by_span_cap"] == 0
+
+
+def test_select_survives_a_headerless_empty_windows_csv(tmp_path):
+    """An inventory written before windows.csv carried a header leaves a
+    zero-byte table; it must still parse as an empty table rather than raise."""
+    config_path, out_root = _completed_inventory(tmp_path)
+    (out_root / "windows.csv").write_bytes(b"")
+    _restamp_windows_hash(out_root)
+
+    payload = run_select(config_path, out_root)
+    assert payload["cases"] == []
+    assert set(payload["per_sort"]) == {"synthetic"}
+    assert payload["per_sort"]["synthetic"]["n_failure_cases_selected"] == 0
 
 
 # --------------------------------------------------------------------------- #

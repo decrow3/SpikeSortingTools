@@ -39,6 +39,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import math
 import os
@@ -67,6 +68,17 @@ STATUS_FINITE_INTERIOR = "finite_interior"
 #: default ``max_isi``): a block is split when two adjacent spikes of one
 #: cluster are more than this many seconds apart. Recorded, never re-tuned.
 PRODUCTION_MAX_ISI_S = 10.0
+
+#: ``windows.csv``'s columns, in order. Named so that a table with no rows at
+#: all still carries the header: an all-empty inventory is a legitimate
+#: (indeed the most complete) insufficient-data result, and it has to survive
+#: the round trip to `select` as an empty *table*, not as an unparseable file.
+WINDOWS_COLUMNS = (
+    "sort_id", "cluster_id", "source_row", "i0", "i1",
+    "first_sample", "last_sample", "start_s", "end_s",
+    "historical_count", "nominal_count", "missing_pct",
+    "fit_x0", "fit_k", "fit_A", "status", "invalid_reason",
+)
 
 SELECTION_FLOAT_KEYS = (
     "reference_max_missing_pct",
@@ -728,7 +740,7 @@ def build_windows_table(
                 invalid_reason="cluster_id absent from curated arrays",
             ))
 
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows, columns=list(WINDOWS_COLUMNS))
 
 
 # --------------------------------------------------------------------------- #
@@ -1007,17 +1019,44 @@ def _case_id(sort_id: str, cluster_id: int, role: str, rank: int) -> str:
     return f"{sort_id}__c{cluster_id}__{role}{rank}"
 
 
-def select_cases(windows: pd.DataFrame, c: SelectionConstants) -> dict[str, Any]:
+def _reported_sort_ids(
+    windows: pd.DataFrame, grouped: dict[tuple[str, int], list[dict[str, Any]]],
+    configured_sort_ids: list[str] | None,
+) -> list[str]:
+    """Every sort that must appear in the report, not just the ones with runs.
+
+    ``window_records`` drops the per-cluster ``no_fit`` placeholders, so a sort
+    whose whole inventory is ``no_fit`` has no entry there at all. Deriving the
+    report's sort list from it would make that sort vanish instead of showing
+    up with a valid zero-case result -- which is precisely the insufficient
+    -data condition this audit exists to surface ("counts below the caps are
+    valid"). So the list is the union of the sorts named in the raw window
+    table and the configured ones, including a configured sort that produced no
+    inventory rows whatsoever.
+    """
+    ids = {key[0] for key in grouped}
+    if "sort_id" in getattr(windows, "columns", []):
+        ids |= {str(v) for v in windows["sort_id"].dropna().unique()}
+    if configured_sort_ids:
+        ids |= {str(v) for v in configured_sort_ids}
+    return sorted(ids)
+
+
+def select_cases(
+    windows: pd.DataFrame, c: SelectionConstants, *,
+    configured_sort_ids: list[str] | None = None,
+) -> dict[str, Any]:
     """Freeze the audit's cases from the cached historical QC inventory alone.
 
     No waveform, voltage, candidate or intervention outcome is read here, and
     nothing is refit; KS-good/MUA labels are descriptive elsewhere and are not
     an eligibility filter. Counts below the caps are a valid result -- no
-    threshold is relaxed and no case is backfilled when cases are scarce.
+    threshold is relaxed and no case is backfilled when cases are scarce, and
+    every sort keeps a ``per_sort`` entry even when it yields nothing.
     """
     grouped = window_records(windows)
     k = c.windows_per_case
-    sort_ids = sorted({key[0] for key in grouped})
+    sort_ids = _reported_sort_ids(windows, grouped, configured_sort_ids)
 
     cases: list[dict[str, Any]] = []
     failure_exclusions: dict[str, int] = {r: 0 for r in FAILURE_REJECTION_REASONS}
@@ -1268,10 +1307,21 @@ def _prepare_out_root(
                 f"{resolved / 'selection.json'}; case IDs are frozen once"
             )
         manifest = _require_inventory_manifest(resolved / "manifest.json", config_path)
-        if not (resolved / "windows.csv").exists():
+        windows_path = resolved / "windows.csv"
+        if not windows_path.exists():
             raise RuntimeError(
                 f"select requires the inventory's windows.csv; none found in {resolved}"
             )
+        if not manifest.get("windows_csv_sha256"):
+            raise RuntimeError(
+                f"{resolved / 'manifest.json'} records no windows_csv_sha256; refusing to rank "
+                "rows whose provenance the inventory never attested. Re-run `inventory` into a "
+                "fresh out-root."
+            )
+        # The attested hash is deliberately NOT compared here. Hashing the path
+        # in one place and parsing the path in another is two reads of a file
+        # that can change in between, so the comparison lives in
+        # `read_attested_windows`, which hashes and parses the SAME bytes.
         return resolved, manifest
     raise ValueError(f"unknown stage {stage!r}")
 
@@ -1323,10 +1373,18 @@ def run_inventory(config_path: Path, out_root: Path) -> dict[str, Any]:
                 "cached_qc_sha256": sha256_file(Path(s.qc_dir) / "amp_truncation" / "truncation_qc.npz"),
             }
 
-        windows = pd.concat(tables, ignore_index=True) if tables else pd.DataFrame()
+        windows = (
+            pd.concat(tables, ignore_index=True) if tables
+            else pd.DataFrame(columns=list(WINDOWS_COLUMNS))
+        )
         _atomic_write_csv(out_root / "windows.csv", windows)
 
         manifest["status"] = "complete"
+        # Recorded at inventory time so `select` can prove it is ranking the
+        # rows this inventory actually produced. Without it, a windows.csv
+        # replaced between the two stages would simply be re-hashed by select,
+        # and selection.json's own hash would authenticate the replacement.
+        manifest["windows_csv_sha256"] = sha256_file(out_root / "windows.csv")
         manifest["row_counts"] = {
             "windows_total": int(len(windows)),
             "status_counts": (
@@ -1344,6 +1402,41 @@ def run_inventory(config_path: Path, out_root: Path) -> dict[str, Any]:
     return manifest
 
 
+def _parse_windows_bytes(data: bytes) -> pd.DataFrame:
+    """Parse ``windows.csv`` from bytes already in hand.
+
+    A completely empty inventory writes a header-only table, but a zero-byte or
+    header-less file must not blow up either: an inventory that found nothing
+    is a valid insufficient-data result and has to reach `select` as an empty
+    table so every configured sort can still be reported with zero cases.
+    """
+    try:
+        return pd.read_csv(io.BytesIO(data))
+    except pd.errors.EmptyDataError:
+        return pd.DataFrame(columns=list(WINDOWS_COLUMNS))
+
+
+def read_attested_windows(windows_path: Path, recorded_sha256: str) -> tuple[pd.DataFrame, str]:
+    """Read ``windows.csv`` exactly once, then hash and parse those same bytes.
+
+    Hashing the path and separately parsing the path would leave a window in
+    which the file can be replaced: the substituted rows would be ranked even
+    though the inventory never attested them. Reading once closes it -- the
+    bytes that are hashed are the bytes that are parsed, so a mismatch is
+    refused and nothing else can have been ranked.
+    """
+    data = Path(windows_path).read_bytes()
+    actual = hashlib.sha256(data).hexdigest()
+    if actual != recorded_sha256:
+        raise RuntimeError(
+            f"windows.csv sha256 mismatch: the inventory recorded {recorded_sha256!r} but the "
+            f"bytes read from {windows_path} hash to {actual!r}; it was modified, corrupted or "
+            "replaced since the inventory completed. Refusing to select from it -- re-run "
+            "`inventory` into a fresh out-root rather than repairing this one."
+        )
+    return _parse_windows_bytes(data), actual
+
+
 def run_select(config_path: Path, out_root: Path) -> dict[str, Any]:
     """Freeze the audit's cases from the completed inventory in ``out_root``.
 
@@ -1359,6 +1452,13 @@ def run_select(config_path: Path, out_root: Path) -> dict[str, Any]:
     windows_path = out_root / "windows.csv"
     selection_path = out_root / "selection.json"
 
+    # One read, before the manifest is touched: the table that gets ranked and
+    # the hash that gets recorded both come from these bytes, so a refusal here
+    # leaves the completed inventory exactly as it was.
+    windows, windows_sha256 = read_attested_windows(
+        windows_path, manifest["windows_csv_sha256"]
+    )
+
     manifest["stage"] = "select"
     manifest["status"] = "running"
     manifest["select_started_at"] = datetime.now(timezone.utc).isoformat()
@@ -1366,8 +1466,10 @@ def run_select(config_path: Path, out_root: Path) -> dict[str, Any]:
     _atomic_write_json(manifest_path, manifest)
 
     try:
-        windows = pd.read_csv(windows_path)
-        result = select_cases(windows, cfg.selection)
+        result = select_cases(
+            windows, cfg.selection,
+            configured_sort_ids=[s.sort_id for s in cfg.sorts],
+        )
         payload: dict[str, Any] = {
             "schema": SCHEMA,
             "stage": "select",
@@ -1380,7 +1482,9 @@ def run_select(config_path: Path, out_root: Path) -> dict[str, Any]:
             "config_path": str(Path(config_path).resolve()),
             "config_sha256": sha256_file(config_path),
             "windows_csv_path": str(windows_path),
-            "windows_csv_sha256": sha256_file(windows_path),
+            # the hash of the bytes actually parsed, already proven equal to
+            # the hash the inventory attested
+            "windows_csv_sha256": windows_sha256,
             "selection_constants": cfg.selection.to_dict(),
             "production_constants": {
                 "max_isi_s": PRODUCTION_MAX_ISI_S,
