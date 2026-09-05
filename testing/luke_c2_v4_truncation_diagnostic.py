@@ -123,19 +123,33 @@ def load_curated_arrays(curated: Path) -> tuple[np.ndarray, np.ndarray, np.ndarr
     return times, clusters, amplitudes
 
 
-def _result_identity(result: dict) -> tuple[str, str, str]:
+V4_ARM_PREFIX = "staircase_40um_"
+V4_ARMS = ("static", "moved", "moved_corrected")
+V4_EXPECTED_CELLS = 14 * 7
+
+
+def _result_identity(result: dict, arm_prefix: str = V4_ARM_PREFIX,
+                     arm_names: tuple = V4_ARMS) -> tuple[str, str, str]:
+    """Donor, arm and sorter config from a retained L1 result's snippet name.
+
+    Defaults describe the C2 v4 layout. The threshold-staircase comparison names
+    its recordings `<donor>_static` / `<donor>_staircase` with no condition
+    segment, so it passes `arm_prefix=""` and its own arm names.
+    """
     name = Path(result["snippet_dir"]).name
     donor, rest = name.split("_", 1)
-    prefix = "staircase_40um_"
-    if not rest.startswith(prefix):
+    if not rest.startswith(arm_prefix):
         raise ValueError(f"not a staircase result: {name}")
-    arm = rest[len(prefix):]
-    if arm not in ("static", "moved", "moved_corrected"):
+    arm = rest[len(arm_prefix):]
+    if arm not in arm_names:
         raise ValueError(f"unknown staircase arm in {name}")
     return donor, arm, str(result["sorter_config"])
 
 
-def find_staircase_results(c2_root: Path) -> list[tuple[Path, dict]]:
+def find_staircase_results(c2_root: Path, arm_prefix: str = V4_ARM_PREFIX,
+                           arm_names: tuple = V4_ARMS,
+                           expected: int | None = V4_EXPECTED_CELLS
+                           ) -> list[tuple[Path, dict]]:
     """Find exactly one retained L1 result for every frozen staircase cell."""
     found = {}
     for path in (c2_root / "runs/_l1").rglob("l1_result.json"):
@@ -144,12 +158,11 @@ def find_staircase_results(c2_root: Path) -> list[tuple[Path, dict]]:
         admission = contract.get("admission") or {}
         if admission.get("schema") != STAIRCASE["schema"]:
             continue
-        key = _result_identity(result)
+        key = _result_identity(result, arm_prefix, arm_names)
         if key in found:
             raise ValueError(f"duplicate staircase L1 result for {key}")
         found[key] = (path, result)
-    expected = 14 * 7
-    if len(found) != expected:
+    if expected is not None and len(found) != expected:
         raise ValueError(f"expected {expected} staircase cells, found {len(found)}")
     return [found[key] for key in sorted(found)]
 
@@ -186,8 +199,9 @@ def _fit_window(amps: np.ndarray) -> dict:
     }
 
 
-def analyze_cell(result_path: Path, result: dict) -> tuple[list[dict], list[dict]]:
-    donor, arm, sorter = _result_identity(result)
+def analyze_cell(result_path: Path, result: dict, arm_prefix: str = V4_ARM_PREFIX,
+                 arm_names: tuple = V4_ARMS) -> tuple[list[dict], list[dict]]:
+    donor, arm, sorter = _result_identity(result, arm_prefix, arm_names)
     score = result["score"]
     contract = score["truth_contract"]
     fs = float(score["fs"])
@@ -481,11 +495,13 @@ def summarize(
     }
 
 
-def run(c2_root: Path = DEFAULT_C2_ROOT, output: Path = DEFAULT_OUTPUT) -> dict:
+def run(c2_root: Path = DEFAULT_C2_ROOT, output: Path = DEFAULT_OUTPUT,
+        arm_prefix: str = V4_ARM_PREFIX, arm_names: tuple = V4_ARMS,
+        expected: int | None = V4_EXPECTED_CELLS) -> dict:
     c2_root, output = Path(c2_root), Path(output)
     phase_rows, window_rows = [], []
-    for path, result in find_staircase_results(c2_root):
-        p, w = analyze_cell(path, result)
+    for path, result in find_staircase_results(c2_root, arm_prefix, arm_names, expected):
+        p, w = analyze_cell(path, result, arm_prefix, arm_names)
         phase_rows.extend(p)
         window_rows.extend(w)
     phase = pd.DataFrame(phase_rows)
@@ -499,7 +515,7 @@ def run(c2_root: Path = DEFAULT_C2_ROOT, output: Path = DEFAULT_OUTPUT) -> dict:
     primary.to_csv(output / "primary_phase.csv", index=False)
     windows.to_csv(output / "windows.csv", index=False)
     calibration.to_csv(output / "calibration.csv", index=False)
-    input_results = find_staircase_results(c2_root)
+    input_results = find_staircase_results(c2_root, arm_prefix, arm_names, expected)
     inputs = sorted(str(p) for p, _ in input_results)
     content_digest = hashlib.sha256()
     for path, _ in sorted(input_results, key=lambda item: str(item[0])):
