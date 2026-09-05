@@ -427,17 +427,22 @@ def test_corrupt_freeze_receipt_is_refused(tmp_path, base):
 
 
 # --------------------------------------------------------------------------- #
-# provenance under a dirty tree
+# provenance recording (must not depend on whether the tree happens to be dirty)
 # --------------------------------------------------------------------------- #
 def test_validate_records_commit_and_working_tree_hashes(tmp_path, base):
     report = validate(DEFAULT_CONTRACT, mode=MODE_AUTHORING, out_root=tmp_path / "out")
     prov = report.provenance
     assert len(prov["git_commit"]) == 40
     assert prov["git_status_available"] is True
-    # this branch is being authored on a dirty tree; both facts must be recorded
-    assert prov["git_tree_dirty"] is True
+    # Both facts must be recorded and must agree with each other. Do NOT assert
+    # the tree is dirty: that is ambient state, true only until this work is
+    # committed, and a test that depends on it passes for a reason that has
+    # nothing to do with the code under test.
+    assert isinstance(prov["git_tree_dirty"], bool)
     assert len(prov["git_status_porcelain_sha256"]) == 64
-    assert prov["git_dirty_entry_count"] >= 1
+    assert isinstance(prov["git_dirty_entry_count"], int)
+    assert prov["git_dirty_entry_count"] >= 0
+    assert prov["git_tree_dirty"] is (prov["git_dirty_entry_count"] > 0)
     assert set(prov["source_sha256"]) == {"validator_module", "contract"}
     assert all(len(h) == 64 for h in prov["source_sha256"].values())
 
@@ -447,7 +452,7 @@ def test_freeze_receipt_carries_the_same_provenance(tmp_path, base):
     receipt = freeze_acceptance(path, tmp_path / "out")
     prov = receipt["provenance"]
     assert len(prov["git_commit"]) == 40
-    assert prov["git_tree_dirty"] is True
+    assert prov["git_tree_dirty"] is (prov["git_dirty_entry_count"] > 0)
     assert prov["source_sha256"]["contract"] != prov["source_sha256"]["validator_module"]
     assert receipt["required_before_execution"] == base["required_before_execution"]
 
