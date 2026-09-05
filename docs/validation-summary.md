@@ -10,6 +10,19 @@ this research repository.
 scorer-validation failure on 2026-09-03. Historical measurements below remain
 useful only within the qualifications stated here.
 
+**Later evidence and current direction — 2026-09-05:** the separately documented
+[C2 v4 result](luke_20250804_c2_v4_result.md) validates the exact 40 µm control,
+not the fractional-motion donor model. The completed
+[threshold Stage 2 comparison](luke_c2_train_stability_stage2_result.md) did not
+qualify 8/8 or 9/9 to replace 12/9; this is not evidence of equivalence. These
+updates do not change the full-session acceptance verdict below. Use the
+[current plan](pipeline_improvement_plan.md) for work priority and the
+[amplitude-completeness prescription](amplitude_completeness_next_step_prescription.md)
+for the next bounded diagnostic checkpoint. That checkpoint has no established
+result here and does not confer production validation. Its immediate target is
+a reproducible real dropout improvement with healthy-interval preservation and
+independent-case confirmation, followed by the existing promotion gates.
+
 ## Datasets
 
 | Session | Probe | Duration | Role |

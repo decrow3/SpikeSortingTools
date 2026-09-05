@@ -1,12 +1,18 @@
 # Stage 2 prespec — threshold configurations judged on distributions
 
 **Date:** 2026-09-04
-**Status:** **draft for review. Not run.**
+**Status:** **complete.** The frozen decision is **no threshold change**; see
+[`luke_c2_train_stability_stage2_result.md`](luke_c2_train_stability_stage2_result.md).
 **Revision 2, 2026-09-05** — after an external code review found the decision
 analysis statistically invalid. Changes are marked **[rev2]** and were made
 *before* any stage-2 data existed.
-**Gates:** L1C, held-out evaluation and fractional threshold cells stay paused
-until this completes. 12/9 remains the operational baseline throughout.
+**Revision 9, 2026-09-05** — the frozen manifest now records the exact donor
+IDs, realisation names and hashes, and applied sorter settings. Analysis binds
+every completed CSV row to those values before issuing a verdict. The runner
+and analysis schemas were advanced before any stage-2 data existed.
+**Gate disposition:** no candidate qualified. Fractional threshold cells, L1C,
+held-out evaluation and matched-real-data evaluation do not open for 8/8 or
+9/9. Production 12/9 remains the operational baseline by default.
 **Motivated by:** [`luke_c2_train_sentinel_result.md`](luke_c2_train_sentinel_result.md)
 
 ## What stage 1 established, and what it left open
@@ -206,8 +212,11 @@ add realisations until something separates — adding realisations within the sa
 * exactly 687 events in every realisation — equality alone would pass if
   upstream admission shifted every train to 686;
 * exactly the 14 unique hash-frozen donors, no subsets or duplicates;
+* exact donor IDs, realisation IDs and truth hashes agree with the manifest
+  frozen before collection — correct dimensions alone are not accepted;
 * the effective `Th_universal` and `Th_learned` KS4 applied, not the requested
-  override, plus `effective_nblocks == 0`;
+  override, plus `effective_nblocks == 0`, are recorded per cell and checked
+  again against the frozen candidate map during analysis;
 * a frozen run manifest, compared and refused if changed;
 * fail-closed recording deletion and a per-realisation free-space recheck, since
   a silently failed delete would break the single start-up disk guard;

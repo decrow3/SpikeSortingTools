@@ -59,6 +59,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import sys
 from math import comb
 from pathlib import Path
@@ -78,7 +79,7 @@ def _atomic_write(path: Path, text: str) -> None:
     tmp.replace(path)
 DEFAULT_ROOT = REPO_ROOT / "testing/outputs/luke_c2_stability_stage2"
 
-ANALYSIS_SCHEMA = "luke-c2-stability-stage2-analysis-v3"
+ANALYSIS_SCHEMA = "luke-c2-stability-stage2-analysis-v4"
 FAILURE_THRESHOLD = 0.9
 SYSTEMATIC_MIN_FAILURES = 12
 # [rev5] Two rules that close the 12/14 cliff. Both can only ever DISQUALIFY a
@@ -124,7 +125,8 @@ FINITE_ENDPOINTS = ("accuracy", "fp", "n_output_units_capturing")
 NULLABLE_ENDPOINTS = ("refractory_violation_median",)
 NUMERIC_ENDPOINTS = FINITE_ENDPOINTS + NULLABLE_ENDPOINTS
 REQUIRED_COLUMNS = ("template", "realisation", "candidate", "n_events",
-                    "truth_sha256") + NUMERIC_ENDPOINTS
+                    "truth_sha256", "Th_universal", "Th_learned",
+                    "effective_nblocks") + NUMERIC_ENDPOINTS
 
 
 def validate_cells(cells: pd.DataFrame) -> dict:
@@ -220,6 +222,82 @@ def validate_cells(cells: pd.DataFrame) -> dict:
             )
         counts[f"undefined_{col}"] = int(np.isnan(values).sum())
     return counts
+
+
+def validate_frozen_inputs(cells: pd.DataFrame, manifest: dict) -> dict:
+    """Bind a structurally valid cell matrix to the frozen experiment manifest.
+
+    Shape and within-triplet agreement are insufficient provenance: a matrix
+    containing 14 invented donors and 14 invented realisations still has the
+    right shape. Every identity-bearing input and applied sorter setting is
+    therefore compared with the values frozen before collection.
+    """
+    required = {"frozen_donors", "frozen_realisations", "candidate_settings"}
+    missing = required - set(manifest)
+    if missing:
+        raise ValueError(
+            f"prespec manifest is missing frozen experimental inputs {sorted(missing)}"
+        )
+
+    frozen_donors = manifest["frozen_donors"]
+    if (not isinstance(frozen_donors, list)
+            or len(frozen_donors) != EXPECTED_DONORS
+            or len(set(frozen_donors)) != EXPECTED_DONORS):
+        raise ValueError("prespec frozen_donors is not 14 unique donor IDs")
+    observed_donors = set(cells.template.astype(str))
+    if observed_donors != set(map(str, frozen_donors)):
+        raise ValueError(
+            "cell donor IDs differ from the frozen cohort: "
+            f"observed={sorted(observed_donors)}, frozen={sorted(map(str, frozen_donors))}"
+        )
+
+    frozen_realisations = manifest["frozen_realisations"]
+    if (not isinstance(frozen_realisations, dict)
+            or len(frozen_realisations) != EXPECTED_REALISATIONS):
+        raise ValueError("prespec frozen_realisations is not a 14-entry mapping")
+    observed_realisations = set(cells.realisation.astype(str))
+    if observed_realisations != set(map(str, frozen_realisations)):
+        raise ValueError(
+            "cell realisation IDs differ from the frozen set: "
+            f"observed={sorted(observed_realisations)}, "
+            f"frozen={sorted(map(str, frozen_realisations))}"
+        )
+    for name, entry in frozen_realisations.items():
+        if not isinstance(entry, dict) or set(entry) < {"n", "sha256"}:
+            raise ValueError(f"frozen realisation {name!r} lacks n or sha256")
+        digest = str(entry["sha256"])
+        if not re.fullmatch(r"[0-9a-f]{64}", digest):
+            raise ValueError(f"frozen realisation {name!r} has a malformed sha256")
+        rows = cells[cells.realisation.astype(str) == str(name)]
+        if set(rows.n_events.astype(int)) != {int(entry["n"])}:
+            raise ValueError(f"realisation {name!r} does not match its frozen event count")
+        observed_hashes = set(rows.truth_sha256.astype(str))
+        if not observed_hashes <= {digest, digest[:12]}:
+            raise ValueError(
+                f"realisation {name!r} truth hashes do not match its frozen digest"
+            )
+
+    settings = manifest["candidate_settings"]
+    expected_configs = {BASELINE, *CANDIDATES}
+    if not isinstance(settings, dict) or set(settings) != expected_configs:
+        raise ValueError("prespec candidate_settings does not name the exact configurations")
+    setting_columns = ("Th_universal", "Th_learned", "effective_nblocks")
+    for config, expected in settings.items():
+        if not isinstance(expected, dict) or set(expected) != set(setting_columns):
+            raise ValueError(f"candidate_settings[{config!r}] is incomplete")
+        rows = cells[cells.candidate == config]
+        for column in setting_columns:
+            values = pd.to_numeric(rows[column], errors="coerce").to_numpy(dtype=float)
+            if not np.isfinite(values).all() or not np.all(values == expected[column]):
+                raise ValueError(
+                    f"{config} {column} does not match the frozen applied setting "
+                    f"{expected[column]!r}"
+                )
+    return {
+        "frozen_donors_verified": len(frozen_donors),
+        "frozen_realisations_verified": len(frozen_realisations),
+        "candidate_settings_verified": len(settings),
+    }
 
 
 # --------------------------------------------------------------------------- #
@@ -776,7 +854,7 @@ def decide(contrasts: dict) -> dict:
     }
 
 
-def assert_frozen_protocol(root: Path) -> dict:
+def load_frozen_manifest(root: Path) -> dict:
     """Refuse to analyse a dataset under rules other than the ones it was run under.
 
     [rev7] The runner froze decision_protocol() into prespec.json at collection,
@@ -816,14 +894,21 @@ def assert_frozen_protocol(root: Path) -> dict:
             f"{detail or 'the analysis source itself differs'}. Re-freezing is a "
             "deliberate act, not a side effect of editing."
         )
-    return stored
+    return document
+
+
+def assert_frozen_protocol(root: Path) -> dict:
+    """Compatibility wrapper returning the verified decision protocol."""
+    return load_frozen_manifest(root)["decision_protocol"]
 
 
 def analyse(root: Path | str = DEFAULT_ROOT) -> dict:
     root = Path(root)
-    frozen = assert_frozen_protocol(root)
+    manifest = load_frozen_manifest(root)
+    frozen = manifest["decision_protocol"]
     cells = pd.read_csv(root / "stage2.csv")
     counts = validate_cells(cells)
+    counts.update(validate_frozen_inputs(cells, manifest))
     tagged = classify(cells)
     contrasts = {c: contrast(tagged, BASELINE, c) for c in CANDIDATES}
     result = {

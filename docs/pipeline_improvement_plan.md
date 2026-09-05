@@ -1,4 +1,236 @@
-# Plan: beat the legacy pipeline, and find out fast
+# Plan: improve spike recovery throughout the recording, and reach decisions faster
+
+## Current direction — 2026-09-05
+
+The practical goal is reliable recovery of individual neurons' spike trains
+throughout the recording. Progress means fixing a recognizable failure,
+preserving healthy periods, and confirming the improvement on independently
+chosen data. Unit yield, benchmark scores and explanations support that goal;
+none alone establishes that a pipeline is better for the lab's recordings.
+
+**The immediate milestone is one reproducible improvement in a real dropout
+case, with preserved healthy intervals, followed by confirmation on an
+independently chosen case.** This is a development milestone, not production
+promotion or a replacement for the held-out and second-session gates below.
+
+### Use the lab's diagnostic to choose the next question
+
+Time-resolved amplitude completeness is a central diagnostic: fit the truncated
+amplitude distribution in nominal 1,000-spike windows to estimate missing-spike
+percentage. In the lab's experience this reveals loss of capture more usefully
+than spike rate alone, which also changes with neural activity. Select real
+failure periods with this signal, then distinguish amplitude loss, identity
+redistribution, curation exclusion and voltage artifacts using supporting evidence.
+
+The estimate is model-dependent. Show window time coverage, no-fit gaps and
+boundary-pinned fits; completely missing periods cannot supply a fit. Compare
+the same supported neuron identity and physical-time interval, and require
+waveform and contamination evidence before interpreting lower missingness as
+improvement. Preserve the distinction between historical QC's 999-value slice
+and an explicitly versioned exact-1,000 calculation.
+
+The bounded [amplitude-completeness implementation prescription](amplitude_completeness_next_step_prescription.md)
+defines the next diagnostic checkpoint: at most four failure cases and two
+controls, two working days of implementation/review effort, and one nominated
+intervention or an explicit insufficient-evidence conclusion. It does not open
+a new programme or block already-authorized motion implementation work.
+
+### Separate three kinds of work
+
+| Work | Required outcome | Stopping condition |
+|---|---|---|
+| Operational improvement | Better supported recovery with bounded costs on relevant data | Advance through the existing ladder, reject the candidate, or retain the baseline |
+| Mechanism research | Evidence distinguishing specific causal explanations | Answer the stated question or record its unresolved limit; do not gate unrelated improvements |
+| Evaluation implementation | A trustworthy measurement needed for the next decision | Validate the smallest necessary interfaces and use them; avoid general framework expansion |
+
+A development screen and a production replacement require different amounts
+of evidence. Cheap screens may nominate a candidate; promotion still requires
+the frozen criteria. A complete mechanism is not an additional promotion gate.
+Conversely, a synthetic benchmark must demonstrate relevance to an observed
+failure before its ranking justifies substantial new development. Synthetic
+truth remains necessary evidence for the claims it can actually test.
+
+### Limit work in progress and make each experiment decide something
+
+- External voltage registration (A) and unwarped motion-aware identity handling
+  (B) remain the two development options. Give each one minimal demonstration
+  and an explicit continuation/stop rule before expanding it. The next expensive
+  experiment should follow the strongest actionable evidence, not an obligation
+  to complete both architectures before learning anything useful.
+- Every experiment states the decision it informs, the observation that would
+  distinguish alternatives, its resource cap, and actions for success, failure
+  and ambiguity. If all outcomes mean more investigation, narrow the question.
+- Freeze settings, comparison intervals and numerical decision margins before
+  candidate results. An ambiguous result does not automatically authorize a
+  larger panel, another variant or a full-session run.
+- Implement small, independently testable contracts for amplitude sourcing,
+  window bounds, clocks, geometry, identity matching and provenance. Known-answer
+  fixtures at these interfaces should precede an end-to-end run; repeated broad
+  review is not a substitute for them.
+- Protect task-relevant spikes: inspect condition-dependent loss, weak events,
+  bursts, collisions and artifact-adjacent periods when applicable to the frozen
+  comparison. Aggregate QC can improve while scientifically useful spikes worsen.
+
+Production remains the frozen rescue graph at 12/9. Threshold Stage 2 ended in
+`no_threshold_change`; its lower candidate failure-rate point estimates neither
+establish equivalence nor reopen the closed 8/8 and 9/9 gates. Dense-donor motion
+modelling remains a separate scientific task. Existing historical corrections,
+experiment prespecifications and production promotion rules remain in force.
+
+The delivery sequence below governs execution order; §9 inventories available
+work rather than requiring every item before a release. The evidence chronology
+explains how we arrived here; dated priorities within it are historical.
+
+## Delivery sequence: a first updated pipeline we can actually use
+
+**Build one credible candidate, establish a meaningful improvement, freeze it,
+and use it.** The first version may leave optimizations and mechanisms unresolved.
+“Step change” is an intended outcome, not a claim established by the existing
+rescue results or by successful software integration. It must be demonstrated
+against the pre-existing pipeline on recovery and downstream-relevant evidence.
+
+This sequence supersedes older instructions to complete both motion options,
+find the best conventional pipeline, or exhaust diagnostic avenues before a
+first candidate can advance. It does not waive frozen experiment decisions,
+operator integrity checks, or the production-promotion criteria in §6 Phase E.
+
+### Step 1 — freeze a small first-version delivery contract
+
+Create `configs/first_pipeline_candidate.v1.json` before new candidate runs.
+Record the exact pre-existing legacy comparator and current rescue control,
+recording/sort identities, development windows, healthy controls, output root,
+candidate settings and runtime budget. Name the practical recovery failure and
+the minimum improvement that would justify adoption, with numerical margins for
+completeness, identity, contamination and healthy-interval preservation. Set
+those margins from baseline evidence before inspecting candidate results;
+“better looking” or a statistically detectable tiny change is insufficient.
+
+Reuse the existing ladder, data, QC and frozen evaluation gates. State which
+unresolved implementation dependencies are required for this particular candidate.
+Do not expand the contract into a comprehensive framework or redefine the old
+threshold experiment. Deliverable: one executable comparison contract, not a
+list of potential experiments. Contract omissions block execution, not planning
+or implementation of independent components.
+
+### Step 2 — choose one candidate when the bounded audit ends
+
+Use the amplitude-completeness audit within its two-working-day cap to choose
+the intervention with the clearest supporting evidence. A targeted curation
+repair can be the first delivery if it directly fixes an observed exclusion;
+the first release need not contain a new motion architecture.
+
+If the audit remains ambiguous, stop it and proceed with the minimum Option B
+implementation: qualified motion coordinates plus conservative, reversible
+identity links, retaining original voltage, spike times and cluster labels.
+This is an engineering default because it can reuse an existing sort; it is not
+a claim that B is scientifically superior. If B lacks a field or cannot pass
+its identity/union-cleanliness controls, choose A only if its required field and
+operator checks pass. Do not manufacture links or apply an unsupported field to
+meet the schedule. If neither is admissible, record the single blocking contract
+and repair that prerequisite; stop unrelated diagnostic work.
+
+Only one candidate receives active integration priority. Preserve the other
+option's existing work and schedule a return condition; its completion is not
+a prerequisite for releasing the first useful candidate. This also means that
+a B-versus-legacy result cannot be called superiority over all voltage correction.
+
+### Step 3 — make that candidate run end to end on bounded data
+
+Use one thin runner/configuration to execute accepted input → candidate change
+→ sorting or retained-sort replay → curation → waveform/refractory/amplitude QC
+→ standard analysis export. Reuse `pipeline/`, `testing/ladder_l1.py`,
+`testing/ladder_sorter.py` and the relevant existing motion implementation.
+For a motion candidate, use the runner contract in the
+[motion build instructions](luke_two_motion_pipeline_build_instructions.md).
+For a curation-only candidate, use retained-output replay through the same
+downstream interfaces. Do not fork the whole production pipeline.
+
+Deliver a named candidate version, resolved configuration, manifests, restartable
+outputs, standard exports, and one command documented from input through QC.
+For B, exports must explicitly distinguish original clusters and proposed
+families. Evaluate the actual train used downstream; a coordinate plot or family
+annotation alone is not a recovered spike train. Ambiguous links stay separate.
+Keep all outputs separate from accepted production results.
+
+Pass known-answer interface tests and one end-to-end smoke run before expansion.
+This is the first legitimate runnable attempt; it is allowed to fail its scientific
+screen. Its completion must not be reported as a proven pipeline improvement.
+
+### Step 4 — screen the integrated candidate, then freeze its settings
+
+Compare against both the specified legacy comparator and rescue control on the
+selected failure and healthy intervals. Use supported same-neuron comparisons,
+time-resolved completeness and identity evidence, plus the common truth scores
+and contamination/refractory guardrails. Require the Step 1 practical margins.
+Confirm a promising result on an independently chosen development case without
+retuning, then apply L1C and L2 as required by the existing ladder. The new case
+must not silently consume the sealed held-out panel.
+
+Permit at most one mechanism-directed revision after the first scientific
+screen, within the existing candidate-count caps. Record both attempts. A failed
+hard integrity check must be fixed before any scientific interpretation; it is
+not another parameter trial. If the candidate still fails, close its attempt
+and make a written switch-or-stop decision. Do not turn failure into an automatic
+sweep. If it passes, freeze the version and stop optimizing it during validation.
+
+### Step 5 — validate the frozen first version and make the adoption decision
+
+Run the surviving version through L2L longitudinal continuity, the sealed
+held-out panel and second-session replication, with the condition-dependent
+recovery checks and all Phase E promotion criteria. Only after those gates pass,
+run L4 at full-session scale under the existing budget and review its outputs
+before adoption. Retain failed and unresolved safeguards explicitly; they are
+not evidence of preserved neurons. No new mechanism explanation or exhaustive
+alternative-sorter comparison is added as a gate.
+
+The first-version decision is adopt within the validated domain, reject, or
+retain as a research candidate with a stated limitation. A successful version
+gets a frozen configuration, environment receipt, run instructions, validation
+summary, known limitations and a route to reproduce the legacy comparison.
+It need not be the best achievable pipeline to be worth adopting.
+
+### Step 6 — use the version to measure effects on downstream analyses
+
+Once the frozen candidate has bounded validation and compatible exports, a
+bounded downstream comparison may run on those existing outputs alongside
+remaining validation. Full-session comparisons wait for Step 5's L4 gate;
+routine replacement of the analysis input waits for adoption.
+
+Freeze the downstream analysis code, trial selection, behavioral/stimulus inputs
+and inclusion rules before comparing pipeline outputs. Change only the sorting
+input. Report matched-neuron analyses separately from population analyses that
+include newly admitted or lost units. Assess changes in the lab's selected
+endpoints, their uncertainty, and whether changes concentrate in periods of
+improved completeness. Choose those endpoints from actual analysis requirements
+in the delivery contract; do not invent a new downstream suite here.
+
+Changed tuning, decoding or effect sizes do not by themselves prove a better
+sort. The purpose is to quantify scientific consequences of independently
+supported recovery improvements. Deliver a paired analysis report with versioned
+inputs, then decide whether any remaining issue is consequential enough to reopen.
+
+### Deferred questions: explicitly allowed to remain open
+
+Maintain a short deferred list in the candidate's delivery record, with question,
+current evidence, why it is unnecessary for this release, and a return trigger.
+These are initial defaults, not additional work packages:
+
+| Deferred work | Return trigger |
+|---|---|
+| Dense spatial donors and Luke-scale fractional-motion mechanism | A later motion claim or optimization actually requires that causal calibration |
+| Completing/optimizing the other motion architecture | The first candidate fails, or a validated residual deficit warrants a challenger |
+| Broad preprocessing, interpolation or sorter searches | A reproducible remaining failure survives the released candidate's relevant controls |
+| Exhaustive explanation of every dropout, similar pair or polarity pattern | It breaches a release guardrail or materially affects a downstream conclusion |
+| Further threshold exploration | A separately justified future protocol; the closed Stage 2 gates remain closed |
+| General tooling and dashboard improvements | Repeated use of the first pipeline exposes a concrete maintenance or decision bottleneck |
+
+Questions that invalidate the candidate's measurements, identity claims, waveform
+integrity or frozen acceptance criteria cannot be deferred as “optimization.”
+Everything else may remain documented and unexplored while a useful first version
+is built, validated and used. The release milestone is a demonstrated practical
+advance, not exhaustion of the hypothesis list.
+
+## Evidence chronology and qualifications
 
 > **HISTORICAL EVIDENCE CORRECTION — 2026-09-03.** The original C2,
 > Candidate 2, D2b-1, D2b-3, and Checkpoint C panel comparisons are
@@ -75,7 +307,7 @@
 > real-data confirmation. Detailed build instructions:
 > [`luke_two_motion_pipeline_build_instructions.md`](luke_two_motion_pipeline_build_instructions.md).
 
-> **CURRENT FAST ITERATION — 2026-09-04.** The 154-cell static
+> **CURRENT FAST ITERATION — 2026-09-05.** The 154-cell static
 > detection-threshold sweep is complete across the 14 compact donors, with
 > correction off everywhere. It establishes that D10's 12/9 failure is a
 > threshold effect: 9/8 changes accuracy from 0.475 to 0.976 and FP from 275 to
@@ -86,14 +318,22 @@
 > **9/9** is the recovery candidate (13/14 recovered, worst donor 0.891, 97
 > total FP). Production 12/9 recovered 11/14, with a 0.475 worst donor and 289
 > total FP. These are development candidates, not an authorized pipeline
-> change. Both advance to the exact staircase while the deterministic D10/D14
-> failures are traced to their first divergent sorter stage. Before either is
-> trusted, one spatial/temporal context check must show that candidate ranking
-> survives a wider crop and a longer learning context. Surviving candidates
-> then advance to held-out static and matched real-data evaluation. Dense-donor
-> modelling remains background science and does not gate this path.
+> change. The exact-staircase rerun then invalidated that single-train ranking:
+> removing 21 events changed total static FP from 12 to 1244 for 8/8 and from
+> 97 to 896 for 9/9. A 105-cell sentinel showed that the cliffs follow injected
+> train composition and timing phase, not event count. Excluding D10's distinct
+> systematic detection failure, the three configurations are not separated.
+> Production 12/9 therefore remains the operational baseline by default, not
+> because it won. The frozen 588-cell Stage 2 distributional comparison is now
+> complete ([result](luke_c2_train_stability_stage2_result.md)). Both candidates
+> improved the failure-rate point estimate (8/8: −0.112; 9/9: −0.102), but their
+> paired 97.5% donor-bootstrap intervals crossed zero. Neither qualified, so the
+> preregistered decision is **no threshold change**. Fractional refinement, L1C,
+> held-out static and matched-real-data evaluation do not open for these
+> candidates; the threshold branch closes and effort returns to Options A and B.
+> Dense-donor modelling remains background science and does not gate this path.
 
-**Status:** active, updated 2026-09-04
+**Status:** active, updated 2026-09-05
 **Supersedes as a work plan:** the follow-up lists in
 [`decisions/0008`](decisions/0008-amplitude-completeness-gates-promotion.md) and
 [`decisions/0010`](decisions/0010-rescue-yield-is-relabelling-not-detection.md)
@@ -783,10 +1023,13 @@ pending rerun:**
 **Current consequence — not a conclusion from the historical table:** the
 completed static sweep confirms that detection/template-learning thresholds
 are a real lever and that production 12/9 lies beside a poor region of the
-response surface. It does not identify one universally superior setting: 8/8
-maximises robustness while 9/9 maximises recovered donors. The exact staircase
-is the next development testbed for both. Unqualified family stitching remains
-unsupported by A2's real-data refractory results.
+response surface. Its provisional single-train ranking did not transfer to the
+exact-staircase train. The subsequent sentinel localized that failure to train
+composition and phase, and the completed 588-cell Stage 2 comparison did not
+separate 8/8 or 9/9 from 12/9 at the frozen donor-level confidence threshold
+([result](luke_c2_train_stability_stage2_result.md)). The threshold branch is
+closed with no change. Unqualified family stitching remains unsupported by
+A2's real-data refractory results.
 
 V4 supplies both polarities and the full compact real-donor amplitude range.
 The staircase truncation-vs-truth diagnostic is now complete
@@ -856,8 +1099,8 @@ L2, held-out data or full-session yield before its rule is frozen.
 The uncorrected rescue pipeline remains the comparator in every experiment; it
 does not consume a development-option slot.
 
-**Immediate cheap branch — threshold sweep complete; staircase next
-(2026-09-04).** The static 14-donor grid held correction off and varied only
+**Immediate cheap branch — threshold branch closed with no change
+(2026-09-05).** The static 14-donor grid held correction off and varied only
 `Th_universal` and `Th_learned`. D10's 12/9 failure reproduced exactly and is
 removed by lower `Th_universal`, proving that this specific failure is caused
 by thresholds rather than motion correction. The grid also exposed genuine,
@@ -866,7 +1109,7 @@ between much better neighbouring cells. Three repeats each of D10 12/9, D10
 9/9, D14 9/8, D14 12/7 and D14 10/8 produced bit-identical spike times,
 clusters, amplitudes and scores.
 
-Carry exactly two integer candidates forward:
+That single-train grid provisionally nominated two integer candidates:
 
 - **8/8 — robustness candidate:** 12/14 recovered, median accuracy 0.987,
   12 total FP, and no donor below 0.976.
@@ -875,25 +1118,18 @@ Carry exactly two integer candidates forward:
 
 Production 12/9 recovered 11/14, with median accuracy 0.992, 289 total FP and a
 0.475 worst donor. This establishes that 12/9 is brittle on the development
-cohort, but does **not** license changing production: D10 motivated the
-experiment and the same 14 donors selected the candidates. Test 8/8 and 9/9
-against 12/9 on paired static/exact-staircase arms, using the common admitted
-truth and selecting on drift penalty plus FP/FN, splits, label switches and
-truncation. Drop a candidate for a material fragmentation or contamination
-regression. Confirm every survivor on a different static background/donor set,
-then use the normal L1/L2 and matched-real-data sequence. Do not choose from
-KS-good yield alone.
+cohort, but did **not** license changing production: D10 motivated the
+experiment and the same 14 donors selected the candidates. On the
+exact-staircase train the candidate FP totals rose sharply, and the 105-cell
+sentinel showed that threshold collapses depend on train composition and timing
+phase rather than event count. Stage 2 therefore compared distributions over
+14 frozen realisations. Its point estimates favoured both candidates, but both
+97.5% donor-bootstrap intervals crossed zero (8/8: −0.112 [−0.311, +0.026];
+9/9: −0.102 [−0.306, +0.036]). The frozen result is **no threshold change**.
+Do not open the fractional cells, L1C, held-out static or matched-real-data
+gates for these candidates.
 
-**Fractional thresholds are allowed, but refinement is bounded.** KS4 declares
-both thresholds as floating-point values and compares continuous template
-scores directly; the integer grid was an experimental choice, not an algorithm
-constraint. Do not open a broad fractional search on these 14 donors. If the
-staircase leaves a genuine decision unresolved, one preregistered interpolation
-pass may add only 8.5/8, 8.5/8.5 and 9/8.5. Those cells can describe whether a
-stable plateau exists between 8/8 and 9/9, but cannot confirm or nominate a
-pipeline setting without held-out evidence.
-
-**D10/D14 stage trace — immediate diagnostic, run alongside the staircase.**
+**D10/D14 stage trace — complete diagnostic.**
 The threshold cliffs are more informative than a parameter ranking alone. For
 the same hashed injected recordings, compare each reproducible success/failure
 pair at four boundaries:
@@ -903,13 +1139,13 @@ pair at four boundaries:
 3. learned-template assignments, residuals and event ownership;
 4. final clustering and merging.
 
-Use D10 12/9 versus 9/9 and D14 9/8 versus 10/8 as the minimum trace, retaining
-D14 12/7 as the high-FP secondary failure. Record the **first substantial
-divergence**, not every downstream difference caused by it. If that divergence
-supports a small stage-local fix, test the fix under the same candidate budget;
-do not automatically prefer a globally lower threshold. This diagnostic may
-explain or improve transfer, but it does not replace staircase or held-out
-pipeline scoring.
+The trace found D10's first divergence at detection: 12/9 missed 99 of 708
+events before clustering, while 9/9 found all 708. D14 was different: injected
+events survived every recorded stage in both the 9/8-versus-10/8 and
+12/7-versus-10/8 contrasts; the failed cells were contaminated at the winning
+cluster (0.247 and 0.363 versus 0.0), not missing donor spikes. This separates a
+systematic detection loss from the contamination lottery, but Stage 2 found no
+globally supported threshold remedy.
 
 **The priority order is a decision tree, not a fixed list** (revised
 2026-09-02). The earlier fixed ordering — curation first, motion last — rested
@@ -1285,11 +1521,13 @@ unresolved result evidence that the unit was preserved.
 
 ### Option B — unwarped motion-aware identity, and the architecture gate
 
-Build the minimum viable unwarped option in parallel: retain the accepted
+When B is the selected first candidate, build the minimum viable unwarped option:
+retain the accepted
 voltage exactly, transform only spike/template coordinates into a tissue frame,
 and link identities through time only when waveform, trajectory, temporal
 complementarity and union-refractory evidence all pass frozen gates. This
-lightweight candidate is one of the two required options, not a fallback.
+lightweight candidate is one of the two development options. The other option
+may remain deferred under the first-version delivery sequence.
 
 The **heavyweight architecture gate** still controls developing DARTsort,
 KIASORT, TDC motion-aware template matching or another sorter as a new pipeline.
@@ -1302,9 +1540,12 @@ behind the gate and opens only if the lightweight unwarped option or the best
 conventional motion-corrected KS4 candidate retains a meaningful, reproducible
 identity deficit on injected truth and L2L longitudinal continuity.
 
-The unwarped option and any later architecture must be compared against both
-the **best conventional motion-corrected KS4 pipeline** and the shared
-uncorrected control. It must not be judged solely against:
+For a broad claim of architecture superiority, the unwarped option and any later
+architecture must be compared against a credible conventional motion-corrected
+KS4 pipeline and the shared uncorrected control. First-version adoption instead
+uses the specified legacy comparator, rescue control and frozen promotion gates;
+it need not wait for an optimized conventional challenger. An architecture-wide
+claim must not be judged solely against:
 
 - the pathological historical DREDGE warp;
 - the intentionally uncorrected rescue baseline; or
@@ -1507,22 +1748,47 @@ adoption need not wait for the dense-donor motion mechanism to be complete.
    finish that causal question, but is not required to test threshold or
    identity-handling candidates against the exact staircase and real data.
 
+### Completed threshold branch — no production change
+
+6. **Stage 2 train-stability comparison.** The provenance-bound 588-cell run
+   completed across 14 donors, 14 frozen train realisations and production 12/9
+   versus candidates 8/8 and 9/9. Both candidates reduced the failure-rate point
+   estimate, but neither paired 97.5% donor-bootstrap interval excluded zero.
+   No candidate qualified; the frozen outcome is `no_threshold_change`.
+   Fractional thresholds, L1C, held-out static and matched-real-data gates remain
+   closed for these candidates. Doc:
+   [`train_stability_stage2_result`](luke_c2_train_stability_stage2_result.md).
+
 ### Build and test now
 
+Execute the delivery sequence at the top of this document. The options below
+are an inventory, not simultaneous prerequisites for the first candidate.
+
+- **Immediate decision checkpoint: real amplitude-completeness failures.** Follow
+  the [bounded prescription](amplitude_completeness_next_step_prescription.md).
+  Use existing QC to nominate one intervention, or close with insufficient
+  evidence at the effort cap. A positive local result must preserve healthy
+  intervals and be confirmed on an independently chosen case before broader
+  escalation. This checkpoint does not replace the shared ladder.
 - **Option A external voltage registration** — build/operator smoke tests may
   run now; its specific Luke-scale causal interpretation waits for the dense
-  donor, but real-data pipeline performance does not.
+  donor, but real-data pipeline performance does not. Start with one minimal
+  demonstration and a written continuation/stop rule.
 - **Option B unwarped motion-aware identity** — build/identity-preservation
   smoke tests may run now and may use the exact staircase mechanism; promotion
   still requires the same frozen panels and matched real-data checks.
 - **Detection-threshold branch** — the 154-cell static grid and 15-sort
-  determinism check are complete. Test provisional 8/8 and 9/9 against 12/9 on
-  paired static/exact-staircase arms; send survivors to held-out static and
-  matched real data. Fractional refinement is optional and capped by the
-  preregistered three-cell interpolation above.
-- **Stage/context diagnostics** — trace the first D10/D14 divergence while the
-  staircase runs, then require one narrow/wide and short/long ranking check
-  before trusting the cheap benchmark's preferred configuration.
+  determinism check are complete, but the exact-staircase and sentinel results
+  invalidated the single-realisation ranking of 8/8 and 9/9. The frozen 588-cell
+  Stage 2 comparison is complete and did not separate either candidate from
+  12/9 at the preregistered donor-level confidence threshold
+  ([result](luke_c2_train_stability_stage2_result.md)). **Close this branch with
+  no threshold change:** do not run fractional refinement, L1C, held-out static
+  or matched real data for 8/8 or 9/9.
+- **Stage/context diagnostics** — use retained evidence when it discriminates
+  the nominated failure. The completed threshold branch does not trigger another
+  D10/D14 investigation. A surviving candidate still requires the prespecified
+  spatial/temporal context check before trusting the cheap benchmark's ranking.
 - **Bounded donor extension** — freeze a few independently reviewed imec1
   waveform families and weaker examples for fixed-denominator confirmation;
   do not replace the 14-donor regression cohort.
@@ -1548,14 +1814,19 @@ adoption need not wait for the dense-donor motion mechanism to be complete.
 > fragment identity and that rigid correction can repair it, but it does not
 > establish a Luke-scale effect because the fractional-offset donor model dims
 > rather than translates compact footprints. No current result shows that the
-> rescue pipeline beats legacy. The completed threshold sweep shows that 12/9
-> causes a reproducible static failure and nominates 8/8 and 9/9 as distinct
-> robustness/recovery candidates; it does not authorize either setting. The
-> fastest active route is their exact-staircase comparison plus D10/D14 stage
-> tracing, followed by one context-rank check, fixed-cohort held-out static
-> confirmation (including bounded imec1/weak examples), and matched real-data
-> evaluation. Operational improvement can be established before its complete
-> mechanism; dense-donor modelling remains a parallel scientific task.**
+> rescue pipeline beats legacy. The threshold programme confirms that 12/9
+> causes a reproducible D10 detection-stage failure, while D14-like collapses
+> are contamination-driven and train-sensitive. Nevertheless the completed
+> 588-cell Stage 2 comparison did not separate 8/8 or 9/9 from production at the
+> frozen donor-level confidence threshold, so the operational decision is no
+> threshold change and that branch is closed. The current development options
+> are physically validated external voltage registration and unwarped
+> motion-aware identity handling. The bounded amplitude-completeness checkpoint
+> connects the next intervention to a recognizable real failure; no result from
+> that checkpoint is yet established. Both options use the shared ladder and
+> matched real-data confirmation. Operational improvement can be established
+> before its complete mechanism; dense-donor modelling remains a parallel
+> scientific task.**
 
 ### Historical (retracted 2026-09-03 — not active work)
 

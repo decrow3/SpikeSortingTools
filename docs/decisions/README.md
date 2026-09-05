@@ -28,6 +28,12 @@ this research repository and is not duplicated here.
 
 The active work plan derived from these records is
 [`../pipeline_improvement_plan.md`](../pipeline_improvement_plan.md).
+Its current opening governs development priority: reliable spike recovery over
+time, amplitude-completeness-led real failure cases, bounded experiments and
+explicit decisions. The [next diagnostic prescription](../amplitude_completeness_next_step_prescription.md)
+implements that direction. These priorities do not amend historical evidence or
+weaken frozen production-promotion rules; dated next-step lists in older records
+must be read in the context of the current plan.
 
 Each record states the evidence commit or artifact it rests on. When a record is
 superseded, add a new record and mark the old one superseded rather than editing

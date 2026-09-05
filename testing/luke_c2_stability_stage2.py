@@ -81,7 +81,7 @@ EXPECTED_EVENTS = 687   # every realisation, always; count is not a variable
 EXPECTED_DONORS = 14
 
 STAGE2 = {
-    "schema": "luke-c2-stability-stage2-v1",
+    "schema": "luke-c2-stability-stage2-v2",
     "prespec": "docs/luke_c2_train_stability_stage2_prespec.md",
     "status": "development evidence; L1C, held-out and fractional cells stay paused",
     "donors": "all 14 compact D2b-2 donors",
@@ -206,7 +206,9 @@ def freeze_manifest(manifest_path: Path, manifest: dict) -> Path:
 
 def output_root(explicit=None) -> Path:
     root = Path(explicit or os.environ.get("LUKE_STAGE2_ROOT") or DEFAULT_OUTPUT)
-    if str(root.resolve()).startswith("/mnt/"):
+    resolved = root.resolve()
+    mnt = Path("/mnt")
+    if resolved == mnt or mnt in resolved.parents:
         raise ValueError("refusing an output root under /mnt")
     return root
 
@@ -266,7 +268,17 @@ def run(donors=None, root=None, keep_recordings: bool = False,
     # acceptability caps lived only in the analysis module, so either could be
     # changed after collection and freeze_manifest() would still accept the
     # stored prespec -- the constants were "frozen" only by assertion.
-    manifest = {**STAGE2, "plan": budget, "frozen_realisations": frozen,
+    candidate_settings = {
+        config.label: {
+            "Th_universal": config.overrides["Th_universal"],
+            "Th_learned": config.overrides["Th_learned"],
+            "effective_nblocks": 0,
+        }
+        for config in CANDIDATES
+    }
+    manifest = {**STAGE2, "plan": budget, "frozen_donors": list(tids),
+                "frozen_realisations": frozen,
+                "candidate_settings": candidate_settings,
                 "decision_protocol": decision_protocol()}
     freeze_manifest(root / "prespec.json", manifest)
 
@@ -309,6 +321,7 @@ def run(donors=None, root=None, keep_recordings: bool = False,
                     "phase": "phalf" if name.endswith("phalf") else "p0",
                     "n_events": int(train.size), "candidate": config.label,
                     "Th_universal": eff["Th_universal"], "Th_learned": eff["Th_learned"],
+                    "effective_nblocks": eff["effective_nblocks"],
                     "accuracy": unit["accuracy"], "tp": unit["tp"], "fp": unit["fp"],
                     "fn": unit["fn"], "recovered": unit["recovered"],
                     "n_output_units_capturing": unit["n_output_units_capturing"],

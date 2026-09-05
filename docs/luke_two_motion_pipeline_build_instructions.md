@@ -2,6 +2,19 @@
 
 **Status:** implementation specification; not a result and not a frozen numeric
 prespec  
+
+**Execution priority update — 2026-09-05:** use the
+[current plan's opening](pipeline_improvement_plan.md) for sequencing. A and B
+remain development options, each beginning with one minimal demonstration and a
+written continuation/stop rule. The broader implementation contract below is
+not a requirement to finish both architectures before testing a useful change.
+The [bounded amplitude-completeness checkpoint](amplitude_completeness_next_step_prescription.md)
+helps connect the next intervention to a real dropout; it does not block
+already-authorized implementation work. C2 v4 is complete: its exact 40 µm arm
+is a useful operator control, while the fractional arms do not establish a
+Luke-scale effect. References below to waiting for C2 are historical sequencing,
+not a current prerequisite. Frozen scientific and production gates still apply.
+
 **Governing plan:**
 [`pipeline_improvement_plan.md`](pipeline_improvement_plan.md)  
 **Purpose:** build two credible motion-handling pipelines quickly enough that
@@ -21,24 +34,28 @@ registration as a class.
 
 ## 1. Outcome and time discipline
 
-The build is complete when one command can run the same accepted input through
-the control, Option A and Option B and emit the same score schema for all three.
-Do not turn this into another general framework project.
+For the first delivery, the build is complete when one command runs the same
+accepted input through the control and the selected option, through QC and
+standard exports, with the common score schema. The other option can be added
+later through the same interface. Follow the
+[first-version delivery sequence](pipeline_improvement_plan.md#delivery-sequence-a-first-updated-pipeline-we-can-actually-use)
+for candidate selection, validation and downstream comparison. Completion of
+both architectures is no longer a prerequisite for a first useful release.
 
 Time-box the work:
 
-1. one smoke window per option;
-2. C2 v4 causal calibration;
+1. one smoke window for the selected option;
+2. reuse completed C2 v4's valid controls and pass the selected operator's checks;
 3. L1 on one discriminating window;
 4. L2 only for candidates that pass L1;
 5. L2L only for candidates that pass L2;
 6. held-out and production-scale materialization only after the option is frozen.
 
-Implementation, unit tests and smoke tests may run while C2 v4 runs. Numeric
-tuning, candidate selection and promotion may not. Within the existing
-six-configuration D2 cap, start with no more than three external-warp policies:
-the field-standard full correction, one conservative low-order/partial policy,
-and one supported non-rigid policy if the field diagnostics justify it.
+Start with one policy for the selected option, frozen before its scientific
+screen. The delivery sequence permits at most one directed revision, within the
+existing six-configuration D2 cap rather than in addition to it. Do not run a
+three-policy search by default. Broader architecture comparisons below describe
+the eventual comparison scope, not prerequisites for first-version integration.
 
 ## 2. Inputs and storage
 

@@ -7,6 +7,13 @@ Currently maintained by Declan Rowley
 
 ## Start here
 
+- **[Current development direction](docs/pipeline_improvement_plan.md)** — improve
+  individual neurons' spike recovery throughout the recording, use amplitude
+  completeness to identify actionable dropout cases, and escalate only when a
+  bounded experiment supports the next decision.
+- **[Next diagnostic checkpoint](docs/amplitude_completeness_next_step_prescription.md)**
+  — a capped real-case audit with exact data contracts, tests and stop rules;
+  its deliverable is one targeted experiment or an insufficient-evidence decision.
 - **[Decision records](docs/decisions/README.md)** — what the production pipeline
   does and why: the frozen sorting graph, motion policy, artifact handling,
   challenger-sorter status, and the rules governing when to reopen a question.
@@ -14,8 +21,29 @@ Currently maintained by Declan Rowley
   validated, on which data, against which prespecified gates, and the limits
   that should not be overstated.
 
-The remaining files in [`docs/`](docs/) and [`testing/`](testing/) are the raw
-investigative record. They are kept deliberately and are not condensed.
+The immediate development milestone is one reproducible dropout improvement,
+preserved healthy intervals, and confirmation on an independently chosen case.
+The [delivery sequence](docs/pipeline_improvement_plan.md#delivery-sequence-a-first-updated-pipeline-we-can-actually-use)
+makes the path explicit: freeze the comparison contract, select one candidate,
+integrate it through QC/export, screen and freeze it, pass the existing validation
+gates, then compare downstream analyses with fixed analysis code. Completing both
+motion architectures or resolving every diagnostic question is not required for
+the first useful version; deferred questions have explicit return triggers.
+The lab's time-resolved truncated-amplitude fits are central to finding these
+failures; firing rate provides context. Lower fitted missingness needs waveform,
+identity and contamination support. Synthetic truth and the evaluation ladder
+validate candidate changes; production adoption requires the full frozen gates.
+
+Production remains the rescue graph at thresholds 12/9. The completed threshold
+Stage 2 comparison did not qualify 8/8 or 9/9 for advancement. External voltage
+registration and unwarped motion-aware identity remain development options;
+complete mechanistic understanding is not a prerequisite for a supported
+operational improvement.
+
+The remaining files in [`docs/`](docs/) and [`testing/`](testing/) include the
+investigative record and implementation specifications. Preserve their historical
+results and corrections, but use the current plan for work priority. The legacy
+pipeline sections below describe historical behavior, not the rescue graph.
 
 ## Production environment for the rescue pipeline
 

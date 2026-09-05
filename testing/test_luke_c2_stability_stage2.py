@@ -19,6 +19,11 @@ FS = 29999.759166666667
 DONORS = [f"D{i:02d}" for i in range(1, 15)]
 REALS = [f"r{i:02d}" for i in range(14)]
 CONFIGS = [BASELINE, "th_8_8", "th_9_9"]
+APPLIED = {
+    "th_12_9": {"Th_universal": 12, "Th_learned": 9, "effective_nblocks": 0},
+    "th_8_8": {"Th_universal": 8, "Th_learned": 8, "effective_nblocks": 0},
+    "th_9_9": {"Th_universal": 9, "Th_learned": 9, "effective_nblocks": 0},
+}
 
 
 # --------------------------------------------------------------------------- #
@@ -64,8 +69,9 @@ def test_disk_plan_and_guard(tmp_path):
 
 
 def test_never_writes_under_mnt():
-    with pytest.raises(ValueError, match="under /mnt"):
-        output_root("/mnt/NPX/nope")
+    for path in ("/mnt", "/mnt/NPX/nope"):
+        with pytest.raises(ValueError, match="under /mnt"):
+            output_root(path)
 
 
 # --------------------------------------------------------------------------- #
@@ -87,13 +93,14 @@ def matrix(fail_map=None, fp_map=None, split_map=None):
                     "n_output_units_capturing": split_map.get((d, c), 2 if failed else 1),
                     "refractory_violation_median": 0.001,
                     "truth_sha256": digest_for(d, r),
+                    **APPLIED[c],
                 })
     return pd.DataFrame(rows)
 
 
 def digest_for(donor, realisation):
     """A realistic 12-hex digest: the runner writes contract[...][:12]."""
-    return hashlib.sha256(f"{donor}-{realisation}".encode()).hexdigest()[:12]
+    return hashlib.sha256(realisation.encode()).hexdigest()[:12]
 
 
 def fails(n):
@@ -469,7 +476,8 @@ def test_multiplicity_is_handled_not_ignored():
 # --------------------------------------------------------------------------- #
 def test_validation_requires_every_column_it_depends_on():
     """A column that was merely optional degraded silently into a NaN endpoint."""
-    for column in ("n_events", "refractory_violation_median", "truth_sha256"):
+    for column in ("n_events", "refractory_violation_median", "truth_sha256",
+                   "Th_universal", "Th_learned", "effective_nblocks"):
         with pytest.raises(ValueError, match="missing columns"):
             validate_cells(matrix().drop(columns=[column]))
 
@@ -526,7 +534,7 @@ def test_an_undefined_guardrail_is_permitted_counted_and_not_contagious():
 def test_configurations_must_be_proved_to_have_seen_the_identical_train():
     """Matching labels are not evidence; the recorded hashes are."""
     ok = matrix()
-    assert validate_cells(ok)["truth_hashes"] == len(REALS) * len(DONORS)
+    assert validate_cells(ok)["truth_hashes"] == len(REALS)
     drifted = matrix()
     row = (drifted.template.eq("D04") & drifted.realisation.eq("r05")
            & drifted.candidate.eq("th_8_8"))
@@ -941,8 +949,18 @@ def stage2_root(tmp_path, protocol=None):
     from testing.luke_c2_stability_stage2_analysis import decision_protocol
 
     matrix().to_csv(tmp_path / "stage2.csv", index=False)
-    manifest = {"decision_protocol": protocol if protocol is not None
-                else decision_protocol()}
+    manifest = {
+        "decision_protocol": protocol if protocol is not None else decision_protocol(),
+        "frozen_donors": DONORS,
+        "frozen_realisations": {
+            realisation: {
+                "n": EXPECTED_EVENTS,
+                "sha256": hashlib.sha256(realisation.encode()).hexdigest(),
+            }
+            for realisation in REALS
+        },
+        "candidate_settings": APPLIED,
+    }
     (tmp_path / "prespec.json").write_text(json.dumps(manifest, indent=2))
     return tmp_path
 
@@ -1002,6 +1020,53 @@ def test_a_matching_protocol_analyses_end_to_end(tmp_path):
     assert result["frozen_protocol_verified"]["min_defined_donors"] == 10
     assert (tmp_path / "analysis.json").exists()
     assert (tmp_path / "analysis_cells.csv").exists()
+
+
+def test_analysis_binds_cells_to_the_frozen_experimental_inputs(tmp_path):
+    """A correctly shaped matrix is not necessarily the prespecified matrix."""
+    from testing.luke_c2_stability_stage2_analysis import analyse
+
+    mutations = []
+
+    wrong_donor = matrix()
+    wrong_donor["template"] = wrong_donor.template.replace("D14", "X14")
+    mutations.append((wrong_donor, "donor IDs differ"))
+
+    wrong_realisation = matrix()
+    wrong_realisation["realisation"] = wrong_realisation.realisation.replace("r13", "x13")
+    mutations.append((wrong_realisation, "realisation IDs differ"))
+
+    wrong_truth = matrix()
+    wrong_truth.loc[wrong_truth.realisation == "r05", "truth_sha256"] = "0" * 12
+    mutations.append((wrong_truth, "truth hashes do not match"))
+
+    wrong_threshold = matrix()
+    wrong_threshold.loc[wrong_threshold.candidate == "th_8_8", "Th_universal"] = 12
+    mutations.append((wrong_threshold, "does not match the frozen applied setting"))
+
+    wrong_nblocks = matrix()
+    wrong_nblocks.loc[wrong_nblocks.candidate == "th_9_9", "effective_nblocks"] = 1
+    mutations.append((wrong_nblocks, "does not match the frozen applied setting"))
+
+    for index, (cells, message) in enumerate(mutations):
+        root = tmp_path / f"case_{index}"
+        root.mkdir()
+        stage2_root(root)
+        cells.to_csv(root / "stage2.csv", index=False)
+        with pytest.raises(ValueError, match=message):
+            analyse(root)
+
+
+def test_analysis_refuses_a_manifest_without_frozen_inputs(tmp_path):
+    from testing.luke_c2_stability_stage2_analysis import analyse, decision_protocol
+
+    matrix().to_csv(tmp_path / "stage2.csv", index=False)
+    import json
+    (tmp_path / "prespec.json").write_text(json.dumps({
+        "decision_protocol": decision_protocol(),
+    }))
+    with pytest.raises(ValueError, match="missing frozen experimental inputs"):
+        analyse(tmp_path)
 
 
 def test_an_undefined_absolute_estimate_is_refused_on_either_bound():
