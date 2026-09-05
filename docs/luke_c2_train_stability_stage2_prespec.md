@@ -74,8 +74,41 @@ Secondary, all with donor-bootstrap CIs: median accuracy, **p10 accuracy**,
 **[rev2] Multiplicity:** two candidates are tested, so the familywise α of 0.05
 is split Bonferroni-wise; each CI is computed at 97.5 %.
 
-Ranking uses median, lower tail, failure probability and FP tail together. Not
-best accuracy, not mean accuracy, not KS-good yield.
+**[rev3] Ranking is rule 4 below, and only rule 4.** An earlier sentence here
+said "ranking uses median, lower tail, failure probability and FP tail
+together", which is a different and non-executable ordering from the one rule 4
+specifies and the code implements. Two conflicting ranking statements in a
+prespec is a free parameter, so this one is withdrawn *before any Stage-2 data
+exists*. Median accuracy and p10 accuracy remain reported secondary endpoints;
+they carry no ranking weight. What stays excluded is unchanged: not best
+accuracy, not mean accuracy, not KS-good yield.
+
+**[rev3] The primary population is all 14 frozen donors.** Rev2 ran the primary
+contrast on donors that were not systematic under either arm. The union
+equalised the arms' denominators but left the estimand conditioned on the
+outcome: moving one donor from 11 to 12 failures drops it from both arms, and
+the reported failure-rate difference goes from +0.056 to exactly 0.000 — a
+candidate is rewarded for failing more. Rev2's own test asserted only set
+membership and never compared the two reported rates, so it passed throughout.
+
+Under rev3 the primary contrast uses every frozen donor. A donor failing under
+both arms contributes equally to both and cancels from the paired difference, so
+inclusion is conservative, not biased. Systematic status remains a **separate
+disqualifying guardrail** (rule 2). The union-excluded population is still
+computed and reported as a labelled **sensitivity** analysis that no decision
+reads. A fixed population is also what makes the two candidates rankable against
+each other under rule 4 — per-contrast union sets could score them on different
+donors.
+
+**[rev3] Interval limitations.** Every CI is an ordinary percentile bootstrap
+over 14 clusters; at 97.5 % roughly 50 of the 4000 draws land in each tail, and
+`p10_accuracy` / `fp_p90` / `fp_max` are order statistics of a heavily tied
+pooled sample, so their intervals are discrete and may be stepwise or
+zero-width. This is disclosed rather than patched: BCa's jackknife acceleration
+is itself unstable for tied maxima and quantiles, and a t-interval does not suit
+non-smooth endpoints. For the two smooth endpoints — failure rate and split
+rate — a donor-level paired t-interval is reported alongside as a prespecified
+sensitivity check. Neither sensitivity is decisive.
 
 ## Decision rules, written before the data
 

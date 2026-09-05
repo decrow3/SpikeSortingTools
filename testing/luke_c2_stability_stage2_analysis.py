@@ -17,19 +17,41 @@ Inference is **conditional on the 14 frozen train realisations** and generalises
 across donors only. Extending it to other realisations would need the
 realisation axis resampled too, and this design cannot support that.
 
-The eligible population is **common to a contrast**
----------------------------------------------------
-A donor is excluded from a baseline-versus-candidate contrast if it is
-systematic under **either** configuration. Conditioning each configuration on
-its own systematic set — the obvious implementation — is biased in both
-directions: a configuration that fails a donor 12 times has that donor removed
-from its rate entirely, while one that fails 11 times keeps all 14 cells, so a
-configuration can improve its reported rate *by failing once more*. The union
-rule makes both arms of a contrast describe the same donors.
+The primary population is **all frozen donors** [rev3]
+------------------------------------------------------
+Earlier revisions ran the primary contrast on the donors that were not
+"systematic" under either arm. The union made both arms describe the same
+donors, which fixed an unequal-denominator bug — but membership of that set is
+itself a Stage-2 outcome, so the estimand stayed conditioned on the result.
+Crossing one donor from 11 to 12 failures drops it from both arms and moves the
+reported contrast from +0.056 to exactly 0.000; the fix's own test asserted only
+set membership and never caught it.
 
-Every decision endpoint is a **paired difference** on that common population,
+So the primary contrast now runs on **all 14 frozen donors**. A donor that fails
+under both arms contributes equally to both and cancels from the paired
+difference, which makes inclusion conservative rather than biased. Systematic
+status survives as a *separate disqualifying guardrail* (a candidate is dropped
+if it makes a donor systematic that the baseline does not), and the
+union-excluded population survives as a labelled **sensitivity** analysis that
+no decision reads. Fixing the population also makes the two candidates rankable
+against one another, which per-contrast union sets did not.
+
+Every decision endpoint is a **paired difference** on that fixed population,
 with its own donor-bootstrap CI. Endpoints are never compared through another
 endpoint's p-value.
+
+Interval limitations, stated in advance [rev3]
+----------------------------------------------
+These are ordinary percentile bootstraps over **14 clusters**. At a 97.5 % level
+only ~50 of the 4000 draws populate each nominal tail, and the tail endpoints
+(`p10_accuracy`, `fp_p90`, `fp_max`) are order statistics of a heavily tied
+pooled sample, so their bootstrap distributions are visibly discrete and can
+produce stepwise or zero-width intervals. This is reported, not corrected: BCa's
+jackknife acceleration is itself unstable for tied maxima and quantiles, and a
+t-interval is unsuitable for non-smooth endpoints. For the two *smooth*
+endpoints a donor-level paired t-interval is reported alongside as a
+prespecified sensitivity check. More draws would cut Monte-Carlo noise but
+cannot manufacture more than 14 independent clusters.
 """
 
 from __future__ import annotations
@@ -41,8 +63,16 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from scipy.stats import t as student_t
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def _atomic_write(path: Path, text: str) -> None:
+    """Same-directory temp then rename, so a frozen output is never half-written."""
+    tmp = path.with_name(path.name + ".tmp")
+    tmp.write_text(text)
+    tmp.replace(path)
 DEFAULT_ROOT = REPO_ROOT / "testing/outputs/luke_c2_stability_stage2"
 
 ANALYSIS_SCHEMA = "luke-c2-stability-stage2-analysis-v2"
@@ -63,11 +93,20 @@ PER_COMPARISON_ALPHA = FAMILY_ALPHA / len(CANDIDATES)   # Bonferroni
 # --------------------------------------------------------------------------- #
 # validation — the analysis must refuse an incomplete or duplicated matrix
 # --------------------------------------------------------------------------- #
+NUMERIC_ENDPOINTS = ("accuracy", "fp", "n_output_units_capturing",
+                     "refractory_violation_median")
+REQUIRED_COLUMNS = ("template", "realisation", "candidate", "n_events",
+                    "truth_sha256") + NUMERIC_ENDPOINTS
+
+
 def validate_cells(cells: pd.DataFrame) -> dict:
-    """Refuse anything but the complete, unique, prespecified design."""
-    required = {"template", "realisation", "candidate", "accuracy", "fp",
-                "n_output_units_capturing"}
-    missing = required - set(cells.columns)
+    """Refuse anything but the complete, unique, prespecified design.
+
+    Every check here is *required*, never conditional on a column happening to
+    be present: an absent column used to sail through and then surface as a
+    silent NaN inside an endpoint statistic.
+    """
+    missing = set(REQUIRED_COLUMNS) - set(cells.columns)
     if missing:
         raise ValueError(f"cell matrix is missing columns {sorted(missing)}")
     duplicated = cells.duplicated(["template", "realisation", "candidate"]).sum()
@@ -83,14 +122,40 @@ def validate_cells(cells: pd.DataFrame) -> dict:
                 "realisations": EXPECTED_REALISATIONS, "configs": 1 + len(CANDIDATES)}
     if counts != expected:
         raise ValueError(f"incomplete design: got {counts}, expected {expected}")
-    if "n_events" in cells and set(cells.n_events.unique()) != {EXPECTED_EVENTS}:
+
+    # the right *number* of configurations is not the right configurations
+    observed_configs = set(cells.candidate.unique())
+    if observed_configs != {BASELINE, *CANDIDATES}:
+        raise ValueError(
+            f"configurations are {sorted(observed_configs)}, expected "
+            f"{sorted({BASELINE, *CANDIDATES})}"
+        )
+    if set(cells.n_events.unique()) != {EXPECTED_EVENTS}:
         raise ValueError(
             f"every cell must hold {EXPECTED_EVENTS} events, got "
             f"{sorted(cells.n_events.unique())}"
         )
+    # a NaN accuracy is not a success: `NaN < FAILURE_THRESHOLD` is False, so an
+    # unchecked null would silently count as a passing cell in classify().
+    for col in NUMERIC_ENDPOINTS:
+        values = pd.to_numeric(cells[col], errors="coerce")
+        bad = ~np.isfinite(values.to_numpy(dtype=float))
+        if bad.any():
+            raise ValueError(
+                f"{int(bad.sum())} cells hold a null or non-finite {col}"
+            )
     per_pair = cells.groupby(["template", "realisation"]).candidate.nunique()
     if not (per_pair == 1 + len(CANDIDATES)).all():
         raise ValueError("some donor/realisation pairs lack a complete config triplet")
+    # identical labels do not prove the three configs saw the identical train
+    hashes = cells.groupby(["template", "realisation"]).truth_sha256.nunique()
+    if not (hashes == 1).all():
+        disagree = sorted(hashes[hashes != 1].index)
+        raise ValueError(
+            f"{len(disagree)} donor/realisation pairs are not hash-paired across "
+            f"configurations: {disagree[:5]}"
+        )
+    counts["truth_hashes"] = int(cells.truth_sha256.nunique())
     return counts
 
 
@@ -110,8 +175,17 @@ def classify(cells: pd.DataFrame, threshold: float = FAILURE_THRESHOLD,
 def eligible_donors(tagged: pd.DataFrame, baseline: str, candidate: str) -> list:
     """Donors systematic under NEITHER arm of this contrast.
 
-    The union rule is what stops a configuration improving its own rate by
-    failing a donor one more time.
+    [rev3] The union equalises the two arms' denominators, but it does NOT make
+    the exclusion harmless: membership is itself an outcome, so crossing a donor
+    from 11 to 12 failures drops it from both arms and moves the reported
+    contrast (verified: +0.056 -> 0.000). An earlier docstring here claimed the
+    union "stops a configuration improving its own rate by failing a donor one
+    more time"; that claim was false and is withdrawn.
+
+    This population therefore drives only the labelled sporadic-only
+    *sensitivity* analysis. The primary contrast runs on all frozen donors,
+    where a donor that fails under both arms contributes equally to both and so
+    cancels from the paired difference.
     """
     pair = tagged[tagged.candidate.isin([baseline, candidate])]
     systematic = set(pair.loc[pair.systematic, "template"])
@@ -210,6 +284,32 @@ STATISTICS = {
     if "refractory_violation_median" in a else float("nan"),
 }
 DECISION_ENDPOINTS = ("failure_rate", "fp_p90", "split_rate")
+# endpoints that are means, so a donor-level t-interval is meaningful; the tail
+# order statistics are deliberately excluded (see the module docstring)
+SMOOTH_ENDPOINTS = ("failure_rate", "split_rate")
+
+
+def donor_paired_t(tagged, baseline: str, candidate: str, statistic,
+                   donors: list, alpha: float = PER_COMPARISON_ALPHA) -> dict:
+    """Student-t interval on the 14 donor-level paired differences.
+
+    A prespecified sensitivity check on the percentile bootstrap for the smooth
+    endpoints only. Reported, never decisive.
+    """
+    base_blocks = _blocks(tagged, baseline, donors)
+    cand_blocks = _blocks(tagged, candidate, donors)
+    per_donor = np.array([statistic(_pool(cand_blocks, [d]))
+                          - statistic(_pool(base_blocks, [d])) for d in donors])
+    n = len(per_donor)
+    mean = float(per_donor.mean())
+    if n < 2 or not np.isfinite(per_donor).all():
+        return {"point": mean, "ci": [float("nan")] * 2, "n_donors": n}
+    se = float(per_donor.std(ddof=1) / np.sqrt(n))
+    crit = float(student_t.ppf(1 - alpha / 2, df=n - 1))
+    return {"point": round(mean, 5),
+            "ci": [round(mean - crit * se, 5), round(mean + crit * se, 5)],
+            "ci_level": round(1 - alpha, 4), "n_donors": n,
+            "excludes_zero": bool(abs(mean) > crit * se)}
 
 
 def exact_mcnemar(b: int, c: int) -> float:
@@ -227,20 +327,37 @@ def exact_mcnemar(b: int, c: int) -> float:
     return float(min(1.0, 2 * tail))
 
 
-def contrast(tagged: pd.DataFrame, baseline: str, candidate: str) -> dict:
-    """Every prespecified endpoint for one contrast, on the common population."""
-    donors = eligible_donors(tagged, baseline, candidate)
-    pair = tagged[tagged.template.isin(donors)]
-    excluded = sorted(set(tagged.template) - set(donors))
+def contrast(tagged: pd.DataFrame, baseline: str, candidate: str,
+             n_bootstrap: int = N_BOOTSTRAP) -> dict:
+    """Every prespecified endpoint for one contrast.
+
+    [rev3] The primary population is *all* frozen donors. Outcome-dependent
+    exclusion is confined to a labelled sensitivity analysis; see
+    `eligible_donors`. Keeping the primary population fixed also makes the two
+    candidates rankable against each other, which the per-contrast union set did
+    not — each candidate could otherwise be scored on a different donor set.
+    """
+    donors = sorted(set(tagged.template))
+    pair = tagged
+    sporadic_only = eligible_donors(tagged, baseline, candidate)
+    excluded = sorted(set(donors) - set(sporadic_only))
 
     differences = {
-        name: paired_donor_bootstrap(pair, baseline, candidate, stat, donors)
+        name: paired_donor_bootstrap(pair, baseline, candidate, stat, donors,
+                                     n=n_bootstrap)
         for name, stat in STATISTICS.items()
     }
     marginals = {
-        config: {name: marginal_bootstrap(pair, config, stat, donors)
+        config: {name: marginal_bootstrap(pair, config, stat, donors,
+                                          n=n_bootstrap)
                  for name, stat in STATISTICS.items()}
         for config in (baseline, candidate)
+    }
+    sensitivity = {
+        name: paired_donor_bootstrap(pair[pair.template.isin(sporadic_only)],
+                                     baseline, candidate, stat, sporadic_only,
+                                     n=n_bootstrap)
+        for name, stat in STATISTICS.items()
     }
     wide = pair.pivot_table(index=["template", "realisation"], columns="candidate",
                             values="failed", aggfunc="first")
@@ -248,7 +365,8 @@ def contrast(tagged: pd.DataFrame, baseline: str, candidate: str) -> dict:
     c = int(((wide[baseline] == 0) & (wide[candidate] == 1)).sum())
     return {
         "baseline": baseline, "candidate": candidate,
-        "eligible_donors": donors, "n_eligible_donors": len(donors),
+        "primary_donors": donors, "n_primary_donors": len(donors),
+        "sporadic_only_donors": sporadic_only,
         "excluded_systematic_donors": excluded,
         "systematic_by_config": {
             config: sorted(set(tagged.loc[(tagged.candidate == config)
@@ -257,6 +375,15 @@ def contrast(tagged: pd.DataFrame, baseline: str, candidate: str) -> dict:
         },
         "differences": differences,
         "marginals": marginals,
+        "paired_difference_t_sensitivity": {
+            name: donor_paired_t(pair, baseline, candidate, STATISTICS[name], donors)
+            for name in SMOOTH_ENDPOINTS
+        },
+        "sporadic_only_sensitivity": {
+            "note": "outcome-dependent population; reported, never decisive",
+            "n_donors": len(sporadic_only),
+            "differences": sensitivity,
+        },
         "unadjusted_mcnemar": {
             "baseline_fails_candidate_ok": b, "candidate_fails_baseline_ok": c,
             "p_value": round(exact_mcnemar(b, c), 6),
@@ -268,13 +395,31 @@ def contrast(tagged: pd.DataFrame, baseline: str, candidate: str) -> dict:
 # --------------------------------------------------------------------------- #
 # decision rules
 # --------------------------------------------------------------------------- #
+def _side(entry: dict, name: str) -> tuple[bool, bool]:
+    """(improved, regressed) read off the CI itself.
+
+    [rev3] Direction used to come from the sign of `point` gated on an
+    `excludes_zero` flag. Those are three facts that can disagree, and a result
+    carrying point=-0.05 with ci=[0.01, 0.10] was accepted as an improvement.
+    The interval is the authority; a point outside its own CI is incoherent
+    input and raises rather than silently picking one of them.
+    """
+    point, (lo, hi) = entry["point"], entry["ci"]
+    if np.isfinite(lo) and np.isfinite(hi):
+        if not lo <= point <= hi:
+            raise ValueError(
+                f"{name}: point {point} lies outside its own CI [{lo}, {hi}]"
+            )
+        return hi < 0, lo > 0
+    return False, False
+
+
 def decide_contrast(result: dict) -> dict:
     """Rules 1-3, each endpoint judged on its own paired CI."""
     diff = result["differences"]
-    better = diff["failure_rate"]["point"] < 0 and diff["failure_rate"]["excludes_zero"]
-    worse_failure = diff["failure_rate"]["point"] > 0 and diff["failure_rate"]["excludes_zero"]
-    worse_fp = diff["fp_p90"]["point"] > 0 and diff["fp_p90"]["excludes_zero"]
-    worse_splits = diff["split_rate"]["point"] > 0 and diff["split_rate"]["excludes_zero"]
+    better, worse_failure = _side(diff["failure_rate"], "failure_rate")
+    _, worse_fp = _side(diff["fp_p90"], "fp_p90")
+    _, worse_splits = _side(diff["split_rate"], "split_rate")
     new_systematic = sorted(
         set(result["systematic_by_config"][result["candidate"]])
         - set(result["systematic_by_config"][result["baseline"]]))
@@ -291,9 +436,10 @@ def decide_contrast(result: dict) -> dict:
             "lower paired sporadic failure rate with a CI excluding zero, no FP, "
             "split or systematic regression")
     else:
+        # a baseline advantage is a failure-rate regression, so it is already
+        # handled above; the only way here is a CI that spans zero
         verdict, reason = "not_separated", (
-            "no paired difference in sporadic failure rate whose CI excludes zero"
-            if not worse_failure else "baseline better, but not a candidate regression")
+            "no paired difference in sporadic failure rate whose CI excludes zero")
     return {
         "verdict": verdict, "reason": reason,
         "failure_rate_difference": diff["failure_rate"],
@@ -350,13 +496,22 @@ def analyse(root: Path | str = DEFAULT_ROOT) -> dict:
             "paired donor bootstrap; conditional on the 14 frozen realisations, "
             "generalising across donors only"
         ),
-        "eligibility": "donors systematic under either arm are excluded from that contrast",
+        "primary_population": (
+            "all frozen donors; systematic status is a separate disqualifying "
+            "guardrail, and the union-excluded population is reported only as a "
+            "labelled sensitivity analysis"
+        ),
+        "interval_caveat": (
+            "percentile bootstrap over 14 clusters; tail endpoints are ties-heavy "
+            "order statistics with discrete, possibly zero-width intervals"
+        ),
         "decision_endpoints": list(DECISION_ENDPOINTS),
         "contrasts": contrasts,
         "decision": decide(contrasts),
     }
-    tagged.to_csv(root / "analysis_cells.csv", index=False)
-    (root / "analysis.json").write_text(json.dumps(result, indent=2, default=str) + "\n")
+    _atomic_write(root / "analysis_cells.csv", tagged.to_csv(index=False))
+    _atomic_write(root / "analysis.json",
+                  json.dumps(result, indent=2, default=str) + "\n")
     return result
 
 

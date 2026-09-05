@@ -154,6 +154,37 @@ def _atomic_csv(frame, path: Path) -> None:
     tmp.replace(path)
 
 
+THRESHOLD_KEYS = ("Th_universal", "Th_learned")
+
+
+def assert_applied_settings(label: str, eff: dict, requested: dict) -> dict:
+    """Fail unless KS4 *applied* the requested thresholds with correction off.
+
+    effective_settings() falls back to the requested value when a manifest
+    records no applied one — a normalisation that is right for production
+    manifests and fatal here, because comparing that fallback to the request it
+    came from succeeds by construction. So provenance is checked first: every
+    threshold must carry an `applied:` source, or the cell is refused.
+    """
+    sources = eff.get("_sources", {})
+    unproven = {k: sources.get(k) for k in THRESHOLD_KEYS
+                if not str(sources.get(k, "")).startswith("applied:")}
+    if unproven:
+        raise RuntimeError(
+            f"{label} thresholds are not applied-derived ({unproven}); this "
+            "runner will not verify a threshold against the request that "
+            "produced it"
+        )
+    mismatch = {k: {"requested": requested[k], "effective": eff.get(k)}
+                for k in THRESHOLD_KEYS if eff.get(k) != requested[k]}
+    if eff["effective_nblocks"] != 0:
+        mismatch["effective_nblocks"] = {"requested": 0,
+                                         "effective": eff["effective_nblocks"]}
+    if mismatch:
+        raise RuntimeError(f"{label} did not resolve as requested: {mismatch}")
+    return eff
+
+
 def output_root(explicit=None) -> Path:
     root = Path(explicit or os.environ.get("LUKE_STAGE2_ROOT") or DEFAULT_OUTPUT)
     if str(root.resolve()).startswith("/mnt/"):
@@ -222,7 +253,7 @@ def run(donors=None, root=None, keep_recordings: bool = False,
                 "an edited file."
             )
     else:
-        manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+        _atomic_write(manifest_path, json.dumps(manifest, indent=2) + "\n")
 
     rows = []
     for tid in tids:
@@ -255,20 +286,7 @@ def run(donors=None, root=None, keep_recordings: bool = False,
                 obs = result["stage_observables"]
                 eff = effective_settings({"summary": obs["sort_summary"],
                                           "sorter_params": obs.get("sort_request", {})})
-                # The requested override proves nothing; assert what KS4 applied.
-                requested = config.overrides
-                mismatch = {
-                    key: {"requested": requested[key], "effective": eff.get(key)}
-                    for key in ("Th_universal", "Th_learned")
-                    if eff.get(key) != requested[key]
-                }
-                if eff["effective_nblocks"] != 0:
-                    mismatch["effective_nblocks"] = {"requested": 0,
-                                                     "effective": eff["effective_nblocks"]}
-                if mismatch:
-                    raise RuntimeError(
-                        f"{config.label} did not resolve as requested: {mismatch}"
-                    )
+                assert_applied_settings(config.label, eff, config.overrides)
                 unit = result["score"]["primary"]["units"][0]
                 guard = result["score"]["guardrails"]
                 rows.append({
@@ -318,7 +336,8 @@ def run(donors=None, root=None, keep_recordings: bool = False,
                "frozen_realisations": frozen, "n_cells": int(len(frame)),
                "n_donors": len(tids),
                "realisation_hashes": int(frame.truth_sha256.nunique())}
-    (root / "summary.json").write_text(json.dumps(summary, indent=2, default=str) + "\n")
+    _atomic_write(root / "summary.json",
+                  json.dumps(summary, indent=2, default=str) + "\n")
     return summary
 
 
