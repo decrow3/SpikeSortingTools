@@ -261,7 +261,8 @@ def load_wide_background(margin: int | None = None):
 
 def build_arms(wide_uv, wide_geometry, fs, *, duration_s=None, crop=None,
                margin=None, wide_channel_ids=None, trajectory_fn=None,
-               labels=("static", "staircase", "staircase_corrected")):
+               labels=("static", "staircase", "staircase_corrected"),
+               with_corrected: bool = True):
     """Static / moved / exactly-corrected arms, cropped identically.
 
     `trajectory_fn` returns µm of displacement against time and defaults to the
@@ -283,13 +284,14 @@ def build_arms(wide_uv, wide_geometry, fs, *, duration_s=None, crop=None,
     moved_wide = warp_array_with_known_motion(
         wide_uv, wide_geometry, trajectory_fn=trajectory_fn, sign=-1.0, **warp
     )
+    # `with_corrected=False` skips the exact-inverse warp when a caller only
+    # needs the static/moved pair -- it halves the CPU warping cost per donor.
     corrected_wide = warp_array_with_known_motion(
         moved_wide, wide_geometry, trajectory_fn=trajectory_fn, sign=+1.0, **warp
-    )
-    return {
+    ) if with_corrected else None
+    arms = {
         static_label: np.ascontiguousarray(wide_uv[:, crop]),
         moved_label: np.ascontiguousarray(moved_wide[:, crop]),
-        corrected_label: np.ascontiguousarray(corrected_wide[:, crop]),
         "geometry": np.ascontiguousarray(wide_geometry[crop]),
         "channel_ids": (
             np.asarray(wide_channel_ids)[crop] if wide_channel_ids is not None
@@ -298,6 +300,9 @@ def build_arms(wide_uv, wide_geometry, fs, *, duration_s=None, crop=None,
         "_wide": wide_uv,
         "crop": crop,
     }
+    if corrected_wide is not None:
+        arms[corrected_label] = np.ascontiguousarray(corrected_wide[:, crop])
+    return arms
 
 
 def verify_arms(arms, fs) -> dict:
