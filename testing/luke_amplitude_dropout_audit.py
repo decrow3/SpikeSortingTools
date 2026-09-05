@@ -80,6 +80,15 @@ WINDOWS_COLUMNS = (
     "fit_x0", "fit_k", "fit_A", "status", "invalid_reason",
 )
 
+#: Columns read back byte-for-byte, with CSV type inference and NA conversion
+#: both disabled. ``sort_id`` is the immutable identifier the config supplies;
+#: ``status`` is a fixed vocabulary. ``cluster_id`` is deliberately NOT here --
+#: it is a genuine integer whose value the exact-integer validators enforce.
+_WINDOWS_TEXT_COLUMNS = ("sort_id", "status")
+
+#: Free text that is legitimately empty; blanks become ``None``, not NaN.
+_WINDOWS_FREE_TEXT_COLUMNS = ("invalid_reason",)
+
 SELECTION_FLOAT_KEYS = (
     "reference_max_missing_pct",
     "failing_min_missing_pct",
@@ -1403,17 +1412,56 @@ def run_inventory(config_path: Path, out_root: Path) -> dict[str, Any]:
 
 
 def _parse_windows_bytes(data: bytes) -> pd.DataFrame:
-    """Parse ``windows.csv`` from bytes already in hand.
+    """Parse ``windows.csv`` from bytes already in hand, without letting CSV
+    type inference rewrite an identity.
 
-    A completely empty inventory writes a header-only table, but a zero-byte or
-    header-less file must not blow up either: an inventory that found nothing
-    is a valid insufficient-data result and has to reach `select` as an empty
-    table so every configured sort can still be reported with zero cases.
+    ``pd.read_csv``'s inference silently mangles a sort ID on the way back in:
+    a column of ``"001"``/``"002"`` returns as ``1``/``2``, ``"1e3"`` as
+    ``1000.0``, and ``"NA"`` as ``nan`` even in a mixed column that otherwise
+    keeps its strings. The configured sort ID would then no longer match the
+    one keying the rows -- wrong case IDs, plus a phantom zero-case ``per_sort``
+    entry for the same sort. The prescription makes this load-bearing: the sort
+    ID is an immutable identifier supplied by config, and "IDs are values".
+
+    So the file is read as raw text with NA conversion disabled, and only then
+    are the *numeric* columns converted back:
+
+    * identity text (``_WINDOWS_TEXT_COLUMNS``: ``sort_id``, ``status``) is
+      taken byte-for-byte, so ``"001"``, ``"1e3"`` and ``"NA"`` all survive;
+    * ``invalid_reason`` is free text, and an empty cell becomes ``None``;
+    * every other column is a nullable numeric -- an empty cell becomes NaN,
+      which is what ``_opt_int``/``_opt_float`` and the ``no_fit`` placeholder
+      rows (blank ``i0``/``i1``/times) expect. ``keep_default_na=False`` is
+      deliberately NOT applied to these; blanks must stay missing.
+
+    A numeric column carrying junk is left as text rather than coerced to NaN,
+    so the exact-integer validators reject it instead of silently reading a
+    corrupt row as a missing one.
+
+    An empty or header-less file still yields an empty table with the expected
+    columns: an inventory that found nothing is a valid insufficient-data
+    result and must reach `select` so every configured sort is still reported.
     """
     try:
-        return pd.read_csv(io.BytesIO(data))
+        raw = pd.read_csv(io.BytesIO(data), dtype=str, keep_default_na=False, na_filter=False)
     except pd.errors.EmptyDataError:
         return pd.DataFrame(columns=list(WINDOWS_COLUMNS))
+
+    parsed = pd.DataFrame(index=raw.index)
+    for column in raw.columns:
+        values = raw[column]
+        if column in _WINDOWS_TEXT_COLUMNS:
+            parsed[column] = values
+            continue
+        blanked = values.where(values != "", other=None)
+        if column in _WINDOWS_FREE_TEXT_COLUMNS:
+            parsed[column] = blanked
+            continue
+        try:
+            parsed[column] = pd.to_numeric(blanked)
+        except (TypeError, ValueError):
+            parsed[column] = values
+    return parsed
 
 
 def read_attested_windows(windows_path: Path, recorded_sha256: str) -> tuple[pd.DataFrame, str]:

@@ -1,4 +1,5 @@
 import dataclasses
+import io
 import json
 import math
 from pathlib import Path
@@ -34,7 +35,9 @@ from testing.luke_amplitude_dropout_audit import (
     load_config,
     load_curated_arrays,
     main,
+    _parse_windows_bytes,
     parse_selection_constants,
+    read_attested_windows,
     run_inventory,
     run_select,
     select_cases,
@@ -1602,6 +1605,102 @@ def test_select_survives_a_headerless_empty_windows_csv(tmp_path):
     assert payload["cases"] == []
     assert set(payload["per_sort"]) == {"synthetic"}
     assert payload["per_sort"]["synthetic"]["n_failure_cases_selected"] == 0
+
+
+# --------------------------------------------------------------------------- #
+# layer 3 regression: a sort_id must survive windows.csv byte-for-byte
+# --------------------------------------------------------------------------- #
+def _write_two_sort_config(tmp_path: Path, sort_ids: list[str]) -> Path:
+    """A config whose sort IDs are the awkward ones CSV inference rewrites."""
+    recording = tmp_path / "recording"
+    recording.mkdir(parents=True, exist_ok=True)
+    sorts = []
+    for n, sort_id in enumerate(sort_ids):
+        curated = _write_curated(tmp_path / f"sort{n}", n=10)
+        qc_dir = tmp_path / f"qc{n}"
+        _write_cached_qc(
+            qc_dir, cid=np.array([0.0]), window_blocks=np.array([[0, 3]]),
+            popts=np.array([[10.0, 1.0, 1.0]]), mpcts=np.array([12.5]),
+        )
+        sorts.append({
+            "sort_id": sort_id, "curated": str(curated), "qc_dir": str(qc_dir),
+            "source_recording": str(recording), "sampling_frequency_hz": 1000.0,
+            "selected_start_sample": 0, "duration_s": 1.0,
+        })
+    config_path = tmp_path / "config.json"
+    config_path.write_text(json.dumps(
+        {"schema": SCHEMA, "selection": SELECTION_BLOCK, "sorts": sorts}
+    ))
+    return config_path
+
+
+def test_sort_ids_survive_the_windows_csv_round_trip_without_type_inference(tmp_path):
+    """`pd.read_csv` infers types, so "001" comes back as 1 and "NA" as nan.
+    The rows would then be keyed by a mangled sort while the configured
+    identifier is unioned in as its original string -- wrong case IDs plus a
+    phantom zero-case per_sort entry for the same sort."""
+    config_path = _write_two_sort_config(tmp_path, ["001", "NA"])
+    out_root = tmp_path / "out"
+    manifest = run_inventory(config_path, out_root)
+
+    windows, _ = read_attested_windows(
+        out_root / "windows.csv", manifest["windows_csv_sha256"]
+    )
+    assert sorted(set(windows["sort_id"])) == ["001", "NA"]     # "NA" is not nan
+    assert all(isinstance(v, str) for v in windows["sort_id"])
+    # cluster 1 has no cached QC row, so it is a no_fit placeholder that
+    # window_records drops -- but its row still carries the exact sort_id
+    assert set(window_records(windows)) == {("001", 0), ("NA", 0)}
+    assert set(windows.loc[windows["status"] == STATUS_NO_FIT, "sort_id"]) == {"001", "NA"}
+
+    payload = run_select(config_path, out_root)
+    assert set(payload["per_sort"]) == {"001", "NA"}            # no "1"/nan phantoms
+    assert len(payload["per_sort"]) == len(json.loads(config_path.read_text())["sorts"])
+
+
+def test_a_wholly_numeric_looking_sort_id_column_is_not_coerced_to_numbers():
+    """The pure case the mixed column hides: every value CSV-coercible."""
+    table = _table(_failing_run(sort_id="001", cluster_id=1),
+                   _failing_run(sort_id="002", cluster_id=1))
+    buffer = io.StringIO()
+    table.to_csv(buffer, index=False)
+    parsed = _parse_windows_bytes(buffer.getvalue().encode())
+
+    assert list(parsed["sort_id"].unique()) == ["001", "002"]
+    assert _ids(select_cases(parsed, CONSTANTS)) == ["001__c1__failure1", "002__c1__failure1"]
+
+
+def test_numeric_columns_stay_nullable_across_the_round_trip():
+    """Disabling NA conversion must not spill onto the numeric columns: the
+    no_fit placeholder rows depend on blank i0/i1/times reading as missing."""
+    no_fit = _wrow(sort_id="s1", cluster_id=2, source_row=-1)
+    no_fit.update({"i0": np.nan, "i1": np.nan, "first_sample": np.nan, "last_sample": np.nan,
+                   "start_s": np.nan, "end_s": np.nan, "historical_count": np.nan,
+                   "nominal_count": np.nan, "missing_pct": np.nan, "status": STATUS_NO_FIT,
+                   "invalid_reason": None})
+    buffer = io.StringIO()
+    _table(_failing_run(sort_id="s1", cluster_id=1), [no_fit]).to_csv(buffer, index=False)
+    parsed = _parse_windows_bytes(buffer.getvalue().encode())
+
+    placeholder = parsed[parsed["status"] == STATUS_NO_FIT].iloc[0]
+    for column in ("i0", "i1", "first_sample", "last_sample", "start_s", "end_s",
+                   "historical_count", "nominal_count", "missing_pct"):
+        assert pd.isna(placeholder[column]), column
+    assert placeholder["invalid_reason"] is None
+    assert parsed.loc[0, "i0"] == 0 and parsed.loc[0, "nominal_count"] == 1000
+    # the placeholder is dropped by window_records but its sort still reports
+    assert set(window_records(parsed)) == {("s1", 1)}
+    assert set(select_cases(parsed, CONSTANTS)["per_sort"]) == {"s1"}
+
+
+def test_junk_in_a_numeric_column_is_rejected_not_silently_read_as_missing():
+    table = _table(_failing_run(sort_id="s1", cluster_id=1))
+    table.loc[0, "i0"] = "not-a-number"
+    buffer = io.StringIO()
+    table.to_csv(buffer, index=False)
+    parsed = _parse_windows_bytes(buffer.getvalue().encode())
+    with pytest.raises(ValueError, match="must be a number"):
+        select_cases(parsed, CONSTANTS)
 
 
 # --------------------------------------------------------------------------- #
