@@ -639,3 +639,75 @@ def test_statistics_sharing_one_column_are_not_interchangeable():
                  n_bootstrap=25)["differences"]
     assert d["fp_max"]["point"] == 0.0
     assert d["fp_p90"]["point"] != 0.0
+
+
+# --------------------------------------------------------------------------- #
+# [rev5] closing the 12/14 systematic cliff from both sides
+# --------------------------------------------------------------------------- #
+def graded(base_fails, cand_fails, override=None):
+    """A complete design at prescribed per-donor failure counts."""
+    over = override or {}
+    fail_map = {}
+    for d in DONORS:
+        fail_map[(d, BASELINE)] = fails(base_fails)
+        fail_map[(d, "th_9_9")] = fails(base_fails)
+        fail_map[(d, "th_8_8")] = fails(over.get(d, cand_fails))
+    return classify(matrix(fail_map))
+
+
+def test_an_absolutely_bad_candidate_cannot_win_by_being_less_bad():
+    """The cliff's blind side: 11/14 everywhere is never 'systematic'.
+
+    Baseline fails 12/14 on every donor, candidate 11/14 on every donor. The
+    candidate has no systematic donors at all and a failure-rate difference
+    whose CI excludes zero, so before rev5 it qualified while failing 78.6% of
+    its cells.
+    """
+    result = contrast(graded(12, 11), BASELINE, "th_8_8", n_bootstrap=200)
+    assert result["systematic_by_config"]["th_8_8"] == []        # the blind side
+    assert result["differences"]["failure_rate"]["point"] < 0    # and it "wins"
+    assert result["absolute_failure_rate"]["point"] == pytest.approx(0.78571, abs=1e-4)
+
+    v = decide_contrast(result)
+    assert v["verdict"] == "dropped"
+    assert v["absolute_failure_rate_acceptable"] is False
+    assert "absolute failure rate" in v["reason"]
+
+
+def test_a_candidate_much_worse_on_one_donor_cannot_hide_behind_the_aggregate():
+    """Graded, so it has no special behaviour at the 12/14 step."""
+    for extra, expected in ((3, "qualifies"), (4, "dropped"), (5, "dropped")):
+        result = contrast(graded(6, 1, {"D09": 6 + extra}), BASELINE, "th_8_8",
+                          n_bootstrap=200)
+        worst = result["worst_donor_deterioration"]
+        assert worst["donor"] == "D09" and worst["extra_failures"] == extra
+        assert worst["exceeds_cap"] is (extra >= 4)
+        v = decide_contrast(result)
+        assert v["verdict"] == expected, (extra, v["reason"])
+        # the aggregate always favours the candidate, so only the cap can drop it
+        assert result["differences"]["failure_rate"]["point"] < 0
+
+
+def test_the_new_guardrails_can_only_disqualify_never_promote():
+    """Neither rule may turn a losing candidate into a winner."""
+    # a candidate that is genuinely better and absolutely acceptable still wins
+    good = contrast(graded(6, 2), BASELINE, "th_8_8", n_bootstrap=200)
+    assert decide_contrast(good)["verdict"] == "qualifies"
+    assert good["absolute_failure_rate"]["point"] < 0.5
+
+    # a worse candidate is not rescued by a clean absolute rate or donor spread
+    worse = contrast(graded(2, 6), BASELINE, "th_8_8", n_bootstrap=200)
+    v = decide_contrast(worse)
+    assert worse["absolute_failure_rate"]["point"] < 0.5      # absolutely fine
+    assert v["verdict"] == "dropped" and "failure_rate" in v["regressions"]
+
+
+def test_the_per_donor_failure_distribution_is_reported_in_full():
+    """The 12/14 flag must be auditable against what it was thresholded from."""
+    result = contrast(graded(6, 1, {"D09": 13}), BASELINE, "th_8_8",
+                      n_bootstrap=200)
+    counts = result["donor_failure_counts"]
+    assert set(counts) == {BASELINE, "th_8_8"}
+    assert set(counts["th_8_8"]) == set(DONORS)                 # every donor
+    assert counts["th_8_8"]["D09"] == 13 and counts["th_8_8"]["D01"] == 1
+    assert counts[BASELINE]["D09"] == 6

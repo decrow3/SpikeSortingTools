@@ -128,9 +128,31 @@ sensitivity check. Neither sensitivity is decisive.
    regression under rule 2.
 2. A candidate is **dropped** on a material regression: FP p90, split rate or
    failure rate worse than production with its own paired CI excluding zero, or
-   a new systematic donor. **[rev2] A regression disqualifies even when the
+   a new systematic donor, or **[rev5]** either of the two guardrails below. **[rev2] A regression disqualifies even when the
    failure rate is better** — the earlier draft's branch order returned
    "replaces" for a candidate that was simultaneously better and regressed.
+2a. **[rev5] Absolute acceptability floor.** A candidate cannot replace
+   production unless the upper bound of its own marginal failure-rate CI is
+   below **0.5**. The systematic flag is a step at 12 of 14, so it is blind on
+   one side: a candidate failing 11/14 on *every* donor has no systematic donors
+   at all, and could qualify on a relative win while failing 78.6 % of its
+   cells. A benchmark that fails more than half its cells cannot serve as a
+   benchmark however much better than production it is, and that situation is
+   already what rule 3 exists to report.
+
+2b. **[rev5] Per-donor deterioration cap.** A candidate is dropped if, on any
+   single donor, it fails on **4 or more** additional realisations than
+   production (4 of 14 = 29 points). This closes the step's other side: it is
+   computed on the candidate-minus-baseline difference, so it has no special
+   behaviour at 12, and it catches a candidate that is substantially worse on
+   selected donors while winning on aggregate elsewhere. The full per-donor
+   failure distribution is reported under each contrast, so the 12/14 flag can
+   be audited against the distribution it was thresholded from.
+
+   Both constants are frozen judgement calls, not fitted quantities, and both
+   rules can only ever **disqualify** a candidate — neither can promote one, so
+   neither can manufacture a false positive.
+
 3. If no candidate satisfies (1), the outcome is **no threshold change**, and
    the benchmark's realisation sensitivity becomes the finding.
 4. **[rev2] If both candidates qualify**, they are ranked by a prespecified

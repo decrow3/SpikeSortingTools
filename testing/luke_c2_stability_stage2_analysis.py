@@ -78,6 +78,19 @@ DEFAULT_ROOT = REPO_ROOT / "testing/outputs/luke_c2_stability_stage2"
 ANALYSIS_SCHEMA = "luke-c2-stability-stage2-analysis-v2"
 FAILURE_THRESHOLD = 0.9
 SYSTEMATIC_MIN_FAILURES = 12
+# [rev5] Two rules that close the 12/14 cliff. Both can only ever DISQUALIFY a
+# candidate, never promote one, so neither can manufacture a false positive.
+# The constants are frozen judgement calls, not fitted quantities.
+#
+# A benchmark that fails more than half its cells cannot serve as a benchmark,
+# however much better than production it is: "less bad" is not usable, and that
+# situation is already what rule 3 exists to report.
+ABSOLUTE_FAILURE_CAP = 0.5
+# Of 14 realisations, failing 4 more than production on one donor (29 points) is
+# a material per-donor regression. This fires on the candidate-minus-baseline
+# difference, so unlike the systematic flag it has no special behaviour at 12 and
+# catches a candidate that is much worse on one donor while winning on aggregate.
+DONOR_DETERIORATION_CAP = 4
 BASELINE = "th_12_9"
 CANDIDATES = ("th_8_8", "th_9_9")
 EXPECTED_CELLS = 588
@@ -199,6 +212,29 @@ def classify(cells: pd.DataFrame, threshold: float = FAILURE_THRESHOLD,
         n_failures="sum", n_realisations="size").reset_index()
     flags["systematic"] = flags.n_failures >= systematic_min
     return out.merge(flags, on=["template", "candidate"], how="left")
+
+
+def donor_failure_counts(tagged: pd.DataFrame) -> pd.DataFrame:
+    """Failures out of 14 for every donor x configuration.
+
+    [rev5] Reported in full so the 12/14 systematic flag can be audited against
+    the distribution it was thresholded from, rather than standing alone.
+    """
+    return (tagged.groupby(["template", "candidate"]).failed.sum()
+            .unstack("candidate").astype(int).sort_index())
+
+
+def worst_donor_deterioration(tagged: pd.DataFrame, baseline: str,
+                              candidate: str) -> dict:
+    """The donor on which the candidate fails most often relative to production."""
+    counts = donor_failure_counts(tagged)
+    delta = (counts[candidate] - counts[baseline]).sort_values(ascending=False)
+    donor = delta.index[0]
+    return {"donor": str(donor), "extra_failures": int(delta.iloc[0]),
+            "candidate_failures": int(counts.loc[donor, candidate]),
+            "baseline_failures": int(counts.loc[donor, baseline]),
+            "cap": DONOR_DETERIORATION_CAP,
+            "exceeds_cap": bool(delta.iloc[0] >= DONOR_DETERIORATION_CAP)}
 
 
 def eligible_donors(tagged: pd.DataFrame, baseline: str, candidate: str) -> list:
@@ -401,9 +437,23 @@ def contrast(tagged: pd.DataFrame, baseline: str, candidate: str,
                             values="failed", aggfunc="first")
     b = int(((wide[baseline] == 1) & (wide[candidate] == 0)).sum())
     c = int(((wide[baseline] == 0) & (wide[candidate] == 1)).sum())
+    counts = donor_failure_counts(tagged)
     return {
         "baseline": baseline, "candidate": candidate,
         "primary_donors": donors, "n_primary_donors": len(donors),
+        # [rev5] the distribution the 12/14 flag is thresholded from, in full
+        "donor_failure_counts": {
+            config: {str(d): int(counts.loc[d, config]) for d in counts.index}
+            for config in (baseline, candidate)
+        },
+        "worst_donor_deterioration": worst_donor_deterioration(
+            tagged, baseline, candidate),
+        # [rev5] the candidate on its own terms: a relative win over a bad
+        # baseline is still unusable if the candidate is itself bad
+        "absolute_failure_rate": {
+            **marginals[candidate]["failure_rate"],
+            "cap": ABSOLUTE_FAILURE_CAP,
+        },
         "sporadic_only_donors": sporadic_only,
         "excluded_systematic_donors": excluded,
         "systematic_by_config": {
@@ -462,26 +512,48 @@ def decide_contrast(result: dict) -> dict:
         set(result["systematic_by_config"][result["candidate"]])
         - set(result["systematic_by_config"][result["baseline"]]))
 
+    # [rev5] the 12/14 systematic flag is a step, so on its own it both misses a
+    # candidate failing 11/14 everywhere and disqualifies one crossing to 12/14
+    # on a single donor. These two rules close it from either side. Both can only
+    # disqualify, so neither can turn a losing candidate into a winner.
+    absolute = result.get("absolute_failure_rate")
+    too_bad_outright = bool(
+        absolute is not None and absolute["ci"][1] >= ABSOLUTE_FAILURE_CAP)
+    worst = result.get("worst_donor_deterioration") or {}
+    donor_regression = bool(worst.get("exceeds_cap"))
+
     regressions = [name for name, flag in
                    (("fp_p90", worse_fp), ("split_rate", worse_splits),
                     ("failure_rate", worse_failure)) if flag]
-    if regressions or new_systematic:
-        verdict, reason = "dropped", (
-            f"material regression on {regressions or 'systematic failures'}"
-            + (f"; new systematic donors {new_systematic}" if new_systematic else ""))
+    if regressions or new_systematic or donor_regression or too_bad_outright:
+        causes = list(regressions)
+        if new_systematic:
+            causes.append(f"new systematic donors {new_systematic}")
+        if donor_regression:
+            causes.append(
+                f"donor {worst['donor']} fails {worst['extra_failures']} more "
+                f"times than production (cap {DONOR_DETERIORATION_CAP})")
+        if too_bad_outright:
+            causes.append(
+                f"absolute failure rate is not bounded below "
+                f"{ABSOLUTE_FAILURE_CAP} (upper CI {absolute['ci'][1]})")
+        verdict, reason = "dropped", "; ".join(causes)
     elif better:
         verdict, reason = "qualifies", (
-            "lower paired sporadic failure rate with a CI excluding zero, no FP, "
-            "split or systematic regression")
+            "lower paired failure rate over all frozen donors with a CI "
+            "excluding zero; no FP, split, per-donor or systematic regression, "
+            "and an acceptable absolute failure rate")
     else:
         # a baseline advantage is a failure-rate regression, so it is already
         # handled above; the only way here is a CI that spans zero
         verdict, reason = "not_separated", (
-            "no paired difference in sporadic failure rate whose CI excludes zero")
+            "no paired difference in failure rate whose CI excludes zero")
     return {
         "verdict": verdict, "reason": reason,
         "failure_rate_difference": diff["failure_rate"],
         "regressions": regressions, "new_systematic_donors": new_systematic,
+        "donor_deterioration": worst or None,
+        "absolute_failure_rate_acceptable": not too_bad_outright,
     }
 
 
@@ -547,6 +619,14 @@ def analyse(root: Path | str = DEFAULT_ROOT) -> dict:
             "order statistics with discrete, possibly zero-width intervals"
         ),
         "decision_endpoints": list(DECISION_ENDPOINTS),
+        "disqualifying_guardrails": {
+            "systematic_min_failures": SYSTEMATIC_MIN_FAILURES,
+            "absolute_failure_cap": ABSOLUTE_FAILURE_CAP,
+            "donor_deterioration_cap": DONOR_DETERIORATION_CAP,
+            "note": ("[rev5] all three can only disqualify a candidate, never "
+                     "promote one; the per-donor distribution is reported in "
+                     "full under each contrast's donor_failure_counts"),
+        },
         "contrasts": contrasts,
         "decision": decide(contrasts),
     }
