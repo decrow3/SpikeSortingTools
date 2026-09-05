@@ -577,7 +577,28 @@ def check_practical_failure_value(payload: dict, node: dict) -> None:
         raise ContractRefusal(f"{label}.cluster_id must be an integer id, got {cluster_id!r}")
 
 
-def check_candidate_settings_value(node: dict) -> None:
+def check_candidate_settings_value(payload: dict, node: dict) -> None:
+    """Check a set candidate configuration against what its placeholder promises.
+
+    Deliberately split. What is enforced is what the contract already claims
+    and what makes two different interventions distinguishable:
+
+    * the two enums, which the contract enumerates;
+    * a non-empty ``resolved_configuration`` object -- without it two genuinely
+      different interventions produce the same ``contract_digest``, which is
+      the whole reason ``candidate`` is inside :data:`EXECUTION_DIGEST_PATHS`;
+    * a ``configuration_digest`` that is *recomputed* here, so the "printed with
+      digests before any work starts" promise is checkable rather than
+      decorative, and a digest copied from another run is refused;
+    * ``inputs``, naming what the candidate runs on, restricted to identities
+      this contract already declares -- a candidate may not silently introduce
+      an undeclared input.
+
+    What is left open: the internal shape of ``resolved_configuration``. It
+    belongs to whichever intervention Step 2 selects and cannot be written down
+    honestly before then. It is opaque to this validator but not invisible: it
+    is hashed, so it cannot change after the freeze.
+    """
     label = "candidate.settings.value"
     value = node["value"]
     if not isinstance(value, dict) or not value:
@@ -592,6 +613,52 @@ def check_candidate_settings_value(node: dict) -> None:
     if mode not in CANDIDATE_EXECUTION_MODES:
         raise ContractRefusal(
             f"{label}.execution_mode must be one of {CANDIDATE_EXECUTION_MODES}, got {mode!r}"
+        )
+
+    resolved = value.get("resolved_configuration")
+    if not isinstance(resolved, dict) or not resolved:
+        raise ContractRefusal(
+            f"{label}.resolved_configuration must be a non-empty object holding the parameters "
+            "that will actually run; two interventions that differ only in parameters must not "
+            "share a contract digest"
+        )
+    digest = value.get("configuration_digest")
+    if not isinstance(digest, str) or len(digest) != 64 or any(c not in "0123456789abcdef" for c in digest):
+        raise ContractRefusal(
+            f"{label}.configuration_digest must be a 64-character lowercase sha256 hex digest, "
+            f"got {digest!r}"
+        )
+    recomputed = canonical_digest(resolved)
+    if digest != recomputed:
+        raise ContractRefusal(
+            f"{label}.configuration_digest does not match its resolved_configuration "
+            f"(declared {digest[:12]}, recomputed {recomputed[:12]})"
+        )
+
+    inputs = value.get("inputs")
+    if not isinstance(inputs, dict) or not inputs:
+        raise ContractRefusal(
+            f"{label}.inputs must name the identities this candidate runs on"
+        )
+    comparators = check_comparators(payload)
+    if mode == "retained_sort_replay":
+        key, declared = "source_sort_id", {c["sort_id"] for c in comparators.values()}
+    else:
+        key = "source_recording"
+        declared = {c["source_recording"] for c in comparators.values()}
+        data_dir = payload.get("recording", {}).get("data_dir")
+        if isinstance(data_dir, str) and data_dir:
+            declared.add(data_dir)
+    supplied = inputs.get(key)
+    if not isinstance(supplied, str) or not supplied.strip():
+        raise ContractRefusal(
+            f"{label}.inputs must carry a non-empty {key!r} when execution_mode is {mode!r}, "
+            f"got {supplied!r}"
+        )
+    if supplied not in declared:
+        raise ContractRefusal(
+            f"{label}.inputs.{key} {supplied!r} is not an input this contract declares "
+            f"{sorted(declared)}"
         )
 
 
@@ -613,7 +680,7 @@ def check_required_value_shapes(payload: dict) -> None:
 
     settings = get_path(payload, "candidate.settings")
     if not is_unset(settings, "candidate.settings"):
-        check_candidate_settings_value(settings)
+        check_candidate_settings_value(payload, settings)
 
 
 # --------------------------------------------------------------------------- #

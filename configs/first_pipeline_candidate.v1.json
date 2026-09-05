@@ -174,14 +174,24 @@
       "value": null,
       "description": "The resolved candidate configuration actually executed.",
       "placeholder": {
+        "required_keys_when_set": [
+          "intervention_family",
+          "execution_mode",
+          "resolved_configuration",
+          "configuration_digest",
+          "inputs"
+        ],
         "intervention_family": "one of: targeted_curation_repair | option_b_unwarped_identity | option_a_external_voltage_registration",
         "execution_mode": "one of: retained_sort_replay | resort",
-        "resolved_configuration": "printed with digests before any work starts",
+        "resolved_configuration": "non-empty object holding the parameters that will actually run, printed with digests before any work starts. Its internal shape belongs to whichever intervention Step 2 selects and is deliberately not fixed here.",
+        "configuration_digest": "sha256 hex over resolved_configuration as canonical JSON (sorted keys, no whitespace). The validator recomputes it and refuses a mismatch, so the digest cannot be copied from another run.",
+        "inputs": "the identities this candidate runs on, restricted to inputs this contract already declares: source_sort_id (a comparator sort_id) when execution_mode is retained_sort_replay, source_recording (a comparator source_recording, or recording.data_dir) when it is resort.",
         "reuse": "pipeline/, testing/ladder_l1.py, testing/ladder_sorter.py, and the existing motion implementation for a motion candidate"
       },
       "set_from": "Step 2 candidate selection",
       "set_at": null,
-      "set_by": null
+      "set_by": null,
+      "left_open_until_step_2": "The parameter names and values inside resolved_configuration. They cannot be written down before a candidate is chosen, so they are hashed rather than schema-checked: opaque to the validator, but frozen by the contract digest and unchangeable once results exist."
     },
     "dependency_requirements_resolved": {
       "state": "unset",
