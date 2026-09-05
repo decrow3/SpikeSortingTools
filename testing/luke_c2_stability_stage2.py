@@ -57,6 +57,7 @@ from testing.ladder_inject import inject_trajectory, static_trajectory, write_in
 from testing.ladder_l1 import l1_run
 from testing.ladder_score import build_truth_contract, truth_digest
 from testing.ladder_sorter import SorterConfig, effective_settings
+from testing.luke_c2_stability_stage2_analysis import DECISION_PROTOCOL
 from testing.luke_c2_staircase_control import STAIRCASE, load_wide_background, staircase_admitted_truth
 from testing.luke_c2_staircase_smoke import donor_placement
 from testing.luke_rescue_c2_drift_challenge import (
@@ -261,7 +262,12 @@ def run(donors=None, root=None, keep_recordings: bool = False,
               for n, t in trains.items()}
     if len({v["sha256"] for v in frozen.values()}) != len(frozen):
         raise RuntimeError("two realisations are identical; the pairing would be degenerate")
-    manifest = {**STAGE2, "plan": budget, "frozen_realisations": frozen}
+    # [rev6] The decision protocol is frozen with the data. Without it the
+    # acceptability caps lived only in the analysis module, so either could be
+    # changed after collection and freeze_manifest() would still accept the
+    # stored prespec -- the constants were "frozen" only by assertion.
+    manifest = {**STAGE2, "plan": budget, "frozen_realisations": frozen,
+                "decision_protocol": DECISION_PROTOCOL}
     freeze_manifest(root / "prespec.json", manifest)
 
     rows = []

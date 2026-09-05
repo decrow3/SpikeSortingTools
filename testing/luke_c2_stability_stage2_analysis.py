@@ -75,7 +75,7 @@ def _atomic_write(path: Path, text: str) -> None:
     tmp.replace(path)
 DEFAULT_ROOT = REPO_ROOT / "testing/outputs/luke_c2_stability_stage2"
 
-ANALYSIS_SCHEMA = "luke-c2-stability-stage2-analysis-v2"
+ANALYSIS_SCHEMA = "luke-c2-stability-stage2-analysis-v3"
 FAILURE_THRESHOLD = 0.9
 SYSTEMATIC_MIN_FAILURES = 12
 # [rev5] Two rules that close the 12/14 cliff. Both can only ever DISQUALIFY a
@@ -194,10 +194,28 @@ def validate_cells(cells: pd.DataFrame) -> dict:
             f"configurations: {disagree[:5]}"
         )
     counts["truth_hashes"] = int(cells.truth_sha256.nunique())
-    # undefined guardrails are permitted, but never silent
+    # undefined guardrails are permitted, but never silent -- and "undefined"
+    # means null, not anything unparseable. The scorer builds this endpoint from
+    # finite boolean means and reports NaN only when no good unit has two spikes,
+    # so an infinity or a string is corruption wearing missingness as a disguise.
     for col in NULLABLE_ENDPOINTS:
-        values = pd.to_numeric(cells[col], errors="coerce").to_numpy(dtype=float)
-        counts[f"undefined_{col}"] = int((~np.isfinite(values)).sum())
+        raw = cells[col]
+        null = raw.isna()
+        parsed = pd.to_numeric(raw, errors="coerce")
+        unparseable = parsed.isna() & ~null
+        if unparseable.any():
+            raise ValueError(
+                f"{int(unparseable.sum())} cells hold a non-numeric {col}, e.g. "
+                f"{raw[unparseable].iloc[0]!r}; a null is undefined, this is not"
+            )
+        values = parsed.to_numpy(dtype=float)
+        infinite = np.isinf(values)
+        if infinite.any():
+            raise ValueError(
+                f"{int(infinite.sum())} cells hold an infinite {col}; the scorer "
+                "cannot produce one"
+            )
+        counts[f"undefined_{col}"] = int(np.isnan(values).sum())
     return counts
 
 
@@ -292,6 +310,27 @@ def _draws(n: int, n_donors: int, seed: int):
 
 
 
+# A resample can legitimately contain no defined cell for a nullable endpoint
+# (every drawn donor undefined), in which case that draw's statistic is NaN.
+# np.percentile propagates one NaN to the whole interval, so the CI collapsed to
+# [nan, nan] for an endpoint the prespec promises a CI for. Percentiles are taken
+# over the defined draws, and how many were usable is reported.
+MIN_USABLE_DRAW_FRACTION = 0.5
+
+
+def _draw_interval(draws: np.ndarray, alpha: float) -> dict:
+    """Percentile interval over the defined draws, with its own provenance."""
+    finite = draws[np.isfinite(draws)]
+    usable = {"n_draws": int(draws.size), "n_usable_draws": int(finite.size)}
+    if finite.size < max(2, MIN_USABLE_DRAW_FRACTION * draws.size):
+        return {"ci": [float("nan")] * 2, "excludes_zero": False,
+                "undefined_interval": True, **usable}
+    lo, hi = np.percentile(finite, [100 * alpha / 2, 100 * (1 - alpha / 2)])
+    return {"ci": [round(float(lo), 5), round(float(hi), 5)],
+            "excludes_zero": bool(lo > 0 or hi < 0),
+            "undefined_interval": False, **usable}
+
+
 def paired_donor_bootstrap(tagged, baseline: str, candidate: str, statistic,
                            donors: list, alpha: float = PER_COMPARISON_ALPHA,
                            n: int = N_BOOTSTRAP, seed: int = BOOTSTRAP_SEED) -> dict:
@@ -312,11 +351,9 @@ def paired_donor_bootstrap(tagged, baseline: str, candidate: str, statistic,
         selection = [donors[j] for j in picks]
         draws[i] = (statistic(_pool(cand_blocks, selection))
                     - statistic(_pool(base_blocks, selection)))
-    lo, hi = np.percentile(draws, [100 * alpha / 2, 100 * (1 - alpha / 2)])
     return {"point": round(float(point), 5),
-            "ci": [round(float(lo), 5), round(float(hi), 5)],
             "ci_level": round(1 - alpha, 4), "n_donors": len(donors),
-            "excludes_zero": bool(lo > 0 or hi < 0)}
+            **_draw_interval(draws, alpha)}
 
 
 def marginal_bootstrap(tagged, config: str, statistic, donors: list,
@@ -329,9 +366,10 @@ def marginal_bootstrap(tagged, config: str, statistic, donors: list,
     draws = np.empty(n)
     for i, picks in enumerate(_draws(n, len(donors), seed)):
         draws[i] = statistic(_pool(blocks, [donors[j] for j in picks]))
-    lo, hi = np.percentile(draws, [100 * alpha / 2, 100 * (1 - alpha / 2)])
-    return {"point": round(float(point), 5),
-            "ci": [round(float(lo), 5), round(float(hi), 5)]}
+    interval = _draw_interval(draws, alpha)
+    return {"point": round(float(point), 5), "ci": interval["ci"],
+            "n_usable_draws": interval["n_usable_draws"],
+            "undefined_interval": interval["undefined_interval"]}
 
 
 # --------------------------------------------------------------------------- #
@@ -358,9 +396,33 @@ def _nanmedian(values) -> float:
 
 
 DECISION_ENDPOINTS = ("failure_rate", "fp_p90", "split_rate")
+
 # endpoints that are means, so a donor-level t-interval is meaningful; the tail
 # order statistics are deliberately excluded (see the module docstring)
 SMOOTH_ENDPOINTS = ("failure_rate", "split_rate")
+
+
+# [rev6] Every constant a verdict depends on, in one place, so the runner can
+# freeze it into prespec.json alongside the protocol. Without this the caps lived
+# only here and could be changed after data collection without the frozen
+# manifest noticing.
+DECISION_PROTOCOL = {
+    "analysis_schema": ANALYSIS_SCHEMA,
+    "failure_threshold": FAILURE_THRESHOLD,
+    "systematic_min_failures": SYSTEMATIC_MIN_FAILURES,
+    "absolute_failure_cap": ABSOLUTE_FAILURE_CAP,
+    "donor_deterioration_cap": DONOR_DETERIORATION_CAP,
+    "baseline": BASELINE,
+    "candidates": list(CANDIDATES),
+    "decision_endpoints": list(DECISION_ENDPOINTS),
+    "smooth_endpoints": list(SMOOTH_ENDPOINTS),
+    "family_alpha": FAMILY_ALPHA,
+    "per_comparison_alpha": PER_COMPARISON_ALPHA,
+    "n_bootstrap": N_BOOTSTRAP,
+    "bootstrap_seed": BOOTSTRAP_SEED,
+    "min_usable_draw_fraction": MIN_USABLE_DRAW_FRACTION,
+    "tie_break": ["failure_rate", "fp_p90", "split_rate"],
+}
 
 
 def donor_paired_t(tagged, baseline: str, candidate: str, statistic,
@@ -516,11 +578,27 @@ def decide_contrast(result: dict) -> dict:
     # candidate failing 11/14 everywhere and disqualifies one crossing to 12/14
     # on a single donor. These two rules close it from either side. Both can only
     # disqualify, so neither can turn a losing candidate into a winner.
-    absolute = result.get("absolute_failure_rate")
-    too_bad_outright = bool(
-        absolute is not None and absolute["ci"][1] >= ABSOLUTE_FAILURE_CAP)
-    worst = result.get("worst_donor_deterioration") or {}
-    donor_regression = bool(worst.get("exceeds_cap"))
+    # [rev6] required-key access. These were read with .get(), so a contrast
+    # dict missing them silently passed both guardrails and still reported
+    # "qualifies" with absolute_failure_rate_acceptable=True -- fail-open on the
+    # public decision function, and a false reason string. A verdict is now
+    # refused rather than guessed when the evidence for it is absent.
+    for key in ("absolute_failure_rate", "worst_donor_deterioration"):
+        if key not in result:
+            raise ValueError(
+                f"contrast result is missing {key}; the rev5 guardrails cannot "
+                "be evaluated and a verdict will not be issued without them"
+            )
+    absolute = result["absolute_failure_rate"]
+    upper = absolute["ci"][1]
+    if not np.isfinite(upper):
+        raise ValueError(
+            "absolute failure-rate CI is undefined; acceptability cannot be "
+            f"established (got {absolute['ci']})"
+        )
+    too_bad_outright = bool(upper >= ABSOLUTE_FAILURE_CAP)
+    worst = result["worst_donor_deterioration"]
+    donor_regression = bool(worst["exceeds_cap"])
 
     regressions = [name for name, flag in
                    (("fp_p90", worse_fp), ("split_rate", worse_splits),

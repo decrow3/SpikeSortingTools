@@ -123,9 +123,11 @@ sensitivity check. Neither sensitivity is decisive.
 
 ## Decision rules, written before the data
 
-1. A candidate **replaces** production only if its paired sporadic failure-rate
-   difference is negative with a CI excluding zero, **and** it shows no
-   regression under rule 2.
+1. A candidate **replaces** production only if its **paired failure-rate
+   difference over all frozen donors** is negative with a CI excluding zero,
+   **and** it shows no regression under rule 2, 2a or 2b. (rev5: this rule
+   previously said "sporadic failure-rate difference", the name rev3 withdrew
+   when the population stopped being filtered.)
 2. A candidate is **dropped** on a material regression: FP p90, split rate or
    failure rate worse than production with its own paired CI excluding zero, or
    a new systematic donor, or **[rev5]** either of the two guardrails below. **[rev2] A regression disqualifies even when the

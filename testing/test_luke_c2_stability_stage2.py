@@ -310,10 +310,27 @@ def test_mcnemar_is_reported_but_flagged_as_not_decisive():
 # --------------------------------------------------------------------------- #
 # CODEX FIX 5 — decision coherence
 # --------------------------------------------------------------------------- #
-def verdict_from(differences, systematic=None):
+def ok_absolute(point=0.1):
+    return {"point": point, "ci": [point, point], "cap": 0.5}
+
+
+def ok_donor(extra=0):
+    return {"donor": "D01", "extra_failures": extra, "candidate_failures": extra,
+            "baseline_failures": 0, "cap": 4, "exceeds_cap": extra >= 4}
+
+
+def verdict_from(differences, systematic=None, absolute=None, donor=None):
+    """[rev6] Fixtures are contract-complete.
+
+    decide_contrast() used to read the rev5 guardrails with .get(), so fixtures
+    omitting them silently skipped both guards -- the tests institutionalised the
+    fail-open path they were supposed to be checking.
+    """
     result = {"candidate": "th_8_8", "baseline": BASELINE,
               "differences": differences,
-              "systematic_by_config": systematic or {BASELINE: [], "th_8_8": []}}
+              "systematic_by_config": systematic or {BASELINE: [], "th_8_8": []},
+              "absolute_failure_rate": absolute or ok_absolute(),
+              "worst_donor_deterioration": donor or ok_donor()}
     return decide_contrast(result)
 
 
@@ -397,7 +414,9 @@ def contrasts_for(verdicts):
                      "differences": {"failure_rate": diff(rate, rate != 0),
                                      "fp_p90": diff(fp, False),
                                      "split_rate": diff(split, False)},
-                     "systematic_by_config": {BASELINE: [], name: []}}
+                     "systematic_by_config": {BASELINE: [], name: []},
+                     "absolute_failure_rate": ok_absolute(),
+                     "worst_donor_deterioration": ok_donor()}
     return out
 
 
@@ -711,3 +730,176 @@ def test_the_per_donor_failure_distribution_is_reported_in_full():
     assert set(counts["th_8_8"]) == set(DONORS)                 # every donor
     assert counts["th_8_8"]["D09"] == 13 and counts["th_8_8"]["D01"] == 1
     assert counts[BASELINE]["D09"] == 6
+
+
+# --------------------------------------------------------------------------- #
+# [rev6] round-4 blockers
+# --------------------------------------------------------------------------- #
+def undefined_matrix(defined_donors):
+    """Only `defined_donors` have a refractory value; the rest are undefined."""
+    cells = matrix()
+    cells["refractory_violation_median"] = cells.refractory_violation_median.astype(float)
+    cells.loc[~cells.template.isin(defined_donors), "refractory_violation_median"] = np.nan
+    return cells
+
+
+def test_an_all_undefined_resample_does_not_destroy_the_whole_interval():
+    """One undefined draw used to poison np.percentile for every draw.
+
+    With a single defined donor, most resamples contain no defined cell at all,
+    so that endpoint's statistic is NaN for those draws. Ordinary np.percentile
+    propagates one NaN to both bounds, collapsing the CI to [nan, nan] for an
+    endpoint the prespec promises an interval for.
+    """
+    from testing.luke_c2_stability_stage2_analysis import paired_donor_bootstrap
+
+    tagged = classify(undefined_matrix(["D01"]))
+    out = paired_donor_bootstrap(tagged, BASELINE, "th_9_9",
+                                 STATISTICS["refractory_violation_median"],
+                                 DONORS, n=200)
+    assert out["n_usable_draws"] < out["n_draws"]        # draws really are lost
+    if out["undefined_interval"]:
+        # too few survived to quote an interval -- then it must say so, not
+        # report a silent [nan, nan] as though it were a computed CI
+        assert np.isnan(out["ci"]).all()
+    else:
+        assert np.isfinite(out["ci"]).all()
+
+
+def test_a_partly_undefined_endpoint_still_yields_a_real_interval():
+    """The realistic case: some donors undefined, most not."""
+    from testing.luke_c2_stability_stage2_analysis import paired_donor_bootstrap
+
+    tagged = classify(undefined_matrix(DONORS[:11]))
+    out = paired_donor_bootstrap(tagged, BASELINE, "th_9_9",
+                                 STATISTICS["refractory_violation_median"],
+                                 DONORS, n=200)
+    assert out["undefined_interval"] is False
+    assert np.isfinite(out["ci"]).all() and out["n_usable_draws"] == out["n_draws"]
+
+
+def test_an_entirely_undefined_endpoint_is_declared_not_faked():
+    from testing.luke_c2_stability_stage2_analysis import (
+        _nanmedian, paired_donor_bootstrap,
+    )
+
+    tagged = classify(undefined_matrix([]))
+    out = paired_donor_bootstrap(tagged, BASELINE, "th_9_9",
+                                 STATISTICS["refractory_violation_median"],
+                                 DONORS, n=200)
+    assert out["undefined_interval"] is True and out["n_usable_draws"] == 0
+    assert np.isnan(out["ci"]).all() and out["excludes_zero"] is False
+    assert np.isnan(_nanmedian([np.nan, np.nan]))
+    # and the decision endpoints are untouched by it
+    result = contrast(tagged, BASELINE, "th_9_9", n_bootstrap=100)
+    assert np.isfinite(result["differences"]["failure_rate"]["ci"]).all()
+
+
+def test_undefined_means_null_not_merely_unparseable():
+    """inf and text are corruption wearing missingness as a disguise."""
+    base = matrix()
+    base["refractory_violation_median"] = base.refractory_violation_median.astype(float)
+
+    ok = base.copy()
+    ok.loc[0, "refractory_violation_median"] = np.nan
+    assert validate_cells(ok)["undefined_refractory_violation_median"] == 1
+
+    for bad in (np.inf, -np.inf):
+        cells = base.copy()
+        cells.loc[0, "refractory_violation_median"] = bad
+        with pytest.raises(ValueError, match="infinite refractory"):
+            validate_cells(cells)
+
+    text = base.copy()
+    text["refractory_violation_median"] = text.refractory_violation_median.astype(object)
+    text.loc[0, "refractory_violation_median"] = "not-a-number"
+    with pytest.raises(ValueError, match="non-numeric refractory"):
+        validate_cells(text)
+
+
+def test_a_verdict_is_refused_when_the_guardrail_evidence_is_absent():
+    """[rev6] .get() made the public decision function fail *open*."""
+    differences = {"failure_rate": diff(-0.05, True), "fp_p90": diff(0.0, False),
+                   "split_rate": diff(0.0, False)}
+    assert verdict_from(differences)["verdict"] == "qualifies"      # complete input
+
+    for missing in ("absolute_failure_rate", "worst_donor_deterioration"):
+        result = {"candidate": "th_8_8", "baseline": BASELINE,
+                  "differences": differences,
+                  "systematic_by_config": {BASELINE: [], "th_8_8": []},
+                  "absolute_failure_rate": ok_absolute(),
+                  "worst_donor_deterioration": ok_donor()}
+        del result[missing]
+        with pytest.raises(ValueError, match=f"missing {missing}"):
+            decide_contrast(result)
+
+    # an undefined absolute CI cannot establish acceptability either
+    with pytest.raises(ValueError, match="acceptability cannot be established"):
+        verdict_from(differences,
+                     absolute={"point": 0.1, "ci": [float("nan")] * 2, "cap": 0.5})
+
+
+def test_each_new_guardrail_toggles_the_verdict_on_identical_differences():
+    """[rev6] The previous version compared two different candidates.
+
+    Its 'good' case had inactive guards and its 'bad' case was dropped by the old
+    failure-rate rule, so neither new guard was ever the deciding factor.
+    """
+    differences = {"failure_rate": diff(-0.05, True), "fp_p90": diff(0.0, False),
+                   "split_rate": diff(0.0, False)}
+    assert verdict_from(differences)["verdict"] == "qualifies"
+
+    # only the absolute cap changes, on identical differences
+    v = verdict_from(differences, absolute=ok_absolute(0.62))
+    assert v["verdict"] == "dropped" and v["absolute_failure_rate_acceptable"] is False
+
+    # only the donor cap changes, on identical differences
+    v = verdict_from(differences, donor=ok_donor(4))
+    assert v["verdict"] == "dropped" and "cap 4" in v["reason"]
+
+    # and neither can promote: a regressing candidate stays dropped when both pass
+    worse = {"failure_rate": diff(0.05, True), "fp_p90": diff(0.0, False),
+             "split_rate": diff(0.0, False)}
+    assert verdict_from(worse)["verdict"] == "dropped"
+    assert verdict_from(worse, absolute=ok_absolute(0.01),
+                        donor=ok_donor(0))["verdict"] == "dropped"
+
+
+def test_the_decision_protocol_is_frozen_with_the_data(tmp_path):
+    """[rev6] The caps were 'frozen judgement calls' recorded nowhere.
+
+    They lived only in the analysis module, so either could be changed after
+    collection and freeze_manifest() would still accept the stored prespec.
+    """
+    from testing.luke_c2_stability_stage2 import (
+        DECISION_PROTOCOL, STAGE2, freeze_manifest,
+    )
+
+    for key in ("absolute_failure_cap", "donor_deterioration_cap",
+                "failure_threshold", "systematic_min_failures", "bootstrap_seed",
+                "n_bootstrap", "analysis_schema", "per_comparison_alpha"):
+        assert key in DECISION_PROTOCOL, key
+
+    path = tmp_path / "prespec.json"
+    manifest = {**STAGE2, "plan": {}, "decision_protocol": DECISION_PROTOCOL}
+    freeze_manifest(path, manifest)
+    freeze_manifest(path, manifest)                       # identical rerun is fine
+
+    # changing any decision-critical constant must stop the run
+    for key in ("absolute_failure_cap", "donor_deterioration_cap",
+                "failure_threshold", "bootstrap_seed", "analysis_schema"):
+        altered = {**manifest, "decision_protocol":
+                   {**DECISION_PROTOCOL, key: "CHANGED"}}
+        with pytest.raises(SystemExit, match="differs from the frozen"):
+            freeze_manifest(path, altered)
+
+
+def test_the_per_donor_distribution_is_complete_for_both_arms():
+    result = contrast(graded(6, 1, {"D09": 13}), BASELINE, "th_8_8",
+                      n_bootstrap=200)
+    counts = result["donor_failure_counts"]
+    for config, expected in ((BASELINE, 6), ("th_8_8", 1)):
+        assert set(counts[config]) == set(DONORS), config
+        assert all(isinstance(v, int) for v in counts[config].values())
+        assert all(counts[config][d] == expected for d in DONORS if d != "D09")
+    assert counts["th_8_8"]["D09"] == 13 and counts[BASELINE]["D09"] == 6
