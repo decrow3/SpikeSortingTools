@@ -384,7 +384,27 @@ class AuditConfig:
 
 
 def load_config(path: Path) -> AuditConfig:
-    payload = json.loads(Path(path).read_text())
+    """Parse CONFIG from disk. Prefer :func:`read_config_once` where the file's
+    hash is also recorded, so the bytes hashed are the bytes parsed."""
+    cfg, _ = read_config_once(path)
+    return cfg
+
+
+def read_config_once(path: Path) -> tuple[AuditConfig, str]:
+    """Read CONFIG exactly once, returning the parsed config and its digest.
+
+    Hashing the path in one place and parsing it in another is two reads of a
+    file that can change in between, so the recorded ``config_sha256`` could
+    attest bytes no stage ever parsed. Same rule as
+    :func:`read_attested_windows` and :func:`read_curated_arrays`.
+    """
+    data = Path(path).read_bytes()
+    return load_config_from_bytes(data, path), hashlib.sha256(data).hexdigest()
+
+
+def load_config_from_bytes(data: bytes, path: Path | str) -> AuditConfig:
+    """Parse CONFIG from bytes already in hand; ``path`` is used only in messages."""
+    payload = json.loads(data)
     sorts = []
     for entry in payload.get("sorts", []):
         sort_id = entry["sort_id"]
@@ -541,18 +561,41 @@ def _validate_kept_spikes(kept: np.ndarray, n_full: int) -> np.ndarray:
     return kept
 
 
-def load_curated_arrays(sort_id: str, curated: Path) -> CuratedArrays:
-    """Load and validate the exact array triplet ``pipeline.qc.run_qc`` consumes.
+def read_curated_arrays(curated: Path) -> tuple[dict[str, np.ndarray], dict[str, str]]:
+    """Read each curated array ONCE, hashing and parsing the very same bytes.
 
-    Reproduces ``KilosortResults.st`` (``full_st[kept_spikes]``) directly from
-    disk rather than importing the class, so this loader can validate
-    ``kept_spikes`` semantics explicitly instead of trusting them silently.
+    Hashing a path in one place and ``np.load``-ing that path in another is
+    two reads of a file that can change in between: the digest would attest
+    bytes the replay never consumed. The sharpest form costs nothing to hide
+    -- swapping only the amplitude at a window's inclusive endpoint leaves
+    every historical fit reproducing its cache while moving the exact-1,000
+    fit -- so the two must not be separable. This is the same rule
+    :func:`read_attested_windows` enforces for ``windows.csv``.
+
+    Each file's bytes are released as soon as that file is parsed, so peak
+    memory stays at one array plus one buffer rather than the whole set.
     """
     curated = Path(curated)
-    times = np.asarray(np.load(curated / "spike_times.npy")).reshape(-1)
-    clusters = np.asarray(np.load(curated / "spike_clusters.npy")).reshape(-1)
-    full_st = np.load(curated / "full_st.npy")
-    kept = np.load(curated / "kept_spikes.npy")
+    arrays: dict[str, np.ndarray] = {}
+    digests: dict[str, str] = {}
+    for name in _CURATED_HASHED_FILES:
+        data = (curated / name).read_bytes()
+        digests[name] = hashlib.sha256(data).hexdigest()
+        arrays[name] = np.load(io.BytesIO(data), allow_pickle=False)
+        del data
+    return arrays, digests
+
+
+def curated_arrays_from_raw(sort_id: str, raw: dict[str, np.ndarray]) -> CuratedArrays:
+    """Validate and normalize already-read curated arrays.
+
+    Split out of :func:`load_curated_arrays` so the attested path can parse
+    the bytes it hashed instead of re-reading the files.
+    """
+    times = np.asarray(raw["spike_times.npy"]).reshape(-1)
+    clusters = np.asarray(raw["spike_clusters.npy"]).reshape(-1)
+    full_st = raw["full_st.npy"]
+    kept = raw["kept_spikes.npy"]
 
     times = _exact_int_array(times, f"{sort_id}: spike_times.npy")
     if times.size and times.min() < 0:
@@ -587,6 +630,41 @@ def load_curated_arrays(sort_id: str, curated: Path) -> CuratedArrays:
     )
 
 
+def load_curated_arrays(sort_id: str, curated: Path) -> CuratedArrays:
+    """Load and validate the exact array triplet ``pipeline.qc.run_qc`` consumes.
+
+    Reproduces ``KilosortResults.st`` (``full_st[kept_spikes]``) directly from
+    disk rather than importing the class, so this loader can validate
+    ``kept_spikes`` semantics explicitly instead of trusting them silently.
+    """
+    raw, _ = read_curated_arrays(curated)
+    return curated_arrays_from_raw(sort_id, raw)
+
+
+def read_attested_curated_arrays(
+    sort_id: str, curated: Path, recorded_hashes: dict[str, Any],
+) -> tuple[CuratedArrays, dict[str, str]]:
+    """Load the curated arrays and refuse unless they are the attested bytes.
+
+    One read per file: the digest compared here covers exactly the bytes that
+    become the returned arrays, so nothing can be substituted between the
+    check and the replay.
+    """
+    raw, digests = read_curated_arrays(curated)
+    moved = [
+        f"{sort_id}/{name}: inventory {recorded_hashes.get(name)!r} != current "
+        f"{digests[name]!r}"
+        for name in _CURATED_HASHED_FILES
+        if recorded_hashes.get(name) != digests[name]
+    ]
+    if moved:
+        raise RuntimeError(
+            "refusing to inspect: curated array(s) moved since the inventory hashed them -- "
+            + "; ".join(moved)
+        )
+    return curated_arrays_from_raw(sort_id, raw), digests
+
+
 @dataclass(frozen=True)
 class CachedTruncationQC:
     """Normalized, validated contents of production's ``truncation_qc.npz``."""
@@ -599,10 +677,23 @@ class CachedTruncationQC:
 
 
 def load_cached_truncation_qc(sort_id: str, qc_dir: Path) -> CachedTruncationQC:
+    cached, _ = read_cached_truncation_qc(sort_id, qc_dir)
+    return cached
+
+
+def read_cached_truncation_qc(sort_id: str, qc_dir: Path) -> tuple[CachedTruncationQC, str]:
+    """Read ``truncation_qc.npz`` once, returning its contents and its digest.
+
+    The digest covers the very bytes parsed here, so the provenance the
+    manifest records is the provenance of the rows that reached
+    ``windows.csv`` -- not of a second read of the path.
+    """
     path = Path(qc_dir) / "amp_truncation" / "truncation_qc.npz"
     if not path.exists():
         raise FileNotFoundError(f"{sort_id}: no cached truncation QC at {path}")
-    data = np.load(path)
+    blob = path.read_bytes()
+    digest = hashlib.sha256(blob).hexdigest()
+    data = np.load(io.BytesIO(blob), allow_pickle=False)
     for key in ("cid", "window_blocks", "popts", "mpcts"):
         if key not in data.files:
             raise ValueError(f"{sort_id}: {path} missing array {key!r}")
@@ -630,7 +721,7 @@ def load_cached_truncation_qc(sort_id: str, qc_dir: Path) -> CachedTruncationQC:
 
     return CachedTruncationQC(
         sort_id=sort_id, cid=cid, window_blocks=window_blocks, popts=popts, mpcts=mpcts,
-    )
+    ), digest
 
 
 def _classify_status(popt: np.ndarray, mpct: float) -> str:
@@ -1261,6 +1352,7 @@ def _config_input_paths(cfg: AuditConfig) -> list[Path]:
 
 def _require_stage_manifest(
     manifest_path: Path, config_path: Path, *, expected_stage: str, requester: str,
+    config_sha256: str,
 ) -> dict[str, Any]:
     """Refuse anything but a *completed* ``expected_stage`` manifest of this config.
 
@@ -1296,7 +1388,11 @@ def _require_stage_manifest(
             f"expected 'complete'; refusing to run {requester} from an incomplete "
             f"{expected_stage}"
         )
-    expected = sha256_file(config_path)
+    # Required, not re-derived: the digest compared here must cover the very
+    # bytes the caller parsed into its AuditConfig. Re-hashing config_path
+    # would be a second read of a file that can change in between, which is
+    # exactly the hole `read_config_once` exists to close.
+    expected = config_sha256
     if manifest.get("config_sha256") != expected:
         raise RuntimeError(
             f"config_sha256 mismatch: {manifest_path} recorded "
@@ -1309,7 +1405,7 @@ def _require_stage_manifest(
 
 def _prepare_out_root(
     stage: str, out_root: Path, config_path: Path, input_paths: list[Path], *,
-    selection_path: Path | None = None,
+    config_sha256: str, selection_path: Path | None = None,
 ) -> tuple[Path, dict[str, Any] | None]:
     """Resolve and gate the single local output root, per stage.
 
@@ -1342,7 +1438,7 @@ def _prepare_out_root(
             )
         manifest = _require_stage_manifest(
             resolved / "manifest.json", config_path,
-            expected_stage="inventory", requester="select",
+            expected_stage="inventory", requester="select", config_sha256=config_sha256,
         )
         _require_attested_windows_csv(resolved, manifest, requester="select")
         # The attested hash is deliberately NOT compared here. Hashing the path
@@ -1371,7 +1467,7 @@ def _prepare_out_root(
             )
         manifest = _require_stage_manifest(
             resolved / "manifest.json", config_path,
-            expected_stage="select", requester="inspect",
+            expected_stage="select", requester="inspect", config_sha256=config_sha256,
         )
         _require_attested_windows_csv(resolved, manifest, requester="inspect")
         select_block = manifest.get("select")
@@ -1410,9 +1506,10 @@ def _require_attested_windows_csv(
 
 
 def run_inventory(config_path: Path, out_root: Path) -> dict[str, Any]:
-    cfg = load_config(config_path)
+    cfg, config_sha256 = read_config_once(config_path)
     out_root, _ = _prepare_out_root(
-        "inventory", Path(out_root), Path(config_path), _config_input_paths(cfg)
+        "inventory", Path(out_root), Path(config_path), _config_input_paths(cfg),
+        config_sha256=config_sha256,
     )
     manifest_path = out_root / "manifest.json"
 
@@ -1424,7 +1521,7 @@ def run_inventory(config_path: Path, out_root: Path) -> dict[str, Any]:
         "git_commit": git_commit(),
         "source_sha256": {name: sha256_file(p) for name, p in source_files.items()},
         "config_path": str(Path(config_path).resolve()),
-        "config_sha256": sha256_file(config_path),
+        "config_sha256": config_sha256,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "sorts": {},
     }
@@ -1434,8 +1531,12 @@ def run_inventory(config_path: Path, out_root: Path) -> dict[str, Any]:
         tables = []
         for s in cfg.sorts:
             recording_check = validate_recording_metadata(s)
-            curated = load_curated_arrays(s.sort_id, s.curated)
-            cached = load_cached_truncation_qc(s.sort_id, s.qc_dir)
+            # Each input is hashed from the very bytes that are parsed, so the
+            # digests recorded below attest the arrays this table was built
+            # from -- which is what `inspect` later checks the replay against.
+            raw_curated, curated_hashes = read_curated_arrays(s.curated)
+            curated = curated_arrays_from_raw(s.sort_id, raw_curated)
+            cached, cached_qc_sha256 = read_cached_truncation_qc(s.sort_id, s.qc_dir)
             table = build_windows_table(curated, cached, fs=s.sampling_frequency_hz)
             tables.append(table)
             manifest["sorts"][s.sort_id] = {
@@ -1447,10 +1548,8 @@ def run_inventory(config_path: Path, out_root: Path) -> dict[str, Any]:
                 "n_cached_windows": int(cached.cid.size),
                 "was_time_ordered": curated.was_time_ordered,
                 "recording_metadata_check": recording_check,
-                "curated_file_hashes": {
-                    name: sha256_file(Path(s.curated) / name) for name in _CURATED_HASHED_FILES
-                },
-                "cached_qc_sha256": sha256_file(Path(s.qc_dir) / "amp_truncation" / "truncation_qc.npz"),
+                "curated_file_hashes": curated_hashes,
+                "cached_qc_sha256": cached_qc_sha256,
             }
 
         windows = (
@@ -1563,9 +1662,10 @@ def run_select(config_path: Path, out_root: Path) -> dict[str, Any]:
     recorded verbatim in ``selection.json`` alongside the hashes of every input
     that could change the answer, so the freeze is auditable after the fact.
     """
-    cfg = load_config(config_path)
+    cfg, config_sha256 = read_config_once(config_path)
     out_root, manifest = _prepare_out_root(
-        "select", Path(out_root), Path(config_path), _config_input_paths(cfg)
+        "select", Path(out_root), Path(config_path), _config_input_paths(cfg),
+        config_sha256=config_sha256,
     )
     manifest_path = out_root / "manifest.json"
     windows_path = out_root / "windows.csv"
@@ -1598,7 +1698,7 @@ def run_select(config_path: Path, out_root: Path) -> dict[str, Any]:
                 name: sha256_file(path) for name, path in audit_source_files().items()
             },
             "config_path": str(Path(config_path).resolve()),
-            "config_sha256": sha256_file(config_path),
+            "config_sha256": config_sha256,
             "windows_csv_path": str(windows_path),
             # the hash of the bytes actually parsed, already proven equal to
             # the hash the inventory attested
@@ -1663,9 +1763,17 @@ REPRODUCTION_ATOL_PP = 1e-6
 CASE_WINDOW_REPRODUCED = "reproduced"
 CASE_WINDOW_REPRODUCTION_MISMATCH = "reproduction_mismatch"
 
+#: Withheld eligibility verdict. A case whose historical replay did not
+#: reproduce its cached value gets this instead of an exact-indexing verdict:
+#: the prescription's "record an input/runtime mismatch and stop
+#: interpretation" makes the verdict itself interpretation, and it could not be
+#: told apart from the mismatch that was just detected.
+EXACT_ELIGIBILITY_NOT_INTERPRETED = "not_interpreted_reproduction_mismatch"
+
 #: Per-case outcome. ``unstable`` is set by a reproduction mismatch, by the
-#: exact-1,000 eligibility sensitivity, or by both; the two boolean columns say
-#: which. It never removes, replaces or re-ranks the case.
+#: exact-1,000 eligibility sensitivity, or by both; the two flag columns say
+#: which -- ``unstable_under_exact_indexing`` is blank when the verdict was
+#: withheld. It never removes, replaces or re-ranks the case.
 CASE_STATUS_STABLE = "stable"
 CASE_STATUS_UNSTABLE = "unstable"
 
@@ -1722,21 +1830,30 @@ def load_attested_selection(selection_path: Path) -> dict[str, Any]:
     return payload
 
 
-def verify_recorded_inputs(payload: dict[str, Any], config_path: Path) -> dict[str, Any]:
+def verify_recorded_inputs(
+    payload: dict[str, Any], config_path: Path,
+) -> tuple[AuditConfig, dict[str, Any]]:
     """Refuse if any input the freeze recorded has moved, naming WHICH one.
 
     Working-tree source hashes are compared, not the Git commit: the
     prescription expects a dirty workspace, so an unchanged commit is no
     evidence that the fitter or this module is the one that produced the
     frozen numbers.
+
+    CONFIG is read exactly once here and parsed from those same bytes, so the
+    returned :class:`AuditConfig` is provably the attested one.
     """
     config_path = Path(config_path)
-    if not config_path.exists():
+    try:
+        # ONE read: the bytes hashed here are the bytes parsed below, so a
+        # config swapped after the check can never reach the replay.
+        config_bytes = config_path.read_bytes()
+    except OSError as exc:
         raise RuntimeError(
-            f"the config the selection was frozen against is gone: {config_path}"
-        )
+            f"the config the selection was frozen against is unreadable: {config_path} ({exc})"
+        ) from exc
     moved: list[str] = []
-    config_sha256 = sha256_file(config_path)
+    config_sha256 = hashlib.sha256(config_bytes).hexdigest()
     if payload.get("config_sha256") != config_sha256:
         moved.append(
             f"config ({config_path}): frozen {payload.get('config_sha256')!r} != current "
@@ -1757,7 +1874,9 @@ def verify_recorded_inputs(payload: dict[str, Any], config_path: Path) -> dict[s
             "frozen -- " + "; ".join(moved) + ". Re-run `inventory` and `select` into a fresh "
             "out-root; nothing here is repaired in place."
         )
-    return {"config": config_sha256, "sources": sources}
+    return load_config_from_bytes(config_bytes, config_path), {
+        "config": config_sha256, "sources": sources,
+    }
 
 
 def _same_frozen_value(frozen: Any, attested: Any) -> bool:
@@ -1806,19 +1925,21 @@ def verify_frozen_windows_against_inventory(
                     )
 
 
-def verify_curated_inputs(
+def read_attested_curated_inputs(
     payload: dict[str, Any], cfg: AuditConfig, manifest: dict[str, Any],
-) -> dict[str, dict[str, str]]:
-    """Refuse if a curated array consumed by the replay moved since the inventory.
+) -> tuple[dict[str, CuratedArrays], dict[str, dict[str, str]]]:
+    """Load every curated array the replay will consume, attested as it is read.
 
     The replay refits from ``spike_times``/``spike_clusters``/``full_st``/
-    ``kept_spikes``; the inventory hashed exactly those files. Comparing them
-    means a reproduction mismatch reported below is a mismatch of *runtime*,
-    not of silently substituted input.
+    ``kept_spikes``; the inventory hashed exactly those files. The check and
+    the load are one operation (:func:`read_attested_curated_arrays`), so the
+    arrays handed to the replay are provably the attested bytes -- which is
+    what makes a reproduction mismatch reported below a mismatch of *runtime*
+    rather than of silently substituted input.
     """
     sort_ids = sorted({str(case["sort_id"]) for case in payload.get("cases", [])})
+    curated_by_sort: dict[str, CuratedArrays] = {}
     hashes: dict[str, dict[str, str]] = {}
-    moved: list[str] = []
     for sort_id in sort_ids:
         recorded = (manifest.get("sorts") or {}).get(sort_id)
         if not isinstance(recorded, dict) or not recorded.get("curated_file_hashes"):
@@ -1826,21 +1947,10 @@ def verify_curated_inputs(
                 f"the inventory manifest records no curated_file_hashes for sort {sort_id!r}; "
                 "refusing to replay arrays whose provenance it never attested"
             )
-        curated_dir = Path(cfg.by_id(sort_id).curated)
-        current = {name: sha256_file(curated_dir / name) for name in _CURATED_HASHED_FILES}
-        hashes[sort_id] = current
-        for name, digest in current.items():
-            frozen = recorded["curated_file_hashes"].get(name)
-            if frozen != digest:
-                moved.append(
-                    f"{sort_id}/{name}: inventory {frozen!r} != current {digest!r}"
-                )
-    if moved:
-        raise RuntimeError(
-            "refusing to inspect: curated array(s) moved since the inventory hashed them -- "
-            + "; ".join(moved)
+        curated_by_sort[sort_id], hashes[sort_id] = read_attested_curated_arrays(
+            sort_id, Path(cfg.by_id(sort_id).curated), recorded["curated_file_hashes"],
         )
-    return hashes
+    return curated_by_sort, hashes
 
 
 def cluster_amplitude_sequence(
@@ -1899,22 +2009,20 @@ def exact_indexing_eligibility(
 
 def replay_case_windows(
     payload: dict[str, Any], cfg: AuditConfig,
+    curated_by_sort: dict[str, CuratedArrays],
 ) -> tuple[pd.DataFrame, list[dict[str, Any]]]:
     """Historical and exact replay of every frozen case window, in frozen order.
 
+    ``curated_by_sort`` carries the arrays already attested by
+    :func:`read_attested_curated_inputs`; nothing is re-read from disk here.
     Cases are emitted in ``selection.json``'s own order and none is dropped,
     added or re-ranked, whatever the replay finds.
     """
-    curated_by_sort: dict[str, CuratedArrays] = {}
     rows: list[dict[str, Any]] = []
     summaries: list[dict[str, Any]] = []
 
     for case in payload.get("cases", []):
         sort_id = str(case["sort_id"])
-        if sort_id not in curated_by_sort:
-            curated_by_sort[sort_id] = load_curated_arrays(
-                sort_id, Path(cfg.by_id(sort_id).curated)
-            )
         curated = curated_by_sort[sort_id]
         times, amplitudes = cluster_amplitude_sequence(curated, int(case["cluster_id"]))
 
@@ -1991,11 +2099,22 @@ def replay_case_windows(
                 "status_reason": status_reason,
             })
 
-        exact_reason = exact_indexing_eligibility(case, replays, cfg.selection)
-        unstable_exact = exact_reason != "qualified"
         unstable_repro = any(not r["reproduces"] for r in replays)
+        if unstable_repro:
+            # A detected input/runtime mismatch stops interpretation of this
+            # case. The exact-1,000 fits come from the same arrays whose
+            # historical fit just failed to reproduce its cache, so a verdict
+            # drawn from them could not be told apart from the mismatch itself
+            # -- and reporting one would read as an indexing finding. The
+            # exact numbers are still emitted as data; only the verdict is
+            # withheld, and the reason column says why.
+            exact_reason = EXACT_ELIGIBILITY_NOT_INTERPRETED
+            unstable_exact = None
+        else:
+            exact_reason = exact_indexing_eligibility(case, replays, cfg.selection)
+            unstable_exact = exact_reason != "qualified"
         case_status = (
-            CASE_STATUS_UNSTABLE if (unstable_exact or unstable_repro) else CASE_STATUS_STABLE
+            CASE_STATUS_UNSTABLE if (unstable_repro or unstable_exact) else CASE_STATUS_STABLE
         )
         for row in case_rows:
             row["case_status"] = case_status
@@ -2035,12 +2154,11 @@ def run_inspect(selection_path: Path, out_root: Path) -> dict[str, Any]:
     selection_path = Path(selection_path)
     payload = load_attested_selection(selection_path)
     config_path = Path(payload["config_path"])
-    source_hashes = verify_recorded_inputs(payload, config_path)
-    cfg = load_config(config_path)
+    cfg, source_hashes = verify_recorded_inputs(payload, config_path)
 
     out_root, manifest = _prepare_out_root(
         "inspect", Path(out_root), config_path, _config_input_paths(cfg),
-        selection_path=selection_path,
+        selection_path=selection_path, config_sha256=source_hashes["config"],
     )
     manifest_path = out_root / "manifest.json"
     case_windows_path = out_root / "case_windows.csv"
@@ -2063,7 +2181,7 @@ def run_inspect(selection_path: Path, out_root: Path) -> dict[str, Any]:
         out_root / "windows.csv", payload["windows_csv_sha256"]
     )
     verify_frozen_windows_against_inventory(payload, windows)
-    curated_hashes = verify_curated_inputs(payload, cfg, manifest)
+    curated_by_sort, curated_hashes = read_attested_curated_inputs(payload, cfg, manifest)
 
     manifest["stage"] = "inspect"
     manifest["status"] = "running"
@@ -2072,7 +2190,7 @@ def run_inspect(selection_path: Path, out_root: Path) -> dict[str, Any]:
     _atomic_write_json(manifest_path, manifest)
 
     try:
-        case_windows, summaries = replay_case_windows(payload, cfg)
+        case_windows, summaries = replay_case_windows(payload, cfg, curated_by_sort)
         _atomic_write_csv(case_windows_path, case_windows)
 
         manifest["status"] = "complete"
@@ -2096,6 +2214,10 @@ def run_inspect(selection_path: Path, out_root: Path) -> dict[str, Any]:
             "unstable_under_exact_indexing": [
                 s["case_id"] for s in summaries if s["unstable_under_exact_indexing"]
             ],
+            "exact_sensitivity_not_interpreted": [
+                s["case_id"] for s in summaries
+                if s["exact_eligibility_reason"] == EXACT_ELIGIBILITY_NOT_INTERPRETED
+            ],
             "reproduction_mismatch_cases": [
                 s["case_id"] for s in summaries if s["unstable_reproduction_mismatch"]
             ],
@@ -2105,7 +2227,10 @@ def run_inspect(selection_path: Path, out_root: Path) -> dict[str, Any]:
                 "A case flagged unstable_under_exact_indexing is reported, never re-selected, "
                 "dropped or re-ranked; selection stays frozen.",
                 "A reproduction mismatch is an input/runtime mismatch: it is recorded and "
-                "interpretation of that case stops, and the tolerance is never widened.",
+                "interpretation of that case stops, and the tolerance is never widened. No "
+                "exact-indexing eligibility verdict is produced for such a case: its "
+                f"exact_eligibility_reason is {EXACT_ELIGIBILITY_NOT_INTERPRETED!r} and its "
+                "unstable_under_exact_indexing is left undetermined.",
                 "Figures, voltage review, evidence classification and decision.md are later "
                 "layers and are not produced by this stage.",
             ],

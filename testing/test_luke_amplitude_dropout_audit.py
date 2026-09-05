@@ -14,6 +14,7 @@ from testing.luke_amplitude_dropout_audit import (
     CASE_WINDOWS_COLUMNS,
     CASE_WINDOW_REPRODUCED,
     CASE_WINDOW_REPRODUCTION_MISMATCH,
+    EXACT_ELIGIBILITY_NOT_INTERPRETED,
     PRODUCTION_MAX_ISI_S,
     REPRODUCTION_ATOL_PP,
     SCHEMA,
@@ -2045,6 +2046,200 @@ def test_inspect_cli_replays_and_reports(tmp_path, capsys):
         c["case_id"] for c in selection["cases"]
     ]
     assert (out_root / "case_windows.csv").exists()
+
+
+def test_a_reproduction_mismatch_withholds_the_exact_indexing_verdict(tmp_path):
+    """A detected input/runtime mismatch stops interpretation of that case.
+
+    This fixture rigs BOTH conditions at once: window 1's cached value no
+    longer matches its own inputs, and window 3's endpoint amplitude would
+    drop the exact-1,000 estimate under the failing gate. Emitting the
+    indexing verdict anyway would report an apparent indexing finding whose
+    real cause may be the mismatch -- so no verdict is produced for this case,
+    and the reason says why.
+    """
+    _, out_root, selection = _inspect_ready_root(
+        tmp_path,
+        mpct_perturbation={(1, 1): 1e-3},
+        final_amp_overrides={(1, 3): 5.0},
+    )
+    manifest = run_inspect(out_root / "selection.json", out_root)
+    table = _case_windows_table(out_root)
+
+    failure = table[table["case_id"] == "synthetic__c1__failure1"]
+    assert failure["unstable_reproduction_mismatch"].all()
+    assert (failure["case_status"] == CASE_STATUS_UNSTABLE).all()
+    # no eligibility verdict at all -- not "qualified", not the flag
+    assert (failure["exact_eligibility_reason"] == EXACT_ELIGIBILITY_NOT_INTERPRETED).all()
+    assert failure["unstable_under_exact_indexing"].isna().all()
+    assert "synthetic__c1__failure1" not in manifest["inspect"]["unstable_under_exact_indexing"]
+    assert manifest["inspect"]["exact_sensitivity_not_interpreted"] == [
+        "synthetic__c1__failure1"
+    ]
+    summary = manifest["inspect"]["cases"][0]
+    assert summary["unstable_under_exact_indexing"] is None
+    assert summary["exact_eligibility_reason"] == EXACT_ELIGIBILITY_NOT_INTERPRETED
+
+    # the exact NUMBERS are still reported -- only the verdict is withheld
+    window3 = failure[failure["window_ordinal"] == 3].iloc[0]
+    assert window3["exact_missing_pct"] < 0.01
+
+    # the clean control case is unaffected and still gets its verdict
+    control = table[table["case_id"] == "synthetic__c2__control1"]
+    assert (control["exact_eligibility_reason"] == "qualified").all()
+    assert control["unstable_under_exact_indexing"].notna().all()
+    assert not control["unstable_under_exact_indexing"].any()
+
+    # nothing dropped or re-ranked
+    assert list(dict.fromkeys(table["case_id"])) == [c["case_id"] for c in selection["cases"]]
+
+
+def test_every_stage_reads_the_config_exactly_once(tmp_path, monkeypatch):
+    """Hashing CONFIG in one place and parsing it in another is two reads.
+
+    A config swapped in between would let unattested selection constants and
+    sort paths drive a stage while the manifest records the digest of a file
+    that never ran -- the same defect class as the windows.csv and curated
+    array races. Each stage must read it once and parse those same bytes.
+    """
+    curated, qc_dir = _write_replay_fixture(tmp_path, FAILURE_AND_CONTROL_SPEC)
+    config_path = _write_config(
+        tmp_path, curated, qc_dir, tmp_path / "recording",
+        sampling_frequency_hz=REPLAY_FS, duration_s=2000.0,
+    )
+    out_root = tmp_path / "out"
+
+    real_open = Path.open
+    opened: list[str] = []
+
+    def counting_open(self, *args, **kwargs):
+        opened.append(self.name)
+        return real_open(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", counting_open)
+
+    opened.clear()
+    run_inventory(config_path, out_root)
+    assert opened.count("config.json") == 1
+
+    opened.clear()
+    run_select(config_path, out_root)
+    assert opened.count("config.json") == 1
+
+    opened.clear()
+    run_inspect(out_root / "selection.json", out_root)
+    assert opened.count("config.json") == 1
+
+    monkeypatch.undo()
+    # and the digest each stage recorded is the one that file actually hashes to
+    expected = sha256_file(config_path)
+    manifest = json.loads((out_root / "manifest.json").read_text())
+    selection = json.loads((out_root / "selection.json").read_text())
+    assert manifest["config_sha256"] == expected
+    assert selection["config_sha256"] == expected
+    assert manifest["inspect"]["config_sha256"] == expected
+
+
+def _swapped_full_st(tmp_path: Path, curated: Path) -> Path:
+    """A full_st.npy differing only in the amplitude at the failure case's
+    window-3 inclusive endpoint -- the one sample no historical slice fits.
+
+    That is the cheapest thing to substitute and the hardest to notice: every
+    historical fit still reproduces its cache, while the exact-1,000 fit moves
+    to ~0%. Replaying it would manufacture an apparently attested indexing
+    sensitivity out of unattested input.
+    """
+    swapped = np.load(curated / "full_st.npy")
+    swapped[4 * REPLAY_SPIKES_PER_WINDOW - 1, 2] = 5.0
+    path = tmp_path / "swapped_full_st.npy"
+    np.save(path, swapped)
+    return path
+
+
+def _racing_np_load(monkeypatch, fire_before_call: int, on_fire):
+    """Monkeypatch np.load to run `on_fire` just before its Nth call.
+
+    Both the old (hash-the-path, then np.load-the-path) and the new
+    (read-bytes, hash-them, parse-them) loaders read the four curated arrays in
+    `_CURATED_HASHED_FILES` order, so the call ordinal names the same file in
+    each: 1 spike_times, 2 spike_clusters, 3 full_st, 4 kept_spikes.
+    """
+    real_load = np.load
+    calls = {"n": 0, "fired": False}
+
+    def racing_load(source, *args, **kwargs):
+        calls["n"] += 1
+        if calls["n"] == fire_before_call and not calls["fired"]:
+            calls["fired"] = True
+            on_fire()
+        return real_load(source, *args, **kwargs)
+
+    monkeypatch.setattr(np, "load", racing_load)
+    return calls
+
+
+def test_inspect_cannot_be_raced_between_hashing_and_loading_a_curated_array(
+    tmp_path, monkeypatch,
+):
+    """Hashing a curated .npy and separately np.load-ing it is two reads.
+
+    This race fires *inside* full_st's own hash-then-parse -- after its bytes
+    have been read, immediately before they are turned into an array. The
+    parse must come from the very bytes that were hashed, so the substitution
+    is invisible and the attested amplitudes are the ones replayed. The old
+    code read the path a second time here and replayed the substitute.
+    """
+    _, out_root, _ = _inspect_ready_root(tmp_path)
+    curated = tmp_path / "curated"
+    attested = json.loads((out_root / "manifest.json").read_text())
+    attested_full_st = attested["sorts"]["synthetic"]["curated_file_hashes"]["full_st.npy"]
+    swapped_path = _swapped_full_st(tmp_path, curated)
+
+    calls = _racing_np_load(
+        monkeypatch, 3,
+        lambda: (curated / "full_st.npy").write_bytes(swapped_path.read_bytes()),
+    )
+    manifest = run_inspect(out_root / "selection.json", out_root)
+    monkeypatch.undo()
+
+    assert calls["fired"]                                             # the race really fired
+    assert sha256_file(curated / "full_st.npy") != attested_full_st   # the file really changed
+
+    table = _case_windows_table(out_root)
+    failure = table[table["case_id"] == "synthetic__c1__failure1"]
+    window3 = failure[failure["window_ordinal"] == 3].iloc[0]
+    # the attested amplitudes were replayed: the substituted endpoint would
+    # have driven this exact fit to ~0%
+    assert window3["exact_missing_pct"] > 15.0
+    assert window3["status"] == CASE_WINDOW_REPRODUCED
+    assert not failure["unstable_under_exact_indexing"].any()
+    # and the manifest attests the digest the replay actually consumed
+    assert manifest["inspect"]["curated_file_hashes"]["synthetic"]["full_st.npy"] \
+        == attested_full_st
+
+
+def test_inspect_refuses_a_curated_array_swapped_while_the_gate_is_still_reading(
+    tmp_path, monkeypatch,
+):
+    """The other half of the same race: the substitution lands before full_st
+    has been read at all. Its bytes then hash differently from the ones the
+    inventory attested, so the run is refused outright -- the swapped array is
+    never replayed and no output is written."""
+    _, out_root, _ = _inspect_ready_root(tmp_path)
+    curated = tmp_path / "curated"
+    swapped_path = _swapped_full_st(tmp_path, curated)
+
+    calls = _racing_np_load(
+        monkeypatch, 1,
+        lambda: (curated / "full_st.npy").write_bytes(swapped_path.read_bytes()),
+    )
+    with pytest.raises(RuntimeError, match="curated array"):
+        run_inspect(out_root / "selection.json", out_root)
+    monkeypatch.undo()
+
+    assert calls["fired"]
+    assert not (out_root / "case_windows.csv").exists()
+    assert json.loads((out_root / "manifest.json").read_text())["stage"] == "select"
 
 
 # --------------------------------------------------------------------------- #
