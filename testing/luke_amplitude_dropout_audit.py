@@ -2,11 +2,13 @@
 
 Prescription: ``docs/amplitude_completeness_next_step_prescription.md``. This
 module implements, in the prescription's own "Implementation order", layer 1
-(loader and window-table normalization), layer 2 (historical/exact replay) and
-layer 3 (deterministic case selection). Evidence/reporting (layer 4), the
-real-case validation run (layer 5) and the one-experiment contract are NOT
-implemented here -- the ``inspect`` CLI subcommand the prescription describes
-does not exist yet. ``inventory`` and ``select`` run.
+(loader and window-table normalization), layer 2 (historical/exact replay),
+layer 3 (deterministic case selection) and the *numeric* half of the
+``inspect`` stage: the provenance gate, ``case_windows.csv``, the cached-value
+reproduction check and the exact-1,000 eligibility sensitivity flag.
+``inventory``, ``select`` and ``inspect`` run. Still NOT implemented: the
+evidence panel figures, voltage review, ``case_evidence.csv``, ``decision.md``
+and the one-experiment contract.
 
 Selection reads only the cached historical QC rows normalized into
 ``windows.csv``. No candidate, waveform, voltage or intervention outcome is an
@@ -753,9 +755,8 @@ def build_windows_table(
 
 
 # --------------------------------------------------------------------------- #
-# layer 2 -- historical / exact replay (not yet wired into a CLI subcommand;
-# will be consumed by the not-yet-implemented `inspect` stage on the frozen
-# case selection)
+# layer 2 -- historical / exact replay (consumed by the `inspect` stage below,
+# on the frozen case selection)
 # --------------------------------------------------------------------------- #
 def historical_exact_counts(i0: int, i1: int) -> tuple[int, int]:
     """Historical (exclusive-stop) vs exact (inclusive-stop) sample counts.
@@ -1235,8 +1236,22 @@ def canonical_selection_digest(payload: dict[str, Any]) -> str:
 
 
 # --------------------------------------------------------------------------- #
-# CLI -- `inventory` and `select`
+# CLI -- `inventory`, `select` and `inspect`
 # --------------------------------------------------------------------------- #
+def audit_source_files() -> dict[str, Path]:
+    """Working-tree source files whose content can change an audit answer.
+
+    The prescription requires the Git commit *and* hashes of the relevant
+    working-tree sources, "since the workspace may be dirty" -- so `inspect`
+    compares these hashes, not the commit, when deciding whether the code that
+    froze a selection is still the code replaying it.
+    """
+    return {
+        "module": Path(__file__),
+        "pipeline.truncation": REPO_ROOT / "pipeline/truncation.py",
+    }
+
+
 def _config_input_paths(cfg: AuditConfig) -> list[Path]:
     paths: list[Path] = []
     for s in cfg.sorts:
@@ -1244,16 +1259,21 @@ def _config_input_paths(cfg: AuditConfig) -> list[Path]:
     return paths
 
 
-def _require_inventory_manifest(manifest_path: Path, config_path: Path) -> dict[str, Any]:
-    """Refuse anything but a completed inventory of *this* config.
+def _require_stage_manifest(
+    manifest_path: Path, config_path: Path, *, expected_stage: str, requester: str,
+) -> dict[str, Any]:
+    """Refuse anything but a *completed* ``expected_stage`` manifest of this config.
 
-    A mismatch is refused with a reason; the inventory is never regenerated,
+    Shared by `select` (which requires a completed ``inventory``) and `inspect`
+    (which requires a completed ``select``). A mismatch is refused with a
+    reason naming what disagreed; the earlier stage is never regenerated,
     repaired or rediscovered from a sibling directory.
     """
     if not manifest_path.exists():
         raise RuntimeError(
-            f"select requires a completed inventory in this out-root; no manifest.json at "
-            f"{manifest_path}. Run `inventory` first; select never generates one."
+            f"{requester} requires a completed {expected_stage} in this out-root; no "
+            f"manifest.json at {manifest_path}. Run `{expected_stage}` first; {requester} "
+            "never generates one."
         )
     try:
         manifest = json.loads(manifest_path.read_text())
@@ -1264,28 +1284,32 @@ def _require_inventory_manifest(manifest_path: Path, config_path: Path) -> dict[
             f"{manifest_path} has schema {manifest.get('schema') if isinstance(manifest, dict) else None!r}"
             f", expected {SCHEMA!r}"
         )
-    if manifest.get("stage") != "inventory":
+    if manifest.get("stage") != expected_stage:
         raise RuntimeError(
-            f"{manifest_path} is at stage {manifest.get('stage')!r}, expected 'inventory'; "
-            "select runs exactly once on a freshly completed inventory"
+            f"{manifest_path} is at stage {manifest.get('stage')!r}, expected "
+            f"{expected_stage!r}; {requester} runs exactly once on a freshly completed "
+            f"{expected_stage}"
         )
     if manifest.get("status") != "complete":
         raise RuntimeError(
-            f"{manifest_path} reports inventory status {manifest.get('status')!r}, expected "
-            "'complete'; refusing to select from an incomplete inventory"
+            f"{manifest_path} reports {expected_stage} status {manifest.get('status')!r}, "
+            f"expected 'complete'; refusing to run {requester} from an incomplete "
+            f"{expected_stage}"
         )
     expected = sha256_file(config_path)
     if manifest.get("config_sha256") != expected:
         raise RuntimeError(
             f"config_sha256 mismatch: {manifest_path} recorded "
             f"{manifest.get('config_sha256')!r} but {Path(config_path)} hashes to {expected!r}; "
-            "refusing to select against a different config than the inventory was built with"
+            f"refusing to run {requester} against a different config than the {expected_stage} "
+            "was built with"
         )
     return manifest
 
 
 def _prepare_out_root(
-    stage: str, out_root: Path, config_path: Path, input_paths: list[Path],
+    stage: str, out_root: Path, config_path: Path, input_paths: list[Path], *,
+    selection_path: Path | None = None,
 ) -> tuple[Path, dict[str, Any] | None]:
     """Resolve and gate the single local output root, per stage.
 
@@ -1293,10 +1317,11 @@ def _prepare_out_root(
     manifest.json: an orphaned windows.csv from a partial/incompatible prior
     run must not be silently overwritten either. ``select`` must instead write
     into the very root ``inventory`` populated, so it requires that completed
-    inventory and refuses an existing selection.json. The ``/mnt``-and-input
-    -directory rejection applies to both (prescription: "Existing incompatible
-    outputs must be refused. Do not implement automatic cache repair or
-    recursive 'latest run' discovery").
+    inventory and refuses an existing selection.json. ``inspect`` in turn
+    requires the completed ``select`` in that same root and refuses an existing
+    case_windows.csv. The ``/mnt``-and-input-directory rejection applies to all
+    three (prescription: "Existing incompatible outputs must be refused. Do not
+    implement automatic cache repair or recursive 'latest run' discovery").
     """
     resolved = _reject_unsafe_out_root(Path(out_root), input_paths)
     if stage == "inventory":
@@ -1315,24 +1340,73 @@ def _prepare_out_root(
                 f"refusing to overwrite an existing frozen selection at "
                 f"{resolved / 'selection.json'}; case IDs are frozen once"
             )
-        manifest = _require_inventory_manifest(resolved / "manifest.json", config_path)
-        windows_path = resolved / "windows.csv"
-        if not windows_path.exists():
-            raise RuntimeError(
-                f"select requires the inventory's windows.csv; none found in {resolved}"
-            )
-        if not manifest.get("windows_csv_sha256"):
-            raise RuntimeError(
-                f"{resolved / 'manifest.json'} records no windows_csv_sha256; refusing to rank "
-                "rows whose provenance the inventory never attested. Re-run `inventory` into a "
-                "fresh out-root."
-            )
+        manifest = _require_stage_manifest(
+            resolved / "manifest.json", config_path,
+            expected_stage="inventory", requester="select",
+        )
+        _require_attested_windows_csv(resolved, manifest, requester="select")
         # The attested hash is deliberately NOT compared here. Hashing the path
         # in one place and parsing the path in another is two reads of a file
         # that can change in between, so the comparison lives in
         # `read_attested_windows`, which hashes and parses the SAME bytes.
         return resolved, manifest
+    if stage == "inspect":
+        if selection_path is None:
+            raise ValueError("inspect requires the frozen selection path")
+        # Checked before the manifest, so a second `inspect` is refused for the
+        # true reason -- this root already carries a replay -- rather than for
+        # the stage marker the first run left behind.
+        if (resolved / "case_windows.csv").exists():
+            raise RuntimeError(
+                f"refusing to overwrite an existing replay at {resolved / 'case_windows.csv'}; "
+                "pick a fresh out-root and re-run `inventory`/`select` there rather than "
+                "repairing this one"
+            )
+        selection_path = Path(selection_path).resolve()
+        if selection_path.parent != resolved:
+            raise RuntimeError(
+                f"--selection {selection_path} does not live in --out-root {resolved}; inspect "
+                "verifies and extends one output root's own manifest, and never discovers a run "
+                "in a sibling directory"
+            )
+        manifest = _require_stage_manifest(
+            resolved / "manifest.json", config_path,
+            expected_stage="select", requester="inspect",
+        )
+        _require_attested_windows_csv(resolved, manifest, requester="inspect")
+        select_block = manifest.get("select")
+        if not isinstance(select_block, dict) or not select_block.get("selection_sha256"):
+            raise RuntimeError(
+                f"{resolved / 'manifest.json'} records no select.selection_sha256; refusing to "
+                "replay cases whose freeze this out-root never attested"
+            )
+        recorded_selection_path = select_block.get("selection_path")
+        if not recorded_selection_path or Path(recorded_selection_path).resolve() != selection_path:
+            raise RuntimeError(
+                f"--selection {selection_path} is not the selection {resolved / 'manifest.json'} "
+                f"attested ({recorded_selection_path!r}); refusing to replay a selection this "
+                "out-root did not freeze"
+            )
+        return resolved, manifest
     raise ValueError(f"unknown stage {stage!r}")
+
+
+def _require_attested_windows_csv(
+    resolved: Path, manifest: dict[str, Any], *, requester: str,
+) -> Path:
+    """The inventory's windows.csv must exist AND have been attested by it."""
+    windows_path = resolved / "windows.csv"
+    if not windows_path.exists():
+        raise RuntimeError(
+            f"{requester} requires the inventory's windows.csv; none found in {resolved}"
+        )
+    if not manifest.get("windows_csv_sha256"):
+        raise RuntimeError(
+            f"{resolved / 'manifest.json'} records no windows_csv_sha256; refusing to use rows "
+            "whose provenance the inventory never attested. Re-run `inventory` into a fresh "
+            "out-root."
+        )
+    return windows_path
 
 
 def run_inventory(config_path: Path, out_root: Path) -> dict[str, Any]:
@@ -1342,10 +1416,7 @@ def run_inventory(config_path: Path, out_root: Path) -> dict[str, Any]:
     )
     manifest_path = out_root / "manifest.json"
 
-    source_files = {
-        "module": Path(__file__),
-        "pipeline.truncation": REPO_ROOT / "pipeline/truncation.py",
-    }
+    source_files = audit_source_files()
     manifest: dict[str, Any] = {
         "schema": SCHEMA,
         "stage": "inventory",
@@ -1524,8 +1595,7 @@ def run_select(config_path: Path, out_root: Path) -> dict[str, Any]:
             "created_at": datetime.now(timezone.utc).isoformat(),
             "git_commit": git_commit(),
             "source_sha256": {
-                "module": sha256_file(Path(__file__)),
-                "pipeline.truncation": sha256_file(REPO_ROOT / "pipeline/truncation.py"),
+                name: sha256_file(path) for name, path in audit_source_files().items()
             },
             "config_path": str(Path(config_path).resolve()),
             "config_sha256": sha256_file(config_path),
@@ -1573,6 +1643,483 @@ def run_select(config_path: Path, out_root: Path) -> dict[str, Any]:
     return payload
 
 
+# --------------------------------------------------------------------------- #
+# layer 4a -- `inspect`: gate, then historical/exact replay on the frozen cases
+#
+# This is the *numeric* half of the prescription's `inspect` stage only:
+# case_windows.csv, its reproduction check and the exact-1,000 sensitivity
+# flag. Figures, voltage review, case_evidence.csv and decision.md belong to
+# later layers and are deliberately absent.
+# --------------------------------------------------------------------------- #
+#: Acceptance-test 5's reproduction tolerance, in percentage points. Frozen as
+#: module constants so no caller can widen them: a replayed historical estimate
+#: outside this band of the cached one is recorded as an input/runtime mismatch
+#: and its case is marked unstable ("record an input/runtime mismatch and stop
+#: interpretation"), never accepted by relaxing the tolerance.
+REPRODUCTION_RTOL = 1e-6
+REPRODUCTION_ATOL_PP = 1e-6
+
+#: Per-window replay outcome.
+CASE_WINDOW_REPRODUCED = "reproduced"
+CASE_WINDOW_REPRODUCTION_MISMATCH = "reproduction_mismatch"
+
+#: Per-case outcome. ``unstable`` is set by a reproduction mismatch, by the
+#: exact-1,000 eligibility sensitivity, or by both; the two boolean columns say
+#: which. It never removes, replaces or re-ranks the case.
+CASE_STATUS_STABLE = "stable"
+CASE_STATUS_UNSTABLE = "unstable"
+
+#: ``case_windows.csv``'s columns, in order. Both sample counts are carried on
+#: every row (``historical_count`` 999 vs ``exact_count`` 1,000 for a nominal
+#: 1,000-spike window), as are both fits' parameters and both saturation flags.
+CASE_WINDOWS_COLUMNS = (
+    "case_id", "sort_id", "cluster_id", "case_role", "window_role", "window_ordinal",
+    "source_row", "i0", "i1", "first_sample", "last_sample", "start_s", "end_s",
+    "historical_count", "exact_count",
+    "cached_missing_pct", "replayed_historical_missing_pct", "exact_missing_pct",
+    "reproduction_abs_diff_pp", "exact_minus_historical_pp",
+    "historical_saturated", "exact_saturated",
+    "historical_fit_x0", "historical_fit_k", "historical_fit_A",
+    "exact_fit_x0", "exact_fit_k", "exact_fit_A",
+    "status", "status_reason",
+    "case_status", "unstable_reproduction_mismatch", "unstable_under_exact_indexing",
+    "exact_eligibility_reason",
+)
+
+
+def load_attested_selection(selection_path: Path) -> dict[str, Any]:
+    """Read ``selection.json`` and refuse it unless its own digest still holds.
+
+    ``canonical_selection_digest`` hashes everything except the recorded digest
+    itself, so an edited case, window, threshold or hash inside the frozen file
+    is caught here before any array is read.
+    """
+    selection_path = Path(selection_path)
+    if not selection_path.exists():
+        raise RuntimeError(f"no frozen selection at {selection_path}")
+    try:
+        payload = json.loads(selection_path.read_text())
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"{selection_path} is not readable JSON: {exc}") from exc
+    if not isinstance(payload, dict) or payload.get("schema") != SCHEMA:
+        raise RuntimeError(
+            f"{selection_path} has schema "
+            f"{payload.get('schema') if isinstance(payload, dict) else None!r}, "
+            f"expected {SCHEMA!r}"
+        )
+    if payload.get("stage") != "select":
+        raise RuntimeError(
+            f"{selection_path} is at stage {payload.get('stage')!r}, expected 'select'"
+        )
+    recorded = payload.get("selection_sha256")
+    actual = canonical_selection_digest(payload)
+    if recorded != actual:
+        raise RuntimeError(
+            f"selection_sha256 mismatch: {selection_path} records {recorded!r} but its frozen "
+            f"content hashes to {actual!r}; it was edited since `select` wrote it. Refusing to "
+            "inspect a selection that is no longer the one that was frozen."
+        )
+    return payload
+
+
+def verify_recorded_inputs(payload: dict[str, Any], config_path: Path) -> dict[str, Any]:
+    """Refuse if any input the freeze recorded has moved, naming WHICH one.
+
+    Working-tree source hashes are compared, not the Git commit: the
+    prescription expects a dirty workspace, so an unchanged commit is no
+    evidence that the fitter or this module is the one that produced the
+    frozen numbers.
+    """
+    config_path = Path(config_path)
+    if not config_path.exists():
+        raise RuntimeError(
+            f"the config the selection was frozen against is gone: {config_path}"
+        )
+    moved: list[str] = []
+    config_sha256 = sha256_file(config_path)
+    if payload.get("config_sha256") != config_sha256:
+        moved.append(
+            f"config ({config_path}): frozen {payload.get('config_sha256')!r} != current "
+            f"{config_sha256!r}"
+        )
+    recorded_sources = payload.get("source_sha256") or {}
+    sources: dict[str, str] = {}
+    for name, path in audit_source_files().items():
+        sources[name] = sha256_file(path)
+        if recorded_sources.get(name) != sources[name]:
+            moved.append(
+                f"{name} ({path}): frozen {recorded_sources.get(name)!r} != current "
+                f"{sources[name]!r}"
+            )
+    if moved:
+        raise RuntimeError(
+            "refusing to inspect: the following recorded input(s) moved since the selection was "
+            "frozen -- " + "; ".join(moved) + ". Re-run `inventory` and `select` into a fresh "
+            "out-root; nothing here is repaired in place."
+        )
+    return {"config": config_sha256, "sources": sources}
+
+
+def _same_frozen_value(frozen: Any, attested: Any) -> bool:
+    if frozen is None or attested is None:
+        return frozen is None and attested is None
+    if isinstance(frozen, float) or isinstance(attested, float):
+        f, a = float(frozen), float(attested)
+        if math.isnan(f) or math.isnan(a):
+            return math.isnan(f) and math.isnan(a)
+        return f == a
+    return frozen == attested
+
+
+def verify_frozen_windows_against_inventory(
+    payload: dict[str, Any], windows: pd.DataFrame,
+) -> None:
+    """Every frozen case window must still be exactly the attested inventory row.
+
+    ``selection.json`` carries its own digest, so a hand-written one can be
+    made self-consistent. The inventory's ``windows.csv`` cannot: the manifest
+    attested its bytes, and ``read_attested_windows`` proved them. So the
+    windows table -- not the selection file -- is the authority for every
+    cached value this stage replays, and a disagreement is refused rather than
+    replayed.
+    """
+    lookup: dict[tuple[str, int, int | None], dict[str, Any]] = {}
+    for (sort_id, cluster_id), rows in window_records(windows).items():
+        for row in rows:
+            lookup[(sort_id, cluster_id, row["source_row"])] = row
+    for case in payload.get("cases", []):
+        for frozen in case["windows"]:
+            key = (str(case["sort_id"]), int(case["cluster_id"]), frozen["source_row"])
+            attested = lookup.get(key)
+            if attested is None:
+                raise RuntimeError(
+                    f"case {case['case_id']} window {frozen['position']} (sort {key[0]}, cluster "
+                    f"{key[1]}, source_row {key[2]}) is not in the attested windows.csv; refusing "
+                    "to replay a case the inventory does not contain"
+                )
+            for field in _WINDOW_FIELDS:
+                if not _same_frozen_value(frozen.get(field), attested.get(field)):
+                    raise RuntimeError(
+                        f"case {case['case_id']} window {frozen['position']} disagrees with the "
+                        f"attested windows.csv on {field!r}: frozen {frozen.get(field)!r} != "
+                        f"inventory {attested.get(field)!r}"
+                    )
+
+
+def verify_curated_inputs(
+    payload: dict[str, Any], cfg: AuditConfig, manifest: dict[str, Any],
+) -> dict[str, dict[str, str]]:
+    """Refuse if a curated array consumed by the replay moved since the inventory.
+
+    The replay refits from ``spike_times``/``spike_clusters``/``full_st``/
+    ``kept_spikes``; the inventory hashed exactly those files. Comparing them
+    means a reproduction mismatch reported below is a mismatch of *runtime*,
+    not of silently substituted input.
+    """
+    sort_ids = sorted({str(case["sort_id"]) for case in payload.get("cases", [])})
+    hashes: dict[str, dict[str, str]] = {}
+    moved: list[str] = []
+    for sort_id in sort_ids:
+        recorded = (manifest.get("sorts") or {}).get(sort_id)
+        if not isinstance(recorded, dict) or not recorded.get("curated_file_hashes"):
+            raise RuntimeError(
+                f"the inventory manifest records no curated_file_hashes for sort {sort_id!r}; "
+                "refusing to replay arrays whose provenance it never attested"
+            )
+        curated_dir = Path(cfg.by_id(sort_id).curated)
+        current = {name: sha256_file(curated_dir / name) for name in _CURATED_HASHED_FILES}
+        hashes[sort_id] = current
+        for name, digest in current.items():
+            frozen = recorded["curated_file_hashes"].get(name)
+            if frozen != digest:
+                moved.append(
+                    f"{sort_id}/{name}: inventory {frozen!r} != current {digest!r}"
+                )
+    if moved:
+        raise RuntimeError(
+            "refusing to inspect: curated array(s) moved since the inventory hashed them -- "
+            + "; ".join(moved)
+        )
+    return hashes
+
+
+def cluster_amplitude_sequence(
+    curated: CuratedArrays, cluster_id: int,
+) -> tuple[np.ndarray, np.ndarray]:
+    """One cluster's time-ordered sample/amplitude sequence, as production QC built it.
+
+    ``pipeline.qc.truncation_qc`` slices ``spike_amplitudes[spike_clusters ==
+    cid]`` out of the already-time-ordered curated table, so cached
+    ``window_blocks`` index into exactly this sequence -- not global rows,
+    samples or seconds. A source that was not already time ordered cannot be
+    replayed at all: re-sorting it would silently reinterpret those indices,
+    so this refuses instead (same rule ``build_windows_table`` enforces).
+    """
+    if not curated.was_time_ordered:
+        raise ValueError(
+            f"{curated.sort_id}: spike_times.npy was not already time-ordered; cached "
+            "window_blocks indices cannot be safely replayed against a re-sorted array"
+        )
+    positions = np.flatnonzero(curated.clusters == int(cluster_id))
+    if positions.size == 0:
+        raise ValueError(
+            f"{curated.sort_id}: cluster {cluster_id} has no spikes in the curated arrays"
+        )
+    return curated.times[positions], curated.amplitudes[positions]
+
+
+def exact_indexing_eligibility(
+    case: dict[str, Any], replays: list[dict[str, Any]], c: SelectionConstants,
+) -> str:
+    """Re-test *this frozen case's own* eligibility with the exact-1,000 estimates.
+
+    This is a sensitivity report, not a re-selection: it re-runs the very same
+    classifier on the very same four windows with only ``missing_pct`` (and the
+    status that follows from the exact fit) replaced. No other run, cluster or
+    case is examined, nothing is re-ranked, and the answer never removes a
+    case -- the prescription forbids replacing a case after results are seen.
+    """
+    run = []
+    for frozen, replay in zip(case["windows"], replays):
+        row = {field: frozen[field] for field in _WINDOW_FIELDS}
+        row["missing_pct"] = replay["exact_missing_pct"]
+        row["status"] = _classify_status(
+            np.asarray(replay["exact_popt"], dtype=float), replay["exact_missing_pct"]
+        )
+        run.append(row)
+    role = case.get("role")
+    if role == "failure":
+        reason, _ = classify_failure_run(run, c)
+    elif role == "control":
+        reason, _ = classify_control_run(run, c)
+    else:
+        raise ValueError(f"{case.get('case_id')!r}: unknown case role {role!r}")
+    return reason
+
+
+def replay_case_windows(
+    payload: dict[str, Any], cfg: AuditConfig,
+) -> tuple[pd.DataFrame, list[dict[str, Any]]]:
+    """Historical and exact replay of every frozen case window, in frozen order.
+
+    Cases are emitted in ``selection.json``'s own order and none is dropped,
+    added or re-ranked, whatever the replay finds.
+    """
+    curated_by_sort: dict[str, CuratedArrays] = {}
+    rows: list[dict[str, Any]] = []
+    summaries: list[dict[str, Any]] = []
+
+    for case in payload.get("cases", []):
+        sort_id = str(case["sort_id"])
+        if sort_id not in curated_by_sort:
+            curated_by_sort[sort_id] = load_curated_arrays(
+                sort_id, Path(cfg.by_id(sort_id).curated)
+            )
+        curated = curated_by_sort[sort_id]
+        times, amplitudes = cluster_amplitude_sequence(curated, int(case["cluster_id"]))
+
+        replays: list[dict[str, Any]] = []
+        case_rows: list[dict[str, Any]] = []
+        for frozen in case["windows"]:
+            i0, i1 = int(frozen["i0"]), int(frozen["i1"])
+            fit = historical_exact_fit(amplitudes, i0, i1)
+
+            # Invariants, not measurements: the window bounds, both counts and
+            # the two endpoint samples are fixed by the attested inventory row,
+            # so a disagreement here means the replay is not looking at the
+            # sequence the inventory described.
+            if (fit["historical_count"] != frozen["historical_count"]
+                    or fit["exact_count"] != frozen["nominal_count"]):
+                raise ValueError(
+                    f"{case['case_id']} window {frozen['position']}: replayed counts "
+                    f"({fit['historical_count']}, {fit['exact_count']}) != frozen "
+                    f"({frozen['historical_count']}, {frozen['nominal_count']})"
+                )
+            if (int(times[i0]) != int(frozen["first_sample"])
+                    or int(times[i1]) != int(frozen["last_sample"])):
+                raise ValueError(
+                    f"{case['case_id']} window {frozen['position']}: replayed endpoint samples "
+                    f"({int(times[i0])}, {int(times[i1])}) != frozen "
+                    f"({frozen['first_sample']}, {frozen['last_sample']})"
+                )
+
+            cached = float(frozen["missing_pct"])
+            replayed = fit["historical_missing_pct"]
+            reproduces = bool(np.isclose(
+                replayed, cached,
+                rtol=REPRODUCTION_RTOL, atol=REPRODUCTION_ATOL_PP, equal_nan=False,
+            ))
+            diff_pp = float(abs(replayed - cached))
+            status_reason = None if reproduces else (
+                f"replayed historical missing_pct {replayed!r} does not reproduce the cached "
+                f"{cached!r} within rtol={REPRODUCTION_RTOL}, atol={REPRODUCTION_ATOL_PP} "
+                f"percentage points (|diff| = {diff_pp!r} pp); input/runtime mismatch, "
+                "interpretation of this case stops here"
+            )
+            replays.append(dict(fit, reproduces=reproduces, diff_pp=diff_pp))
+            case_rows.append({
+                "case_id": case["case_id"],
+                "sort_id": sort_id,
+                "cluster_id": int(case["cluster_id"]),
+                "case_role": case.get("role"),
+                "window_role": frozen.get("window_role"),
+                "window_ordinal": int(frozen["position"]),
+                "source_row": frozen["source_row"],
+                "i0": i0, "i1": i1,
+                "first_sample": frozen["first_sample"],
+                "last_sample": frozen["last_sample"],
+                "start_s": frozen["start_s"], "end_s": frozen["end_s"],
+                "historical_count": fit["historical_count"],
+                "exact_count": fit["exact_count"],
+                "cached_missing_pct": cached,
+                "replayed_historical_missing_pct": replayed,
+                "exact_missing_pct": fit["exact_missing_pct"],
+                "reproduction_abs_diff_pp": diff_pp,
+                "exact_minus_historical_pp": fit["exact_missing_pct"] - replayed,
+                "historical_saturated": fit["historical_saturated"],
+                "exact_saturated": fit["exact_saturated"],
+                "historical_fit_x0": fit["historical_popt"][0],
+                "historical_fit_k": fit["historical_popt"][1],
+                "historical_fit_A": fit["historical_popt"][2],
+                "exact_fit_x0": fit["exact_popt"][0],
+                "exact_fit_k": fit["exact_popt"][1],
+                "exact_fit_A": fit["exact_popt"][2],
+                "status": (
+                    CASE_WINDOW_REPRODUCED if reproduces
+                    else CASE_WINDOW_REPRODUCTION_MISMATCH
+                ),
+                "status_reason": status_reason,
+            })
+
+        exact_reason = exact_indexing_eligibility(case, replays, cfg.selection)
+        unstable_exact = exact_reason != "qualified"
+        unstable_repro = any(not r["reproduces"] for r in replays)
+        case_status = (
+            CASE_STATUS_UNSTABLE if (unstable_exact or unstable_repro) else CASE_STATUS_STABLE
+        )
+        for row in case_rows:
+            row["case_status"] = case_status
+            row["unstable_reproduction_mismatch"] = unstable_repro
+            row["unstable_under_exact_indexing"] = unstable_exact
+            row["exact_eligibility_reason"] = exact_reason
+        rows.extend(case_rows)
+
+        summaries.append({
+            "case_id": case["case_id"],
+            "sort_id": sort_id,
+            "cluster_id": int(case["cluster_id"]),
+            "role": case.get("role"),
+            "n_windows": len(case_rows),
+            "case_status": case_status,
+            "unstable_reproduction_mismatch": unstable_repro,
+            "unstable_under_exact_indexing": unstable_exact,
+            "exact_eligibility_reason": exact_reason,
+            "max_reproduction_abs_diff_pp": (
+                max(r["diff_pp"] for r in replays) if replays else None
+            ),
+            "mismatched_window_ordinals": [
+                row["window_ordinal"] for row in case_rows
+                if row["status"] == CASE_WINDOW_REPRODUCTION_MISMATCH
+            ],
+        })
+
+    return pd.DataFrame(rows, columns=list(CASE_WINDOWS_COLUMNS)), summaries
+
+
+def run_inspect(selection_path: Path, out_root: Path) -> dict[str, Any]:
+    """Verify the frozen selection, then replay only its cases.
+
+    Every gate runs before the manifest is touched, so a refusal leaves the
+    completed `select` stage exactly as it was.
+    """
+    selection_path = Path(selection_path)
+    payload = load_attested_selection(selection_path)
+    config_path = Path(payload["config_path"])
+    source_hashes = verify_recorded_inputs(payload, config_path)
+    cfg = load_config(config_path)
+
+    out_root, manifest = _prepare_out_root(
+        "inspect", Path(out_root), config_path, _config_input_paths(cfg),
+        selection_path=selection_path,
+    )
+    manifest_path = out_root / "manifest.json"
+    case_windows_path = out_root / "case_windows.csv"
+
+    if manifest["select"]["selection_sha256"] != payload["selection_sha256"]:
+        raise RuntimeError(
+            f"selection_sha256 mismatch: {manifest_path} attested "
+            f"{manifest['select']['selection_sha256']!r} but {selection_path} carries "
+            f"{payload['selection_sha256']!r}"
+        )
+    if manifest["windows_csv_sha256"] != payload.get("windows_csv_sha256"):
+        raise RuntimeError(
+            f"windows.csv hash moved between the inventory and the freeze: {manifest_path} "
+            f"attested {manifest['windows_csv_sha256']!r}, {selection_path} recorded "
+            f"{payload.get('windows_csv_sha256')!r}"
+        )
+
+    # One read: the bytes hashed are the bytes parsed (see read_attested_windows).
+    windows, windows_sha256 = read_attested_windows(
+        out_root / "windows.csv", payload["windows_csv_sha256"]
+    )
+    verify_frozen_windows_against_inventory(payload, windows)
+    curated_hashes = verify_curated_inputs(payload, cfg, manifest)
+
+    manifest["stage"] = "inspect"
+    manifest["status"] = "running"
+    manifest["inspect_started_at"] = datetime.now(timezone.utc).isoformat()
+    manifest.pop("failure_reason", None)
+    _atomic_write_json(manifest_path, manifest)
+
+    try:
+        case_windows, summaries = replay_case_windows(payload, cfg)
+        _atomic_write_csv(case_windows_path, case_windows)
+
+        manifest["status"] = "complete"
+        manifest["inspect"] = {
+            "selection_path": str(selection_path),
+            "selection_sha256": payload["selection_sha256"],
+            "windows_csv_sha256": windows_sha256,
+            "config_sha256": source_hashes["config"],
+            "source_sha256": source_hashes["sources"],
+            "git_commit": git_commit(),
+            "curated_file_hashes": curated_hashes,
+            "case_windows_path": str(case_windows_path),
+            "case_windows_sha256": sha256_file(case_windows_path),
+            "n_cases": len(summaries),
+            "n_case_windows": int(len(case_windows)),
+            "reproduction_tolerance": {
+                "rtol": REPRODUCTION_RTOL,
+                "atol_pp": REPRODUCTION_ATOL_PP,
+            },
+            "cases": summaries,
+            "unstable_under_exact_indexing": [
+                s["case_id"] for s in summaries if s["unstable_under_exact_indexing"]
+            ],
+            "reproduction_mismatch_cases": [
+                s["case_id"] for s in summaries if s["unstable_reproduction_mismatch"]
+            ],
+            "notes": [
+                "Historical replay fits amps[i0:i1] (999 values for a nominal 1,000-spike "
+                "window); exact replay fits amps[i0:i1+1] (1,000). Both counts are kept.",
+                "A case flagged unstable_under_exact_indexing is reported, never re-selected, "
+                "dropped or re-ranked; selection stays frozen.",
+                "A reproduction mismatch is an input/runtime mismatch: it is recorded and "
+                "interpretation of that case stops, and the tolerance is never widened.",
+                "Figures, voltage review, evidence classification and decision.md are later "
+                "layers and are not produced by this stage.",
+            ],
+        }
+    except Exception as exc:
+        manifest["status"] = "failed"
+        manifest["failure_reason"] = f"{type(exc).__name__}: {exc}"
+        _atomic_write_json(manifest_path, manifest)
+        raise
+
+    _atomic_write_json(manifest_path, manifest)
+    return manifest
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n", 1)[0])
     sub = ap.add_subparsers(dest="command", required=True)
@@ -1594,6 +2141,16 @@ def main(argv=None) -> int:
     sel.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     sel.add_argument("--out-root", type=Path, required=True)
 
+    insp = sub.add_parser(
+        "inspect",
+        help=(
+            "verify the frozen selection and replay only its cases: historical vs exact-1,000 "
+            "fits into case_windows.csv. No figures, voltage or classification at this layer"
+        ),
+    )
+    insp.add_argument("--selection", type=Path, required=True)
+    insp.add_argument("--out-root", type=Path, required=True)
+
     args = ap.parse_args(argv)
     if args.command == "inventory":
         manifest = run_inventory(args.config, args.out_root)
@@ -1609,6 +2166,10 @@ def main(argv=None) -> int:
         }
         print(json.dumps(summary, indent=2, default=str))
         return 0
+    if args.command == "inspect":
+        manifest = run_inspect(args.selection, args.out_root)
+        print(json.dumps(manifest["inspect"], indent=2, default=str))
+        return 0 if manifest["status"] == "complete" else 1
 
     ap.print_help()
     return 1
