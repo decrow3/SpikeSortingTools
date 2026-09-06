@@ -58,6 +58,7 @@ import io
 import json
 import math
 import os
+import re
 import subprocess
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -2638,6 +2639,9 @@ def replay_case_windows(
             "sort_id": sort_id,
             "cluster_id": int(case["cluster_id"]),
             "role": case.get("role"),
+            # the freeze's own ordering, carried so the nomination can prefer
+            # it without recomputing anything
+            "rank": case.get("rank"),
             "n_windows": len(case_rows),
             "case_status": case_status,
             "unstable_reproduction_mismatch": unstable_repro,
@@ -3285,6 +3289,24 @@ def open_voltage_source(
     return BoundedVoltageReader(path, meta), meta, None
 
 
+def voltage_available_by_sort(cfg: AuditConfig, sort_ids) -> dict[str, bool]:
+    """Whether each sort's OWN raw voltage still exists on disk.
+
+    A filesystem question, asked without opening a reader: the answer is a
+    property of the inputs, not of any ranking. It is what lets a nomination
+    prefer a case whose evidence can actually be completed -- the legacy sort's
+    traces file was deleted after sorting, so its voltage limb is uncollectable
+    in principle rather than merely uncollected.
+    """
+    available: dict[str, bool] = {}
+    for sort_id in sort_ids:
+        recording = Path(cfg.by_id(str(sort_id)).source_recording)
+        available[str(sort_id)] = bool(
+            sorted(recording.glob("*.raw")) or sorted(recording.glob("*.dat"))
+        )
+    return available
+
+
 def select_voltage_review_cases(payload: dict[str, Any]) -> list[str]:
     """The at-most-two highest-ranked failure cases and their controls.
 
@@ -3730,18 +3752,51 @@ def render_case_panel(
 # --------------------------------------------------------------------------- #
 # layer 4b -- decision.md
 # --------------------------------------------------------------------------- #
+def _nomination_effect(row: dict[str, Any]) -> float:
+    """Magnitude on whichever limb carries the supported verdict.
+
+    Parsed from the observation the category itself wrote, so this cannot
+    reach for a quantity the verdict did not rest on. Unreadable means zero:
+    it is only a tie-break, and it never promotes a case past criteria 1-2.
+    """
+    text = str(row.get("observation") or "")
+    best = 0.0
+    for match in re.finditer(r"([+-]?\d+(?:\.\d+)?)\s*(um|%)", text):
+        best = max(best, abs(float(match.group(1))))
+    return best
+
+
 def _nominate(
     evidence_rows: list[dict[str, Any]], summaries: list[dict[str, Any]],
+    *, voltage_available: dict[str, bool] | None = None,
 ) -> dict[str, Any] | None:
     """The single nominated case, or ``None`` for insufficient_evidence.
 
-    Deterministic and conservative: only a failure case whose replay reproduced
-    and whose reading is a single supported mechanism can be nominated, ranked
-    by the case order the freeze already fixed. An ``ambiguous`` reading is not
-    a nomination -- it is a disagreement, and the prescription forbids
+    Eligibility is unchanged and conservative: a failure case whose replay
+    reproduced, with exactly one supported mechanism. An ``ambiguous`` reading
+    is never a nomination -- it is a disagreement, and the prescription forbids
     resolving it by majority.
+
+    ORDER among eligible cases (prespec:
+    docs/luke_amplitude_dropout_audit_nomination_rule_prespec.md):
+
+    1. executable evidence -- a case whose sort has raw voltage available,
+       because a case whose voltage limb is uncollectable IN PRINCIPLE cannot
+       have its nominated experiment's evidence completed at any cost;
+    2. the frozen rank, computed before any evidence was read;
+    3. the larger effect on the supported limb;
+    4. sort_id then numeric cluster_id, for determinism.
+
+    Criterion 1 rests on a constraint that predates every ranking (the legacy
+    sort's raw voltage was deleted, recorded 2026-09-05 14:14 and 14:21, while
+    the first ranking was written at 19:35). The previous rule -- first
+    eligible in frozen order, i.e. alphabetical by sort ID -- was arbitrary
+    with respect to evidence; see the prespec for why this is a correction and
+    not a retrofit.
     """
+    voltage_available = voltage_available or {}
     by_case = {s["case_id"]: s for s in summaries}
+    eligible: list[dict[str, Any]] = []
     for row in evidence_rows:
         summary = by_case.get(row["case_id"])
         if summary is None or row["case_role"] != "failure":
@@ -3754,13 +3809,27 @@ def _nominate(
             continue
         if row["verdict"] != VERDICT_SUPPORTED or row["category"] == "unresolved":
             continue
-        return row
-    return None
+        eligible.append(row)
+    if not eligible:
+        return None
+
+    def order(row: dict[str, Any]):
+        summary = by_case[row["case_id"]]
+        return (
+            0 if voltage_available.get(str(row["sort_id"]), False) else 1,
+            int(summary.get("rank") or 0) or 10**6,
+            -_nomination_effect(row),
+            str(row["sort_id"]),
+            int(row["cluster_id"]),
+        )
+
+    return sorted(eligible, key=order)[0]
 
 
 def write_decision_md(
     path: Path, *, evidence_rows: list[dict[str, Any]], summaries: list[dict[str, Any]],
     selection: dict[str, Any], evidence_constants: EvidenceConstants,
+    voltage_available: dict[str, bool] | None = None,
 ) -> str:
     """Write ``decision.md``; return the decision (a case_id or the sentinel).
 
@@ -3769,7 +3838,7 @@ def write_decision_md(
     observation was unavailable. A collection of figures without one of those
     is not a completed deliverable, so this refuses to write anything else.
     """
-    nomination = _nominate(evidence_rows, summaries)
+    nomination = _nominate(evidence_rows, summaries, voltage_available=voltage_available)
     lines = [
         "# Amplitude-completeness dropout audit -- decision",
         "",
@@ -3934,8 +4003,11 @@ def build_case_evidence(
     per_sort_extra: dict[str, tuple] = {}
     per_sort_geometry: dict[str, np.ndarray | None] = {}
     voltage_sources: dict[str, tuple] = {}
+    all_sort_ids = sorted({str(c["sort_id"]) for c in payload.get("cases", [])})
     extras["voltage"] = {"reviewed_case_ids": sorted(review_ids), "sources": {},
-                         "extraction": {}}
+                         "extraction": {},
+                         "raw_voltage_available_by_sort": voltage_available_by_sort(
+                             cfg, all_sort_ids)}
     for sort_id in sorted({str(c["sort_id"]) for c in payload.get("cases", [])}):
         curated_dir = Path(cfg.by_id(sort_id).curated)
         positions, pos_sha, pos_reason = read_attested_spike_positions(sort_id, curated_dir)
@@ -4100,6 +4172,8 @@ def run_inspect(selection_path: Path, out_root: Path) -> dict[str, Any]:
             decision_path, evidence_rows=case_evidence.to_dict("records"),
             summaries=summaries, selection=payload,
             evidence_constants=evidence_constants,
+            voltage_available=evidence_extras.get("voltage", {}).get(
+                "raw_voltage_available_by_sort", {}),
         )
 
         manifest["status"] = "complete"

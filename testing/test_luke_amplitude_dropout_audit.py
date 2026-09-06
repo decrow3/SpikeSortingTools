@@ -3744,3 +3744,111 @@ def test_each_excerpt_is_marked_with_its_own_assigned_events(tmp_path):
         assert (offsets >= 0).all()
         if window["excerpt"] is not None and window["excerpt"].size:
             assert (offsets < window["excerpt"].shape[0]).all()
+
+
+# --------------------------------------------------------------------------- #
+# the corrected nomination rule
+# (docs/luke_amplitude_dropout_audit_nomination_rule_prespec.md)
+#
+# Order among ALREADY-eligible cases: executable evidence, then the frozen
+# rank, then the larger effect on the supported limb, then ids. Each criterion
+# is pinned separately so a change to one cannot hide behind another.
+# --------------------------------------------------------------------------- #
+def _nom_row(case_id, sort_id, cluster_id, observation, category="motion_amplitude_change"):
+    return {
+        "case_id": case_id, "sort_id": sort_id, "cluster_id": cluster_id,
+        "case_role": "failure", "category": category, "verdict": VERDICT_SUPPORTED,
+        "permitted_conclusion": EVIDENCE_TABLE[category][0],
+        "next_action": EVIDENCE_TABLE[category][1], "observation": observation,
+        "limitations": "-", "case_status": CASE_STATUS_STABLE,
+        "case_evidence_reading": category, "figure_path": "", "case_windows_rows": "",
+    }
+
+
+def _nom_summary(case_id, sort_id, cluster_id, rank):
+    return {"case_id": case_id, "sort_id": sort_id, "cluster_id": cluster_id,
+            "role": "failure", "rank": rank, "case_status": CASE_STATUS_STABLE,
+            "unstable_reproduction_mismatch": False}
+
+
+def _decide(tmp_path, rows, summaries, voltage_available):
+    return write_decision_md(
+        tmp_path / "decision.md", evidence_rows=rows, summaries=summaries,
+        selection={"selection_sha256": "x", "selection_constants": {}},
+        evidence_constants=EVIDENCE_CONSTANTS, voltage_available=voltage_available)
+
+
+def test_a_case_whose_voltage_is_uncollectable_loses_to_one_whose_is_not(tmp_path):
+    """Criterion 1. The legacy sort's traces file was deleted, so its voltage
+    limb cannot be collected at any cost -- even with a better rank."""
+    rows = [
+        _nom_row("legacy__c1__failure1", "legacy", 1, "median amplitude drop +40.0%"),
+        _nom_row("rescue__c2__failure2", "rescue", 2, "median amplitude drop +1.0%"),
+    ]
+    summaries = [_nom_summary("legacy__c1__failure1", "legacy", 1, 1),
+                 _nom_summary("rescue__c2__failure2", "rescue", 2, 2)]
+    decision = _decide(tmp_path, rows, summaries,
+                       {"legacy": False, "rescue": True})
+    assert decision == "rescue__c2__failure2"
+
+
+def test_with_evidence_equally_collectable_the_frozen_rank_decides(tmp_path):
+    """Criterion 2, isolated: same sort, so criterion 1 cannot act."""
+    rows = [
+        _nom_row("s__c9__failure2", "s", 9, "median amplitude drop +40.0%"),
+        _nom_row("s__c1__failure1", "s", 1, "median amplitude drop +20.0%"),
+    ]
+    summaries = [_nom_summary("s__c9__failure2", "s", 9, 2),
+                 _nom_summary("s__c1__failure1", "s", 1, 1)]
+    assert _decide(tmp_path, rows, summaries, {"s": True}) == "s__c1__failure1"
+
+
+def test_at_equal_rank_the_larger_effect_on_the_supported_limb_decides(tmp_path):
+    """Criterion 3, isolated: same availability and same rank."""
+    rows = [
+        _nom_row("s__c1__failure1", "s", 1, "median depth shift +1.00 um; drop +12.0%"),
+        _nom_row("t__c2__failure1", "t", 2, "median depth shift +30.00 um; drop +12.0%"),
+    ]
+    summaries = [_nom_summary("s__c1__failure1", "s", 1, 1),
+                 _nom_summary("t__c2__failure1", "t", 2, 1)]
+    assert _decide(tmp_path, rows, summaries, {"s": True, "t": True}) == "t__c2__failure1"
+
+
+def test_the_nomination_no_longer_follows_alphabetical_sort_id(tmp_path):
+    """The defect this rule corrects: the old rule returned the first eligible
+    row in frozen order, which is alphabetical by sort ID."""
+    rows = [
+        _nom_row("aaa__c1__failure1", "aaa", 1, "median amplitude drop +1.0%"),
+        _nom_row("zzz__c2__failure1", "zzz", 2, "median amplitude drop +50.0%"),
+    ]
+    summaries = [_nom_summary("aaa__c1__failure1", "aaa", 1, 1),
+                 _nom_summary("zzz__c2__failure1", "zzz", 2, 1)]
+    assert _decide(tmp_path, rows, summaries, {"aaa": True, "zzz": True}) == "zzz__c2__failure1"
+
+
+def test_the_rule_does_not_make_an_ineligible_case_nominable(tmp_path):
+    """Ordering acts only among cases that were already eligible: availability
+    never rescues an ambiguous reading or an unstable case."""
+    ambiguous = _nom_row("s__c1__failure1", "s", 1, "drop +99.0%")
+    ambiguous["case_evidence_reading"] = CASE_EVIDENCE_AMBIGUOUS
+    unstable = _nom_row("s__c2__failure2", "s", 2, "drop +99.0%")
+    unstable["case_status"] = CASE_STATUS_UNSTABLE
+    summaries = [_nom_summary("s__c1__failure1", "s", 1, 1),
+                 dict(_nom_summary("s__c2__failure2", "s", 2, 2),
+                      case_status=CASE_STATUS_UNSTABLE)]
+    assert _decide(tmp_path, [ambiguous, unstable], summaries,
+                   {"s": True}) == DECISION_INSUFFICIENT
+
+
+def test_voltage_availability_is_a_filesystem_fact_not_a_ranking_fact(tmp_path):
+    """Criterion 1's input is a property of the inputs, readable before any
+    case exists."""
+    from testing.luke_amplitude_dropout_audit import voltage_available_by_sort
+    curated, qc_dir = _write_replay_fixture(tmp_path, FAILURE_AND_CONTROL_SPEC)
+    recording = tmp_path / "recording"
+    config_path = _write_config(tmp_path, curated, qc_dir, recording,
+                                sampling_frequency_hz=REPLAY_FS, duration_s=2000.0)
+    cfg = load_config(config_path)
+    assert voltage_available_by_sort(cfg, ["synthetic"]) == {"synthetic": False}
+    (recording / "traces_cached_seg0.raw").write_bytes(b"\x00" * 64)
+    assert voltage_available_by_sort(cfg, ["synthetic"]) == {"synthetic": True}
