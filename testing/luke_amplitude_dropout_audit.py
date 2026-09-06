@@ -17,6 +17,19 @@ input to it, and every triage constant is supplied by the JSON config (see
 command line -- the prescription requires them frozen *before* rankings are
 read, so there is deliberately no CLI flag that can move one.
 
+Selection is also bounded in TIME by the first-pipeline-candidate delivery
+contract (``configs/first_pipeline_candidate.v1.json``), which partitions this
+recording into a sealed held-out panel plus buffer, reserved healthy
+evaluation intervals, and the development windows that remain. Every case span
+must lie inside a single development window; a run outside them is excluded
+before ranking (``outside_development_window``), never merely outranked, so a
+stronger prohibited case cannot displace an eligible one. The contract's
+intervals are re-derived and re-validated against this recording at runtime
+(see :func:`read_permitted_intervals`) rather than trusted as shipped, and its
+identity is recorded in ``selection.json``. The audit's own ``control`` cases
+are DIAGNOSTIC controls, gated the same way and distinct from the contract's
+reserved evaluation intervals.
+
 Two verified facts from the prescription are load-bearing and must not be
 "fixed" by this module:
 
@@ -364,6 +377,10 @@ class AuditConfig:
     schema: str
     sorts: tuple[SortConfig, ...]
     selection: SelectionConstants
+    #: Which delivery contract reserves this recording's sealed panel and
+    #: healthy evaluation intervals. Optional at parse time so `inventory`
+    #: (which ranks nothing) still runs without one; `run_select` requires it.
+    interval_contract: IntervalContractRef | None = None
 
     def __post_init__(self) -> None:
         if self.schema != SCHEMA:
@@ -375,6 +392,20 @@ class AuditConfig:
             raise ValueError(f"duplicate sort_id in config: {ids}")
         if not isinstance(self.selection, SelectionConstants):
             raise ValueError("config must supply frozen selection constants")
+        if self.interval_contract is not None and not isinstance(
+            self.interval_contract, IntervalContractRef
+        ):
+            raise ValueError("interval_contract must be an IntervalContractRef")
+
+    def require_interval_contract(self, config_path: Path | str) -> IntervalContractRef:
+        if self.interval_contract is None:
+            raise ValueError(
+                f"{Path(config_path)}: config has no 'interval_contract' block; selection may "
+                "only rank inside the delivery contract's development windows, which reserve the "
+                "sealed held-out panel, its buffer and the healthy evaluation intervals -- there "
+                "is no unrestricted ranking"
+            )
+        return self.interval_contract
 
     def by_id(self, sort_id: str) -> SortConfig:
         for s in self.sorts:
@@ -429,8 +460,13 @@ def load_config_from_bytes(data: bytes, path: Path | str) -> AuditConfig:
             "frozen in CONFIG (with units) before any ranking is read -- there are no defaults"
         )
     selection = parse_selection_constants(payload["selection"])
+    interval_contract = (
+        parse_interval_contract_ref(payload["interval_contract"], path)
+        if "interval_contract" in payload else None
+    )
     return AuditConfig(
         schema=payload.get("schema", ""), sorts=tuple(sorts), selection=selection,
+        interval_contract=interval_contract,
     )
 
 
@@ -897,12 +933,361 @@ def historical_exact_fit(cluster_amplitudes: np.ndarray, i0: int, i1: int) -> di
 
 
 # --------------------------------------------------------------------------- #
+# the delivery contract's interval gate
+#
+# The audit ranks cases out of one recording that the first-pipeline-candidate
+# delivery contract has already partitioned: a sealed held-out panel (plus an
+# exclusion buffer), reserved healthy evaluation intervals, and the development
+# windows that remain. Only the development windows may be developed, tuned or
+# inspected on, so a case span outside them must never reach a ranking -- not
+# even to be beaten by an eligible one. The contract is the single source of
+# these intervals (``configs/first_pipeline_candidate.v1.json``); this module
+# re-validates them at runtime rather than trusting the shipped list.
+# --------------------------------------------------------------------------- #
+#: Tolerance for interval arithmetic, in seconds. Interval bounds are authored
+#: as exact round numbers plus one duration copied from the recording manifest,
+#: so this absorbs float representation only -- it is far below the ~120 s
+#: scale of any window and cannot admit a case that overhangs a boundary.
+INTERVAL_EPSILON_S = 1e-6
+
+#: Audit cases with role ``control`` are DIAGNOSTIC controls: quiet spans of a
+#: non-failure cluster, selected inside development windows for comparison
+#: within this audit. They are not the contract's reserved
+#: ``intervals.healthy_control_intervals``, which are evaluation-only, never
+#: tuned on, and excluded from every development window by construction.
+DIAGNOSTIC_CONTROL_KIND = "diagnostic"
+
+
+@dataclass(frozen=True)
+class IntervalContractRef:
+    """CONFIG's declaration of which delivery contract governs the intervals."""
+
+    path: Path
+    contract_id: str
+
+    def __post_init__(self) -> None:
+        if not str(self.path):
+            raise ValueError("interval_contract.path must be a non-empty path")
+        if not self.contract_id:
+            raise ValueError("interval_contract.contract_id must be a non-empty string")
+
+
+def parse_interval_contract_ref(payload: Any, config_path: Path | str) -> IntervalContractRef:
+    if not isinstance(payload, dict):
+        raise ValueError(
+            f"{Path(config_path)}: 'interval_contract' must be an object declaring the delivery "
+            "contract that reserves the sealed panel and the healthy evaluation intervals"
+        )
+    unknown = sorted(set(payload) - {"path", "contract_id", "purpose"})
+    if unknown:
+        raise ValueError(f"config: 'interval_contract' has unknown key(s) {unknown}")
+    for key in ("path", "contract_id"):
+        if not isinstance(payload.get(key), str) or not payload[key]:
+            raise ValueError(f"config: 'interval_contract.{key}' must be a non-empty string")
+    path = Path(payload["path"])
+    if not path.is_absolute():
+        path = (REPO_ROOT / path).resolve()
+    return IntervalContractRef(path=path, contract_id=payload["contract_id"])
+
+
+@dataclass(frozen=True)
+class PermittedIntervals:
+    """The contract's development windows, re-validated against this recording.
+
+    ``development_windows_s`` is the only region selection may rank in.
+    ``sealed_windows_s`` (expanded by ``sealed_exclusion_buffer_s``) and
+    ``reserved_evaluation_windows_s`` are carried so provenance records what was
+    excluded, and so the derivation can be recomputed rather than trusted.
+    """
+
+    contract_path: str
+    contract_sha256: str
+    contract_id: str
+    contract_schema: str
+    clock: str
+    recording_duration_s: float
+    development_windows_s: tuple[tuple[float, float], ...]
+    sealed_windows_s: tuple[tuple[float, float], ...]
+    sealed_exclusion_buffer_s: float
+    reserved_evaluation_windows_s: tuple[tuple[float, float], ...]
+    reserved_evaluation_names: tuple[str, ...]
+
+    def containing_index(self, start_s: float, end_s: float) -> int | None:
+        """Index of the single development window containing ``[start_s, end_s]``.
+
+        ``None`` when the span straddles a boundary, falls in an excluded
+        region, or is not a finite interval at all. Containment is required in
+        ONE window: a span covering an excluded region between two windows is
+        not permitted just because both of its ends are.
+        """
+        if start_s is None or end_s is None:
+            return None
+        if not (math.isfinite(start_s) and math.isfinite(end_s)) or end_s < start_s:
+            return None
+        for index, (w_start, w_stop) in enumerate(self.development_windows_s):
+            if start_s >= w_start - INTERVAL_EPSILON_S and end_s <= w_stop + INTERVAL_EPSILON_S:
+                return index
+        return None
+
+    def to_provenance(self) -> dict[str, Any]:
+        return {
+            "contract_path": self.contract_path,
+            "contract_sha256": self.contract_sha256,
+            "contract_id": self.contract_id,
+            "contract_schema": self.contract_schema,
+            "clock": self.clock,
+            "recording_duration_s": self.recording_duration_s,
+            "development_windows_s": [list(w) for w in self.development_windows_s],
+            "development_windows_total_s": round(
+                sum(stop - start for start, stop in self.development_windows_s), 9
+            ),
+            "sealed_windows_s": [list(w) for w in self.sealed_windows_s],
+            "sealed_exclusion_buffer_s": self.sealed_exclusion_buffer_s,
+            "reserved_evaluation_windows_s": [
+                list(w) for w in self.reserved_evaluation_windows_s
+            ],
+            "reserved_evaluation_names": list(self.reserved_evaluation_names),
+            "rule": (
+                "every case span (first window start_s to last window end_s) must lie inside a "
+                "single development window; audit controls are diagnostic and are gated the same "
+                "way, and are distinct from the contract's reserved healthy evaluation intervals"
+            ),
+        }
+
+
+def _merge_intervals(
+    intervals: list[tuple[float, float]], eps: float = INTERVAL_EPSILON_S,
+) -> list[tuple[float, float]]:
+    """Union of possibly overlapping/touching intervals, sorted by start."""
+    if not intervals:
+        return []
+    ordered = sorted(intervals)
+    merged = [ordered[0]]
+    for start, stop in ordered[1:]:
+        last_start, last_stop = merged[-1]
+        if start <= last_stop + eps:
+            merged[-1] = (last_start, max(last_stop, stop))
+        else:
+            merged.append((start, stop))
+    return merged
+
+
+def _subtract_intervals(
+    base: list[tuple[float, float]], cuts: list[tuple[float, float]],
+    eps: float = INTERVAL_EPSILON_S,
+) -> list[tuple[float, float]]:
+    """``base`` minus ``cuts``; zero-length remnants are dropped."""
+    remaining = list(base)
+    for cut_start, cut_stop in _merge_intervals(cuts, eps):
+        nxt: list[tuple[float, float]] = []
+        for start, stop in remaining:
+            if cut_stop <= start + eps or cut_start >= stop - eps:
+                nxt.append((start, stop))
+                continue
+            if cut_start > start + eps:
+                nxt.append((start, cut_start))
+            if cut_stop < stop - eps:
+                nxt.append((cut_stop, stop))
+        remaining = nxt
+    return [(start, stop) for start, stop in remaining if stop - start > eps]
+
+
+def _intervals_equal(
+    left: list[tuple[float, float]], right: list[tuple[float, float]],
+    eps: float = INTERVAL_EPSILON_S,
+) -> bool:
+    if len(left) != len(right):
+        return False
+    return all(
+        abs(a_start - b_start) <= eps and abs(a_stop - b_stop) <= eps
+        for (a_start, a_stop), (b_start, b_stop) in zip(left, right)
+    )
+
+
+def read_permitted_intervals(
+    ref: IntervalContractRef, *, recording_duration_s: float,
+) -> PermittedIntervals:
+    """Read the delivery contract ONCE and re-derive its development windows.
+
+    The contract's own ``derivation`` field says the shipped window list does
+    not need to be trusted, so this recomputes it (full stream, minus every
+    sealed window expanded by the exclusion buffer, minus the reserved healthy
+    evaluation intervals) and refuses a mismatch. Bounds, recording limits and
+    disjointness from every reserved period are checked here at runtime, not
+    only in a test of the shipped JSON.
+
+    The bytes hashed are the bytes parsed: this file becomes a consumed input
+    of ``select``, and its recorded identity must attest what was actually read.
+    """
+    from testing.first_pipeline_candidate_contract import (
+        SCHEMA as CONTRACT_SCHEMA,
+        development_windows as contract_development_windows,
+        _interval_list as contract_interval_list,
+    )
+
+    path = Path(ref.path)
+    data = path.read_bytes()
+    contract_sha256 = hashlib.sha256(data).hexdigest()
+    payload = json.loads(data)
+    if not isinstance(payload, dict):
+        raise ValueError(f"interval contract {path} must be a JSON object")
+    schema = payload.get("schema")
+    if schema != CONTRACT_SCHEMA:
+        raise ValueError(f"interval contract schema {schema!r} != {CONTRACT_SCHEMA!r}")
+    contract_id = payload.get("contract_id")
+    if contract_id != ref.contract_id:
+        raise ValueError(
+            f"interval contract at {path} declares contract_id {contract_id!r}, but CONFIG's "
+            f"interval_contract.contract_id is {ref.contract_id!r}"
+        )
+
+    # the interval clock is "seconds from the start of the selected stream", so
+    # the contract and CONFIG must be describing the same recording
+    recording = payload.get("recording")
+    if not isinstance(recording, dict):
+        raise ValueError(f"interval contract {path} has no 'recording' block")
+    contract_duration = recording.get("duration_s")
+    if not isinstance(contract_duration, (int, float)) or isinstance(contract_duration, bool):
+        raise ValueError(f"interval contract {path}: recording.duration_s must be a number")
+    contract_duration = float(contract_duration)
+    if not math.isfinite(contract_duration) or contract_duration <= 0:
+        raise ValueError(
+            f"interval contract {path}: recording.duration_s must be finite and positive"
+        )
+    if abs(contract_duration - float(recording_duration_s)) > INTERVAL_EPSILON_S:
+        raise ValueError(
+            f"interval contract {path} governs a recording of {contract_duration} s, but CONFIG's "
+            f"sorts declare {recording_duration_s} s; the audit and the contract are not "
+            "describing the same recording"
+        )
+
+    intervals = payload.get("intervals")
+    if not isinstance(intervals, dict):
+        raise ValueError(f"interval contract {path} has no 'intervals' block")
+    sealed = intervals.get("sealed_panel")
+    healthy = intervals.get("healthy_control_intervals")
+    if not isinstance(sealed, dict) or not isinstance(healthy, dict):
+        raise ValueError(
+            f"interval contract {path} must declare intervals.sealed_panel and "
+            "intervals.healthy_control_intervals"
+        )
+
+    # parsed by the contract module itself, so both tracks read these the same way
+    development = [tuple(w) for w in contract_development_windows(payload)]
+    sealed_windows = [
+        tuple(w) for w in contract_interval_list(
+            sealed.get("windows_s"), "intervals.sealed_panel.windows_s"
+        )
+    ]
+    buffer_s = sealed.get("exclusion_buffer_s")
+    if not isinstance(buffer_s, (int, float)) or isinstance(buffer_s, bool):
+        raise ValueError("intervals.sealed_panel.exclusion_buffer_s must be a number")
+    buffer_s = float(buffer_s)
+    if not math.isfinite(buffer_s) or buffer_s < 0:
+        raise ValueError("intervals.sealed_panel.exclusion_buffer_s must be finite and >= 0")
+
+    # A list, possibly empty: what actually protects the reserved regions is
+    # the derivation check below (development == stream minus everything
+    # reserved), not a count of how many regions the contract chose to reserve.
+    reserved_nodes = healthy.get("windows")
+    if not isinstance(reserved_nodes, list):
+        raise ValueError("intervals.healthy_control_intervals.windows must be a list")
+    reserved: list[tuple[float, float]] = []
+    reserved_names: list[str] = []
+    for node in reserved_nodes:
+        if not isinstance(node, dict):
+            raise ValueError("each healthy control interval must be an object")
+        (start, stop), = contract_interval_list(
+            [[node.get("start_s"), node.get("stop_s")]],
+            "intervals.healthy_control_intervals.windows",
+        )
+        reserved.append((start, stop))
+        reserved_names.append(str(node.get("name", "")))
+
+    if not math.isfinite(recording_duration_s) or recording_duration_s <= 0:
+        raise ValueError("recording_duration_s must be finite and positive")
+    if not development:
+        raise ValueError(f"interval contract {path} declares no development windows")
+
+    # bounds and recording limits
+    for label, windows in (
+        ("development", development), ("sealed", sealed_windows), ("reserved evaluation", reserved),
+    ):
+        for start, stop in windows:
+            if not (math.isfinite(start) and math.isfinite(stop)):
+                raise ValueError(f"{label} interval [{start}, {stop}] is not finite")
+            if stop <= start:
+                raise ValueError(f"{label} interval [{start}, {stop}] must have stop > start")
+            if start < -INTERVAL_EPSILON_S or stop > recording_duration_s + INTERVAL_EPSILON_S:
+                raise ValueError(
+                    f"{label} interval [{start}, {stop}] falls outside the recording "
+                    f"[0, {recording_duration_s}]"
+                )
+
+    # development windows must not overlap each other
+    ordered = sorted(development)
+    for (a_start, a_stop), (b_start, b_stop) in zip(ordered, ordered[1:]):
+        if b_start < a_stop - INTERVAL_EPSILON_S:
+            raise ValueError(
+                f"development windows [{a_start}, {a_stop}] and [{b_start}, {b_stop}] overlap"
+            )
+
+    # ... nor intersect anything the contract reserves
+    sealed_expanded = [
+        (max(0.0, start - buffer_s), min(recording_duration_s, stop + buffer_s))
+        for start, stop in sealed_windows
+    ]
+    for label, cuts in (
+        ("a sealed window expanded by its exclusion buffer", sealed_expanded),
+        ("a reserved healthy evaluation interval", reserved),
+    ):
+        for d_start, d_stop in development:
+            for c_start, c_stop in cuts:
+                if d_start < c_stop - INTERVAL_EPSILON_S and c_start < d_stop - INTERVAL_EPSILON_S:
+                    raise ValueError(
+                        f"development window [{d_start}, {d_stop}] intersects {label} "
+                        f"[{c_start}, {c_stop}]"
+                    )
+
+    # the shipped list must be exactly the documented derivation
+    recomputed = _subtract_intervals(
+        [(0.0, float(recording_duration_s))], sealed_expanded + reserved
+    )
+    if not _intervals_equal(ordered, recomputed):
+        raise ValueError(
+            f"interval contract {path}: intervals.development_windows.windows_s is not the "
+            "documented derivation (full stream minus sealed windows expanded by "
+            f"exclusion_buffer_s minus healthy control intervals); shipped {ordered}, "
+            f"recomputed {recomputed}"
+        )
+
+    return PermittedIntervals(
+        contract_path=str(path),
+        contract_sha256=contract_sha256,
+        contract_id=str(contract_id),
+        contract_schema=str(schema),
+        clock=str(intervals.get("clock", "")),
+        recording_duration_s=float(recording_duration_s),
+        development_windows_s=tuple(ordered),
+        sealed_windows_s=tuple(sealed_windows),
+        sealed_exclusion_buffer_s=buffer_s,
+        reserved_evaluation_windows_s=tuple(reserved),
+        reserved_evaluation_names=tuple(reserved_names),
+    )
+
+
+# --------------------------------------------------------------------------- #
 # layer 3 -- deterministic case selection
 # --------------------------------------------------------------------------- #
 #: Why a candidate run of ``windows_per_case`` consecutive stored windows was
 #: not eligible. Exactly one reason is attributed per examined run, in this
 #: precedence order, so the counts partition every run the enumerator saw and a
 #: slow unit dropped by the span cap stays visible in the report.
+#:
+#: ``outside_development_window`` is the delivery contract's gate: a run that
+#: satisfies every threshold but whose span leaves the permitted development
+#: windows is re-attributed here and never enters a ranking, so a stronger
+#: prohibited case can never displace a weaker eligible one.
 FAILURE_REJECTION_REASONS = (
     "non_contiguous_index",
     "status_not_finite_interior",
@@ -914,6 +1299,7 @@ FAILURE_REJECTION_REASONS = (
     "failing_below_min_missing_pct",
     "median_difference_below_min_pp",
     "span_over_max_s",
+    "outside_development_window",
     "qualified",
 )
 CONTROL_REJECTION_REASONS = (
@@ -928,6 +1314,7 @@ CONTROL_REJECTION_REASONS = (
     "range_above_max_pp",
     "nonpositive_span",
     "span_over_max_s",
+    "outside_development_window",
     "qualified",
 )
 
@@ -1143,8 +1530,19 @@ def _reported_sort_ids(
     return sorted(ids)
 
 
+def _run_window_index(run: list[dict[str, Any]], permitted: PermittedIntervals) -> int | None:
+    """Development window containing this run's whole span, or ``None``.
+
+    The span is the case's own span: the first window's ``start_s`` to the last
+    window's ``end_s``. Every window in between is inside it by construction,
+    so containment of the span is containment of the case.
+    """
+    return permitted.containing_index(run[0]["start_s"], run[-1]["end_s"])
+
+
 def select_cases(
     windows: pd.DataFrame, c: SelectionConstants, *,
+    permitted: PermittedIntervals,
     configured_sort_ids: list[str] | None = None,
 ) -> dict[str, Any]:
     """Freeze the audit's cases from the cached historical QC inventory alone.
@@ -1154,6 +1552,11 @@ def select_cases(
     an eligibility filter. Counts below the caps are a valid result -- no
     threshold is relaxed and no case is backfilled when cases are scarce, and
     every sort keeps a ``per_sort`` entry even when it yields nothing.
+
+    ``permitted`` is required, with no default: the delivery contract reserves
+    a sealed panel and healthy evaluation intervals out of the same recording,
+    so there is no such thing as ranking "the whole recording". A run outside
+    the development windows is excluded BEFORE ranking, not merely outranked.
     """
     grouped = window_records(windows)
     k = c.windows_per_case
@@ -1173,12 +1576,20 @@ def select_cases(
             for j in range(len(rows) - k + 1):
                 run = rows[j:j + k]
                 reason, metrics = classify_failure_run(run, c)
+                window_index = None
+                if reason == "qualified":
+                    # the contract's gate, applied before this run can become a
+                    # candidate: a prohibited run is never ranked at all
+                    window_index = _run_window_index(run, permitted)
+                    if window_index is None:
+                        reason = "outside_development_window"
                 failure_exclusions[reason] += 1
                 if reason != "qualified":
                     continue
                 candidate = {
                     "sort_id": sort_id, "cluster_id": cluster_id, "run": run, **metrics,
                     "start_s": run[0]["start_s"],
+                    "development_window_index": window_index,
                 }
                 current = best_by_cluster.get(cluster_id)
                 if current is None or (
@@ -1207,6 +1618,10 @@ def select_cases(
                 "difference_pp": candidate["difference_pp"],
                 "reference_median_missing_pct": candidate["reference_median_missing_pct"],
                 "failing_median_missing_pct": candidate["failing_median_missing_pct"],
+                "development_window_index": candidate["development_window_index"],
+                "development_window_s": list(
+                    permitted.development_windows_s[candidate["development_window_index"]]
+                ),
                 "windows": _case_windows(candidate["run"], roles),
                 "reason": (
                     f"{k} consecutive stored windows of cluster {candidate['cluster_id']} tiling one "
@@ -1234,12 +1649,21 @@ def select_cases(
                     control_exclusions["cluster_selected_as_failure"] += 1
                     continue
                 reason, metrics = classify_control_run(run, c)
+                window_index = None
+                if reason == "qualified":
+                    # diagnostic controls are gated exactly like failure cases;
+                    # the contract's own reserved healthy evaluation intervals
+                    # are excluded from every development window by construction
+                    window_index = _run_window_index(run, permitted)
+                    if window_index is None:
+                        reason = "outside_development_window"
                 control_exclusions[reason] += 1
                 if reason != "qualified":
                     continue
                 control_candidates.append({
                     "sort_id": sort_id, "cluster_id": cluster_id, "run": run, **metrics,
                     "start_s": run[0]["start_s"],
+                    "development_window_index": window_index,
                 })
 
         reference_span_s = selected_failures[0]["span_s"] if selected_failures else None
@@ -1271,6 +1695,9 @@ def select_cases(
                 "sort_id": sort_id,
                 "cluster_id": candidate["cluster_id"],
                 "role": "control",
+                # a diagnostic control of this audit, NOT one of the contract's
+                # reserved healthy evaluation intervals
+                "control_kind": DIAGNOSTIC_CONTROL_KIND,
                 "rank": rank,
                 "span_s": candidate["span_s"],
                 "difference_pp": None,
@@ -1278,6 +1705,10 @@ def select_cases(
                 "max_missing_pct": candidate["max_missing_pct"],
                 "min_missing_pct": candidate["min_missing_pct"],
                 "abs_log_span_ratio": log_ratio,
+                "development_window_index": candidate["development_window_index"],
+                "development_window_s": list(
+                    permitted.development_windows_s[candidate["development_window_index"]]
+                ),
                 "windows": _case_windows(candidate["run"], ["control"] * k),
                 "reason": (
                     f"{k} consecutive stored windows of cluster {candidate['cluster_id']} tiling one "
@@ -1310,7 +1741,12 @@ def select_cases(
             "control_runs_by_reason": control_exclusions,
             "failure_runs_excluded_by_span_cap": failure_exclusions["span_over_max_s"],
             "control_runs_excluded_by_span_cap": control_exclusions["span_over_max_s"],
+            "failure_runs_excluded_outside_development_windows":
+                failure_exclusions["outside_development_window"],
+            "control_runs_excluded_outside_development_windows":
+                control_exclusions["outside_development_window"],
         },
+        "interval_contract": permitted.to_provenance(),
     }
 
 
@@ -1340,7 +1776,30 @@ def audit_source_files() -> dict[str, Path]:
     return {
         "module": Path(__file__),
         "pipeline.truncation": REPO_ROOT / "pipeline/truncation.py",
+        # parses and validates the delivery contract's intervals, so its
+        # content can change which spans are eligible to be ranked
+        "testing.first_pipeline_candidate_contract":
+            REPO_ROOT / "testing/first_pipeline_candidate_contract.py",
     }
+
+
+def _configured_recording_duration_s(cfg: AuditConfig) -> float:
+    """The one recording duration the interval clock is measured against.
+
+    The delivery contract's intervals are "seconds from the start of the
+    selected imec0 stream", and every configured sort is a sort OF that one
+    stream, so their declared durations must agree; a disagreement means the
+    audit and the contract are not describing the same recording, which is
+    exactly the W1/W6 coupling this gate exists to close.
+    """
+    durations = {s.sort_id: float(s.duration_s) for s in cfg.sorts}
+    distinct = sorted(set(durations.values()))
+    if len(distinct) != 1:
+        raise ValueError(
+            "configured sorts declare different recording durations, so the delivery "
+            f"contract's interval clock is ambiguous: {durations}"
+        )
+    return distinct[0]
 
 
 def _config_input_paths(cfg: AuditConfig) -> list[Path]:
@@ -1685,8 +2144,12 @@ def run_select(config_path: Path, out_root: Path) -> dict[str, Any]:
     _atomic_write_json(manifest_path, manifest)
 
     try:
+        ref = cfg.require_interval_contract(config_path)
+        permitted = read_permitted_intervals(
+            ref, recording_duration_s=_configured_recording_duration_s(cfg),
+        )
         result = select_cases(
-            windows, cfg.selection,
+            windows, cfg.selection, permitted=permitted,
             configured_sort_ids=[s.sort_id for s in cfg.sorts],
         )
         payload: dict[str, Any] = {
@@ -1709,6 +2172,7 @@ def run_select(config_path: Path, out_root: Path) -> dict[str, Any]:
                 "max_isi_s_units": "seconds",
                 "contiguity_rule": "i0_next == i1_prev + 1 (pipeline/truncation.py construct_windows)",
             },
+            "interval_contract": result["interval_contract"],
             "cases": result["cases"],
             "per_sort": result["per_sort"],
             "exclusion_counts": result["exclusion_counts"],
@@ -1718,6 +2182,11 @@ def run_select(config_path: Path, out_root: Path) -> dict[str, Any]:
                 "Counts below the caps are a valid result; no threshold was relaxed and no "
                 "case was backfilled.",
                 "KS-good/MUA status is descriptive elsewhere and does not filter eligibility.",
+                "Every case span lies inside one delivery-contract development window; runs "
+                "outside them were excluded before ranking, never outranked.",
+                "Audit controls are DIAGNOSTIC controls of this audit. The contract's "
+                "healthy_control_intervals are reserved evaluation intervals, are excluded from "
+                "every development window, and are never selected here.",
             ],
         }
         payload["selection_sha256"] = canonical_selection_digest(payload)

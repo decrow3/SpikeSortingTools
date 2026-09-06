@@ -1,5 +1,6 @@
 import dataclasses
 import io
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -27,9 +28,14 @@ from testing.luke_amplitude_dropout_audit import (
     STATUS_BOUNDARY_PINNED,
     STATUS_FINITE_INTERIOR,
     STATUS_INVALID_INPUT,
+    DIAGNOSTIC_CONTROL_KIND,
+    IntervalContractRef,
+    PermittedIntervals,
     STATUS_NONFINITE_FIT,
     STATUS_NO_FIT,
     WINDOWS_COLUMNS,
+    parse_interval_contract_ref,
+    read_permitted_intervals,
     _reject_unsafe_out_root,
     _validate_kept_spikes,
     audit_source_files,
@@ -66,6 +72,97 @@ REAL_CONFIG = REPO_ROOT / "testing/configs/luke_amplitude_dropout_audit_v1.json"
 # selection tests pin down cannot go unnoticed.
 SELECTION_BLOCK = json.loads(REAL_CONFIG.read_text())["selection"]
 CONSTANTS = parse_selection_constants(SELECTION_BLOCK)
+INTERVAL_CONTRACT_BLOCK = json.loads(REAL_CONFIG.read_text())["interval_contract"]
+
+CONTRACT_SCHEMA = "luke-first-pipeline-candidate-v1"
+
+
+# --------------------------------------------------------------------------- #
+# the delivery contract's interval gate
+#
+# `select_cases` takes `permitted` with no default, so these helpers make the
+# permitted region explicit in every selection test. The default covers the
+# whole synthetic timeline, which reproduces the pre-gate behaviour exactly;
+# tests of the gate itself pass a restricted region instead.
+# --------------------------------------------------------------------------- #
+def _permitted(windows_s=((0.0, 1e9),), *, duration_s: float = 1e9,
+               reserved=(), reserved_names=()) -> PermittedIntervals:
+    return PermittedIntervals(
+        contract_path="synthetic-contract",
+        contract_sha256="0" * 64,
+        contract_id="synthetic_contract",
+        contract_schema=CONTRACT_SCHEMA,
+        clock="seconds from the start of the selected stream",
+        recording_duration_s=duration_s,
+        development_windows_s=tuple(tuple(w) for w in windows_s),
+        sealed_windows_s=(),
+        sealed_exclusion_buffer_s=0.0,
+        reserved_evaluation_windows_s=tuple(tuple(w) for w in reserved),
+        reserved_evaluation_names=tuple(reserved_names),
+    )
+
+
+PERMISSIVE = _permitted()
+
+
+def _select(windows, constants=CONSTANTS, *, permitted=PERMISSIVE, **kwargs):
+    """`select_cases` with an explicit permitted region (permissive by default)."""
+    return select_cases(windows, constants, permitted=permitted, **kwargs)
+
+
+def _contract_payload(*, duration_s: float, sealed=None, buffer_s: float | None = None,
+                      healthy=(), contract_id: str = "synthetic_contract",
+                      development=None, schema: str = CONTRACT_SCHEMA) -> dict:
+    """A minimal delivery contract whose development windows are the documented
+    derivation: the full stream, minus sealed windows expanded by the buffer,
+    minus the reserved healthy evaluation intervals.
+
+    The contract module requires a non-empty sealed panel, so the default seals
+    a slice at the very end of the recording (scaled to its duration, since
+    these fixtures run from 1 s to 10,000 s long). That leaves the front of the
+    recording -- where the synthetic cases live -- permitted.
+    """
+    if sealed is None:
+        sealed = [(0.98 * duration_s, 0.99 * duration_s)]
+    if buffer_s is None:
+        buffer_s = 0.005 * duration_s
+    if development is None:
+        cuts = [(max(0.0, s - buffer_s), min(duration_s, e + buffer_s)) for s, e in sealed]
+        cuts += [(h["start_s"], h["stop_s"]) for h in healthy]
+        remaining = [(0.0, float(duration_s))]
+        for cut_start, cut_stop in sorted(cuts):
+            nxt = []
+            for start, stop in remaining:
+                if cut_stop <= start or cut_start >= stop:
+                    nxt.append((start, stop))
+                    continue
+                if cut_start > start:
+                    nxt.append((start, cut_start))
+                if cut_stop < stop:
+                    nxt.append((cut_stop, stop))
+            remaining = nxt
+        development = [[s, e] for s, e in remaining if e > s]
+    return {
+        "schema": schema,
+        "contract_id": contract_id,
+        "recording": {"duration_s": float(duration_s)},
+        "intervals": {
+            "clock": "seconds from the start of the selected stream",
+            "sealed_panel": {
+                "windows_s": [list(w) for w in sealed],
+                "exclusion_buffer_s": buffer_s,
+            },
+            "healthy_control_intervals": {"windows": list(healthy)},
+            "development_windows": {"windows_s": development},
+        },
+    }
+
+
+def _write_contract(tmp_path: Path, *, duration_s: float, name: str = "contract.json",
+                    **kwargs) -> Path:
+    path = tmp_path / name
+    path.write_text(json.dumps(_contract_payload(duration_s=duration_s, **kwargs)))
+    return path
 
 
 # --------------------------------------------------------------------------- #
@@ -719,8 +816,24 @@ def test_reject_unsafe_out_root_allows_sibling(tmp_path):
 # end-to-end inventory on synthetic fixtures
 # --------------------------------------------------------------------------- #
 def _write_config(tmp_path: Path, curated: Path, qc_dir: Path, source_recording: Path, *,
-                  sampling_frequency_hz: float = 1000.0, duration_s: float = 1.0) -> Path:
+                  sampling_frequency_hz: float = 1000.0, duration_s: float = 1.0,
+                  interval_contract: dict | None | str = "default",
+                  contract_kwargs: dict | None = None) -> Path:
+    """Write CONFIG plus, by default, a delivery contract whose development
+    windows cover the whole synthetic recording.
+
+    Pass ``interval_contract=None`` to omit the block (for the refusal test), or
+    ``contract_kwargs`` to restrict/derange the contract the config points at.
+    """
     source_recording.mkdir(parents=True, exist_ok=True)
+    if interval_contract == "default":
+        contract_path = _write_contract(
+            tmp_path, duration_s=duration_s, **(contract_kwargs or {})
+        )
+        interval_contract = {
+            "path": str(contract_path),
+            "contract_id": (contract_kwargs or {}).get("contract_id", "synthetic_contract"),
+        }
     payload = {
         "schema": SCHEMA,
         "selection": SELECTION_BLOCK,
@@ -734,6 +847,8 @@ def _write_config(tmp_path: Path, curated: Path, qc_dir: Path, source_recording:
             "duration_s": duration_s,
         }],
     }
+    if interval_contract is not None:
+        payload["interval_contract"] = interval_contract
     config_path = tmp_path / "config.json"
     config_path.write_text(json.dumps(payload))
     return config_path
@@ -858,7 +973,7 @@ def _failing_run(**kw):
 
 
 def test_select_freezes_one_failure_case_from_a_qualifying_transition():
-    result = select_cases(_table(_failing_run(sort_id="s1", cluster_id=7)), CONSTANTS)
+    result = _select(_table(_failing_run(sort_id="s1", cluster_id=7)), CONSTANTS)
     assert _ids(result) == ["s1__c7__failure1"]
     case = result["cases"][0]
     assert case["role"] == "failure" and case["rank"] == 1
@@ -879,11 +994,11 @@ def test_select_freezes_one_failure_case_from_a_qualifying_transition():
 
 def test_reference_threshold_is_inclusive_at_5_pct():
     """Both reference windows at exactly 5.0 % qualify; a hair above does not."""
-    ok = select_cases(_table(_run_rows([5.0, 5.0, 20.0, 20.0], cluster_id=1)), CONSTANTS)
+    ok = _select(_table(_run_rows([5.0, 5.0, 20.0, 20.0], cluster_id=1)), CONSTANTS)
     assert _ids(ok) == ["s1__c1__failure1"]
 
     rows = _run_rows([5.0, 5.0 + 1e-9, 20.0, 20.0], cluster_id=1)
-    bad = select_cases(_table(rows), CONSTANTS)
+    bad = _select(_table(rows), CONSTANTS)
     assert bad["cases"] == []
     assert bad["exclusion_counts"]["failure_runs_by_reason"][
         "reference_above_max_missing_pct"] == 1
@@ -891,10 +1006,10 @@ def test_reference_threshold_is_inclusive_at_5_pct():
 
 def test_failing_threshold_is_inclusive_at_15_pct():
     """Both failing windows at exactly 15.0 % qualify; a hair below does not."""
-    ok = select_cases(_table(_run_rows([1.0, 1.0, 15.0, 15.0], cluster_id=2)), CONSTANTS)
+    ok = _select(_table(_run_rows([1.0, 1.0, 15.0, 15.0], cluster_id=2)), CONSTANTS)
     assert _ids(ok) == ["s1__c2__failure1"]
 
-    bad = select_cases(_table(_run_rows([1.0, 1.0, 15.0, 15.0 - 1e-9], cluster_id=2)), CONSTANTS)
+    bad = _select(_table(_run_rows([1.0, 1.0, 15.0, 15.0 - 1e-9], cluster_id=2)), CONSTANTS)
     assert bad["cases"] == []
     assert bad["exclusion_counts"]["failure_runs_by_reason"]["failing_below_min_missing_pct"] == 1
 
@@ -908,12 +1023,12 @@ def test_median_difference_is_inclusive_at_10_pp_and_is_actually_applied():
     so a raised constant is used to prove the rule is live rather than dead
     code that happens to agree.
     """
-    ok = select_cases(_table(_run_rows([5.0, 5.0, 15.0, 15.0], cluster_id=3)), CONSTANTS)
+    ok = _select(_table(_run_rows([5.0, 5.0, 15.0, 15.0], cluster_id=3)), CONSTANTS)
     assert _ids(ok) == ["s1__c3__failure1"]
     assert ok["cases"][0]["difference_pp"] == pytest.approx(10.0)
 
     stricter = dataclasses.replace(CONSTANTS, min_median_difference_pp=12.0)
-    bad = select_cases(_table(_run_rows([5.0, 5.0, 15.0, 15.0], cluster_id=3)), stricter)
+    bad = _select(_table(_run_rows([5.0, 5.0, 15.0, 15.0], cluster_id=3)), stricter)
     assert bad["cases"] == []
     assert bad["exclusion_counts"]["failure_runs_by_reason"][
         "median_difference_below_min_pp"] == 1
@@ -922,11 +1037,11 @@ def test_median_difference_is_inclusive_at_10_pp_and_is_actually_applied():
 def test_span_cap_is_inclusive_at_600_s_and_exclusions_are_reported():
     """A 600.0 s span qualifies; a longer one is excluded and COUNTED, so slow
     units stay visible in the inventory instead of vanishing."""
-    ok = select_cases(_table(_failing_run(cluster_id=4, dur_s=150.0)), CONSTANTS)
+    ok = _select(_table(_failing_run(cluster_id=4, dur_s=150.0)), CONSTANTS)
     assert _ids(ok) == ["s1__c4__failure1"]
     assert ok["cases"][0]["span_s"] == pytest.approx(600.0)
 
-    slow = select_cases(
+    slow = _select(
         _table(_failing_run(cluster_id=4, dur_s=150.0, inter_window_gap_s=1.0)), CONSTANTS
     )
     assert slow["cases"] == []
@@ -945,7 +1060,7 @@ def test_an_intervening_invalid_or_boundary_pinned_window_breaks_the_run(bad_sta
         statuses=[STATUS_FINITE_INTERIOR, STATUS_FINITE_INTERIOR, bad_status,
                   STATUS_FINITE_INTERIOR, STATUS_FINITE_INTERIOR],
     )
-    result = select_cases(_table(rows), CONSTANTS)
+    result = _select(_table(rows), CONSTANTS)
     assert result["cases"] == []
     assert result["exclusion_counts"]["failure_runs_by_reason"][
         "status_not_finite_interior"] == 2  # both length-4 runs contain it
@@ -956,7 +1071,7 @@ def test_a_non_contiguous_i0_jump_breaks_the_run():
     for row in rows[2:]:            # shift the second half one index later
         row["i0"] += 1
         row["i1"] += 1
-    result = select_cases(_table(rows), CONSTANTS)
+    result = _select(_table(rows), CONSTANTS)
     assert result["cases"] == []
     assert result["exclusion_counts"]["failure_runs_by_reason"]["non_contiguous_index"] == 1
 
@@ -964,7 +1079,7 @@ def test_a_non_contiguous_i0_jump_breaks_the_run():
 def test_a_wrong_nominal_count_breaks_the_run():
     rows = _run_rows([1.0, 2.0, 20.0, 22.0], cluster_id=8, nominals=[1000, 1000, 999, 1000])
     assert [r["i0"] for r in rows] == [0, 1000, 2000, 2999]   # still contiguous
-    result = select_cases(_table(rows), CONSTANTS)
+    result = _select(_table(rows), CONSTANTS)
     assert result["cases"] == []
     assert result["exclusion_counts"]["failure_runs_by_reason"]["nominal_count_not_required"] == 1
 
@@ -975,14 +1090,14 @@ def test_a_production_gap_between_two_index_contiguous_windows_breaks_the_run():
     lie inside ONE gap-free block, so a >10 s separation between window k's
     last spike and window k+1's first spike -- already known to be adjacent
     spikes by index -- splits the run."""
-    over = select_cases(
+    over = _select(
         _table(_failing_run(cluster_id=9, inter_window_gap_s=PRODUCTION_MAX_ISI_S + 0.5)),
         CONSTANTS,
     )
     assert over["cases"] == []
     assert over["exclusion_counts"]["failure_runs_by_reason"]["gap_between_windows"] == 1
 
-    exact = select_cases(
+    exact = _select(
         _table(_failing_run(cluster_id=9, inter_window_gap_s=PRODUCTION_MAX_ISI_S)), CONSTANTS
     )
     assert _ids(exact) == ["s1__c9__failure1"]   # exactly 10 s does not split
@@ -992,10 +1107,10 @@ def test_ties_are_broken_by_start_then_by_numeric_cluster_id():
     same = [1.0, 1.0, 21.0, 21.0]
     later_but_lower_id = _run_rows(same, cluster_id=3, start_s=1000.0)
     earlier_but_higher_id = _run_rows(same, cluster_id=7, start_s=0.0)
-    result = select_cases(_table(later_but_lower_id, earlier_but_higher_id), CONSTANTS)
+    result = _select(_table(later_but_lower_id, earlier_but_higher_id), CONSTANTS)
     assert _ids(result) == ["s1__c7__failure1", "s1__c3__failure2"]  # start beats ID
 
-    tie_on_start = select_cases(
+    tie_on_start = _select(
         _table(_run_rows(same, cluster_id=9, start_s=0.0),
                _run_rows(same, cluster_id=4, start_s=0.0)),
         CONSTANTS,
@@ -1006,13 +1121,13 @@ def test_ties_are_broken_by_start_then_by_numeric_cluster_id():
 def test_largest_difference_per_cluster_is_kept_and_cluster_ties_go_to_earliest_start():
     early_small = _run_rows([1.0, 1.0, 16.0, 16.0], cluster_id=2, i0=0, start_s=0.0)
     late_large = _run_rows([1.0, 1.0, 26.0, 26.0], cluster_id=2, i0=50000, start_s=5000.0)
-    result = select_cases(_table(early_small, late_large), CONSTANTS)
+    result = _select(_table(early_small, late_large), CONSTANTS)
     assert _ids(result) == ["s1__c2__failure1"]
     assert result["cases"][0]["difference_pp"] == pytest.approx(25.0)
     assert result["cases"][0]["windows"][0]["i0"] == 50000
 
     same = [1.0, 1.0, 21.0, 21.0]
-    tie = select_cases(
+    tie = _select(
         _table(_run_rows(same, cluster_id=2, i0=0, start_s=0.0),
                _run_rows(same, cluster_id=2, i0=50000, start_s=5000.0)),
         CONSTANTS,
@@ -1021,7 +1136,7 @@ def test_largest_difference_per_cluster_is_kept_and_cluster_ties_go_to_earliest_
 
 
 def test_only_two_failure_cases_per_sort_are_kept():
-    result = select_cases(
+    result = _select(
         _table(_run_rows([1.0, 1.0, 30.0, 30.0], cluster_id=1),
                _run_rows([1.0, 1.0, 25.0, 25.0], cluster_id=2),
                _run_rows([1.0, 1.0, 20.0, 20.0], cluster_id=3)),
@@ -1036,7 +1151,7 @@ def test_only_two_failure_cases_per_sort_are_kept():
 def test_fewer_cases_than_the_caps_is_a_valid_result_without_relaxation():
     """One sort yields a case, the other yields nothing at all. Nothing is
     backfilled and no threshold moves."""
-    result = select_cases(
+    result = _select(
         _table(_failing_run(sort_id="rescue", cluster_id=1),
                _run_rows([9.0, 9.0, 9.0, 9.0], sort_id="legacy", cluster_id=1)),
         CONSTANTS,
@@ -1048,20 +1163,20 @@ def test_fewer_cases_than_the_caps_is_a_valid_result_without_relaxation():
 
 
 def test_control_range_is_inclusive_at_3_pp():
-    ok = select_cases(_table(_run_rows([1.0, 4.0, 2.0, 3.0], cluster_id=1)), CONSTANTS)
+    ok = _select(_table(_run_rows([1.0, 4.0, 2.0, 3.0], cluster_id=1)), CONSTANTS)
     assert _ids(ok) == ["s1__c1__control1"]
     assert ok["cases"][0]["range_pp"] == pytest.approx(3.0)
 
-    bad = select_cases(_table(_run_rows([1.0, 4.5, 2.0, 3.0], cluster_id=1)), CONSTANTS)
+    bad = _select(_table(_run_rows([1.0, 4.5, 2.0, 3.0], cluster_id=1)), CONSTANTS)
     assert bad["cases"] == []
     assert bad["exclusion_counts"]["control_runs_by_reason"]["range_above_max_pp"] == 1
 
 
 def test_control_missing_pct_is_inclusive_at_5_pct():
-    ok = select_cases(_table(_run_rows([5.0, 5.0, 5.0, 5.0], cluster_id=1)), CONSTANTS)
+    ok = _select(_table(_run_rows([5.0, 5.0, 5.0, 5.0], cluster_id=1)), CONSTANTS)
     assert _ids(ok) == ["s1__c1__control1"]
 
-    bad = select_cases(_table(_run_rows([5.0, 5.0, 5.0, 5.0 + 1e-9], cluster_id=1)), CONSTANTS)
+    bad = _select(_table(_run_rows([5.0, 5.0, 5.0, 5.0 + 1e-9], cluster_id=1)), CONSTANTS)
     assert bad["cases"] == []
     assert bad["exclusion_counts"]["control_runs_by_reason"]["above_max_missing_pct"] == 1
 
@@ -1071,7 +1186,7 @@ def test_a_cluster_selected_as_a_failure_cannot_also_be_the_control():
     same_cluster_control = _run_rows([1.0, 1.0, 1.0, 1.0], cluster_id=1, i0=50000,
                                      start_s=5000.0, base_row=4)
     other_cluster_control = _run_rows([2.0, 2.0, 2.0, 2.0], cluster_id=2, i0=0, start_s=0.0)
-    result = select_cases(
+    result = _select(
         _table(failure, same_cluster_control, other_cluster_control), CONSTANTS
     )
     assert _ids(result) == ["s1__c1__failure1", "s1__c2__control1"]
@@ -1079,7 +1194,7 @@ def test_a_cluster_selected_as_a_failure_cannot_also_be_the_control():
 
 
 def test_no_control_is_invented_when_the_only_candidate_is_the_failure_cluster():
-    result = select_cases(
+    result = _select(
         _table(_failing_run(cluster_id=1, i0=0, start_s=0.0),
                _run_rows([1.0, 1.0, 1.0, 1.0], cluster_id=1, i0=50000, start_s=5000.0,
                          base_row=4)),
@@ -1093,7 +1208,7 @@ def test_control_is_chosen_by_the_minimal_absolute_log_span_ratio():
     """Failure span 400 s. Candidate spans 200 s (|log 0.5| = 0.693) and 600 s
     (|log 1.5| = 0.405): the longer one wins even though it is further away in
     absolute seconds."""
-    result = select_cases(
+    result = _select(
         _table(_failing_run(cluster_id=1, dur_s=100.0),
                _run_rows([1.0, 1.0, 1.0, 1.0], cluster_id=2, dur_s=50.0),
                _run_rows([1.0, 1.0, 1.0, 1.0], cluster_id=3, dur_s=150.0)),
@@ -1108,7 +1223,7 @@ def test_control_is_chosen_by_the_minimal_absolute_log_span_ratio():
 
 def test_control_log_ratio_ties_break_by_start_then_cluster_id():
     stable = [1.0, 1.0, 1.0, 1.0]
-    result = select_cases(
+    result = _select(
         _table(_failing_run(cluster_id=1, dur_s=100.0),
                _run_rows(stable, cluster_id=3, dur_s=100.0, start_s=0.0),
                _run_rows(stable, cluster_id=2, dur_s=100.0, start_s=9000.0)),
@@ -1116,7 +1231,7 @@ def test_control_log_ratio_ties_break_by_start_then_cluster_id():
     )
     assert _ids(result) == ["s1__c1__failure1", "s1__c3__control1"]  # start beats ID
 
-    tied = select_cases(
+    tied = _select(
         _table(_failing_run(cluster_id=1, dur_s=100.0),
                _run_rows(stable, cluster_id=5, dur_s=100.0, start_s=9000.0),
                _run_rows(stable, cluster_id=4, dur_s=100.0, start_s=9000.0)),
@@ -1127,7 +1242,7 @@ def test_control_log_ratio_ties_break_by_start_then_cluster_id():
 
 def test_with_no_failure_the_earliest_eligible_control_is_taken():
     stable = [1.0, 1.0, 1.0, 1.0]
-    result = select_cases(
+    result = _select(
         _table(_run_rows(stable, cluster_id=2, dur_s=150.0, start_s=5000.0),
                _run_rows(stable, cluster_id=8, dur_s=50.0, start_s=10.0)),
         CONSTANTS,
@@ -1138,7 +1253,7 @@ def test_with_no_failure_the_earliest_eligible_control_is_taken():
 
 
 def test_controls_are_selected_independently_per_sort():
-    result = select_cases(
+    result = _select(
         _table(_failing_run(sort_id="rescue", cluster_id=1),
                _run_rows([1.0, 1.0, 1.0, 1.0], sort_id="rescue", cluster_id=2),
                _failing_run(sort_id="legacy", cluster_id=1),
@@ -1179,13 +1294,13 @@ def test_no_candidate_or_intervention_column_can_influence_selection():
     poisoned["intervention_outcome"] = "improved"
     poisoned["ks_label"] = ["mua"] * len(poisoned)
     poisoned["waveform_score"] = np.arange(len(poisoned), dtype=float)
-    assert select_cases(poisoned, CONSTANTS)["cases"] == select_cases(base, CONSTANTS)["cases"]
+    assert _select(poisoned, CONSTANTS)["cases"] == _select(base, CONSTANTS)["cases"]
 
 
 def test_ks_good_mua_status_does_not_filter_eligibility():
     table = _table(_failing_run(cluster_id=1))
     table["ks_label"] = "mua"
-    assert _ids(select_cases(table, CONSTANTS)) == ["s1__c1__failure1"]
+    assert _ids(_select(table, CONSTANTS)) == ["s1__c1__failure1"]
 
 
 # --------------------------------------------------------------------------- #
@@ -1269,7 +1384,15 @@ def test_selection_constants_cannot_be_overridden_on_the_command_line(tmp_path):
 # --------------------------------------------------------------------------- #
 # layer 3: `select` writes into the inventory's own out-root, once
 # --------------------------------------------------------------------------- #
-def _completed_inventory(tmp_path: Path, windows: pd.DataFrame | None = None):
+#: Hand-built selection tables put their windows on a ~100 s-per-window clock,
+#: so the config these tests declare must describe a recording long enough to
+#: contain them -- the interval gate compares case spans against the delivery
+#: contract's windows, which are derived from that same duration.
+SYNTHETIC_RECORDING_S = 10_000.0
+
+
+def _completed_inventory(tmp_path: Path, windows: pd.DataFrame | None = None,
+                         *, duration_s: float = SYNTHETIC_RECORDING_S, **config_kwargs):
     """Run a real `inventory` on synthetic fixtures, then (optionally) replace
     windows.csv with a hand-built table so selection can be exercised without
     fabricating a 4,000-spike cluster.
@@ -1285,7 +1408,8 @@ def _completed_inventory(tmp_path: Path, windows: pd.DataFrame | None = None):
         qc_dir, cid=np.array([0.0]), window_blocks=np.array([[0, 3]]),
         popts=np.array([[10.0, 1.0, 1.0]]), mpcts=np.array([12.5]),
     )
-    config_path = _write_config(tmp_path, curated, qc_dir, tmp_path / "recording")
+    config_path = _write_config(tmp_path, curated, qc_dir, tmp_path / "recording",
+                                duration_s=duration_s, **config_kwargs)
     out_root = tmp_path / "out"
     run_inventory(config_path, out_root)
     if windows is not None:
@@ -1502,7 +1626,7 @@ def test_a_sort_whose_inventory_is_entirely_no_fit_still_reports_zero_cases():
                     "missing_pct": np.nan, "status": STATUS_NO_FIT})
         no_fit_rows.append(row)
 
-    result = select_cases(
+    result = _select(
         _table(_failing_run(sort_id="rescue", cluster_id=1), no_fit_rows), CONSTANTS
     )
     assert _ids(result) == ["rescue__c1__failure1"]
@@ -1518,7 +1642,7 @@ def test_a_sort_whose_inventory_is_entirely_no_fit_still_reports_zero_cases():
 
 
 def test_a_configured_sort_with_no_inventory_rows_at_all_still_reports_zero_cases():
-    result = select_cases(
+    result = _select(
         _table(_failing_run(sort_id="rescue", cluster_id=1)), CONSTANTS,
         configured_sort_ids=["rescue", "legacy"],
     )
@@ -1640,10 +1764,16 @@ def _write_two_sort_config(tmp_path: Path, sort_ids: list[str]) -> Path:
             "source_recording": str(recording), "sampling_frequency_hz": 1000.0,
             "selected_start_sample": 0, "duration_s": 1.0,
         })
+    contract_path = _write_contract(tmp_path, duration_s=1.0)
     config_path = tmp_path / "config.json"
-    config_path.write_text(json.dumps(
-        {"schema": SCHEMA, "selection": SELECTION_BLOCK, "sorts": sorts}
-    ))
+    config_path.write_text(json.dumps({
+        "schema": SCHEMA,
+        "selection": SELECTION_BLOCK,
+        "interval_contract": {
+            "path": str(contract_path), "contract_id": "synthetic_contract",
+        },
+        "sorts": sorts,
+    }))
     return config_path
 
 
@@ -1680,7 +1810,7 @@ def test_a_wholly_numeric_looking_sort_id_column_is_not_coerced_to_numbers():
     parsed = _parse_windows_bytes(buffer.getvalue().encode())
 
     assert list(parsed["sort_id"].unique()) == ["001", "002"]
-    assert _ids(select_cases(parsed, CONSTANTS)) == ["001__c1__failure1", "002__c1__failure1"]
+    assert _ids(_select(parsed, CONSTANTS)) == ["001__c1__failure1", "002__c1__failure1"]
 
 
 def test_numeric_columns_stay_nullable_across_the_round_trip():
@@ -1703,7 +1833,7 @@ def test_numeric_columns_stay_nullable_across_the_round_trip():
     assert parsed.loc[0, "i0"] == 0 and parsed.loc[0, "nominal_count"] == 1000
     # the placeholder is dropped by window_records but its sort still reports
     assert set(window_records(parsed)) == {("s1", 1)}
-    assert set(select_cases(parsed, CONSTANTS)["per_sort"]) == {"s1"}
+    assert set(_select(parsed, CONSTANTS)["per_sort"]) == {"s1"}
 
 
 def test_junk_in_a_numeric_column_is_rejected_not_silently_read_as_missing():
@@ -1713,7 +1843,7 @@ def test_junk_in_a_numeric_column_is_rejected_not_silently_read_as_missing():
     table.to_csv(buffer, index=False)
     parsed = _parse_windows_bytes(buffer.getvalue().encode())
     with pytest.raises(ValueError, match="must be a number"):
-        select_cases(parsed, CONSTANTS)
+        _select(parsed, CONSTANTS)
 
 
 # --------------------------------------------------------------------------- #
@@ -2512,9 +2642,14 @@ def test_load_attested_selection_refuses_a_foreign_or_unfrozen_file(tmp_path):
     assert load_attested_selection(path)["selection_sha256"] == payload["selection_sha256"]
 
 
-def test_audit_source_files_covers_the_fitter_and_this_module():
+def test_audit_source_files_covers_the_fitter_the_contract_parser_and_this_module():
+    """Every working-tree source whose content can change an audit answer: the
+    module itself, the fitter, and (since the interval gate) the contract
+    parser that decides which spans are eligible to be ranked at all."""
     files = audit_source_files()
-    assert set(files) == {"module", "pipeline.truncation"}
+    assert set(files) == {
+        "module", "pipeline.truncation", "testing.first_pipeline_candidate_contract",
+    }
     assert files["module"].name == "luke_amplitude_dropout_audit.py"
     assert all(p.exists() for p in files.values())
 
@@ -2571,3 +2706,301 @@ def test_historical_replay_reproduces_one_real_cached_window():
     result = historical_exact_fit(cluster_amps, i0, i1)
     assert result["historical_count"] == i1 - i0
     assert abs(result["historical_missing_pct"] - float(cached.mpcts[r])) < 1e-6
+
+
+# --------------------------------------------------------------------------- #
+# the delivery contract's interval gate (note item 1)
+#
+# The audit ranks cases out of a recording the delivery contract has already
+# partitioned. These tests pin the two guarantees the integration exists for:
+# a prohibited case never reaches a ranking, and a case that overhangs an
+# exclusion boundary is rejected rather than trimmed.
+# --------------------------------------------------------------------------- #
+def test_a_stronger_prohibited_case_never_displaces_an_eligible_one():
+    """The failure cap is 2 per sort. A stronger case outside the development
+    windows must not take one of those slots -- it must not be ranked at all.
+
+    The permissive arm proves the fixture actually exercises displacement: with
+    no gate the prohibited case wins slot 1 and evicts an eligible one.
+    """
+    inside_a = _failing_run(sort_id="s1", cluster_id=1, start_s=0.0)          # 19.5 pp
+    inside_b = _run_rows([1.0, 2.0, 18.0, 19.0], sort_id="s1", cluster_id=2,  # 17.0 pp
+                         start_s=500.0)
+    prohibited = _run_rows([0.5, 0.5, 45.0, 45.0], sort_id="s1", cluster_id=3,  # 44.5 pp
+                           start_s=5000.0)
+    table = _table(inside_a, inside_b, prohibited)
+
+    ungated = _select(table, CONSTANTS)
+    assert _ids(ungated) == ["s1__c3__failure1", "s1__c1__failure2"], (
+        "fixture does not exercise displacement: the prohibited case must be the "
+        "strongest and the cap must bind"
+    )
+
+    permitted = _permitted(((0.0, 1000.0),), duration_s=10_000.0)
+    gated = _select(table, CONSTANTS, permitted=permitted)
+    assert _ids(gated) == ["s1__c1__failure1", "s1__c2__failure2"]
+    assert all(c["cluster_id"] != 3 for c in gated["cases"])
+    assert gated["exclusion_counts"]["failure_runs_by_reason"][
+        "outside_development_window"] == 1
+    assert gated["exclusion_counts"][
+        "failure_runs_excluded_outside_development_windows"] == 1
+
+
+def test_a_case_crossing_an_exclusion_boundary_is_rejected():
+    """Containment is of the whole span. A run that starts inside a development
+    window and ends past its edge is rejected, not trimmed to fit."""
+    run = _failing_run(sort_id="s1", cluster_id=1, start_s=800.0)  # span [800, 1200]
+    table = _table(run)
+
+    inside = _select(table, CONSTANTS, permitted=_permitted(((0.0, 1200.0),)))
+    assert _ids(inside) == ["s1__c1__failure1"]
+
+    crossing = _select(table, CONSTANTS, permitted=_permitted(((0.0, 1199.0),)))
+    assert crossing["cases"] == []
+    assert crossing["exclusion_counts"]["failure_runs_by_reason"][
+        "outside_development_window"] == 1
+
+
+def test_a_case_spanning_two_windows_across_an_excluded_gap_is_rejected():
+    """Both ends inside permitted regions is not containment: the excluded
+    region between them is exactly what the contract reserved."""
+    run = _failing_run(sort_id="s1", cluster_id=1, start_s=0.0)  # span [0, 400]
+    table = _table(run)
+    split = _permitted(((0.0, 150.0), (250.0, 1000.0)))
+    result = _select(table, CONSTANTS, permitted=split)
+    assert result["cases"] == []
+    assert result["exclusion_counts"]["failure_runs_by_reason"][
+        "outside_development_window"] == 1
+
+
+def test_diagnostic_controls_are_gated_and_labelled_as_diagnostic():
+    """Controls get the same gate as failures, and are labelled to keep them
+    distinct from the contract's reserved healthy evaluation intervals."""
+    failure = _failing_run(sort_id="s1", cluster_id=1, start_s=0.0)
+    control = _run_rows([1.0, 1.0, 1.5, 1.5], sort_id="s1", cluster_id=2, start_s=500.0)
+
+    allowed = _select(_table(failure, control), CONSTANTS,
+                      permitted=_permitted(((0.0, 1000.0),)))
+    controls = [c for c in allowed["cases"] if c["role"] == "control"]
+    assert [c["cluster_id"] for c in controls] == [2]
+    assert controls[0]["control_kind"] == DIAGNOSTIC_CONTROL_KIND
+    assert controls[0]["development_window_index"] == 0
+    assert controls[0]["development_window_s"] == [0.0, 1000.0]
+
+    gated = _select(_table(failure, control), CONSTANTS,
+                    permitted=_permitted(((0.0, 450.0),)))
+    assert [c["role"] for c in gated["cases"]] == ["failure"]
+    assert gated["exclusion_counts"]["control_runs_by_reason"][
+        "outside_development_window"] == 1
+
+
+def test_selected_cases_record_the_window_they_came_from():
+    result = _select(_table(_failing_run(sort_id="s1", cluster_id=1, start_s=600.0)),
+                     CONSTANTS,
+                     permitted=_permitted(((0.0, 100.0), (500.0, 1500.0))))
+    case = result["cases"][0]
+    assert case["development_window_index"] == 1
+    assert case["development_window_s"] == [500.0, 1500.0]
+
+
+def test_select_cases_requires_permitted_intervals():
+    """There is no unrestricted ranking: `permitted` has no default."""
+    with pytest.raises(TypeError):
+        select_cases(_table(_failing_run()), CONSTANTS)
+
+
+# --------------------------------------------------------------------------- #
+# reading and re-validating the contract
+# --------------------------------------------------------------------------- #
+def _ref(path: Path, contract_id: str = "synthetic_contract") -> IntervalContractRef:
+    return IntervalContractRef(path=path, contract_id=contract_id)
+
+
+def test_read_permitted_intervals_derives_and_hashes_the_bytes_it_parsed(tmp_path):
+    path = _write_contract(
+        tmp_path, duration_s=10_000.0,
+        sealed=[(2000.0, 2100.0)], buffer_s=300.0,
+        healthy=[{"name": "H1", "start_s": 5000.0, "stop_s": 5120.0}],
+    )
+    permitted = read_permitted_intervals(_ref(path), recording_duration_s=10_000.0)
+    assert permitted.development_windows_s == (
+        (0.0, 1700.0), (2400.0, 5000.0), (5120.0, 10_000.0),
+    )
+    assert permitted.contract_sha256 == hashlib.sha256(path.read_bytes()).hexdigest()
+    assert permitted.reserved_evaluation_names == ("H1",)
+
+
+def test_read_permitted_intervals_refuses_a_shipped_list_that_is_not_the_derivation(tmp_path):
+    """The contract says its window list need not be trusted; this is what
+    makes that true.
+
+    The list below is disjoint from everything reserved -- every bounds and
+    disjointness check passes -- but it silently drops one permitted region, so
+    only re-deriving it catches the drift.
+    """
+    payload = _contract_payload(
+        duration_s=10_000.0, sealed=[(2000.0, 2100.0)], buffer_s=300.0,
+        healthy=[{"name": "H1", "start_s": 5000.0, "stop_s": 5120.0}],
+    )
+    derived = payload["intervals"]["development_windows"]["windows_s"]
+    assert len(derived) > 1
+    payload["intervals"]["development_windows"]["windows_s"] = derived[:-1]
+    path = tmp_path / "c.json"
+    path.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="not the documented derivation"):
+        read_permitted_intervals(_ref(path), recording_duration_s=10_000.0)
+
+
+def test_read_permitted_intervals_refuses_a_window_hiding_a_sealed_region(tmp_path):
+    """The other direction: one window swallowing a sealed region is caught by
+    the disjointness check before the derivation check ever runs."""
+    payload = _contract_payload(
+        duration_s=10_000.0, sealed=[(2000.0, 2100.0)], buffer_s=300.0, healthy=[],
+        development=[[0.0, 10_000.0]],
+    )
+    path = tmp_path / "c.json"
+    path.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="sealed window expanded"):
+        read_permitted_intervals(_ref(path), recording_duration_s=10_000.0)
+
+
+def test_read_permitted_intervals_refuses_a_window_over_a_sealed_region(tmp_path):
+    payload = _contract_payload(duration_s=10_000.0, sealed=[(2000.0, 2100.0)],
+                                buffer_s=300.0, healthy=[])
+    payload["intervals"]["development_windows"]["windows_s"] = [[0.0, 2050.0], [2400.0, 10_000.0]]
+    path = tmp_path / "c.json"
+    path.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="sealed window expanded"):
+        read_permitted_intervals(_ref(path), recording_duration_s=10_000.0)
+
+
+def test_read_permitted_intervals_refuses_a_window_over_a_reserved_evaluation_interval(tmp_path):
+    healthy = [{"name": "H1", "start_s": 5000.0, "stop_s": 5120.0}]
+    payload = _contract_payload(duration_s=10_000.0, sealed=[(1000.0, 1100.0)],
+                                buffer_s=100.0, healthy=healthy)
+    # disjoint from the sealed region, but [1200, 5060] swallows the reserved
+    # evaluation interval [5000, 5120]
+    payload["intervals"]["development_windows"]["windows_s"] = [
+        [0.0, 900.0], [1200.0, 5060.0], [5120.0, 10_000.0],
+    ]
+    path = tmp_path / "c.json"
+    path.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="reserved healthy evaluation interval"):
+        read_permitted_intervals(_ref(path), recording_duration_s=10_000.0)
+
+
+def test_read_permitted_intervals_refuses_a_window_outside_the_recording(tmp_path):
+    payload = _contract_payload(duration_s=1000.0, healthy=[])
+    payload["intervals"]["development_windows"]["windows_s"] = [[0.0, 2000.0]]
+    path = tmp_path / "c.json"
+    path.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="outside the recording"):
+        read_permitted_intervals(_ref(path), recording_duration_s=1000.0)
+
+
+def test_read_permitted_intervals_refuses_a_duration_that_is_not_this_recording(tmp_path):
+    path = _write_contract(tmp_path, duration_s=10_000.0, healthy=[])
+    with pytest.raises(ValueError, match="not describing the same recording"):
+        read_permitted_intervals(_ref(path), recording_duration_s=9_000.0)
+
+
+def test_read_permitted_intervals_refuses_a_contract_id_mismatch(tmp_path):
+    path = _write_contract(tmp_path, duration_s=1000.0, healthy=[],
+                           contract_id="some_other_contract")
+    with pytest.raises(ValueError, match="contract_id"):
+        read_permitted_intervals(_ref(path), recording_duration_s=1000.0)
+
+
+def test_read_permitted_intervals_refuses_a_foreign_schema(tmp_path):
+    path = _write_contract(tmp_path, duration_s=1000.0, healthy=[],
+                           schema="something-else-v1")
+    with pytest.raises(ValueError, match="schema"):
+        read_permitted_intervals(_ref(path), recording_duration_s=1000.0)
+
+
+def test_read_permitted_intervals_refuses_overlapping_development_windows(tmp_path):
+    payload = _contract_payload(duration_s=1000.0, healthy=[])
+    payload["intervals"]["development_windows"]["windows_s"] = [[0.0, 600.0], [500.0, 1000.0]]
+    path = tmp_path / "c.json"
+    path.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="overlap"):
+        read_permitted_intervals(_ref(path), recording_duration_s=1000.0)
+
+
+# --------------------------------------------------------------------------- #
+# wiring: CONFIG -> contract -> select
+# --------------------------------------------------------------------------- #
+def test_config_without_an_interval_contract_cannot_select(tmp_path):
+    curated = _write_curated(tmp_path, n=10)
+    qc_dir = tmp_path / "qc"
+    _write_cached_qc(qc_dir, cid=np.array([0.0]), window_blocks=np.array([[0, 3]]),
+                     popts=np.array([[10.0, 1.0, 1.0]]), mpcts=np.array([12.5]))
+    config_path = _write_config(tmp_path, curated, qc_dir, tmp_path / "recording",
+                                interval_contract=None)
+    out_root = tmp_path / "out"
+    run_inventory(config_path, out_root)  # inventory ranks nothing, so it still runs
+    with pytest.raises(ValueError, match="interval_contract"):
+        run_select(config_path, out_root)
+
+
+def test_sorts_that_disagree_about_the_recording_duration_cannot_select(tmp_path):
+    """If the sorts do not agree on the recording, the contract's interval
+    clock is ambiguous and the audit is not describing the contract's data."""
+    from testing.luke_amplitude_dropout_audit import _configured_recording_duration_s
+
+    cfg = AuditConfig(
+        schema=SCHEMA,
+        sorts=(
+            SortConfig(sort_id="a", curated=Path("."), qc_dir=Path("."),
+                       source_recording=Path("."), sampling_frequency_hz=1000.0,
+                       selected_start_sample=0, duration_s=100.0),
+            SortConfig(sort_id="b", curated=Path("."), qc_dir=Path("."),
+                       source_recording=Path("."), sampling_frequency_hz=1000.0,
+                       selected_start_sample=0, duration_s=101.0),
+        ),
+        selection=CONSTANTS,
+    )
+    with pytest.raises(ValueError, match="different recording durations"):
+        _configured_recording_duration_s(cfg)
+
+
+def test_selection_json_records_the_interval_contract_identity(tmp_path):
+    curated = _write_curated(tmp_path, n=10)
+    qc_dir = tmp_path / "qc"
+    _write_cached_qc(qc_dir, cid=np.array([0.0]), window_blocks=np.array([[0, 3]]),
+                     popts=np.array([[10.0, 1.0, 1.0]]), mpcts=np.array([12.5]))
+    config_path = _write_config(tmp_path, curated, qc_dir, tmp_path / "recording")
+    out_root = tmp_path / "out"
+    run_inventory(config_path, out_root)
+    payload = run_select(config_path, out_root)
+
+    recorded = payload["interval_contract"]
+    contract_path = Path(recorded["contract_path"])
+    assert recorded["contract_id"] == "synthetic_contract"
+    assert recorded["contract_sha256"] == hashlib.sha256(contract_path.read_bytes()).hexdigest()
+    # the default fixture seals a slice at the end of the 1 s synthetic stream
+    assert recorded["development_windows_s"] == [[0.0, 0.975], [0.995, 1.0]]
+    assert recorded["sealed_windows_s"] == [[0.98, 0.99]]
+    assert "reserved" in recorded["rule"] or "development window" in recorded["rule"]
+    # and the identity is inside the digest that freezes the selection
+    assert payload["selection_sha256"] == canonical_selection_digest(payload)
+
+
+def test_the_shipped_config_points_at_the_shipped_contract():
+    """The W1/W6 join itself: the audit config's declared contract must exist,
+    match its declared id, and re-derive cleanly against the same recording
+    duration the audit's sorts declare."""
+    cfg = load_config(REAL_CONFIG)
+    ref = cfg.require_interval_contract(REAL_CONFIG)
+    assert ref.contract_id == INTERVAL_CONTRACT_BLOCK["contract_id"]
+    if not ref.path.exists():
+        pytest.skip("delivery contract not present in this working tree")
+    durations = {s.duration_s for s in cfg.sorts}
+    assert len(durations) == 1
+    permitted = read_permitted_intervals(ref, recording_duration_s=durations.pop())
+    assert len(permitted.development_windows_s) == 8
+    assert permitted.development_windows_s[0] == (0.0, 900.0)
+    # nothing permitted may touch the sealed panel or the reserved evaluation set
+    for d_start, d_stop in permitted.development_windows_s:
+        for r_start, r_stop in permitted.reserved_evaluation_windows_s:
+            assert d_stop <= r_start or d_start >= r_stop

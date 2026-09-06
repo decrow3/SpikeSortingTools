@@ -1,5 +1,10 @@
 {
   "schema": "luke-amplitude-dropout-audit-v1",
+  "interval_contract": {
+    "path": "configs/first_pipeline_candidate.v1.json",
+    "contract_id": "luke0804_imec0_first_pipeline_candidate_v1",
+    "purpose": "The delivery contract that reserves this recording's sealed held-out panel (plus its exclusion buffer) and the healthy evaluation intervals. Selection may only rank case spans that lie inside one of its intervals.development_windows.windows_s; those windows are re-derived and re-validated at runtime, not trusted as shipped."
+  },
   "selection": {
     "windows_per_case": 4,
     "required_nominal_count": 1000,
