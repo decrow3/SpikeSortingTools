@@ -486,7 +486,9 @@ def resolve_motion(resolved: dict[str, Any], inputs: ReplayInput) -> MotionDecla
             f"the motion field at {path} hashes to {digest[:12]}, not the declared "
             f"{declared['sha256'][:12]}"
         )
-    field = load_qualified_motion_field(path)  # refuses an unqualified field
+    # duration supplied so a field carrying acquisition-clock times is refused
+    # rather than silently interpolated against the wrong origin
+    field = load_qualified_motion_field(path, recording_duration_s=resolved["duration_s"])
     interpolated = interpolate_motion_at_spikes(field, inputs.seconds(), inputs.depth_um)
     return MotionDeclaration(
         mode="qualified_field",

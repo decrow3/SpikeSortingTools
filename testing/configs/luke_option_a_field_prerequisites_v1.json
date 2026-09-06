@@ -1,0 +1,43 @@
+{
+  "session": "Luke 2025-08-04",
+  "stream": "imec0.ap",
+  "motion_root": "/mnt/NPX/Luke/20250804/dredge_pipeline_results_Luke0804_V2V1_g0_imec0/motion",
+  "spikeglx_meta": "/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0/Luke0730_V2V1_g0_imec0/Luke0730_V2V1_g0_t0.imec0.ap.meta",
+  "spikeinterface_manifest": "/mnt/NPX/Luke/20250804/dredge_pipeline_results_Luke0804_V2V1_g0_imec0/preprocessed_recording/binary.json",
+  "declared_field_npz": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/motion/dredge-rigid-sidecar/estimate.npz",
+  "duration_s": 10473.5537279367,
+  "development_windows_s": [
+    [
+      0.0,
+      900.0
+    ],
+    [
+      1620.0,
+      2100.0
+    ],
+    [
+      2820.0,
+      3120.0
+    ],
+    [
+      3240.0,
+      4380.0
+    ],
+    [
+      5220.0,
+      5640.0
+    ],
+    [
+      5760.0,
+      8700.0
+    ],
+    [
+      9540.0,
+      9600.0
+    ],
+    [
+      9720.0,
+      10473.5537279367
+    ]
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "schema": "luke-first-pipeline-candidate-v1",
   "contract_id": "luke0804_imec0_first_pipeline_candidate_v2",
-  "status": "executable",
+  "status": "closed",
   "purpose": "The one allowed revision of the first delivered pipeline candidate. v1 failed because a proposed linking operation destroyed existing identities when it accepted no link: refused epoch-to-epoch continuity links fragmented 659 clusters into 2,038 units. v2 makes the output partition a partition of the ORIGINAL CLUSTERS, changed only by an accepted merge, and runs once on the same case and the same healthy control.",
   "governing_documents": {
     "plan": "docs/pipeline_improvement_plan.md#step-1--freeze-a-small-first-version-delivery-contract",
@@ -487,5 +487,19 @@
     "verdict": "FAIL",
     "result": "docs/luke_first_pipeline_candidate_v1_result.md",
     "note": "v1 stands as FAIL and is not re-run, re-frozen or edited. This is the one allowed revision, and its purpose is to make the candidate PRESERVE the input when it cannot justify a change -- not to obtain links. The waveform and contamination gates are unchanged; loosening them to produce a merge is explicitly out of scope."
+  },
+  "closed": {
+    "date": "2026-09-06",
+    "verdict": "safe but ineffective on the nominated case; candidate CLOSED on cluster 37",
+    "result": "docs/luke_first_pipeline_candidate_v2_result.md",
+    "gates": {
+      "completeness": "fail (0.0 pp against a 20.0 pp margin, measured)",
+      "identity": "pass (retained fraction 1.0)",
+      "contamination": "pass (increase 0.0)",
+      "healthy_identity_preservation": "pass (632 of 632 eligible clusters intact, full coverage)",
+      "healthy_completeness": "inconclusive (1.7% coverage against a 50% requirement)"
+    },
+    "no_further_tuning": "The cluster-37 replay branch is closed. The linker is not to be tuned further for this case, and the waveform (0.9 cosine) and contamination (0.01) gates are not to be loosened to obtain links.",
+    "preserved_for_later": "The 18 cross-cluster merges this run accepted are preserved as UNVALIDATED candidates in docs/luke_v2_unvalidated_merge_candidates.md and the run's own unit_provenance.csv. They are not audited now, are not promoted, and are not carried into the next candidate by default."
   }
 }

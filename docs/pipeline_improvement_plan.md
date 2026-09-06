@@ -1228,6 +1228,27 @@ branch is either adopted or closed.
 
 ### D2 / Option A — conventional external voltage-registration optimization
 
+**Readiness assessed 2026-09-06: Option A cannot run on this session.** See
+[Option A readiness assessment](luke_option_a_readiness_assessment.md). The
+estimator and the application operator both exist and work; the **field** is
+what blocks. Measured against `qualify_field`'s own gates: supported time/depth
+fraction **0.917** (needs 0.95, and only 1.5% of time bins are supported at
+every depth), implied gain error **≥ 0.80** from a 5.05× disagreement between
+the four accepted estimators (needs ≤ 0.30), and split-half reproducibility
+never measured. Any one of these fails the gate closed.
+
+Completed as the smallest required task: the §5.3 field-qualification receipt
+(`testing/luke_option_a_field_prerequisites.py`), which also established the
+acquisition↔recording time origin (**3057.677050340359 s**, two independent
+sources agreeing) and caught a live artifact that declares
+`selected_recording_start` while carrying acquisition-clock values.
+`load_qualified_motion_field` now refuses that when given the duration.
+
+If Option A is revived, the nominated development interval is **[7200, 7320] s**
+— the window where all four estimators agree there is the most motion (min
+16.1 µm), chosen on motion coordinates alone and deliberately *not* cluster 37's
+interval. Closing the gain limb is a calibration, not a small task.
+
 **A required primary development branch**, tested fairly rather than inferred
 from the rejected historical warp. It is developed alongside the lightweight
 Option B implementation. Expensive alternative-sorter work remains behind the

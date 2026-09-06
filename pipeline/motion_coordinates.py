@@ -39,13 +39,24 @@ def _sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def load_qualified_motion_field(path: Path) -> dict[str, Any]:
+def load_qualified_motion_field(
+    path: Path, *, recording_duration_s: float | None = None
+) -> dict[str, Any]:
     """Load and strictly validate the estimator-to-pipeline handoff artifact.
 
     Required NPZ members are ``schema_version``, ``qualification_passed``,
     ``time_reference``, ``displacement_um``, ``time_s``, ``depth_um``,
     ``support``, and ``confidence``.  Time must be relative to the beginning of
     the selected/materialized recording, not the original acquisition.
+
+    ``recording_duration_s`` turns that last sentence from a declaration into a
+    check.  A field may *say* ``selected_recording_start`` and carry acquisition
+    -clock values: SpikeInterface writes motion time bins in acquisition time,
+    so on Luke 2025-08-04 imec0 every estimator's axis runs 3058.7-13530.7 s on
+    a 10473.6 s recording, offset by the SpikeGLX ``firstSample`` origin.  The
+    string alone cannot catch that, and interpolating against the wrong clock
+    misplaces every displacement by the origin.  Supply the duration whenever
+    the caller knows it.
     """
     path = Path(path)
     with np.load(path, allow_pickle=False) as values:
@@ -110,6 +121,15 @@ def load_qualified_motion_field(path: Path) -> dict[str, Any]:
         raise ValueError("Motion-field times must be finite and strictly increasing")
     if not np.all(np.isfinite(depths)) or not np.all(np.diff(depths) > 0):
         raise ValueError("Motion-field depths must be finite and strictly increasing")
+    if recording_duration_s is not None:
+        tolerance = max(1.0, 0.001 * float(recording_duration_s))
+        if times[0] < -tolerance or times[-1] > float(recording_duration_s) + tolerance:
+            raise ValueError(
+                f"Motion field declares time_reference 'selected_recording_start' but its times "
+                f"span [{times[0]:.3f}, {times[-1]:.3f}] s, outside the recording "
+                f"[0, {float(recording_duration_s):.3f}] s. A field written on the acquisition "
+                "clock looks exactly like this; map it with the recording's t_start before use."
+            )
     if np.any(~np.isfinite(support)) or np.any(support < 0):
         raise ValueError("Motion-field support must be finite and nonnegative")
     if np.any(~np.isfinite(confidence)) or np.any((confidence < 0) | (confidence > 1)):
