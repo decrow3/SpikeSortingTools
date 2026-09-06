@@ -1,0 +1,54 @@
+{
+  "schema": "luke-option-a-endpoint-amendment-v1",
+  "base_contract": "configs/option_a_development_comparison.v1.json",
+  "base_contract_digest": "fd4fca3c8a77e0b78d77d4c352ccd021d08ffb996bd942c94f95187e47ef640c",
+  "support_artifact": {
+    "peaks_npy": "/mnt/NPX/Luke/20250804/dredge_pipeline_results_Luke0804_V2V1_g0_imec0/motion/peaks.npy",
+    "peak_locations_npy": "/mnt/NPX/Luke/20250804/dredge_pipeline_results_Luke0804_V2V1_g0_imec0/motion/peak_locations.npy",
+    "time_field": "peaks.sample_index / recording.sampling_frequency_hz",
+    "depth_field": "peak_locations.y",
+    "minimum_peaks_per_cell": 5,
+    "time_bin_s": 1.0,
+    "depth_bin_s": 100.0,
+    "depth_grid_first_center_um": 60.0,
+    "support_fraction_gate": 0.95,
+    "support_mapping": "histogram onto the measured one-second/100-um grid; each frozen output channel's displaced 3-sigma source neighborhood must meet the support fraction gate",
+    "unsupported_policy": "refuse"
+  },
+  "identity_correspondence": {
+    "eligible_population": "all baseline good clusters with at least one retained spike in the frozen interval and depth band",
+    "event_tolerance_samples": 15,
+    "minimum_exclusive_coincidence_fraction": 0.8,
+    "maximum_depth_distance_um": 100.0,
+    "minimum_waveform_cosine": 0.8,
+    "ambiguity_policy": "reject a unit when more than one reciprocal candidate satisfies all criteria",
+    "unmatched_policy": "remain in the eligible denominator and are not improvements"
+  },
+  "completeness": {
+    "amplitude_source": "full_st[kept_spikes][:, 2]",
+    "window_indexing": "historical",
+    "spikes_per_window": 1000,
+    "max_isi_s": 10.0,
+    "minimum_finite_interior_windows": 2,
+    "minimum_coverage_fraction": 0.5,
+    "minimum_improvement_pp": 5.0,
+    "aggregation": "median(baseline_missing_pct - candidate_missing_pct) over measurable reciprocal pairs; positive means the candidate has lower estimated missingness",
+    "improvement_definition": "baseline_missing_pct - candidate_missing_pct",
+  },
+  "guardrails": {
+    "maximum_contamination_increase": 0.01,
+    "minimum_waveform_cosine_p10": 0.9,
+    "minimum_waveform_peak_retention_p10": 0.8
+  },
+  "verdicts": {
+    "pass": "coverage meets floor, completeness improvement meets margin, and no guardrail breaches",
+    "fail": "coverage meets floor and a measured primary or guardrail criterion fails",
+    "inconclusive": "a required denominator or measurement is unavailable; report the measured denominator and prerequisite"
+  },
+  "analysis_provenance": {
+    "amendment_present_before_sort_execution": true,
+    "endpoint_implementation_corrected_after_execution": true,
+    "correction": "The executed evaluator uses baseline_missing_pct - candidate_missing_pct, matching the production completeness gate. The initial report wording and amendment aggregation text said candidate minus baseline; this was corrected after the arms completed without changing thresholds, data, or acceptance criteria.",
+    "not_prospectively_frozen_claim": "The endpoint code correction was post-execution; the corrected endpoint is an engineering recomputation of the completed artifacts, not a prospectively frozen candidate result."
+  }
+}
