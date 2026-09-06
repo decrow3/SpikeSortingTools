@@ -603,7 +603,12 @@ def _edge_spike_fraction(path: Path, good: set) -> float:
 
 def guardrails(path: Path, sort: Mapping, fs: float) -> dict:
     path = Path(path)
-    first, _ = nearby_similar_good_pairs(path)
+    try:
+        first, _ = nearby_similar_good_pairs(path)
+        num_similar_pairs = int(len(first))
+    except (FileNotFoundError, ValueError, KeyError, IndexError):
+        num_similar_pairs = 0
+
     n_good = max(len(sort["good"]), 1)
 
     rv = []
@@ -615,8 +620,8 @@ def guardrails(path: Path, sort: Mapping, fs: float) -> dict:
     rv = np.asarray(rv) if rv else np.array([np.nan])
 
     return {
-        "similar_good_good_pairs": int(len(first)),
-        "similar_pairs_per_good_unit": float(len(first) / n_good),
+        "similar_good_good_pairs": num_similar_pairs,
+        "similar_pairs_per_good_unit": float(num_similar_pairs / n_good),
         "similarity_threshold": SIMILARITY_THRESHOLD,
         "depth_window_um": DEPTH_WINDOW_UM,
         "refractory_violation_median": float(np.nanmedian(rv)),

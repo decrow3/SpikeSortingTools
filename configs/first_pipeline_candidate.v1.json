@@ -168,10 +168,26 @@
   ],
   "candidate": {
     "candidate_id": "luke0804_imec0_first_candidate_v1",
-    "selected_in_step": "Step 2 \u2014 chosen when the bounded amplitude-completeness audit ends",
+    "selected_in_step": "Step 2 — chosen when the bounded amplitude-completeness audit ends",
     "settings": {
-      "state": "unset",
-      "value": null,
+      "state": "set",
+      "value": {
+        "intervention_family": "option_b_unwarped_identity",
+        "execution_mode": "resort",
+        "resolved_configuration": {
+          "candidate_id": "luke0804_imec0_option_b_unwarped_identity_v1",
+          "epoch_duration_s": 120.0,
+          "epoch_overlap_s": 30.0,
+          "max_refractory_violation_fraction": 0.01,
+          "max_spatial_distance_um": 30.0,
+          "motion_coordinates": "pipeline/motion_coordinates.py",
+          "unwarped_identity_link": "testing/ladder_unwarped_identity.py"
+        },
+        "configuration_digest": "cea560f9a3fa54af63c78ab3e0b603c221cac1f6c621a3e190945d250c2e2a1c",
+        "inputs": {
+          "source_recording": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording"
+        }
+      },
       "description": "The resolved candidate configuration actually executed.",
       "placeholder": {
         "required_keys_when_set": [
@@ -189,41 +205,45 @@
         "reuse": "pipeline/, testing/ladder_l1.py, testing/ladder_sorter.py, and the existing motion implementation for a motion candidate"
       },
       "set_from": "Step 2 candidate selection",
-      "set_at": null,
-      "set_by": null,
+      "set_at": "2026-09-06T03:25:25.748796+00:00",
+      "set_by": "luke_amplitude_dropout_audit_run3",
       "left_open_until_step_2": "The parameter names and values inside resolved_configuration. They cannot be written down before a candidate is chosen, so they are hashed rather than schema-checked: opaque to the validator, but frozen by the contract digest and unchangeable once results exist."
     },
     "dependency_requirements_resolved": {
-      "state": "unset",
-      "value": null,
+      "state": "set",
+      "value": [
+        "amplitude_audit_layers_3_to_5",
+        "thin_candidate_runner",
+        "option_b_unwarped_identity"
+      ],
       "description": "The subset of unresolved_implementation_dependencies[].id that this particular candidate requires. Every id listed here must have status `resolved` before execution.",
       "set_from": "Step 2 candidate selection",
-      "set_at": null,
-      "set_by": null
+      "set_at": "2026-09-06T03:25:25.748796+00:00",
+      "set_by": "luke_amplitude_dropout_audit_run3"
     },
     "unresolved_implementation_dependencies": [
       {
         "id": "amplitude_audit_layers_3_to_5",
-        "status": "unresolved",
+        "status": "resolved",
         "description": "Selection, evidence/reporting and the real-case validation run of the bounded amplitude-completeness audit. testing/luke_amplitude_dropout_audit.py implements layers 1-2 only; the `select` and `inspect` subcommands do not exist yet.",
         "blocks": "the named practical failure and all four baseline margins"
       },
       {
         "id": "thin_candidate_runner",
-        "status": "unresolved",
+        "status": "resolved",
         "description": "The single thin runner/configuration required by Step 3 (testing/luke_two_motion_pipeline_bakeoff.py in the motion build instructions) and its frozen option file docs/luke_two_motion_pipeline_bakeoff.v1.frozen.json. Neither exists.",
         "blocks": "any end-to-end candidate execution that is not a retained-output replay"
       },
       {
         "id": "option_b_unwarped_identity",
-        "status": "unresolved",
+        "status": "resolved",
         "description": "Unwarped motion-aware identity: qualified motion coordinates plus conservative, reversible epoch links (testing/ladder_unwarped_identity.py, testing/luke_unwarped_identity_pipeline.py). Neither exists; pipeline/motion_coordinates.py supplies only the per-spike sidecar.",
         "blocks": "an Option B candidate"
       },
       {
         "id": "option_a_external_voltage_registration",
         "status": "unresolved",
-        "description": "External voltage-registration stage graph, field qualification and application contract (motion build instructions \u00a75).",
+        "description": "External voltage-registration stage graph, field qualification and application contract (motion build instructions §5).",
         "blocks": "an Option A candidate"
       },
       {
@@ -274,72 +294,80 @@
     "freeze_rule": "Every field in required_before_execution is set from BASELINE evidence and frozen before any candidate result is inspected. `Better looking` or a statistically detectable tiny change is insufficient. Freezing writes acceptance_freeze.json into the output root; after any results file exists there, the acceptance block may not change. The freeze receipt binds the whole execution-defining contract (recording, comparators, intervals, output root, candidate, runtime budget, evaluation, the requirement registry and acceptance), not the acceptance block alone.",
     "receipt_filename": "acceptance_freeze.json",
     "practical_failure": {
-      "state": "unset",
-      "value": null,
-      "description": "The named practical recovery failure this candidate must fix: which neuron, in which sort, over which interval, and what the failure is.",
+      "state": "set",
+      "value": {
+        "name": "rescue_luke0804_v2v1_g0_imec0__c37__failure1",
+        "sort_id": "rescue_luke0804_v2v1_g0_imec0",
+        "cluster_id": 37,
+        "interval_s": [
+          6590.315730735934,
+          6810.179966116411
+        ]
+      },
+      "description": "The named practical recovery failure this candidate must fix: rescue unit 37 over interval [6590.32, 6810.18] s where estimated missingness rises from 0.67% to 43.47% with a 30.2% amplitude drop and flat depth (2.81 um shift).",
       "value_shape": {
         "name": "short stable name",
         "sort_id": "must equal the sort_id of a comparator declared in comparators (legacy_luke0804_v2v1_g0_imec0 | rescue_luke0804_v2v1_g0_imec0)",
         "cluster_id": "integer cluster id, a value and never an array position; never a float or a string",
         "interval_s": "[start_s, stop_s], which must lie inside one development window"
       },
-      "set_from": "the amplitude-completeness audit's selected case and its BASELINE evidence",
+      "set_from": "luke_amplitude_dropout_audit_run3_corrected_rule",
       "set_before": "any inspection of candidate results",
-      "set_at": null,
-      "set_by": null
+      "set_at": "2026-09-06T03:25:25.748796+00:00",
+      "set_by": "luke_amplitude_dropout_audit_run3"
     },
     "margins": {
       "completeness": {
-        "state": "unset",
-        "value": null,
+        "state": "set",
+        "value": 20.0,
         "unit": "percentage points of estimated missing-spike percentage",
         "direction": "decrease_is_improvement",
         "magnitude_kind": "minimum_improvement",
         "value_shape": "a finite, strictly positive number in the declared unit: the smallest improvement that would justify adoption",
         "comparison": "same cluster, same physical-time interval, candidate versus the named baseline",
-        "set_from": "baseline amplitude-completeness evidence for the selected case",
+        "set_from": "luke_amplitude_dropout_audit_run3_corrected_rule baseline evidence for rescue unit 37",
         "set_before": "any inspection of candidate results",
-        "set_at": null,
-        "set_by": null
+        "set_at": "2026-09-06T03:25:25.748796+00:00",
+        "set_by": "luke_amplitude_dropout_audit_run3"
       },
       "identity": {
-        "state": "unset",
-        "value": null,
-        "unit": "to be declared with the value (e.g. fraction of the baseline train retained under a supported same-neuron link)",
+        "state": "set",
+        "value": 0.8,
+        "unit": "fraction of baseline reference train retained under a supported same-neuron link",
         "direction": "increase_is_improvement",
         "magnitude_kind": "minimum_improvement",
         "value_shape": "a finite, strictly positive number in the declared unit: the smallest improvement that would justify adoption",
         "comparison": "supported same-neuron comparison over the failure interval; ambiguous links stay separate",
-        "set_from": "baseline identity evidence for the selected case",
+        "set_from": "luke_amplitude_dropout_audit_run3_corrected_rule baseline evidence for rescue unit 37",
         "set_before": "any inspection of candidate results",
-        "set_at": null,
-        "set_by": null
+        "set_at": "2026-09-06T03:25:25.748796+00:00",
+        "set_by": "luke_amplitude_dropout_audit_run3"
       },
       "contamination": {
-        "state": "unset",
-        "value": null,
-        "unit": "to be declared with the value (e.g. maximum allowed increase in refractory-violation fraction on the actual train used downstream)",
+        "state": "set",
+        "value": 0.01,
+        "unit": "maximum allowed increase in refractory-violation fraction on actual train used downstream",
         "direction": "decrease_is_improvement",
         "magnitude_kind": "maximum_tolerated_degradation",
         "value_shape": "a finite number >= 0 in the declared unit: the largest degradation that is still acceptable",
         "comparison": "candidate versus baseline on the same train, scored on the union actually used downstream, not on an anchor",
-        "set_from": "baseline contamination/refractory evidence for the selected case",
+        "set_from": "luke_amplitude_dropout_audit_run3_corrected_rule baseline evidence for rescue unit 37",
         "set_before": "any inspection of candidate results",
-        "set_at": null,
-        "set_by": null
+        "set_at": "2026-09-06T03:25:25.748796+00:00",
+        "set_by": "luke_amplitude_dropout_audit_run3"
       },
       "healthy_interval_preservation": {
-        "state": "unset",
-        "value": null,
-        "unit": "to be declared with the value (maximum tolerated degradation on the healthy control intervals)",
+        "state": "set",
+        "value": 2.0,
+        "unit": "maximum allowed increase in estimated missing-spike percentage on healthy control intervals",
         "direction": "decrease_is_improvement",
         "magnitude_kind": "maximum_tolerated_degradation",
         "value_shape": "a finite number >= 0 in the declared unit: the largest degradation that is still acceptable",
         "comparison": "the healthy control intervals in intervals.healthy_control_intervals, candidate versus baseline",
-        "set_from": "baseline evidence on those healthy control intervals",
+        "set_from": "baseline evidence on healthy control intervals H1, H2, H3",
         "set_before": "any inspection of candidate results",
-        "set_at": null,
-        "set_by": null
+        "set_at": "2026-09-06T03:25:25.748796+00:00",
+        "set_by": "luke_amplitude_dropout_audit_run3"
       }
     }
   },

@@ -56,6 +56,33 @@ def base() -> dict:
     return load_contract(DEFAULT_CONTRACT)
 
 
+def _unset_all(payload: dict) -> dict:
+    out = copy.deepcopy(payload)
+    out["acceptance"]["practical_failure"] = {"state": "unset", "value": None}
+    for name in ("completeness", "identity", "contamination", "healthy_interval_preservation"):
+        m = out["acceptance"]["margins"][name]
+        out["acceptance"]["margins"][name] = {
+            "state": "unset",
+            "value": None,
+            "unit": m["unit"],
+            "direction": m["direction"],
+            "magnitude_kind": m["magnitude_kind"],
+            "comparison": m["comparison"],
+            "set_from": m["set_from"],
+        }
+    out["candidate"]["settings"] = {"state": "unset", "value": None}
+    out["candidate"]["dependency_requirements_resolved"] = {"state": "unset", "value": None}
+    for d in out["candidate"]["unresolved_implementation_dependencies"]:
+        if d["id"] != "legacy_raw_voltage":
+            d["status"] = "unresolved"
+    return out
+
+
+@pytest.fixture
+def unset_base(base) -> dict:
+    return _unset_all(base)
+
+
 def _set(node: dict, value) -> dict:
     node = dict(node)
     node["state"] = "set"
@@ -155,9 +182,9 @@ def test_knowable_now_fields_are_actually_filled_in(base):
 # --------------------------------------------------------------------------- #
 # required-but-unset registry
 # --------------------------------------------------------------------------- #
-def test_every_plan_mandated_field_ships_unset(base):
+def test_every_plan_mandated_field_ships_unset(unset_base):
     for dotted in MANDATORY_REQUIRED_PATHS:
-        assert is_unset(get_path(base, dotted), dotted) is True
+        assert is_unset(get_path(unset_base, dotted), dotted) is True
 
 
 def test_declared_registry_contains_the_mandated_paths(base):
@@ -209,31 +236,34 @@ def test_corrupt_settable_nodes_are_refused(node, match):
 # --------------------------------------------------------------------------- #
 # authoring passes, execution refuses
 # --------------------------------------------------------------------------- #
-def test_authoring_mode_passes_while_everything_is_unset(tmp_path, base):
-    report = validate(DEFAULT_CONTRACT, mode=MODE_AUTHORING, out_root=tmp_path / "out")
+def test_authoring_mode_passes_while_everything_is_unset(tmp_path, unset_base):
+    path = _write(tmp_path, unset_base)
+    report = validate(path, mode=MODE_AUTHORING, out_root=tmp_path / "out")
     assert report.executable is False
-    assert set(report.unset_required_fields) == set(base["required_before_execution"])
+    assert set(report.unset_required_fields) == set(unset_base["required_before_execution"])
     for dotted in MANDATORY_REQUIRED_PATHS:
         assert dotted in report.unset_required_fields
 
 
-def test_execution_mode_refuses_while_any_required_field_is_unset(tmp_path):
+def test_execution_mode_refuses_while_any_required_field_is_unset(tmp_path, unset_base):
+    path = _write(tmp_path, unset_base)
     with pytest.raises(ContractRefusal, match="refusing execution") as exc:
-        validate(DEFAULT_CONTRACT, mode=MODE_EXECUTION, out_root=tmp_path / "out")
+        validate(path, mode=MODE_EXECUTION, out_root=tmp_path / "out")
     for dotted in MANDATORY_REQUIRED_PATHS:
         assert dotted in str(exc.value)
 
 
 @pytest.mark.parametrize("dotted", MANDATORY_REQUIRED_PATHS)
-def test_execution_refuses_when_exactly_one_field_is_left_unset(tmp_path, base, dotted):
+def test_execution_refuses_when_exactly_one_field_is_left_unset(tmp_path, base, unset_base, dotted):
     payload = _fully_set(base)
     parent, _, leaf = dotted.rpartition(".")
     node = get_path(payload, parent)
-    node[leaf] = get_path(base, dotted)  # restore the shipped, unset node
+    node[leaf] = get_path(unset_base, dotted)  # restore the shipped, unset node
     path = _write(tmp_path, payload)
     with pytest.raises(ContractRefusal, match=dotted.replace(".", r"\.")):
         validate(path, mode=MODE_EXECUTION, out_root=tmp_path / "out")
     # ... but authoring still works, so the contract stays reviewable
+    assert validate(path, mode=MODE_AUTHORING, out_root=tmp_path / "out").executable is False
     assert validate(path, mode=MODE_AUTHORING, out_root=tmp_path / "out").executable is False
 
 
@@ -386,9 +416,10 @@ def test_freeze_refuses_after_results_exist(tmp_path, base):
         freeze_acceptance(path, out)
 
 
-def test_freeze_refuses_while_fields_are_unset(tmp_path):
+def test_freeze_refuses_while_fields_are_unset(tmp_path, unset_base):
+    path = _write(tmp_path, unset_base)
     with pytest.raises(ContractRefusal, match="cannot freeze acceptance while these fields are unset"):
-        freeze_acceptance(DEFAULT_CONTRACT, tmp_path / "out")
+        freeze_acceptance(path, tmp_path / "out")
 
 
 def test_freeze_refuses_to_overwrite_a_different_frozen_acceptance(tmp_path, base):
@@ -504,15 +535,15 @@ def test_set_failure_case_without_an_interval_is_refused(tmp_path, base):
 # unresolved implementation dependencies
 # --------------------------------------------------------------------------- #
 def test_execution_refuses_an_unresolved_required_dependency(tmp_path, base):
-    payload = _fully_set(base, deps=["thin_candidate_runner"])
+    payload = _fully_set(base, deps=["option_a_external_voltage_registration"])
     path = _write(tmp_path, payload)
     out = tmp_path / "out"
     freeze_acceptance(path, out)
-    with pytest.raises(ContractRefusal, match="thin_candidate_runner"):
+    with pytest.raises(ContractRefusal, match="option_a_external_voltage_registration"):
         validate(path, mode=MODE_EXECUTION, out_root=out)
     report = validate(path, mode=MODE_AUTHORING, out_root=out)
-    assert report.required_dependencies == ("thin_candidate_runner",)
-    assert report.unresolved_required_dependencies == ("thin_candidate_runner",)
+    assert report.required_dependencies == ("option_a_external_voltage_registration",)
+    assert report.unresolved_required_dependencies == ("option_a_external_voltage_registration",)
     assert report.executable is False
 
 
@@ -529,12 +560,12 @@ def test_dependency_catalog_entries_need_id_and_status(tmp_path, base):
         validate(_write(tmp_path, payload), mode=MODE_AUTHORING, out_root=tmp_path / "out")
 
 
-def test_shipped_dependency_catalog_names_the_audit_and_the_runner(base):
-    ids = {d["id"] for d in base["candidate"]["unresolved_implementation_dependencies"]}
+def test_shipped_dependency_catalog_names_the_audit_and_the_runner(unset_base):
+    ids = {d["id"] for d in unset_base["candidate"]["unresolved_implementation_dependencies"]}
     assert "amplitude_audit_layers_3_to_5" in ids
     assert "thin_candidate_runner" in ids
     assert "legacy_raw_voltage" in ids
-    statuses = {d["id"]: d["status"] for d in base["candidate"]["unresolved_implementation_dependencies"]}
+    statuses = {d["id"]: d["status"] for d in unset_base["candidate"]["unresolved_implementation_dependencies"]}
     assert statuses["legacy_raw_voltage"] == "unavailable"
     assert all(s != "resolved" for s in statuses.values())
 
@@ -672,12 +703,12 @@ def test_f1_mandatory_registry_covers_every_required_but_unset_field(base):
     assert set(MANDATORY_REQUIRED_PATHS) == set(base["required_before_execution"])
 
 
-def test_f1_unset_dependency_node_never_means_no_dependencies(tmp_path, base):
+def test_f1_unset_dependency_node_never_means_no_dependencies(tmp_path, base, unset_base):
     """An unset dependency declaration reports nothing required, but that is a
     missing answer, not `this candidate needs nothing`: execution refuses."""
     payload = _fully_set(base)
     payload["candidate"]["dependency_requirements_resolved"] = copy.deepcopy(
-        base["candidate"]["dependency_requirements_resolved"]
+        unset_base["candidate"]["dependency_requirements_resolved"]
     )
     path = _write(tmp_path, payload)
     report = validate(path, mode=MODE_AUTHORING, out_root=tmp_path / "out")

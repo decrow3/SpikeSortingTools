@@ -48,7 +48,10 @@ def l1_root() -> Path:
         return Path(env)
     cfg = Path(__file__).resolve().parents[1] / "configs" / "ladder.toml"
     if cfg.is_file():
-        import tomllib
+        try:
+            import tomllib
+        except ImportError:
+            import tomli as tomllib
 
         data = tomllib.loads(cfg.read_text())
         if "l1_root" in data:

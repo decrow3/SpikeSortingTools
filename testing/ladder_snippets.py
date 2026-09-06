@@ -28,7 +28,10 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-import tomllib
+try:
+    import tomllib
+except ImportError:
+    import tomli as tomllib
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
