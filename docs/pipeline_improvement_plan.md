@@ -8,10 +8,13 @@ preserving healthy periods, and confirming the improvement on independently
 chosen data. Unit yield, benchmark scores and explanations support that goal;
 none alone establishes that a pipeline is better for the lab's recordings.
 
-**The immediate milestone is one reproducible improvement in a real dropout
-case, with preserved healthy intervals, followed by confirmation on an
-independently chosen case.** This is a development milestone, not production
-promotion or a replacement for the held-out and second-session gates below.
+**The immediate milestone is one complete-session development comparison of a
+single frozen candidate against the current operational reference, with
+time-resolved recovery and preserved healthy intervals.** Individual dropout
+cases are diagnostics inside that session, not the experimental unit. This is a
+development milestone, not production promotion or a replacement for the
+held-out and second-session gates below. See the [full-session development
+comparison proposal](full_session_development_comparison_proposal_v1.md).
 
 ### Use the lab's diagnostic to choose the next question
 
@@ -112,12 +115,15 @@ threshold experiment. Deliverable: one executable comparison contract, not a
 list of potential experiments. Contract omissions block execution, not planning
 or implementation of independent components.
 
-### Step 2 — choose one candidate when the bounded audit ends
+### Step 2 — choose one candidate before the full-session comparison
 
-Use the amplitude-completeness audit within its two-working-day cap to choose
-the intervention with the clearest supporting evidence. A targeted curation
-repair can be the first delivery if it directly fixes an observed exclusion;
-the first release need not contain a new motion architecture.
+Use existing implementation and evidence to choose one candidate for the
+full-session development comparison. A targeted curation repair can be the
+candidate if it directly fixes an observed exclusion; the first release need
+not contain a new motion architecture. The closed Option A, Option B, and
+threshold results do not by themselves justify selecting a candidate. If no
+candidate is justified, record that blocker before execution rather than
+selecting a variant to fill the slot.
 
 If the audit remains ambiguous, stop it and proceed with the minimum Option B
 implementation: qualified motion coordinates plus conservative, reversible
@@ -134,16 +140,17 @@ option's existing work and schedule a return condition; its completion is not
 a prerequisite for releasing the first useful candidate. This also means that
 a B-versus-legacy result cannot be called superiority over all voltage correction.
 
-### Step 3 — make that candidate run end to end on bounded data
+### Step 3 — make that candidate run end to end on the full development session
 
-Use one thin runner/configuration to execute accepted input → candidate change
-→ sorting or retained-sort replay → curation → waveform/refractory/amplitude QC
-→ standard analysis export. Reuse `pipeline/`, `testing/ladder_l1.py`,
+Use one thin runner/configuration to execute the complete development session
+through accepted input → candidate change → sorting or retained-sort replay →
+curation → waveform/refractory/amplitude QC → standard analysis export. Reuse `pipeline/`, `testing/ladder_l1.py`,
 `testing/ladder_sorter.py` and the relevant existing motion implementation.
 For a motion candidate, use the runner contract in the
 [motion build instructions](luke_two_motion_pipeline_build_instructions.md).
 For a curation-only candidate, use retained-output replay through the same
-downstream interfaces. Do not fork the whole production pipeline.
+downstream interfaces. Do not fork the whole production pipeline or substitute
+another short case for the full-session unit.
 
 Deliver a named candidate version, resolved configuration, manifests, restartable
 outputs, standard exports, and one command documented from input through QC.
