@@ -1,0 +1,125 @@
+{
+  "schema": "luke-baseline-recovery-cluster553-evidence-v1",
+  "cluster_id": 553,
+  "source_rows": [
+    16816,
+    16817,
+    16818,
+    16819
+  ],
+  "source_hashes": {
+    "full_st_sha256": "8fb07f5290a8049f313bfac0e930c03f467bf5dbce7c21e7e3c4d051293cc8fb"
+  },
+  "replay": [
+    {
+      "source_row": 16816,
+      "role": "reference",
+      "start_s": 5802.133888235484,
+      "end_s": 5892.752617001755,
+      "historical_n": 999,
+      "exact_n": 1000,
+      "cached_missing_pct": 4.019114977552567,
+      "historical_replay_pct": 4.019114977552567,
+      "exact_pct": 4.012770448970617,
+      "exact_minus_historical_pp": -0.006344528581950115,
+      "historical_saturated": false,
+      "exact_saturated": false
+    },
+    {
+      "source_row": 16817,
+      "role": "reference",
+      "start_s": 5892.831317432028,
+      "end_s": 5954.244219856822,
+      "historical_n": 999,
+      "exact_n": 1000,
+      "cached_missing_pct": 1.5071631566852963,
+      "historical_replay_pct": 1.5071631566852963,
+      "exact_pct": 1.4996536510405447,
+      "exact_minus_historical_pp": -0.007509505644751613,
+      "historical_saturated": false,
+      "exact_saturated": false
+    },
+    {
+      "source_row": 16818,
+      "role": "failing",
+      "start_s": 5954.280520055284,
+      "end_s": 6066.266865643115,
+      "historical_n": 999,
+      "exact_n": 1000,
+      "cached_missing_pct": 24.262895034057845,
+      "historical_replay_pct": 24.262895034057845,
+      "exact_pct": 24.26071904330711,
+      "exact_minus_historical_pp": -0.0021759907507359344,
+      "historical_saturated": false,
+      "exact_saturated": false
+    },
+    {
+      "source_row": 16819,
+      "role": "failing",
+      "start_s": 6066.2986991504895,
+      "end_s": 6360.328406676924,
+      "historical_n": 999,
+      "exact_n": 1000,
+      "cached_missing_pct": 44.41077535603068,
+      "historical_replay_pct": 44.41077535603068,
+      "exact_pct": 44.55853403733483,
+      "exact_minus_historical_pp": 0.14775868130414693,
+      "historical_saturated": false,
+      "exact_saturated": false
+    }
+  ],
+  "waveform": {
+    "raw_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+    "gain_uv_per_count": 2.34375,
+    "channels": [
+      294,
+      295,
+      296,
+      297,
+      298,
+      299,
+      300,
+      301,
+      302,
+      303,
+      304,
+      305,
+      306,
+      307,
+      308,
+      309
+    ],
+    "reference_depth_um": 3013.578369140625,
+    "peak_channel": 302,
+    "windows": [
+      {
+        "role": "reference",
+        "source_row": 16816,
+        "n_events": 100,
+        "median_peak_to_peak_uv": 283.59375,
+        "median_abs_peak_uv": 230.859375
+      },
+      {
+        "role": "reference",
+        "source_row": 16817,
+        "n_events": 100,
+        "median_peak_to_peak_uv": 308.203125,
+        "median_abs_peak_uv": 243.75
+      },
+      {
+        "role": "failing",
+        "source_row": 16818,
+        "n_events": 100,
+        "median_peak_to_peak_uv": 250.78125,
+        "median_abs_peak_uv": 262.5
+      },
+      {
+        "role": "failing",
+        "source_row": 16819,
+        "n_events": 100,
+        "median_peak_to_peak_uv": 339.84375,
+        "median_abs_peak_uv": 275.390625
+      }
+    ]
+  }
+}
