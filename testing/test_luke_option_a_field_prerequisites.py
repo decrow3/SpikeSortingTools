@@ -16,8 +16,9 @@ from testing.luke_option_a_field_prerequisites import (
     _edges,
     assess,
     check_declared_time_reference,
-    inter_estimator_scale_spread,
+    inter_estimator_disagreement,
     nominate_development_interval,
+    probe_operator_polarity,
     read_spikeglx_time_origin,
     support_fraction,
     verify_time_origin,
@@ -174,13 +175,15 @@ def _field(scale, n=600):
             "depth_bins_um": np.array([0.0, 100.0])}
 
 
-def test_estimator_disagreement_is_reported_as_a_lower_bound_on_gain_error():
+def test_estimator_disagreement_is_never_reported_as_a_measured_gain_error():
+    """Disagreement says they cannot all be right, not that any one is wrong."""
     fields = {"a": _field(1.0), "b": _field(4.0)}
     windows = [(0.0, 120.0), (120.0, 240.0), (240.0, 360.0)]
-    spread = inter_estimator_scale_spread(fields, windows)
+    spread = inter_estimator_disagreement(fields, windows)
     assert spread["max_over_min_ratio"] == pytest.approx(4.0, rel=1e-6)
-    assert spread["implied_minimum_gain_error_fraction"] == pytest.approx(0.75, rel=1e-6)
-    assert "lower bound, not a calibration" in spread["note"]
+    assert spread["absolute_gain_status"] == "unmeasured"
+    assert "NOT an error measurement" in spread["note"]
+    assert not any("error_fraction" in key for key in spread)
 
 
 def test_the_nominated_interval_is_where_every_estimator_agrees_there_is_motion():
@@ -246,3 +249,21 @@ def test_assess_blocks_when_the_evidence_limbs_are_missing(tmp_path):
     # the time axes were mapped back onto the recording clock before use
     assert receipt["time_origin"]["acquisition_time_origin_s"] == pytest.approx(ORIGIN_S)
     assert receipt["nominated_development_interval"]["nominated"] is not None
+
+
+# --------------------------------------------------------------------------- #
+# operator integrity
+# --------------------------------------------------------------------------- #
+def test_the_polarity_probe_reports_unavailability_rather_than_guessing():
+    """An unverifiable sign convention must not be assumed."""
+    result = probe_operator_polarity()
+    if not result["available"]:
+        assert "not importable" in result["reason"]
+        return
+    # where SpikeInterface is present the probe must actually resolve the sign
+    assert result["zero_motion_identity"] is True
+    assert result["forward_inverse_symmetric"] is True
+    assert result["polarity_resolved"] is True
+    assert result["recovered_magnitude_um"] == pytest.approx(result["applied_displacement_um"],
+                                                             rel=0.05)
+    assert result["passes"] is True

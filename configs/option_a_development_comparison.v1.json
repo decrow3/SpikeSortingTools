@@ -1,0 +1,151 @@
+{
+  "schema": "luke-option-a-development-comparison-v1",
+  "contract_id": "luke0804_imec0_option_a_development_comparison_v1",
+  "status": "authored",
+  "purpose": "One development-only, operational comparison: does applying one explicitly identified motion field improve sorting in one frozen interval and one frozen depth domain? It is not a qualification of the field, not a promotion path, and not a motion measurement.",
+  "governing_documents": {
+    "prespec": "docs/luke_option_a_development_comparison_prespec.md",
+    "readiness": "docs/luke_option_a_readiness_assessment.md",
+    "build_instructions": "docs/luke_two_motion_pipeline_build_instructions.md#5-option-a--external-voltage-registration-pipeline"
+  },
+  "non_goals": [
+    "Does not qualify the field: qualify_field still fails closed and is not waived.",
+    "Does not measure motion, motion accuracy, or any estimator's gain.",
+    "Does not rank the four accepted estimators against each other.",
+    "Does not promote anything to production, and does not touch the sealed panel.",
+    "Does not reopen the closed cluster-37 replay branch or use its unvalidated merges."
+  ],
+  "recording": {
+    "subject_session": "Luke 2025-08-04",
+    "stream_id": "imec0.ap",
+    "source_recording": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording",
+    "sampling_frequency_hz": 29999.835983263598,
+    "duration_s": 10473.5537279367
+  },
+  "field": {
+    "estimator": "ks-motion",
+    "why_this_one": "Smallest displacement magnitude of the four accepted estimators (max|d| 39.0 um in the frozen window, median 120 s excursion 4.06 um), so it is the most conservative choice while the absolute gain is unmeasured; the only one whose window max|d| sits inside the provisional 60 um range other than medicine; and it yields the largest usable interior. It is NOT selected for accuracy -- no accuracy evidence exists for any of the four.",
+    "motion_npy": "/mnt/NPX/Luke/20250804/dredge_pipeline_results_Luke0804_V2V1_g0_imec0/motion/ks-motion/motion.npy",
+    "motion_sha256": "b48204e1c5dae223f2ae91cd87bd45553c4d0316857362f049d90175724ccdb4",
+    "time_bins_npy": "/mnt/NPX/Luke/20250804/dredge_pipeline_results_Luke0804_V2V1_g0_imec0/motion/ks-motion/time_bins.npy",
+    "time_bins_sha256": "a77d8d6872a821a240ab03d49b7b5b587f1d94bbf30da12363ea405b907f123a",
+    "depth_bins_npy": "/mnt/NPX/Luke/20250804/dredge_pipeline_results_Luke0804_V2V1_g0_imec0/motion/ks-motion/depth_bins.npy",
+    "depth_bins_sha256": "f8a2ecbdf1753ac01cf70b1680b635159a6edd88b736e928e751127e24116fe5",
+    "time_reference_as_stored": "acquisition",
+    "acquisition_time_origin_s": 3057.677050340359,
+    "time_mapping": "t_recording_s = t_stored_s - 3057.677050340359",
+    "time_origin_sources": [
+      "SpikeGLX meta firstSample 91729810 / imSampRate 29999.835983263598",
+      "SpikeInterface preprocessed_recording/binary.json t_starts[0]"
+    ],
+    "absolute_gain": "UNMEASURED",
+    "absolute_gain_statement": "No field on this session has been compared against known motion. This experiment can say whether applying THIS field improves sorting in THIS window. It cannot say that the motion was corrected by any particular amount, cannot rank the four estimators, and cannot generalise to another session or another field.",
+    "reproducibility": "NOT ESTABLISHED -- see prespec \u00a73; the field is identified by digest, not by a reproducible recipe"
+  },
+  "domain": {
+    "interval_s": [
+      7200.0,
+      7320.0
+    ],
+    "interval_selected_by": "Highest minimum rigid excursion across all four accepted estimators among 55 non-overlapping 120 s windows inside the delivery contract's development windows. Motion coordinates only; no sorter output consulted; frozen before any sort.",
+    "interval_inside_development_window_s": [
+      5760.0,
+      8700.0
+    ],
+    "depth_band_um": [
+      1810.0,
+      3710.0
+    ],
+    "depth_band_derivation": "Longest contiguous run of 100 um depth bins with local support >= 0.95 inside the interval ([1710, 3810] um), eroded at both ends by max|displacement| (39.0 um) plus 3 sigma of the kriging kernel (3 x 20 = 60 um), so every retained channel draws only from supported depths.",
+    "n_channels_in_band": 190,
+    "depth_bins_failing_local_support_um": [
+      1660.0,
+      3860.0
+    ],
+    "frozen_before_any_sort": true,
+    "crop_order": "correction is applied on the full channel geometry FIRST; the depth crop happens after"
+  },
+  "application_policy": {
+    "operator": "spikeinterface.sortingcomponents.motion.InterpolateMotionRecording",
+    "spikeinterface_version": "0.102.1",
+    "spatial_interpolation_method": "kriging",
+    "sigma_um": 20.0,
+    "border_mode": "remove_channels",
+    "border_mode_departure": "VERSIONED DEPARTURE from the recorded starting policy `force_extrapolate` (build instructions \u00a75.4). force_extrapolate invents values at channels whose source depth is off the probe; this contract refuses to extrapolate, so channels that would require it are removed instead and the frozen analysis band already excludes them. Recorded, not silent.",
+    "dtype_before_interpolation": "float32",
+    "output_dtype": "int16",
+    "polarity_convention": "output_depth = source_depth - displacement",
+    "polarity_evidence": "Verified synthetically: zero-motion identity holds; +60 um displacement moves a feature from 300.0 to 240.0 um and -60 um to 360.0 um, recovered magnitude 59.99999968 um, forward/inverse symmetric.",
+    "correction_gain": 1.0,
+    "gain_is_not_a_tuning_knob": "Fixed at 1.0. Sweeping it would be fitting the field to the outcome."
+  },
+  "arms": {
+    "control": {
+      "name": "uncorrected",
+      "external_correction": false,
+      "sorter": "kilosort4",
+      "do_correction": false,
+      "nblocks": 0
+    },
+    "candidate": {
+      "name": "externally_corrected_ks_motion",
+      "external_correction": true,
+      "sorter": "kilosort4",
+      "do_correction": false,
+      "nblocks": 0
+    },
+    "shared": "Both arms run the same KS4 settings on the same interval and are analysed on the same frozen depth band. KS4 internal correction is disabled in BOTH arms, so the only difference is the external application. Double correction is refused."
+  },
+  "endpoints": {
+    "primary": {
+      "name": "amplitude_completeness",
+      "statistic": "median estimated missing-spike percentage over finite-interior windows",
+      "amplitude_source": "full_st[kept_spikes][:, 2]",
+      "spikes_per_window": 1000,
+      "max_isi_s": 10.0,
+      "window_indexing": "historical",
+      "comparison": "matched units, same physical-time interval, same depth band",
+      "min_coverage_of_eligible_population": 0.5,
+      "coverage_rule": "Below the coverage fraction the completeness comparison is `inconclusive`, never `pass`. Unmeasured units are not evidence of improvement."
+    },
+    "supporting_identity": {
+      "name": "unit_correspondence",
+      "rule": "Units are matched between arms by exclusive spatial+waveform correspondence before any completeness number is compared. An unmatched or ambiguously matched unit contributes to coverage as unmeasurable, never as an improvement."
+    },
+    "supporting_contamination": {
+      "name": "refractory_violation_fraction",
+      "max_tolerated_increase": 0.01,
+      "scored_on": "the complete exported train of each matched unit over the interval"
+    },
+    "reporting_rule": "A completeness improvement is reportable only when identity correspondence is established and contamination has not breached. Completeness alone is not a result."
+  },
+  "stop_rule": {
+    "wall_clock_hours_max": 6,
+    "one_execution": "This contract executes once. No parameter is adjusted and re-run.",
+    "abandon_if": [
+      "the materialized recording's manifest does not bind the source and motion digests",
+      "either arm's KS4 settings do not record do_correction=False and nblocks=0",
+      "the corrected recording removes any channel inside the frozen depth band",
+      "fewer than half the eligible units are matchable between arms"
+    ],
+    "negative_result_is_a_result": "If the corrected arm does not improve completeness, that closes external registration as a development direction for this session at this scale. It does not license loosening the domain, changing the field, or sweeping the gain."
+  },
+  "output_root": "/media/huklab/Data/NPX/Ryansorting/Luke/Luke0804_option_a_development_v1",
+  "qualification_status": {
+    "qualify_field": "FAILS CLOSED and is not waived",
+    "indispensable_implementation_integrity": {
+      "acquisition_recording_clock_mapping": "verified",
+      "supported_application_domain": "verified locally within the frozen domain",
+      "displacement_polarity": "verified",
+      "operator_behaviour": "verified available and exact"
+    },
+    "provisional_scientific_criteria": {
+      "max_abs_displacement_um": "passes locally (39.0 <= 60)",
+      "min_support_fraction": "fails whole-probe (0.917); met locally within the frozen domain",
+      "min_split_half_correlation": "not measurable -- the accepted fields' configurations are not recorded",
+      "max_estimated_gain_error_fraction": "not evaluable -- gain unmeasured, calibration retracted"
+    },
+    "departure_statement": "This contract does not claim the field is qualified. It proceeds on the indispensable integrity requirements only, inside a frozen local domain, for a development-only operational question. The provisional criteria inherited from the retracted D2b-1 envelope are recorded above as unmet or unevaluable rather than waived silently, and FieldGate/qualify_field are unmodified."
+  },
+  "contract_digest": "fd4fca3c8a77e0b78d77d4c352ccd021d08ffb996bd942c94f95187e47ef640c"
+}

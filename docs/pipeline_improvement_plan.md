@@ -1228,14 +1228,20 @@ branch is either adopted or closed.
 
 ### D2 / Option A — conventional external voltage-registration optimization
 
-**Readiness assessed 2026-09-06: Option A cannot run on this session.** See
-[Option A readiness assessment](luke_option_a_readiness_assessment.md). The
-estimator and the application operator both exist and work; the **field** is
-what blocks. Measured against `qualify_field`'s own gates: supported time/depth
-fraction **0.917** (needs 0.95, and only 1.5% of time bins are supported at
-every depth), implied gain error **≥ 0.80** from a 5.05× disagreement between
-the four accepted estimators (needs ≤ 0.30), and split-half reproducibility
-never measured. Any one of these fails the gate closed.
+**Readiness assessed 2026-09-06, then revised: a bounded development-only Option
+A comparison CAN proceed on a frozen local domain.** See
+[readiness assessment](luke_option_a_readiness_assessment.md) and the frozen
+[development comparison prespec](luke_option_a_development_comparison_prespec.md).
+
+The requirements split in two. **Indispensable implementation integrity** —
+clock mapping, supported application, polarity, operator behaviour — is now
+verified in all four limbs. **Provisional scientific criteria** inherited from
+the retracted D2b-1 envelope are not met: whole-probe support is 0.917 against
+0.95, split-half is not measurable, and gain is **unmeasured** (an earlier note
+here reported "implied gain error ≥ 0.80" — that was estimator *disagreement*,
+not error, and is withdrawn). `FieldGate` and `qualify_field` are unmodified and
+still fail closed; proceeding on integrity alone inside a frozen domain is an
+explicit versioned departure for development only.
 
 Completed as the smallest required task: the §5.3 field-qualification receipt
 (`testing/luke_option_a_field_prerequisites.py`), which also established the
@@ -1244,10 +1250,18 @@ sources agreeing) and caught a live artifact that declares
 `selected_recording_start` while carrying acquisition-clock values.
 `load_qualified_motion_field` now refuses that when given the duration.
 
-If Option A is revived, the nominated development interval is **[7200, 7320] s**
-— the window where all four estimators agree there is the most motion (min
+The frozen domain is **[7200, 7320] s × [1810, 3710] µm** (190 of 384 channels):
+the window where all four estimators agree there is the most motion (min
 16.1 µm), chosen on motion coordinates alone and deliberately *not* cluster 37's
-interval. Closing the gain limb is a calibration, not a small task.
+interval, intersected with the depth band that has ≥0.95 local support after
+eroding by max|d| + 3σ so nothing is extrapolated. Frozen before any sort.
+
+Split-half returned identically zero from both halves, twice — consistent with
+the withdrawn sidecar's documented `fallback: identity` degeneracy, and so not a
+measurement of the accepted field. The concrete finding is that **the accepted
+estimates' generating configurations are not recorded**, so they cannot be
+re-estimated. Closing the gain limb remains a calibration, not a small task, and
+the bounded comparison does not substitute for it.
 
 **A required primary development branch**, tested fairly rather than inferred
 from the rejected historical warp. It is developed alongside the lightweight
