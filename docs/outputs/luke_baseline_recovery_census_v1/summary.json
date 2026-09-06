@@ -1,0 +1,114 @@
+{
+  "schema": "luke-baseline-recovery-census-v1",
+  "windows_sha256": "2c91e638ff1e2fab297174536bb6661b8f5c0bb29d401231a4612b6a5bf9e31e",
+  "selection_sha256": "b8adeefe29a894ea4db5351453d512650c2519ece63f9d49790ff914df9e102f",
+  "source_sha256": "e1c8dc8a00ab907991ec48d14ff19895c49d49d341be9c8773cd9b2739913ad9",
+  "extra_input_hashes": {
+    "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output/cluster_KSLabel.tsv": "2996ee700f37dbbfbfb23856619925fd6689a6b6336cf2e3c9fab7d45f5d60dc",
+    "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output/cluster_ContamPct.tsv": "b495383ccfdc9da441505f9b9e7691f7e8b23e681b5cf863dab199e6be81c366",
+    "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output/cluster_KSLabel.tsv": "4b6ca2b4769aa34d9df5bbabeead39dba99b3b8289d10c008af41cc34fa5291d",
+    "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output/cluster_ContamPct.tsv": "1ddeccdada06d9ad450268bc71ed6ce9a7e8dced3bf154988faa059d9400ab8c"
+  },
+  "intervals": [
+    [
+      0.0,
+      900.0
+    ],
+    [
+      1620.0,
+      2100.0
+    ],
+    [
+      2820.0,
+      3120.0
+    ],
+    [
+      3240.0,
+      4380.0
+    ],
+    [
+      5220.0,
+      5640.0
+    ],
+    [
+      5760.0,
+      8700.0
+    ],
+    [
+      9540.0,
+      9600.0
+    ],
+    [
+      9720.0,
+      10473.5537279367
+    ]
+  ],
+  "rules": "Baseline-only recovery census; no sort, candidate data, or fitter execution.\n\nKeep the original abrupt-transition rule, remove its per-sort nomination cap,\nand separately enumerate a broader exploratory rule: two adjacent valid stable\nwindows followed by two adjacent valid deteriorated windows in the SAME permitted\ndevelopment interval. Each pair is gap-free; the interval BETWEEN the pairs may\ncontain gaps or invalid windows and is reported, never fitted across. Pick the\nshortest qualifying span per cluster, ties by start then larger change. Exclude\nrescue cluster 37. No new hypothesis test or promotion decision is performed.\n",
+  "selection_constants": {
+    "reference_max_missing_pct": 5.0,
+    "failing_min_missing_pct": 15.0,
+    "min_median_difference_pp": 10.0,
+    "max_span_s": 600.0,
+    "control_max_missing_pct": 5.0,
+    "control_max_range_pp": 3.0,
+    "windows_per_case": 4,
+    "required_nominal_count": 1000,
+    "max_failure_cases_per_sort": 2,
+    "max_control_cases_per_sort": 1,
+    "units": {
+      "windows_per_case": "windows (count); also the control's 'at least four consecutive valid windows'",
+      "required_nominal_count": "spikes per window (count; i1 - i0 + 1)",
+      "reference_max_missing_pct": "percent missing (inclusive upper bound, <=)",
+      "failing_min_missing_pct": "percent missing (inclusive lower bound, >=)",
+      "min_median_difference_pp": "percentage points (inclusive lower bound, >=)",
+      "max_span_s": "seconds (inclusive upper bound, <=; first window start_s to last window end_s)",
+      "control_max_missing_pct": "percent missing (inclusive upper bound, <=)",
+      "control_max_range_pp": "percentage points (inclusive upper bound, <=; max - min)",
+      "max_failure_cases_per_sort": "cases (count)",
+      "max_control_cases_per_sort": "cases (count)"
+    }
+  },
+  "by_sort": {
+    "legacy_luke0804_v2v1_g0_imec0": {
+      "clusters": 563,
+      "good": 228,
+      "status_counts": {
+        "no_stable_pair": 67,
+        "qualifying_transition": 30,
+        "no_valid_dev_pair": 93,
+        "no_cached_windows": 267,
+        "no_deteriorated_pair": 81,
+        "no_ordered_pair_in_same_dev_interval": 25
+      },
+      "good_status_counts": {
+        "no_stable_pair": 9,
+        "no_cached_windows": 150,
+        "no_valid_dev_pair": 20,
+        "no_deteriorated_pair": 40,
+        "qualifying_transition": 4,
+        "no_ordered_pair_in_same_dev_interval": 5
+      }
+    },
+    "rescue_luke0804_v2v1_g0_imec0": {
+      "clusters": 710,
+      "good": 301,
+      "status_counts": {
+        "no_cached_windows": 396,
+        "no_valid_dev_pair": 96,
+        "no_deteriorated_pair": 82,
+        "no_stable_pair": 69,
+        "qualifying_transition": 34,
+        "no_ordered_pair_in_same_dev_interval": 32,
+        "excluded_closed_cluster_37": 1
+      },
+      "good_status_counts": {
+        "no_cached_windows": 191,
+        "no_deteriorated_pair": 50,
+        "no_valid_dev_pair": 30,
+        "no_stable_pair": 17,
+        "qualifying_transition": 7,
+        "no_ordered_pair_in_same_dev_interval": 6
+      }
+    }
+  }
+}

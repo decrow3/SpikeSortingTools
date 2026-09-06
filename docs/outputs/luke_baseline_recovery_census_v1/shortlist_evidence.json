@@ -1,0 +1,80 @@
+[
+  {
+    "cluster_id": 553,
+    "phases": [
+      {
+        "phase": "reference",
+        "n_spikes": 2000,
+        "rv_fraction_1_5ms": 0.0,
+        "median_sorter_amplitude": 12.75549602508545,
+        "median_depth_um": 3013.578369140625,
+        "depth_p10_um": 3006.70068359375,
+        "depth_p90_um": 3019.2916015625
+      },
+      {
+        "phase": "failing",
+        "n_spikes": 2000,
+        "rv_fraction_1_5ms": 0.0,
+        "median_sorter_amplitude": 11.716254711151123,
+        "median_depth_um": 3012.35107421875,
+        "depth_p10_um": 3004.6699951171877,
+        "depth_p90_um": 3019.2419189453126
+      }
+    ],
+    "depth_change_um": -1.227294921875,
+    "amplitude_drop_fraction": 0.08147400241358815,
+    "selected_input_sha256": "c44b9b6c066f6c051ed29b9985c4ee9b3375a6fe09afa1e4acb1607f6b73b96d"
+  },
+  {
+    "cluster_id": 452,
+    "phases": [
+      {
+        "phase": "reference",
+        "n_spikes": 2000,
+        "rv_fraction_1_5ms": 0.0005002501250625312,
+        "median_sorter_amplitude": 13.358869075775146,
+        "median_depth_um": 2305.3349609375,
+        "depth_p10_um": 2297.4028564453124,
+        "depth_p90_um": 2313.2618896484373
+      },
+      {
+        "phase": "failing",
+        "n_spikes": 2000,
+        "rv_fraction_1_5ms": 0.0015007503751875938,
+        "median_sorter_amplitude": 11.334150791168213,
+        "median_depth_um": 2304.9453125,
+        "depth_p10_um": 2296.6676025390625,
+        "depth_p90_um": 2314.07021484375
+      }
+    ],
+    "depth_change_um": -0.3896484375,
+    "amplitude_drop_fraction": 0.15156359966717092,
+    "selected_input_sha256": "0f4d3e0c188e6c59afd2e42963007982b8e68540590483a34fbe017070404190"
+  },
+  {
+    "cluster_id": 36,
+    "phases": [
+      {
+        "phase": "reference",
+        "n_spikes": 2000,
+        "rv_fraction_1_5ms": 0.0005002501250625312,
+        "median_sorter_amplitude": 13.37523603439331,
+        "median_depth_um": 87.56887817382812,
+        "depth_p10_um": 78.77525100708007,
+        "depth_p90_um": 96.92256927490234
+      },
+      {
+        "phase": "failing",
+        "n_spikes": 2000,
+        "rv_fraction_1_5ms": 0.0005002501250625312,
+        "median_sorter_amplitude": 14.893383502960205,
+        "median_depth_um": 84.54603576660156,
+        "depth_p10_um": 75.55970611572266,
+        "depth_p90_um": 94.23044052124024
+      }
+    ],
+    "depth_change_um": -3.0228424072265625,
+    "amplitude_drop_fraction": -0.11350434972983692,
+    "selected_input_sha256": "d099c9ac2592f659103017a7f4c3445f6e764f21076b275a6ee6babd9db5de46"
+  }
+]

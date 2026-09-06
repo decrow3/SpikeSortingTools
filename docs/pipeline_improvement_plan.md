@@ -16,6 +16,14 @@ development milestone, not production promotion or a replacement for the
 held-out and second-session gates below. See the [full-session development
 comparison proposal](full_session_development_comparison_proposal_v1.md).
 
+**Execution update, 2026-09-06:** the user authorized full Luke0804 imec0 and
+selected native rigid KS4 correction on the accepted rescue input. The
+[active run record](luke_full_session_rigid_v1.md) specifies the single candidate,
+full-session scope, reused baseline and descriptive outcome comparison. That
+authorization supersedes the proposal's unfilled candidate slot and older
+snippet-first execution restrictions for this development run. It does not
+promote the candidate or reopen the closed threshold/linker experiments.
+
 ### Use the lab's diagnostic to choose the next question
 
 Time-resolved amplitude completeness is a central diagnostic: fit the truncated

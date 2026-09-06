@@ -2,6 +2,13 @@
 
 Date: 2026-09-06. Status: **prospective proposal; not executed.**
 
+**Subsequent authorization, 2026-09-06:** the user selected full Luke0804 imec0
+with native rigid KS4 motion correction versus the accepted rescue baseline.
+Execution is recorded in [the active run record](luke_full_session_rigid_v1.md).
+The open candidate slot and lack of authorization described below are the
+proposal's earlier state. This is a descriptive development comparison; no
+production pass margin or promotion is asserted from it.
+
 ## Decision context
 
 The 120-second Option A comparison completed both arms but measured the primary
