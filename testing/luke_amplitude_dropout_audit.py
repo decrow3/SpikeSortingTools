@@ -67,7 +67,9 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from pipeline.truncation import fit_amp_cdf, is_saturated
+from pipeline.truncation import (
+    SATURATION_PCT, fit_amp_cdf, is_saturated, truncated_sigmoid,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = "luke-amplitude-dropout-audit-v1"
@@ -377,6 +379,10 @@ class AuditConfig:
     schema: str
     sorts: tuple[SortConfig, ...]
     selection: SelectionConstants
+    #: Frozen thresholds for the evidence layer. Optional at parse time so
+    #: `inventory` and `select` (which read no evidence) still run without one;
+    #: `run_inspect` requires it before it classifies anything.
+    evidence: "EvidenceConstants | None" = None
     #: Which delivery contract reserves this recording's sealed panel and
     #: healthy evaluation intervals. Optional at parse time so `inventory`
     #: (which ranks nothing) still runs without one; `run_select` requires it.
@@ -396,6 +402,17 @@ class AuditConfig:
             self.interval_contract, IntervalContractRef
         ):
             raise ValueError("interval_contract must be an IntervalContractRef")
+        if self.evidence is not None and not isinstance(self.evidence, EvidenceConstants):
+            raise ValueError("evidence must be EvidenceConstants")
+
+    def require_evidence_constants(self, config_path: Path | str) -> "EvidenceConstants":
+        if self.evidence is None:
+            raise ValueError(
+                f"{Path(config_path)}: config has no 'evidence' block; the evidence layer's "
+                "thresholds must be frozen in CONFIG (with units) before any observation is "
+                "read, exactly as the selection constants are -- there are no defaults"
+            )
+        return self.evidence
 
     def require_interval_contract(self, config_path: Path | str) -> IntervalContractRef:
         if self.interval_contract is None:
@@ -464,9 +481,12 @@ def load_config_from_bytes(data: bytes, path: Path | str) -> AuditConfig:
         parse_interval_contract_ref(payload["interval_contract"], path)
         if "interval_contract" in payload else None
     )
+    evidence = (
+        parse_evidence_constants(payload["evidence"]) if "evidence" in payload else None
+    )
     return AuditConfig(
         schema=payload.get("schema", ""), sorts=tuple(sorts), selection=selection,
-        interval_contract=interval_contract,
+        interval_contract=interval_contract, evidence=evidence,
     )
 
 
@@ -578,6 +598,13 @@ class CuratedArrays:
     amplitudes: np.ndarray
     row_id: np.ndarray
     was_time_ordered: bool
+    #: The attested full-table arrays this curated view was derived from, kept
+    #: so the evidence layer's retained-row lineage does not have to re-read
+    #: (and re-hash) files the replay already consumed. Optional: a caller that
+    #: constructs a view directly need not supply them, and the lineage
+    #: observation then degrades to `unavailable`.
+    full_st: "np.ndarray | None" = None
+    kept: "np.ndarray | None" = None
 
 
 def _validate_kept_spikes(kept: np.ndarray, n_full: int) -> np.ndarray:
@@ -663,6 +690,10 @@ def curated_arrays_from_raw(sort_id: str, raw: dict[str, np.ndarray]) -> Curated
         amplitudes=amplitudes[order],
         row_id=row_id[order],
         was_time_ordered=was_ordered,
+        # the FULL table, not st (= full_st[kept]): the lineage observation
+        # counts rows the kept mask excluded, which st no longer contains
+        full_st=full_st,
+        kept=kept,
     )
 
 
@@ -2624,6 +2655,917 @@ def replay_case_windows(
     return pd.DataFrame(rows, columns=list(CASE_WINDOWS_COLUMNS)), summaries
 
 
+# --------------------------------------------------------------------------- #
+# layer 4b -- evidence classification, panels and the decision
+#
+# The prescription's five-row evidence table, verbatim in intent: each case is
+# classified into every category, several categories may be supported at once,
+# and disagreement resolves to `ambiguous` -- never by a majority vote across
+# metrics. A category whose prerequisite is missing is `unavailable` or
+# `not_attempted` with the reason recorded; neither is evidence of absence.
+# --------------------------------------------------------------------------- #
+#: Category -> (permitted conclusion, next action). These are the prescription's
+#: own words: the audit may not upgrade a conclusion beyond the one its evidence
+#: row licenses.
+EVIDENCE_TABLE = {
+    "curation_exclusion": (
+        "Curation contributes to exclusion",
+        "Replay one specific curation rule on retained arrays",
+    ),
+    "identity_redistribution": (
+        "Identity redistribution is supported",
+        "Test one motion-aware identity rule",
+    ),
+    "motion_amplitude_change": (
+        "Motion/amplitude change is a candidate explanation",
+        "Choose a bounded existing registration or identity experiment; "
+        "do not claim causality yet",
+    ),
+    "voltage_integrity": (
+        "Local voltage integrity is suspect",
+        "Replay one implicated processing operation on the same voltage",
+    ),
+    "unresolved": (
+        "Stage is unresolved",
+        "Stop with the missing observation identified",
+    ),
+}
+EVIDENCE_CATEGORIES = tuple(EVIDENCE_TABLE)
+
+#: Per-category verdicts. `unavailable` (a prerequisite observation does not
+#: exist) and `not_attempted` (a protocol this checkpoint does not have) are
+#: distinct from `unsupported` (looked, and the observation did not support it).
+VERDICT_SUPPORTED = "supported"
+VERDICT_UNSUPPORTED = "unsupported"
+VERDICT_UNAVAILABLE = "unavailable"
+VERDICT_NOT_ATTEMPTED = "not_attempted"
+VERDICT_UNRESOLVED = "unresolved"
+
+#: Case-level readings. `ambiguous` is what disagreement resolves to.
+CASE_EVIDENCE_AMBIGUOUS = "ambiguous"
+CASE_EVIDENCE_UNRESOLVED = "unresolved"
+CASE_EVIDENCE_STOPPED = "interpretation_stopped"
+
+#: decision.md's two permitted endings.
+DECISION_INSUFFICIENT = "insufficient_evidence"
+
+CASE_EVIDENCE_COLUMNS = (
+    "case_id", "sort_id", "cluster_id", "case_role", "category", "verdict",
+    "permitted_conclusion", "next_action", "observation", "limitations",
+    "case_status", "case_evidence_reading", "figure_path", "case_windows_rows",
+)
+
+
+@dataclass(frozen=True)
+class EvidenceConstants:
+    """Frozen thresholds for the one comparison each evidence category makes.
+
+    Same discipline as :class:`SelectionConstants`: supplied only by CONFIG,
+    with units, no default in code and no CLI override, so they cannot move
+    after an observation has been seen.
+    """
+
+    depth_shift_um_material: float
+    amplitude_drop_frac_material: float
+    min_events_per_window_for_shift: int
+
+    def __post_init__(self) -> None:
+        if not math.isfinite(self.depth_shift_um_material) or self.depth_shift_um_material < 0:
+            raise ValueError("evidence.depth_shift_um_material must be finite and >= 0")
+        if not (0.0 <= self.amplitude_drop_frac_material <= 1.0):
+            raise ValueError("evidence.amplitude_drop_frac_material must lie in [0, 1]")
+        if self.min_events_per_window_for_shift < 1:
+            raise ValueError("evidence.min_events_per_window_for_shift must be >= 1")
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "depth_shift_um_material": self.depth_shift_um_material,
+            "amplitude_drop_frac_material": self.amplitude_drop_frac_material,
+            "min_events_per_window_for_shift": self.min_events_per_window_for_shift,
+        }
+
+
+_EVIDENCE_KEYS = ("depth_shift_um_material", "amplitude_drop_frac_material",
+                  "min_events_per_window_for_shift")
+
+
+def parse_evidence_constants(payload: Any) -> EvidenceConstants:
+    """Parse CONFIG's ``evidence`` block, requiring every constant and its unit."""
+    if not isinstance(payload, dict):
+        raise ValueError("config: 'evidence' must be an object of frozen evidence constants")
+    missing = sorted(set(_EVIDENCE_KEYS) - set(payload))
+    if missing:
+        raise ValueError(f"config: 'evidence' block is missing required key(s) {missing}")
+    unknown = sorted(set(payload) - set(_EVIDENCE_KEYS) - {"units", "note"})
+    if unknown:
+        raise ValueError(f"config: 'evidence' block has unknown key(s) {unknown}")
+    units = payload.get("units")
+    if not isinstance(units, dict) or sorted(units) != sorted(_EVIDENCE_KEYS):
+        raise ValueError(
+            "config: 'evidence.units' must name a unit for exactly the evidence constants"
+        )
+    for key in _EVIDENCE_KEYS:
+        value = payload[key]
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f"evidence.{key} must be a number, got {value!r}")
+        if not math.isfinite(float(value)):
+            raise ValueError(f"evidence.{key} must be finite, got {value!r}")
+    return EvidenceConstants(
+        depth_shift_um_material=float(payload["depth_shift_um_material"]),
+        amplitude_drop_frac_material=float(payload["amplitude_drop_frac_material"]),
+        min_events_per_window_for_shift=_exact_int_scalar(
+            payload["min_events_per_window_for_shift"],
+            "evidence.min_events_per_window_for_shift",
+        ),
+    )
+
+
+def read_attested_spike_positions(
+    sort_id: str, curated: Path,
+) -> tuple[np.ndarray | None, str | None, str | None]:
+    """Read ``spike_positions.npy`` once, hashing the bytes that were parsed.
+
+    Returns ``(positions, sha256, reason_unavailable)``. A missing file is a
+    permitted outcome -- depth evidence becomes ``unavailable`` with the reason
+    recorded -- not an exception and never a substitution from another sort.
+
+    This is deliberately NOT folded into the inventory's attested set: that set
+    is the replay's input contract, and widening it would silently invalidate
+    every manifest written against the old one.
+    """
+    path = Path(curated) / "spike_positions.npy"
+    if not path.exists():
+        return None, None, f"{path} does not exist; per-spike depth was never exported"
+    data = path.read_bytes()
+    digest = hashlib.sha256(data).hexdigest()
+    positions = np.load(io.BytesIO(data), allow_pickle=False)
+    del data
+    positions = np.asarray(positions)
+    if positions.ndim != 2 or positions.shape[1] < 2:
+        return None, digest, (
+            f"{path} has shape {positions.shape}; expected (n_spikes, >=2) with depth in "
+            "column 1"
+        )
+    return positions, digest, None
+
+
+def read_attested_full_labels(
+    sort_id: str, curated: Path,
+) -> tuple[np.ndarray | None, str | None, str | None]:
+    """Read ``full_clu.npy`` once, hashing the bytes that were parsed.
+
+    Returns ``(labels, sha256, reason_unavailable)``. Like
+    :func:`read_attested_spike_positions` this is kept out of the inventory's
+    attested set -- that set is the replay's input contract -- and a missing
+    file degrades the lineage observation to ``unavailable`` rather than raising.
+    """
+    path = Path(curated) / "full_clu.npy"
+    if not path.exists():
+        return None, None, f"{path} does not exist; full-table labels were never exported"
+    data = path.read_bytes()
+    digest = hashlib.sha256(data).hexdigest()
+    labels = np.load(io.BytesIO(data), allow_pickle=False)
+    del data
+    return np.asarray(labels).reshape(-1), digest, None
+
+
+def _window_event_slices(
+    case: dict[str, Any], times: np.ndarray,
+) -> dict[str, list[tuple[int, int]]]:
+    """Per-window ``[i0, i1]`` index ranges of the case, split by window role."""
+    by_role: dict[str, list[tuple[int, int]]] = {}
+    for window in case.get("windows", []):
+        role = str(window.get("window_role"))
+        by_role.setdefault(role, []).append((int(window["i0"]), int(window["i1"])))
+    return by_role
+
+
+def _role_values(values: np.ndarray, spans: list[tuple[int, int]]) -> np.ndarray:
+    """Concatenate one role's per-window values, inclusive of each endpoint."""
+    if not spans:
+        return np.empty(0, dtype=float)
+    return np.concatenate([np.asarray(values[i0:i1 + 1], dtype=float) for i0, i1 in spans])
+
+
+def measure_case_shift(
+    case: dict[str, Any], curated: CuratedArrays,
+    positions: np.ndarray | None,
+) -> dict[str, Any]:
+    """Median amplitude and depth of the reference vs the failing windows.
+
+    Amplitude is the sorter-native QC amplitude (``full_st[kept][:, 2]``); depth
+    is column 1 of ``spike_positions.npy``. Both are read over the SAME frozen
+    event spans the case was selected from, so nothing here re-selects anything.
+
+    The amplitude comparison is a median of the raw values, not a re-reading of
+    the truncation fit: the fitted missingness is what defined the case, so
+    scoring the case on it again would be circular.
+    """
+    cluster_positions = np.flatnonzero(curated.clusters == int(case["cluster_id"]))
+    amplitudes = curated.amplitudes[cluster_positions]
+    by_role = _window_event_slices(case, curated.times[cluster_positions])
+    reference_spans = by_role.get("reference", [])
+    failing_spans = by_role.get("failing", [])
+
+    out: dict[str, Any] = {
+        "n_reference_events": int(sum(i1 - i0 + 1 for i0, i1 in reference_spans)),
+        "n_failing_events": int(sum(i1 - i0 + 1 for i0, i1 in failing_spans)),
+        "reference_median_amplitude": None, "failing_median_amplitude": None,
+        "amplitude_drop_frac": None,
+        "reference_median_depth_um": None, "failing_median_depth_um": None,
+        "depth_shift_um": None, "depth_reason_unavailable": None,
+    }
+    if not reference_spans or not failing_spans:
+        out["depth_reason_unavailable"] = (
+            "this case has no reference/failing window split (control cases are "
+            "single-role by construction)"
+        )
+        return out
+
+    ref_amp = _role_values(amplitudes, reference_spans)
+    fail_amp = _role_values(amplitudes, failing_spans)
+    ref_median = float(np.median(ref_amp))
+    fail_median = float(np.median(fail_amp))
+    out["reference_median_amplitude"] = ref_median
+    out["failing_median_amplitude"] = fail_median
+    out["amplitude_drop_frac"] = (
+        float((ref_median - fail_median) / ref_median) if ref_median > 0 else None
+    )
+
+    if positions is None:
+        out["depth_reason_unavailable"] = "spike_positions.npy was not available"
+        return out
+    if positions.shape[0] != curated.times.size:
+        out["depth_reason_unavailable"] = (
+            f"spike_positions.npy has {positions.shape[0]} rows but the curated table has "
+            f"{curated.times.size}; the arrays are not aligned, so depth is not read"
+        )
+        return out
+    depths = np.asarray(positions[cluster_positions, 1], dtype=float)
+    ref_depth = _role_values(depths, reference_spans)
+    fail_depth = _role_values(depths, failing_spans)
+    if not (np.isfinite(ref_depth).all() and np.isfinite(fail_depth).all()):
+        out["depth_reason_unavailable"] = "spike_positions.npy carries non-finite depths here"
+        return out
+    out["reference_median_depth_um"] = float(np.median(ref_depth))
+    out["failing_median_depth_um"] = float(np.median(fail_depth))
+    out["depth_shift_um"] = float(
+        out["failing_median_depth_um"] - out["reference_median_depth_um"]
+    )
+    return out
+
+
+def measure_retained_row_lineage(
+    case: dict[str, Any], curated: CuratedArrays, raw: dict[str, np.ndarray],
+    full_labels: np.ndarray | None = None,
+    labels_unavailable: str | None = None,
+) -> dict[str, Any]:
+    """Rows of the full table inside the case's failing span that were not kept.
+
+    This is retained-row LINEAGE, not timestamp matching: the case's kept rows
+    are located in the full table through ``kept_spikes`` itself, their
+    ``full_clu`` label is read off there, and only rows carrying that same label
+    are counted. Full-sort and curated cluster IDs need not be equal, so the
+    label is never assumed.
+
+    It reports an observation and nothing more. Calling a dropped row "removed
+    by curation" -- or an absent one "never detected" -- would be a claim about
+    retained-array semantics, which the prescription requires establishing
+    against the installed KS4 source first. Until that exists, the category
+    stays unresolved no matter what this returns.
+    """
+    out: dict[str, Any] = {
+        "n_full_rows_in_span": None, "n_dropped_rows_in_span": None,
+        "full_label": None, "reason_unavailable": None,
+    }
+    full_st = raw.get("full_st.npy")
+    kept = raw.get("kept_spikes.npy")
+    if full_st is None or kept is None:
+        out["reason_unavailable"] = "the attested full-table arrays were not provided"
+        return out
+    if full_labels is None:
+        out["reason_unavailable"] = labels_unavailable or "full_clu.npy was not available"
+        return out
+
+    by_role = _window_event_slices(case, curated.times)
+    failing_spans = by_role.get("failing", [])
+    if not failing_spans:
+        out["reason_unavailable"] = "this case has no failing windows"
+        return out
+
+    cluster_positions = np.flatnonzero(curated.clusters == int(case["cluster_id"]))
+    times = curated.times[cluster_positions]
+    span_start = int(times[failing_spans[0][0]])
+    span_stop = int(times[failing_spans[-1][1]])
+
+    kept_arr = np.asarray(kept)
+    if kept_arr.dtype == np.bool_:
+        kept_rows = np.flatnonzero(kept_arr)
+    else:
+        kept_rows = np.asarray(kept_arr, dtype=np.int64)
+    if kept_rows.size != curated.times.size:
+        out["reason_unavailable"] = (
+            "kept_spikes does not resolve to one full-table row per curated spike"
+        )
+        return out
+
+    # the curated table was stable-sorted by time; row_id maps back to the
+    # pre-sort order, which is the order kept_spikes indexes
+    case_full_rows = kept_rows[curated.row_id[cluster_positions]]
+    full_clu = np.asarray(full_labels)
+    if full_clu.size != np.asarray(full_st).shape[0]:
+        out["reason_unavailable"] = (
+            f"full_clu.npy has {full_clu.size} rows but full_st.npy has "
+            f"{np.asarray(full_st).shape[0]}; the full-table arrays are not aligned"
+        )
+        return out
+    labels, counts = np.unique(full_clu[case_full_rows], return_counts=True)
+    if labels.size == 0:
+        out["reason_unavailable"] = "no full-table label could be read for this cluster"
+        return out
+    label = labels[int(np.argmax(counts))]
+    out["full_label"] = int(label)
+
+    full_times = np.asarray(full_st)[:, 0].astype(np.int64)
+    in_span = (full_times >= span_start) & (full_times <= span_stop)
+    same_label = full_clu == label
+    kept_mask = np.zeros(full_times.size, dtype=bool)
+    kept_mask[kept_rows] = True
+    out["n_full_rows_in_span"] = int(np.count_nonzero(in_span & same_label))
+    out["n_dropped_rows_in_span"] = int(np.count_nonzero(in_span & same_label & ~kept_mask))
+    return out
+
+
+def classify_case_evidence(
+    case: dict[str, Any], summary: dict[str, Any], shift: dict[str, Any],
+    lineage: dict[str, Any], c: EvidenceConstants,
+    voltage: dict[str, Any] | None = None,
+) -> tuple[list[dict[str, Any]], str]:
+    """One row per evidence category for one case, plus the case's reading.
+
+    Multiple supported categories are allowed; when more than one mechanism is
+    supported the reading is ``ambiguous`` -- the disagreement is reported, not
+    voted on. A case whose historical replay failed to reproduce its cache is
+    ``interpretation_stopped`` before any category is judged: the prescription
+    stops interpretation there, and every observation below is drawn from the
+    same arrays whose fit just failed to reproduce.
+    """
+    stopped = bool(summary.get("unstable_reproduction_mismatch"))
+    rows: list[dict[str, Any]] = []
+
+    def emit(category: str, verdict: str, observation: str, limitations: str) -> None:
+        conclusion, next_action = EVIDENCE_TABLE[category]
+        rows.append({
+            "category": category,
+            "verdict": verdict,
+            "permitted_conclusion": conclusion if verdict == VERDICT_SUPPORTED else "",
+            "next_action": next_action if verdict == VERDICT_SUPPORTED else "",
+            "observation": observation,
+            "limitations": limitations,
+        })
+
+    if stopped:
+        halted = (
+            "the historical replay of this case did not reproduce its cached missing_pct, "
+            "so interpretation stopped before any category was judged"
+        )
+        for category in EVIDENCE_CATEGORIES:
+            emit(category, VERDICT_UNRESOLVED, halted,
+                 "no observation from these arrays is interpretable while the mismatch stands")
+        return rows, CASE_EVIDENCE_STOPPED
+
+    # 1. curation exclusion -- observation only; the stage claim needs KS4 semantics
+    if lineage.get("reason_unavailable"):
+        emit("curation_exclusion", VERDICT_UNAVAILABLE,
+             f"retained-row lineage not read: {lineage['reason_unavailable']}",
+             "no lineage observation exists for this case")
+    else:
+        emit(
+            "curation_exclusion", VERDICT_UNRESOLVED,
+            f"{lineage['n_dropped_rows_in_span']} of {lineage['n_full_rows_in_span']} full-table "
+            f"rows carrying full-sort label {lineage['full_label']} inside the failing span are "
+            "absent from kept_spikes",
+            "a row absent from kept_spikes is NOT thereby 'removed by curation' or 'never "
+            "detected': the semantics of the retained arrays have not been established against "
+            "the installed KS4 source, so this observation licenses no stage claim",
+        )
+
+    # 2. identity redistribution -- needs a frozen shift-null protocol
+    emit("identity_redistribution", VERDICT_NOT_ATTEMPTED,
+         "no spatially restricted exclusive event matching was run",
+         "this checkpoint has no frozen shift-null protocol, and the prescription forbids an "
+         "identity claim from time coincidence alone; not attempted is not evidence of absence")
+
+    # 3. motion / amplitude change
+    depth_shift = shift.get("depth_shift_um")
+    drop = shift.get("amplitude_drop_frac")
+    n_min = min(shift.get("n_reference_events") or 0, shift.get("n_failing_events") or 0)
+    underpowered = n_min < c.min_events_per_window_for_shift
+    observations = []
+    if depth_shift is not None:
+        observations.append(f"median depth shift {depth_shift:+.2f} um")
+    if drop is not None:
+        observations.append(f"median amplitude drop {100 * drop:+.1f}% of the reference median")
+    observed = "; ".join(observations) if observations else "no shift could be measured"
+    depth_material = depth_shift is not None and abs(depth_shift) >= c.depth_shift_um_material
+    amp_material = drop is not None and drop >= c.amplitude_drop_frac_material
+    if depth_shift is None and drop is None:
+        emit("motion_amplitude_change", VERDICT_UNAVAILABLE, observed,
+             shift.get("depth_reason_unavailable") or "no amplitude or depth observation")
+    elif underpowered:
+        emit("motion_amplitude_change", VERDICT_UNRESOLVED, observed,
+             f"only {n_min} events in the smaller role (< "
+             f"{c.min_events_per_window_for_shift}); the shift is reported but its verdict is "
+             "withheld as underpowered")
+    elif depth_material or amp_material:
+        limits = [
+            "no assignment explanation was established for this case, which is what this row "
+            "requires; identity redistribution was not attempted",
+            "a shift accompanying missingness is not a cause of it -- this is a candidate "
+            "explanation, not a causal claim",
+        ]
+        if depth_shift is None:
+            limits.append("depth was unavailable; this rests on amplitude alone")
+        emit("motion_amplitude_change", VERDICT_SUPPORTED, observed, " | ".join(limits))
+    else:
+        emit("motion_amplitude_change", VERDICT_UNSUPPORTED, observed,
+             f"below the frozen thresholds (depth >= {c.depth_shift_um_material} um or "
+             f"amplitude drop >= {c.amplitude_drop_frac_material:.2f} of the reference median)")
+
+    # 4. voltage integrity -- filled by the bounded voltage review, when it ran
+    if voltage is None:
+        emit("voltage_integrity", VERDICT_UNAVAILABLE,
+             "no voltage review was performed for this case",
+             "voltage evidence is unavailable, which lowers this case's conclusion strength; "
+             "it is never reconstructed or substituted from another sort")
+    else:
+        emit("voltage_integrity", voltage["verdict"], voltage["observation"],
+             voltage["limitations"])
+
+    supported = [r["category"] for r in rows if r["verdict"] == VERDICT_SUPPORTED]
+
+    # 5. unresolved -- the prescription's own fallback row
+    if supported:
+        emit("unresolved", VERDICT_UNSUPPORTED,
+             f"supported categories: {', '.join(supported)}",
+             "the supported rows carry their own limitations")
+        reading = supported[0] if len(supported) == 1 else CASE_EVIDENCE_AMBIGUOUS
+    else:
+        missing = [r["category"] for r in rows
+                   if r["verdict"] in (VERDICT_UNAVAILABLE, VERDICT_NOT_ATTEMPTED,
+                                       VERDICT_UNRESOLVED)]
+        emit("unresolved", VERDICT_SUPPORTED,
+             "no category is supported: only missingness/amplitude changes were observed, or "
+             f"the required intermediates are absent ({', '.join(missing)})",
+             "the missing observations are named per category above")
+        reading = CASE_EVIDENCE_UNRESOLVED
+    return rows, reading
+
+
+# --------------------------------------------------------------------------- #
+# layer 4b -- the static evidence panel
+# --------------------------------------------------------------------------- #
+#: Context shown either side of the frozen interval, as a fraction of its span.
+#: The frozen four-window interval itself is never cropped.
+PANEL_CONTEXT_FRACTION = 0.5
+
+
+def _fitted_cdf(popt: tuple[float, float, float], x: np.ndarray) -> np.ndarray:
+    x0, k, amplitude = (float(v) for v in popt)
+    return truncated_sigmoid(x, x0, k, amplitude, float(np.min(x)) if x.size else 0.0)
+
+
+def render_case_panel(
+    case: dict[str, Any], rows: list[dict[str, Any]], curated: CuratedArrays,
+    positions: np.ndarray | None, out_path: Path, *,
+    shift: dict[str, Any] | None = None,
+) -> Path:
+    """One aligned static panel for one case.
+
+    Time-domain rows share one x axis and the whole frozen interval stays
+    visible. Missingness is drawn at each window's ACTUAL width, in percent;
+    boundary-pinned fits are drawn distinctly and excluded from the drawn
+    change score; no-fit time is shaded separately from boundary-pinned fits,
+    and both are in the legend. The CDF row is per window, in amplitude, which
+    is not a time axis and is labelled as such.
+    """
+    import matplotlib
+    matplotlib.use("Agg", force=True)
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Patch
+
+    cluster_positions = np.flatnonzero(curated.clusters == int(case["cluster_id"]))
+    times = curated.times[cluster_positions]
+    amps = curated.amplitudes[cluster_positions]
+    fs = float(case.get("_fs") or 1.0)
+    seconds = times / fs
+
+    ordered = sorted(rows, key=lambda r: int(r["window_ordinal"]))
+    starts = [float(r["start_s"]) for r in ordered]
+    ends = [float(r["end_s"]) for r in ordered]
+    frozen_lo, frozen_hi = min(starts), max(ends)
+    pad = max((frozen_hi - frozen_lo) * PANEL_CONTEXT_FRACTION, 1e-6)
+    lo, hi = frozen_lo - pad, frozen_hi + pad
+    keep = (seconds >= lo) & (seconds <= hi)
+
+    fig = plt.figure(figsize=(11.0, 12.0))
+    grid = fig.add_gridspec(5, len(ordered), height_ratios=[3, 2, 2, 2, 3], hspace=0.55)
+    ax_amp = fig.add_subplot(grid[0, :])
+    ax_missing = fig.add_subplot(grid[1, :], sharex=ax_amp)
+    ax_depth = fig.add_subplot(grid[2, :], sharex=ax_amp)
+    ax_rate = fig.add_subplot(grid[3, :], sharex=ax_amp)
+
+    # --- amplitude vs time -------------------------------------------------- #
+    if np.count_nonzero(keep) > 1:
+        ax_amp.hist2d(seconds[keep], amps[keep], bins=(80, 40), cmap="Blues")
+    ax_amp.set_ylabel("amplitude\n(sorter-native)")
+    ax_amp.set_title(
+        f"{case['case_id']}  --  sort {case['sort_id']}, cluster {case['cluster_id']}, "
+        f"role {case.get('role')}\n"
+        "amplitudes are sorter-native QC units (full_st[kept][:, 2]), never microvolts",
+        fontsize=10,
+    )
+
+    # --- missingness at actual window widths -------------------------------- #
+    pinned_any = False
+    for row in ordered:
+        start, end = float(row["start_s"]), float(row["end_s"])
+        width = max(end - start, 1e-9)
+        for key, colour, offset, label in (
+            ("replayed_historical_missing_pct", "#3b6ea5", 0.0, "historical (999)"),
+            ("exact_missing_pct", "#c46a1f", 0.5, "exact (1,000)"),
+        ):
+            value = row.get(key)
+            if value is None or not np.isfinite(float(value)):
+                continue
+            saturated = bool(row.get(
+                "historical_saturated" if "historical" in key else "exact_saturated"
+            ))
+            pinned_any = pinned_any or saturated
+            ax_missing.bar(
+                start + offset * width / 2.0, float(value), width=width / 2.0, align="edge",
+                color="none" if saturated else colour,
+                edgecolor=colour, hatch="///" if saturated else None,
+                linewidth=1.2, label=label,
+            )
+    ax_missing.set_ylabel("estimated\nmissing (%)")
+    ax_missing.set_ylim(0, 55)
+    ax_missing.axhline(SATURATION_PCT, color="0.4", lw=0.8, ls=":")
+    ax_missing.text(
+        lo, SATURATION_PCT + 0.6,
+        "50% = censoring bound: a hatched bar is boundary-pinned, not a measurement",
+        fontsize=7, color="0.3", va="bottom",
+    )
+
+    # --- depth vs time (waveform/depth summary) ----------------------------- #
+    if positions is not None and positions.shape[0] == curated.times.size:
+        depths = np.asarray(positions[cluster_positions, 1], dtype=float)
+        ax_depth.plot(seconds[keep], depths[keep], ".", ms=2, color="#4b7f52", alpha=0.5)
+        ax_depth.set_ylabel("depth (um)")
+        if shift and shift.get("depth_shift_um") is not None:
+            ax_depth.set_title(
+                f"median depth shift, failing minus reference: "
+                f"{shift['depth_shift_um']:+.2f} um", fontsize=8, loc="left",
+            )
+    else:
+        ax_depth.set_ylabel("depth (um)")
+        ax_depth.text(0.5, 0.5, "per-spike depth unavailable", ha="center", va="center",
+                      transform=ax_depth.transAxes, fontsize=9, color="0.35")
+        ax_depth.set_yticks([])
+
+    # --- rate as context ---------------------------------------------------- #
+    if np.count_nonzero(keep) > 1:
+        edges = np.linspace(lo, hi, 60)
+        counts, _ = np.histogram(seconds[keep], bins=edges)
+        widths = np.diff(edges)
+        ax_rate.step(edges[:-1], counts / widths, where="post", color="0.35", lw=1.0)
+    ax_rate.set_ylabel("rate (Hz)\ncontext only")
+    ax_rate.set_xlabel("time (s, selected-recording relative)")
+    ax_rate.set_xlim(lo, hi)
+
+    # --- frozen interval, no-fit shading ------------------------------------ #
+    covered = [(float(r["start_s"]), float(r["end_s"])) for r in ordered]
+    for axis in (ax_amp, ax_missing, ax_depth, ax_rate):
+        axis.axvspan(frozen_lo, frozen_hi, facecolor="#f2c14e", alpha=0.10, zorder=0)
+        cursor = lo
+        for start, end in sorted(covered):
+            if start > cursor:
+                axis.axvspan(cursor, start, facecolor="0.75", alpha=0.30, hatch="xx",
+                             edgecolor="0.5", lw=0.0, zorder=0)
+            cursor = max(cursor, end)
+        if cursor < hi:
+            axis.axvspan(cursor, hi, facecolor="0.75", alpha=0.30, hatch="xx",
+                         edgecolor="0.5", lw=0.0, zorder=0)
+        axis.grid(alpha=0.15)
+
+    handles = [
+        Patch(facecolor="#3b6ea5", edgecolor="#3b6ea5", label="historical fit (999 samples)"),
+        Patch(facecolor="#c46a1f", edgecolor="#c46a1f", label="exact fit (1,000 samples)"),
+        Patch(facecolor="none", edgecolor="0.2", hatch="///",
+              label="boundary-pinned (censored at 50%, excluded from change scores)"),
+        Patch(facecolor="0.75", edgecolor="0.5", hatch="xx",
+              label="no fit in this time (outside the frozen windows)"),
+        Patch(facecolor="#f2c14e", alpha=0.3, label="frozen four-window interval"),
+    ]
+    ax_missing.legend(handles=handles, fontsize=7, loc="upper left", framealpha=0.9)
+
+    # --- per-window CDFs ---------------------------------------------------- #
+    for column, row in enumerate(ordered):
+        axis = fig.add_subplot(grid[4, column])
+        i0, i1 = int(row["i0"]), int(row["i1"])
+        window_amps = np.sort(np.asarray(amps[i0:i1 + 1], dtype=float))
+        if window_amps.size:
+            empirical = np.arange(window_amps.size) / window_amps.size
+            axis.step(window_amps, empirical, where="post", color="0.25", lw=1.0,
+                      label="empirical")
+            popt = (row.get("exact_fit_x0"), row.get("exact_fit_k"), row.get("exact_fit_A"))
+            if all(v is not None and np.isfinite(float(v)) for v in popt):
+                axis.plot(window_amps, _fitted_cdf(popt, window_amps), color="#c46a1f",
+                          lw=1.0, label="fitted")
+        saturated = bool(row.get("exact_saturated"))
+        axis.set_title(
+            f"w{row['window_ordinal']} {row.get('window_role')}\n"
+            + ("boundary-pinned" if saturated
+               else f"{float(row['exact_missing_pct']):.2f}% missing"),
+            fontsize=7,
+        )
+        axis.set_xlabel("amplitude", fontsize=7)
+        if column == 0:
+            axis.set_ylabel("CDF", fontsize=7)
+            axis.legend(fontsize=6)
+        axis.tick_params(labelsize=6)
+
+    fig.suptitle(
+        "CDF row is amplitude-domain, not time. Missingness in %, changes in percentage points.",
+        y=0.055, fontsize=7, color="0.35",
+    )
+    out_path = Path(out_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=110, bbox_inches="tight")
+    plt.close(fig)
+    return out_path
+
+
+# --------------------------------------------------------------------------- #
+# layer 4b -- decision.md
+# --------------------------------------------------------------------------- #
+def _nominate(
+    evidence_rows: list[dict[str, Any]], summaries: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """The single nominated case, or ``None`` for insufficient_evidence.
+
+    Deterministic and conservative: only a failure case whose replay reproduced
+    and whose reading is a single supported mechanism can be nominated, ranked
+    by the case order the freeze already fixed. An ``ambiguous`` reading is not
+    a nomination -- it is a disagreement, and the prescription forbids
+    resolving it by majority.
+    """
+    by_case = {s["case_id"]: s for s in summaries}
+    for row in evidence_rows:
+        summary = by_case.get(row["case_id"])
+        if summary is None or row["case_role"] != "failure":
+            continue
+        if summary.get("case_status") != CASE_STATUS_STABLE:
+            continue
+        if row["case_evidence_reading"] in (
+            CASE_EVIDENCE_AMBIGUOUS, CASE_EVIDENCE_UNRESOLVED, CASE_EVIDENCE_STOPPED,
+        ):
+            continue
+        if row["verdict"] != VERDICT_SUPPORTED or row["category"] == "unresolved":
+            continue
+        return row
+    return None
+
+
+def write_decision_md(
+    path: Path, *, evidence_rows: list[dict[str, Any]], summaries: list[dict[str, Any]],
+    selection: dict[str, Any], evidence_constants: EvidenceConstants,
+) -> str:
+    """Write ``decision.md``; return the decision (a case_id or the sentinel).
+
+    Ends with exactly one of: a nominated case + intervention + expected
+    observable + why it is preferred, or ``insufficient_evidence`` naming which
+    observation was unavailable. A collection of figures without one of those
+    is not a completed deliverable, so this refuses to write anything else.
+    """
+    nomination = _nominate(evidence_rows, summaries)
+    lines = [
+        "# Amplitude-completeness dropout audit -- decision",
+        "",
+        f"Schema: `{SCHEMA}`  ",
+        f"Selection: `{selection.get('selection_sha256', '')}`  ",
+        f"Cases examined: {len(summaries)}",
+        "",
+        "## What this audit is",
+        "",
+        "A local candidate screen on cached amplitude-truncation QC from one recording.",
+        "It is not proof of true recall, not a measure of production superiority, and not",
+        "a causal claim: a change that accompanies missingness is not thereby its cause.",
+        "Selected extremes can regress toward typical behaviour. Any positive result",
+        "advances only through the existing independent-window/context, held-out and",
+        "session-replication gates.",
+        "",
+        "## Cases",
+        "",
+        "| case | sort | cluster | role | status | reading |",
+        "|---|---|---|---|---|---|",
+    ]
+    readings = {r["case_id"]: r["case_evidence_reading"] for r in evidence_rows}
+    for summary in summaries:
+        lines.append(
+            f"| `{summary['case_id']}` | {summary['sort_id']} | {summary['cluster_id']} | "
+            f"{summary.get('role')} | {summary.get('case_status')} | "
+            f"{readings.get(summary['case_id'], CASE_EVIDENCE_UNRESOLVED)} |"
+        )
+
+    lines += ["", "## Evidence that was unavailable or not attempted", ""]
+    any_missing = False
+    for summary in summaries:
+        case_id = summary["case_id"]
+        missing_rows = [
+            r for r in evidence_rows
+            if r["case_id"] == case_id
+            and r["verdict"] in (VERDICT_UNAVAILABLE, VERDICT_NOT_ATTEMPTED)
+        ]
+        if not missing_rows:
+            continue
+        any_missing = True
+        lines.append(f"- `{case_id}`:")
+        for row in missing_rows:
+            lines.append(
+                f"  - **{row['category']}** ({row['verdict']}): {row['limitations']}"
+            )
+    if not any_missing:
+        lines.append("- none")
+
+    lines += ["", "## Decision", ""]
+    if nomination is None:
+        stopped = [s["case_id"] for s in summaries
+                   if s.get("case_status") != CASE_STATUS_STABLE]
+        lines += [
+            f"**`{DECISION_INSUFFICIENT}`**",
+            "",
+            "No case reached a single supported mechanism with a reproducing replay, so no",
+            "intervention is nominated. Precisely which observation was unavailable, per case",
+            "(a category that was measured and came out below its frozen threshold is listed",
+            "as `unsupported`, which is a result, not a missing observation):",
+            "",
+        ]
+        for summary in summaries:
+            case_id = summary["case_id"]
+            case_rows = [r for r in evidence_rows if r["case_id"] == case_id
+                         and r["category"] != "unresolved"]
+            lines.append(f"- `{case_id}`:")
+            for row in case_rows:
+                lines.append(
+                    f"  - `{row['category']}` -- {row['verdict']}: "
+                    + (row["limitations"] if row["verdict"] in (
+                        VERDICT_UNAVAILABLE, VERDICT_NOT_ATTEMPTED, VERDICT_UNRESOLVED)
+                       else f"measured, {row['observation']}")
+                )
+        if stopped:
+            lines.append(
+                f"- replay did not reproduce the cached estimate for: {', '.join(stopped)}; "
+                "interpretation of those cases stopped there"
+            )
+        lines += [
+            "",
+            "Per the prescription this closes the checkpoint. No threshold is relaxed, no",
+            "case is backfilled, and no further variant is launched to reach a result.",
+        ]
+        decision = DECISION_INSUFFICIENT
+    else:
+        conclusion, next_action = EVIDENCE_TABLE[nomination["category"]]
+        others = sorted({
+            f"`{r['category']}` ({r['verdict']})" for r in evidence_rows
+            if r["case_id"] == nomination["case_id"] and r["category"] != nomination["category"]
+            and r["category"] != "unresolved"
+        })
+        lines += [
+            f"**Nominated case:** `{nomination['case_id']}` "
+            f"(sort {nomination['sort_id']}, cluster {nomination['cluster_id']})",
+            "",
+            f"**Supported category:** `{nomination['category']}` -- {conclusion}.",
+            "",
+            f"**Observation:** {nomination['observation']}",
+            "",
+            f"**Nominated intervention:** {next_action}.",
+            "",
+            "**Expected observable:** lower estimated missingness in this case's failing",
+            "windows under the candidate, in the same physical-time interval, with added-event",
+            "waveform support and no breached contamination, refractory or healthy-control",
+            "margin. The comparison is inconclusive unless enough fits fall inside the frozen",
+            "interval under both configurations.",
+            "",
+            "**Why this rather than the other interventions:** the remaining categories did not",
+            f"reach a supported verdict for this case ({', '.join(others) or 'none recorded'}),",
+            "so their interventions have nothing to act on here.",
+            "",
+            f"**Limitations carried into the experiment:** {nomination['limitations']}",
+            "",
+            "Before execution, an experiment JSON must fix both applied-setting maps, input and",
+            "target identities, correspondence criteria, intervals, amplitude semantics,",
+            "contamination/refractory endpoints, runtime cap, improvement and regression",
+            "margins, and the decision rule. Those margins need this case's baseline evidence",
+            "and must not be chosen after candidate results are seen.",
+        ]
+        decision = nomination["case_id"]
+
+    lines += [
+        "",
+        "## Frozen constants",
+        "",
+        f"- evidence: `{json.dumps(evidence_constants.to_dict(), sort_keys=True)}`",
+        f"- selection: `{json.dumps(selection.get('selection_constants', {}), sort_keys=True)}`",
+        "",
+    ]
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    tmp = Path(path).with_suffix(".md.tmp")
+    tmp.write_text("\n".join(lines))
+    os.replace(tmp, path)
+    return decision
+
+
+def build_case_evidence(
+    payload: dict[str, Any], cfg: AuditConfig, curated_by_sort: dict[str, CuratedArrays],
+    case_windows: pd.DataFrame, summaries: list[dict[str, Any]], out_root: Path,
+    *, evidence_constants: EvidenceConstants, render_figures: bool = True,
+    voltage_by_case: dict[str, dict[str, Any]] | None = None,
+) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Classify every frozen case and render its panel.
+
+    Reads only the frozen cases -- nothing here re-selects, re-ranks or drops a
+    case, and no threshold moves. Extra arrays this layer needs
+    (``spike_positions.npy``, ``full_clu.npy``) are attested on read and are
+    permitted to be absent: the affected category degrades to ``unavailable``
+    with the reason recorded.
+    """
+    voltage_by_case = voltage_by_case or {}
+    by_case_id = {s["case_id"]: s for s in summaries}
+    rows: list[dict[str, Any]] = []
+    extras: dict[str, Any] = {"spike_positions_sha256": {}, "full_clu_sha256": {},
+                              "unavailable": {}}
+    figures_dir = Path(out_root) / "figures"
+
+    per_sort_extra: dict[str, tuple] = {}
+    for sort_id in sorted({str(c["sort_id"]) for c in payload.get("cases", [])}):
+        curated_dir = Path(cfg.by_id(sort_id).curated)
+        positions, pos_sha, pos_reason = read_attested_spike_positions(sort_id, curated_dir)
+        labels, lab_sha, lab_reason = read_attested_full_labels(sort_id, curated_dir)
+        per_sort_extra[sort_id] = (positions, labels, lab_reason)
+        if pos_sha:
+            extras["spike_positions_sha256"][sort_id] = pos_sha
+        if lab_sha:
+            extras["full_clu_sha256"][sort_id] = lab_sha
+        if pos_reason or lab_reason:
+            extras["unavailable"][sort_id] = {
+                k: v for k, v in
+                (("spike_positions.npy", pos_reason), ("full_clu.npy", lab_reason)) if v
+            }
+
+    for case in payload.get("cases", []):
+        case_id = str(case["case_id"])
+        sort_id = str(case["sort_id"])
+        curated = curated_by_sort[sort_id]
+        positions, labels, labels_reason = per_sort_extra[sort_id]
+        summary = by_case_id.get(case_id, {})
+        window_rows = case_windows[case_windows["case_id"] == case_id].to_dict("records")
+
+        shift = measure_case_shift(case, curated, positions)
+        lineage = measure_retained_row_lineage(
+            case, curated,
+            {"full_st.npy": curated.full_st, "kept_spikes.npy": curated.kept},
+            full_labels=labels, labels_unavailable=labels_reason,
+        )
+        category_rows, reading = classify_case_evidence(
+            case, summary, shift, lineage, evidence_constants,
+            voltage=voltage_by_case.get(case_id),
+        )
+
+        figure_path = ""
+        if render_figures and window_rows:
+            case_for_panel = dict(case, _fs=cfg.by_id(sort_id).sampling_frequency_hz)
+            rendered = render_case_panel(
+                case_for_panel, window_rows, curated, positions,
+                figures_dir / f"{case_id}.png", shift=shift,
+            )
+            figure_path = str(Path("figures") / rendered.name)
+
+        source_rows = ",".join(str(r.get("source_row")) for r in window_rows)
+        for row in category_rows:
+            rows.append({
+                "case_id": case_id, "sort_id": sort_id,
+                "cluster_id": int(case["cluster_id"]), "case_role": case.get("role"),
+                **row,
+                "case_status": summary.get("case_status"),
+                "case_evidence_reading": reading,
+                "figure_path": figure_path,
+                "case_windows_rows": source_rows,
+            })
+
+    return pd.DataFrame(rows, columns=list(CASE_EVIDENCE_COLUMNS)), extras
+
+
 def run_inspect(selection_path: Path, out_root: Path) -> dict[str, Any]:
     """Verify the frozen selection, then replay only its cases.
 
@@ -2641,6 +3583,9 @@ def run_inspect(selection_path: Path, out_root: Path) -> dict[str, Any]:
     )
     manifest_path = out_root / "manifest.json"
     case_windows_path = out_root / "case_windows.csv"
+    case_evidence_path = out_root / "case_evidence.csv"
+    decision_path = out_root / "decision.md"
+    evidence_constants = cfg.require_evidence_constants(config_path)
 
     if manifest["select"]["selection_sha256"] != payload["selection_sha256"]:
         raise RuntimeError(
@@ -2672,6 +3617,17 @@ def run_inspect(selection_path: Path, out_root: Path) -> dict[str, Any]:
         case_windows, summaries = replay_case_windows(payload, cfg, curated_by_sort)
         _atomic_write_csv(case_windows_path, case_windows)
 
+        case_evidence, evidence_extras = build_case_evidence(
+            payload, cfg, curated_by_sort, case_windows, summaries, out_root,
+            evidence_constants=evidence_constants,
+        )
+        _atomic_write_csv(case_evidence_path, case_evidence)
+        decision = write_decision_md(
+            decision_path, evidence_rows=case_evidence.to_dict("records"),
+            summaries=summaries, selection=payload,
+            evidence_constants=evidence_constants,
+        )
+
         manifest["status"] = "complete"
         manifest["inspect"] = {
             "selection_path": str(selection_path),
@@ -2690,6 +3646,18 @@ def run_inspect(selection_path: Path, out_root: Path) -> dict[str, Any]:
                 "atol_pp": REPRODUCTION_ATOL_PP,
             },
             "cases": summaries,
+            "case_evidence_path": str(case_evidence_path),
+            "case_evidence_sha256": sha256_file(case_evidence_path),
+            "decision_path": str(decision_path),
+            "decision_sha256": sha256_file(decision_path),
+            "decision": decision,
+            "figures_dir": str(out_root / "figures"),
+            "evidence_constants": evidence_constants.to_dict(),
+            "evidence_extra_inputs": evidence_extras,
+            "case_evidence_readings": {
+                row["case_id"]: row["case_evidence_reading"]
+                for row in case_evidence.to_dict("records")
+            },
             "unstable_under_exact_indexing": [
                 s["case_id"] for s in summaries if s["unstable_under_exact_indexing"]
             ],
@@ -2710,8 +3678,13 @@ def run_inspect(selection_path: Path, out_root: Path) -> dict[str, Any]:
                 "exact-indexing eligibility verdict is produced for such a case: its "
                 f"exact_eligibility_reason is {EXACT_ELIGIBILITY_NOT_INTERPRETED!r} and its "
                 "unstable_under_exact_indexing is left undetermined.",
-                "Figures, voltage review, evidence classification and decision.md are later "
-                "layers and are not produced by this stage.",
+                "Evidence categories are classified per case; several may be supported at "
+                "once, and disagreement is reported as `ambiguous`, never resolved by a "
+                "majority across metrics. `unavailable` and `not_attempted` record a missing "
+                "prerequisite and are not evidence of absence.",
+                "decision.md ends with exactly one nomination or `insufficient_evidence`.",
+                "The bounded voltage review is a later layer; until it runs, every case's "
+                "voltage_integrity row is `unavailable` with that reason recorded.",
             ],
         }
     except Exception as exc:

@@ -53,6 +53,26 @@ from testing.luke_amplitude_dropout_audit import (
     load_curated_arrays,
     main,
     _parse_windows_bytes,
+    CASE_EVIDENCE_AMBIGUOUS,
+    CASE_EVIDENCE_COLUMNS,
+    CASE_EVIDENCE_STOPPED,
+    CASE_EVIDENCE_UNRESOLVED,
+    DECISION_INSUFFICIENT,
+    EVIDENCE_CATEGORIES,
+    EVIDENCE_TABLE,
+    EvidenceConstants,
+    VERDICT_NOT_ATTEMPTED,
+    VERDICT_SUPPORTED,
+    VERDICT_UNAVAILABLE,
+    VERDICT_UNRESOLVED,
+    VERDICT_UNSUPPORTED,
+    classify_case_evidence,
+    measure_case_shift,
+    measure_retained_row_lineage,
+    parse_evidence_constants,
+    read_attested_full_labels,
+    read_attested_spike_positions,
+    write_decision_md,
     parse_selection_constants,
     read_attested_windows,
     run_inspect,
@@ -73,6 +93,11 @@ REAL_CONFIG = REPO_ROOT / "testing/configs/luke_amplitude_dropout_audit_v1.json"
 SELECTION_BLOCK = json.loads(REAL_CONFIG.read_text())["selection"]
 CONSTANTS = parse_selection_constants(SELECTION_BLOCK)
 INTERVAL_CONTRACT_BLOCK = json.loads(REAL_CONFIG.read_text())["interval_contract"]
+# The frozen evidence-layer constants, read from the shipped config for the
+# same reason as SELECTION_BLOCK: a drift between what ships and what the
+# tests pin down should not go unnoticed.
+EVIDENCE_BLOCK = json.loads(REAL_CONFIG.read_text())["evidence"]
+EVIDENCE_CONSTANTS = parse_evidence_constants(EVIDENCE_BLOCK)
 
 CONTRACT_SCHEMA = "luke-first-pipeline-candidate-v1"
 
@@ -837,6 +862,7 @@ def _write_config(tmp_path: Path, curated: Path, qc_dir: Path, source_recording:
     payload = {
         "schema": SCHEMA,
         "selection": SELECTION_BLOCK,
+        "evidence": EVIDENCE_BLOCK,
         "sorts": [{
             "sort_id": "synthetic",
             "curated": str(curated),
@@ -1769,6 +1795,7 @@ def _write_two_sort_config(tmp_path: Path, sort_ids: list[str]) -> Path:
     config_path.write_text(json.dumps({
         "schema": SCHEMA,
         "selection": SELECTION_BLOCK,
+        "evidence": EVIDENCE_BLOCK,
         "interval_contract": {
             "path": str(contract_path), "contract_id": "synthetic_contract",
         },
@@ -3073,3 +3100,329 @@ def test_merging_cuts_preserves_a_real_gap_between_them():
     assert _subtract_intervals([(0.0, 300.0)], [(0.0, 100.0), (100.0000005, 200.0)]) == [
         (100.0, 100.0000005), (200.0, 300.0),
     ]
+
+
+# --------------------------------------------------------------------------- #
+# layer 4b -- evidence classification, panels, decision.md
+#
+# The prescription's five-row table: several categories may be supported at
+# once, disagreement is `ambiguous` and is never resolved by a majority across
+# metrics, and a missing prerequisite is recorded as unavailable/not_attempted
+# rather than read as evidence of absence.
+# --------------------------------------------------------------------------- #
+def _summary(case_id="c", status=CASE_STATUS_STABLE, mismatch=False, role="failure"):
+    return {"case_id": case_id, "role": role, "case_status": status,
+            "unstable_reproduction_mismatch": mismatch}
+
+
+def _shift(depth=None, drop=None, n=500, reason=None):
+    return {"n_reference_events": n, "n_failing_events": n,
+            "reference_median_amplitude": 100.0,
+            "failing_median_amplitude": None if drop is None else 100.0 * (1 - drop),
+            "amplitude_drop_frac": drop,
+            "reference_median_depth_um": None, "failing_median_depth_um": None,
+            "depth_shift_um": depth, "depth_reason_unavailable": reason}
+
+
+def _lineage(dropped=3, total=10, reason=None):
+    return {"n_full_rows_in_span": total, "n_dropped_rows_in_span": dropped,
+            "full_label": 7, "reason_unavailable": reason}
+
+
+def _verdicts(rows):
+    return {r["category"]: r["verdict"] for r in rows}
+
+
+def test_every_prescription_category_is_classified_for_every_case():
+    rows, reading = classify_case_evidence(
+        {"cluster_id": 1, "windows": []}, _summary(), _shift(), _lineage(), EVIDENCE_CONSTANTS)
+    assert [r["category"] for r in rows] == list(EVIDENCE_CATEGORIES)
+    assert set(EVIDENCE_CATEGORIES) == set(EVIDENCE_TABLE)
+    assert reading == CASE_EVIDENCE_UNRESOLVED
+
+
+def test_a_material_depth_shift_supports_motion_amplitude_change():
+    rows, reading = classify_case_evidence(
+        {"cluster_id": 1, "windows": []}, _summary(),
+        _shift(depth=12.0, drop=0.02), _lineage(), EVIDENCE_CONSTANTS)
+    verdicts = _verdicts(rows)
+    assert verdicts["motion_amplitude_change"] == VERDICT_SUPPORTED
+    assert reading == "motion_amplitude_change"
+    row = next(r for r in rows if r["category"] == "motion_amplitude_change")
+    assert row["permitted_conclusion"] == EVIDENCE_TABLE["motion_amplitude_change"][0]
+    # the permitted conclusion is a candidate explanation, never a cause
+    assert "candidate explanation" in row["permitted_conclusion"]
+    assert "not a causal claim" in row["limitations"]
+
+
+def test_a_shift_below_the_frozen_threshold_is_unsupported_not_missing():
+    rows, _ = classify_case_evidence(
+        {"cluster_id": 1, "windows": []}, _summary(),
+        _shift(depth=1.0, drop=0.01), _lineage(), EVIDENCE_CONSTANTS)
+    assert _verdicts(rows)["motion_amplitude_change"] == VERDICT_UNSUPPORTED
+
+
+def test_an_underpowered_shift_withholds_its_verdict():
+    """Too few events is not 'no effect'; the shift is reported, the verdict is
+    withheld."""
+    rows, _ = classify_case_evidence(
+        {"cluster_id": 1, "windows": []}, _summary(),
+        _shift(depth=99.0, drop=0.9, n=3), _lineage(), EVIDENCE_CONSTANTS)
+    row = next(r for r in rows if r["category"] == "motion_amplitude_change")
+    assert row["verdict"] == VERDICT_UNRESOLVED
+    assert "underpowered" in row["limitations"]
+    assert "99" in row["observation"]  # the measurement is still reported
+
+
+def test_disagreement_between_supported_categories_is_ambiguous_not_a_vote():
+    """Two mechanisms supported at once is a disagreement to report, never a
+    majority to resolve."""
+    voltage = {"verdict": VERDICT_SUPPORTED, "observation": "artifact overlaps the waveform",
+               "limitations": "one excerpt"}
+    rows, reading = classify_case_evidence(
+        {"cluster_id": 1, "windows": []}, _summary(),
+        _shift(depth=12.0, drop=0.5), _lineage(), EVIDENCE_CONSTANTS, voltage=voltage)
+    supported = [r["category"] for r in rows if r["verdict"] == VERDICT_SUPPORTED]
+    assert set(supported) == {"motion_amplitude_change", "voltage_integrity"}
+    assert reading == CASE_EVIDENCE_AMBIGUOUS
+
+
+def test_a_reproduction_mismatch_stops_interpretation_before_any_category():
+    rows, reading = classify_case_evidence(
+        {"cluster_id": 1, "windows": []}, _summary(mismatch=True, status=CASE_STATUS_UNSTABLE),
+        _shift(depth=99.0, drop=0.9), _lineage(), EVIDENCE_CONSTANTS)
+    assert reading == CASE_EVIDENCE_STOPPED
+    assert {r["verdict"] for r in rows} == {VERDICT_UNRESOLVED}
+    assert all("interpretation stopped" in r["observation"] for r in rows)
+
+
+def test_curation_stays_unresolved_without_established_ks4_semantics():
+    """A row absent from kept_spikes is an observation, not a curation claim
+    and never a 'never detected' claim."""
+    rows, _ = classify_case_evidence(
+        {"cluster_id": 1, "windows": []}, _summary(), _shift(), _lineage(dropped=42, total=99),
+        EVIDENCE_CONSTANTS)
+    row = next(r for r in rows if r["category"] == "curation_exclusion")
+    assert row["verdict"] == VERDICT_UNRESOLVED
+    assert "42 of 99" in row["observation"]
+    assert "installed KS4 source" in row["limitations"]
+    assert row["permitted_conclusion"] == ""      # no conclusion is licensed
+
+
+def test_identity_redistribution_is_not_attempted_without_a_shift_null_protocol():
+    rows, _ = classify_case_evidence(
+        {"cluster_id": 1, "windows": []}, _summary(), _shift(), _lineage(), EVIDENCE_CONSTANTS)
+    row = next(r for r in rows if r["category"] == "identity_redistribution")
+    assert row["verdict"] == VERDICT_NOT_ATTEMPTED
+    assert "not evidence of absence" in row["limitations"]
+
+
+def test_voltage_is_unavailable_until_the_voltage_review_runs():
+    rows, _ = classify_case_evidence(
+        {"cluster_id": 1, "windows": []}, _summary(), _shift(), _lineage(), EVIDENCE_CONSTANTS)
+    row = next(r for r in rows if r["category"] == "voltage_integrity")
+    assert row["verdict"] == VERDICT_UNAVAILABLE
+    assert "never reconstructed or substituted" in row["limitations"]
+
+
+# --------------------------------------------------------------------------- #
+# the measurements behind the categories
+# --------------------------------------------------------------------------- #
+def test_measure_case_shift_reads_raw_amplitudes_not_the_fitted_missingness(tmp_path):
+    """The fit defined the case, so scoring the case on it again is circular.
+    This asserts the measured drop follows the amplitudes, not the fits."""
+    _, out_root, selection = _inspect_ready_root(tmp_path)
+    cfg = load_config(json.loads((out_root / "selection.json").read_text())["config_path"])
+    curated = load_curated_arrays("synthetic", cfg.sorts[0].curated)
+    case = next(c for c in selection["cases"] if c["role"] == "failure")
+    shift = measure_case_shift(case, curated, None)
+    positions = np.flatnonzero(curated.clusters == int(case["cluster_id"]))
+    amps = curated.amplitudes[positions]
+    ref = np.median(np.concatenate([amps[w["i0"]:w["i1"] + 1] for w in case["windows"]
+                                    if w["window_role"] == "reference"]))
+    assert shift["reference_median_amplitude"] == pytest.approx(float(ref))
+    assert shift["depth_shift_um"] is None          # no spike_positions in this fixture
+    assert "spike_positions" in shift["depth_reason_unavailable"]
+
+
+def test_a_control_case_has_no_reference_failing_split_to_compare(tmp_path):
+    _, out_root, selection = _inspect_ready_root(tmp_path)
+    cfg = load_config(json.loads((out_root / "selection.json").read_text())["config_path"])
+    curated = load_curated_arrays("synthetic", cfg.sorts[0].curated)
+    case = next(c for c in selection["cases"] if c["role"] == "control")
+    shift = measure_case_shift(case, curated, None)
+    assert shift["amplitude_drop_frac"] is None
+    assert "single-role" in shift["depth_reason_unavailable"]
+
+
+def test_missing_spike_positions_and_full_clu_are_unavailable_not_exceptions(tmp_path):
+    curated = _write_curated(tmp_path, n=10)
+    positions, sha, reason = read_attested_spike_positions("s1", curated)
+    assert positions is None and sha is None and "does not exist" in reason
+    labels, sha2, reason2 = read_attested_full_labels("s1", curated)
+    assert labels is None and sha2 is None and "does not exist" in reason2
+
+
+def test_present_evidence_arrays_are_hashed_as_they_are_parsed(tmp_path):
+    curated = _write_curated(tmp_path, n=10)
+    np.save(curated / "spike_positions.npy", np.zeros((10, 3)))
+    np.save(curated / "full_clu.npy", np.arange(10))
+    positions, sha, reason = read_attested_spike_positions("s1", curated)
+    assert reason is None and positions.shape == (10, 3)
+    assert sha == hashlib.sha256((curated / "spike_positions.npy").read_bytes()).hexdigest()
+    labels, sha2, _ = read_attested_full_labels("s1", curated)
+    assert sha2 == hashlib.sha256((curated / "full_clu.npy").read_bytes()).hexdigest()
+    assert labels.size == 10
+
+
+# --------------------------------------------------------------------------- #
+# the deliverables
+# --------------------------------------------------------------------------- #
+def test_inspect_writes_evidence_a_panel_and_a_decision(tmp_path):
+    _, out_root, selection = _inspect_ready_root(tmp_path)
+    manifest = run_inspect(out_root / "selection.json", out_root)
+    inspect = manifest["inspect"]
+
+    evidence = pd.read_csv(out_root / "case_evidence.csv")
+    assert list(evidence.columns) == list(CASE_EVIDENCE_COLUMNS)
+    # one row per case per category, no case skipped
+    assert len(evidence) == len(selection["cases"]) * len(EVIDENCE_CATEGORIES)
+    assert set(evidence["case_id"]) == {c["case_id"] for c in selection["cases"]}
+
+    for case in selection["cases"]:
+        png = out_root / "figures" / f"{case['case_id']}.png"
+        assert png.exists() and png.stat().st_size > 5000   # rendered, not a stub
+    assert (out_root / "decision.md").exists()
+    assert inspect["case_evidence_sha256"] == sha256_file(out_root / "case_evidence.csv")
+    assert inspect["decision_sha256"] == sha256_file(out_root / "decision.md")
+    assert inspect["evidence_constants"] == EVIDENCE_CONSTANTS.to_dict()
+
+
+def test_decision_md_ends_with_insufficient_evidence_when_nothing_is_supported(tmp_path):
+    _, out_root, _ = _inspect_ready_root(tmp_path)
+    manifest = run_inspect(out_root / "selection.json", out_root)
+    text = (out_root / "decision.md").read_text()
+    assert manifest["inspect"]["decision"] == DECISION_INSUFFICIENT
+    assert f"**`{DECISION_INSUFFICIENT}`**" in text
+    # it must name which observation was missing, and must not call a measured
+    # below-threshold category "missing"
+    assert "identity_redistribution` -- not_attempted" in text
+    assert "unsupported: measured" in text
+    assert "local candidate screen" in text
+    assert "not proof of true recall" in text
+
+
+def test_decision_md_nominates_one_case_when_exactly_one_mechanism_is_supported(tmp_path):
+    supported = [{
+        "case_id": "s__c1__failure1", "sort_id": "s", "cluster_id": 1, "case_role": "failure",
+        "category": "motion_amplitude_change", "verdict": VERDICT_SUPPORTED,
+        "permitted_conclusion": EVIDENCE_TABLE["motion_amplitude_change"][0],
+        "next_action": EVIDENCE_TABLE["motion_amplitude_change"][1],
+        "observation": "median depth shift +12.00 um", "limitations": "no causal claim",
+        "case_status": CASE_STATUS_STABLE, "case_evidence_reading": "motion_amplitude_change",
+        "figure_path": "figures/s__c1__failure1.png", "case_windows_rows": "0,1,2,3",
+    }]
+    summaries = [{"case_id": "s__c1__failure1", "sort_id": "s", "cluster_id": 1,
+                  "role": "failure", "case_status": CASE_STATUS_STABLE}]
+    path = tmp_path / "decision.md"
+    decision = write_decision_md(
+        path, evidence_rows=supported, summaries=summaries,
+        selection={"selection_sha256": "abc", "selection_constants": {}},
+        evidence_constants=EVIDENCE_CONSTANTS)
+    text = path.read_text()
+    assert decision == "s__c1__failure1"
+    assert "Nominated case:" in text and "s__c1__failure1" in text
+    assert "Expected observable:" in text
+    assert "Why this rather than the other interventions:" in text
+    assert EVIDENCE_TABLE["motion_amplitude_change"][1] in text
+
+
+def test_an_ambiguous_reading_is_not_a_nomination(tmp_path):
+    """Disagreement must not be resolved into a decision."""
+    rows = []
+    for category in ("motion_amplitude_change", "voltage_integrity"):
+        rows.append({
+            "case_id": "s__c1__failure1", "sort_id": "s", "cluster_id": 1,
+            "case_role": "failure", "category": category, "verdict": VERDICT_SUPPORTED,
+            "permitted_conclusion": EVIDENCE_TABLE[category][0],
+            "next_action": EVIDENCE_TABLE[category][1], "observation": "x",
+            "limitations": "y", "case_status": CASE_STATUS_STABLE,
+            "case_evidence_reading": CASE_EVIDENCE_AMBIGUOUS,
+            "figure_path": "", "case_windows_rows": "",
+        })
+    summaries = [{"case_id": "s__c1__failure1", "sort_id": "s", "cluster_id": 1,
+                  "role": "failure", "case_status": CASE_STATUS_STABLE}]
+    path = tmp_path / "decision.md"
+    decision = write_decision_md(
+        path, evidence_rows=rows, summaries=summaries,
+        selection={"selection_sha256": "abc", "selection_constants": {}},
+        evidence_constants=EVIDENCE_CONSTANTS)
+    assert decision == DECISION_INSUFFICIENT
+
+
+def test_an_unstable_case_is_never_nominated(tmp_path):
+    rows = [{
+        "case_id": "s__c1__failure1", "sort_id": "s", "cluster_id": 1, "case_role": "failure",
+        "category": "motion_amplitude_change", "verdict": VERDICT_SUPPORTED,
+        "permitted_conclusion": "x", "next_action": "y", "observation": "z",
+        "limitations": "w", "case_status": CASE_STATUS_UNSTABLE,
+        "case_evidence_reading": "motion_amplitude_change",
+        "figure_path": "", "case_windows_rows": "",
+    }]
+    summaries = [{"case_id": "s__c1__failure1", "sort_id": "s", "cluster_id": 1,
+                  "role": "failure", "case_status": CASE_STATUS_UNSTABLE}]
+    decision = write_decision_md(
+        tmp_path / "decision.md", evidence_rows=rows, summaries=summaries,
+        selection={"selection_sha256": "a", "selection_constants": {}},
+        evidence_constants=EVIDENCE_CONSTANTS)
+    assert decision == DECISION_INSUFFICIENT
+
+
+def test_every_case_window_came_from_a_finite_interior_row(tmp_path):
+    """Boundary-pinned and no-fit rows cannot reach a change score, because
+    selection admits only finite_interior windows into a case."""
+    _, out_root, selection = _inspect_ready_root(tmp_path)
+    run_inspect(out_root / "selection.json", out_root)
+    windows = pd.read_csv(out_root / "windows.csv")
+    frozen = {(c["sort_id"], int(w["source_row"]))
+              for c in selection["cases"] for w in c["windows"]}
+    for sort_id, source_row in frozen:
+        row = windows[(windows["sort_id"] == sort_id) & (windows["source_row"] == source_row)]
+        assert row.iloc[0]["status"] == STATUS_FINITE_INTERIOR
+
+
+def test_inspect_requires_frozen_evidence_constants(tmp_path):
+    curated, qc_dir = _write_replay_fixture(tmp_path, FAILURE_AND_CONTROL_SPEC)
+    config_path = _write_config(tmp_path, curated, qc_dir, tmp_path / "recording",
+                                sampling_frequency_hz=REPLAY_FS, duration_s=2000.0)
+    payload = json.loads(config_path.read_text())
+    del payload["evidence"]
+    config_path.write_text(json.dumps(payload))
+    out_root = tmp_path / "out"
+    run_inventory(config_path, out_root)
+    run_select(config_path, out_root)
+    with pytest.raises(ValueError, match="evidence"):
+        run_inspect(out_root / "selection.json", out_root)
+
+
+def test_evidence_constants_require_units_and_reject_incoherent_values():
+    with pytest.raises(ValueError, match="units"):
+        parse_evidence_constants({k: 1 for k in
+                                  ("depth_shift_um_material", "amplitude_drop_frac_material",
+                                   "min_events_per_window_for_shift")})
+    bad = dict(EVIDENCE_BLOCK, amplitude_drop_frac_material=1.5)
+    with pytest.raises(ValueError, match="\\[0, 1\\]"):
+        parse_evidence_constants(bad)
+    with pytest.raises(ValueError, match="unknown key"):
+        parse_evidence_constants(dict(EVIDENCE_BLOCK, surprise=1))
+    with pytest.raises(ValueError, match="missing required key"):
+        parse_evidence_constants({"units": {}})
+
+
+def test_the_shipped_config_carries_the_frozen_evidence_constants():
+    block = json.loads(REAL_CONFIG.read_text())["evidence"]
+    constants = parse_evidence_constants(block)
+    assert constants.depth_shift_um_material == 8.0
+    assert constants.amplitude_drop_frac_material == 0.15
+    assert constants.min_events_per_window_for_shift == 100
+    assert sorted(block["units"]) == sorted(constants.to_dict())
