@@ -3401,11 +3401,18 @@ def review_case_voltage(
         stack = np.stack(waveforms) if waveforms else np.empty((0, 2 * half, channels.size))
 
         centre_frame = int(times[(i0 + i1) // 2]) + offset
-        excerpt, excerpt_clip = reader.read(
-            centre_frame - excerpt_half, centre_frame + excerpt_half, channels,
-        )
+        excerpt_start = centre_frame - excerpt_half
+        excerpt_stop = centre_frame + excerpt_half
+        excerpt, excerpt_clip = reader.read(excerpt_start, excerpt_stop, channels)
         for key in clipped_total:
             clipped_total[key] += excerpt_clip[key]
+        # assigned events inside the excerpt, as offsets from its first frame,
+        # so the excerpt can be marked rather than merely shown
+        window_samples = np.asarray(times[i0:i1 + 1], dtype=np.int64) + offset
+        inside = window_samples[
+            (window_samples >= excerpt_start) & (window_samples < excerpt_stop)
+        ]
+        excerpt_event_offsets = (inside - excerpt_start).astype(int)
 
         per_window.append({
             "window_role": window.get("window_role"),
@@ -3419,6 +3426,8 @@ def review_case_voltage(
             "median_waveform": stack.mean(axis=0) if stack.size else None,
             "excerpt": excerpt,
             "excerpt_centre_frame": centre_frame,
+            "excerpt_event_offsets": excerpt_event_offsets,
+            "n_excerpt_events": int(excerpt_event_offsets.size),
         })
 
     saturated_fraction = (saturated_samples / total_samples) if total_samples else 0.0
@@ -3475,6 +3484,8 @@ def review_case_voltage(
             "clipped_margins_frames": clipped_total,
             "saturation_threshold_uv": c.voltage_saturation_uv,
             "saturated_sample_fraction": saturated_fraction,
+            "excerpt_centre_frames": [w["excerpt_centre_frame"] for w in per_window],
+            "excerpt_marked_events": [w["n_excerpt_events"] for w in per_window],
         },
     }
 
@@ -3508,7 +3519,13 @@ def render_voltage_panel(case_id: str, review: dict[str, Any], fs: float, out_pa
             span_ms = np.arange(excerpt.shape[0]) / fs * 1e3
             offsets = np.arange(excerpt.shape[1]) * (np.ptp(excerpt) or 1.0)
             ax_excerpt.plot(span_ms, excerpt + offsets, lw=0.4, color="0.25")
-        ax_excerpt.set_title(f"{VOLTAGE_EXCERPT_MS:.0f} ms excerpt", fontsize=7)
+            for sample in np.asarray(window.get("excerpt_event_offsets", []), dtype=int):
+                if 0 <= sample < excerpt.shape[0]:
+                    ax_excerpt.axvline(sample / fs * 1e3, color="#c0392b", lw=0.6,
+                                       alpha=0.75, zorder=3)
+        ax_excerpt.set_title(
+            f"{VOLTAGE_EXCERPT_MS:.0f} ms excerpt\n"
+            f"{window.get('n_excerpt_events', 0)} assigned events marked", fontsize=7)
         ax_excerpt.set_xlabel("ms", fontsize=7)
         ax_excerpt.tick_params(labelsize=6)
         ax_excerpt.set_yticks([])

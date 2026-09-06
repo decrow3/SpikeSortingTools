@@ -3715,3 +3715,32 @@ def test_freezing_channels_needs_depth_and_geometry(tmp_path):
     channels, peak, reason = freeze_review_channels(case, curated, None, None, 64)
     assert channels is None and peak is None
     assert "depth or probe geometry" in reason
+
+
+def test_each_excerpt_is_marked_with_its_own_assigned_events(tmp_path):
+    """An excerpt without event markers shows voltage but not which events the
+    sorter assigned in it, which is the comparison the review exists to make."""
+    config_path, out_root, _ = _voltage_ready(tmp_path)
+    cfg = load_config(config_path)
+    curated = load_curated_arrays("synthetic", cfg.sorts[0].curated)
+    payload = json.loads((out_root / "selection.json").read_text())
+    case = next(c for c in payload["cases"] if c["role"] == "failure")
+
+    double = _RecordingDouble()
+    meta = VoltageMeta(path="double", dtype="int16", n_samples=double.n_samples,
+                       n_channels=double.n_channels, gain_uv_per_count=1.0,
+                       selected_start_sample=0, view="recording double")
+    positions = np.load(Path(cfg.sorts[0].curated) / "spike_positions.npy")
+    geometry = np.load(Path(cfg.sorts[0].channel_geometry))
+    review = review_case_voltage(case, curated, double, meta, positions, geometry,
+                                 float(cfg.sorts[0].sampling_frequency_hz), EVIDENCE_CONSTANTS)
+
+    centres = review["extraction"]["excerpt_centre_frames"]
+    assert len(centres) == len(case["windows"])
+    assert len(set(centres)) == len(centres), "every window's excerpt must come from its own time"
+    assert any(n > 0 for n in review["extraction"]["excerpt_marked_events"])
+    for window in review["per_window"]:
+        offsets = np.asarray(window["excerpt_event_offsets"])
+        assert (offsets >= 0).all()
+        if window["excerpt"] is not None and window["excerpt"].size:
+            assert (offsets < window["excerpt"].shape[0]).all()
