@@ -1,7 +1,8 @@
 # Amplitude-completeness dropout audit — result
 
-Date: 2026-09-06. Status: **executed on real data; the decision it produced is
-not yet scientifically interpretable as motion evidence.** See §6 before acting
+Date: 2026-09-06. Status: **executed on real data. The nomination rule was
+corrected under a prespec written beforehand and re-run (§7a); the evidence
+reading is unchanged and is still not motion evidence.** See §6 before acting
 on the nomination.
 
 Prescription: [amplitude_completeness_next_step_prescription.md](amplitude_completeness_next_step_prescription.md).
@@ -141,18 +142,41 @@ Two consequences:
 
 ## 7. Two defects in the implementation, found by this run
 
-**(a) The nomination picks by frozen case order, not evidence strength.**
-`_nominate` returns the first eligible case in the freeze's order, which is
+**(a) The nomination picked by frozen case order, not evidence strength —
+corrected under a prespec, and re-run.**
+`_nominate` returned the first eligible case in the freeze's order, which is
 alphabetical by sort ID. It therefore nominated `legacy…c424__failure2` —
 depth shift 0.84 µm, amplitude drop 15.4% (barely over the 15% threshold),
 rank 2, voltage unavailable — over `rescue…c37__failure1`, which has rank 1,
 double the amplitude effect, the largest depth shift of the supported set, and
-a completed voltage review. That is hard to defend as "the audit's nomination".
+a completed voltage review.
 
-This has **not** been fixed and re-run: changing a decision rule after seeing
-the first ranking is exactly what the prespec discipline forbids, and the
-executed answer stands on record. The fix and the re-run are a decision for the
-user, and the corrected rule should be written down before it is executed.
+It was deliberately **not** fixed before reporting: changing a decision rule
+once its answer is visible voids the point of freezing constants before a
+ranking is read. The corrected rule was written down first
+([prespec](luke_amplitude_dropout_audit_nomination_rule_prespec.md), `360eb1e`)
+and executed only on the user's explicit go-ahead (`81b128d`).
+
+Its basis predates every ranking: the legacy sort's raw voltage was deleted
+after sorting, so a legacy case's voltage limb is uncollectable *in principle*.
+That was recorded at 14:14:35 (`701d890`) and 14:21:01 (`bfce40c`, the commit
+that froze case selection), while the first ranking was written at 19:35:11.
+The rule prefers executable evidence, then the frozen rank, then the larger
+effect on the supported limb, then ids — none of which references which case it
+selects.
+
+**Both answers are on record:**
+
+| run | rule | nominated |
+|---|---|---|
+| `run1`, `run2` | first eligible in frozen order | `legacy…c424__failure2` |
+| `run3_corrected_rule` | prespec `360eb1e` | `rescue…c37__failure1` |
+
+The re-run is auditable because everything else held: **identical case IDs,
+identical exclusion counts and identical evidence readings across all three
+runs**, with only `decision.md` differing. That separates "the decision rule
+changed" from "the selection changed" — had the case set moved, the re-run
+would not have been clean.
 
 **(b) The voltage excerpts were rendered without event markers** (fixed in
 `2186b3b`, before the `run2` figures). Found by looking at the rendered figure,
@@ -161,10 +185,11 @@ the output distinguished data from bug.
 
 ## 8. Decision
 
-The audit executed successfully and produced a nomination
-(`legacy…c424__failure2`, a bounded registration-or-identity experiment). Given
-§6 and §7(a), **that nomination should not be carried into an experiment as
-written.** Successful execution is not the same as an interpretable result.
+The audit executed successfully and, under the corrected rule, nominates
+**`rescue…c37__failure1`** for a bounded registration-or-identity experiment.
+Successful execution is not the same as an interpretable result: §6 still
+governs what that nomination may be read as. The nomination says *which case*
+to take forward; it does not upgrade the evidence about *why* the case fails.
 
 What is supported: on four selected failure cases, a large rise in estimated
 missingness is accompanied by an amplitude collapse, with depth essentially
@@ -178,17 +203,23 @@ attempted.
 
 ## 9. Next implementation action
 
-1. Decide and record the corrected nomination rule (§7a), then re-run
-   `select`/`inspect` into a fresh output root. The rule must be written before
-   the re-run.
-2. If the nomination then lands on `rescue…c37__failure1`, the better-targeted
-   half of its next action is the identity experiment, not registration —
-   depth is flat on every case. The experiment JSON must fix its margins from
-   this case's baseline evidence, before any candidate result is seen.
-3. Consider whether a depth-limb requirement (or a separate reading for
-   amplitude-only support) belongs in the evidence constants. That is a
-   prespec change, not an implementation fix, and it must not be made to obtain
-   a different answer from the run already on record.
+1. **Done** (§7a): the corrected rule is recorded in its prespec, implemented,
+   and re-run into `run3_corrected_rule`, with the case set and exclusion
+   counts verified unchanged.
+2. Write the experiment contract for `rescue…c37__failure1`. Two limbs
+   converge on **identity handling** as the better-targeted half of that
+   category's next action, and neither depends on the category's name:
+   registration has little to act on because depth is flat on every case
+   (0.84–3.01 µm against a frozen 8 µm threshold), and curation repair is
+   removed because 0 of 2,000 labelled rows in every failing span were dropped
+   by `kept_spikes` — a negative that needs no KS4 semantics, unlike the
+   positive claim. The contract's margins must come from this case's baseline
+   evidence and be fixed before any candidate result is seen.
+3. Open, and not to be settled by re-running: whether a depth-limb requirement
+   (or a separate reading for amplitude-only support) belongs in the evidence
+   constants. That is a prespec change to a frozen constant's semantics, it
+   would invalidate comparison with the three runs on record, and it must not
+   be made in order to obtain a different answer from them.
 
 ## Related records
 
