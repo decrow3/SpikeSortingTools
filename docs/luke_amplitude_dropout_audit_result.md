@@ -178,6 +178,23 @@ runs**, with only `decision.md` differing. That separates "the decision rule
 changed" from "the selection changed" — had the case set moved, the re-run
 would not have been clean.
 
+**Known limitation — the nomination's basis is not in `decision.md`.** That
+file names the nominated case but records neither the rule nor the value
+criterion 1 consumed. Both are on disk, in `manifest.json`:
+`inspect.evidence_extra_inputs.voltage.raw_voltage_available_by_sort` and
+`inspect.voltage_review.raw_voltage_available_by_sort`, each reading
+`{legacy: false, rescue: true}`. The map is evaluated once during `inspect`
+and the nomination consumes the recorded value rather than re-querying the
+filesystem, so the basis stays readable after the disk moves on. Anyone
+quoting `decision.md` onward should carry that pointer with it.
+
+This was left unfixed rather than patched. `decision.md` is generated output
+whose `decision_sha256` is attested in `manifest.json`, so hand-editing it
+would desync the hash and corrupt the run's attestation — the note belongs
+here, not there. Regenerating it properly means a fourth output root, which
+is not worth spending on a provenance line; the writer should record its own
+rule when some later change touches it anyway.
+
 **(b) The voltage excerpts were rendered without event markers** (fixed in
 `2186b3b`, before the `run2` figures). Found by looking at the rendered figure,
 not by a test: the four excerpts were visually near-identical and nothing in
