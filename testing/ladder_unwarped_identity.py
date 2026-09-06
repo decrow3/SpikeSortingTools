@@ -16,23 +16,36 @@ longitudinal identity families:
    channel neighbourhood;
 4. keep only links that are exclusive in *both* directions and unambiguous on
    *both* sides -- anything contested is left separate rather than guessed;
-5. union the surviving links into families, assign every original spike **row**
-   to exactly one family (deduplicating the overlap region by original row id,
-   never by timestamp), and re-check refractory cleanliness on the *exported*
-   train that assignment actually produces, pruning links until it is clean.
+5. union the surviving **cross-cluster** links into families over the original
+   cluster ids, and re-check refractory cleanliness on the *exported* train each
+   merge produces, pruning merge links until every merged train is clean.
 
-Three properties this module is written to hold, each with a known-answer
+Four properties this module is written to hold, each with a known-answer
 fixture in ``testing/test_ladder_unwarped_identity.py``:
 
+* **The input partition is preserved unless a merge is justified.** This is the
+  invariant v1 lacked and failed on. Epochs are *observations used to evaluate
+  links*; they are not output units. Only an accepted link **between two
+  different original clusters** changes the partition. With no such link, the
+  exported assignment reproduces the input exactly, up to family renumbering --
+  a cluster whose epoch-to-epoch continuity link is refused stays one cluster,
+  and a row in no eligible epoch at all stays with its cluster. Splitting a
+  cluster is not an operation this module has; adding one would need its own
+  gates and its own fixtures.
 * **Dedup is by original event identity.** Two distinct spikes may share a
   sample; collapsing on timestamps would delete one of them and hide the
-  coincidence from every downstream contamination check. Overlapping epochs are
-  reconciled on ``row_id``, and simultaneous distinct rows both survive.
+  coincidence from every downstream contamination check. Simultaneous distinct
+  rows both survive and both remain visible to the refractory check.
 * **Exclusivity runs both ways.** A source observation may claim at most one
   destination and a destination may be claimed by at most one source.
-* **Refractory is validated on the exported train.** Not on an epoch-masked
-  union, not on an anchor: on the same rows the export writes, under the same
-  overlap-assignment rule.
+* **Refractory is validated on the exported train, incrementally.** Not on an
+  epoch-masked union and not on an anchor: on the rows the export writes. The
+  gated quantity is the *increase* a merge causes over the worst contributing
+  cluster's own baseline, because that is what "this link joined two neurons"
+  means. Preserving an imperfect input cluster is not certifying it -- a
+  single-cluster family is never pruned and never declared clean -- and a high
+  baseline never licenses a merge on its own: the increment gate supplements
+  the depth, amplitude and waveform evidence, it does not replace it.
 
 Motion is never inferred. :class:`MotionDeclaration` has no default: a caller
 either supplies a qualified field's displacement or declares its absence
@@ -63,16 +76,26 @@ MOTION_MODES = (MOTION_QUALIFIED_FIELD, MOTION_DECLARED_ABSENT)
 #: Why a candidate link was refused. Recorded per rejected pair so a run that
 #: links nothing says which gate did it rather than "no links".
 REJECTION_REASONS = (
+    "self_link_no_output_effect",
     "spatial_distance",
     "amplitude_ratio",
     "waveform_cosine",
     "waveform_unavailable",
-    "epoch_pair_refractory",
+    "epoch_pair_refractory_increase",
     "ambiguous_source",
     "ambiguous_destination",
     "source_already_claimed",
     "destination_already_claimed",
+    "exported_train_refractory_increase",
 )
+
+#: A link between two observations of the *same* original cluster. It is
+#: proposed and measured, because its metrics are the evidence that a cluster is
+#: continuous, but it can never be accepted and never changes the partition:
+#: under the preservation invariant a cluster is already one unit, so there is
+#: nothing for a self-link to join. In v1 these were gated like merges, and
+#: refusing them fragmented 659 clusters into 2,038 units.
+SELF_LINK = "self_link_no_output_effect"
 
 
 class IdentityRefusal(ValueError):
@@ -97,7 +120,11 @@ class UnwarpedIdentityConfig:
     min_waveform_cosine: float = 0.9
     waveform_channel_neighbourhood_um: float = 60.0
     ambiguity_threshold_ratio: float = 0.85
-    max_refractory_violation_fraction: float = 0.01
+    #: The largest refractory-violation-fraction *increase* a merge may cause
+    #: over the worst contributing cluster's own baseline. An absolute cap here
+    #: was the v1 defect: applied to units whose baseline already exceeds it, it
+    #: is unsatisfiable, and in v1 it fragmented the sort rather than merging it.
+    max_refractory_violation_increase: float = 0.01
     refractory_period_ms: float = 1.5
 
     def __post_init__(self) -> None:
@@ -112,6 +139,8 @@ class UnwarpedIdentityConfig:
             raise IdentityRefusal("max_amplitude_ratio must be >= 1")
         if not 0.0 < self.ambiguity_threshold_ratio <= 1.0:
             raise IdentityRefusal("ambiguity_threshold_ratio must lie in (0, 1]")
+        if self.max_refractory_violation_increase < 0:
+            raise IdentityRefusal("max_refractory_violation_increase must be >= 0")
         if self.refractory_period_ms <= 0:
             raise IdentityRefusal("refractory_period_ms must be positive")
 
@@ -492,7 +521,9 @@ class CandidateLink:
     amplitude_ratio: float
     waveform_cosine: float
     pair_refractory_fraction: float
+    pair_refractory_increase: float
     link_score: float
+    is_merge: bool = False
     accepted: bool = False
     rejected_because: str = ""
 
@@ -577,8 +608,26 @@ def build_candidate_links(
             cosine: float | None = None
             pair_rvf = float("nan")
 
-            reason = ""
-            if ratio > config.max_amplitude_ratio:
+            is_merge = obs_a.cluster_id != obs_b.cluster_id
+            pair_increase = float("nan")
+
+            # A same-cluster pair is measured but never gated: the two
+            # observations are already one output unit, so there is nothing for
+            # the link to join and refusing it must not split anything.
+            reason = "" if is_merge else SELF_LINK
+            if reason:
+                cosine = waveform_cosine(
+                    obs_a, obs_b, inputs.channel_positions_um,
+                    config.waveform_channel_neighbourhood_um, neighbourhoods,
+                )
+                union_rows = np.union1d(obs_a.row_ids, obs_b.row_ids)
+                pair_rvf = refractory_violation_fraction(
+                    samples_of(union_rows), inputs.fs_hz, config.refractory_period_ms
+                )
+                pair_increase = pair_rvf - max(
+                    obs_a.refractory_violation_fraction, obs_b.refractory_violation_fraction
+                )
+            elif ratio > config.max_amplitude_ratio:
                 reason = "amplitude_ratio"
             else:
                 cosine = waveform_cosine(
@@ -594,13 +643,18 @@ def build_candidate_links(
                     # two observations' original rows -- deduplicated by row id,
                     # so rows shared through the epoch overlap are counted once
                     # and two distinct rows at one sample are still counted
-                    # twice.
+                    # twice. What is gated is the *increase* over what the two
+                    # clusters already carry apart, not the absolute level.
                     union_rows = np.union1d(obs_a.row_ids, obs_b.row_ids)
                     pair_rvf = refractory_violation_fraction(
                         samples_of(union_rows), inputs.fs_hz, config.refractory_period_ms
                     )
-                    if pair_rvf > config.max_refractory_violation_fraction:
-                        reason = "epoch_pair_refractory"
+                    pair_increase = pair_rvf - max(
+                        obs_a.refractory_violation_fraction,
+                        obs_b.refractory_violation_fraction,
+                    )
+                    if pair_increase > config.max_refractory_violation_increase:
+                        reason = "epoch_pair_refractory_increase"
 
             proposals.append(
                 CandidateLink(
@@ -612,6 +666,8 @@ def build_candidate_links(
                     amplitude_ratio=float(ratio),
                     waveform_cosine=float("nan") if cosine is None else float(cosine),
                     pair_refractory_fraction=float(pair_rvf),
+                    pair_refractory_increase=float(pair_increase),
+                    is_merge=is_merge,
                     link_score=(
                         0.0 if reason or cosine is None else _link_score(distance, ratio, cosine)
                     ),
@@ -682,9 +738,7 @@ def _resolve_exclusive(
 # --------------------------------------------------------------------------- #
 # families and row assignment
 # --------------------------------------------------------------------------- #
-def _components(
-    nodes: list[tuple[int, int]], links: list[CandidateLink]
-) -> dict[tuple[int, int], tuple[int, int]]:
+def _components(nodes: list[int], edges: list[tuple[int, int]]) -> dict[int, int]:
     parent = {node: node for node in nodes}
 
     def find(n):
@@ -693,73 +747,86 @@ def _components(
             n = parent[n]
         return n
 
-    for link in links:
-        if link.source in parent and link.destination in parent:
-            ra, rb = find(link.source), find(link.destination)
+    for a, b in edges:
+        if a in parent and b in parent:
+            ra, rb = find(a), find(b)
             if ra != rb:
                 parent[ra] = rb
     return {node: find(node) for node in nodes}
 
 
 def assign_rows_to_families(
-    observations: list[EpochObservation],
-    accepted_links: list[CandidateLink],
-) -> tuple[dict[int, int], dict[tuple[int, int], int], dict[str, Any]]:
-    """Give every original row exactly one family id.
+    inputs: ReplayInput,
+    accepted_merges: list[CandidateLink],
+) -> tuple[dict[int, int], dict[int, int], dict[str, Any]]:
+    """Give every original row a family, via its cluster. Never via its epoch.
 
-    Overlapping epochs mean a row can sit in two observations. They are
-    reconciled **by original row id** -- never by timestamp, which would
-    collapse two distinct simultaneous spikes into one and hide the coincidence
-    from the refractory check. When a row's two epochs land in different
-    families, the earliest epoch wins and the disagreement is counted rather
-    than smoothed away.
+    This is the preservation invariant. The output partition is a partition of
+    the **original clusters**: a family is a connected component of clusters
+    joined by accepted merge links, and every row of a cluster goes wherever
+    that cluster goes. Consequences, all of them deliberate:
+
+    * with no accepted merge, the exported assignment *is* the input partition,
+      renumbered;
+    * a refused epoch-to-epoch continuity link cannot split a cluster, because
+      the partition does not consult epochs at all;
+    * a row in no eligible epoch -- below the per-epoch minimum, or outside every
+      whole epoch in the interval -- still belongs to its cluster, so there is no
+      "unassigned" class to invent an extra fragment for;
+    * every row is assigned exactly once, so there is no overlap conflict to
+      resolve.
+
+    Returns ``(row_family, family_of_cluster, metadata)``.
     """
-    nodes = sorted({obs.key for obs in observations})
-    roots = _components(nodes, accepted_links)
+    clusters = sorted({int(c) for c in np.unique(inputs.cluster)})
+    edges = [(int(l.cluster_a), int(l.cluster_b)) for l in accepted_merges]
+    roots = _components(clusters, edges)
 
-    # deterministic family ids: order by (first epoch, smallest cluster id)
-    order: dict[tuple[int, int], tuple[int, int]] = {}
-    for node, root in roots.items():
-        current = order.get(root)
-        if current is None or node < current:
-            order[root] = node
-    family_of_node = {
-        root: idx
-        for idx, root in enumerate(sorted(order, key=lambda r: order[r]), start=1)
+    # deterministic family ids, ordered by each component's smallest cluster id
+    smallest: dict[int, int] = {}
+    for cluster, root in roots.items():
+        if root not in smallest or cluster < smallest[root]:
+            smallest[root] = cluster
+    family_of_root = {
+        root: index
+        for index, root in enumerate(sorted(smallest, key=lambda r: smallest[r]), start=1)
     }
-    node_family = {node: family_of_node[root] for node, root in roots.items()}
+    family_of_cluster = {c: family_of_root[roots[c]] for c in clusters}
 
-    row_family: dict[int, int] = {}
-    row_epoch: dict[int, int] = {}
-    disagreements = 0
-    for obs in sorted(observations, key=lambda o: (o.epoch_idx, o.cluster_id)):
-        family = node_family[obs.key]
-        for row in obs.row_ids.tolist():
-            previous = row_family.get(row)
-            if previous is None:
-                row_family[row] = family
-                row_epoch[row] = obs.epoch_idx
-            elif previous != family:
-                disagreements += 1  # earliest epoch keeps the row
+    cluster_array = inputs.cluster.astype(np.int64)
+    row_family = {
+        int(row): family_of_cluster[int(cluster)]
+        for row, cluster in zip(inputs.row_id.tolist(), cluster_array.tolist())
+    }
+    contributors: dict[int, list[int]] = {}
+    for cluster, family in family_of_cluster.items():
+        contributors.setdefault(family, []).append(cluster)
 
     metadata = {
-        "num_nodes": len(nodes),
-        "num_families": len(set(node_family.values())),
+        "num_original_clusters": len(clusters),
+        "num_families": len(family_of_root),
         "num_assigned_rows": len(row_family),
-        "overlap_rows_with_conflicting_family": disagreements,
-        "overlap_assignment_rule": "earliest epoch containing the row wins",
+        "num_unassigned_rows": int(inputs.row_id.size) - len(row_family),
+        "num_families_built_from_a_merge": sum(
+            1 for cids in contributors.values() if len(cids) > 1
+        ),
+        "partition_policy": "preserve_input_partition; only an accepted merge changes it",
         "dedup_key": "original_spike_row_id",
+        "input_partition_preserved": all(len(c) == 1 for c in contributors.values()),
     }
-    return row_family, node_family, metadata
+    return row_family, family_of_cluster, metadata
 
 
-def _family_trains(
-    row_family: dict[int, int], sample_by_row: dict[int, int]
-) -> dict[int, np.ndarray]:
-    trains: dict[int, list[int]] = {}
-    for row, family in row_family.items():
-        trains.setdefault(family, []).append(sample_by_row[row])
-    return {f: np.sort(np.asarray(s, dtype=np.int64)) for f, s in trains.items()}
+def _cluster_samples(inputs: ReplayInput) -> dict[int, np.ndarray]:
+    order = np.argsort(inputs.cluster, kind="stable")
+    clusters = inputs.cluster[order]
+    samples = inputs.sample[order]
+    boundaries = np.flatnonzero(np.diff(clusters)) + 1
+    return {
+        int(part[0]): np.sort(sample_part)
+        for part, sample_part in zip(np.split(clusters, boundaries), np.split(samples, boundaries))
+        if part.size
+    }
 
 
 def solve_families(
@@ -767,60 +834,82 @@ def solve_families(
     links: list[CandidateLink],
     inputs: ReplayInput,
     config: UnwarpedIdentityConfig,
-) -> tuple[dict[int, int], dict[tuple[int, int], int], list[CandidateLink], dict[str, Any]]:
-    """Union accepted links into families, then verify the **exported** train.
+) -> tuple[dict[int, int], dict[int, int], list[CandidateLink], dict[str, Any]]:
+    """Union accepted merges into families, then verify each **merged** train.
 
-    The refractory check that matters is the one on the rows the export will
-    actually write, under the same overlap-assignment rule -- not on an
-    epoch-masked union computed before assignment. So the loop assigns rows,
-    scores each family's exported train, and prunes the weakest link inside any
-    family that breaches the gate, until every exported train is clean.
+    Only merges are prunable and only merges can breach: a single-cluster family
+    is exactly its input cluster, so its increase over its own baseline is zero
+    by construction. That is the point -- preserving an imperfect cluster is not
+    the same as certifying it, and this loop never has to choose between the two.
+    Its absolute violation fraction is still reported, descriptively.
+
+    The loop prunes the worst breaching family that *has* a removable link, and
+    keeps going while any such family remains. An earlier version returned as
+    soon as the single worst family had nothing to prune, which left other
+    breaching families with removable links untouched.
     """
-    sample_by_row = dict(zip(inputs.row_id.tolist(), inputs.sample.tolist()))
-    active = [l for l in links if l.accepted]
+    cluster_samples = _cluster_samples(inputs)
+    baseline_rvf = {
+        cluster: refractory_violation_fraction(
+            samples, inputs.fs_hz, config.refractory_period_ms
+        )
+        for cluster, samples in cluster_samples.items()
+    }
+    active = [l for l in links if l.accepted and l.is_merge]
     pruned: list[CandidateLink] = []
 
     while True:
-        row_family, node_family, meta = assign_rows_to_families(observations, active)
-        trains = _family_trains(row_family, sample_by_row)
-        dirty = {
-            family: refractory_violation_fraction(
+        row_family, family_of_cluster, meta = assign_rows_to_families(inputs, active)
+        contributors: dict[int, list[int]] = {}
+        for cluster, family in family_of_cluster.items():
+            contributors.setdefault(family, []).append(cluster)
+
+        absolute: dict[int, float] = {}
+        increase: dict[int, float] = {}
+        for family, cids in contributors.items():
+            train = np.sort(np.concatenate([cluster_samples[c] for c in cids]))
+            rvf = refractory_violation_fraction(
                 train, inputs.fs_hz, config.refractory_period_ms
             )
-            for family, train in trains.items()
-        }
-        breaching = {
-            f: rvf for f, rvf in dirty.items() if rvf > config.max_refractory_violation_fraction
-        }
-        if not breaching:
-            meta["exported_train_refractory_fraction"] = {
-                str(f): rvf for f, rvf in sorted(dirty.items())
-            }
-            meta["num_pruned_links"] = len(pruned)
-            meta["num_accepted_links"] = len(active)
-            meta["pruned_for_exported_train_refractory"] = [l.to_row() for l in pruned]
-            return row_family, node_family, active, meta
+            absolute[family] = rvf
+            increase[family] = rvf - max(baseline_rvf[c] for c in cids)
 
-        worst_family = max(breaching, key=lambda f: breaching[f])
-        inside = [l for l in active if node_family.get(l.source) == worst_family]
-        if not inside:
-            # A single original cluster already breaches the gate on its own
-            # rows. That is a property of the retained sort, not of any link
-            # this replay made, and no pruning can fix it.
+        breaching = {
+            f: increase[f]
+            for f in contributors
+            if increase[f] > config.max_refractory_violation_increase
+        }
+        prunable = {
+            f: v
+            for f, v in breaching.items()
+            if any(family_of_cluster.get(int(l.cluster_a)) == f for l in active)
+        }
+        if not prunable:
             meta["exported_train_refractory_fraction"] = {
-                str(f): rvf for f, rvf in sorted(dirty.items())
+                str(f): absolute[f] for f in sorted(absolute)
             }
-            meta["num_pruned_links"] = len(pruned)
-            meta["num_accepted_links"] = len(active)
+            meta["exported_train_refractory_increase"] = {
+                str(f): increase[f] for f in sorted(increase)
+            }
+            meta["num_pruned_merges"] = len(pruned)
+            meta["num_accepted_merges"] = len(active)
             meta["pruned_for_exported_train_refractory"] = [l.to_row() for l in pruned]
             meta["families_breaching_without_a_prunable_link"] = sorted(breaching)
-            return row_family, node_family, active, meta
+            meta["single_cluster_families_are_preserved_not_certified"] = (
+                "A family of one cluster is the input cluster unchanged. Its absolute "
+                "refractory violation fraction is reported and may be high; that is a "
+                "property of the retained sort, is not corrected here, and is not a claim "
+                "that the cluster is one clean neuron."
+            )
+            return row_family, family_of_cluster, active, meta
 
+        worst = max(prunable, key=lambda f: prunable[f])
+        inside = [l for l in active if family_of_cluster.get(int(l.cluster_a)) == worst]
         victim = max(
-            inside, key=lambda l: (l.pair_refractory_fraction, -l.link_score, l.cluster_b)
+            inside, key=lambda l: (l.pair_refractory_increase, -l.link_score, l.cluster_b)
         )
         victim.accepted = False
-        victim.rejected_because = "exported_train_refractory"
+        victim.rejected_because = "exported_train_refractory_increase"
         active.remove(victim)
         pruned.append(victim)
 
@@ -866,13 +955,13 @@ def run_unwarped_identity_replay(
     observations = extract_epoch_observations(inputs, epoch_indices, tissue_depth, config)
     link_counters: dict[str, int] = {}
     links = build_candidate_links(observations, inputs, config, link_counters)
-    row_family, node_family, active_links, meta = solve_families(
+    row_family, family_of_cluster, active_links, meta = solve_families(
         observations, links, inputs, config
     )
 
-    # Families that are exactly one original cluster are not new identities.
+    # Families that are exactly one original cluster are the input, preserved.
     contributors: dict[int, set[int]] = {}
-    for (_, cluster_id), family in node_family.items():
+    for cluster_id, family in family_of_cluster.items():
         contributors.setdefault(family, set()).add(cluster_id)
     linked_families = sorted(f for f, cids in contributors.items() if len(cids) > 1)
 
@@ -893,11 +982,9 @@ def run_unwarped_identity_replay(
     families_csv = output_dir / "family_membership.csv"
     with families_csv.open("w", newline="") as fh:
         writer = csv.writer(fh)
-        writer.writerow(["family_id", "epoch_idx", "cluster_id"])
-        for (epoch_idx, cluster_id), family in sorted(
-            node_family.items(), key=lambda kv: (kv[1], kv[0])
-        ):
-            writer.writerow([family, epoch_idx, cluster_id])
+        writer.writerow(["family_id", "cluster_id"])
+        for cluster_id, family in sorted(family_of_cluster.items(), key=lambda kv: (kv[1], kv[0])):
+            writer.writerow([family, cluster_id])
 
     rejection_counts = {reason: 0 for reason in REJECTION_REASONS}
     # depth-rejected pairs are counted rather than materialised
@@ -926,9 +1013,11 @@ def run_unwarped_identity_replay(
         "num_candidate_links": len(links),
         "num_accepted_links": len(active_links),
         "link_rejections": rejection_counts,
+        "num_original_clusters": meta["num_original_clusters"],
         "num_families": meta["num_families"],
-        "num_families_built_from_a_link": len(linked_families),
-        "families_built_from_a_link": linked_families,
+        "num_families_built_from_a_merge": len(linked_families),
+        "families_built_from_a_merge": linked_families,
+        "input_partition_preserved": meta["input_partition_preserved"],
         "assignment": meta,
         "output_artifacts": {
             "epoch_observations": observations_csv.name,
@@ -944,7 +1033,7 @@ def run_unwarped_identity_replay(
         "links": links,
         "accepted_links": active_links,
         "row_family": row_family,
-        "node_family": node_family,
-        "families_built_from_a_link": linked_families,
+        "family_of_cluster": family_of_cluster,
+        "families_built_from_a_merge": linked_families,
         "family_contributors": {f: sorted(c) for f, c in contributors.items()},
     }

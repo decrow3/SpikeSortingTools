@@ -1,6 +1,10 @@
 # First pipeline candidate v1 — executed result
 
 Date: 2026-09-06. Status: **executed against the frozen contract. Verdict: FAIL.**
+**Amended 2026-09-06** after review: the verdict and every measured number stand
+unchanged; three interpretations in the original text were too strong and are
+corrected in §9, and three implementation defects the run did not exercise are
+recorded there. Read §9 before quoting §3 or §8.
 
 Contract: [`configs/first_pipeline_candidate.v1.json`](../configs/first_pipeline_candidate.v1.json)
 (digest `31b4fdad…`, frozen before any candidate result existed).
@@ -61,13 +65,19 @@ adjacent-epoch self-links (37→37) was refused, all by the same gate:
 | 75→76 | 0.45 | 1.06 | 1.00 | 0.213 | refused |
 | 76→77 | 3.29 | 1.09 | 1.00 | 0.086 | refused |
 
-Depth, amplitude and waveform all say "same neuron" — cosine is exactly 1.0
-because the epochs share the template. The refractory gate says no, every time,
-because it is an **absolute** threshold of 0.01 applied to a unit whose own
-baseline is 0.396: 39.6% of cluster 37's inter-spike intervals inside the
-endpoint interval are shorter than 1.5 ms (38.0% across the whole cluster, ISI
-mode at 1.1–1.3 ms, zero duplicate samples). Verified directly from
-`spike_times.npy`, independently of this runner.
+Depth and amplitude are consistent with "same cluster continuing". **The cosine
+of 1.0 is true by construction and is not evidence of anything**: both epochs'
+mean waveforms are built from the same cluster's templates, so the comparison is
+a template against itself. It does not establish waveform stability across
+epochs and it does not establish "same neuron" — see §9.1.
+
+The refractory gate says no, every time, because it is an **absolute** threshold
+of 0.01 applied to a cluster whose own baseline is 0.396: 39.6% of cluster 37's
+inter-spike intervals inside the endpoint interval are shorter than 1.5 ms
+(38.0% across the whole cluster, ISI mode at 1.1–1.3 ms, zero duplicate
+samples). Verified directly from `spike_times.npy`, independently of this
+runner. What that fraction means for cluster 37's biological identity is open —
+see §9.2.
 
 So `max_refractory_violation_fraction: 0.01` cannot be satisfied by this unit in
 any epoch pair, and the same is true probe-wide: 659 original clusters in the
@@ -195,13 +205,82 @@ That change alone does not make the candidate work; it makes it testable. Two
 things this run says about that, neither of which a re-run settles:
 
 1. Even with the gate fixed, no cross-cluster link survived the waveform cosine
-   on this interval (10,470 pairs refused there). Whether the amplitude collapse
-   on c37 corresponds to any *other* cluster is still unestablished, and this run
-   is evidence against it, not for it.
+   on this interval (10,470 pairs refused there). That establishes only that
+   **this candidate found no acceptable links under this implementation's
+   waveform rule** — and that rule compared whitened templates (§9.3). It is not
+   evidence that identity redistribution is absent.
 2. Cluster 37's 38% ISI-under-1.5 ms baseline means 1.5 ms is not describing a
    refractory period for this train. Whether it is a bursting unit or a merge is
    an open question about the retained sort that predates this candidate, and the
    completeness endpoint on such a unit inherits that ambiguity.
+
+## 9. Amendments after review (2026-09-06)
+
+The verdict is unchanged: FAIL on identity and contamination, completeness
+`unevaluable`. Every number in §1–§5 is unchanged. What follows corrects how
+three of them may be read, and records three implementation defects found by
+review that this run did not exercise.
+
+### 9.1 Cosine 1.0 is true by construction
+
+Each epoch observation's waveform is the count-weighted mean of its spikes'
+templates. Two observations of the *same cluster* draw on the same template, so
+their cosine is 1.0 whatever the underlying waveform did. The §3 table's cosine
+column is therefore not independent evidence that cluster 37's waveform was
+stable across epochs, and the claim that "depth, amplitude and waveform all say
+same neuron" was overstated. Waveform compatibility is a real gate **between
+different clusters**; within one cluster it measures nothing.
+
+### 9.2 Unit 37 is a cluster, not an established neuron
+
+38% of its inter-spike intervals are under 1.5 ms. The report should call it a
+cluster throughout. Its truncated-amplitude fit remains a useful observation —
+it is what selected the case — but nothing here establishes that the fit
+describes one clean neuron, and neither a relative refractory gate nor this
+replay resolves that. A completeness comparison on such a cluster inherits the
+ambiguity.
+
+### 9.3 The 10,470 waveform refusals cannot yet carry a biological reading
+
+The loader passed `templates.npy` straight into peak-channel selection and the
+cosine comparison. The installed KS4 exporter saves templates in the **whitened**
+space; whitening mixes neighbouring channels, so those arrays are not
+physical-channel waveforms, and this repo's own donor implementation
+(`testing/ladder_donors.py::_dewhitened_shape`) explicitly reverses it with
+`templates.npy @ whitening_mat_inv.npy`. Peak channels and similarity scores can
+both move under that transform, which changes which channels the shared
+neighbourhood covers.
+
+So the refusals establish that **this candidate found no acceptable links under
+this implementation's waveform rule**. They do not establish that no fragment of
+cluster 37 exists elsewhere. Fixed in v2.
+
+### 9.4 Two further implementation defects, neither exercised by this run
+
+- **Pruning could stop early.** `solve_families` returned as soon as the single
+  worst breaching family had no removable link. If that family was an
+  already-dirty standalone cluster, other breaching families with removable
+  links were left untouched — a reproducer leaves a bad link accepted at an
+  exported violation fraction of 1.5625%, above the 1% gate. The v1 run never
+  hit this: it accepted no cross-cluster link, so nothing was prunable at all.
+- **Boundary and low-count rows became an extra fragment.** Rows in no eligible
+  epoch received a *new* family id per original cluster, separate from that
+  cluster's already-assigned rows. Fixing the refused self-links alone would not
+  have restored the original partition; 150,788 rows took this path in the case
+  arm.
+
+### 9.5 What this changes about the next step
+
+The original §8 named the refractory gate's calibration as the next action. That
+is not the most fundamental problem. **A proposed linking operation that
+destroys existing identities when it accepts nothing is the deeper defect**, and
+it subsumes the self-link fragmentation, the extra-fragment path in 9.4 and much
+of the gate question: once epochs stop being output units, a refused continuity
+link has nothing to split, and the gate only ever applies to real merges.
+
+v2 therefore makes preservation the invariant, not the calibration. See
+[the v2 prespec](luke_first_pipeline_candidate_v2_prespec.md). v1 is not re-run
+and its contract is not edited.
 
 ## Related records
 

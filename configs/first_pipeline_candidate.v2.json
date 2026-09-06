@@ -1,0 +1,491 @@
+{
+  "schema": "luke-first-pipeline-candidate-v1",
+  "contract_id": "luke0804_imec0_first_pipeline_candidate_v2",
+  "status": "executable",
+  "purpose": "The one allowed revision of the first delivered pipeline candidate. v1 failed because a proposed linking operation destroyed existing identities when it accepted no link: refused epoch-to-epoch continuity links fragmented 659 clusters into 2,038 units. v2 makes the output partition a partition of the ORIGINAL CLUSTERS, changed only by an accepted merge, and runs once on the same case and the same healthy control.",
+  "governing_documents": {
+    "plan": "docs/pipeline_improvement_plan.md#step-1--freeze-a-small-first-version-delivery-contract",
+    "audit_prescription": "docs/amplitude_completeness_next_step_prescription.md",
+    "runner_contract_for_a_motion_candidate": "docs/luke_two_motion_pipeline_build_instructions.md#required-orchestration-contract",
+    "frozen_promotion_gates": "configs/rescue/imec0_legacy_acceptance_criteria.json",
+    "prespec": "docs/luke_first_pipeline_candidate_v2_prespec.md"
+  },
+  "non_goals": [
+    "This contract is not a comprehensive experiment framework and adds no new experiment.",
+    "It does not redefine or reopen the closed threshold Stage 2 experiment.",
+    "It invents no downstream endpoints; Step 6 takes those from actual analysis requirements.",
+    "It does not waive frozen experiment decisions, operator integrity checks, or the Phase E promotion criteria."
+  ],
+  "recording": {
+    "subject_session": "Luke 2025-08-04",
+    "data_dir": "/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0",
+    "stream_id": "imec0.ap",
+    "sampling_frequency_hz": 29999.835983263598,
+    "duration_s": 10473.5537279367,
+    "num_samples": 314204894,
+    "dataset_manifest_digest": "82d933695c95535f404ee108f3cb856ea5329784a0fd37ace31d67073a06f661",
+    "raw_ap_sha256_imec0": "1e3a89ec68e0ad23b6dcd95225f48db49ab5897d9a0966e276c4ec191fef6833",
+    "identity_source": "testing/configs/luke_aind_downstream_bounded_v1.json and testing/configs/luke_amplitude_dropout_audit_v1.json; not re-derived here"
+  },
+  "comparators": {
+    "legacy": {
+      "role": "pre-existing legacy comparator",
+      "sort_id": "legacy_luke0804_v2v1_g0_imec0",
+      "curated": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output",
+      "qc_dir": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/qc",
+      "source_recording": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/preprocessed_recording",
+      "provenance": {
+        "recording_manifest": "preprocessed_recording/binary.json",
+        "recording_manifest_schema": "spikeinterface-binary-recording (pre-dates rescue_recording_manifest)",
+        "duration_validated": false,
+        "raw_voltage_available": false,
+        "raw_voltage_note": "traces_cached_seg0.raw has been deleted from preprocessed_recording/. Voltage evidence for a legacy-sort case is `unavailable`; that is an expected, permitted outcome that lowers conclusion strength and is never reconstructed.",
+        "kilosort_sorter_output": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output"
+      }
+    },
+    "rescue_control": {
+      "role": "current rescue control",
+      "sort_id": "rescue_luke0804_v2v1_g0_imec0",
+      "curated": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output",
+      "qc_dir": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/qc",
+      "source_recording": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording",
+      "provenance": {
+        "recording_manifest": "recording/rescue_recording_manifest.json",
+        "recording_manifest_schema": "rescue-recording-manifest-v2",
+        "duration_validated": true,
+        "raw_voltage_available": true,
+        "production_graph": "frozen rescue graph at 12/9; threshold Stage 2 ended in no_threshold_change"
+      }
+    }
+  },
+  "intervals": {
+    "clock": "seconds from the start of the selected imec0 stream (selected_start_sample = 0)",
+    "sealed_panel": {
+      "policy": "The sealed held-out panel is not consumed by this contract. No development window, healthy control interval or selected failure interval may fall inside a sealed window or its buffer.",
+      "source": "testing/outputs/luke_prospective_holdout/sealed_windows_v2.csv",
+      "source_sha256": "5f7c415a512f77c599587405fd03d10298186fb2be3b2f240efa9e303aa57f71",
+      "manifest_sha256_v2": "01643baa20fd9ee4905a9bd6e9282ab25e1365dd4899bd69244ea63a4a7fcc9b",
+      "exclusion_buffer_s": 300.0,
+      "windows_s": [
+        [
+          1200.0,
+          1320.0
+        ],
+        [
+          2400.0,
+          2520.0
+        ],
+        [
+          4680.0,
+          4800.0
+        ],
+        [
+          4800.0,
+          4920.0
+        ],
+        [
+          9000.0,
+          9120.0
+        ],
+        [
+          9120.0,
+          9240.0
+        ]
+      ]
+    },
+    "healthy_control_intervals": {
+      "purpose": "Evaluation-only intervals on which healthy-interval preservation is measured. Never tuned on, never used to select the candidate.",
+      "selection_rule": "From the pre-existing prospective-holdout candidate window motion table, keep the 120 s windows that do not intersect any sealed window expanded by the exclusion buffer, then take the lowest combined_motion_score in each session third; ties broken by earliest start_s. Selection uses pre-existing motion coordinates only and inspects no sorter output and no candidate result.",
+      "source": "testing/outputs/luke_prospective_holdout/candidate_window_motion_metrics_v2.csv",
+      "source_sha256": "810e5187e06ef1ee3c8467b71fe3450d0be3def1b03fa17b0c1cdfdc10398ecf",
+      "windows": [
+        {
+          "name": "H1_third0_quiet",
+          "start_s": 3120.0,
+          "stop_s": 3240.0,
+          "time_third": 0,
+          "combined_motion_score": 0.5094339622641509
+        },
+        {
+          "name": "H2_third1_quiet",
+          "start_s": 5640.0,
+          "stop_s": 5760.0,
+          "time_third": 1,
+          "combined_motion_score": 0.660377358490566
+        },
+        {
+          "name": "H3_third2_quiet",
+          "start_s": 9600.0,
+          "stop_s": 9720.0,
+          "time_third": 2,
+          "combined_motion_score": 0.8490566037735849
+        }
+      ]
+    },
+    "development_windows": {
+      "purpose": "The only intervals in which the candidate may be developed, tuned or inspected, and the only intervals a selected failure case may come from.",
+      "derivation": "Full selected stream [0, duration_s], minus every sealed window expanded by exclusion_buffer_s, minus the healthy control intervals. Recomputable from this file; the validator does not need it to be trusted.",
+      "windows_s": [
+        [
+          0.0,
+          900.0
+        ],
+        [
+          1620.0,
+          2100.0
+        ],
+        [
+          2820.0,
+          3120.0
+        ],
+        [
+          3240.0,
+          4380.0
+        ],
+        [
+          5220.0,
+          5640.0
+        ],
+        [
+          5760.0,
+          8700.0
+        ],
+        [
+          9540.0,
+          9600.0
+        ],
+        [
+          9720.0,
+          10473.5537279367
+        ]
+      ]
+    }
+  },
+  "output_root": "/media/huklab/Data/NPX/Ryansorting/Luke/Luke0804_first_pipeline_candidate_v2",
+  "output_root_rules": [
+    "One local output root; never under /mnt and never under or over any input directory.",
+    "Atomic writes; existing incompatible outputs are refused; no automatic cache repair and no `latest run` discovery.",
+    "All outputs stay separate from accepted production results."
+  ],
+  "candidate": {
+    "candidate_id": "luke0804_imec0_first_candidate_v1",
+    "selected_in_step": "Step 2 \u2014 chosen when the bounded amplitude-completeness audit ends",
+    "settings": {
+      "state": "set",
+      "value": {
+        "intervention_family": "option_b_unwarped_identity",
+        "execution_mode": "retained_sort_replay",
+        "resolved_configuration": {
+          "candidate_id": "luke0804_imec0_option_b_unwarped_identity_v2",
+          "what_this_is": "A retained-sort replay whose output partition is a partition of the original clusters. Epochs are observations used to evaluate links; they are not output units. Only an accepted link BETWEEN TWO DIFFERENT original clusters changes the partition. With no accepted merge the exported assignment reproduces the input exactly, up to family renumbering. Splitting a cluster is not an operation this replay has.",
+          "execution": {
+            "clock": "integer samples of the selected imec0 stream. Seconds are derived only as sample / recording.sampling_frequency_hz; the exported train keeps the original integer sample times and the original spike-row ids.",
+            "epoch_grid_origin_s": 0.0,
+            "arms": {
+              "case": {
+                "name": "rescue_luke0804_v2v1_g0_imec0__c37__failure1",
+                "role": "nominated_failure",
+                "endpoint_interval_s": [
+                  6590.315730735934,
+                  6810.179966116411
+                ],
+                "processing_interval_s": [
+                  6350.0,
+                  7050.0
+                ],
+                "permitted_context": "intervals.development_windows.windows_s[5] = [5760.0, 8700.0]"
+              },
+              "healthy_control": {
+                "name": "H1_third0_quiet",
+                "role": "healthy_interval_preservation",
+                "endpoint_interval_s": [
+                  3120.0,
+                  3240.0
+                ],
+                "processing_interval_s": [
+                  2880.0,
+                  3480.0
+                ],
+                "permitted_context": "development windows [2820.0, 3120.0] and [3240.0, 4380.0] plus this arm's own declared healthy control interval; disjoint from every sealed window expanded by intervals.sealed_panel.exclusion_buffer_s"
+              }
+            }
+          },
+          "identity_link": {
+            "module": "testing/ladder_unwarped_identity.py",
+            "epoch_duration_s": 120.0,
+            "epoch_overlap_s": 30.0,
+            "min_spikes_per_epoch": 10,
+            "max_spatial_distance_um": 30.0,
+            "max_amplitude_ratio": 2.0,
+            "min_waveform_cosine": 0.9,
+            "waveform_representation": "probe_physical_channels_dewhitened",
+            "waveform_channel_neighbourhood_um": 60.0,
+            "ambiguity_threshold_ratio": 0.85,
+            "refractory_period_ms": 1.5,
+            "exclusivity": "one_to_one_over_both_source_and_destination",
+            "ambiguous_link_policy": "leave_separate",
+            "overlap_dedup_key": "original_spike_row_id",
+            "partition_policy": "preserve_input_partition",
+            "self_link_policy": "A link between two observations of the same cluster is measured and reported as continuity evidence, and can never be accepted or refused into an output effect. In v1 these were gated like merges and refusing them fragmented the sort.",
+            "split_operation": "none; adding one requires its own gates and its own fixtures",
+            "max_refractory_violation_increase": 0.01,
+            "refractory_gate_semantics": "The largest refractory-violation-fraction INCREASE a merge may cause over the worst contributing cluster's own baseline, checked on the pair and again on the exported train. It supplements the depth, amplitude and waveform evidence and is never sufficient alone; a high baseline never licenses a merge, and preserving an imperfect cluster never certifies it.",
+            "waveform_dewhitening": "templates.npy @ whitening_mat_inv.npy, the convention in testing/ladder_donors.py. KS4 exports templates in the whitened space, where channel mixing can move a peak channel and change a cosine; v1 compared whitened templates as if they were physical waveforms.",
+            "unchanged_from_v1": [
+              "min_waveform_cosine = 0.9",
+              "max_amplitude_ratio = 2.0",
+              "max_spatial_distance_um = 30.0",
+              "ambiguity_threshold_ratio = 0.85",
+              "epoch_duration_s = 120.0",
+              "epoch_overlap_s = 30.0"
+            ]
+          },
+          "motion": {
+            "mode": "declared_absent",
+            "qualified_motion_field": null,
+            "rationale": "No qualified-motion-field-v1 artifact exists for this recording. The only motion artifact on disk, motion/dredge-rigid-sidecar/estimate.npz, is a dredge-rigid-estimate-v1: it carries no qualification receipt, support/confidence grids or polarity declaration, and manufacturing one would be fabricating the qualification. This arm therefore runs with tissue depth == observed depth and is NOT motion-aware; the audit's finding of flat depth (2.81 um on this case) is why that is defensible here and it is recorded as a limitation, not a result.",
+            "runner_rule": "mode 'qualified_field' requires an existing qualified-motion-field-v1 whose sha256 matches the declared digest, loaded through pipeline.motion_coordinates.load_qualified_motion_field. A missing, unreadable or unqualified field is a refusal. Absent motion is NEVER silently substituted with zero displacement."
+          },
+          "completeness_qc": {
+            "amplitude_source": "full_st[kept_spikes][:, 2]",
+            "amplitude_units": "sorter_native",
+            "forbidden_amplitude_sources": [
+              "amplitudes.npy",
+              "microvolt-converted waveform amplitudes"
+            ],
+            "spikes_per_window": 1000,
+            "max_isi_s": 10.0,
+            "window_indexing": "historical",
+            "min_finite_interior_windows": 2,
+            "max_family_amplitude_scale_ratio": 1.25,
+            "unevaluable_policy": "A family pooling original clusters whose median interval amplitudes differ by more than max_family_amplitude_scale_ratio has no defensible family-level amplitude measurement: report completeness `unevaluable`. `unevaluable` never passes the gate and a cleaner fit on pooled incompatible scales is never read as recovery.",
+            "healthy_min_coverage_of_eligible_population": 0.5,
+            "healthy_coverage_policy": "The eligible population is every original cluster with rows in the healthy endpoint interval, fixed before measurement. Completeness coverage below this fraction makes the healthy completeness comparison `inconclusive`, never `pass`. Identity preservation is measured on the whole eligible population and therefore always has full coverage."
+          },
+          "labels": {
+            "original_labels_preserved_as": "cluster_group.original.tsv / cluster_KSLabel.original.tsv",
+            "new_family_label": "unvalidated",
+            "rule": "A family identical to one original cluster keeps that cluster's original label. Any family built from a link is `unvalidated` until its own exported train passes the contamination and refractory checks; no track is assigned `good` by the runner."
+          }
+        },
+        "configuration_digest": "35f2f9e1daa30579428959d38fdeb55fe000f7b2bb60aaf72d36dd59884cbabe",
+        "inputs": {
+          "source_sort_id": "rescue_luke0804_v2v1_g0_imec0"
+        },
+        "set_at": "2026-09-06T00:00:00+00:00",
+        "set_by": "first_pipeline_candidate_v2_preservation_revision"
+      },
+      "description": "The resolved candidate configuration actually executed. execution_mode is retained_sort_replay because that is what the implementation does: it replays the retained rescue sort's arrays through identity linking, curation-equivalent labelling, QC and export. It was `resort` until 2026-09-06, which described a run nobody had written.",
+      "placeholder": {
+        "required_keys_when_set": [
+          "intervention_family",
+          "execution_mode",
+          "resolved_configuration",
+          "configuration_digest",
+          "inputs"
+        ],
+        "intervention_family": "one of: targeted_curation_repair | option_b_unwarped_identity | option_a_external_voltage_registration",
+        "execution_mode": "one of: retained_sort_replay | resort",
+        "resolved_configuration": "non-empty object holding the parameters that will actually run, printed with digests before any work starts. Its internal shape belongs to whichever intervention Step 2 selects and is deliberately not fixed here.",
+        "configuration_digest": "sha256 hex over resolved_configuration as canonical JSON (sorted keys, no whitespace). The validator recomputes it and refuses a mismatch, so the digest cannot be copied from another run.",
+        "inputs": "the identities this candidate runs on, restricted to inputs this contract already declares: source_sort_id (a comparator sort_id) when execution_mode is retained_sort_replay, source_recording (a comparator source_recording, or recording.data_dir) when it is resort.",
+        "reuse": "pipeline/, testing/ladder_l1.py, testing/ladder_sorter.py, and the existing motion implementation for a motion candidate"
+      },
+      "set_from": "Step 2 candidate selection",
+      "set_at": "2026-09-06T00:00:00+00:00",
+      "set_by": "first_pipeline_candidate_integration",
+      "left_open_until_step_2": "The parameter names and values inside resolved_configuration. They cannot be written down before a candidate is chosen, so they are hashed rather than schema-checked: opaque to the validator, but frozen by the contract digest and unchangeable once results exist."
+    },
+    "dependency_requirements_resolved": {
+      "state": "set",
+      "value": [
+        "amplitude_audit_layers_3_to_5",
+        "thin_candidate_runner",
+        "option_b_unwarped_identity",
+        "retained_sort_replay_interface"
+      ],
+      "description": "The subset of unresolved_implementation_dependencies[].id that this particular candidate requires. Every id listed here must have status `resolved` before execution.",
+      "set_from": "Step 2 candidate selection",
+      "set_at": "2026-09-06T00:00:00+00:00",
+      "set_by": "first_pipeline_candidate_integration"
+    },
+    "unresolved_implementation_dependencies": [
+      {
+        "id": "amplitude_audit_layers_3_to_5",
+        "status": "resolved",
+        "description": "Selection, evidence/reporting and the real-case validation run of the bounded amplitude-completeness audit.",
+        "blocks": "the named practical failure and all four baseline margins",
+        "resolved_by": "testing/test_luke_amplitude_dropout_audit.py plus the executed real-data run recorded in docs/luke_amplitude_dropout_audit_result.md; select and inspect exist and nominated rescue c37.",
+        "resolved_at": "2026-09-06"
+      },
+      {
+        "id": "thin_candidate_runner",
+        "status": "resolved",
+        "description": "The thin runner. Not resolved until the contract-to-runner-to-export integration test passes, including that templates are transformed into the declared physical-channel representation and that the exported partition is checked against the input on real rows.",
+        "blocks": "any end-to-end candidate execution that is not a retained-output replay",
+        "resolved_by": "testing/test_luke_two_motion_pipeline_bakeoff.py -- 37 integration tests, including templates de-whitened into the declared physical-channel representation, a missing whitening matrix refused, no original cluster split by the export, and an all-merges-refused run reproducing the input partition exactly.",
+        "resolved_at": "2026-09-06"
+      },
+      {
+        "id": "option_b_unwarped_identity",
+        "status": "resolved",
+        "description": "Unwarped identity linking under the preservation invariant. Not resolved until the known-answer fixtures pass: the input partition survives refused self-links, overlapping epochs, a high-violation input cluster and rows in no eligible epoch; pruning continues past a family it cannot fix; and the merge gate is incremental.",
+        "blocks": "an Option B candidate",
+        "resolved_by": "testing/test_ladder_unwarped_identity.py -- 21 known-answer fixtures, including the combined preservation invariant (high-violation cluster, refused self-links, overlapping epochs, ambiguous neighbours, rows in no eligible epoch), pruning that continues past a family it cannot fix, and preserved-not-certified.",
+        "resolved_at": "2026-09-06"
+      },
+      {
+        "id": "option_a_external_voltage_registration",
+        "status": "unresolved",
+        "description": "External voltage-registration stage graph, field qualification and application contract (motion build instructions \u00a75).",
+        "blocks": "an Option A candidate"
+      },
+      {
+        "id": "retained_sort_replay_interface",
+        "status": "resolved",
+        "description": "Replay of a retained curated output through the same curation/QC/export interfaces. This candidate is itself a retained_sort_replay, so this dependency is now required, and it is resolved by the same integration test as the runner.",
+        "blocks": "a targeted curation-repair candidate",
+        "resolved_by": "Same integration test: one export interface used identically by the control and candidate arms, with the exported partition checked against the input on real rows.",
+        "resolved_at": "2026-09-06"
+      },
+      {
+        "id": "legacy_raw_voltage",
+        "status": "unavailable",
+        "description": "The legacy sort's raw voltage is deleted. Voltage evidence for a legacy-sort case is permanently `unavailable`; this lowers conclusion strength and is not reconstructed.",
+        "blocks": "voltage-level adjudication of a legacy-side case only"
+      }
+    ]
+  },
+  "runtime_budget": {
+    "basis": "Existing evaluation-ladder tier budgets (docs/pipeline_improvement_plan.md \u00a73). No new budget is created by this contract.",
+    "l1_wall_clock_minutes_max": 5,
+    "l2_wall_clock_minutes_max": 45,
+    "l1c_wall_clock_hours_max": 2,
+    "l3_wall_clock_hours_max": 4,
+    "end_to_end_smoke_wall_clock_minutes_max": 45,
+    "candidate_screen_wall_clock_hours_max": 4,
+    "note": "L4 full-session scale runs only after Step 5's gates, under the existing L4 budget."
+  },
+  "evaluation": {
+    "reuse": "The existing ladder, data, QC and frozen evaluation gates are reused unchanged.",
+    "comparison_unit": "the same supported neuron identity over the same physical-time interval; population-composition comparisons are reported separately",
+    "amplitude_completeness_semantics": [
+      "QC amplitudes are full_st[kept_spikes][:, 2] in sorter-native units; amplitudes.npy is a different observable.",
+      "Historical QC fits 999 values in a nominal-1000 window; the exact-1000 calculation is explicitly versioned and both are retained.",
+      "A boundary-pinned (50%) fit is not a measurement of 50% and is never a biological lower bound.",
+      "Missing QC for a cluster is no_fit, never zero missingness."
+    ],
+    "guardrails": "Contamination/refractory guardrails and the common truth scores from the frozen gates; a hard integrity failure is fixed before any scientific interpretation."
+  },
+  "required_before_execution": [
+    "acceptance.practical_failure",
+    "acceptance.margins.completeness",
+    "acceptance.margins.identity",
+    "acceptance.margins.contamination",
+    "acceptance.margins.healthy_interval_preservation",
+    "candidate.settings",
+    "candidate.dependency_requirements_resolved"
+  ],
+  "acceptance": {
+    "freeze_rule": "Every field in required_before_execution is set from BASELINE evidence and frozen before any candidate result is inspected. `Better looking` or a statistically detectable tiny change is insufficient. Freezing writes acceptance_freeze.json into the output root; after any results file exists there, the acceptance block may not change. The freeze receipt binds the whole execution-defining contract (recording, comparators, intervals, output root, candidate, runtime budget, evaluation, the requirement registry and acceptance), not the acceptance block alone.",
+    "receipt_filename": "acceptance_freeze.json",
+    "practical_failure": {
+      "state": "set",
+      "value": {
+        "name": "rescue_luke0804_v2v1_g0_imec0__c37__failure1",
+        "sort_id": "rescue_luke0804_v2v1_g0_imec0",
+        "cluster_id": 37,
+        "interval_s": [
+          6590.315730735934,
+          6810.179966116411
+        ]
+      },
+      "description": "The named practical recovery failure this candidate must fix: rescue unit 37 over interval [6590.32, 6810.18] s where estimated missingness rises from 0.67% to 43.47% with a 30.2% amplitude drop and flat depth (2.81 um shift).",
+      "value_shape": {
+        "name": "short stable name",
+        "sort_id": "must equal the sort_id of a comparator declared in comparators (legacy_luke0804_v2v1_g0_imec0 | rescue_luke0804_v2v1_g0_imec0)",
+        "cluster_id": "integer cluster id, a value and never an array position; never a float or a string",
+        "interval_s": "[start_s, stop_s], which must lie inside one development window"
+      },
+      "set_from": "luke_amplitude_dropout_audit_run3_corrected_rule",
+      "set_before": "any inspection of candidate results",
+      "set_at": "2026-09-06T03:25:25.748796+00:00",
+      "set_by": "luke_amplitude_dropout_audit_run3"
+    },
+    "margins": {
+      "completeness": {
+        "state": "set",
+        "value": 20.0,
+        "unit": "percentage points of estimated missing-spike percentage",
+        "direction": "decrease_is_improvement",
+        "magnitude_kind": "minimum_improvement",
+        "value_shape": "a finite, strictly positive number in the declared unit: the smallest improvement that would justify adoption",
+        "comparison": "same cluster, same physical-time interval, candidate versus the named baseline",
+        "set_from": "luke_amplitude_dropout_audit_run3_corrected_rule baseline evidence for rescue unit 37",
+        "set_before": "any inspection of candidate results",
+        "set_at": "2026-09-06T03:25:25.748796+00:00",
+        "set_by": "luke_amplitude_dropout_audit_run3",
+        "decision_rule": "PASS requires baseline_missing_pct - candidate_missing_pct >= 20.0 percentage points for the named cluster (baseline) versus the family carrying it (candidate), over the named failure interval, both measured from full_st[kept_spikes][:, 2] with production's historical window indexing. An `unevaluable` completeness endpoint -- including one declared because the family pools incompatible cluster amplitude scales -- is not a PASS."
+      },
+      "identity": {
+        "state": "set",
+        "value": 0.8,
+        "unit": "fraction of baseline reference train retained under a supported same-neuron link",
+        "direction": "increase_is_improvement",
+        "magnitude_kind": "absolute_floor",
+        "value_shape": "a finite number in (0, 1]: the lowest retained fraction that still counts as the same neuron surviving the intervention",
+        "comparison": "supported same-neuron comparison over the failure interval; ambiguous links stay separate",
+        "set_from": "luke_amplitude_dropout_audit_run3_corrected_rule baseline evidence for rescue unit 37",
+        "set_before": "any inspection of candidate results",
+        "set_at": "2026-09-06T03:25:25.748796+00:00",
+        "set_by": "luke_amplitude_dropout_audit_run3",
+        "decision_rule": "PASS requires retained_fraction >= 0.8, where retained_fraction is the fraction of the baseline reference train's events inside the failure interval that the candidate assigns to the single family carrying that neuron. This is an absolute level reached by the candidate's own train, NOT a difference against a baseline that is 1.0 by construction: read as a minimum_improvement the gate would have been unsatisfiable.",
+        "clarified_at": "2026-09-06",
+        "clarified_why": "0.8 was labelled minimum_improvement but read as a retention floor. The contract was not yet frozen and no results existed, so the label was corrected rather than reinterpreted after the fact; the number 0.8 and its source are unchanged."
+      },
+      "contamination": {
+        "state": "set",
+        "value": 0.01,
+        "unit": "maximum allowed increase in refractory-violation fraction on actual train used downstream",
+        "direction": "decrease_is_improvement",
+        "magnitude_kind": "maximum_tolerated_degradation",
+        "value_shape": "a finite number >= 0 in the declared unit: the largest degradation that is still acceptable",
+        "comparison": "candidate versus baseline on the same train, scored on the union actually used downstream, not on an anchor",
+        "set_from": "luke_amplitude_dropout_audit_run3_corrected_rule baseline evidence for rescue unit 37",
+        "set_before": "any inspection of candidate results",
+        "set_at": "2026-09-06T03:25:25.748796+00:00",
+        "set_by": "luke_amplitude_dropout_audit_run3",
+        "decision_rule": "PASS requires candidate_rvf - baseline_rvf <= 0.01, where rvf is the refractory-violation fraction of the train actually exported for downstream use over the failure interval, scored on the complete exported union and never on a clean anchor or a matched subset."
+      },
+      "healthy_interval_preservation": {
+        "state": "set",
+        "value": 2.0,
+        "unit": "maximum allowed increase in estimated missing-spike percentage on healthy control intervals",
+        "direction": "decrease_is_improvement",
+        "magnitude_kind": "maximum_tolerated_degradation",
+        "value_shape": "a finite number >= 0 in the declared unit: the largest degradation that is still acceptable",
+        "comparison": "the healthy control intervals in intervals.healthy_control_intervals, candidate versus baseline",
+        "set_from": "baseline evidence on healthy control intervals H1, H2, H3",
+        "set_before": "any inspection of candidate results",
+        "set_at": "2026-09-06T03:25:25.748796+00:00",
+        "set_by": "luke_amplitude_dropout_audit_run3",
+        "decision_rule": "PASS requires max over the declared healthy control intervals, over clusters measurable in both arms, of (candidate_missing_pct - baseline_missing_pct) <= 2.0 percentage points."
+      }
+    },
+    "margins_carried_from": {
+      "contract": "configs/first_pipeline_candidate.v1.json",
+      "acceptance_digest_v1": "e9ea21cf592e2ca41b66ac8175246e431fbcd09fb6fe855d19a9e3acc5a38acd",
+      "rule": "Every margin value, unit, direction, magnitude kind and decision rule is carried over from v1 UNCHANGED. They were set from baseline evidence before any candidate result existed; v1's results have since been seen, so re-deriving them now would be choosing margins after viewing an answer. The named practical failure and both evaluation intervals are carried over unchanged for the same reason."
+    }
+  },
+  "notes": [
+    "Contract omissions block execution, not planning or the implementation of independent components: this file is authorable and reviewable while every required field is unset.",
+    "A single validator enforces the refusals; see testing/first_pipeline_candidate_contract.py."
+  ],
+  "supersedes": {
+    "contract": "configs/first_pipeline_candidate.v1.json",
+    "verdict": "FAIL",
+    "result": "docs/luke_first_pipeline_candidate_v1_result.md",
+    "note": "v1 stands as FAIL and is not re-run, re-frozen or edited. This is the one allowed revision, and its purpose is to make the candidate PRESERVE the input when it cannot justify a change -- not to obtain links. The waveform and contamination gates are unchanged; loosening them to produce a merge is explicitly out of scope."
+  }
+}

@@ -1521,16 +1521,28 @@ unresolved result evidence that the unit was preserved.
 
 ### Option B — unwarped motion-aware identity, and the architecture gate
 
-**Executed 2026-09-06 as the first candidate; verdict FAIL.** See
-[first pipeline candidate v1 result](luke_first_pipeline_candidate_v1_result.md).
-The bounded replay ran on the nominated case (`rescue…c37__failure1`) and on
-healthy interval H1 under the frozen contract. It made no cross-cluster identity
-links at all and fragmented 659 clusters into 2,038 units, because the linker's
-refractory gate was specified as an absolute 0.01 against units whose own
-baseline is ~0.40. Identity and contamination both failed; completeness was
-`unevaluable` — and would otherwise have read as a 20.8 pp "improvement" produced
-by discarding 82% of the interval. The gate is not to be retuned and this case
-re-run; the next action is one prespec change for a v2 contract (result §8).
+**Executed 2026-09-06. v1 FAIL; v2 safe but ineffective — candidate CLOSED on
+cluster 37.**
+
+- [v1 result](luke_first_pipeline_candidate_v1_result.md): the bounded replay
+  made no cross-cluster links and fragmented 659 clusters into 2,038 units,
+  because refused epoch-to-epoch continuity links split clusters. Identity and
+  contamination failed; completeness was `unevaluable`, and would otherwise have
+  read as a 20.8 pp "improvement" produced by discarding 82% of the interval.
+- [v2 prespec](luke_first_pipeline_candidate_v2_prespec.md) and
+  [v2 result](luke_first_pipeline_candidate_v2_result.md): the one allowed
+  revision made the output partition a partition of the *original clusters*, so
+  a candidate that cannot justify a change leaves the input alone. On two
+  intervals it split **0** clusters and made 18 conservatively gated,
+  `unvalidated` merges, 11 of which reproduce across both. Cluster 37 was
+  untouched: completeness improvement **0.0 pp** against a 20.0 pp margin — a
+  measured fail. Healthy identity preservation passes at full coverage; healthy
+  completeness is `inconclusive` at 1.7% coverage.
+
+Per the prespec, the candidate closes on cluster 37 rather than weakening the
+waveform or contamination gates to obtain links. The 18 merges are a separate,
+testable question with its own endpoints; what cluster 37 *is* remains an open
+question about the retained sort.
 
 When B is the selected first candidate, build the minimum viable unwarped option:
 retain the accepted

@@ -146,7 +146,7 @@ def _fully_set(payload: dict, *, interval=(3000.0, 3100.0), deps=None) -> dict:
 # --------------------------------------------------------------------------- #
 def test_shipped_contract_round_trips(tmp_path, base):
     assert base["schema"] == SCHEMA
-    assert base["contract_id"] == "luke0804_imec0_first_pipeline_candidate_v1"
+    assert base["contract_id"] == "luke0804_imec0_first_pipeline_candidate_v2"
     again = load_contract(_write(tmp_path, base))
     assert again == base
     assert acceptance_digest(again) == acceptance_digest(base)

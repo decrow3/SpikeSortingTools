@@ -81,7 +81,7 @@ CONFIG = UnwarpedIdentityConfig(
     max_amplitude_ratio=2.0,
     min_waveform_cosine=0.9,
     ambiguity_threshold_ratio=0.85,
-    max_refractory_violation_fraction=0.01,
+    max_refractory_violation_increase=0.01,
 )
 
 ABSENT = MotionDeclaration(mode="declared_absent", rationale="fixture")
@@ -248,8 +248,8 @@ def test_ambiguous_links_leave_both_sides_separate():
     assert not any(l.accepted for l in links)
     assert {l.rejected_because for l in links if l.cluster_a == 0} == {"ambiguous_source"}
 
-    _, node_family, _ = assign_rows_to_families(observations, [])
-    assert len({node_family[o.key] for o in observations}) == len(observations)
+    _, family_of_cluster, _ = assign_rows_to_families(inputs, [])
+    assert len(set(family_of_cluster.values())) == 3  # nothing merged
 
 
 # --------------------------------------------------------------------------- #
@@ -278,7 +278,8 @@ def test_two_distinct_spikes_at_one_sample_stay_visible_to_the_refractory_check(
     # 40 distinct rows on 20 distinct samples: sorted, every second interval
     # is exactly 0, so 20 of the 39 intervals are violations.
     assert link.pair_refractory_fraction == pytest.approx(20.0 / 39.0)
-    assert link.rejected_because == "epoch_pair_refractory"
+    assert link.pair_refractory_increase == pytest.approx(20.0 / 39.0)  # both clean apart
+    assert link.rejected_because == "epoch_pair_refractory_increase"
 
     # the timestamp-collapsing version of the same union looks spotless
     unique_times = np.unique(inputs.sample)
@@ -296,7 +297,7 @@ def test_every_original_row_survives_assignment_exactly_once():
         inputs, epochs_covering((0.0, 210.0), CONFIG), inputs.depth_um, CONFIG
     )
     links = build_candidate_links(observations, inputs, CONFIG)
-    row_family, _, meta = assign_rows_to_families(observations, [l for l in links if l.accepted])
+    row_family, _, meta = assign_rows_to_families(inputs, [l for l in links if l.accepted])
 
     # 40 distinct rows over 20 distinct samples: all 40 are assigned.
     assert len(row_family) == 40
@@ -305,7 +306,8 @@ def test_every_original_row_survives_assignment_exactly_once():
     assert set(row_family) == set(inputs.row_id.tolist())
 
 
-def test_overlap_rows_are_counted_once_and_go_to_the_earliest_epoch():
+def test_overlapping_epochs_do_not_split_a_cluster():
+    """A row in two epochs has one family because its *cluster* has one family."""
     spikes = _train(10.0, 200.0, 60, 0, 500.0, 12.0, 0)
     inputs = _inputs(spikes)
     observations = extract_epoch_observations(
@@ -315,12 +317,11 @@ def test_overlap_rows_are_counted_once_and_go_to_the_earliest_epoch():
     in_both = set(observations[0].row_ids.tolist()) & set(observations[1].row_ids.tolist())
     assert in_both
 
-    row_family, _, meta = assign_rows_to_families(observations, [])
+    row_family, family_of_cluster, meta = assign_rows_to_families(inputs, [])
     assert len(row_family) == 60
-    earliest_family = min(
-        f for k, f in assign_rows_to_families(observations, [])[1].items() if k[0] == 0
-    )
-    assert {row_family[r] for r in in_both} == {earliest_family}
+    assert meta["num_unassigned_rows"] == 0
+    assert {row_family[r] for r in in_both} == {family_of_cluster[0]}
+    assert len(set(row_family.values())) == 1
 
 
 # --------------------------------------------------------------------------- #
@@ -337,61 +338,166 @@ def _observation(epoch_idx, cluster_id, rows, *, depth=500.0):
     )
 
 
-def test_the_refractory_gate_is_rechecked_on_the_train_the_export_writes():
-    """A pairwise-clean link whose *exported* family train breaches is pruned.
-
-    The pair gate scores the two observations' whole row sets. The export does
-    not get those rows: the overlap-assignment rule hands cluster 1's shared
-    rows to its own earlier-epoch observation, and the family that is left is
-    small enough that the same single violation breaches the 1% gate. Checking
-    only the pair would have shipped it.
-    """
-    # cluster 0: 60 clean rows inside epoch 0 only
-    c0 = [(t, 0, 500.0, 12.0, 0) for t in np.linspace(1.0, 89.0, 60)]
-    # cluster 1: 60 rows in the epoch 0/1 overlap, plus 5 in epoch 1 alone,
-    # two of which are 0.5 ms apart -- one refractory violation.
-    shared = [(t, 1, 500.0, 12.0, 1) for t in np.linspace(90.0, 119.0, 60)]
-    tail_times = [130.0, 150.0, 150.0005, 170.0, 190.0]
-    tail = [(t, 1, 500.0, 12.0, 1) for t in tail_times]
-    inputs = _inputs(c0 + shared + tail)
-
-    obs_c0_ep0 = _observation(0, 0, range(0, 60))
-    obs_c1_ep0 = _observation(0, 1, range(60, 120))
-    obs_c1_ep1 = _observation(1, 1, range(60, 125))
-    observations = [obs_c0_ep0, obs_c1_ep0, obs_c1_ep1]
-
-    link = CandidateLink(
-        epoch_a=0, cluster_a=0, epoch_b=1, cluster_b=1,
+def _merge(cluster_a, cluster_b, *, increase=0.0, score=1.0):
+    return CandidateLink(
+        epoch_a=0, cluster_a=cluster_a, epoch_b=1, cluster_b=cluster_b,
         spatial_distance_um=0.0, amplitude_ratio=1.0, waveform_cosine=1.0,
-        pair_refractory_fraction=1.0 / 124.0, link_score=1.0, accepted=True,
+        pair_refractory_fraction=increase, pair_refractory_increase=increase,
+        link_score=score, is_merge=True, accepted=True,
     )
-    # the pair gate saw 125 rows and one violation, and passed
-    assert link.pair_refractory_fraction < CONFIG.max_refractory_violation_fraction
 
-    row_family, node_family, active, meta = solve_families(
-        observations, [link], inputs, CONFIG
+
+def test_a_merge_that_dirties_the_exported_train_is_pruned():
+    """The gated quantity is the increase the merge causes, on the exported rows."""
+    clean_a = [(t, 1, 500.0, 12.0, 0) for t in np.linspace(130.0, 190.0, 60)]
+    # cluster 2 interleaves 0.5 ms after every one of cluster 1's spikes: apart
+    # each is spotless, merged the train is nothing but violations.
+    clean_b = [(t + 0.0005, 2, 500.0, 12.0, 1) for t in np.linspace(130.0, 190.0, 60)]
+    inputs = _inputs(clean_a + clean_b)
+
+    _, family_of_cluster, active, meta = solve_families([], [_merge(1, 2)], inputs, CONFIG)
+    assert active == []
+    assert meta["num_pruned_merges"] == 1
+    assert family_of_cluster[1] != family_of_cluster[2]
+    assert meta["input_partition_preserved"]
+
+
+def test_pruning_continues_past_a_family_it_cannot_fix():
+    """The reproducer: a dirty standalone cluster must not stop the loop.
+
+    Cluster 9 is filthy on its own and no link caused it, so nothing can be
+    pruned for it. Clusters 1 and 2 are a genuinely bad merge sitting in a
+    different family. A loop that returns as soon as the *worst* breaching
+    family has no removable link leaves that merge accepted.
+    """
+    dirty_standalone = []
+    t = 300.0
+    for _ in range(40):                      # 0.2 ms pairs: ~50% violations
+        dirty_standalone += [(t, 9, 900.0, 12.0, 0), (t + 0.0002, 9, 900.0, 12.0, 0)]
+        t += 1.0
+    clean_a = [(x, 1, 500.0, 12.0, 0) for x in np.linspace(130.0, 190.0, 60)]
+    clean_b = [(x + 0.0005, 2, 500.0, 12.0, 1) for x in np.linspace(130.0, 190.0, 60)]
+    inputs = _inputs(clean_a + clean_b + dirty_standalone)
+
+    _, family_of_cluster, active, meta = solve_families([], [_merge(1, 2)], inputs, CONFIG)
+
+    # cluster 9 is left alone -- preserved, not certified, and reported
+    standalone = family_of_cluster[9]
+    assert meta["exported_train_refractory_fraction"][str(standalone)] > 0.4
+    assert meta["exported_train_refractory_increase"][str(standalone)] == 0.0
+    # ...and the bad merge in the other family is still pruned
+    assert meta["num_pruned_merges"] == 1
+    assert active == []
+    assert family_of_cluster[1] != family_of_cluster[2]
+
+
+def test_a_high_baseline_cluster_is_preserved_without_being_certified():
+    """Retaining an imperfect cluster is not a claim that it is a clean neuron."""
+    dirty = []
+    t = 130.0
+    for _ in range(40):
+        dirty += [(t, 5, 500.0, 12.0, 0), (t + 0.0002, 5, 500.0, 12.0, 0)]
+        t += 1.0
+    inputs = _inputs(dirty)
+    row_family, family_of_cluster, active, meta = solve_families([], [], inputs, CONFIG)
+
+    assert len(row_family) == len(dirty)          # every event survives
+    assert set(family_of_cluster) == {5}          # one cluster, one family
+    assert meta["input_partition_preserved"]
+    assert meta["families_breaching_without_a_prunable_link"] == []
+    family = family_of_cluster[5]
+    # high absolute violation fraction, reported; zero increase, so not pruned
+    assert meta["exported_train_refractory_fraction"][str(family)] > 0.4
+    assert meta["exported_train_refractory_increase"][str(family)] == 0.0
+    assert "not a claim" in meta["single_cluster_families_are_preserved_not_certified"]
+
+
+# --------------------------------------------------------------------------- #
+# the preservation invariant, under everything that broke v1 at once
+# --------------------------------------------------------------------------- #
+def test_the_input_partition_survives_every_condition_that_broke_v1(tmp_path):
+    """One fixture carrying all four v1 failure conditions simultaneously.
+
+    * a high-violation input cluster (37', ~50% of its ISIs under 1.5 ms), whose
+      self-links v1 refused and whose refusal shredded it;
+    * therefore refused self-links across all epoch boundaries;
+    * overlapping epochs, so rows are seen twice;
+    * ambiguous neighbouring clusters at matching depth and amplitude, so the
+      merge candidates exist and are contested;
+    * and boundary/low-count rows that sit in no eligible epoch at all.
+
+    Every original event must survive, and no original cluster may fragment.
+    """
+    rng = np.random.default_rng(11)
+    spikes = []
+    # a dirty, long-lived cluster spanning every epoch
+    t = 5.0
+    while t < 200.0:
+        spikes += [(t, 37, 500.0, 12.0, 0), (t + 0.0002, 37, 500.0, 12.0, 0)]
+        t += 0.5
+    # two neighbours that are near-identical to each other -> ambiguous merges
+    for cid, depth in ((41, 515.0), (42, 515.4)):
+        spikes += [
+            (x + rng.uniform(0, 0.001), cid, depth, 12.0, 1)
+            for x in np.linspace(5.0, 200.0, 300)
+        ]
+    # a cluster with too few spikes per epoch to produce any observation, and
+    # rows outside every whole epoch in the processing interval
+    spikes += [(x, 77, 505.0, 12.0, 0) for x in (1.0, 2.0, 3.0, 202.0, 205.0, 208.0)]
+    inputs = _inputs(sorted(spikes, key=lambda s: s[0]))
+
+    result = run_unwarped_identity_replay(
+        inputs, motion=ABSENT, config=CONFIG,
+        processing_interval_s=(0.0, 210.0), output_dir=tmp_path,
     )
-    assert active == []
-    assert meta["num_pruned_links"] == 1
-    assert link.rejected_because == "exported_train_refractory"
-    # The violation itself belongs to the retained sort, so it does not vanish
-    # when the link does. What must not happen is it being passed off as clean:
-    # the surviving family that still carries it is named, on the exported
-    # train, as breaching with no link left to prune.
-    assert meta["families_breaching_without_a_prunable_link"]
-    assert max(meta["exported_train_refractory_fraction"].values()) > 0.01
+    manifest = result["manifest"]
+    row_family = result["row_family"]
+
+    # the dirty cluster's self-links were all refused, as in v1
+    self_links = [l for l in result["links"] if l.cluster_a == 37 and l.cluster_b == 37]
+    assert self_links
+    assert all(l.rejected_because == "self_link_no_output_effect" for l in self_links)
+    assert not any(l.accepted for l in self_links)
+
+    # every original event survives, exactly once
+    assert len(row_family) == inputs.row_id.size
+    assert set(row_family) == set(inputs.row_id.tolist())
+    assert manifest["assignment"]["num_unassigned_rows"] == 0
+
+    # no original cluster fragmented: one family per cluster, and the map from
+    # cluster to family is the identity up to renumbering
+    by_cluster = {}
+    for row, family in row_family.items():
+        cluster = int(inputs.cluster[int(np.flatnonzero(inputs.row_id == row)[0])])
+        by_cluster.setdefault(cluster, set()).add(family)
+    assert all(len(f) == 1 for f in by_cluster.values()), by_cluster
+    assert manifest["num_original_clusters"] == 4
+    assert manifest["input_partition_preserved"] is True
+    assert manifest["num_families"] == 4
+
+    # the low-count cluster never produced an observation and still came through
+    assert 77 in by_cluster
+    assert not any(o.cluster_id == 77 for o in result["observations"])
 
 
-def test_a_single_dirty_original_cluster_is_reported_not_silently_passed():
-    """No link caused it, so no pruning can fix it; it must not be hidden."""
-    dirty = [130.0, 150.0, 150.0002, 170.0, 190.0, 195.0, 195.0002, 200.0]
-    inputs = _inputs([(t, 1, 500.0, 12.0, 1) for t in dirty])
-    observations = [_observation(1, 1, range(len(dirty)))]
-    _, _, active, meta = solve_families(observations, [], inputs, CONFIG)
-
-    assert active == []
-    assert meta["families_breaching_without_a_prunable_link"]
-    assert max(meta["exported_train_refractory_fraction"].values()) > 0.01
+def test_with_no_accepted_merge_the_export_is_the_input_renumbered(tmp_path):
+    spikes = (
+        _train(10.0, 200.0, 60, 3, 100.0, 12.0, 0)
+        + _train(10.0, 200.0, 60, 8, 900.0, 40.0, 1)      # far away, no merge
+    )
+    inputs = _inputs(spikes)
+    result = run_unwarped_identity_replay(
+        inputs, motion=ABSENT, config=CONFIG,
+        processing_interval_s=(0.0, 210.0), output_dir=tmp_path,
+    )
+    assert result["manifest"]["num_families_built_from_a_merge"] == 0
+    mapping = result["family_of_cluster"]
+    assert len(set(mapping.values())) == len(mapping) == 2
+    families = np.array([mapping[int(c)] for c in inputs.cluster])
+    # identical partition: two rows share a family iff they shared a cluster
+    same_family = families[:, None] == families[None, :]
+    same_cluster = inputs.cluster[:, None] == inputs.cluster[None, :]
+    assert np.array_equal(same_family, same_cluster)
 
 
 # --------------------------------------------------------------------------- #
@@ -449,11 +555,13 @@ def test_replay_writes_its_artifacts_and_records_why_it_linked_what_it_did(tmp_p
     assert manifest["epoch_indices"] == [0, 1]
     assert manifest["num_input_rows"] == 60
     assert manifest["assignment"]["num_assigned_rows"] == 60
-    # one cluster carried across the epoch boundary: one family, and it is not
-    # a *new* identity, so it is not counted as built from a link
+    assert manifest["assignment"]["num_unassigned_rows"] == 0
+    # one input cluster in, one family out, unchanged
+    assert manifest["num_original_clusters"] == 1
     assert manifest["num_families"] == 1
-    assert manifest["families_built_from_a_link"] == []
-    assert set(manifest["link_rejections"]) >= {"waveform_cosine", "ambiguous_source"}
+    assert manifest["families_built_from_a_merge"] == []
+    assert manifest["input_partition_preserved"] is True
+    assert set(manifest["link_rejections"]) >= {"waveform_cosine", "self_link_no_output_effect"}
     for name in ("epoch_observations.csv", "candidate_links.csv", "family_membership.csv"):
         assert (tmp_path / name).exists()
 

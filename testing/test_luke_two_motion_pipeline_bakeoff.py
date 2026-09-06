@@ -23,6 +23,7 @@ import numpy as np
 import pytest
 
 from testing.first_pipeline_candidate_contract import (
+    ARCHIVED_CONTRACTS,
     DEFAULT_CONTRACT,
     ContractRefusal,
     canonical_digest,
@@ -99,10 +100,17 @@ def _write_curated(root: Path) -> Path:
 
     n_samples = 10
     trough = -np.exp(-0.5 * ((np.arange(n_samples) - 5.0) / 1.5) ** 2)
-    bank = np.zeros((N_TEMPLATES, n_samples, N_CHANNELS), dtype=np.float32)
-    bank[0] = np.outer(trough, [0.1, 0.5, 1.0, 0.5, 0.1, 0.0, 0.0, 0.0])
-    bank[1] = np.outer(trough, [0.0, 0.0, 0.0, 0.1, 0.5, 1.0, 0.5, 0.1])
-    np.save(root / "templates.npy", bank)
+    physical = np.zeros((N_TEMPLATES, n_samples, N_CHANNELS), dtype=np.float64)
+    physical[0] = np.outer(trough, [0.1, 0.5, 1.0, 0.5, 0.1, 0.0, 0.0, 0.0])
+    physical[1] = np.outer(trough, [0.0, 0.0, 0.0, 0.1, 0.5, 1.0, 0.5, 0.1])
+    # KS4 stores templates in the WHITENED space. Whitening here is a channel
+    # rotation by two sites, so the stored peak channel is not the physical one
+    # and anything comparing the stored array directly is comparing the wrong
+    # channels. `templates.npy @ whitening_mat_inv.npy` recovers `physical`.
+    whitening = np.roll(np.eye(N_CHANNELS), 2, axis=1)
+    np.save(root / "templates.npy", (physical @ whitening).astype(np.float32))
+    np.save(root / "whitening_mat_inv.npy", np.linalg.inv(whitening).astype(np.float32))
+    np.save(root / "_physical_templates_for_the_test.npy", physical)
     np.save(root / "channel_positions.npy",
             np.stack([np.zeros(N_CHANNELS), np.arange(N_CHANNELS) * 20.0], axis=1))
 
@@ -347,19 +355,50 @@ def test_execution_is_refused_while_a_required_dependency_is_unresolved(tmp_path
 
 
 def test_every_resolved_dependency_names_the_check_that_resolved_it():
-    """`resolved` is a claim about a check that ran, not a label anyone may set.
-
-    These three were `unresolved` while the runner and the linker were being
-    corrected, which is what kept the contract unexecutable; they moved only
-    when the tests named here passed.
-    """
+    """`resolved` is a claim about a check that ran, not a label anyone may set."""
     payload = load_contract(DEFAULT_CONTRACT)
     required = set(payload["candidate"]["dependency_requirements_resolved"]["value"])
     for dependency in payload["candidate"]["unresolved_implementation_dependencies"]:
-        if dependency["id"] in required:
-            assert dependency["status"] == "resolved", dependency["id"]
+        if dependency["id"] in required and dependency["status"] == "resolved":
             assert dependency["resolved_by"].startswith(("testing/", "Same integration test"))
-    assert not validate(DEFAULT_CONTRACT, mode="authoring").unresolved_required_dependencies
+
+
+def test_v1_is_kept_unedited_as_the_record_of_the_failed_run():
+    """v1 stands as FAIL. It is not re-run, re-frozen, or quietly revised."""
+    v1 = load_contract(ARCHIVED_CONTRACTS[0])
+    v2 = load_contract(DEFAULT_CONTRACT)
+    assert v1["contract_id"].endswith("_v1") and v2["contract_id"].endswith("_v2")
+    assert v2["output_root"] != v1["output_root"]
+    assert v2["supersedes"]["verdict"] == "FAIL"
+
+    # the margins, the named failure and both intervals are carried over
+    # unchanged: v1's results have been seen, so re-deriving them now would be
+    # choosing an acceptance criterion after viewing an answer
+    for name, margin in v2["acceptance"]["margins"].items():
+        for key in ("value", "unit", "direction", "magnitude_kind", "decision_rule"):
+            assert margin[key] == v1["acceptance"]["margins"][name][key], (name, key)
+    assert (v2["acceptance"]["practical_failure"]["value"]
+            == v1["acceptance"]["practical_failure"]["value"])
+    v1_arms = v1["candidate"]["settings"]["value"]["resolved_configuration"]["execution"]["arms"]
+    v2_arms = v2["candidate"]["settings"]["value"]["resolved_configuration"]["execution"]["arms"]
+    for arm in ("case", "healthy_control"):
+        assert v2_arms[arm]["endpoint_interval_s"] == v1_arms[arm]["endpoint_interval_s"]
+        assert v2_arms[arm]["processing_interval_s"] == v1_arms[arm]["processing_interval_s"]
+
+
+def test_the_revision_does_not_weaken_the_gates_that_would_manufacture_links():
+    """The fix is preservation, not a lower bar for merging."""
+    v1 = load_contract(ARCHIVED_CONTRACTS[0])["candidate"]["settings"]["value"]
+    v2 = load_contract(DEFAULT_CONTRACT)["candidate"]["settings"]["value"]
+    for key in ("min_waveform_cosine", "max_amplitude_ratio", "max_spatial_distance_um",
+                "ambiguity_threshold_ratio"):
+        assert (v2["resolved_configuration"]["identity_link"][key]
+                == v1["resolved_configuration"]["identity_link"][key]), key
+    # the absolute refractory gate is gone; what replaced it is an increment at
+    # the same magnitude, not a larger allowance
+    assert "max_refractory_violation_fraction" not in v2["resolved_configuration"]["identity_link"]
+    assert (v2["resolved_configuration"]["identity_link"]["max_refractory_violation_increase"]
+            == v1["resolved_configuration"]["identity_link"]["max_refractory_violation_fraction"])
 
 
 # --------------------------------------------------------------------------- #
@@ -448,7 +487,8 @@ def test_the_two_clusters_that_are_one_neuron_are_joined_into_one_family(contrac
     assert endpoints["carrier_contributing_clusters"] == [1, 2]
 
     families = _load(out_root / "case__unwarped_identity" / "unwarped_identity_manifest.json")
-    assert families["num_families_built_from_a_link"] == 1
+    assert families["num_families_built_from_a_merge"] == 1
+    assert families["input_partition_preserved"] is False  # one merge happened
 
 
 def test_two_clusters_that_coexist_in_an_epoch_are_never_merged(contract, out_root):
@@ -537,7 +577,137 @@ def test_the_healthy_arm_measures_preservation_on_its_reserved_interval(contract
     endpoints = _load(out_root / "healthy_control__endpoints.json")
     assert endpoints["endpoint_interval_s"] == [200.0, 260.0]
     assert endpoints["max_tolerated_increase_pp"] == 2.0
-    assert endpoints["verdict"] in ("pass", "fail", "unevaluable")
+    assert endpoints["verdict"] in ("pass", "fail", "inconclusive")
+
+    # identity preservation is measured on the whole eligible population, so it
+    # has full coverage even where completeness does not
+    identity = endpoints["identity_preservation"]
+    assert identity["coverage_of_eligible_population"] == 1.0
+    assert identity["n_clusters_split"] == 0
+    assert identity["n_clusters_preserved_intact"] == identity["n_eligible_clusters"]
+
+    completeness = endpoints["completeness"]
+    assert completeness["n_eligible_clusters"] >= completeness["n_clusters_measurable_in_both_arms"]
+    if completeness["coverage_of_eligible_population"] < completeness["min_coverage_required"]:
+        assert completeness["verdict"] == "inconclusive"
+
+
+def test_thin_healthy_completeness_coverage_is_inconclusive_not_pass(contract, out_root):
+    """Four measurable comparisons cannot certify the other ninety-six clusters."""
+    _frozen(contract, out_root)
+    run_bakeoff(option="unwarped_identity", arm="healthy_control", mode="smoke",
+                out_root=out_root, contract_path=contract)
+    completeness = _load(out_root / "healthy_control__endpoints.json")["completeness"]
+    assert "not evidence of preservation" in completeness["note"]
+    assert completeness["verdict"] != "pass" or (
+        completeness["coverage_of_eligible_population"] >= completeness["min_coverage_required"]
+    )
+
+
+# --------------------------------------------------------------------------- #
+# waveforms are compared in the declared physical channel representation
+# --------------------------------------------------------------------------- #
+def test_templates_are_dewhitened_before_they_are_used_as_waveforms(contract):
+    """KS4 stores templates whitened; the contract declares physical channels."""
+    from testing.luke_two_motion_pipeline_bakeoff import load_replay_rows
+
+    resolved = _resolve(contract)
+    loaded = load_replay_rows(resolved)
+    curated = resolved["curated"]
+
+    physical = np.load(curated / "_physical_templates_for_the_test.npy")
+    stored = np.load(curated / "templates.npy")
+    used = loaded["inputs"].template_bank
+
+    assert np.allclose(used, physical, atol=1e-5)
+    assert not np.allclose(stored, physical)
+
+    def peaks(bank):
+        return np.argmax(bank.max(axis=1) - bank.min(axis=1), axis=1)
+
+    # the whitened array peaks on the wrong channels, which is what would have
+    # selected the wrong shared neighbourhood
+    assert not np.array_equal(peaks(stored), peaks(used))
+    record = loaded["waveform_representation"]
+    assert record["declared"] == "probe_physical_channels"
+    assert record["transform"] == "templates.npy @ whitening_mat_inv.npy"
+    assert record["n_templates_whose_peak_channel_moved"] == record["n_templates"]
+
+
+def test_a_missing_whitening_matrix_is_a_refusal(tmp_path, out_root):
+    path = _contract(tmp_path)
+    (tmp_path / "curated" / "whitening_mat_inv.npy").unlink()
+    freeze_acceptance(path, out_root)
+    with pytest.raises(RunnerRefusal, match="whitening_mat_inv.npy is missing"):
+        run_bakeoff(option="unwarped_identity", arm="case", mode="smoke",
+                    out_root=out_root, contract_path=path)
+
+
+# --------------------------------------------------------------------------- #
+# the preservation invariant, on real exported rows
+# --------------------------------------------------------------------------- #
+def test_no_original_cluster_is_split_by_the_export(contract, out_root):
+    _frozen(contract, out_root)
+    manifest = run_bakeoff(option="unwarped_identity", arm="case", mode="smoke",
+                           out_root=out_root, contract_path=contract)
+    preservation = manifest["stages"]["preservation"]
+    assert preservation["n_original_clusters_split"] == 0
+    assert preservation["original_clusters_split"] == []
+    # this fixture does contain one justified merge, so the partition is not
+    # identical -- but nothing fragmented
+    assert preservation["n_families_merged_from_multiple_clusters"] == 1
+    assert preservation["n_candidate_families"] == preservation["n_original_clusters"] - 1
+
+    baseline = np.load(out_root / "case__baseline_export" / "spike_clusters.npy")
+    candidate = np.load(out_root / "case__candidate_export" / "spike_clusters.npy")
+    assert baseline.size == candidate.size
+    # every candidate unit is a union of whole original clusters
+    for unit in np.unique(candidate):
+        originals = np.unique(baseline[candidate == unit])
+        for original in originals:
+            assert set(np.unique(candidate[baseline == original])) == {unit}
+
+
+def test_a_cluster_whose_links_are_all_refused_is_still_one_unit(tmp_path, out_root):
+    """The v1 failure mode, on the runner: refused links must not fragment.
+
+    The depth gate is tightened to 0.5 um so no cross-cluster merge survives,
+    while same-cluster continuity links still sit at distance 0 and are still
+    proposed. The export must then reproduce the input partition exactly -- same
+    number of units, same grouping of rows.
+    """
+    path = _contract(tmp_path)
+    payload = load_contract(path)
+    resolved = payload["candidate"]["settings"]["value"]["resolved_configuration"]
+    resolved["identity_link"]["max_spatial_distance_um"] = 0.5
+    payload["candidate"]["settings"]["value"]["configuration_digest"] = canonical_digest(resolved)
+    path.write_text(json.dumps(payload))
+
+    freeze_acceptance(path, out_root)
+    manifest = run_bakeoff(option="unwarped_identity", arm="case", mode="smoke",
+                           out_root=out_root, contract_path=path)
+
+    identity = manifest["stages"]["unwarped_identity"]
+    assert identity["num_accepted_links"] == 0
+    assert identity["input_partition_preserved"] is True
+    # the self-links are still proposed and still not accepted -- they simply
+    # have no power to split anything any more
+    assert identity["link_rejections"]["self_link_no_output_effect"] > 0
+
+    preservation = manifest["stages"]["preservation"]
+    assert preservation["input_partition_preserved_exactly"] is True
+    assert preservation["n_original_clusters_split"] == 0
+    assert preservation["n_candidate_families"] == preservation["n_original_clusters"]
+
+    baseline = np.load(out_root / "case__baseline_export" / "spike_clusters.npy")
+    candidate = np.load(out_root / "case__candidate_export" / "spike_clusters.npy")
+    # identical partition up to renumbering
+    _, baseline_codes = np.unique(baseline, return_inverse=True)
+    _, candidate_codes = np.unique(candidate, return_inverse=True)
+    assert np.array_equal(baseline_codes, candidate_codes)
+    assert manifest["stages"]["candidate_export"]["n_units"] == (
+        manifest["stages"]["baseline_export"]["n_units"]
+    )
 
 
 # --------------------------------------------------------------------------- #

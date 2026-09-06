@@ -98,6 +98,7 @@ EXTRA_HASHED_FILES = (
     "spike_positions.npy",
     "spike_templates.npy",
     "templates.npy",
+    "whitening_mat_inv.npy",
     "channel_positions.npy",
 )
 
@@ -269,10 +270,13 @@ def resolve_settings(
             resolved["identity_link"]["waveform_channel_neighbourhood_um"]
         ),
         ambiguity_threshold_ratio=float(resolved["identity_link"]["ambiguity_threshold_ratio"]),
-        max_refractory_violation_fraction=float(
-            resolved["identity_link"]["max_refractory_violation_fraction"]
+        max_refractory_violation_increase=float(
+            resolved["identity_link"]["max_refractory_violation_increase"]
         ),
         refractory_period_ms=float(resolved["identity_link"]["refractory_period_ms"]),
+    )
+    healthy_min_coverage = float(
+        resolved["completeness_qc"].get("healthy_min_coverage_of_eligible_population", 0.5)
     )
     qc_node = resolved["completeness_qc"]
     completeness_config = CompletenessConfig(
@@ -297,6 +301,7 @@ def resolve_settings(
         "processing_interval_s": processing,
         "identity_config": identity_config,
         "completeness_config": completeness_config,
+        "healthy_min_coverage": healthy_min_coverage,
         "motion_node": motion_node,
         "motion_info_dir": motion_info_dir,
         "configuration_digest": recomputed,
@@ -408,6 +413,16 @@ def load_replay_rows(resolved: dict[str, Any]) -> dict[str, Any]:
             f"spike_templates.npy has {templates_full.size} rows for {arrays.times.size} spikes"
         )
 
+    # `templates.npy` as KS4 exports it is in the WHITENED space, so its
+    # per-channel amplitudes are not the waveform on the probe: the whitening
+    # matrix mixes neighbouring channels, which can move a peak channel and
+    # change a similarity score. The contract declares a *physical* channel
+    # representation, so undo it, with the same convention the repo's donor
+    # implementation uses (`testing/ladder_donors.py::_dewhitened_shape`).
+    dewhitened = np.asarray(extra["templates.npy"], dtype=np.float64) @ np.asarray(
+        extra["whitening_mat_inv.npy"], dtype=np.float64
+    )
+
     fs = resolved["fs_hz"]
     start_s, stop_s = resolved["processing_interval_s"]
     seconds = arrays.times.astype(np.float64) / fs
@@ -424,12 +439,27 @@ def load_replay_rows(resolved: dict[str, Any]) -> dict[str, Any]:
         depth_um=depth_full[arrays.row_id[inside]],
         amplitude=arrays.amplitudes[inside],
         template=templates_full[arrays.row_id[inside]].astype(np.int64),
-        template_bank=np.asarray(extra["templates.npy"], dtype=np.float64),
+        template_bank=dewhitened,
         channel_positions_um=np.asarray(extra["channel_positions.npy"], dtype=np.float64),
         fs_hz=fs,
     )
+    whitened = np.asarray(extra["templates.npy"], dtype=np.float64)
+    peak_whitened = np.argmax(whitened.max(axis=1) - whitened.min(axis=1), axis=1)
+    peak_physical = np.argmax(dewhitened.max(axis=1) - dewhitened.min(axis=1), axis=1)
     return {
         "inputs": inputs,
+        "waveform_representation": {
+            "declared": "probe_physical_channels",
+            "transform": "templates.npy @ whitening_mat_inv.npy",
+            "why": (
+                "KS4 exports templates in the whitened space; whitening mixes neighbouring "
+                "channels, so untransformed templates are not a physical-channel waveform."
+            ),
+            "n_templates": int(dewhitened.shape[0]),
+            "n_templates_whose_peak_channel_moved": int(
+                np.count_nonzero(peak_whitened != peak_physical)
+            ),
+        },
         "n_rows_total": int(arrays.times.size),
         "n_rows_in_interval": int(inside.size),
         "n_rows_outside_interval_not_processed": int(arrays.times.size - inside.size),
@@ -693,6 +723,7 @@ def evaluate_healthy_arm(
     endpoint_interval_s: tuple[float, float],
     completeness_config: CompletenessConfig,
     margins: dict[str, Any],
+    min_coverage: float = 0.5,
 ) -> dict[str, Any]:
     """Per-cluster completeness preservation on a reserved healthy interval."""
     row_index = {int(r): i for i, r in enumerate(inputs.row_id.tolist())}
@@ -760,21 +791,100 @@ def evaluate_healthy_arm(
             }
         )
 
+    # The eligible population is fixed before anything is measured: every
+    # original cluster with rows in the endpoint interval. Completeness can only
+    # be compared on the subset with enough fits, so coverage is reported against
+    # that fixed denominator rather than against whatever happened to be
+    # measurable -- four comparisons say nothing about the other ninety-six.
+    eligible = sorted({c for r, c in baseline_of_row.items()
+                       if start_s <= seconds[row_index[int(r)]] < stop_s})
+    identity = _identity_preservation(
+        inputs=inputs, baseline_of_row=baseline_of_row, candidate_of_row=candidate_of_row,
+        eligible=eligible, row_index=row_index, seconds=seconds,
+        start_s=start_s, stop_s=stop_s,
+    )
+
     increases = [c["increase_pp"] for c in per_cluster if c["increase_pp"] is not None]
-    if not increases:
-        verdict, worst = VERDICT_UNEVALUABLE, None
+    coverage = len(increases) / len(eligible) if eligible else 0.0
+    if not increases or coverage < min_coverage:
+        completeness_verdict, worst = "inconclusive", (max(increases) if increases else None)
     else:
         worst = max(increases)
-        verdict = VERDICT_PASS if worst <= tolerance else "fail"
+        completeness_verdict = VERDICT_PASS if worst <= tolerance else "fail"
+
+    # Preservation is the conjunction: a completeness comparison on a handful of
+    # clusters cannot certify an arm that fragmented the rest.
+    if identity["verdict"] == "fail":
+        verdict = "fail"
+    elif completeness_verdict == VERDICT_PASS:
+        verdict = VERDICT_PASS
+    else:
+        verdict = completeness_verdict
+
     return {
         "endpoint_interval_s": [start_s, stop_s],
         "max_tolerated_increase_pp": tolerance,
-        "n_clusters_considered": len(per_cluster),
-        "n_clusters_measurable": len(increases),
-        "worst_increase_pp": worst,
         "verdict": verdict,
+        "identity_preservation": identity,
+        "completeness": {
+            "verdict": completeness_verdict,
+            "n_eligible_clusters": len(eligible),
+            "n_clusters_with_enough_spikes_to_consider": len(per_cluster),
+            "n_clusters_measurable_in_both_arms": len(increases),
+            "coverage_of_eligible_population": coverage,
+            "min_coverage_required": min_coverage,
+            "worst_increase_pp": worst,
+            "note": (
+                "Coverage below the required fraction makes the completeness comparison "
+                "`inconclusive`, never `pass`: the unmeasured clusters are not evidence of "
+                "preservation."
+            ),
+        },
         "per_cluster": per_cluster,
         "decision_rule": margins["healthy_interval_preservation"]["decision_rule"],
+    }
+
+
+def _identity_preservation(
+    *,
+    inputs: ReplayInput,
+    baseline_of_row: dict[int, int],
+    candidate_of_row: dict[int, int],
+    eligible: list[int],
+    row_index: dict[int, int],
+    seconds: np.ndarray,
+    start_s: float,
+    stop_s: float,
+) -> dict[str, Any]:
+    """Did the candidate keep every eligible cluster intact over the interval?
+
+    Measured on the whole eligible population, not on the completeness subset.
+    A cluster is preserved when all of its rows in the interval carry one family
+    id. Any split is a failure of the invariant, reported as such.
+    """
+    families: dict[int, set[int]] = {}
+    for row, cluster in baseline_of_row.items():
+        if start_s <= seconds[row_index[int(row)]] < stop_s:
+            families.setdefault(cluster, set()).add(candidate_of_row[int(row)])
+    split = sorted(c for c in eligible if len(families.get(c, set())) > 1)
+    merged: dict[int, set[int]] = {}
+    for cluster in eligible:
+        for family in families.get(cluster, set()):
+            merged.setdefault(family, set()).add(cluster)
+    return {
+        "n_eligible_clusters": len(eligible),
+        "n_clusters_preserved_intact": len(eligible) - len(split),
+        "n_clusters_split": len(split),
+        "clusters_split": split[:50],
+        "n_families_merged_from_multiple_clusters": sum(
+            1 for cs in merged.values() if len(cs) > 1
+        ),
+        "coverage_of_eligible_population": 1.0,
+        "verdict": VERDICT_PASS if not split else "fail",
+        "note": (
+            "Identity preservation is measured on every eligible cluster, so it has full "
+            "coverage even when completeness does not."
+        ),
     }
 
 
@@ -916,25 +1026,18 @@ def _execute(resolved: dict[str, Any], root: Path, option: str) -> dict[str, Any
 
     candidate_of_row = {int(r): int(f) for r, f in replay["row_family"].items()}
     contributors = {int(f): list(c) for f, c in replay["family_contributors"].items()}
-    unassigned = set(baseline_of_row) - set(candidate_of_row)
-    if unassigned:
-        # rows in the interval that no epoch observation claimed (below the
-        # per-epoch minimum, or outside every whole epoch). They keep their own
-        # identity rather than being dropped or folded into a neighbour.
-        next_id = max(candidate_of_row.values(), default=0) + 1
-        singleton_of_cluster: dict[int, int] = {}
-        for row in sorted(unassigned):
-            cid = baseline_of_row[row]
-            if cid not in singleton_of_cluster:
-                singleton_of_cluster[cid] = next_id
-                contributors[next_id] = [cid]
-                next_id += 1
-            candidate_of_row[row] = singleton_of_cluster[cid]
-        stages["unassigned_rows"] = {
-            "n_rows": len(unassigned),
-            "n_carried_through_as_their_original_cluster": len(singleton_of_cluster),
-            "rule": "a row no epoch observation claimed keeps its own identity; never dropped",
-        }
+
+    # The partition is over original clusters, so every row in the interval
+    # already has a family through its cluster -- including rows in no eligible
+    # epoch. There is no `unassigned` class to give an extra family id to, which
+    # is what produced a second fragment per cluster in v1.
+    missing = set(baseline_of_row) - set(candidate_of_row)
+    if missing:
+        raise RunnerRefusal(
+            f"{len(missing)} retained rows in the interval received no family. Every row must "
+            "reach the export through its original cluster; this is the preservation invariant."
+        )
+    stages["preservation"] = _check_partition_preserved(baseline_of_row, candidate_of_row)
 
     stages["candidate_export"] = export_arm(
         root / f"{arm}__candidate_export",
@@ -964,12 +1067,49 @@ def _execute(resolved: dict[str, Any], root: Path, option: str) -> dict[str, Any
             endpoint_interval_s=resolved["endpoint_interval_s"],
             completeness_config=resolved["completeness_config"],
             margins=margins,
+            min_coverage=resolved["healthy_min_coverage"],
         )
     _atomic_write(
         root / f"{arm}__endpoints.json",
         json.dumps(stages["endpoints"], indent=2, default=str) + "\n",
     )
     return stages
+
+
+def _check_partition_preserved(
+    baseline_of_row: dict[int, int], candidate_of_row: dict[int, int]
+) -> dict[str, Any]:
+    """Measure what the candidate did to the input partition, on the real rows.
+
+    Reported for every run, not only when something is wrong. Three numbers say
+    the whole story: how many original clusters were split (must be zero -- this
+    replay has no splitting operation), how many families were merged from more
+    than one cluster, and whether the two partitions are identical up to
+    renumbering.
+    """
+    families_of_cluster: dict[int, set[int]] = {}
+    clusters_of_family: dict[int, set[int]] = {}
+    for row, cluster in baseline_of_row.items():
+        family = candidate_of_row[row]
+        families_of_cluster.setdefault(cluster, set()).add(family)
+        clusters_of_family.setdefault(family, set()).add(cluster)
+
+    split = sorted(c for c, f in families_of_cluster.items() if len(f) > 1)
+    merged = sorted(f for f, c in clusters_of_family.items() if len(c) > 1)
+    return {
+        "n_original_clusters": len(families_of_cluster),
+        "n_candidate_families": len(clusters_of_family),
+        "n_original_clusters_split": len(split),
+        "original_clusters_split": split[:50],
+        "n_families_merged_from_multiple_clusters": len(merged),
+        "families_merged_from_multiple_clusters": merged[:50],
+        "input_partition_preserved_exactly": not split and not merged,
+        "n_rows": len(baseline_of_row),
+        "rule": (
+            "Splitting an original cluster is not an operation this replay has. A non-zero "
+            "n_original_clusters_split is a defect, not a result."
+        ),
+    }
 
 
 def _contract_margins(resolved: dict[str, Any]) -> dict[str, Any]:

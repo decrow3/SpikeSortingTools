@@ -57,7 +57,10 @@ from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = "luke-first-pipeline-candidate-v1"
-DEFAULT_CONTRACT = REPO_ROOT / "configs/first_pipeline_candidate.v1.json"
+#: v1 is frozen with results and stands as FAIL; it is kept as a record and is
+#: never re-run or edited. v2 is the one allowed revision and is what executes.
+ARCHIVED_CONTRACTS = (REPO_ROOT / "configs/first_pipeline_candidate.v1.json",)
+DEFAULT_CONTRACT = REPO_ROOT / "configs/first_pipeline_candidate.v2.json"
 
 FREEZE_RECEIPT = "acceptance_freeze.json"
 FREEZE_SCHEMA = "luke-first-pipeline-candidate-contract-freeze-v1"
