@@ -33,7 +33,7 @@
     "minimum_coverage_fraction": 0.5,
     "minimum_improvement_pp": 5.0,
     "aggregation": "median(baseline_missing_pct - candidate_missing_pct) over measurable reciprocal pairs; positive means the candidate has lower estimated missingness",
-    "improvement_definition": "baseline_missing_pct - candidate_missing_pct",
+    "improvement_definition": "baseline_missing_pct - candidate_missing_pct"
   },
   "guardrails": {
     "maximum_contamination_increase": 0.01,
