@@ -9,10 +9,14 @@
     "depth_shift_um_material": 8.0,
     "amplitude_drop_frac_material": 0.15,
     "min_events_per_window_for_shift": 100,
+    "voltage_saturation_uv": 500.0,
+    "voltage_saturated_frac_material": 0.01,
     "units": {
       "depth_shift_um_material": "micrometres (inclusive lower bound, >=; |median depth of the failing windows - median depth of the reference windows|, from spike_positions.npy)",
       "amplitude_drop_frac_material": "fraction of the reference median (inclusive lower bound, >=; (reference median amplitude - failing median amplitude) / reference median amplitude, in sorter-native amplitude units)",
-      "min_events_per_window_for_shift": "assigned events per window (count; below this the shift is reported but its verdict is withheld as underpowered)"
+      "min_events_per_window_for_shift": "assigned events per window (count; below this the shift is reported but its verdict is withheld as underpowered)",
+      "voltage_saturation_uv": "microvolts (absolute; the rescue conditioning's samplewise bilateral blanking threshold, so a sample at or beyond it was clipped by that stage)",
+      "voltage_saturated_frac_material": "fraction of read samples (inclusive lower bound, >=; at or beyond voltage_saturation_uv across the frozen channels of this case's windows)"
     },
     "note": "Proposed triage constants for ONE comparison each, frozen before any evidence is read, exactly as the selection constants are. They are not calibrated biological thresholds and no verdict they produce is a causal claim."
   },

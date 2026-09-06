@@ -69,7 +69,16 @@ from testing.luke_amplitude_dropout_audit import (
     classify_case_evidence,
     measure_case_shift,
     measure_retained_row_lineage,
+    VOLTAGE_MAX_CHANNELS,
+    VOLTAGE_MAX_EVENTS_PER_WINDOW,
+    VOLTAGE_MAX_REVIEW_FAILURE_CASES,
+    VoltageMeta,
+    build_case_evidence,
+    freeze_review_channels,
+    open_voltage_source,
     parse_evidence_constants,
+    review_case_voltage,
+    select_voltage_review_cases,
     read_attested_full_labels,
     read_attested_spike_positions,
     write_decision_md,
@@ -3406,10 +3415,12 @@ def test_inspect_requires_frozen_evidence_constants(tmp_path):
 
 
 def test_evidence_constants_require_units_and_reject_incoherent_values():
+    no_units = {k: v for k, v in EVIDENCE_BLOCK.items() if k not in ("units", "note")}
     with pytest.raises(ValueError, match="units"):
-        parse_evidence_constants({k: 1 for k in
-                                  ("depth_shift_um_material", "amplitude_drop_frac_material",
-                                   "min_events_per_window_for_shift")})
+        parse_evidence_constants(no_units)
+    partial_units = dict(no_units, units={"depth_shift_um_material": "um"})
+    with pytest.raises(ValueError, match="units"):
+        parse_evidence_constants(partial_units)
     bad = dict(EVIDENCE_BLOCK, amplitude_drop_frac_material=1.5)
     with pytest.raises(ValueError, match="\\[0, 1\\]"):
         parse_evidence_constants(bad)
@@ -3426,3 +3437,281 @@ def test_the_shipped_config_carries_the_frozen_evidence_constants():
     assert constants.amplitude_drop_frac_material == 0.15
     assert constants.min_events_per_window_for_shift == 100
     assert sorted(block["units"]) == sorted(constants.to_dict())
+
+
+# --------------------------------------------------------------------------- #
+# layer 4c -- the bounded voltage review
+#
+# The bounded-read guarantee is enforced HERE, by a recording double that
+# raises when it is over-asked. Inspection of the code is not the check: a
+# review that quietly widened a request would pass a reading and fail this.
+# --------------------------------------------------------------------------- #
+class _RecordingDouble:
+    """A voltage source that refuses to be over-asked.
+
+    Raises if a single request exceeds `max_frames_per_request` frames or the
+    channel cap, and records every request so a test can assert what was asked
+    for -- the frozen channel set, the applied source offset, and the clipped
+    margins at the recording's edge.
+    """
+
+    def __init__(self, n_samples=1_000_000, n_channels=64, *, max_frames_per_request=4096,
+                 gain=1.0, value=1.0):
+        self.n_samples = n_samples
+        self.n_channels = n_channels
+        self.max_frames_per_request = max_frames_per_request
+        self.requests: list[tuple[int, int, tuple[int, ...]]] = []
+        self.gain = gain
+        self.value = value
+
+    def read(self, start_frame, end_frame, channels):
+        channels = tuple(int(c) for c in channels)
+        span = int(end_frame) - int(start_frame)
+        if span > self.max_frames_per_request:
+            raise AssertionError(
+                f"voltage read asked for {span} frames, over the double's cap of "
+                f"{self.max_frames_per_request}"
+            )
+        if len(channels) > VOLTAGE_MAX_CHANNELS:
+            raise AssertionError(
+                f"voltage read asked for {len(channels)} channels, over the cap of "
+                f"{VOLTAGE_MAX_CHANNELS}"
+            )
+        if any(c < 0 or c >= self.n_channels for c in channels):
+            raise AssertionError("voltage read asked for a channel outside the recording")
+        self.requests.append((int(start_frame), int(end_frame), channels))
+        lo, hi = max(0, int(start_frame)), min(self.n_samples, int(end_frame))
+        clip = {"clipped_start_frames": lo - int(start_frame),
+                "clipped_end_frames": int(end_frame) - hi}
+        rows = max(0, hi - lo)
+        return np.full((rows, len(channels)), self.value, dtype=np.float32), clip
+
+
+def _voltage_ready(tmp_path, **kwargs):
+    """An inspect-ready root whose curated dir also carries depth and geometry."""
+    config_path, out_root, selection = _inspect_ready_root(tmp_path, **kwargs)
+    cfg = load_config(config_path)
+    curated = Path(cfg.sorts[0].curated)
+    arrays = load_curated_arrays("synthetic", curated)
+    n = arrays.times.size
+    # Depth must MOVE between a case's reference and failing windows, or a
+    # channel set recomputed on the failing windows would land on the frozen
+    # one anyway and the freeze test would be vacuous (it was: a mutant that
+    # recomputed per window passed against a constant-depth fixture).
+    depth = np.full(n, 200.0)
+    for case in selection["cases"]:
+        cluster_positions = np.flatnonzero(arrays.clusters == int(case["cluster_id"]))
+        for window in case["windows"]:
+            rows = cluster_positions[int(window["i0"]):int(window["i1"]) + 1]
+            depth[rows] = 100.0 if window["window_role"] in ("reference", "control") else 300.0
+    np.save(curated / "spike_positions.npy", np.column_stack([np.zeros(n), depth]))
+    geometry = np.column_stack([np.zeros(64), np.arange(64) * 10.0])
+    np.save(curated / "channel_positions.npy", geometry)
+    payload = json.loads(config_path.read_text())
+    payload["sorts"][0]["channel_geometry"] = str(curated / "channel_positions.npy")
+    config_path.write_text(json.dumps(payload))
+    return config_path, out_root, selection
+
+
+def _double_factory(double, *, offset=0, gain=1.0):
+    meta = VoltageMeta(
+        path="double", dtype="int16", n_samples=double.n_samples,
+        n_channels=double.n_channels, gain_uv_per_count=gain,
+        selected_start_sample=offset, view="recording double",
+    )
+    return lambda sort_cfg: (double, meta, None)
+
+
+def _review(tmp_path, double, **factory_kwargs):
+    """Run the evidence layer with the double injected as the voltage source."""
+    config_path, out_root, selection = _voltage_ready(tmp_path)
+    cfg = load_config(config_path)
+    payload = json.loads((out_root / "selection.json").read_text())
+    curated = {"synthetic": load_curated_arrays("synthetic", cfg.sorts[0].curated)}
+    case_windows = pd.DataFrame(columns=list(CASE_WINDOWS_COLUMNS))
+    summaries = [{"case_id": c["case_id"], "sort_id": c["sort_id"],
+                  "cluster_id": c["cluster_id"], "role": c["role"],
+                  "case_status": CASE_STATUS_STABLE,
+                  "unstable_reproduction_mismatch": False} for c in payload["cases"]]
+    evidence, extras = build_case_evidence(
+        payload, cfg, curated, case_windows, summaries, out_root,
+        evidence_constants=EVIDENCE_CONSTANTS, render_figures=False,
+        voltage_reader_factory=_double_factory(double, **factory_kwargs),
+    )
+    return payload, evidence, extras
+
+
+def test_the_voltage_review_never_over_asks_the_recording(tmp_path):
+    """The double raises on an over-wide request; a full review must not trip it."""
+    double = _RecordingDouble()
+    _, evidence, extras = _review(tmp_path, double)
+    assert double.requests, "the review read nothing at all"
+    assert all(len(channels) <= VOLTAGE_MAX_CHANNELS for _, _, channels in double.requests)
+    voltage_rows = evidence[evidence["category"] == "voltage_integrity"]
+    assert set(voltage_rows["verdict"]) <= {VERDICT_SUPPORTED, VERDICT_UNSUPPORTED}
+
+
+def test_at_most_100_events_are_read_per_window(tmp_path):
+    double = _RecordingDouble()
+    payload, _, extras = _review(tmp_path, double)
+    for case_id, extraction in extras["voltage"]["extraction"].items():
+        assert extraction["max_events_per_window"] == VOLTAGE_MAX_EVENTS_PER_WINDOW
+    # 4 windows per case: at most 100 waveform reads + 1 excerpt read each
+    reviewed = extras["voltage"]["reviewed_case_ids"]
+    assert len(double.requests) <= len(reviewed) * 4 * (VOLTAGE_MAX_EVENTS_PER_WINDOW + 1)
+
+
+def test_the_channel_set_is_frozen_from_the_reference_windows_and_reused(tmp_path):
+    """Within a case, the reference windows fix the channel set and the failing
+    windows reuse it unchanged. Recomputing it there would follow the unit and
+    hide the displacement this review exists to show.
+
+    (Across cases the sets legitimately differ -- a different cluster sits at a
+    different depth -- so this asserts per case, on one case's own reads.)
+    """
+    config_path, out_root, selection = _voltage_ready(tmp_path)
+    cfg = load_config(config_path)
+    curated = load_curated_arrays("synthetic", cfg.sorts[0].curated)
+    payload = json.loads((out_root / "selection.json").read_text())
+    case = next(c for c in payload["cases"] if c["role"] == "failure")
+    roles = {w["window_role"] for w in case["windows"]}
+    assert {"reference", "failing"} <= roles, "fixture must have both roles to prove reuse"
+
+    double = _RecordingDouble()
+    meta = VoltageMeta(path="double", dtype="int16", n_samples=double.n_samples,
+                       n_channels=double.n_channels, gain_uv_per_count=1.0,
+                       selected_start_sample=0, view="recording double")
+    positions = np.load(Path(cfg.sorts[0].curated) / "spike_positions.npy")
+    geometry = np.load(Path(cfg.sorts[0].channel_geometry))
+    review = review_case_voltage(
+        case, curated, double, meta, positions, geometry,
+        float(cfg.sorts[0].sampling_frequency_hz), EVIDENCE_CONSTANTS)
+
+    used = {channels for _, _, channels in double.requests}
+    assert len(used) == 1, f"the channel set moved between windows: {used}"
+    frozen = next(iter(used))
+    assert len(frozen) == VOLTAGE_MAX_CHANNELS
+    assert tuple(review["extraction"]["frozen_channels"]) == frozen
+    assert "reused unchanged for the failing windows" in (
+        review["extraction"]["channel_freeze_rule"])
+    # and it is centred on the REFERENCE depth (100 um -> channel 10 at 10 um pitch)
+    assert review["extraction"]["peak_channel"] == 10
+
+
+def test_each_reviewed_case_freezes_its_own_channel_set(tmp_path):
+    double = _RecordingDouble()
+    _, _, extras = _review(tmp_path, double)
+    sets = {case_id: tuple(e["frozen_channels"])
+            for case_id, e in extras["voltage"]["extraction"].items()
+            if "frozen_channels" in e}
+    assert len(sets) == len(extras["voltage"]["reviewed_case_ids"])
+    used = {channels for _, _, channels in double.requests}
+    assert used == set(sets.values())
+
+
+def test_the_verified_source_offset_is_applied_to_every_read(tmp_path):
+    """Source frame = selected-relative frame + the config's verified offset,
+    never an offset inferred from a filename."""
+    plain = _RecordingDouble()
+    _review(tmp_path / "a", plain)
+    shifted = _RecordingDouble()
+    _review(tmp_path / "b", shifted, offset=5_000)
+    assert plain.requests and shifted.requests
+    for (p_start, p_end, _), (s_start, s_end, _) in zip(plain.requests, shifted.requests):
+        assert s_start - p_start == 5_000
+        assert s_end - p_end == 5_000
+
+
+def test_an_out_of_bounds_request_is_clipped_and_reported(tmp_path):
+    """Clipping at the recording edge is reported, not silently satisfied."""
+    tiny = _RecordingDouble(n_samples=1)     # every read runs past the end
+    _, _, extras = _review(tmp_path, tiny)
+    clipped = [e["clipped_margins_frames"] for e in extras["voltage"]["extraction"].values()
+               if "clipped_margins_frames" in e]
+    assert clipped, "no extraction recorded a clipped margin"
+    assert any(c["clipped_end_frames"] > 0 for c in clipped)
+
+
+def test_a_sort_without_raw_voltage_is_unavailable_not_an_exception(tmp_path):
+    """The legacy sort's traces file is deleted; that is a permitted outcome."""
+    config_path, out_root, _ = _voltage_ready(tmp_path)
+    cfg = load_config(config_path)
+    reader, meta, reason = open_voltage_source(cfg.sorts[0])
+    assert reader is None and meta is None
+    assert "no recognisable recording manifest" in reason or "no raw voltage file" in reason
+
+    payload = json.loads((out_root / "selection.json").read_text())
+    curated = {"synthetic": load_curated_arrays("synthetic", cfg.sorts[0].curated)}
+    summaries = [{"case_id": c["case_id"], "sort_id": c["sort_id"],
+                  "cluster_id": c["cluster_id"], "role": c["role"],
+                  "case_status": CASE_STATUS_STABLE,
+                  "unstable_reproduction_mismatch": False} for c in payload["cases"]]
+    evidence, extras = build_case_evidence(
+        payload, cfg, curated, pd.DataFrame(columns=list(CASE_WINDOWS_COLUMNS)),
+        summaries, out_root, evidence_constants=EVIDENCE_CONSTANTS, render_figures=False)
+    voltage_rows = evidence[evidence["category"] == "voltage_integrity"]
+    assert set(voltage_rows["verdict"]) == {VERDICT_UNAVAILABLE}
+    assert all("never reconstructed" in text or "never substituted" in text
+               for text in voltage_rows["limitations"])
+
+
+def test_the_review_covers_at_most_two_failure_cases_and_their_controls():
+    cases = [
+        {"case_id": f"s__c{i}__failure{i}", "sort_id": "s", "role": "failure", "rank": i}
+        for i in (1, 2, 3)
+    ] + [
+        {"case_id": "s__c9__control1", "sort_id": "s", "role": "control", "rank": 1},
+        {"case_id": "other__c9__control1", "sort_id": "other", "role": "control", "rank": 1},
+    ]
+    chosen = select_voltage_review_cases({"cases": cases})
+    failures = [c for c in chosen if "failure" in c]
+    assert len(failures) == VOLTAGE_MAX_REVIEW_FAILURE_CASES
+    assert failures == ["s__c1__failure1", "s__c2__failure2"]   # by frozen rank
+    assert "s__c9__control1" in chosen                          # its sort's control
+    assert "other__c9__control1" not in chosen                  # not a reviewed sort
+
+
+def test_waveforms_are_not_recentred(tmp_path):
+    double = _RecordingDouble()
+    _, _, extras = _review(tmp_path, double)
+    for extraction in extras["voltage"]["extraction"].values():
+        assert extraction["events_recentred"] is False
+
+
+def test_the_extraction_record_names_the_view_gains_and_choices(tmp_path):
+    double = _RecordingDouble()
+    _, _, extras = _review(tmp_path, double, gain=2.5)
+    extraction = next(iter(extras["voltage"]["extraction"].values()))
+    for key in ("voltage_view", "voltage_path", "dtype", "gain_uv_per_count",
+                "filter_margins", "selected_start_sample_offset", "frozen_channels",
+                "peak_channel", "max_events_per_window", "max_channels", "excerpt_ms",
+                "clipped_margins_frames", "saturation_threshold_uv"):
+        assert key in extraction, f"extraction record omits {key}"
+    assert extraction["gain_uv_per_count"] == 2.5
+
+
+def test_a_saturated_window_supports_the_voltage_integrity_category(tmp_path):
+    """The one declared, frozen indicator: samples at or beyond the blanking
+    threshold. Everything else about 'visibly alters' stays a human judgement."""
+    saturated = _RecordingDouble(value=EVIDENCE_CONSTANTS.voltage_saturation_uv + 1.0)
+    _, evidence, _ = _review(tmp_path, saturated)
+    rows = evidence[(evidence["category"] == "voltage_integrity")
+                    & (evidence["case_role"] == "failure")]
+    assert set(rows["verdict"]) == {VERDICT_SUPPORTED}
+    assert "does not automate" in rows.iloc[0]["limitations"]
+
+    quiet = _RecordingDouble(value=1.0)
+    _, evidence2, _ = _review(tmp_path / "quiet", quiet)
+    rows2 = evidence2[evidence2["category"] == "voltage_integrity"]
+    assert set(rows2["verdict"]) == {VERDICT_UNSUPPORTED}
+
+
+def test_freezing_channels_needs_depth_and_geometry(tmp_path):
+    curated_dir = _write_curated(tmp_path, n=10)
+    curated = load_curated_arrays("s1", curated_dir)
+    case = {"cluster_id": 0, "windows": [
+        {"i0": 0, "i1": 1, "window_role": "reference"},
+        {"i0": 2, "i1": 3, "window_role": "failing"}]}
+    channels, peak, reason = freeze_review_channels(case, curated, None, None, 64)
+    assert channels is None and peak is None
+    assert "depth or probe geometry" in reason

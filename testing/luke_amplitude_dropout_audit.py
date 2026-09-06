@@ -2728,8 +2728,14 @@ class EvidenceConstants:
     depth_shift_um_material: float
     amplitude_drop_frac_material: float
     min_events_per_window_for_shift: int
+    voltage_saturation_uv: float
+    voltage_saturated_frac_material: float
 
     def __post_init__(self) -> None:
+        if not math.isfinite(self.voltage_saturation_uv) or self.voltage_saturation_uv <= 0:
+            raise ValueError("evidence.voltage_saturation_uv must be finite and > 0")
+        if not (0.0 <= self.voltage_saturated_frac_material <= 1.0):
+            raise ValueError("evidence.voltage_saturated_frac_material must lie in [0, 1]")
         if not math.isfinite(self.depth_shift_um_material) or self.depth_shift_um_material < 0:
             raise ValueError("evidence.depth_shift_um_material must be finite and >= 0")
         if not (0.0 <= self.amplitude_drop_frac_material <= 1.0):
@@ -2742,11 +2748,14 @@ class EvidenceConstants:
             "depth_shift_um_material": self.depth_shift_um_material,
             "amplitude_drop_frac_material": self.amplitude_drop_frac_material,
             "min_events_per_window_for_shift": self.min_events_per_window_for_shift,
+            "voltage_saturation_uv": self.voltage_saturation_uv,
+            "voltage_saturated_frac_material": self.voltage_saturated_frac_material,
         }
 
 
 _EVIDENCE_KEYS = ("depth_shift_um_material", "amplitude_drop_frac_material",
-                  "min_events_per_window_for_shift")
+                  "min_events_per_window_for_shift", "voltage_saturation_uv",
+                  "voltage_saturated_frac_material")
 
 
 def parse_evidence_constants(payload: Any) -> EvidenceConstants:
@@ -2777,6 +2786,8 @@ def parse_evidence_constants(payload: Any) -> EvidenceConstants:
             payload["min_events_per_window_for_shift"],
             "evidence.min_events_per_window_for_shift",
         ),
+        voltage_saturation_uv=float(payload["voltage_saturation_uv"]),
+        voltage_saturated_frac_material=float(payload["voltage_saturated_frac_material"]),
     )
 
 
@@ -2827,6 +2838,25 @@ def read_attested_full_labels(
     labels = np.load(io.BytesIO(data), allow_pickle=False)
     del data
     return np.asarray(labels).reshape(-1), digest, None
+
+
+def read_attested_geometry(
+    sort_cfg: SortConfig,
+) -> tuple[np.ndarray | None, str | None, str | None]:
+    """Read the probe geometry once, hashing the bytes that were parsed."""
+    if sort_cfg.channel_geometry is None:
+        return None, None, "config declares no channel_geometry for this sort"
+    path = Path(sort_cfg.channel_geometry)
+    if not path.exists():
+        return None, None, f"{path} does not exist"
+    data = path.read_bytes()
+    digest = hashlib.sha256(data).hexdigest()
+    geometry = np.load(io.BytesIO(data), allow_pickle=False)
+    del data
+    geometry = np.asarray(geometry)
+    if geometry.ndim != 2 or geometry.shape[1] < 2:
+        return None, digest, f"{path} has shape {geometry.shape}; expected (n_channels, >=2)"
+    return geometry, digest, None
 
 
 def _window_event_slices(
@@ -3120,6 +3150,380 @@ def classify_case_evidence(
              "the missing observations are named per category above")
         reading = CASE_EVIDENCE_UNRESOLVED
     return rows, reading
+
+
+# --------------------------------------------------------------------------- #
+# layer 4c -- the bounded voltage review
+#
+# Hard caps, from the prescription: at most the two highest-ranked failure
+# cases and their corresponding controls; at most 100 evenly spaced assigned
+# events per window; at most 16 channels nearest the reference peak channel,
+# with the channel set FROZEN from the reference windows and reused unchanged
+# for the failing windows. Reads are bounded chunks -- a full-session voltage
+# array is never materialized.
+#
+# The legacy sort has no raw voltage on disk. That is a permitted outcome: its
+# cases degrade to `unavailable` with the reason recorded. The rescue
+# recording is never substituted for a legacy case.
+# --------------------------------------------------------------------------- #
+VOLTAGE_MAX_REVIEW_FAILURE_CASES = 2
+VOLTAGE_MAX_EVENTS_PER_WINDOW = 100
+VOLTAGE_MAX_CHANNELS = 16
+VOLTAGE_EXCERPT_MS = 50.0
+VOLTAGE_WAVEFORM_HALF_MS = 1.3
+
+
+@dataclass(frozen=True)
+class VoltageMeta:
+    """What the voltage view is, recorded so a reader knows what was read."""
+
+    path: str
+    dtype: str
+    n_samples: int
+    n_channels: int
+    gain_uv_per_count: float
+    selected_start_sample: int
+    view: str
+
+
+class BoundedVoltageReader:
+    """Bounded reads out of a raw interleaved int16 recording.
+
+    Backed by a memmap and sliced per request, so only the requested frames and
+    channels are ever brought into memory. Every request is checked against the
+    caps and against the file's own bounds: an out-of-range request is clipped
+    and the clipped margin is REPORTED rather than silently satisfied.
+    """
+
+    def __init__(self, path: Path, meta: VoltageMeta):
+        self.path = Path(path)
+        self.meta = meta
+        self._map = np.memmap(
+            self.path, dtype=np.dtype(meta.dtype), mode="r",
+            shape=(int(meta.n_samples), int(meta.n_channels)),
+        )
+
+    @property
+    def n_samples(self) -> int:
+        return int(self.meta.n_samples)
+
+    @property
+    def n_channels(self) -> int:
+        return int(self.meta.n_channels)
+
+    def read(self, start_frame: int, end_frame: int, channels) -> tuple[np.ndarray, dict]:
+        channels = np.asarray(list(channels), dtype=int)
+        if channels.size > VOLTAGE_MAX_CHANNELS:
+            raise ValueError(
+                f"voltage read requested {channels.size} channels, over the cap of "
+                f"{VOLTAGE_MAX_CHANNELS}"
+            )
+        if channels.size and (channels.min() < 0 or channels.max() >= self.n_channels):
+            raise ValueError("voltage read requested a channel outside the recording")
+        clipped_start = max(0, int(start_frame))
+        clipped_end = min(self.n_samples, int(end_frame))
+        clip = {
+            "clipped_start_frames": int(clipped_start - int(start_frame)),
+            "clipped_end_frames": int(int(end_frame) - clipped_end),
+        }
+        if clipped_end <= clipped_start:
+            return np.empty((0, channels.size), dtype=np.float32), clip
+        block = np.asarray(self._map[clipped_start:clipped_end, :][:, channels], dtype=np.float32)
+        return block * float(self.meta.gain_uv_per_count), clip
+
+
+def open_voltage_source(
+    sort_cfg: SortConfig,
+) -> tuple[BoundedVoltageReader | None, VoltageMeta | None, str | None]:
+    """Resolve one sort's OWN raw voltage, or say why there is none.
+
+    A sort's voltage comes from its own recording folder or not at all: the
+    prescription's `unavailable` is a permitted, conclusion-weakening outcome,
+    and substituting another sort's recording would fabricate the evidence.
+    The source offset comes from the verified config field, never from a
+    filename.
+    """
+    recording = Path(sort_cfg.source_recording)
+    manifest = recording / "rescue_recording_manifest.json"
+    binary = recording / "binary.json"
+    if manifest.exists():
+        payload = json.loads(manifest.read_text())
+        dtype = str(payload.get("dtype", "int16"))
+        n_samples = _exact_int_scalar(payload["num_samples"], "recording num_samples")
+        n_channels = _exact_int_scalar(payload["num_channels"], "recording num_channels")
+        gain = float(payload.get("gain_uv_per_count", 1.0))
+        view = "rescue recording (conditioned voltage the sorter consumed)"
+    elif binary.exists():
+        payload = json.loads(binary.read_text())["kwargs"]
+        dtype = str(payload.get("dtype", "int16")).lstrip("<>|")
+        n_channels = _exact_int_scalar(payload["num_channels"], "recording num_channels")
+        gain_values = payload.get("gain_to_uV")
+        gain = float(np.asarray(gain_values).reshape(-1)[0]) if gain_values is not None else 1.0
+        n_samples = 0
+        view = "spikeinterface binary recording folder"
+    else:
+        return None, None, (
+            f"{recording} carries no recognisable recording manifest, so this sort has no "
+            "voltage view; it is never substituted from another sort"
+        )
+
+    candidates = sorted(recording.glob("*.raw")) + sorted(recording.glob("*.dat"))
+    if not candidates:
+        return None, None, (
+            f"no raw voltage file remains in {recording} (the sorter input was deleted after "
+            "sorting); voltage evidence is unavailable for this sort and is never reconstructed"
+        )
+    path = candidates[0]
+    itemsize = np.dtype(dtype).itemsize
+    if not n_samples:
+        n_samples = int(path.stat().st_size // (itemsize * n_channels))
+    meta = VoltageMeta(
+        path=str(path), dtype=dtype, n_samples=int(n_samples), n_channels=int(n_channels),
+        gain_uv_per_count=gain, selected_start_sample=int(sort_cfg.selected_start_sample),
+        view=view,
+    )
+    return BoundedVoltageReader(path, meta), meta, None
+
+
+def select_voltage_review_cases(payload: dict[str, Any]) -> list[str]:
+    """The at-most-two highest-ranked failure cases and their controls.
+
+    Rank is the freeze's own rank; nothing is re-ranked here. A control
+    "corresponds" to a failure case by being its sort's control, which is how
+    selection chose it (its span is matched to that sort's first failure span).
+    """
+    failures = [c for c in payload.get("cases", []) if c.get("role") == "failure"]
+    failures = sorted(failures, key=lambda c: (int(c.get("rank", 0)), str(c["case_id"])))
+    chosen = failures[:VOLTAGE_MAX_REVIEW_FAILURE_CASES]
+    sorts = {str(c["sort_id"]) for c in chosen}
+    controls = [
+        c for c in payload.get("cases", [])
+        if c.get("role") == "control" and str(c["sort_id"]) in sorts
+    ]
+    return [str(c["case_id"]) for c in chosen + controls]
+
+
+def _evenly_spaced(indices: np.ndarray, cap: int) -> np.ndarray:
+    """At most ``cap`` evenly spaced picks, deterministically."""
+    indices = np.asarray(indices)
+    if indices.size <= cap:
+        return indices
+    picks = np.linspace(0, indices.size - 1, cap).round().astype(int)
+    return indices[np.unique(picks)]
+
+
+def freeze_review_channels(
+    case: dict[str, Any], curated: CuratedArrays, positions: np.ndarray | None,
+    geometry: np.ndarray | None, n_channels: int,
+) -> tuple[np.ndarray | None, int | None, str | None]:
+    """The frozen channel set: the peak channel of the REFERENCE windows, plus
+    its nearest neighbours by probe geometry, capped at 16.
+
+    Frozen from the reference windows and reused unchanged for the failing
+    windows -- recomputing it there would follow the unit and hide exactly the
+    displacement this review is looking for.
+    """
+    if positions is None or geometry is None:
+        return None, None, "per-spike depth or probe geometry was unavailable"
+    if positions.shape[0] != curated.times.size:
+        return None, None, "spike_positions.npy is not aligned with the curated table"
+    cluster_positions = np.flatnonzero(curated.clusters == int(case["cluster_id"]))
+    by_role = _window_event_slices(case, curated.times[cluster_positions])
+    reference_spans = by_role.get("reference") or by_role.get("control") or []
+    if not reference_spans:
+        return None, None, "this case has no reference windows to freeze a channel set from"
+    depths = np.asarray(positions[cluster_positions, 1], dtype=float)
+    reference_depth = float(np.median(_role_values(depths, reference_spans)))
+    if not math.isfinite(reference_depth):
+        return None, None, "the reference windows carry no finite depth"
+    peak = int(np.argmin(np.abs(np.asarray(geometry[:, 1], dtype=float) - reference_depth)))
+    order = np.argsort(np.abs(np.asarray(geometry[:, 1], dtype=float) - geometry[peak, 1]),
+                       kind="stable")
+    keep = np.sort(order[:min(VOLTAGE_MAX_CHANNELS, n_channels)])
+    return keep, peak, None
+
+
+def review_case_voltage(
+    case: dict[str, Any], curated: CuratedArrays, reader, meta: VoltageMeta,
+    positions: np.ndarray | None, geometry: np.ndarray | None, fs: float,
+    c: EvidenceConstants,
+) -> dict[str, Any]:
+    """Bounded voltage review for one case.
+
+    Per window: at most 100 evenly spaced ASSIGNED events, read on the frozen
+    channel set only, plus one fixed 50 ms continuous excerpt centred in the
+    window. Waveforms are NOT recentred -- recentring would conceal the
+    displacement this review exists to show. Every read is a bounded chunk and
+    every clipped margin is reported.
+
+    The verdict rests on one declared, frozen indicator (the fraction of read
+    samples at or beyond the saturation threshold). "Visibly alters the
+    waveform" is a human judgement this audit does not make; the panel is
+    rendered so a person can make it.
+    """
+    channels, peak, reason = freeze_review_channels(
+        case, curated, positions, geometry, reader.n_channels,
+    )
+    if channels is None:
+        return {
+            "verdict": VERDICT_UNAVAILABLE,
+            "observation": "no voltage was read",
+            "limitations": f"channel set could not be frozen: {reason}",
+            "extraction": {"reason_unavailable": reason},
+        }
+
+    cluster_positions = np.flatnonzero(curated.clusters == int(case["cluster_id"]))
+    times = curated.times[cluster_positions]
+    offset = int(meta.selected_start_sample)
+    half = max(1, int(round(VOLTAGE_WAVEFORM_HALF_MS * 1e-3 * fs)))
+    excerpt_half = max(1, int(round(VOLTAGE_EXCERPT_MS * 1e-3 * fs / 2)))
+
+    per_window: list[dict[str, Any]] = []
+    clipped_total = {"clipped_start_frames": 0, "clipped_end_frames": 0}
+    saturated_samples = 0
+    total_samples = 0
+
+    for window in case.get("windows", []):
+        i0, i1 = int(window["i0"]), int(window["i1"])
+        event_indices = _evenly_spaced(np.arange(i0, i1 + 1), VOLTAGE_MAX_EVENTS_PER_WINDOW)
+        waveforms = []
+        for index in event_indices:
+            centre = int(times[index]) + offset
+            block, clip = reader.read(centre - half, centre + half, channels)
+            for key in clipped_total:
+                clipped_total[key] += clip[key]
+            if block.shape[0] == 2 * half:
+                waveforms.append(block)
+            total_samples += int(block.size)
+            saturated_samples += int(np.count_nonzero(
+                np.abs(block) >= c.voltage_saturation_uv
+            ))
+        stack = np.stack(waveforms) if waveforms else np.empty((0, 2 * half, channels.size))
+
+        centre_frame = int(times[(i0 + i1) // 2]) + offset
+        excerpt, excerpt_clip = reader.read(
+            centre_frame - excerpt_half, centre_frame + excerpt_half, channels,
+        )
+        for key in clipped_total:
+            clipped_total[key] += excerpt_clip[key]
+
+        per_window.append({
+            "window_role": window.get("window_role"),
+            "window_ordinal": int(window.get("position", len(per_window))),
+            "n_events_read": int(len(waveforms)),
+            "n_events_requested": int(event_indices.size),
+            # peak-to-peak per event on the frozen channels, NOT recentred
+            "median_peak_to_peak_uv": (
+                float(np.median(stack.max(axis=1) - stack.min(axis=1))) if stack.size else None
+            ),
+            "median_waveform": stack.mean(axis=0) if stack.size else None,
+            "excerpt": excerpt,
+            "excerpt_centre_frame": centre_frame,
+        })
+
+    saturated_fraction = (saturated_samples / total_samples) if total_samples else 0.0
+    reference = [w for w in per_window if w["window_role"] in ("reference", "control")]
+    failing = [w for w in per_window if w["window_role"] == "failing"]
+
+    def _median_pp(rows):
+        values = [r["median_peak_to_peak_uv"] for r in rows if r["median_peak_to_peak_uv"]]
+        return float(np.median(values)) if values else None
+
+    ref_pp, fail_pp = _median_pp(reference), _median_pp(failing)
+    observation = (
+        f"{sum(w['n_events_read'] for w in per_window)} events read on {channels.size} frozen "
+        f"channels around peak channel {peak}; "
+        f"{100 * saturated_fraction:.3f}% of read samples at or beyond "
+        f"{c.voltage_saturation_uv:.0f} uV"
+    )
+    if ref_pp is not None and fail_pp is not None:
+        observation += (
+            f"; median peak-to-peak {ref_pp:.1f} uV reference vs {fail_pp:.1f} uV failing"
+        )
+
+    supported = saturated_fraction >= c.voltage_saturated_frac_material
+    limitations = (
+        "excerpts and waveform distributions illustrate evidence; they do not estimate recall "
+        "or a false-positive rate. Waveforms are not recentred. 'Artifacts or voltage "
+        "processing visibly alter the waveform' is a human judgement this audit does not "
+        "automate: only the frozen saturation indicator is scored"
+    )
+    return {
+        "verdict": VERDICT_SUPPORTED if supported else VERDICT_UNSUPPORTED,
+        "observation": observation,
+        "limitations": limitations,
+        "per_window": per_window,
+        "channels": channels,
+        "extraction": {
+            "voltage_view": meta.view,
+            "voltage_path": meta.path,
+            "dtype": meta.dtype,
+            "gain_uv_per_count": meta.gain_uv_per_count,
+            "filter_margins": "none applied; the stored view is read as the sorter consumed it",
+            "selected_start_sample_offset": offset,
+            "frozen_channels": [int(x) for x in channels],
+            "peak_channel": int(peak),
+            "channel_freeze_rule": (
+                "peak channel of the REFERENCE windows by median depth, plus nearest "
+                "neighbours by probe geometry, reused unchanged for the failing windows"
+            ),
+            "max_events_per_window": VOLTAGE_MAX_EVENTS_PER_WINDOW,
+            "max_channels": VOLTAGE_MAX_CHANNELS,
+            "waveform_half_ms": VOLTAGE_WAVEFORM_HALF_MS,
+            "excerpt_ms": VOLTAGE_EXCERPT_MS,
+            "events_recentred": False,
+            "clipped_margins_frames": clipped_total,
+            "saturation_threshold_uv": c.voltage_saturation_uv,
+            "saturated_sample_fraction": saturated_fraction,
+        },
+    }
+
+
+def render_voltage_panel(case_id: str, review: dict[str, Any], fs: float, out_path: Path) -> Path:
+    """Before/during waveforms on the frozen channels, plus one 50 ms excerpt."""
+    import matplotlib
+    matplotlib.use("Agg", force=True)
+    import matplotlib.pyplot as plt
+
+    windows = review.get("per_window") or []
+    fig, axes = plt.subplots(2, max(len(windows), 1), figsize=(3.0 * max(len(windows), 1), 6.4),
+                             squeeze=False)
+    for column, window in enumerate(windows):
+        ax_wave = axes[0][column]
+        waveform = window.get("median_waveform")
+        if waveform is not None:
+            time_ms = (np.arange(waveform.shape[0]) - waveform.shape[0] / 2) / fs * 1e3
+            ax_wave.plot(time_ms, waveform, lw=0.7)
+        ax_wave.set_title(
+            f"w{window['window_ordinal']} {window['window_role']}\n"
+            f"{window['n_events_read']} events, not recentred", fontsize=7)
+        ax_wave.set_xlabel("ms", fontsize=7)
+        if column == 0:
+            ax_wave.set_ylabel("uV (frozen channels)", fontsize=7)
+        ax_wave.tick_params(labelsize=6)
+
+        ax_excerpt = axes[1][column]
+        excerpt = window.get("excerpt")
+        if excerpt is not None and getattr(excerpt, "size", 0):
+            span_ms = np.arange(excerpt.shape[0]) / fs * 1e3
+            offsets = np.arange(excerpt.shape[1]) * (np.ptp(excerpt) or 1.0)
+            ax_excerpt.plot(span_ms, excerpt + offsets, lw=0.4, color="0.25")
+        ax_excerpt.set_title(f"{VOLTAGE_EXCERPT_MS:.0f} ms excerpt", fontsize=7)
+        ax_excerpt.set_xlabel("ms", fontsize=7)
+        ax_excerpt.tick_params(labelsize=6)
+        ax_excerpt.set_yticks([])
+
+    fig.suptitle(
+        f"{case_id} -- bounded voltage review\n"
+        "excerpts illustrate evidence; they do not estimate recall or a false-positive rate",
+        fontsize=9,
+    )
+    fig.tight_layout(rect=(0, 0, 1, 0.93))
+    out_path = Path(out_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=110)
+    plt.close(fig)
+    return out_path
 
 
 # --------------------------------------------------------------------------- #
@@ -3491,6 +3895,8 @@ def build_case_evidence(
     case_windows: pd.DataFrame, summaries: list[dict[str, Any]], out_root: Path,
     *, evidence_constants: EvidenceConstants, render_figures: bool = True,
     voltage_by_case: dict[str, dict[str, Any]] | None = None,
+    review_voltage: bool = True,
+    voltage_reader_factory=None,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
     """Classify every frozen case and render its panel.
 
@@ -3500,14 +3906,19 @@ def build_case_evidence(
     permitted to be absent: the affected category degrades to ``unavailable``
     with the reason recorded.
     """
-    voltage_by_case = voltage_by_case or {}
+    voltage_by_case = dict(voltage_by_case or {})
     by_case_id = {s["case_id"]: s for s in summaries}
+    review_ids = set(select_voltage_review_cases(payload)) if review_voltage else set()
     rows: list[dict[str, Any]] = []
     extras: dict[str, Any] = {"spike_positions_sha256": {}, "full_clu_sha256": {},
                               "unavailable": {}}
     figures_dir = Path(out_root) / "figures"
 
     per_sort_extra: dict[str, tuple] = {}
+    per_sort_geometry: dict[str, np.ndarray | None] = {}
+    voltage_sources: dict[str, tuple] = {}
+    extras["voltage"] = {"reviewed_case_ids": sorted(review_ids), "sources": {},
+                         "extraction": {}}
     for sort_id in sorted({str(c["sort_id"]) for c in payload.get("cases", [])}):
         curated_dir = Path(cfg.by_id(sort_id).curated)
         positions, pos_sha, pos_reason = read_attested_spike_positions(sort_id, curated_dir)
@@ -3517,11 +3928,29 @@ def build_case_evidence(
             extras["spike_positions_sha256"][sort_id] = pos_sha
         if lab_sha:
             extras["full_clu_sha256"][sort_id] = lab_sha
-        if pos_reason or lab_reason:
+        geometry, geo_sha, geo_reason = read_attested_geometry(cfg.by_id(sort_id))
+        per_sort_geometry[sort_id] = geometry
+        if geo_sha:
+            extras.setdefault("channel_geometry_sha256", {})[sort_id] = geo_sha
+        if pos_reason or lab_reason or geo_reason:
             extras["unavailable"][sort_id] = {
-                k: v for k, v in
-                (("spike_positions.npy", pos_reason), ("full_clu.npy", lab_reason)) if v
+                k: v for k, v in (("spike_positions.npy", pos_reason),
+                                  ("full_clu.npy", lab_reason),
+                                  ("channel_positions.npy", geo_reason)) if v
             }
+
+    if review_ids:
+        for sort_id in sorted({str(c["sort_id"]) for c in payload.get("cases", [])
+                               if str(c["case_id"]) in review_ids}):
+            factory = voltage_reader_factory or open_voltage_source
+            reader, meta, reason = factory(cfg.by_id(sort_id))
+            voltage_sources[sort_id] = (reader, meta, reason)
+            extras["voltage"]["sources"][sort_id] = (
+                {"unavailable": reason} if reader is None
+                else {"path": meta.path, "view": meta.view, "dtype": meta.dtype,
+                      "gain_uv_per_count": meta.gain_uv_per_count,
+                      "selected_start_sample": meta.selected_start_sample}
+            )
 
     for case in payload.get("cases", []):
         case_id = str(case["case_id"])
@@ -3537,6 +3966,34 @@ def build_case_evidence(
             {"full_st.npy": curated.full_st, "kept_spikes.npy": curated.kept},
             full_labels=labels, labels_unavailable=labels_reason,
         )
+        if case_id in review_ids and case_id not in voltage_by_case:
+            reader, meta, reason = voltage_sources.get(sort_id, (None, None, None))
+            if reader is None:
+                voltage_by_case[case_id] = {
+                    "verdict": VERDICT_UNAVAILABLE,
+                    "observation": "no raw voltage exists for this sort",
+                    "limitations": (
+                        f"{reason}; this lowers the case's conclusion strength and is a "
+                        "permitted outcome -- voltage is never reconstructed, and another "
+                        "sort's recording is never substituted"
+                    ),
+                    "extraction": {"reason_unavailable": reason},
+                }
+            else:
+                review = review_case_voltage(
+                    case, curated, reader, meta, positions,
+                    per_sort_geometry.get(sort_id),
+                    float(cfg.by_id(sort_id).sampling_frequency_hz), evidence_constants,
+                )
+                voltage_by_case[case_id] = review
+                if render_figures and review.get("per_window"):
+                    render_voltage_panel(
+                        case_id, review, float(cfg.by_id(sort_id).sampling_frequency_hz),
+                        figures_dir / f"{case_id}_voltage.png",
+                    )
+            extras["voltage"]["extraction"][case_id] = voltage_by_case[case_id].get(
+                "extraction", {})
+
         category_rows, reading = classify_case_evidence(
             case, summary, shift, lineage, evidence_constants,
             voltage=voltage_by_case.get(case_id),
@@ -3654,6 +4111,16 @@ def run_inspect(selection_path: Path, out_root: Path) -> dict[str, Any]:
             "figures_dir": str(out_root / "figures"),
             "evidence_constants": evidence_constants.to_dict(),
             "evidence_extra_inputs": evidence_extras,
+            "voltage_review": {
+                "caps": {
+                    "max_failure_cases": VOLTAGE_MAX_REVIEW_FAILURE_CASES,
+                    "max_events_per_window": VOLTAGE_MAX_EVENTS_PER_WINDOW,
+                    "max_channels": VOLTAGE_MAX_CHANNELS,
+                    "excerpt_ms": VOLTAGE_EXCERPT_MS,
+                    "waveform_half_ms": VOLTAGE_WAVEFORM_HALF_MS,
+                },
+                **evidence_extras.get("voltage", {}),
+            },
             "case_evidence_readings": {
                 row["case_id"]: row["case_evidence_reading"]
                 for row in case_evidence.to_dict("records")
@@ -3683,8 +4150,13 @@ def run_inspect(selection_path: Path, out_root: Path) -> dict[str, Any]:
                 "majority across metrics. `unavailable` and `not_attempted` record a missing "
                 "prerequisite and are not evidence of absence.",
                 "decision.md ends with exactly one nomination or `insufficient_evidence`.",
-                "The bounded voltage review is a later layer; until it runs, every case's "
-                "voltage_integrity row is `unavailable` with that reason recorded.",
+                "The bounded voltage review covers at most the two highest-ranked failure "
+                "cases and their corresponding controls, reads at most 100 evenly spaced "
+                "assigned events per window on at most 16 channels frozen from the reference "
+                "windows, and never materializes a full-session voltage array.",
+                "A sort with no raw voltage on disk yields `unavailable` with the reason "
+                "recorded; voltage is never reconstructed and another sort's recording is "
+                "never substituted.",
             ],
         }
     except Exception as exc:
