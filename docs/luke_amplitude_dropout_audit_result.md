@@ -221,6 +221,13 @@ attempted.
    would invalidate comparison with the three runs on record, and it must not
    be made in order to obtain a different answer from them.
 
+   **Step 2 does not wait on step 3, and does not depend on its answer.** The
+   steer to identity handling is built from two *exclusions* — flat depth, and
+   no rows dropped by `kept_spikes` — not from `motion_amplitude_change`
+   reaching a supported verdict. Both exclusions hold whatever this category
+   turns out to mean, or should have been called. A later reader should not
+   infer that the steer rested on the verdict that step 3 questions.
+
 ## Related records
 
 - [Prescription](amplitude_completeness_next_step_prescription.md)
