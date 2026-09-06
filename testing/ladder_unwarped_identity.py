@@ -1,10 +1,43 @@
 """Unwarped motion-aware identity handling (Option B candidate).
 
-Leaves accepted raw voltage, spike times, and original cluster IDs unchanged.
-Partition spike observations into overlapping time epochs, computes tissue-frame
-depths using motion coordinates, generates link candidates across adjacent epochs
-gated by spatial proximity, refractory cleanliness, and rate/amplitude compatibility,
-solves longitudinal identity tracks, and emits reversible track mappings.
+This is a **retained-sort replay**, not a re-sort. The accepted recording, the
+spike times, the original cluster labels and the production amplitudes are read
+back unchanged; nothing here detects, fits templates, or writes into a
+production output. What it does is re-group *existing* spike rows into
+longitudinal identity families:
+
+1. partition the retained spike rows into overlapping time epochs on a grid
+   anchored to the recording clock;
+2. summarise each ``(epoch, original cluster)`` observation -- spike rows,
+   tissue-frame depth, production amplitude, and a mean waveform expressed on
+   the probe's **physical channels**;
+3. propose links between observations in adjacent epochs, gated on spatial
+   proximity, amplitude ratio, and waveform cosine over a shared physical
+   channel neighbourhood;
+4. keep only links that are exclusive in *both* directions and unambiguous on
+   *both* sides -- anything contested is left separate rather than guessed;
+5. union the surviving links into families, assign every original spike **row**
+   to exactly one family (deduplicating the overlap region by original row id,
+   never by timestamp), and re-check refractory cleanliness on the *exported*
+   train that assignment actually produces, pruning links until it is clean.
+
+Three properties this module is written to hold, each with a known-answer
+fixture in ``testing/test_ladder_unwarped_identity.py``:
+
+* **Dedup is by original event identity.** Two distinct spikes may share a
+  sample; collapsing on timestamps would delete one of them and hide the
+  coincidence from every downstream contamination check. Overlapping epochs are
+  reconciled on ``row_id``, and simultaneous distinct rows both survive.
+* **Exclusivity runs both ways.** A source observation may claim at most one
+  destination and a destination may be claimed by at most one source.
+* **Refractory is validated on the exported train.** Not on an epoch-masked
+  union, not on an anchor: on the same rows the export writes, under the same
+  overlap-assignment rule.
+
+Motion is never inferred. :class:`MotionDeclaration` has no default: a caller
+either supplies a qualified field's displacement or declares its absence
+explicitly, and "declared absent" is recorded as a limitation on the run rather
+than passed off as zero motion.
 """
 
 from __future__ import annotations
@@ -12,36 +45,230 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 
 
-UNWARPED_IDENTITY_SCHEMA = "luke-unwarped-identity-v1"
+UNWARPED_IDENTITY_SCHEMA = "luke-unwarped-identity-v2"
 MANIFEST_NAME = "unwarped_identity_manifest.json"
 
+#: Motion handling is a declared choice, never a fallback.
+MOTION_QUALIFIED_FIELD = "qualified_field"
+MOTION_DECLARED_ABSENT = "declared_absent"
+MOTION_MODES = (MOTION_QUALIFIED_FIELD, MOTION_DECLARED_ABSENT)
 
-@dataclass
+#: Why a candidate link was refused. Recorded per rejected pair so a run that
+#: links nothing says which gate did it rather than "no links".
+REJECTION_REASONS = (
+    "spatial_distance",
+    "amplitude_ratio",
+    "waveform_cosine",
+    "waveform_unavailable",
+    "epoch_pair_refractory",
+    "ambiguous_source",
+    "ambiguous_destination",
+    "source_already_claimed",
+    "destination_already_claimed",
+)
+
+
+class IdentityRefusal(ValueError):
+    """The replay refuses to proceed. Never caught internally."""
+
+
+# --------------------------------------------------------------------------- #
+# configuration
+# --------------------------------------------------------------------------- #
+@dataclass(frozen=True)
 class UnwarpedIdentityConfig:
+    """Link-gate constants. Mirrors ``candidate.settings.value
+    .resolved_configuration.identity_link`` in the delivery contract; the
+    runner builds this *from* the contract rather than from a CLI flag."""
+
     epoch_duration_s: float = 120.0
     epoch_overlap_s: float = 30.0
-    max_spatial_distance_um: float = 30.0
-    max_refractory_violation_fraction: float = 0.01
-    max_amplitude_ratio: float = 2.0
-    ambiguity_threshold_ratio: float = 0.85
+    epoch_grid_origin_s: float = 0.0
     min_spikes_per_epoch: int = 10
+    max_spatial_distance_um: float = 30.0
+    max_amplitude_ratio: float = 2.0
+    min_waveform_cosine: float = 0.9
+    waveform_channel_neighbourhood_um: float = 60.0
+    ambiguity_threshold_ratio: float = 0.85
+    max_refractory_violation_fraction: float = 0.01
     refractory_period_ms: float = 1.5
+
+    def __post_init__(self) -> None:
+        if not self.epoch_duration_s > self.epoch_overlap_s >= 0:
+            raise IdentityRefusal(
+                "epoch_duration_s must exceed epoch_overlap_s and neither may be negative; "
+                f"got {self.epoch_duration_s} and {self.epoch_overlap_s}"
+            )
+        if not 0.0 <= self.min_waveform_cosine <= 1.0:
+            raise IdentityRefusal("min_waveform_cosine must lie in [0, 1]")
+        if not self.max_amplitude_ratio >= 1.0:
+            raise IdentityRefusal("max_amplitude_ratio must be >= 1")
+        if not 0.0 < self.ambiguity_threshold_ratio <= 1.0:
+            raise IdentityRefusal("ambiguity_threshold_ratio must lie in (0, 1]")
+        if self.refractory_period_ms <= 0:
+            raise IdentityRefusal("refractory_period_ms must be positive")
+
+    @property
+    def epoch_step_s(self) -> float:
+        return self.epoch_duration_s - self.epoch_overlap_s
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
     def digest(self) -> str:
-        s = json.dumps(self.to_dict(), sort_keys=True, separators=(",", ":"))
-        return hashlib.sha256(s.encode()).hexdigest()
+        return hashlib.sha256(
+            json.dumps(self.to_dict(), sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
 
 
+@dataclass(frozen=True)
+class MotionDeclaration:
+    """An explicit statement of what motion this arm applied.
+
+    There is no default and no fallback. ``qualified_field`` requires a
+    per-spike displacement the caller obtained from a
+    ``qualified-motion-field-v1`` artifact plus that artifact's identity;
+    ``declared_absent`` means the arm ran unregistered, is not motion-aware,
+    and says so in its own manifest.
+    """
+
+    mode: str
+    displacement_um: np.ndarray | None = None
+    field_identity: dict[str, Any] = field(default_factory=dict)
+    rationale: str = ""
+
+    def __post_init__(self) -> None:
+        if self.mode not in MOTION_MODES:
+            raise IdentityRefusal(f"motion mode must be one of {MOTION_MODES}, got {self.mode!r}")
+        if self.mode == MOTION_QUALIFIED_FIELD:
+            if self.displacement_um is None:
+                raise IdentityRefusal(
+                    "motion mode 'qualified_field' requires a per-spike displacement from an "
+                    "identified qualified-motion-field-v1 artifact. Absent motion is never "
+                    "silently substituted with zero displacement."
+                )
+            if not self.field_identity.get("sha256"):
+                raise IdentityRefusal(
+                    "motion mode 'qualified_field' requires the field's sha256 in field_identity: "
+                    "a motion-aware arm must name the motion field it consumed."
+                )
+        elif self.displacement_um is not None:
+            raise IdentityRefusal(
+                "motion mode 'declared_absent' must not carry a displacement array; declare "
+                "'qualified_field' if a field was actually applied."
+            )
+
+    @property
+    def is_motion_aware(self) -> bool:
+        return self.mode == MOTION_QUALIFIED_FIELD
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "mode": self.mode,
+            "motion_aware": self.is_motion_aware,
+            "field_identity": dict(self.field_identity),
+            "rationale": self.rationale,
+        }
+
+
+# --------------------------------------------------------------------------- #
+# inputs
+# --------------------------------------------------------------------------- #
+@dataclass(frozen=True)
+class ReplayInput:
+    """The retained rows this replay regroups, on the recording clock.
+
+    ``row_id`` is the original 0-based index into the sort's
+    ``spike_times.npy``. It is the event identity everything downstream
+    deduplicates on; ``sample`` is a *measurement*, and two distinct rows are
+    allowed to share one.
+    """
+
+    row_id: np.ndarray
+    sample: np.ndarray
+    cluster: np.ndarray
+    depth_um: np.ndarray
+    amplitude: np.ndarray
+    template: np.ndarray
+    template_bank: np.ndarray
+    channel_positions_um: np.ndarray
+    fs_hz: float
+
+    def __post_init__(self) -> None:
+        n = self.row_id.size
+        for name in ("sample", "cluster", "depth_um", "amplitude", "template"):
+            arr = getattr(self, name)
+            if arr.ndim != 1 or arr.size != n:
+                raise IdentityRefusal(f"{name} must be a 1-D array of length {n}, got {arr.shape}")
+        if np.unique(self.row_id).size != n:
+            raise IdentityRefusal("row_id must be unique: it is the original event identity")
+        if not np.issubdtype(self.sample.dtype, np.integer):
+            raise IdentityRefusal(
+                "sample must be integer samples of the recording clock; converting to seconds "
+                "before this point loses the clock the export has to preserve"
+            )
+        if not np.all(np.isfinite(self.depth_um)):
+            raise IdentityRefusal(
+                "depth_um must be finite real depths. A zero-filled or missing depth array is a "
+                "refusal, not a depth of zero."
+            )
+        if not np.all(np.isfinite(self.amplitude)):
+            raise IdentityRefusal("amplitude must be finite")
+        if self.template_bank.ndim != 3:
+            raise IdentityRefusal(
+                "template_bank must be (n_templates, n_samples, n_channels) on the probe's "
+                "physical channels"
+            )
+        n_templates, _, n_channels = self.template_bank.shape
+        if self.template.size and (
+            int(self.template.min()) < 0 or int(self.template.max()) >= n_templates
+        ):
+            raise IdentityRefusal("template ids are out of range for template_bank")
+        if self.channel_positions_um.shape != (n_channels, 2):
+            raise IdentityRefusal(
+                f"channel_positions_um must be ({n_channels}, 2) to give the template bank a "
+                "physical channel representation"
+            )
+        if not self.fs_hz > 0:
+            raise IdentityRefusal("fs_hz must be positive")
+
+    def seconds(self) -> np.ndarray:
+        """Seconds derived from the clock, never stored in place of it."""
+        return self.sample.astype(np.float64) / float(self.fs_hz)
+
+
+# --------------------------------------------------------------------------- #
+# refractory
+# --------------------------------------------------------------------------- #
+def refractory_violation_fraction(
+    samples: np.ndarray, fs_hz: float, refractory_period_ms: float
+) -> float:
+    """Fraction of consecutive intervals shorter than the refractory period.
+
+    Duplicated *timestamps* are preserved, so two distinct rows recorded at the
+    same sample contribute an interval of 0 and count as a violation. That is
+    the whole point: a merge that stacks simultaneous spikes must be visible
+    here rather than deduplicated out of sight.
+    """
+    samples = np.asarray(samples)
+    if samples.size <= 1:
+        return 0.0
+    ordered = np.sort(samples)
+    intervals_s = np.diff(ordered).astype(np.float64) / float(fs_hz)
+    threshold_s = refractory_period_ms / 1000.0
+    return float(np.count_nonzero(intervals_s < threshold_s) / intervals_s.size)
+
+
+# --------------------------------------------------------------------------- #
+# epoch observations
+# --------------------------------------------------------------------------- #
 @dataclass
 class EpochObservation:
     epoch_idx: int
@@ -52,483 +279,672 @@ class EpochObservation:
     firing_rate_hz: float
     mean_observed_depth_um: float
     mean_tissue_depth_um: float
-    mean_amplitude: float
-    refractory_violation_rate: float
+    median_amplitude: float
+    refractory_violation_fraction: float
+    peak_channel: int
+    #: Original row ids, ascending. Not written to CSV; the identity carrier.
+    row_ids: np.ndarray = field(default_factory=lambda: np.empty(0, dtype=np.int64))
+    #: Mean waveform on the probe's physical channels, (n_samples, n_channels).
+    mean_waveform: np.ndarray | None = None
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
+    @property
+    def key(self) -> tuple[int, int]:
+        return (self.epoch_idx, self.cluster_id)
+
+    def to_row(self) -> dict[str, Any]:
+        return {
+            k: v
+            for k, v in asdict(self).items()
+            if k not in ("row_ids", "mean_waveform")
+        }
 
 
+CSV_OBSERVATION_FIELDS = (
+    "epoch_idx",
+    "cluster_id",
+    "start_s",
+    "stop_s",
+    "num_spikes",
+    "firing_rate_hz",
+    "mean_observed_depth_um",
+    "mean_tissue_depth_um",
+    "median_amplitude",
+    "refractory_violation_fraction",
+    "peak_channel",
+)
+
+
+def epoch_bounds(epoch_idx: int, config: UnwarpedIdentityConfig) -> tuple[float, float]:
+    start = config.epoch_grid_origin_s + epoch_idx * config.epoch_step_s
+    return start, start + config.epoch_duration_s
+
+
+def epochs_covering(
+    interval_s: tuple[float, float], config: UnwarpedIdentityConfig
+) -> list[int]:
+    """Grid epochs lying wholly inside ``interval_s``.
+
+    The grid is anchored to the recording clock, not to the interval, so the
+    same spike lands in the same epoch index whichever bounded run reaches it.
+    Only whole epochs are used: a partial epoch would summarise a shorter span
+    and silently change every rate and count it feeds into a gate.
+    """
+    start, stop = float(interval_s[0]), float(interval_s[1])
+    if not stop > start:
+        raise IdentityRefusal(f"processing interval must have stop > start, got {interval_s!r}")
+    step, origin = config.epoch_step_s, config.epoch_grid_origin_s
+    first = int(np.ceil((start - origin) / step))
+    out: list[int] = []
+    idx = first
+    while True:
+        lo, hi = epoch_bounds(idx, config)
+        if lo < start:
+            idx += 1
+            continue
+        if hi > stop:
+            break
+        out.append(idx)
+        idx += 1
+    return out
+
+
+def _mean_waveform(
+    template_ids: np.ndarray, template_bank: np.ndarray
+) -> tuple[np.ndarray, int]:
+    """Count-weighted mean template on the full physical channel set."""
+    present, counts = np.unique(template_ids, return_counts=True)
+    weights = counts.astype(np.float64) / counts.sum()
+    waveform = np.tensordot(weights, template_bank[present], axes=(0, 0))
+    peak_to_peak = waveform.max(axis=0) - waveform.min(axis=0)
+    return waveform, int(np.argmax(peak_to_peak))
+
+
+def extract_epoch_observations(
+    inputs: ReplayInput,
+    epoch_indices: list[int],
+    tissue_depth_um: np.ndarray,
+    config: UnwarpedIdentityConfig,
+) -> list[EpochObservation]:
+    """Summarise every ``(epoch, original cluster)`` observation.
+
+    A row inside the overlap belongs to two observations here. That is
+    deliberate -- links are proposed between epochs, so the boundary rows have
+    to be visible in both -- and is reconciled once, on ``row_id``, in
+    :func:`assign_rows_to_families`.
+    """
+    seconds = inputs.seconds()
+    observations: list[EpochObservation] = []
+    for epoch_idx in epoch_indices:
+        lo, hi = epoch_bounds(epoch_idx, config)
+        in_epoch = np.flatnonzero((seconds >= lo) & (seconds < hi))
+        if in_epoch.size == 0:
+            continue
+        # group by cluster with one sort rather than one pass per cluster: on a
+        # full probe the latter is (clusters x spikes) and dominates the run
+        order = np.argsort(inputs.cluster[in_epoch], kind="stable")
+        in_epoch = in_epoch[order]
+        clusters_here = inputs.cluster[in_epoch]
+        boundaries = np.flatnonzero(np.diff(clusters_here)) + 1
+        for rows in np.split(in_epoch, boundaries):
+            if rows.size < config.min_spikes_per_epoch:
+                continue
+            cid = int(inputs.cluster[rows[0]])
+            waveform, peak_channel = _mean_waveform(
+                inputs.template[rows], inputs.template_bank
+            )
+            observations.append(
+                EpochObservation(
+                    epoch_idx=epoch_idx,
+                    cluster_id=int(cid),
+                    start_s=float(lo),
+                    stop_s=float(hi),
+                    num_spikes=int(rows.size),
+                    firing_rate_hz=float(rows.size / config.epoch_duration_s),
+                    mean_observed_depth_um=float(np.mean(inputs.depth_um[rows])),
+                    mean_tissue_depth_um=float(np.mean(tissue_depth_um[rows])),
+                    median_amplitude=float(np.median(inputs.amplitude[rows])),
+                    refractory_violation_fraction=refractory_violation_fraction(
+                        inputs.sample[rows], inputs.fs_hz, config.refractory_period_ms
+                    ),
+                    peak_channel=peak_channel,
+                    row_ids=np.sort(inputs.row_id[rows]),
+                    mean_waveform=waveform,
+                )
+            )
+    return observations
+
+
+# --------------------------------------------------------------------------- #
+# waveform compatibility on a common physical channel representation
+# --------------------------------------------------------------------------- #
+def channel_neighbourhoods(
+    channel_positions_um: np.ndarray, neighbourhood_um: float
+) -> np.ndarray:
+    """``(n_channels, n_channels)`` mask of which channels sit near which.
+
+    Precomputed once per run: the shared channel set is asked for on every
+    candidate pair, and on a 384-site probe recomputing it from coordinates
+    each time is the difference between seconds and hours.
+    """
+    positions = np.asarray(channel_positions_um, dtype=np.float64)
+    distances = np.linalg.norm(positions[:, None, :] - positions[None, :, :], axis=2)
+    return distances <= neighbourhood_um
+
+
+def shared_physical_channels(
+    peak_a: int,
+    peak_b: int,
+    channel_positions_um: np.ndarray,
+    neighbourhood_um: float,
+    neighbourhoods: np.ndarray | None = None,
+) -> np.ndarray:
+    """Channels physically near either peak, as indices into the full probe.
+
+    Two clusters generally carry their energy on different channel subsets, and
+    each sort's own sparse channel list is indexed differently. Comparing them
+    on a neighbourhood defined by ``channel_positions_um`` -- micrometres on the
+    probe -- is what makes the two waveforms the same kind of object.
+    """
+    if neighbourhoods is None:
+        neighbourhoods = channel_neighbourhoods(channel_positions_um, neighbourhood_um)
+    return np.flatnonzero(neighbourhoods[peak_a] | neighbourhoods[peak_b])
+
+
+def waveform_cosine(
+    obs_a: EpochObservation,
+    obs_b: EpochObservation,
+    channel_positions_um: np.ndarray,
+    neighbourhood_um: float,
+    neighbourhoods: np.ndarray | None = None,
+) -> float | None:
+    """Cosine similarity of two mean waveforms on their shared channel set.
+
+    ``None`` when either waveform is missing or has no energy on the shared
+    channels: unavailable waveform evidence refuses the link, it does not pass
+    it.
+    """
+    if obs_a.mean_waveform is None or obs_b.mean_waveform is None:
+        return None
+    channels = shared_physical_channels(
+        obs_a.peak_channel, obs_b.peak_channel, channel_positions_um, neighbourhood_um,
+        neighbourhoods,
+    )
+    if channels.size == 0:
+        return None
+    a = obs_a.mean_waveform[:, channels].ravel()
+    b = obs_b.mean_waveform[:, channels].ravel()
+    norm = float(np.linalg.norm(a) * np.linalg.norm(b))
+    if not norm > 0:
+        return None
+    return float(np.dot(a, b) / norm)
+
+
+# --------------------------------------------------------------------------- #
+# candidate links
+# --------------------------------------------------------------------------- #
 @dataclass
-class AcceptedLink:
+class CandidateLink:
     epoch_a: int
     cluster_a: int
     epoch_b: int
     cluster_b: int
-    spatial_dist_um: float
+    spatial_distance_um: float
     amplitude_ratio: float
-    union_refractory_rate: float
+    waveform_cosine: float
+    pair_refractory_fraction: float
     link_score: float
+    accepted: bool = False
+    rejected_because: str = ""
 
-    def to_dict(self) -> dict[str, Any]:
+    @property
+    def source(self) -> tuple[int, int]:
+        return (self.epoch_a, self.cluster_a)
+
+    @property
+    def destination(self) -> tuple[int, int]:
+        return (self.epoch_b, self.cluster_b)
+
+    def to_row(self) -> dict[str, Any]:
         return asdict(self)
 
 
-def compute_refractory_violation_rate(
-    spike_times_s: np.ndarray, refractory_period_ms: float = 1.5
-) -> float:
-    """Fraction of inter-spike intervals < refractory_period_ms."""
-    if spike_times_s.size <= 1:
-        return 0.0
-    sorted_times = np.sort(spike_times_s)
-    isis_s = np.diff(sorted_times)
-    refractory_threshold_s = refractory_period_ms / 1000.0
-    violations = np.sum(isis_s < refractory_threshold_s)
-    return float(violations / len(isis_s))
+CSV_LINK_FIELDS = tuple(CandidateLink.__annotations__.keys())
 
 
-def extract_epoch_observations(
-    spike_times_s: np.ndarray,
-    spike_clusters: np.ndarray,
-    spike_depths_um: np.ndarray,
-    tissue_depths_um: np.ndarray,
-    recording_duration_s: float,
-    config: UnwarpedIdentityConfig,
-    spike_amplitudes: np.ndarray | None = None,
-) -> list[EpochObservation]:
-    """Partition spikes into overlapping epochs and compute per-cluster summary metrics."""
-    times = np.asarray(spike_times_s, dtype=np.float64)
-    clusters = np.asarray(spike_clusters, dtype=np.int64)
-    obs_depths = np.asarray(spike_depths_um, dtype=np.float64)
-    tiss_depths = np.asarray(tissue_depths_um, dtype=np.float64)
-    amps = np.abs(np.asarray(spike_amplitudes, dtype=np.float64)) if spike_amplitudes is not None else np.ones_like(times)
-
-    step_s = config.epoch_duration_s - config.epoch_overlap_s
-    if step_s <= 0:
-        raise ValueError("epoch_duration_s must be strictly greater than epoch_overlap_s")
-
-    num_epochs = max(1, int(np.ceil((max(recording_duration_s, times.max() if times.size else 0) - config.epoch_overlap_s) / step_s)))
-    
-    unique_clusters = np.unique(clusters)
-    observations: list[EpochObservation] = []
-
-    for ep_idx in range(num_epochs):
-        ep_start = ep_idx * step_s
-        ep_stop = ep_start + config.epoch_duration_s
-        mask_ep = (times >= ep_start) & (times < ep_stop)
-
-        if not np.any(mask_ep):
-            continue
-
-        times_ep = times[mask_ep]
-        clusters_ep = clusters[mask_ep]
-        obs_depths_ep = obs_depths[mask_ep]
-        tiss_depths_ep = tiss_depths[mask_ep]
-        amps_ep = amps[mask_ep]
-
-        for cid in unique_clusters:
-            mask_c = clusters_ep == cid
-            n_spikes = int(np.sum(mask_c))
-            if n_spikes < config.min_spikes_per_epoch:
-                continue
-
-            c_times = times_ep[mask_c]
-            c_obs_d = obs_depths_ep[mask_c]
-            c_tiss_d = tiss_depths_ep[mask_c]
-            c_amps = amps_ep[mask_c]
-
-            fr = float(n_spikes / config.epoch_duration_s)
-            mean_obs_d = float(np.mean(c_obs_d))
-            mean_tiss_d = float(np.mean(c_tiss_d))
-            mean_amp = float(np.mean(c_amps)) if c_amps.size else 1.0
-            rv_rate = compute_refractory_violation_rate(c_times, config.refractory_period_ms)
-
-            observations.append(
-                EpochObservation(
-                    epoch_idx=ep_idx,
-                    cluster_id=int(cid),
-                    start_s=float(ep_start),
-                    stop_s=float(ep_stop),
-                    num_spikes=n_spikes,
-                    firing_rate_hz=fr,
-                    mean_observed_depth_um=mean_obs_d,
-                    mean_tissue_depth_um=mean_tiss_d,
-                    mean_amplitude=mean_amp,
-                    refractory_violation_rate=rv_rate,
-                )
-            )
-
-    return observations
+def _link_score(distance_um: float, amplitude_ratio: float, cosine: float) -> float:
+    """Higher is better. Bounded in (0, 1] so ambiguity ratios are meaningful."""
+    penalty = distance_um / 10.0 + (amplitude_ratio - 1.0) + 10.0 * (1.0 - cosine)
+    return 1.0 / (1.0 + penalty)
 
 
 def build_candidate_links(
     observations: list[EpochObservation],
-    spike_times_s: np.ndarray,
-    spike_clusters: np.ndarray,
+    inputs: ReplayInput,
     config: UnwarpedIdentityConfig,
-) -> list[AcceptedLink]:
-    """Build evidence-gated links between observations in adjacent epochs with ambiguity handling."""
-    times = np.asarray(spike_times_s, dtype=np.float64)
-    clusters = np.asarray(spike_clusters, dtype=np.int64)
+    counters: dict[str, int] | None = None,
+) -> list[CandidateLink]:
+    """Propose and adjudicate links between adjacent-epoch observations.
 
-    obs_by_epoch: dict[int, list[EpochObservation]] = {}
+    Every proposal that is spatially plausible is returned, accepted or not,
+    carrying the gate that refused it: a run that links nothing must be able to
+    say *why* it linked nothing. Pairs the depth gate rejects are only counted,
+    into ``counters`` -- on a full probe there are millions of them and they
+    carry no information beyond "far apart".
+
+    Gates are applied cheapest-first and short-circuit, so the waveform cosine
+    and the refractory union are computed only for pairs still in contention.
+    """
+    counters = {} if counters is None else counters
+    counters.setdefault("pairs_considered", 0)
+    counters.setdefault("spatial_distance", 0)
+
+    by_epoch: dict[int, list[EpochObservation]] = {}
     for obs in observations:
-        obs_by_epoch.setdefault(obs.epoch_idx, []).append(obs)
+        by_epoch.setdefault(obs.epoch_idx, []).append(obs)
 
-    accepted_links: list[AcceptedLink] = []
-    sorted_epochs = sorted(obs_by_epoch.keys())
+    order = np.argsort(inputs.row_id, kind="stable")
+    sorted_rows = inputs.row_id[order]
+    sorted_samples = inputs.sample[order]
+    neighbourhoods = channel_neighbourhoods(
+        inputs.channel_positions_um, config.waveform_channel_neighbourhood_um
+    )
 
-    for ep_a, ep_b in zip(sorted_epochs, sorted_epochs[1:]):
-        if ep_b != ep_a + 1:
+    def samples_of(row_ids: np.ndarray) -> np.ndarray:
+        return sorted_samples[np.searchsorted(sorted_rows, row_ids)]
+
+    links: list[CandidateLink] = []
+    for epoch_a in sorted(by_epoch):
+        epoch_b = epoch_a + 1
+        if epoch_b not in by_epoch:
             continue
+        list_a, list_b = by_epoch[epoch_a], by_epoch[epoch_b]
 
-        list_a = obs_by_epoch[ep_a]
-        list_b = obs_by_epoch[ep_b]
+        depths_a = np.array([o.mean_tissue_depth_um for o in list_a])
+        depths_b = np.array([o.mean_tissue_depth_um for o in list_b])
+        distances = np.abs(depths_a[:, None] - depths_b[None, :])
+        close = distances <= config.max_spatial_distance_um
+        counters["pairs_considered"] += int(distances.size)
+        counters["spatial_distance"] += int(distances.size - np.count_nonzero(close))
 
-        candidate_links_ep: list[AcceptedLink] = []
+        proposals: list[CandidateLink] = []
+        for index_a, index_b in zip(*np.nonzero(close)):
+            obs_a, obs_b = list_a[index_a], list_b[index_b]
+            distance = float(distances[index_a, index_b])
 
-        for obs_a in list_a:
-            for obs_b in list_b:
-                dist_um = abs(obs_a.mean_tissue_depth_um - obs_b.mean_tissue_depth_um)
-                if dist_um > config.max_spatial_distance_um:
-                    continue
+            amp_hi = max(obs_a.median_amplitude, obs_b.median_amplitude)
+            amp_lo = min(obs_a.median_amplitude, obs_b.median_amplitude)
+            ratio = float("inf") if amp_lo <= 0 else amp_hi / amp_lo
+            cosine: float | None = None
+            pair_rvf = float("nan")
 
-                amp_max = max(obs_a.mean_amplitude, obs_b.mean_amplitude)
-                amp_min = max(1e-6, min(obs_a.mean_amplitude, obs_b.mean_amplitude))
-                amp_ratio = amp_max / amp_min
-                if amp_ratio > config.max_amplitude_ratio:
-                    continue
-
-                # Union refractory check on spikes in overlapping / adjacent time range
-                mask_a = (clusters == obs_a.cluster_id) & (times >= obs_a.start_s) & (times < obs_a.stop_s)
-                mask_b = (clusters == obs_b.cluster_id) & (times >= obs_b.start_s) & (times < obs_b.stop_s)
-                combined_times = np.unique(np.concatenate([times[mask_a], times[mask_b]]))
-                union_rv = compute_refractory_violation_rate(combined_times, config.refractory_period_ms)
-
-                if union_rv > config.max_refractory_violation_fraction:
-                    continue
-
-                link_score = 1.0 / (1.0 + dist_um / 10.0 + (amp_ratio - 1.0) + 100.0 * union_rv)
-
-                candidate_links_ep.append(
-                    AcceptedLink(
-                        epoch_a=ep_a,
-                        cluster_a=obs_a.cluster_id,
-                        epoch_b=ep_b,
-                        cluster_b=obs_b.cluster_id,
-                        spatial_dist_um=float(dist_um),
-                        amplitude_ratio=float(amp_ratio),
-                        union_refractory_rate=float(union_rv),
-                        link_score=float(link_score),
-                    )
+            reason = ""
+            if ratio > config.max_amplitude_ratio:
+                reason = "amplitude_ratio"
+            else:
+                cosine = waveform_cosine(
+                    obs_a, obs_b, inputs.channel_positions_um,
+                    config.waveform_channel_neighbourhood_um, neighbourhoods,
                 )
+                if cosine is None:
+                    reason = "waveform_unavailable"
+                elif cosine < config.min_waveform_cosine:
+                    reason = "waveform_cosine"
+                else:
+                    # The pair's refractory burden is scored on the union of the
+                    # two observations' original rows -- deduplicated by row id,
+                    # so rows shared through the epoch overlap are counted once
+                    # and two distinct rows at one sample are still counted
+                    # twice.
+                    union_rows = np.union1d(obs_a.row_ids, obs_b.row_ids)
+                    pair_rvf = refractory_violation_fraction(
+                        samples_of(union_rows), inputs.fs_hz, config.refractory_period_ms
+                    )
+                    if pair_rvf > config.max_refractory_violation_fraction:
+                        reason = "epoch_pair_refractory"
 
-        # Ambiguity resolution: 1-to-1 matching without competing ambiguous links
-        if not candidate_links_ep:
+            proposals.append(
+                CandidateLink(
+                    epoch_a=epoch_a,
+                    cluster_a=obs_a.cluster_id,
+                    epoch_b=epoch_b,
+                    cluster_b=obs_b.cluster_id,
+                    spatial_distance_um=distance,
+                    amplitude_ratio=float(ratio),
+                    waveform_cosine=float("nan") if cosine is None else float(cosine),
+                    pair_refractory_fraction=float(pair_rvf),
+                    link_score=(
+                        0.0 if reason or cosine is None else _link_score(distance, ratio, cosine)
+                    ),
+                    rejected_because=reason,
+                )
+            )
+
+        links.extend(_resolve_exclusive(proposals, config))
+    return links
+
+
+def _contested(
+    grouped: dict[tuple[int, int], list[CandidateLink]], config: UnwarpedIdentityConfig
+) -> set[tuple[int, int]]:
+    """Endpoints whose best two viable links are too close to separate."""
+    contested: set[tuple[int, int]] = set()
+    for key, group in grouped.items():
+        ranked = sorted(group, key=lambda l: l.link_score, reverse=True)
+        if len(ranked) < 2 or ranked[0].link_score <= 0:
             continue
-
-        # Check forward ambiguity (obs_a -> multiple obs_b)
-        links_from_a: dict[int, list[AcceptedLink]] = {}
-        for link in candidate_links_ep:
-            links_from_a.setdefault(link.cluster_a, []).append(link)
-
-        ambiguous_a: set[int] = set()
-        for cid_a, c_links in links_from_a.items():
-            c_links.sort(key=lambda l: l.link_score, reverse=True)
-            if len(c_links) > 1:
-                top_score = c_links[0].link_score
-                second_score = c_links[1].link_score
-                if top_score > 0 and (second_score / top_score) >= config.ambiguity_threshold_ratio:
-                    ambiguous_a.add(cid_a)
-
-        # Check backward ambiguity (obs_b <- multiple obs_a)
-        links_to_b: dict[int, list[AcceptedLink]] = {}
-        for link in candidate_links_ep:
-            links_to_b.setdefault(link.cluster_b, []).append(link)
-
-        ambiguous_b: set[int] = set()
-        for cid_b, c_links in links_to_b.items():
-            c_links.sort(key=lambda l: l.link_score, reverse=True)
-            if len(c_links) > 1:
-                top_score = c_links[0].link_score
-                second_score = c_links[1].link_score
-                if top_score > 0 and (second_score / top_score) >= config.ambiguity_threshold_ratio:
-                    ambiguous_b.add(cid_b)
-
-        # Keep best non-ambiguous 1-to-1 links
-        claimed_b: set[int] = set()
-        for link in sorted(candidate_links_ep, key=lambda l: l.link_score, reverse=True):
-            if link.cluster_a in ambiguous_a or link.cluster_b in ambiguous_b:
-                continue
-            if link.cluster_b in claimed_b:
-                continue
-            accepted_links.append(link)
-            claimed_b.add(link.cluster_b)
-
-    return accepted_links
+        if ranked[1].link_score / ranked[0].link_score >= config.ambiguity_threshold_ratio:
+            contested.add(key)
+    return contested
 
 
-def solve_identity_tracks(
-    observations: list[EpochObservation],
-    accepted_links: list[AcceptedLink],
-    spike_times_s: np.ndarray | None = None,
-    spike_clusters: np.ndarray | None = None,
-    config: UnwarpedIdentityConfig | None = None,
-) -> tuple[dict[tuple[int, int], int], list[AcceptedLink], dict[str, int]]:
-    """Solve connected component tracks with complete-track refractory cleanliness pruning."""
-    if config is None:
-        config = UnwarpedIdentityConfig()
+def _resolve_exclusive(
+    proposals: list[CandidateLink], config: UnwarpedIdentityConfig
+) -> list[CandidateLink]:
+    """Accept a matching that is exclusive and unambiguous on **both** sides.
 
-    nodes = {(obs.cluster_id, obs.epoch_idx) for obs in observations}
-    active_links = list(accepted_links)
-    num_pruned_links = 0
+    Enforcing exclusivity on the destination alone lets one observation in the
+    earlier epoch claim several successors, quietly merging distinct neurons
+    into one family. Both directions are enforced, and any endpoint whose top
+    two candidates are within ``ambiguity_threshold_ratio`` is dropped from the
+    matching entirely -- an ambiguous link leaves both sides separate.
+    """
+    viable = [l for l in proposals if not l.rejected_because]
+    by_source: dict[tuple[int, int], list[CandidateLink]] = {}
+    by_destination: dict[tuple[int, int], list[CandidateLink]] = {}
+    for link in viable:
+        by_source.setdefault(link.source, []).append(link)
+        by_destination.setdefault(link.destination, []).append(link)
 
-    while True:
-        parent = {node: node for node in nodes}
+    ambiguous_sources = _contested(by_source, config)
+    ambiguous_destinations = _contested(by_destination, config)
 
-        def find(n: tuple[int, int]) -> tuple[int, int]:
-            if parent[n] != n:
-                parent[n] = find(parent[n])
-            return parent[n]
-
-        def union(n1: tuple[int, int], n2: tuple[int, int]):
-            r1, r2 = find(n1), find(n2)
-            if r1 != r2:
-                parent[r1] = r2
-
-        for link in active_links:
-            n_a = (link.cluster_a, link.epoch_a)
-            n_b = (link.cluster_b, link.epoch_b)
-            if n_a in parent and n_b in parent:
-                union(n_a, n_b)
-
-        if spike_times_s is None or spike_clusters is None:
-            break
-
-        # Complete-track refractory cleanliness evaluation
-        times = np.asarray(spike_times_s, dtype=np.float64)
-        clusters = np.asarray(spike_clusters, dtype=np.int64)
-
-        obs_lookup = {(obs.cluster_id, obs.epoch_idx): obs for obs in observations}
-        track_components: dict[tuple[int, int], list[tuple[int, int]]] = {}
-        for node in nodes:
-            r = find(node)
-            track_components.setdefault(r, []).append(node)
-
-        dirty_link_to_remove = None
-        worst_rv = 0.0
-
-        for root, member_nodes in track_components.items():
-            if len(member_nodes) <= 1:
-                continue
-
-            track_spikes = []
-            for cid, ep_idx in member_nodes:
-                obs = obs_lookup.get((cid, ep_idx))
-                if obs is None:
-                    continue
-                mask = (clusters == cid) & (times >= obs.start_s) & (times < obs.stop_s)
-                track_spikes.append(times[mask])
-
-            if not track_spikes:
-                continue
-
-            all_track_times = np.unique(np.concatenate(track_spikes))
-            track_rv = compute_refractory_violation_rate(all_track_times, config.refractory_period_ms)
-
-            if track_rv > config.max_refractory_violation_fraction:
-                # Find worst link in this track
-                member_set = set(member_nodes)
-                track_links = [
-                    l for l in active_links
-                    if (l.cluster_a, l.epoch_a) in member_set and (l.cluster_b, l.epoch_b) in member_set
-                ]
-                if track_links:
-                    worst_link = max(track_links, key=lambda l: (l.union_refractory_rate, -l.link_score))
-                    if track_rv > worst_rv:
-                        worst_rv = track_rv
-                        dirty_link_to_remove = worst_link
-
-        if dirty_link_to_remove is not None:
-            active_links.remove(dirty_link_to_remove)
-            num_pruned_links += 1
+    claimed_sources: set[tuple[int, int]] = set()
+    claimed_destinations: set[tuple[int, int]] = set()
+    for link in sorted(
+        viable,
+        key=lambda l: (-l.link_score, l.cluster_a, l.cluster_b),
+    ):
+        if link.source in ambiguous_sources:
+            link.rejected_because = "ambiguous_source"
+        elif link.destination in ambiguous_destinations:
+            link.rejected_because = "ambiguous_destination"
+        elif link.source in claimed_sources:
+            link.rejected_because = "source_already_claimed"
+        elif link.destination in claimed_destinations:
+            link.rejected_because = "destination_already_claimed"
         else:
-            break
+            link.accepted = True
+            claimed_sources.add(link.source)
+            claimed_destinations.add(link.destination)
+    return proposals
 
-    # Assign integer track IDs
+
+# --------------------------------------------------------------------------- #
+# families and row assignment
+# --------------------------------------------------------------------------- #
+def _components(
+    nodes: list[tuple[int, int]], links: list[CandidateLink]
+) -> dict[tuple[int, int], tuple[int, int]]:
     parent = {node: node for node in nodes}
-    for link in active_links:
-        n_a = (link.cluster_a, link.epoch_a)
-        n_b = (link.cluster_b, link.epoch_b)
-        if n_a in parent and n_b in parent:
-            r1, r2 = find(n_a), find(n_b)
-            if r1 != r2:
-                parent[r1] = r2
 
-    root_to_track_id: dict[tuple[int, int], int] = {}
-    next_track_id = 1
-    track_membership: dict[tuple[int, int], int] = {}
+    def find(n):
+        while parent[n] != n:
+            parent[n] = parent[parent[n]]
+            n = parent[n]
+        return n
 
-    for node in sorted(nodes, key=lambda x: (x[1], x[0])):
-        root = find(node)
-        if root not in root_to_track_id:
-            root_to_track_id[root] = next_track_id
-            next_track_id += 1
-        track_membership[node] = root_to_track_id[root]
+    for link in links:
+        if link.source in parent and link.destination in parent:
+            ra, rb = find(link.source), find(link.destination)
+            if ra != rb:
+                parent[ra] = rb
+    return {node: find(node) for node in nodes}
+
+
+def assign_rows_to_families(
+    observations: list[EpochObservation],
+    accepted_links: list[CandidateLink],
+) -> tuple[dict[int, int], dict[tuple[int, int], int], dict[str, Any]]:
+    """Give every original row exactly one family id.
+
+    Overlapping epochs mean a row can sit in two observations. They are
+    reconciled **by original row id** -- never by timestamp, which would
+    collapse two distinct simultaneous spikes into one and hide the coincidence
+    from the refractory check. When a row's two epochs land in different
+    families, the earliest epoch wins and the disagreement is counted rather
+    than smoothed away.
+    """
+    nodes = sorted({obs.key for obs in observations})
+    roots = _components(nodes, accepted_links)
+
+    # deterministic family ids: order by (first epoch, smallest cluster id)
+    order: dict[tuple[int, int], tuple[int, int]] = {}
+    for node, root in roots.items():
+        current = order.get(root)
+        if current is None or node < current:
+            order[root] = node
+    family_of_node = {
+        root: idx
+        for idx, root in enumerate(sorted(order, key=lambda r: order[r]), start=1)
+    }
+    node_family = {node: family_of_node[root] for node, root in roots.items()}
+
+    row_family: dict[int, int] = {}
+    row_epoch: dict[int, int] = {}
+    disagreements = 0
+    for obs in sorted(observations, key=lambda o: (o.epoch_idx, o.cluster_id)):
+        family = node_family[obs.key]
+        for row in obs.row_ids.tolist():
+            previous = row_family.get(row)
+            if previous is None:
+                row_family[row] = family
+                row_epoch[row] = obs.epoch_idx
+            elif previous != family:
+                disagreements += 1  # earliest epoch keeps the row
 
     metadata = {
-        "num_active_links": len(active_links),
-        "num_pruned_links": num_pruned_links,
-        "num_tracks": len(root_to_track_id),
+        "num_nodes": len(nodes),
+        "num_families": len(set(node_family.values())),
+        "num_assigned_rows": len(row_family),
+        "overlap_rows_with_conflicting_family": disagreements,
+        "overlap_assignment_rule": "earliest epoch containing the row wins",
+        "dedup_key": "original_spike_row_id",
     }
+    return row_family, node_family, metadata
 
-    return track_membership, active_links, metadata
+
+def _family_trains(
+    row_family: dict[int, int], sample_by_row: dict[int, int]
+) -> dict[int, np.ndarray]:
+    trains: dict[int, list[int]] = {}
+    for row, family in row_family.items():
+        trains.setdefault(family, []).append(sample_by_row[row])
+    return {f: np.sort(np.asarray(s, dtype=np.int64)) for f, s in trains.items()}
 
 
-def run_unwarped_identity_pipeline(
-    spike_times_s: np.ndarray,
-    spike_clusters: np.ndarray,
-    spike_depths_um: np.ndarray,
-    displacement_um: np.ndarray | None,
-    recording_duration_s: float,
+def solve_families(
+    observations: list[EpochObservation],
+    links: list[CandidateLink],
+    inputs: ReplayInput,
+    config: UnwarpedIdentityConfig,
+) -> tuple[dict[int, int], dict[tuple[int, int], int], list[CandidateLink], dict[str, Any]]:
+    """Union accepted links into families, then verify the **exported** train.
+
+    The refractory check that matters is the one on the rows the export will
+    actually write, under the same overlap-assignment rule -- not on an
+    epoch-masked union computed before assignment. So the loop assigns rows,
+    scores each family's exported train, and prunes the weakest link inside any
+    family that breaches the gate, until every exported train is clean.
+    """
+    sample_by_row = dict(zip(inputs.row_id.tolist(), inputs.sample.tolist()))
+    active = [l for l in links if l.accepted]
+    pruned: list[CandidateLink] = []
+
+    while True:
+        row_family, node_family, meta = assign_rows_to_families(observations, active)
+        trains = _family_trains(row_family, sample_by_row)
+        dirty = {
+            family: refractory_violation_fraction(
+                train, inputs.fs_hz, config.refractory_period_ms
+            )
+            for family, train in trains.items()
+        }
+        breaching = {
+            f: rvf for f, rvf in dirty.items() if rvf > config.max_refractory_violation_fraction
+        }
+        if not breaching:
+            meta["exported_train_refractory_fraction"] = {
+                str(f): rvf for f, rvf in sorted(dirty.items())
+            }
+            meta["num_pruned_links"] = len(pruned)
+            meta["num_accepted_links"] = len(active)
+            meta["pruned_for_exported_train_refractory"] = [l.to_row() for l in pruned]
+            return row_family, node_family, active, meta
+
+        worst_family = max(breaching, key=lambda f: breaching[f])
+        inside = [l for l in active if node_family.get(l.source) == worst_family]
+        if not inside:
+            # A single original cluster already breaches the gate on its own
+            # rows. That is a property of the retained sort, not of any link
+            # this replay made, and no pruning can fix it.
+            meta["exported_train_refractory_fraction"] = {
+                str(f): rvf for f, rvf in sorted(dirty.items())
+            }
+            meta["num_pruned_links"] = len(pruned)
+            meta["num_accepted_links"] = len(active)
+            meta["pruned_for_exported_train_refractory"] = [l.to_row() for l in pruned]
+            meta["families_breaching_without_a_prunable_link"] = sorted(breaching)
+            return row_family, node_family, active, meta
+
+        victim = max(
+            inside, key=lambda l: (l.pair_refractory_fraction, -l.link_score, l.cluster_b)
+        )
+        victim.accepted = False
+        victim.rejected_because = "exported_train_refractory"
+        active.remove(victim)
+        pruned.append(victim)
+
+
+# --------------------------------------------------------------------------- #
+# entry point
+# --------------------------------------------------------------------------- #
+def run_unwarped_identity_replay(
+    inputs: ReplayInput,
+    *,
+    motion: MotionDeclaration,
+    config: UnwarpedIdentityConfig,
+    processing_interval_s: tuple[float, float],
     output_dir: Path,
-    config: UnwarpedIdentityConfig | None = None,
-    spike_amplitudes: np.ndarray | None = None,
 ) -> dict[str, Any]:
-    """Execute Option B unwarped identity pipeline and write artifacts to output_dir."""
-    if config is None:
-        config = UnwarpedIdentityConfig()
-
+    """Replay the retained rows in ``processing_interval_s`` into families."""
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    times = np.asarray(spike_times_s, dtype=np.float64)
-    clusters = np.asarray(spike_clusters, dtype=np.int64)
-    obs_depths = np.asarray(spike_depths_um, dtype=np.float64)
-    amps = np.abs(np.asarray(spike_amplitudes, dtype=np.float64)) if spike_amplitudes is not None else np.ones_like(times)
-
-    if displacement_um is None:
-        displacements = np.zeros_like(obs_depths)
+    if motion.is_motion_aware:
+        displacement = np.asarray(motion.displacement_um, dtype=np.float64).reshape(-1)
+        if displacement.size != inputs.row_id.size:
+            raise IdentityRefusal(
+                f"motion displacement has {displacement.size} entries for "
+                f"{inputs.row_id.size} spike rows"
+            )
+        if not np.all(np.isfinite(displacement)):
+            raise IdentityRefusal(
+                "a qualified motion field left some spikes unsupported; an unsupported spike is "
+                "not a spike with zero displacement. Restrict the interval or the arm instead."
+            )
+        tissue_depth = inputs.depth_um - displacement
     else:
-        displacements = np.asarray(displacement_um, dtype=np.float64)
+        tissue_depth = inputs.depth_um.copy()
 
-    tissue_depths = obs_depths - displacements
+    epoch_indices = epochs_covering(processing_interval_s, config)
+    if not epoch_indices:
+        raise IdentityRefusal(
+            f"no whole {config.epoch_duration_s} s epoch fits inside processing interval "
+            f"{processing_interval_s!r} on a grid stepping {config.epoch_step_s} s"
+        )
 
-    observations = extract_epoch_observations(
-        times, clusters, obs_depths, tissue_depths, recording_duration_s, config, amps
+    observations = extract_epoch_observations(inputs, epoch_indices, tissue_depth, config)
+    link_counters: dict[str, int] = {}
+    links = build_candidate_links(observations, inputs, config, link_counters)
+    row_family, node_family, active_links, meta = solve_families(
+        observations, links, inputs, config
     )
-    accepted_links = build_candidate_links(observations, times, clusters, config)
-    track_membership, clean_links, prune_meta = solve_identity_tracks(
-        observations, accepted_links, times, clusters, config
-    )
 
-    # Compute per-spike track assignments
-    step_s = config.epoch_duration_s - config.epoch_overlap_s
-    spike_tracks = np.copy(clusters)
-    for i in range(times.size):
-        t = times[i]
-        c = clusters[i]
-        ep_idx = max(0, int(np.floor(t / step_s)))
-        tid = track_membership.get((c, ep_idx))
-        if tid is not None:
-            spike_tracks[i] = tid
+    # Families that are exactly one original cluster are not new identities.
+    contributors: dict[int, set[int]] = {}
+    for (_, cluster_id), family in node_family.items():
+        contributors.setdefault(family, set()).add(cluster_id)
+    linked_families = sorted(f for f, cids in contributors.items() if len(cids) > 1)
 
-    # Save spike tracks
-    tracks_npy_path = output_dir / "spike_tracks.npy"
-    np.save(tracks_npy_path, spike_tracks)
-
-    # Write CSV artifacts
-    obs_csv = output_dir / "epoch_observations.csv"
-    with obs_csv.open("w", newline="") as fh:
-        writer = csv.DictWriter(fh, fieldnames=list(EpochObservation.__annotations__.keys()))
+    observations_csv = output_dir / "epoch_observations.csv"
+    with observations_csv.open("w", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=list(CSV_OBSERVATION_FIELDS))
         writer.writeheader()
         for obs in observations:
-            writer.writerow(obs.to_dict())
+            writer.writerow(obs.to_row())
 
-    links_csv = output_dir / "accepted_links.csv"
+    links_csv = output_dir / "candidate_links.csv"
     with links_csv.open("w", newline="") as fh:
-        writer = csv.DictWriter(fh, fieldnames=list(AcceptedLink.__annotations__.keys()))
+        writer = csv.DictWriter(fh, fieldnames=list(CSV_LINK_FIELDS))
         writer.writeheader()
-        for link in clean_links:
-            writer.writerow(link.to_dict())
+        for link in links:
+            writer.writerow(link.to_row())
 
-    tracks_csv = output_dir / "track_membership.csv"
-    with tracks_csv.open("w", newline="") as fh:
+    families_csv = output_dir / "family_membership.csv"
+    with families_csv.open("w", newline="") as fh:
         writer = csv.writer(fh)
-        writer.writerow(["cluster_id", "epoch_idx", "track_id"])
-        for (cid, ep_idx), tid in sorted(track_membership.items()):
-            writer.writerow([cid, ep_idx, tid])
+        writer.writerow(["family_id", "epoch_idx", "cluster_id"])
+        for (epoch_idx, cluster_id), family in sorted(
+            node_family.items(), key=lambda kv: (kv[1], kv[0])
+        ):
+            writer.writerow([family, epoch_idx, cluster_id])
+
+    rejection_counts = {reason: 0 for reason in REJECTION_REASONS}
+    # depth-rejected pairs are counted rather than materialised
+    rejection_counts["spatial_distance"] = link_counters.get("spatial_distance", 0)
+    for link in links:
+        if link.rejected_because:
+            rejection_counts[link.rejected_because] = (
+                rejection_counts.get(link.rejected_because, 0) + 1
+            )
 
     manifest = {
         "schema": UNWARPED_IDENTITY_SCHEMA,
+        "execution_mode": "retained_sort_replay",
+        "motion": motion.to_dict(),
         "config": config.to_dict(),
         "config_digest": config.digest(),
+        "processing_interval_s": [float(processing_interval_s[0]), float(processing_interval_s[1])],
+        "epoch_indices": epoch_indices,
+        "epoch_span_s": [
+            epoch_bounds(epoch_indices[0], config)[0],
+            epoch_bounds(epoch_indices[-1], config)[1],
+        ],
+        "num_input_rows": int(inputs.row_id.size),
         "num_observations": len(observations),
-        "num_accepted_links": len(clean_links),
-        "num_unique_tracks": len(set(track_membership.values())),
-        "pruning_metadata": prune_meta,
+        "num_pairs_considered": link_counters.get("pairs_considered", 0),
+        "num_candidate_links": len(links),
+        "num_accepted_links": len(active_links),
+        "link_rejections": rejection_counts,
+        "num_families": meta["num_families"],
+        "num_families_built_from_a_link": len(linked_families),
+        "families_built_from_a_link": linked_families,
+        "assignment": meta,
         "output_artifacts": {
-            "spike_tracks_npy": tracks_npy_path.name,
-            "epoch_observations": obs_csv.name,
-            "accepted_links": links_csv.name,
-            "track_membership": tracks_csv.name,
+            "epoch_observations": observations_csv.name,
+            "candidate_links": links_csv.name,
+            "family_membership": families_csv.name,
         },
     }
-
-    manifest_path = output_dir / MANIFEST_NAME
-    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+    (output_dir / MANIFEST_NAME).write_text(json.dumps(manifest, indent=2, default=str) + "\n")
 
     return {
         "manifest": manifest,
         "observations": observations,
-        "accepted_links": clean_links,
-        "track_membership": track_membership,
-        "spike_tracks": spike_tracks,
-    }
-    track_membership = solve_identity_tracks(observations, accepted_links)
-
-    # Write CSV artifacts
-    obs_csv = output_dir / "epoch_observations.csv"
-    with obs_csv.open("w", newline="") as fh:
-        writer = csv.DictWriter(fh, fieldnames=list(EpochObservation.__annotations__.keys()))
-        writer.writeheader()
-        for obs in observations:
-            writer.writerow(obs.to_dict())
-
-    links_csv = output_dir / "accepted_links.csv"
-    with links_csv.open("w", newline="") as fh:
-        writer = csv.DictWriter(fh, fieldnames=list(AcceptedLink.__annotations__.keys()))
-        writer.writeheader()
-        for link in accepted_links:
-            writer.writerow(link.to_dict())
-
-    tracks_csv = output_dir / "track_membership.csv"
-    with tracks_csv.open("w", newline="") as fh:
-        writer = csv.writer(fh)
-        writer.writerow(["cluster_id", "epoch_idx", "track_id"])
-        for (cid, ep_idx), tid in sorted(track_membership.items()):
-            writer.writerow([cid, ep_idx, tid])
-
-    manifest = {
-        "schema": UNWARPED_IDENTITY_SCHEMA,
-        "config": config.to_dict(),
-        "config_digest": config.digest(),
-        "num_observations": len(observations),
-        "num_accepted_links": len(accepted_links),
-        "num_unique_tracks": len(set(track_membership.values())),
-        "output_artifacts": {
-            "epoch_observations": obs_csv.name,
-            "accepted_links": links_csv.name,
-            "track_membership": tracks_csv.name,
-        },
-    }
-
-    manifest_path = output_dir / MANIFEST_NAME
-    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
-
-    return {
-        "manifest": manifest,
-        "observations": observations,
-        "accepted_links": accepted_links,
-        "track_membership": track_membership,
+        "links": links,
+        "accepted_links": active_links,
+        "row_family": row_family,
+        "node_family": node_family,
+        "families_built_from_a_link": linked_families,
+        "family_contributors": {f: sorted(c) for f, c in contributors.items()},
     }

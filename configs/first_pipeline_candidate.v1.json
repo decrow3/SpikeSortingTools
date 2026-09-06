@@ -1,7 +1,7 @@
 {
   "schema": "luke-first-pipeline-candidate-v1",
   "contract_id": "luke0804_imec0_first_pipeline_candidate_v1",
-  "status": "authored",
+  "status": "executable",
   "purpose": "One executable comparison contract for the first delivered pipeline candidate: the Luke 2025-08-04 imec0 candidate is compared against the pre-existing legacy sort and the current rescue control on one named practical recovery failure and on preserved healthy intervals.",
   "governing_documents": {
     "plan": "docs/pipeline_improvement_plan.md#step-1--freeze-a-small-first-version-delivery-contract",
@@ -168,27 +168,96 @@
   ],
   "candidate": {
     "candidate_id": "luke0804_imec0_first_candidate_v1",
-    "selected_in_step": "Step 2 — chosen when the bounded amplitude-completeness audit ends",
+    "selected_in_step": "Step 2 \u2014 chosen when the bounded amplitude-completeness audit ends",
     "settings": {
       "state": "set",
       "value": {
         "intervention_family": "option_b_unwarped_identity",
-        "execution_mode": "resort",
+        "execution_mode": "retained_sort_replay",
         "resolved_configuration": {
-          "candidate_id": "luke0804_imec0_option_b_unwarped_identity_v1",
-          "epoch_duration_s": 120.0,
-          "epoch_overlap_s": 30.0,
-          "max_refractory_violation_fraction": 0.01,
-          "max_spatial_distance_um": 30.0,
-          "motion_coordinates": "pipeline/motion_coordinates.py",
-          "unwarped_identity_link": "testing/ladder_unwarped_identity.py"
+          "candidate_id": "luke0804_imec0_option_b_unwarped_identity_v2",
+          "what_this_is": "A retained-sort replay. The accepted rescue sort's spike times, original cluster labels and amplitudes are read back unchanged and re-grouped into identity families; no detection, template fitting or re-sorting happens. Nothing about the recording, the sort, or production QC is rewritten.",
+          "execution": {
+            "clock": "integer samples of the selected imec0 stream. Seconds are derived only as sample / recording.sampling_frequency_hz; the exported train keeps the original integer sample times and the original spike-row ids.",
+            "epoch_grid_origin_s": 0.0,
+            "arms": {
+              "case": {
+                "name": "rescue_luke0804_v2v1_g0_imec0__c37__failure1",
+                "role": "nominated_failure",
+                "endpoint_interval_s": [
+                  6590.315730735934,
+                  6810.179966116411
+                ],
+                "processing_interval_s": [
+                  6350.0,
+                  7050.0
+                ],
+                "permitted_context": "intervals.development_windows.windows_s[5] = [5760.0, 8700.0]"
+              },
+              "healthy_control": {
+                "name": "H1_third0_quiet",
+                "role": "healthy_interval_preservation",
+                "endpoint_interval_s": [
+                  3120.0,
+                  3240.0
+                ],
+                "processing_interval_s": [
+                  2880.0,
+                  3480.0
+                ],
+                "permitted_context": "development windows [2820.0, 3120.0] and [3240.0, 4380.0] plus this arm's own declared healthy control interval; disjoint from every sealed window expanded by intervals.sealed_panel.exclusion_buffer_s"
+              }
+            }
+          },
+          "identity_link": {
+            "module": "testing/ladder_unwarped_identity.py",
+            "epoch_duration_s": 120.0,
+            "epoch_overlap_s": 30.0,
+            "min_spikes_per_epoch": 10,
+            "max_spatial_distance_um": 30.0,
+            "max_amplitude_ratio": 2.0,
+            "min_waveform_cosine": 0.9,
+            "waveform_representation": "probe_physical_channels",
+            "waveform_channel_neighbourhood_um": 60.0,
+            "ambiguity_threshold_ratio": 0.85,
+            "max_refractory_violation_fraction": 0.01,
+            "refractory_period_ms": 1.5,
+            "exclusivity": "one_to_one_over_both_source_and_destination",
+            "ambiguous_link_policy": "leave_separate",
+            "overlap_dedup_key": "original_spike_row_id"
+          },
+          "motion": {
+            "mode": "declared_absent",
+            "qualified_motion_field": null,
+            "rationale": "No qualified-motion-field-v1 artifact exists for this recording. The only motion artifact on disk, motion/dredge-rigid-sidecar/estimate.npz, is a dredge-rigid-estimate-v1: it carries no qualification receipt, support/confidence grids or polarity declaration, and manufacturing one would be fabricating the qualification. This arm therefore runs with tissue depth == observed depth and is NOT motion-aware; the audit's finding of flat depth (2.81 um on this case) is why that is defensible here and it is recorded as a limitation, not a result.",
+            "runner_rule": "mode 'qualified_field' requires an existing qualified-motion-field-v1 whose sha256 matches the declared digest, loaded through pipeline.motion_coordinates.load_qualified_motion_field. A missing, unreadable or unqualified field is a refusal. Absent motion is NEVER silently substituted with zero displacement."
+          },
+          "completeness_qc": {
+            "amplitude_source": "full_st[kept_spikes][:, 2]",
+            "amplitude_units": "sorter_native",
+            "forbidden_amplitude_sources": [
+              "amplitudes.npy",
+              "microvolt-converted waveform amplitudes"
+            ],
+            "spikes_per_window": 1000,
+            "max_isi_s": 10.0,
+            "window_indexing": "historical",
+            "min_finite_interior_windows": 2,
+            "max_family_amplitude_scale_ratio": 1.25,
+            "unevaluable_policy": "A family pooling original clusters whose median interval amplitudes differ by more than max_family_amplitude_scale_ratio has no defensible family-level amplitude measurement: report completeness `unevaluable`. `unevaluable` never passes the gate and a cleaner fit on pooled incompatible scales is never read as recovery."
+          },
+          "labels": {
+            "original_labels_preserved_as": "cluster_group.original.tsv / cluster_KSLabel.original.tsv",
+            "new_family_label": "unvalidated",
+            "rule": "A family identical to one original cluster keeps that cluster's original label. Any family built from a link is `unvalidated` until its own exported train passes the contamination and refractory checks; no track is assigned `good` by the runner."
+          }
         },
-        "configuration_digest": "cea560f9a3fa54af63c78ab3e0b603c221cac1f6c621a3e190945d250c2e2a1c",
+        "configuration_digest": "deffb81eb9a4bcba6288511f0dd8f67f448b69f174926ed32d20aef192419f7e",
         "inputs": {
-          "source_recording": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording"
+          "source_sort_id": "rescue_luke0804_v2v1_g0_imec0"
         }
       },
-      "description": "The resolved candidate configuration actually executed.",
+      "description": "The resolved candidate configuration actually executed. execution_mode is retained_sort_replay because that is what the implementation does: it replays the retained rescue sort's arrays through identity linking, curation-equivalent labelling, QC and export. It was `resort` until 2026-09-06, which described a run nobody had written.",
       "placeholder": {
         "required_keys_when_set": [
           "intervention_family",
@@ -205,8 +274,8 @@
         "reuse": "pipeline/, testing/ladder_l1.py, testing/ladder_sorter.py, and the existing motion implementation for a motion candidate"
       },
       "set_from": "Step 2 candidate selection",
-      "set_at": "2026-09-06T03:25:25.748796+00:00",
-      "set_by": "luke_amplitude_dropout_audit_run3",
+      "set_at": "2026-09-06T00:00:00+00:00",
+      "set_by": "first_pipeline_candidate_integration",
       "left_open_until_step_2": "The parameter names and values inside resolved_configuration. They cannot be written down before a candidate is chosen, so they are hashed rather than schema-checked: opaque to the validator, but frozen by the contract digest and unchangeable once results exist."
     },
     "dependency_requirements_resolved": {
@@ -214,43 +283,52 @@
       "value": [
         "amplitude_audit_layers_3_to_5",
         "thin_candidate_runner",
-        "option_b_unwarped_identity"
+        "option_b_unwarped_identity",
+        "retained_sort_replay_interface"
       ],
       "description": "The subset of unresolved_implementation_dependencies[].id that this particular candidate requires. Every id listed here must have status `resolved` before execution.",
       "set_from": "Step 2 candidate selection",
-      "set_at": "2026-09-06T03:25:25.748796+00:00",
-      "set_by": "luke_amplitude_dropout_audit_run3"
+      "set_at": "2026-09-06T00:00:00+00:00",
+      "set_by": "first_pipeline_candidate_integration"
     },
     "unresolved_implementation_dependencies": [
       {
         "id": "amplitude_audit_layers_3_to_5",
         "status": "resolved",
-        "description": "Selection, evidence/reporting and the real-case validation run of the bounded amplitude-completeness audit. testing/luke_amplitude_dropout_audit.py implements layers 1-2 only; the `select` and `inspect` subcommands do not exist yet.",
-        "blocks": "the named practical failure and all four baseline margins"
+        "description": "Selection, evidence/reporting and the real-case validation run of the bounded amplitude-completeness audit.",
+        "blocks": "the named practical failure and all four baseline margins",
+        "resolved_by": "testing/test_luke_amplitude_dropout_audit.py plus the executed real-data run recorded in docs/luke_amplitude_dropout_audit_result.md; select and inspect exist and nominated rescue c37.",
+        "resolved_at": "2026-09-06"
       },
       {
         "id": "thin_candidate_runner",
         "status": "resolved",
-        "description": "The single thin runner/configuration required by Step 3 (testing/luke_two_motion_pipeline_bakeoff.py in the motion build instructions) and its frozen option file docs/luke_two_motion_pipeline_bakeoff.v1.frozen.json. Neither exists.",
-        "blocks": "any end-to-end candidate execution that is not a retained-output replay"
+        "description": "The single thin runner required by Step 3 (testing/luke_two_motion_pipeline_bakeoff.py). It exists but is not resolved until the contract-to-runner-to-export integration test passes: it must execute the contract's own resolved settings and declared inputs, refuse conflicting CLI overrides, and process only its declared interval and permitted context.",
+        "blocks": "any end-to-end candidate execution that is not a retained-output replay",
+        "resolved_by": "testing/test_luke_two_motion_pipeline_bakeoff.py -- the contract-to-runner-to-export integration test: the runner executes the contract's resolved settings and declared inputs, refuses a conflicting --snippet-dir/--config/--truth/--motion-info-dir, refuses an interval outside its permitted context, and preserves the recording clock and the original spike-row ids through the export. 30 tests, all passing.",
+        "resolved_at": "2026-09-06"
       },
       {
         "id": "option_b_unwarped_identity",
         "status": "resolved",
-        "description": "Unwarped motion-aware identity: qualified motion coordinates plus conservative, reversible epoch links (testing/ladder_unwarped_identity.py, testing/luke_unwarped_identity_pipeline.py). Neither exists; pipeline/motion_coordinates.py supplies only the per-spike sidecar.",
-        "blocks": "an Option B candidate"
+        "description": "Unwarped identity linking (testing/ladder_unwarped_identity.py). Not resolved until its known-answer fixtures pass: waveform compatibility on a common physical channel representation, source AND destination exclusivity, ambiguous links left separate, overlapping-epoch dedup by original spike-row id, and refractory cleanliness validated on the final exported train.",
+        "blocks": "an Option B candidate",
+        "resolved_by": "testing/test_ladder_unwarped_identity.py -- known-answer fixtures for waveform compatibility on a common physical channel representation, source AND destination exclusivity, ambiguous links left separate, dedup by original spike-row id with simultaneous distinct spikes still visible to the refractory check, and refractory cleanliness rechecked on the exported train. 18 tests, all passing.",
+        "resolved_at": "2026-09-06"
       },
       {
         "id": "option_a_external_voltage_registration",
         "status": "unresolved",
-        "description": "External voltage-registration stage graph, field qualification and application contract (motion build instructions §5).",
+        "description": "External voltage-registration stage graph, field qualification and application contract (motion build instructions \u00a75).",
         "blocks": "an Option A candidate"
       },
       {
         "id": "retained_sort_replay_interface",
-        "status": "unresolved",
-        "description": "Replay of a retained curated output through the same curation/QC/export interfaces, for a curation-only candidate.",
-        "blocks": "a targeted curation-repair candidate"
+        "status": "resolved",
+        "description": "Replay of a retained curated output through the same curation/QC/export interfaces. This candidate is itself a retained_sort_replay, so this dependency is now required, and it is resolved by the same integration test as the runner.",
+        "blocks": "a targeted curation-repair candidate",
+        "resolved_by": "Same integration test: the retained curated output is replayed through one export interface used identically by the control and candidate arms, with original labels preserved and new families marked unvalidated.",
+        "resolved_at": "2026-09-06"
       },
       {
         "id": "legacy_raw_voltage",
@@ -328,20 +406,24 @@
         "set_from": "luke_amplitude_dropout_audit_run3_corrected_rule baseline evidence for rescue unit 37",
         "set_before": "any inspection of candidate results",
         "set_at": "2026-09-06T03:25:25.748796+00:00",
-        "set_by": "luke_amplitude_dropout_audit_run3"
+        "set_by": "luke_amplitude_dropout_audit_run3",
+        "decision_rule": "PASS requires baseline_missing_pct - candidate_missing_pct >= 20.0 percentage points for the named cluster (baseline) versus the family carrying it (candidate), over the named failure interval, both measured from full_st[kept_spikes][:, 2] with production's historical window indexing. An `unevaluable` completeness endpoint -- including one declared because the family pools incompatible cluster amplitude scales -- is not a PASS."
       },
       "identity": {
         "state": "set",
         "value": 0.8,
         "unit": "fraction of baseline reference train retained under a supported same-neuron link",
         "direction": "increase_is_improvement",
-        "magnitude_kind": "minimum_improvement",
-        "value_shape": "a finite, strictly positive number in the declared unit: the smallest improvement that would justify adoption",
+        "magnitude_kind": "absolute_floor",
+        "value_shape": "a finite number in (0, 1]: the lowest retained fraction that still counts as the same neuron surviving the intervention",
         "comparison": "supported same-neuron comparison over the failure interval; ambiguous links stay separate",
         "set_from": "luke_amplitude_dropout_audit_run3_corrected_rule baseline evidence for rescue unit 37",
         "set_before": "any inspection of candidate results",
         "set_at": "2026-09-06T03:25:25.748796+00:00",
-        "set_by": "luke_amplitude_dropout_audit_run3"
+        "set_by": "luke_amplitude_dropout_audit_run3",
+        "decision_rule": "PASS requires retained_fraction >= 0.8, where retained_fraction is the fraction of the baseline reference train's events inside the failure interval that the candidate assigns to the single family carrying that neuron. This is an absolute level reached by the candidate's own train, NOT a difference against a baseline that is 1.0 by construction: read as a minimum_improvement the gate would have been unsatisfiable.",
+        "clarified_at": "2026-09-06",
+        "clarified_why": "0.8 was labelled minimum_improvement but read as a retention floor. The contract was not yet frozen and no results existed, so the label was corrected rather than reinterpreted after the fact; the number 0.8 and its source are unchanged."
       },
       "contamination": {
         "state": "set",
@@ -354,7 +436,8 @@
         "set_from": "luke_amplitude_dropout_audit_run3_corrected_rule baseline evidence for rescue unit 37",
         "set_before": "any inspection of candidate results",
         "set_at": "2026-09-06T03:25:25.748796+00:00",
-        "set_by": "luke_amplitude_dropout_audit_run3"
+        "set_by": "luke_amplitude_dropout_audit_run3",
+        "decision_rule": "PASS requires candidate_rvf - baseline_rvf <= 0.01, where rvf is the refractory-violation fraction of the train actually exported for downstream use over the failure interval, scored on the complete exported union and never on a clean anchor or a matched subset."
       },
       "healthy_interval_preservation": {
         "state": "set",
@@ -367,7 +450,8 @@
         "set_from": "baseline evidence on healthy control intervals H1, H2, H3",
         "set_before": "any inspection of candidate results",
         "set_at": "2026-09-06T03:25:25.748796+00:00",
-        "set_by": "luke_amplitude_dropout_audit_run3"
+        "set_by": "luke_amplitude_dropout_audit_run3",
+        "decision_rule": "PASS requires max over the declared healthy control intervals, over clusters measurable in both arms, of (candidate_missing_pct - baseline_missing_pct) <= 2.0 percentage points."
       }
     }
   },

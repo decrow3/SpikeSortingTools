@@ -117,10 +117,30 @@ REQUIRED_COMPARATOR_FIELDS = ("role", "sort_id", "curated", "qc_dir", "source_re
 #: that would justify adoption, so it must be strictly positive -- zero would be
 #: exactly the "statistically detectable tiny change" the plan rejects. A
 #: ``maximum_tolerated_degradation`` margin is a tolerance, so zero (tolerate
-#: nothing) is meaningful and negative is not.
+#: nothing) is meaningful and negative is not. An ``absolute_floor`` margin is
+#: neither: it is a level the candidate's own measurement must reach, with no
+#: baseline subtracted. It exists because the identity margin is exactly that
+#: shape -- 0.8 of the baseline reference train retained -- and calling it a
+#: ``minimum_improvement`` made its decision rule ambiguous (0.8 *more* than a
+#: baseline that is 1.0 by construction is unsatisfiable, and nobody meant it).
 MARGIN_DIRECTIONS = ("increase_is_improvement", "decrease_is_improvement")
-MARGIN_MAGNITUDE_KINDS = ("minimum_improvement", "maximum_tolerated_degradation")
-MARGIN_DECLARATION_FIELDS = ("unit", "direction", "comparison", "magnitude_kind", "set_from")
+MARGIN_MAGNITUDE_KINDS = (
+    "minimum_improvement",
+    "maximum_tolerated_degradation",
+    "absolute_floor",
+)
+#: ``decision_rule`` is required alongside the enums: the kind says what shape
+#: the number is, the rule says, in one sentence naming the two quantities and
+#: the comparison operator, what verdict the number produces. A gate whose rule
+#: has to be reconstructed from a label is not frozen.
+MARGIN_DECLARATION_FIELDS = (
+    "unit",
+    "direction",
+    "comparison",
+    "magnitude_kind",
+    "decision_rule",
+    "set_from",
+)
 
 #: A resolved candidate configuration names one intervention family and one
 #: execution mode; the placeholder in the contract lists the same values.
@@ -549,6 +569,12 @@ def check_margin_value(name: str, node: dict) -> None:
         raise ContractRefusal(
             f"{label}.value is a maximum_tolerated_degradation in {node['unit']!r}, "
             f"so it must be >= 0; got {number!r}"
+        )
+    if kind == "absolute_floor" and not number > 0:
+        raise ContractRefusal(
+            f"{label}.value is an absolute_floor in {node['unit']!r}, a level the "
+            f"candidate's own measurement must reach, so it must be strictly positive; "
+            f"got {number!r}"
         )
 
 

@@ -67,6 +67,7 @@ def _unset_all(payload: dict) -> dict:
             "unit": m["unit"],
             "direction": m["direction"],
             "magnitude_kind": m["magnitude_kind"],
+            "decision_rule": m["decision_rule"],
             "comparison": m["comparison"],
             "set_from": m["set_from"],
         }
@@ -846,6 +847,7 @@ def test_f3_non_numeric_margin_is_refused(tmp_path, base, name, bad):
 @pytest.mark.parametrize("name", ["completeness", "identity"])
 @pytest.mark.parametrize("bad", [0.0, -0.5])
 def test_f3_non_positive_minimum_improvement_margin_is_refused(tmp_path, base, name, bad):
+    """Both a minimum_improvement and an absolute_floor must be strictly positive."""
     payload = _fully_set(base)
     payload["acceptance"]["margins"][name]["value"] = bad
     with pytest.raises(ContractRefusal, match="strictly positive"):
@@ -864,7 +866,7 @@ def test_f3_negative_tolerance_margin_is_refused_but_zero_is_allowed(tmp_path, b
 
 
 def test_f3_margin_must_declare_its_unit_direction_and_magnitude_kind(tmp_path, base):
-    for key in ("unit", "direction", "comparison", "magnitude_kind", "set_from"):
+    for key in ("unit", "direction", "comparison", "magnitude_kind", "decision_rule", "set_from"):
         payload = copy.deepcopy(base)
         payload["acceptance"]["margins"]["identity"].pop(key)
         with pytest.raises(ContractRefusal, match=f"must declare a non-empty {key!r}"):
@@ -883,10 +885,30 @@ def test_f3_shipped_margins_declare_their_magnitude_kinds(base):
     kinds = {n: m["magnitude_kind"] for n, m in base["acceptance"]["margins"].items()}
     assert kinds == {
         "completeness": "minimum_improvement",
-        "identity": "minimum_improvement",
+        # An absolute level the candidate's own train must reach, not a delta:
+        # 0.8 read as a minimum_improvement over a baseline of 1.0 by
+        # construction would have been an unsatisfiable gate.
+        "identity": "absolute_floor",
         "contamination": "maximum_tolerated_degradation",
         "healthy_interval_preservation": "maximum_tolerated_degradation",
     }
+
+
+def test_f3_every_shipped_margin_states_an_unambiguous_decision_rule(base):
+    """A gate whose rule must be reconstructed from a label is not frozen."""
+    for name, margin in base["acceptance"]["margins"].items():
+        rule = margin["decision_rule"]
+        assert isinstance(rule, str) and len(rule.split()) >= 10, name
+        # the rule names the number it is about and a comparison operator
+        assert str(margin["value"]) in rule, name
+        assert any(op in rule for op in (">=", "<=")), name
+
+
+def test_f3_the_candidate_declares_the_execution_mode_that_is_implemented(base):
+    """The implementation replays a retained sort; the contract must say so."""
+    settings = base["candidate"]["settings"]["value"]
+    assert settings["execution_mode"] == "retained_sort_replay"
+    assert settings["inputs"] == {"source_sort_id": "rescue_luke0804_v2v1_g0_imec0"}
 
 
 @pytest.mark.parametrize("key", ["name", "sort_id", "cluster_id"])

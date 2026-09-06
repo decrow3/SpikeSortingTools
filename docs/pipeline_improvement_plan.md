@@ -1521,6 +1521,17 @@ unresolved result evidence that the unit was preserved.
 
 ### Option B — unwarped motion-aware identity, and the architecture gate
 
+**Executed 2026-09-06 as the first candidate; verdict FAIL.** See
+[first pipeline candidate v1 result](luke_first_pipeline_candidate_v1_result.md).
+The bounded replay ran on the nominated case (`rescue…c37__failure1`) and on
+healthy interval H1 under the frozen contract. It made no cross-cluster identity
+links at all and fragmented 659 clusters into 2,038 units, because the linker's
+refractory gate was specified as an absolute 0.01 against units whose own
+baseline is ~0.40. Identity and contamination both failed; completeness was
+`unevaluable` — and would otherwise have read as a 20.8 pp "improvement" produced
+by discarding 82% of the interval. The gate is not to be retuned and this case
+re-run; the next action is one prespec change for a v2 contract (result §8).
+
 When B is the selected first candidate, build the minimum viable unwarped option:
 retain the accepted
 voltage exactly, transform only spike/template coordinates into a tissue frame,
