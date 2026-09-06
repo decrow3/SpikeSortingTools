@@ -944,11 +944,18 @@ def historical_exact_fit(cluster_amplitudes: np.ndarray, i0: int, i1: int) -> di
 # these intervals (``configs/first_pipeline_candidate.v1.json``); this module
 # re-validates them at runtime rather than trusting the shipped list.
 # --------------------------------------------------------------------------- #
-#: Tolerance for interval arithmetic, in seconds. Interval bounds are authored
-#: as exact round numbers plus one duration copied from the recording manifest,
-#: so this absorbs float representation only -- it is far below the ~120 s
-#: scale of any window and cannot admit a case that overhangs a boundary.
-INTERVAL_EPSILON_S = 1e-6
+#: Tolerance for deciding that a RECOMPUTED interval bound equals an AUTHORED
+#: one, in seconds. This is the only place a tolerance is defensible: both
+#: sides describe the same instant and may differ by float representation.
+#:
+#: It is deliberately not used for containment, disjointness, merging or
+#: subtraction. A tolerance there is not a representation correction, it is a
+#: band in which a case may overhang a development window, or a contract may
+#: overlap a region it reserved, and still pass. Those comparisons are exact,
+#: which fails closed: a span that misses containment by a nanosecond is
+#: excluded (costing at most one case), where the reverse would admit a case
+#: from the sealed panel or a reserved evaluation interval.
+INTERVAL_MATCH_EPSILON_S = 1e-9
 
 #: Audit cases with role ``control`` are DIAGNOSTIC controls: quiet spans of a
 #: non-failure cluster, selected inside development windows for comparison
@@ -1024,8 +1031,9 @@ class PermittedIntervals:
             return None
         if not (math.isfinite(start_s) and math.isfinite(end_s)) or end_s < start_s:
             return None
+        # exact: a span that overhangs by any amount is not contained
         for index, (w_start, w_stop) in enumerate(self.development_windows_s):
-            if start_s >= w_start - INTERVAL_EPSILON_S and end_s <= w_stop + INTERVAL_EPSILON_S:
+            if start_s >= w_start and end_s <= w_stop:
                 return index
         return None
 
@@ -1055,17 +1063,20 @@ class PermittedIntervals:
         }
 
 
-def _merge_intervals(
-    intervals: list[tuple[float, float]], eps: float = INTERVAL_EPSILON_S,
-) -> list[tuple[float, float]]:
-    """Union of possibly overlapping/touching intervals, sorted by start."""
+def _merge_intervals(intervals: list[tuple[float, float]]) -> list[tuple[float, float]]:
+    """Union of overlapping or exactly abutting intervals, sorted by start.
+
+    Exact: two cuts separated by a real, positive gap stay separate, so a
+    permitted sliver between two reserved regions is preserved rather than
+    quietly absorbed into one of them.
+    """
     if not intervals:
         return []
     ordered = sorted(intervals)
     merged = [ordered[0]]
     for start, stop in ordered[1:]:
         last_start, last_stop = merged[-1]
-        if start <= last_stop + eps:
+        if start <= last_stop:
             merged[-1] = (last_start, max(last_stop, stop))
         else:
             merged.append((start, stop))
@@ -1074,27 +1085,26 @@ def _merge_intervals(
 
 def _subtract_intervals(
     base: list[tuple[float, float]], cuts: list[tuple[float, float]],
-    eps: float = INTERVAL_EPSILON_S,
 ) -> list[tuple[float, float]]:
-    """``base`` minus ``cuts``; zero-length remnants are dropped."""
+    """``base`` minus ``cuts``, exactly; only empty remnants are dropped."""
     remaining = list(base)
-    for cut_start, cut_stop in _merge_intervals(cuts, eps):
+    for cut_start, cut_stop in _merge_intervals(cuts):
         nxt: list[tuple[float, float]] = []
         for start, stop in remaining:
-            if cut_stop <= start + eps or cut_start >= stop - eps:
+            if cut_stop <= start or cut_start >= stop:
                 nxt.append((start, stop))
                 continue
-            if cut_start > start + eps:
+            if cut_start > start:
                 nxt.append((start, cut_start))
-            if cut_stop < stop - eps:
+            if cut_stop < stop:
                 nxt.append((cut_stop, stop))
         remaining = nxt
-    return [(start, stop) for start, stop in remaining if stop - start > eps]
+    return [(start, stop) for start, stop in remaining if stop > start]
 
 
 def _intervals_equal(
     left: list[tuple[float, float]], right: list[tuple[float, float]],
-    eps: float = INTERVAL_EPSILON_S,
+    eps: float = INTERVAL_MATCH_EPSILON_S,
 ) -> bool:
     if len(left) != len(right):
         return False
@@ -1154,7 +1164,7 @@ def read_permitted_intervals(
         raise ValueError(
             f"interval contract {path}: recording.duration_s must be finite and positive"
         )
-    if abs(contract_duration - float(recording_duration_s)) > INTERVAL_EPSILON_S:
+    if abs(contract_duration - float(recording_duration_s)) > INTERVAL_MATCH_EPSILON_S:
         raise ValueError(
             f"interval contract {path} governs a recording of {contract_duration} s, but CONFIG's "
             f"sorts declare {recording_duration_s} s; the audit and the contract are not "
@@ -1218,7 +1228,7 @@ def read_permitted_intervals(
                 raise ValueError(f"{label} interval [{start}, {stop}] is not finite")
             if stop <= start:
                 raise ValueError(f"{label} interval [{start}, {stop}] must have stop > start")
-            if start < -INTERVAL_EPSILON_S or stop > recording_duration_s + INTERVAL_EPSILON_S:
+            if start < 0.0 or stop > recording_duration_s:
                 raise ValueError(
                     f"{label} interval [{start}, {stop}] falls outside the recording "
                     f"[0, {recording_duration_s}]"
@@ -1227,7 +1237,7 @@ def read_permitted_intervals(
     # development windows must not overlap each other
     ordered = sorted(development)
     for (a_start, a_stop), (b_start, b_stop) in zip(ordered, ordered[1:]):
-        if b_start < a_stop - INTERVAL_EPSILON_S:
+        if b_start < a_stop:
             raise ValueError(
                 f"development windows [{a_start}, {a_stop}] and [{b_start}, {b_stop}] overlap"
             )
@@ -1243,7 +1253,7 @@ def read_permitted_intervals(
     ):
         for d_start, d_stop in development:
             for c_start, c_stop in cuts:
-                if d_start < c_stop - INTERVAL_EPSILON_S and c_start < d_stop - INTERVAL_EPSILON_S:
+                if d_start < c_stop and c_start < d_stop:
                     raise ValueError(
                         f"development window [{d_start}, {d_stop}] intersects {label} "
                         f"[{c_start}, {c_stop}]"

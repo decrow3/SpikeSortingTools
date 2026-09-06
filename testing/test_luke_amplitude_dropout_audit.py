@@ -3004,3 +3004,72 @@ def test_the_shipped_config_points_at_the_shipped_contract():
     for d_start, d_stop in permitted.development_windows_s:
         for r_start, r_stop in permitted.reserved_evaluation_windows_s:
             assert d_stop <= r_start or d_start >= r_stop
+
+
+# --------------------------------------------------------------------------- #
+# the gate's comparisons are exact, not a tolerance band
+#
+# A tolerance applied to containment/disjointness is not a float-representation
+# correction: it is a width in which a case may overhang a development window,
+# or a contract may overlap a region it reserved, and still pass. These pin the
+# comparisons to exact, and pin the one place a tolerance is still allowed
+# (comparing a recomputed bound to an authored one) to representation scale.
+# --------------------------------------------------------------------------- #
+def test_a_span_overhanging_a_window_by_a_hair_is_not_contained():
+    permitted = _permitted(((0.0, 900.0),))
+    assert permitted.containing_index(500.0, 900.0) == 0          # exactly at the edge
+    assert permitted.containing_index(500.0, 900.0000005) is None  # 0.5 us past it
+    assert permitted.containing_index(-0.0000005, 400.0) is None   # 0.5 us before 0
+
+
+def test_a_contract_overlapping_a_reserved_interval_by_a_hair_is_refused(tmp_path):
+    """A development window may not extend even sub-microsecond into a reserved
+    healthy evaluation interval."""
+    healthy = [{"name": "H1", "start_s": 500.0, "stop_s": 620.0}]
+    payload = _contract_payload(duration_s=1000.0, sealed=[(900.0, 950.0)],
+                                buffer_s=10.0, healthy=healthy)
+    payload["intervals"]["development_windows"]["windows_s"] = [
+        [0.0, 500.0000005], [620.0, 890.0], [960.0, 1000.0],
+    ]
+    path = tmp_path / "c.json"
+    path.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="reserved healthy evaluation interval"):
+        read_permitted_intervals(_ref(path), recording_duration_s=1000.0)
+
+
+def test_a_contract_overlapping_the_sealed_buffer_by_a_hair_is_refused(tmp_path):
+    payload = _contract_payload(duration_s=1000.0, sealed=[(900.0, 950.0)],
+                                buffer_s=10.0, healthy=[])
+    payload["intervals"]["development_windows"]["windows_s"] = [
+        [0.0, 890.0000005], [960.0, 1000.0],
+    ]
+    path = tmp_path / "c.json"
+    path.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="sealed window expanded"):
+        read_permitted_intervals(_ref(path), recording_duration_s=1000.0)
+
+
+def test_a_window_ending_past_the_recording_by_a_hair_is_refused(tmp_path):
+    payload = _contract_payload(duration_s=1000.0, sealed=[(900.0, 950.0)],
+                                buffer_s=10.0, healthy=[])
+    payload["intervals"]["development_windows"]["windows_s"] = [
+        [0.0, 890.0], [960.0, 1000.0000005],
+    ]
+    path = tmp_path / "c.json"
+    path.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="outside the recording"):
+        read_permitted_intervals(_ref(path), recording_duration_s=1000.0)
+
+
+def test_merging_cuts_preserves_a_real_gap_between_them():
+    """A permitted sliver between two reserved regions is narrow, not absent.
+    Merging it away would silently enlarge what the contract excluded."""
+    from testing.luke_amplitude_dropout_audit import _merge_intervals, _subtract_intervals
+
+    assert _merge_intervals([(0.0, 100.0), (100.0000005, 200.0)]) == [
+        (0.0, 100.0), (100.0000005, 200.0),
+    ]
+    assert _merge_intervals([(0.0, 100.0), (100.0, 200.0)]) == [(0.0, 200.0)]  # abutting
+    assert _subtract_intervals([(0.0, 300.0)], [(0.0, 100.0), (100.0000005, 200.0)]) == [
+        (100.0, 100.0000005), (200.0, 300.0),
+    ]
