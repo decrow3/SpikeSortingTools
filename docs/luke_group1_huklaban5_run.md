@@ -22,3 +22,12 @@ Outputs are rooted at
 The controller requires the data mount, at least 500 GiB free, the exact parent
 contract, the completed manager and smoke receipts, and production CUDA before
 writing `launch.json` or starting preparation.
+
+The first long-run attempt was killed during strip preparation at 02:55 PDT on
+2026-09-07. `systemd-oomd` reported user-slice memory pressure of 79.45%, above
+its 50% threshold for more than 20 seconds. No sorter arm had started. Its full
+output tree and stale SIGKILL receipts are retained under `failed_attempts`.
+The replacement launch uses one preparation worker and
+`ManagedOOMPreference=avoid`; both deviations are explicit in the plan and the
+systemd unit. A Kilosort interruption still requires restarting the affected
+arm from its beginning.

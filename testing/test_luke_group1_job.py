@@ -14,6 +14,8 @@ def test_group1_commands_keep_motion_axis_and_skip_completed_smoke():
         assert not any(name.startswith("rescue_10_9") or name.startswith("rescue_9_") for name in command)
         if stage != "prepare_long":
             assert [command[i + 1] for i, value in enumerate(command) if value == "--arm"] == list(EXPECTED)
+        else:
+            assert command[command.index("--n-jobs") + 1] == "1"
 
 
 def test_group2_or_stale_contract_is_refused():
@@ -24,6 +26,12 @@ def test_group2_or_stale_contract_is_refused():
     ]:
         with pytest.raises(RuntimeError):
             commands({**plan, **change})
+
+
+def test_parallel_full_strip_preparation_is_refused():
+    plan = json.loads(PLAN.read_text())
+    with pytest.raises(RuntimeError, match="one worker"):
+        commands({**plan, "prepare_n_jobs": 4})
 
 
 def test_failed_long_preparation_never_launches_sort(tmp_path):

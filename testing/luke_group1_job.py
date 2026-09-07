@@ -34,12 +34,16 @@ def commands(plan):
                 or (params["Th_universal"], params["Th_learned"]) != (12, 9)):
             raise RuntimeError("Group 1 must vary only native motion at frozen 12/9 thresholds")
     root = Path(plan["output_root"])
+    prepare_n_jobs = plan.get("prepare_n_jobs", 1)
+    if prepare_n_jobs != 1:
+        raise RuntimeError("Group 1 full-strip preparation must use one worker")
     prefix = [sys.executable, "-u", "-m", "testing.run_development_ladder"]
     config = ["--config", str(ROOT / plan["contract_path"])]
     arms = [value for name in EXPECTED for value in ("--arm", name)]
     return [
         ("prepare_long", prefix + ["prepare-strip"] + config
-         + ["--output-root", str(root / "long/recording"), "--n-jobs", "4"]),
+         + ["--output-root", str(root / "long/recording"),
+            "--n-jobs", str(prepare_n_jobs)]),
         ("run_long", prefix + ["run-arms"] + config + arms
          + ["--recording-dir", str(root / "long/recording"),
             "--output-root", str(root / "long/arms"), "--group-id", plan["group_id"]]),
