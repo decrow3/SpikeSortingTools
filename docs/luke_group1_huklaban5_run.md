@@ -31,3 +31,13 @@ The replacement launch uses one preparation worker and
 `ManagedOOMPreference=avoid`; both deviations are explicit in the plan and the
 systemd unit. A Kilosort interruption still requires restarting the affected
 arm from its beginning.
+
+After all three long-strip manifests complete, Group 1 benchmarking runs two
+generic comparisons sequentially: native rigid versus motion off, then native
+nonrigid versus motion off. The controller is
+`testing/luke_group1_benchmark_job.py`; it validates the completed group receipt
+and all three sort identities before launch, records a separate managed receipt
+for each comparison, and stops without retry on failure. Comparison artifacts
+are written below `long/arms/comparisons`, while controller receipts and compact
+reports are written below `benchmarks`. The evaluator reports coverage and
+Pareto inputs but never manufactures a composite rank.
