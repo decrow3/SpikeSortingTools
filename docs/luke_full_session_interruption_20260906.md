@@ -2,8 +2,10 @@
 
 The restarted run is cancelled. The systemd user service is inactive, MainPID=0,
 and neither the sorter nor the comparison process remains. Logs and partial
-outputs are preserved. `HOLD.json` prevents the sorting entry point from being
-restarted until the hold is deliberately resolved with subsequent authorization.
+outputs are preserved. The tracked
+`configs/luke_full_session_rigid.HOLD.json` marker prevents both job entry points
+from being restarted until the hold is deliberately resolved with subsequent
+authorization. The legacy output-local `HOLD.json` is also honored when present.
 
 ## Original interruption: strongest evidence is launcher shutdown
 

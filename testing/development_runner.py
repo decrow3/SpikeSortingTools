@@ -18,7 +18,7 @@ from pipeline.runtime import validate_production_environment
 from testing.development_ladder import DevelopmentContract
 from testing.development_strip import repository_receipt, validate_development_selection
 from pipeline.config import fingerprint
-from testing.ladder_sorter import NAMED_CONFIGS, check_effective_settings, run_sorter_config
+from testing.ladder_sorter import NAMED_CONFIGS, _json_safe, check_effective_settings, run_sorter_config
 
 
 def _validated_existing_downstream(root: Path, identity_digest: str, *, sorter_output: Path, recording_dir: Path) -> tuple[Path, Path, dict, dict]:
@@ -51,6 +51,16 @@ def _validated_existing_downstream(root: Path, identity_digest: str, *, sorter_o
             "refractory/refractory_qc.pdf", "amp_truncation/truncation_qc.npz",
             "amp_truncation/present_qc.npz", "amp_truncation/truncation_qc.pdf")])
     return curated, qc, curation_receipt, qc_receipt
+
+
+def _validate_existing_sort_config(sort_manifest: dict, sorter_config) -> None:
+    """Require a reused sort to match every frozen requested sorter parameter."""
+    expected_params = _json_safe(sorter_config.params())
+    if sort_manifest.get("sorter_params") != expected_params:
+        raise RuntimeError("existing sort parameters differ from the frozen candidate configuration")
+    saved_digest = sort_manifest.get("config_digest")
+    if saved_digest is not None and saved_digest != sorter_config.digest:
+        raise RuntimeError("existing sort config digest differs from the frozen candidate configuration")
 
 
 def run_development_arms(
@@ -88,6 +98,7 @@ def run_development_arms(
             if not manifest_path.is_file():
                 raise FileNotFoundError(f"existing sort manifest missing: {manifest_path}")
             sort_manifest = json.loads(manifest_path.read_text())
+            _validate_existing_sort_config(sort_manifest, sorter_config)
         else:
             sort_manifest = run_sorter_config(recording_dir, sort_dir, sorter_config)
         if sort_manifest.get("recording_request_digest") != accepted["request_digest"]:

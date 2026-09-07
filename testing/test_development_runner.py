@@ -82,6 +82,24 @@ def test_sort_reuse_from_another_recording_fails_closed(monkeypatch, tmp_path):
         )
 
 
+@pytest.mark.parametrize("damage", ["params", "digest"])
+def test_existing_sort_requires_complete_frozen_config(damage):
+    from types import SimpleNamespace
+    from testing.development_runner import _validate_existing_sort_config
+    config = SimpleNamespace(params=lambda: {"do_CAR": True, "artifact_threshold": 1000}, digest="config-digest")
+    manifest = {
+        "sorter_params": {"do_CAR": True, "artifact_threshold": 1000},
+        "config_digest": "config-digest",
+    }
+    _validate_existing_sort_config(manifest, config)
+    if damage == "params":
+        manifest["sorter_params"]["artifact_threshold"] = 2000
+    else:
+        manifest["config_digest"] = "other-config"
+    with pytest.raises(RuntimeError, match="frozen candidate configuration"):
+        _validate_existing_sort_config(manifest, config)
+
+
 def test_outputs_cannot_overlap_the_recording(tmp_path):
     with pytest.raises(ValueError, match="disjoint"):
         run_development_arms(

@@ -1,0 +1,8 @@
+{
+  "schema_version": "user-requested-run-hold-v1",
+  "job": "luke_full_session_rigid_v1",
+  "state": "hold",
+  "reason": "The restarted full-session run was cancelled pending explicit authorization and prerequisite persistence/checkpoint validation.",
+  "created_date": "2026-09-06",
+  "removal_requires": "Subsequent explicit user authorization to restart this full-session sorting job."
+}

@@ -15,9 +15,21 @@ BASE = Path('/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_ime
 OUT = ROOT / 'testing/outputs/luke_full_session_rigid_v1'
 
 
+def assert_not_on_hold(root=ROOT):
+    holds = (
+        Path(root) / 'configs/luke_full_session_rigid.HOLD.json',
+        Path(root) / 'testing/outputs/luke_full_session_rigid_v1/HOLD.json',
+    )
+    present = [str(path) for path in holds if path.exists()]
+    if present:
+        raise RuntimeError(
+            'Run is on user-requested hold. Do not restart without subsequent authorization. '
+            f'Hold marker(s): {present}'
+        )
+
+
 def main():
-    if (OUT / 'HOLD.json').exists():
-        raise RuntimeError('Run is on user-requested hold; see HOLD.json. Do not restart without subsequent authorization.')
+    assert_not_on_hold()
     OUT.mkdir(parents=True, exist_ok=True)
     os.environ.setdefault('MPLCONFIGDIR', '/tmp/luke-full-session-matplotlib')
     environment = validate_production_environment(require_cuda=True)

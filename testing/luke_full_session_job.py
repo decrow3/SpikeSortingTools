@@ -5,11 +5,14 @@ import sys
 import time
 from pathlib import Path
 
+from testing.luke_full_session_rigid import assert_not_on_hold
+
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'testing/outputs/luke_full_session_rigid_v1'
 
 
 def main():
+    assert_not_on_hold()
     OUT.mkdir(parents=True, exist_ok=True)
     receipt = dict(started_unix=time.time(), state='running')
     path = OUT / 'job.json'

@@ -146,6 +146,20 @@ def strip_request(source_dir, source_manifest, source, recording_spec, spatial_s
     return selected, request
 
 
+def _validate_loaded_selection(actual, selected, selected_geometry):
+    """Validate metadata that is not protected by the recording binary digest."""
+    if (actual.get_num_samples() != selected.get_num_samples()
+            or actual.get_sampling_frequency() != selected.get_sampling_frequency()
+            or recording_geometry_receipt(actual) != selected_geometry):
+        raise RuntimeError("loaded development recording differs from contracted frames or geometry")
+    if np.dtype(actual.dtype) != np.dtype(selected.dtype):
+        raise RuntimeError("loaded development recording dtype differs from the contracted slice")
+    actual_t_starts = [segment.t_start for segment in actual._recording_segments]
+    selected_t_starts = [segment.t_start for segment in selected._recording_segments]
+    if actual_t_starts != selected_t_starts:
+        raise RuntimeError("loaded development recording clock differs from the contracted slice")
+
+
 def validate_development_selection(recording_dir, accepted, recording_spec, spatial_spec):
     """Refuse valid recordings that are not the exact contracted strip."""
     from spikeinterface.core import load
@@ -154,11 +168,7 @@ def validate_development_selection(recording_dir, accepted, recording_spec, spat
     selected, request = strip_request(source_dir, source_manifest, load(source_dir), recording_spec, spatial_spec)
     if accepted.get("request_digest") != fingerprint(request):
         raise RuntimeError("development recording differs from the contracted slice")
-    actual = load(recording_dir)
-    if (actual.get_num_samples() != selected.get_num_samples()
-            or actual.get_sampling_frequency() != selected.get_sampling_frequency()
-            or recording_geometry_receipt(actual) != request["selected_geometry"]):
-        raise RuntimeError("loaded development recording differs from contracted frames or geometry")
+    _validate_loaded_selection(load(recording_dir), selected, request["selected_geometry"])
 
 
 def materialize_development_strip(
@@ -194,7 +204,9 @@ def materialize_development_strip(
         if manifest.get("request_digest") != request_digest:
             raise RuntimeError("existing strip belongs to another request")
         validate_accepted_recording(output_dir, manifest)
-        return load(output_dir), manifest
+        loaded = load(output_dir)
+        _validate_loaded_selection(loaded, selected, selected_geometry)
+        return loaded, manifest
 
     partial = output_dir.with_name(output_dir.name + ".partial")
     if partial.exists():

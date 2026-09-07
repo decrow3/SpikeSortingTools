@@ -81,6 +81,24 @@ def test_wrong_slice_refused_before_sort(prepared_strip,monkeypatch,tmp_path):
     assert not calls["sort"]
 
 
+@pytest.mark.parametrize("field,value,match", [
+    ("dtype", "<u2", "dtype"),
+    ("t_starts", [123.0], "clock"),
+])
+def test_strip_metadata_mutation_is_refused(prepared_strip, field, value, match):
+    import json
+    from pipeline.preprocess import validate_accepted_recording
+    from testing.development_strip import validate_development_selection
+    source,strip,rec,spatial,_ = prepared_strip
+    metadata_path = strip / "binary.json"
+    metadata = json.loads(metadata_path.read_text())
+    metadata["kwargs"][field] = value
+    metadata_path.write_text(json.dumps(metadata))
+    accepted = validate_accepted_recording(strip)
+    with pytest.raises(RuntimeError, match=match):
+        validate_development_selection(strip, accepted, rec, spatial)
+
+
 class FakeRecording:
     def __init__(self):
         self.ids = np.array(["c7", "c2", "c9", "c1", "c4"], dtype=object)
