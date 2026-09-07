@@ -7,6 +7,13 @@ Currently maintained by Declan Rowley
 
 ## Start here
 
+- **[Hindsight-first development prescription](docs/spikesorting_hindsight_development_prescription.md)**
+  — the current strategy: validate the evaluator, compare mature pipelines on
+  long recordings, advance by longitudinal efficacy plus guardrails, and require
+  evidence before custom methods. Use `python -m testing.run_development_ladder` with
+  [`configs/example.development_comparison.v1.json`](configs/example.development_comparison.v1.json)
+  to make that strategy an enforceable prospective contract; the operator
+  workflow and result schema are [documented here](docs/development_comparison_workflow.md).
 - **[Current development direction](docs/pipeline_improvement_plan.md)** — improve
   individual neurons' spike recovery throughout the recording, use amplitude
   completeness to identify actionable dropout cases, and escalate only when a

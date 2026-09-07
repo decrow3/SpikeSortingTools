@@ -86,8 +86,29 @@ NONRIGID = SorterConfig(
     "nonrigid",
     {"do_correction": True, "nblocks": 6},
 )
+RESCUE_10_9 = SorterConfig(
+    "rescue_10_9",
+    {"Th_universal": 10, "Th_learned": 9},
+)
+RESCUE_9_9 = SorterConfig(
+    "rescue_9_9",
+    {"Th_universal": 9, "Th_learned": 9},
+)
+RESCUE_9_8 = SorterConfig(
+    "rescue_9_8",
+    {"Th_universal": 9, "Th_learned": 8},
+)
 NAMED_CONFIGS = {
-    c.label: c for c in (RESCUE, LEGACY_STYLE, RESCUE_RIGID, NONRIGID)
+    c.label: c
+    for c in (
+        RESCUE,
+        LEGACY_STYLE,
+        RESCUE_RIGID,
+        NONRIGID,
+        RESCUE_10_9,
+        RESCUE_9_9,
+        RESCUE_9_8,
+    )
 }
 
 # What each config must resolve to once KS4 has applied it.
@@ -100,6 +121,12 @@ EXPECTED_EFFECTIVE = {
                      "Th_universal": 9, "Th_learned": 8},
     "nonrigid": {"effective_nblocks": 6, "do_CAR": True,
                  "Th_universal": 12, "Th_learned": 9},
+    "rescue_10_9": {"effective_nblocks": 0, "do_CAR": True,
+                    "Th_universal": 10, "Th_learned": 9},
+    "rescue_9_9": {"effective_nblocks": 0, "do_CAR": True,
+                   "Th_universal": 9, "Th_learned": 9},
+    "rescue_9_8": {"effective_nblocks": 0, "do_CAR": True,
+                   "Th_universal": 9, "Th_learned": 8},
 }
 
 
