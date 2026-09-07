@@ -1,0 +1,18 @@
+{
+  "schema": "luke-group2-execution-v1",
+  "contract_path": "testing/configs/luke0804_hindsight_ladder_v1.json",
+  "contract_digest": "02a803edd83473fb02bda0228a41fbdcfecfa3d8c026ef3c434ddeb8aabe1263",
+  "group_id": "group_2_threshold_axis",
+  "arms": [
+    "rescue_10_9_motion_off",
+    "rescue_9_9_motion_off",
+    "rescue_9_8_motion_off"
+  ],
+  "output_root": "/media/huklab/Data/SpikeSortingTools/luke0804_hindsight_ladder_v1/group2",
+  "smoke_start_s": 0.0,
+  "smoke_duration_s": 120.0,
+  "minimum_free_gib": 200,
+  "authorization": "User instructed Group 2 preparation/testing and then go ahead using a suitable local disk on huklaban1. Original full-probe rigid job remains on hold.",
+  "checkpoint_policy": "Completed sorts and downstream stages can be reused. No within-sort checkpoints; unexpected failure stops this job without automatic retry.",
+  "reference": "rescue_12_9_motion_off supplied separately by Group 1; not executed by this job"
+}
