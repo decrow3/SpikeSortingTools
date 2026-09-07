@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from pipeline.downstream import (
+    completed_stage_receipt,
     pin_sort_identity,
     run_curation_stage,
     run_matlab_export_stage,
@@ -15,23 +16,40 @@ from pipeline.downstream import (
 from pipeline.preprocess import validate_accepted_recording
 from pipeline.runtime import validate_production_environment
 from testing.development_ladder import DevelopmentContract
-from testing.development_strip import repository_receipt
+from testing.development_strip import repository_receipt, validate_development_selection
+from pipeline.config import fingerprint
 from testing.ladder_sorter import NAMED_CONFIGS, check_effective_settings, run_sorter_config
 
 
-def _validated_existing_downstream(root: Path, identity_digest: str) -> tuple[Path, Path, dict, dict]:
+def _validated_existing_downstream(root: Path, identity_digest: str, *, sorter_output: Path, recording_dir: Path) -> tuple[Path, Path, dict, dict]:
     curated = root / "cur/cur_output"
     qc = root / "qc"
     curation_receipt_path = root / "cur/curation_receipt.json"
     qc_receipt_path = qc / "qc_receipt.json"
     if not curation_receipt_path.is_file() or not qc_receipt_path.is_file():
         raise RuntimeError(f"existing downstream output lacks identity-bound receipts: {root}")
-    curation_receipt = json.loads(curation_receipt_path.read_text())
-    qc_receipt = json.loads(qc_receipt_path.read_text())
-    if curation_receipt.get("sort_identity_digest") != identity_digest:
-        raise RuntimeError("existing curation belongs to another sort")
-    if qc_receipt.get("sort_identity_digest") != identity_digest:
-        raise RuntimeError("existing QC belongs to another sort")
+    def validate(request_path, receipt_path, stage, settings, required):
+        request = json.loads(request_path.read_text())
+        expected = dict(schema_version="rescue-downstream-stage-request-v1", stage=stage,
+                        sort_identity_digest=identity_digest, settings=settings)
+        if any(request.get(k) != v for k, v in expected.items()) or request.get("request_digest") != fingerprint(expected):
+            raise RuntimeError(f"existing {stage} settings or source differ from the frozen profile")
+        receipt = completed_stage_receipt(receipt_path, request=request, required_files=required)
+        if receipt is None or receipt.get("sort_identity_digest") != identity_digest:
+            raise RuntimeError(f"existing {stage} belongs to another sort")
+        return receipt
+    curation_receipt = validate(root / "cur/curation_request.json", curation_receipt_path,
+        "legacy_compatible_curation", dict(sorter_output=str(sorter_output.resolve()),
+            strategy="run_cur_final_cosine", cosine_threshold=0.90, ccg_threshold=0.5,
+            automatic_artifact_pair_merging=False),
+        [curated / n for n in ("spike_times.npy", "spike_clusters.npy", "cluster_KSLabel.tsv", "ops.npy")])
+    qc_receipt = validate(qc / "qc_request.json", qc_receipt_path, "legacy_compatible_qc",
+        dict(recording_dir=str(recording_dir.resolve()), curated_output=str(curated.resolve()),
+            waveform_seed=0, waveform_extractor="ordered_chunked_local_memmap_v1",
+            waveform_read_chunk_duration_s=1.0, waveforms_per_unit=512, waveform_samples=82),
+        [qc / n for n in ("waveforms/waveforms.npz", "refractory/refractory_qc.npz",
+            "refractory/refractory_qc.pdf", "amp_truncation/truncation_qc.npz",
+            "amp_truncation/present_qc.npz", "amp_truncation/truncation_qc.pdf")])
     return curated, qc, curation_receipt, qc_receipt
 
 
@@ -54,8 +72,7 @@ def run_development_arms(
     ):
         raise ValueError("development output must be disjoint from the recording")
     accepted = validate_accepted_recording(recording_dir)
-    if accepted.get("request_digest") != contract.raw["recording"]["recording_digest"] and accepted.get("source_recording_request_digest") != contract.raw["recording"]["recording_digest"]:
-        raise RuntimeError("development recording is not derived from the contracted accepted recording")
+    validate_development_selection(recording_dir, accepted, contract.raw["recording"], contract.raw["spatial_contract"])
     environment = validate_production_environment(require_cuda=require_cuda)
     repository = repository_receipt()
     output_root.mkdir(parents=True, exist_ok=True)
@@ -81,7 +98,8 @@ def run_development_arms(
         existing_downstream = candidate.get("existing_downstream_root")
         if existing_downstream:
             curated, qc_dir, curation_receipt, qc_receipt = _validated_existing_downstream(
-                Path(existing_downstream).resolve(), identity["identity_digest"]
+                Path(existing_downstream).resolve(), identity["identity_digest"],
+                sorter_output=sort_dir / "sorter_output", recording_dir=recording_dir,
             )
         else:
             curation_receipt = run_curation_stage(

@@ -37,7 +37,7 @@ def repository_receipt(root: Path | None = None) -> dict[str, Any]:
         diff = subprocess.run(
             ["git", "-C", str(root), "diff", "HEAD", "--binary", "--no-ext-diff"],
             check=True, capture_output=True,
-        ).stdout.encode()
+        ).stdout
     except (OSError, subprocess.CalledProcessError) as error:
         raise RuntimeError("cannot establish repository identity") from error
     return {
@@ -119,6 +119,48 @@ def _frame_range(recording, recording_spec: Mapping[str, Any]) -> tuple[int, int
     return start, end
 
 
+def strip_request(source_dir, source_manifest, source, recording_spec, spatial_spec):
+    """Resolve the same physical selection for preparation and execution."""
+    for name, expected in {
+        "request_digest": recording_spec["recording_digest"],
+        "recording_content_sha256": recording_spec["recording_content_sha256"],
+        "probe_geometry_hash": recording_spec["probe_geometry_hash"],
+    }.items():
+        if source_manifest.get(name) != expected:
+            raise RuntimeError(f"accepted recording {name} differs from the experiment specification")
+    geometry = recording_geometry_receipt(source)
+    if geometry["probe_geometry_hash"] != recording_spec["probe_geometry_hash"]:
+        raise RuntimeError("loaded recording geometry differs from the experiment specification")
+    selection = select_depth_channels(source,
+        processing_depth_um=spatial_spec["processing_depth_um"],
+        scoring_depth_um=spatial_spec["scoring_depth_um"])
+    start, end = _frame_range(source, recording_spec)
+    selected = source.channel_slice(selection["processing_channel_ids"]).frame_slice(start_frame=start, end_frame=end)
+    request = dict(schema_version=STRIP_SCHEMA, pipeline_version=PIPELINE_VERSION,
+        source_path=str(source_dir), source_recording_request_digest=source_manifest["request_digest"],
+        source_recording_content_sha256=source_manifest["recording_content_sha256"],
+        source_probe_geometry_hash=geometry["probe_geometry_hash"],
+        selected_start_frame=start, selected_end_frame=end,
+        spatial_contract=dict(spatial_spec), selection=selection,
+        selected_geometry=recording_geometry_receipt(selected))
+    return selected, request
+
+
+def validate_development_selection(recording_dir, accepted, recording_spec, spatial_spec):
+    """Refuse valid recordings that are not the exact contracted strip."""
+    from spikeinterface.core import load
+    source_dir = Path(recording_spec["accepted_recording_path"]).resolve()
+    source_manifest = json.loads((source_dir / MANIFEST_NAME).read_text())
+    selected, request = strip_request(source_dir, source_manifest, load(source_dir), recording_spec, spatial_spec)
+    if accepted.get("request_digest") != fingerprint(request):
+        raise RuntimeError("development recording differs from the contracted slice")
+    actual = load(recording_dir)
+    if (actual.get_num_samples() != selected.get_num_samples()
+            or actual.get_sampling_frequency() != selected.get_sampling_frequency()
+            or recording_geometry_receipt(actual) != request["selected_geometry"]):
+        raise RuntimeError("loaded development recording differs from contracted frames or geometry")
+
+
 def materialize_development_strip(
     accepted_recording_dir: Path | str,
     output_dir: Path | str,
@@ -140,41 +182,9 @@ def materialize_development_strip(
     if output_dir == source_dir or output_dir.is_relative_to(source_dir) or source_dir.is_relative_to(output_dir):
         raise ValueError("development output must be disjoint from the accepted source")
     source_manifest = validate_accepted_recording(source_dir)
-    expected = {
-        "request_digest": recording_spec["recording_digest"],
-        "recording_content_sha256": recording_spec["recording_content_sha256"],
-        "probe_geometry_hash": recording_spec["probe_geometry_hash"],
-    }
-    for name, value in expected.items():
-        if source_manifest.get(name) != value:
-            raise RuntimeError(f"accepted recording {name} differs from the experiment specification")
-
     source = load(source_dir)
-    geometry = recording_geometry_receipt(source)
-    if geometry["probe_geometry_hash"] != recording_spec["probe_geometry_hash"]:
-        raise RuntimeError("loaded recording geometry differs from the experiment specification")
-    selection = select_depth_channels(
-        source,
-        processing_depth_um=spatial_spec["processing_depth_um"],
-        scoring_depth_um=spatial_spec["scoring_depth_um"],
-    )
-    start_frame, end_frame = _frame_range(source, recording_spec)
-    selected = source.channel_slice(selection["processing_channel_ids"])
-    selected = selected.frame_slice(start_frame=start_frame, end_frame=end_frame)
-    selected_geometry = recording_geometry_receipt(selected)
-    request = {
-        "schema_version": STRIP_SCHEMA,
-        "pipeline_version": PIPELINE_VERSION,
-        "source_path": str(source_dir),
-        "source_recording_request_digest": source_manifest["request_digest"],
-        "source_recording_content_sha256": source_manifest["recording_content_sha256"],
-        "source_probe_geometry_hash": geometry["probe_geometry_hash"],
-        "selected_start_frame": start_frame,
-        "selected_end_frame": end_frame,
-        "spatial_contract": dict(spatial_spec),
-        "selection": selection,
-        "selected_geometry": selected_geometry,
-    }
+    selected, request = strip_request(source_dir, source_manifest, source, recording_spec, spatial_spec)
+    selected_geometry = request["selected_geometry"]
     request_digest = fingerprint(request)
     manifest_path = output_dir / MANIFEST_NAME
     if output_dir.exists():
@@ -199,8 +209,8 @@ def materialize_development_strip(
     integrity = _validate_materialized_recording(partial, selected)
     binary_receipt = recording_binary_receipt(partial)
     manifest = {
-        "schema_version": RECORDING_MANIFEST_SCHEMA,
         **request,
+        "schema_version": RECORDING_MANIFEST_SCHEMA,
         "strip_schema_version": STRIP_SCHEMA,
         "request_digest": request_digest,
         "num_samples": int(selected.get_num_samples()),

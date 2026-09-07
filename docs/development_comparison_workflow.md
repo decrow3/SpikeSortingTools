@@ -1,5 +1,17 @@
 # Longitudinal development comparison workflow
 
+Comparison schema `long-sort-comparison-v2` uses all baseline units in the
+scoring interior as the fixed coverage denominator (all baseline units when
+no spatial region is supplied), regardless of candidate matching or labels.
+`baseline_eligibility.csv` records unmatched units, partners outside the
+interior, insufficient fit support, and measurable pairs. Coverage conditional
+on surviving pairs is reported separately and cannot satisfy the coverage gate.
+V1 comparison outputs require a new output namespace for reevaluation.
+
+Arm execution validates the exact prepared strip against the contracted time
+and physical channel selection. Reused curation and QC require matching stage
+settings, completed receipts and required outputs, not just a shared source sort.
+
 This is the executable contract layer for the
 [hindsight-first prescription](spikesorting_hindsight_development_prescription.md).
 It coordinates existing sorter runners and evaluators; it does not introduce a

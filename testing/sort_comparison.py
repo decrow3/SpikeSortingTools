@@ -22,7 +22,7 @@ from pipeline.config import fingerprint
 from testing.development_strip import classify_unit_depths
 
 
-COMPARISON_SCHEMA = "long-sort-comparison-v1"
+COMPARISON_SCHEMA = "long-sort-comparison-v2"
 EDGE_COLUMNS = [
     "baseline_cluster", "candidate_cluster", "matched_events", "baseline_events",
     "candidate_events", "unmatched_baseline_events", "unmatched_candidate_events",
@@ -343,7 +343,7 @@ def compare_sorts(
         candidate_sort, fs=fs, duration_s=duration_s,
         longitudinal_bin_s=float(config["longitudinal_bin_s"]), spatial_region=spatial_region,
     )
-    primary = edges[edges.primary_match].copy()
+    primary = edges[edges.primary_match.astype(bool)].copy()
     if spatial_region is not None:
         bclass = baseline_units.set_index("cluster_id").spatial_class
         cclass = candidate_units.set_index("cluster_id").spatial_class
@@ -437,13 +437,25 @@ def compare_sorts(
 
     interior_pairs = primary[primary.interior_primary]
     measurable = int(amplitude_pairs.measurable.sum()) if len(amplitude_pairs) else 0
+    eligible = baseline_units if spatial_region is None else baseline_units[baseline_units.spatial_class == "interior"]
+    cohort_rows = []
+    for cid in eligible.cluster_id:
+        partner = primary[primary.baseline_cluster == cid]
+        fitted = amplitude_pairs[amplitude_pairs.baseline_cluster == cid] if len(amplitude_pairs) else pd.DataFrame()
+        reason = ("unmatched" if partner.empty else "candidate_not_interior" if not partner.interior_primary.iloc[0]
+                  else "insufficient_fit_support" if fitted.empty or not fitted.measurable.iloc[0] else "measurable")
+        cohort_rows.append(dict(baseline_cluster=int(cid), candidate_cluster=None if partner.empty else int(partner.candidate_cluster.iloc[0]), status=reason))
+    eligibility = pd.DataFrame(cohort_rows, columns=["baseline_cluster", "candidate_cluster", "status"])
     coverage = {
+        "baseline_eligible_units": int(len(eligible)),
+        "baseline_cohort_status_counts": eligibility.status.value_counts().to_dict(),
         "primary_matches": int(len(primary)),
         "interior_primary_matches": int(len(interior_pairs)),
         "amplitude_measurable_both_common_time": measurable,
-        "amplitude_measurable_fraction": measurable / len(interior_pairs) if len(interior_pairs) else 0.0,
+        "matched_pair_conditional_measurable_fraction": measurable / len(interior_pairs) if len(interior_pairs) else 0.0,
+        "amplitude_measurable_fraction": measurable / len(eligible) if len(eligible) else 0.0,
         "endpoint_status": (
-            "measured" if len(interior_pairs) and measurable / len(interior_pairs) >= float(config["minimum_measurable_unit_fraction"])
+            "measured" if len(eligible) and measurable > 0 and measurable / len(eligible) >= float(config["minimum_measurable_unit_fraction"])
             else "infeasible_insufficient_coverage"
         ),
     }
@@ -486,6 +498,7 @@ def compare_sorts(
         "amplitude_completeness_pairs": amplitude_pairs,
         "unit_metrics_baseline": baseline_units, "unit_metrics_candidate": candidate_units,
         "guardrail_summary": guardrails, "coverage_summary": coverage, "decision": decision,
+        "baseline_eligibility": eligibility,
     }
     if output_dir is not None:
         output = Path(output_dir)
@@ -498,7 +511,7 @@ def compare_sorts(
         for name in ("summary", "candidate_manifest", "split_merge_summary", "coverage_summary", "decision"):
             (output / f"{name}.json").write_text(json.dumps(report[name], indent=2) + "\n")
         for name in (
-            "edges", "primary_matches", "amplitude_windows", "amplitude_completeness_pairs",
+            "edges", "primary_matches", "amplitude_windows", "amplitude_completeness_pairs", "baseline_eligibility",
             "unit_metrics_baseline", "unit_metrics_candidate", "guardrail_summary",
         ):
             filename = "correspondence_edges.csv" if name == "edges" else f"{name}.csv"

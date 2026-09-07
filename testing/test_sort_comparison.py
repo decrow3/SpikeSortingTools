@@ -49,6 +49,29 @@ def config():
     }
 
 
+def test_lost_units_stay_in_coverage_denominator():
+    baseline = pop([100,200,300,1100,1200,1300,2100,2200,2300,3100,3200,3300], [1,2,3]*4)
+    candidate = pop([100,1100,2100,3100], [11]*4)
+    bq = {"amplitude_windows": pd.concat([windows(c,[20]*4) for c in [1,2,3]], ignore_index=True)}
+    cq = {"amplitude_windows": windows(11,[1]*4)}
+    report = compare_sorts(baseline,candidate,bq,cq,config())
+    coverage = report["coverage_summary"]
+    assert coverage["baseline_eligible_units"] == 3
+    assert coverage["amplitude_measurable_fraction"] == pytest.approx(1/3)
+    assert coverage["matched_pair_conditional_measurable_fraction"] == 1
+    assert coverage["baseline_cohort_status_counts"] == {"unmatched":2,"measurable":1}
+    assert report["decision"]["status"] == "endpoint_infeasible"
+
+
+def test_no_correspondence_reports_zero_coverage():
+    baseline=pop([100,1100,2100,3100],[1]*4)
+    candidate=pop([500,1500,2500,3500],[2]*4)
+    report=compare_sorts(baseline,candidate,{"amplitude_windows":windows(1,[20]*4)},
+                        {"amplitude_windows":windows(2,[1]*4)},config())
+    assert report["coverage_summary"]["amplitude_measurable_fraction"]==0
+    assert report["baseline_eligibility"].status.tolist()==["unmatched"]
+
+
 def test_clear_split_merge_unmatched_and_good_to_mua_are_retained():
     baseline = pop(
         [100, 200, 300, 400, 500, 600], [1, 1, 1, 1, 9, 9], labels={1: "good", 9: "mua"}

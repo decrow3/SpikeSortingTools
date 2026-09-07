@@ -13,12 +13,13 @@ def fake_contract():
     return SimpleNamespace(
         digest="contract-digest",
         candidates=candidates,
-        raw={"recording": {"recording_digest": "source-request"}},
+        raw={"recording": {"recording_digest": "source-request"}, "spatial_contract": {}},
     )
 
 
 def install_mocks(monkeypatch, *, accepted_digest="strip-request"):
     calls = {"sort": [], "curation": [], "qc": [], "export": []}
+    monkeypatch.setattr("testing.development_runner.validate_development_selection", lambda *args: None)
     monkeypatch.setattr(
         "testing.development_runner.validate_accepted_recording",
         lambda path: {
@@ -87,3 +88,43 @@ def test_outputs_cannot_overlap_the_recording(tmp_path):
             fake_contract(), recording_dir=tmp_path / "recording",
             output_root=tmp_path / "recording/outputs", require_cuda=False,
         )
+
+
+@pytest.mark.parametrize("damage", [None,"curation_settings","qc_settings","incomplete","missing_file"])
+def test_existing_downstream_validates_requests_and_outputs(tmp_path,damage):
+    import json
+    from pipeline.downstream import ensure_stage_request,write_stage_receipt
+    from pipeline.config import fingerprint
+    from testing.development_runner import _validated_existing_downstream
+    root=tmp_path/"existing"; curated=root/"cur/cur_output"; qc=root/"qc"
+    sorter=tmp_path/"sorter_output"; recording=tmp_path/"recording"
+    identity={"identity_digest":"id"}
+    stages=[(root/"cur","curation","legacy_compatible_curation",
+        dict(sorter_output=str(sorter),strategy="run_cur_final_cosine",cosine_threshold=.9,ccg_threshold=.5,automatic_artifact_pair_merging=False),
+        [curated/n for n in ("spike_times.npy","spike_clusters.npy","cluster_KSLabel.tsv","ops.npy")]),
+        (qc,"qc","legacy_compatible_qc",
+        dict(recording_dir=str(recording),curated_output=str(curated),waveform_seed=0,
+             waveform_extractor="ordered_chunked_local_memmap_v1",waveform_read_chunk_duration_s=1.,waveforms_per_unit=512,waveform_samples=82),
+        [qc/n for n in ("waveforms/waveforms.npz","refractory/refractory_qc.npz","refractory/refractory_qc.pdf",
+                        "amp_truncation/truncation_qc.npz","amp_truncation/present_qc.npz","amp_truncation/truncation_qc.pdf")])]
+    for folder,name,stage,settings,files in stages:
+        for f in files:
+            f.parent.mkdir(parents=True,exist_ok=True);f.touch()
+        request=ensure_stage_request(folder/f"{name}_request.json",stage=stage,sort_identity=identity,settings=settings)
+        write_stage_receipt(folder/f"{name}_receipt.json",request=request,required_files=files,summary={})
+    if damage in {"curation_settings","qc_settings"}:
+        folder,name,_,_,_=stages[0 if damage=="curation_settings" else 1]
+        path=folder/f"{name}_request.json"; data=json.loads(path.read_text())
+        data["settings"]["cosine_threshold" if name=="curation" else "waveform_seed"]=.8 if name=="curation" else 2
+        data["request_digest"]=fingerprint({k:v for k,v in data.items() if k not in {"request_digest","created_at"}})
+        path.write_text(json.dumps(data))
+    elif damage=="incomplete":
+        path=qc/"qc_receipt.json";data=json.loads(path.read_text());data["complete"]=False;path.write_text(json.dumps(data))
+    elif damage=="missing_file":
+        (curated/"ops.npy").unlink()
+    if damage:
+        with pytest.raises(RuntimeError):
+            _validated_existing_downstream(root,"id",sorter_output=sorter,recording_dir=recording)
+    else:
+        result=_validated_existing_downstream(root,"id",sorter_output=sorter,recording_dir=recording)
+        assert result[:2]==(curated,qc)
