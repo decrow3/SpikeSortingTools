@@ -35,7 +35,23 @@ def test_digest_is_stable_and_config_sensitive():
 
 
 def test_named_configs_registry():
-    assert set(NAMED_CONFIGS) == {"rescue", "legacy_style", "rescue_rigid", "nonrigid"}
+    assert set(NAMED_CONFIGS) == {
+        "rescue", "legacy_style", "rescue_rigid", "nonrigid",
+        "rescue_10_9", "rescue_9_9", "rescue_9_8",
+    }
+
+
+@pytest.mark.parametrize(
+    "label, thresholds",
+    [("rescue_10_9", (10, 9)), ("rescue_9_9", (9, 9)), ("rescue_9_8", (9, 8))],
+)
+def test_threshold_candidates_change_only_the_threshold_axis(label, thresholds):
+    baseline = RESCUE.params()
+    candidate = NAMED_CONFIGS[label].params()
+    changed = {key for key in baseline if baseline[key] != candidate[key]}
+    assert changed <= {"Th_universal", "Th_learned"}
+    assert (candidate["Th_universal"], candidate["Th_learned"]) == thresholds
+    assert NAMED_CONFIGS[label].digest != RESCUE.digest
 
 
 def test_nonrigid_turns_on_datashift_without_touching_thresholds():

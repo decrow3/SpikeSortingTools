@@ -1,0 +1,65 @@
+{
+  "schema_version": "longitudinal-development-comparison-v1",
+  "experiment_id": "luke0804-imec0-hindsight-ladder-v1",
+  "development_status": "implementation_ready_not_executed",
+  "decision_statement": "If a standard candidate improves at least one prespecified longitudinal efficacy axis on adequate interior support without a guardrail failure, then advance the non-dominated candidate to full-probe confirmation; otherwise stop that arm.",
+  "recording": {
+    "accepted_recording_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording",
+    "session_id": "Luke-2025-08-04-imec0",
+    "recording_digest": "cc8a98f6a1352314c4442db0a6bb6ba17f7c81bfaa3be994a99b2febc0d0c0f0",
+    "recording_content_sha256": "2d6fac755db3182841bf121d822754f963ebada3bcb8cd9e96e0b63e6f9b7372",
+    "probe_geometry_hash": "8209fdb4d00e7ac71a6f7baf3faf02b5fd8cc6093eba07d9912bec0b3eee9ede",
+    "stream_id": "imec0.ap",
+    "total_duration_s": 10473.5537279367,
+    "start_s": 0.0,
+    "duration_s": 10473.5537279367,
+    "continuous": true,
+    "full_session": true
+  },
+  "spatial_contract": {
+    "processing_depth_um": [1400.0, 2380.0],
+    "scoring_depth_um": [1600.0, 2180.0],
+    "halo_below_um": 200.0,
+    "halo_above_um": 200.0,
+    "required_support_um": 200.0,
+    "minimum_edge_exclusion_um": 80.0,
+    "boundary_qc": true
+  },
+  "curation_profile": "legacy-compatible-cosine-0.90-ccg-0.5-v1",
+  "candidates": [
+    {"name": "rescue_12_9_motion_off", "role": "reference", "sorter_config": "rescue", "curation_profile": "legacy-compatible-cosine-0.90-ccg-0.5-v1"},
+    {"name": "rescue_12_9_native_rigid", "role": "candidate", "sorter_config": "rescue_rigid", "curation_profile": "legacy-compatible-cosine-0.90-ccg-0.5-v1"},
+    {"name": "rescue_12_9_native_nonrigid", "role": "candidate", "sorter_config": "nonrigid", "curation_profile": "legacy-compatible-cosine-0.90-ccg-0.5-v1"},
+    {"name": "rescue_10_9_motion_off", "role": "candidate", "sorter_config": "rescue_10_9", "curation_profile": "legacy-compatible-cosine-0.90-ccg-0.5-v1"},
+    {"name": "rescue_9_9_motion_off", "role": "candidate", "sorter_config": "rescue_9_9", "curation_profile": "legacy-compatible-cosine-0.90-ccg-0.5-v1"},
+    {"name": "rescue_9_8_motion_off", "role": "candidate", "sorter_config": "rescue_9_8", "curation_profile": "legacy-compatible-cosine-0.90-ccg-0.5-v1"}
+  ],
+  "evaluation": {
+    "correspondence_tolerance_ms": 0.5,
+    "minimum_correspondence_overlap": 0.1,
+    "primary_retention": 0.5,
+    "amplitude_window_spikes": 1000,
+    "longitudinal_bin_s": 300.0,
+    "refractory_period_ms": 1.5,
+    "coincidence_tolerance_ms": 0.5,
+    "coincidence_depth_um": 75.0,
+    "minimum_valid_amplitude_windows": 2
+  },
+  "metrics": {
+    "minimum_measurable_unit_fraction": 0.5,
+    "minimum_common_time_fraction": 0.5,
+    "maximum_full_probe_candidates": 2,
+    "primary": {
+      "median_common_time_missingness_improvement_pp": {"minimum_improvement": 5.0, "repeatability": 2.0},
+      "exclusive_identity_continuity_improvement": {"minimum_improvement": 0.05, "repeatability": 0.02}
+    },
+    "guardrails": {
+      "refractory_contamination": {"maximum_regression": 0.01},
+      "chance_aware_duplicate_burden": {"maximum_regression": 0.01},
+      "split_merge_burden": {"maximum_regression": 0.02},
+      "waveform_instability": {"maximum_regression": 0.05},
+      "boundary_burden": {"maximum_regression": 0.01}
+    }
+  },
+  "validation_sequence": ["smoke", "long_strip", "full_probe", "second_session"]
+}

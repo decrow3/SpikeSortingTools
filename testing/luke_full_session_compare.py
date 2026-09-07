@@ -6,97 +6,10 @@ import io
 
 import numpy as np
 import pandas as pd
-from numba import njit
 
 from testing.luke_full_session_rigid import BASE, OUT
 from testing.luke_amplitude_dropout_audit import read_curated_arrays, curated_arrays_from_raw, read_cached_truncation_qc, build_windows_table
-
-
-@njit(cache=True)
-def coincidence_counts(at, ac, bt, bc, na, nb, tolerance):
-    """All temporally possible edges; no cross-cluster exclusive assignment."""
-    counts = np.zeros((na, nb), dtype=np.int64)
-    left = 0
-    for i in range(len(at)):
-        while left < len(bt) and bt[left] < at[i] - tolerance:
-            left += 1
-        j = left
-        while j < len(bt) and bt[j] <= at[i] + tolerance:
-            counts[ac[i], bc[j]] += 1
-            j += 1
-    return counts
-
-
-@njit(cache=True)
-def exclusive_count(a, b, tolerance):
-    i = j = count = 0
-    while i < len(a) and j < len(b):
-        if a[i] < b[j] - tolerance:
-            i += 1
-        elif b[j] < a[i] - tolerance:
-            j += 1
-        else:
-            count += 1
-            i += 1
-            j += 1
-    return count
-
-
-def correspondence(a, b, tolerance):
-    aid, ac = np.unique(a['cl'], return_inverse=True)
-    bid, bc = np.unique(b['cl'], return_inverse=True)
-    an, bn = np.bincount(ac), np.bincount(bc)
-    possible = coincidence_counts(a['st'], ac, b['st'], bc, len(aid), len(bid), tolerance)
-    # Group once, preserving chronological ordering within each cluster.
-    at = np.split(a['st'][np.argsort(ac, kind='stable')], np.cumsum(an)[:-1])
-    bt = np.split(b['st'][np.argsort(bc, kind='stable')], np.cumsum(bn)[:-1])
-    edges = []
-    for i,j in np.argwhere(possible >= .1*np.minimum(an[:,None], bn[None,:])):
-        n = exclusive_count(at[i], bt[j], tolerance)
-        if n < .1*min(an[i], bn[j]):
-            continue
-        edges.append(dict(baseline_cluster=int(aid[i]), candidate_cluster=int(bid[j]),
-            matched_events=n, baseline_events=int(an[i]), candidate_events=int(bn[j]),
-            baseline_retention=n/an[i], candidate_retention=n/bn[j],
-            jaccard=n/(an[i]+bn[j]-n)))
-    columns = ['baseline_cluster','candidate_cluster','matched_events','baseline_events',
-               'candidate_events','baseline_retention','candidate_retention','jaccard']
-    frame = pd.DataFrame(edges, columns=columns)
-    if frame.empty:
-        frame['primary_match'] = pd.Series(dtype=bool)
-        return frame
-    # Ties are ambiguous, never resolved by cluster ID.
-    abest = frame.groupby('baseline_cluster').jaccard.transform('max')
-    bbest = frame.groupby('candidate_cluster').jaccard.transform('max')
-    am = frame.jaccard == abest
-    bm = frame.jaccard == bbest
-    au = am.groupby(frame.baseline_cluster).transform('sum') == 1
-    bu = bm.groupby(frame.candidate_cluster).transform('sum') == 1
-    frame['primary_match'] = am & bm & au & bu & (frame.baseline_retention >= .5) & (frame.candidate_retention >= .5)
-    return frame
-
-
-def common_time(a, b):
-    """Intersect nonoverlapping [start,end] windows; no interpolation over gaps."""
-    a, b = np.asarray(a).reshape(-1,3), np.asarray(b).reshape(-1,3)
-    for v in (a,b):
-        if len(v) and (not np.isfinite(v).all() or np.any(v[:,1] < v[:,0]) or np.any(v[1:,0] < v[:-1,1])):
-            raise ValueError('invalid or overlapping fit intervals')
-    i = j = 0
-    seconds = weighted = 0.
-    pieces = []
-    while i < len(a) and j < len(b):
-        lo, hi = max(a[i,0],b[j,0]), min(a[i,1],b[j,1])
-        if hi > lo:
-            d = a[i,2]-b[j,2]
-            seconds += hi-lo
-            weighted += (hi-lo)*d
-            pieces.append((lo,hi,a[i,2],b[j,2]))
-        if a[i,1] <= b[j,1]:
-            i += 1
-        else:
-            j += 1
-    return seconds, weighted/seconds if seconds else np.nan, pieces
+from testing.sort_comparison import common_time, correspondence, exclusive_count
 
 
 def load_population(name, base, fs, dest):
