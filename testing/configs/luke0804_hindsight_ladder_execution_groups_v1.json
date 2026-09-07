@@ -1,0 +1,37 @@
+{
+  "schema_version": "longitudinal-development-execution-groups-v1",
+  "contract_path": "testing/configs/luke0804_hindsight_ladder_v1.json",
+  "contract_digest": "02a803edd83473fb02bda0228a41fbdcfecfa3d8c026ef3c434ddeb8aabe1263",
+  "output_root": "/media/huklaban5/Data/SpikeSortingTools/luke0804_hindsight_ladder_v1",
+  "smoke": {
+    "start_s": 0.0,
+    "duration_s": 120.0,
+    "engineering_only": true
+  },
+  "groups": {
+    "group_1_motion_axis": {
+      "authorized_after_prerequisites": true,
+      "arms": [
+        "rescue_12_9_motion_off",
+        "rescue_12_9_native_rigid",
+        "rescue_12_9_native_nonrigid"
+      ]
+    },
+    "group_2_threshold_axis": {
+      "authorized_after_prerequisites": false,
+      "arms": [
+        "rescue_10_9_motion_off",
+        "rescue_9_9_motion_off",
+        "rescue_9_8_motion_off"
+      ]
+    }
+  },
+  "launch_gates": [
+    "focused_tests_pass",
+    "bounded_group_1_smoke_passes",
+    "persistent_manager_dummy_survives_launcher_disconnect_and_retains_exit_status",
+    "production_environment_and_cuda_validate",
+    "output_storage_has_capacity_for_strip_and_preserved_failed-arm evidence"
+  ],
+  "checkpoint_policy": "Kilosort has no within-sort checkpoint; interruption restarts only the affected arm from the beginning."
+}

@@ -11,7 +11,7 @@ from testing.development_ladder import build_plan, evaluate_results, load_contra
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("plan", "prepare-strip", "run-arms", "compare-arms", "evaluate"))
+    parser.add_argument("command", choices=("plan", "prepare-strip", "prepare-smoke", "run-smoke", "run-arms", "finalize-arms", "compare-arms", "evaluate"))
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--results", type=Path)
     parser.add_argument("--output", type=Path)
@@ -20,8 +20,12 @@ def main() -> None:
     parser.add_argument("--no-require-cuda", action="store_true")
     parser.add_argument("--baseline")
     parser.add_argument("--candidate")
+    parser.add_argument("--arm", action="append", dest="arms")
+    parser.add_argument("--group-id")
     parser.add_argument("--n-jobs", type=int, default=1)
     parser.add_argument("--chunk-duration", default="10s")
+    parser.add_argument("--smoke-start-s", type=float, default=0.0)
+    parser.add_argument("--smoke-duration-s", type=float, default=120.0)
     args = parser.parse_args()
     contract = load_contract(args.config)
     if args.command == "plan":
@@ -41,6 +45,51 @@ def main() -> None:
             chunk_duration=args.chunk_duration,
         )
         report = manifest
+    elif args.command == "prepare-smoke":
+        from testing.development_smoke import build_smoke_contract, pin_smoke_plan
+        from testing.development_strip import materialize_development_strip
+
+        if args.output_root is None or not args.arms:
+            parser.error("prepare-smoke requires --output-root and at least one --arm")
+        smoke, plan = build_smoke_contract(
+            contract, candidate_names=args.arms, start_s=args.smoke_start_s,
+            duration_s=args.smoke_duration_s,
+        )
+        pin_smoke_plan(plan, args.output_root.parent / "smoke_plan.json")
+        _, manifest = materialize_development_strip(
+            smoke.raw["recording"]["accepted_recording_path"],
+            args.output_root,
+            recording_spec=smoke.raw["recording"],
+            spatial_spec=smoke.raw["spatial_contract"],
+            n_jobs=args.n_jobs,
+            chunk_duration=args.chunk_duration,
+        )
+        report = {"engineering_only": True, "smoke_plan": plan, "recording_manifest": manifest}
+    elif args.command == "run-smoke":
+        from testing.development_runner import finalize_development_arms, run_development_arms
+        from testing.development_smoke import build_smoke_contract, pin_smoke_plan
+
+        if args.recording_dir is None or args.output_root is None or not args.arms:
+            parser.error("run-smoke requires --recording-dir, --output-root, and at least one --arm")
+        smoke, plan = build_smoke_contract(
+            contract, candidate_names=args.arms, start_s=args.smoke_start_s,
+            duration_s=args.smoke_duration_s,
+        )
+        pin_smoke_plan(plan, args.output_root / "smoke_plan.json")
+        group_id = args.group_id or "engineering-smoke"
+        report = run_development_arms(
+            smoke,
+            recording_dir=args.recording_dir,
+            output_root=args.output_root,
+            require_cuda=not args.no_require_cuda,
+            candidate_names=args.arms,
+            group_id=group_id,
+        )
+        finalize_development_arms(
+            smoke, recording_dir=args.recording_dir, output_root=args.output_root,
+            candidate_names=args.arms,
+        )
+        report["engineering_only"] = True
     elif args.command == "run-arms":
         from testing.development_runner import run_development_arms
 
@@ -52,6 +101,20 @@ def main() -> None:
             recording_dir=args.recording_dir,
             output_root=args.output_root,
             require_cuda=not args.no_require_cuda,
+            candidate_names=args.arms,
+            group_id=args.group_id,
+        )
+    elif args.command == "finalize-arms":
+        from testing.development_runner import finalize_development_arms
+
+        if args.recording_dir is None or args.output_root is None:
+            parser.error("finalize-arms requires --recording-dir and --output-root")
+        pin_plan(contract, args.output_root / "comparison_plan.json")
+        report = finalize_development_arms(
+            contract,
+            recording_dir=args.recording_dir,
+            output_root=args.output_root,
+            candidate_names=args.arms,
         )
     elif args.command == "compare-arms":
         from testing.sort_comparison import compare_sorts, load_comparison_inputs

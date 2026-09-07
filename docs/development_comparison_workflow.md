@@ -64,6 +64,38 @@ python -m testing.run_development_ladder run-arms \
   --output-root testing/outputs/my_comparison
 ```
 
+For two independent workers, select whole arms explicitly. Each worker writes
+one group receipt and each arm is protected by an OS lock; subset workers do
+not overwrite the shared summary:
+
+```bash
+python -m testing.run_development_ladder run-arms \
+  --config configs/my_comparison.v1.json \
+  --recording-dir /local/my_comparison/recording \
+  --output-root /local/my_comparison \
+  --group-id motion-axis \
+  --arm rescue_12_9_motion_off \
+  --arm rescue_12_9_native_rigid \
+  --arm rescue_12_9_native_nonrigid
+```
+
+After all intended workers complete, create the shared summary. Omitting
+`--arm` requires every contracted arm; repeated `--arm` options finalize only
+that declared subset:
+
+```bash
+python -m testing.run_development_ladder finalize-arms \
+  --config configs/my_comparison.v1.json \
+  --recording-dir /local/my_comparison/recording \
+  --output-root /local/my_comparison
+```
+
+Long jobs must be launched by an independent manager. Wrap its command with
+`python -m testing.managed_job --receipt ... --cwd ... -- ...` so the exact
+command, working directory, GPU assignment, PID, timestamps and final return
+code survive outside the initiating terminal. Prove manager survival first
+with a cheap dummy command; the wrapper alone is not an independent manager.
+
 Compare any candidate with the reference using the same generic comparator used
 by the historical full-session rigid analysis:
 

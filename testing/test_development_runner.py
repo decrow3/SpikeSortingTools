@@ -67,6 +67,61 @@ def test_all_arms_use_shared_identity_bound_downstream(monkeypatch, tmp_path):
     assert set(report["arms"]) == {"baseline", "rigid"}
     assert report["arms"]["rigid"]["pre_curation_summary"] == {"unit_count": 2}
     assert report["arms"]["rigid"]["post_curation_summary"] == {"unit_count": 2}
+    assert (tmp_path / "outputs/arms_summary.json").is_file()
+    assert (tmp_path / "outputs/group_receipts/all-arms.json").is_file()
+
+
+def test_selected_group_runs_only_named_arms_and_does_not_finalize(monkeypatch, tmp_path):
+    calls = install_mocks(monkeypatch)
+    report = run_development_arms(
+        fake_contract(), recording_dir=tmp_path / "recording",
+        output_root=tmp_path / "outputs", require_cuda=False,
+        candidate_names=["rigid"], group_id="motion-axis",
+    )
+    assert calls["sort"] == ["rescue_rigid"]
+    assert set(report["arms"]) == {"rigid"}
+    assert report["group_receipt"]["candidate_names"] == ["rigid"]
+    assert (tmp_path / "outputs/group_receipts/motion-axis.json").is_file()
+    assert not (tmp_path / "outputs/arms_summary.json").exists()
+
+
+def test_candidate_selection_refuses_unknown_duplicate_or_unsafe_group(monkeypatch, tmp_path):
+    install_mocks(monkeypatch)
+    common = dict(contract=fake_contract(), recording_dir=tmp_path / "recording",
+                  output_root=tmp_path / "outputs", require_cuda=False)
+    with pytest.raises(ValueError, match="unknown candidate"):
+        run_development_arms(**common, candidate_names=["missing"])
+    with pytest.raises(ValueError, match="repeated"):
+        run_development_arms(**common, candidate_names=["rigid", "rigid"])
+    with pytest.raises(ValueError, match="group_id"):
+        run_development_arms(**common, candidate_names=["rigid"], group_id="../unsafe")
+
+
+def test_finalize_requires_every_requested_compatible_manifest(monkeypatch, tmp_path):
+    from testing.development_runner import finalize_development_arms
+    install_mocks(monkeypatch)
+    root = tmp_path / "outputs"
+    run_development_arms(
+        fake_contract(), recording_dir=tmp_path / "recording", output_root=root,
+        require_cuda=False, candidate_names=["baseline"], group_id="reference",
+    )
+    with pytest.raises(RuntimeError, match="candidate is not complete: rigid"):
+        finalize_development_arms(
+            fake_contract(), recording_dir=tmp_path / "recording", output_root=root,
+        )
+    summary = finalize_development_arms(
+        fake_contract(), recording_dir=tmp_path / "recording", output_root=root,
+        candidate_names=["baseline"],
+    )
+    assert set(summary["arms"]) == {"baseline"}
+
+
+def test_arm_lock_refuses_concurrent_owner(tmp_path):
+    from testing.development_runner import arm_execution_lock
+    with arm_execution_lock(tmp_path / "arm"):
+        with pytest.raises(RuntimeError, match="already owned"):
+            with arm_execution_lock(tmp_path / "arm"):
+                pass
 
 
 def test_sort_reuse_from_another_recording_fails_closed(monkeypatch, tmp_path):
@@ -101,11 +156,21 @@ def test_existing_sort_requires_complete_frozen_config(damage):
 
 
 def test_outputs_cannot_overlap_the_recording(tmp_path):
-    with pytest.raises(ValueError, match="disjoint"):
+    with pytest.raises(ValueError, match="inside the recording"):
         run_development_arms(
             fake_contract(), recording_dir=tmp_path / "recording",
             output_root=tmp_path / "recording/outputs", require_cuda=False,
         )
+
+
+def test_output_root_may_own_recording_and_sibling_arms(monkeypatch, tmp_path):
+    calls = install_mocks(monkeypatch)
+    root = tmp_path / "experiment"
+    run_development_arms(
+        fake_contract(), recording_dir=root / "recording",
+        output_root=root, require_cuda=False, candidate_names=["baseline"],
+    )
+    assert calls["sort"] == ["rescue"]
 
 
 @pytest.mark.parametrize("damage", [None,"curation_settings","qc_settings","incomplete","missing_file"])
