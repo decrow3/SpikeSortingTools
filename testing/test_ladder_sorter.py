@@ -38,12 +38,20 @@ def test_named_configs_registry():
     assert set(NAMED_CONFIGS) == {
         "rescue", "legacy_style", "rescue_rigid", "nonrigid",
         "rescue_10_9", "rescue_9_9", "rescue_9_8",
+        "rescue_10_8", "rescue_10_10", "rescue_12_10",
     }
 
 
 @pytest.mark.parametrize(
     "label, thresholds",
-    [("rescue_10_9", (10, 9)), ("rescue_9_9", (9, 9)), ("rescue_9_8", (9, 8))],
+    [
+        ("rescue_10_9", (10, 9)),
+        ("rescue_9_9", (9, 9)),
+        ("rescue_9_8", (9, 8)),
+        ("rescue_10_8", (10, 8)),
+        ("rescue_10_10", (10, 10)),
+        ("rescue_12_10", (12, 10)),
+    ],
 )
 def test_threshold_candidates_change_only_the_threshold_axis(label, thresholds):
     baseline = RESCUE.params()

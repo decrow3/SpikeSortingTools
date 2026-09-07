@@ -98,6 +98,18 @@ RESCUE_9_8 = SorterConfig(
     "rescue_9_8",
     {"Th_universal": 9, "Th_learned": 8},
 )
+RESCUE_10_8 = SorterConfig(
+    "rescue_10_8",
+    {"Th_universal": 10, "Th_learned": 8},
+)
+RESCUE_10_10 = SorterConfig(
+    "rescue_10_10",
+    {"Th_universal": 10, "Th_learned": 10},
+)
+RESCUE_12_10 = SorterConfig(
+    "rescue_12_10",
+    {"Th_universal": 12, "Th_learned": 10},
+)
 NAMED_CONFIGS = {
     c.label: c
     for c in (
@@ -108,6 +120,9 @@ NAMED_CONFIGS = {
         RESCUE_10_9,
         RESCUE_9_9,
         RESCUE_9_8,
+        RESCUE_10_8,
+        RESCUE_10_10,
+        RESCUE_12_10,
     )
 }
 
@@ -126,7 +141,13 @@ EXPECTED_EFFECTIVE = {
     "rescue_9_9": {"effective_nblocks": 0, "do_CAR": True,
                    "Th_universal": 9, "Th_learned": 9},
     "rescue_9_8": {"effective_nblocks": 0, "do_CAR": True,
-                   "Th_universal": 9, "Th_learned": 8},
+                    "Th_universal": 9, "Th_learned": 8},
+    "rescue_10_8": {"effective_nblocks": 0, "do_CAR": True,
+                     "Th_universal": 10, "Th_learned": 8},
+    "rescue_10_10": {"effective_nblocks": 0, "do_CAR": True,
+                      "Th_universal": 10, "Th_learned": 10},
+    "rescue_12_10": {"effective_nblocks": 0, "do_CAR": True,
+                      "Th_universal": 12, "Th_learned": 10},
 }
 
 

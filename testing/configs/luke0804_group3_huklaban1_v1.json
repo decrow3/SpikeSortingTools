@@ -1,0 +1,32 @@
+{
+  "schema": "luke-group3-execution-v1",
+  "contract_path": "testing/configs/luke0804_threshold_interactions_v1.json",
+  "contract_digest": "3cac8f9bb56ec643513ee01af5482a783fee6b611d9c0f8aa2be81f73c637e9c",
+  "group_id": "group_3_threshold_interactions",
+  "reference_arm": "rescue_10_9_motion_off",
+  "arms": [
+    "rescue_10_8_motion_off",
+    "rescue_10_10_motion_off",
+    "rescue_12_10_motion_off"
+  ],
+  "reused_long_recording": "/media/huklab/Data/SpikeSortingTools/luke0804_hindsight_ladder_v1/group2/long/recording",
+  "output_root": "/media/huklab/Data/SpikeSortingTools/luke0804_hindsight_ladder_v1/group3",
+  "smoke_start_s": 0.0,
+  "smoke_duration_s": 120.0,
+  "minimum_free_gib": 200,
+  "manager_launch_command": [
+    "systemd-run",
+    "--user",
+    "--unit=luke-group3-threshold-interactions-v1",
+    "--description=Luke0804 Group 3 threshold interactions",
+    "--working-directory=/home/huklab/Documents/RyanSorting/SpikeSortingTools",
+    "--property=Type=exec",
+    "/home/huklab/Documents/RyanSorting/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+    "-u",
+    "-m",
+    "testing.luke_group3_job"
+  ],
+  "authorization": "User explicitly approved preparation, testing, and launch of Group 3 on huklaban1 on 2026-09-07.",
+  "checkpoint_policy": "Completed arms and downstream stages can be reused. Kilosort has no within-sort checkpoint; interruption of the active arm requires that arm to restart from the beginning. Unexpected failure stops the group without automatic retry.",
+  "scientific_scope": "Complete the adjacent 9/10 x 8/9 and 10/12 x 9/10 threshold interaction cells with motion disabled; defer 9/7."
+}
