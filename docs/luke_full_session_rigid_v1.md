@@ -1,5 +1,8 @@
 # Full Luke0804 imec0 native rigid comparison
 
+**On hold:** the original job was interrupted and the restarted job was cancelled
+by the user. No run is active. See the [incident investigation](luke_full_session_interruption_20260906.md) before proposing any restart.
+
 Authorized by the user on 2026-09-06 after snippet endpoint feasibility failed.
 This is a new full-session development experiment. All 10,473.553728 seconds and
 384 channels are included, including intervals previously reserved in the Luke

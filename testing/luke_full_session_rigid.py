@@ -16,6 +16,8 @@ OUT = ROOT / 'testing/outputs/luke_full_session_rigid_v1'
 
 
 def main():
+    if (OUT / 'HOLD.json').exists():
+        raise RuntimeError('Run is on user-requested hold; see HOLD.json. Do not restart without subsequent authorization.')
     OUT.mkdir(parents=True, exist_ok=True)
     os.environ.setdefault('MPLCONFIGDIR', '/tmp/luke-full-session-matplotlib')
     environment = validate_production_environment(require_cuda=True)
