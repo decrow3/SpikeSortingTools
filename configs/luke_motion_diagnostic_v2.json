@@ -1,0 +1,86 @@
+{
+  "schema_version": "luke-motion-diagnostic-v2",
+  "status": "working_baseline_not_production_validated",
+  "recording": "Luke0804_V2V1_g0_imec0",
+  "validated_scope": "Previously inspected4160\u20134260s; provisional lighthouse corroboration only; brief shallow excursions unresolved",
+  "preprocessing": {
+    "band_hz": [
+      300,
+      6000
+    ],
+    "filter": "order3 zero-phase Butterworth,50ms padding",
+    "shared_response_model": "testing/outputs/luke_common_event_screen_v1/shared_response_model.npz",
+    "shared_response_model_sha256": "033eec8ddb42d0fe0ef8149647e2a59daf382d41b1d24e63ea74d9780fc421fc",
+    "additional_lowpass_hz": null,
+    "screen": null
+  },
+  "detection": {
+    "method": "locally_exclusive",
+    "peak_sign": "neg",
+    "radius_um": 50,
+    "detect_threshold": 3,
+    "noise_path": "testing/outputs/luke_peak_threshold_screen_v1/noise_uv.npy",
+    "noise_sha256": "9b050386bfa0b0ef45f0fac325d17a6f310fdc2e38ebdbc27fd642984591e5c6"
+  },
+  "localization": {
+    "method": "monopolar_triangulation",
+    "radius_um": 75,
+    "n_jobs": 4
+  },
+  "estimator": {
+    "direction": "y",
+    "rigid": false,
+    "win_shape": "gaussian",
+    "win_step_um": 200.0,
+    "win_scale_um": 300.0,
+    "win_margin_um": 50.0,
+    "method": "dredge_ap",
+    "extra_outputs": false,
+    "progress_bar": false,
+    "verbose": false,
+    "bin_um": 1.0,
+    "bin_s": 1.0,
+    "histogram_time_smooth_s": 1.0,
+    "histogram_depth_smooth_um": 1.0,
+    "time_horizon_s": 60.0,
+    "max_disp_um": 80.0,
+    "mincorr": 0.1,
+    "device": "cpu"
+  },
+  "implementation": "testing.luke_dredge_bounded.estimate_bounded",
+  "strict_search_um": 80,
+  "correction_application": "None. Source/sorting voltage unchanged; full-sort hold retained.",
+  "evidence": [
+    "docs/luke_motion_preconditioning_round_20260908.md",
+    "docs/luke_lowpass_evidence_20260908.md",
+    "docs/luke_lowpass_waveform_preservation_20260908.md",
+    "docs/luke_lowpass_common_events_20260908.md",
+    "docs/luke_shallow_fractional_calibration_20260908.md",
+    "docs/luke_mean_raster_diagnostic_20260908.md"
+  ],
+  "rejected_changes": "Additional3kHz lowpass, center-energy screening, and globalmean-per-bin aggregation have not earned promotion.",
+  "numerical_threads": 1,
+  "recording_manifest": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/rescue_recording_manifest.json",
+  "diagnostic_sampling": {
+    "interval_s": [
+      4160,
+      4260
+    ],
+    "chunk_duration_s": 20,
+    "chunk_starts_s": [
+      4160,
+      4180,
+      4200,
+      4220,
+      4240
+    ],
+    "discard_samples_each_chunk_edge": 50,
+    "frame_origin": "Original recording frame zero; offsets round(start*fs)-round(4160*fs), not rounded time differences.",
+    "signal_scale": "gain_uv_per_count from recording manifest; actual sampling frequency from same manifest."
+  },
+  "raster": {
+    "aggregation": "sum_absolute_amplitudes",
+    "avg_in_bin": false,
+    "note": "Globalmean tested and rejected; exactevent lowpasscontrols do not justify adoption."
+  }
+}
