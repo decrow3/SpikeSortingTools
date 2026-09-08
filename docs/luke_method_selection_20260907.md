@@ -1,13 +1,13 @@
 # Luke0804 method selection — 2026-09-07
 
-**Provisional recommendation: retain rescue 12/9, motion off, as the operational
-reference and first candidate if a full-probe choice must be made now. Do not
-treat this as a proven biological winner or commit another full run yet.**
-Native rigid at 12/9 is the strongest unresolved challenger: it has positive
-known-truth motion evidence, but its real-data implementation is not qualified.
-The immediate decision is to finish the existing-motion-output audit, not to
-launch a full sort. The explicit hold on the cancelled full-session rigid job
-remains in force.
+**Nomination: rescue 12/9 with motion off is the operational winner among the
+tested configurations for full-probe confirmation.** The newly supplied native
+motion audit resolves the missing-file blocker: both saved native fields contain
+large unsupported excursions. Do not promote either native configuration
+unchanged. Confidence is moderate in that operational exclusion and low in
+motion-off's biological superiority. This is a recommendation, not a claim that
+motion correction is unhelpful or that completeness has been validated. No sort
+was launched; the explicit hold on the cancelled full-session rigid job remains.
 
 **Decision correction published:** the comparison implementation now reports
 `motion_diagnostics_required` rather than deriving closure/promotion from
@@ -17,6 +17,9 @@ Its v2 summary attests the copied data and original v1 summary; all numerical
 QC is unchanged. V1 remains intact as historical evidence. Seven focused tests
 passed, including perfect-recovery/pure-dropout counterexamples; all seven
 notebook code cells executed and the rendered figure was visually checked.
+That v2 notebook remains the numerical-comparison audit; the later field-based
+nomination below supersedes its pending-file status without reinstating the
+invalid overlap efficacy rule.
 
 ## Comparable completed full-duration strip methods
 
@@ -27,15 +30,15 @@ Threshold notation is universal/learned.
 
 | Method | Clusters | Spikes, millions | Strength | Weakness / selection |
 |---|---:|---:|---|---|
-| **12/9 off** | 230 | 7.772 | Established reference; 141 interior clusters and 4.237M interior spikes; lower median refractory burden than 12/10 | Motion tracking remains unproven; more coincidence and edge burden than 12/10. Provisional operational pick only. |
+| **12/9 off** | 230 | 7.772 | Established reference; 141 interior clusters and 4.237M interior spikes; lower median refractory burden than 12/10; avoids observed native-field instability | Motion tracking remains unproven; more coincidence and edge burden than 12/10. Nominated for operational confirmation, not proven biological superiority. |
 | **12/10 off** | 236 | 5.875 | 148 interior clusters; less coincidence and edge burden than 12/9 | 3.320M interior spikes; stricter detection may discard real low-amplitude events. Main conservative threshold alternative, not a proven completeness winner. |
 | 10/10 off | 213 | 5.977 | Lower coincidence than 12/10 | Only 120 interior clusters; higher boundary and refractory burden than 12/10; little total event gain. |
 | 10/9 off | 240 | 7.860 | Lower coincidence than 12/9; more total clusters | Only 1.13% more total spikes, fewer interior spikes (4.118M), and greater boundary/refractory burden. No demonstrated recovery gain. |
 | 9/9 off | 222 | 7.849 | Similar spike yield to 10/9 | Fewer interior clusters (124); little case for the additional universal-threshold reduction. |
 | 10/8 off | 239 | 10.495 | 33.5% more spikes than 10/9, including interior events | Coincidence excess rises 1.99 percentage points; true recovery versus extra assignments unresolved. |
 | 9/8 off | 232 | 10.530 | Highest event yield; 34.2% more spikes than 9/9 | Coincidence excess rises 2.26 points; 9 rather than 10 adds only 0.33% spikes at learned 8. |
-| **12/9 native rigid** | 164 | 7.084 | Known-truth benefit in exact 40 µm motion control; modest positive real-data excursion screen; less edge burden | Higher aggregate refractory burden, major correspondence changes, unknown validity of this run's motion estimate. Strongest unresolved motion challenger. |
-| 12/9 native nonrigid | 156 | 6.966 | Can model depth-dependent movement | No obvious aggregate rescue; 34 interior matches and 4/141 completeness coverage. Detailed arrays/motion field absent from local handoff. |
+| **12/9 native rigid** | 164 | 7.084 | Known-truth benefit in exact 40 µm motion control; modest positive real-data excursion screen; less edge burden | Higher aggregate refractory burden, major correspondence changes, and 560 adjacent batch jumps >100 µm. Reject unchanged for promotion. |
+| 12/9 native nonrigid | 156 | 6.966 | Can model depth-dependent movement | No obvious aggregate rescue; 34 interior matches and 4/141 completeness coverage. Fields repeat rigid excursions (610 transitions >100 µm); reject unchanged. Curated trains remain absent from the handoff. |
 
 The measured tradeoff is not a total order. For example, 12/10 → 12/9 adds
 32.3% total events but also 1.46 points of coincidence excess and 2.53 points
@@ -129,27 +132,66 @@ revalidated; the receipt is `testing/outputs/luke_method_selection_audit_v1/prov
   under the frozen donor-level uncertainty analysis. They did not establish
   equality, and did not qualify a threshold replacement.
 
-## Decision needed before committing GPU time
+## Native motion handoff verified locally
 
-The shortlist for the motion decision is **12/9 off versus 12/9 native rigid**.
-Full-data nomination remains provisional until the saved native motion estimate
-is checked. The 12/10 off arm remains a threshold sensitivity alternative if
-raw-event review favors conservative detection; it is not an automatic third
-full-probe run. Keep the existing maximum of two full-probe candidates.
+The user supplied
+`/mnt/NPX/Luke/20250804/shared_analysis/luke_motion_audit_20260907_v1/`.
+All 53 inventoried files (16,603,153 bytes) passed local size/SHA-256 checks.
+The off and rigid candidate sort identities match the previously analyzed
+handoff. The field-audit code was inspected and replayed locally using the
+production environment: Kilosort 4.0.27, SpikeInterface 0.102.1. Every field
+summary metric and the complete agreement CSV reproduced exactly. The CPU
+application-sign check also reproduced, and the resulting figure was inspected.
 
-The next required evidence is rigid/nonrigid `ops.npy` or motion exports and
-the associated settings from huklaban5. Its hostname failed resolution both
-inside and outside the sandbox; an address has been requested. No job was
-restarted. Once accessible, inspect the motion fields and qualify suspicious
-correspondence links using spatial/waveform evidence before pooling families.
-If strip estimation is implausible or unrepresentative, a full-probe
-registration-only diagnostic is more informative than another blind full sort.
+| Diagnostic | Rigid | Nonrigid |
+|---|---:|---:|
+| Saved physical displacement range | −309.5 to +315.5 µm | −325.5 to +329.5 µm |
+| Adjacent batch transitions with any field jump >100 µm | 560/5,236 | 610/5,236 |
+| Median absolute adjacent step | 2.5 µm | 3.5 µm |
+| P95 absolute adjacent step | 146.125 µm | 149.0 µm |
+| Batches sampling any scoring-interior coordinate outside the strip | 76 | 75 |
 
-If a decision must be made with the present evidence, my pick is **12/9 off
-for confirmation**, with low confidence in its biological superiority. My
-recommendation now is to finish the bounded motion diagnostic first. Neither
-the new screen nor the failed original efficacy gate warrants declaring motion
-correction unhelpful.
+Rigid and nonrigid median trajectories correlate at 0.9972. At the same depth
+and physical times, native rigid RMS displacement is about 45.7 µm versus
+3.39 µm for DREDGE and 3.55 µm for the independent KS sidecar; their correlations
+with native rigid are only 0.213 and 0.271. Decentralized is almost flat at this
+depth (0.370 µm RMS), so it should not be described as an equally informative
+third consensus vote. The physical sign was fixed from the interpolation
+operator, not selected to maximize correlation. Independent estimates are not
+ground truth and differ in preprocessing, but they do not support the native
+hundreds-of-micrometers excursions.
+
+The supplied raster diagnostic is corroborative only and was not rerun locally:
+it is post-selection, mixes neurons and shares detections with the estimators.
+The nomination does not depend on its modest profile-correlation result.
+
+Local reproduction: `testing/outputs/luke_saved_motion_field_audit_local_v1/`.
+The source handoff contains scripts and the detailed source audit report.
+The scientific conclusion is an unstable saved native estimate, not a proven
+root cause for every lost event and not a general failure of motion correction.
+
+## Full-data recommendation and remaining scientific scope
+
+Choose **rescue 12/9, native motion disabled (`nblocks=0`)**, with the accepted
+preprocessing and unchanged common curation profile, for full-probe confirmation
+among currently tested settings. The 12/10 off arm is the conservative threshold
+alternative, but no new evidence establishes that its removed events are false;
+it does not displace 12/9. Do not spend on another unchanged native rigid or
+nonrigid full sort based on these strip outputs.
+
+The strip has fewer channels than the full probe. Consequently this finding
+does not show that full-probe native motion estimation will fail. If the next
+priority is a corrected-motion method, first estimate motion on the full probe
+without template learning or sorting and qualify that field against independent
+evidence. This is a proposed new diagnostic, not a completed experiment or an
+authorization to remove the full-sort hold.
+
+Biological recovery remains unresolved: amplitude coverage is sparse, the
+correspondence graph cannot be pooled naively, and raw-event family validation
+has not been completed. Those limit claims of superiority; they do not justify
+promoting a demonstrated unstable field over the existing operational reference.
+The requested method comparison and operational nomination are now complete;
+no new sort, full-probe registration job, or hold removal was performed.
 
 Key source records: `docs/luke_20250804_c2_v4_result.md`,
 `docs/luke_20250804_c2_v4_truncation_diagnostic.md`,

@@ -1,5 +1,12 @@
 # Native-rigid metric validity audit — 2026-09-07
 
+**Later evidence:** the saved motion-field handoff is now available and its
+field calculations have been reproduced locally. Missing-file statements below
+describe the initial metric audit. The metric flaws remain valid, but the
+[updated method selection](luke_method_selection_20260907.md) now nominates
+12/9 off based on large unsupported excursions in both saved native fields,
+without using overlap asymmetry as an efficacy endpoint.
+
 **Assessment: the evidence does not support closing the motion question.**
 The completed strip comparison contains adverse results, but the directional
 continuity score is not a valid improvement endpoint and amplitude completeness

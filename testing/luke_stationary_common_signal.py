@@ -1,0 +1,20 @@
+"""Full-probe event-triggered audit of the stationary source groups."""
+from testing.luke_epoch_corroboration import ROOT,BASE
+from testing.luke_multidepth_anchors_v2 import near
+import numpy as np,pandas as pd,json
+from scipy.signal import butter,sosfiltfilt
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+OUT=ROOT/'testing/outputs/luke_stationary_common_signal_v1';PRE=ROOT/'testing/outputs/luke_stationary_voltage_audit_v1'
+def main():
+ OUT.mkdir(exist_ok=False);rec=json.loads((BASE/'recording/rescue_recording_manifest.json').read_text());fs=rec['sampling_frequency_hz'];loc=np.asarray(rec['channel_locations_um']);first=round(4180*fs);n=round(20*fs);pad=round(.05*fs)
+ with (BASE/'recording/traces_cached_seg0.raw').open('rb') as f:f.seek((first-pad)*768);buf=f.read((n+2*pad)*768)
+ x=np.frombuffer(buf,dtype='<i2').reshape(-1,384).astype('float32')*rec['gain_uv_per_count'];sos=butter(3,[300,6000],fs=fs,btype='bandpass',output='sos');filtered=sosfiltfilt(sos,x,axis=0).astype('float32')[pad:pad+n];del x,buf;reference=np.median(filtered,axis=1);post=filtered-reference[:,None];m=pd.read_csv(PRE/'matched_events.csv',dtype={'source':str});a=np.sort(m[m.source=='238'].frame.to_numpy());b=np.sort(m[m.source=='251_252'].frame.to_numpy());co=float(near(a,b,.0002*fs).mean());e=b-first;e=e[np.linspace(0,len(e)-1,min(300,len(e)),dtype=int)];off=np.arange(-90,91);tt=off/fs*1000;medpre=np.median(filtered[e[:,None]+off],axis=0);medpost=np.median(post[e[:,None]+off],axis=0);ref=np.median(reference[e[:,None]+off],axis=0);# Eventwise reference coherence across the entire probe, conditional on matched times.
+ cosine=(medpre.T@ref)/(np.linalg.norm(medpre,axis=0)*np.linalg.norm(ref)+1e-20);amp=np.max(abs(medpre),axis=0);dominant=np.argsort(-amp)[:15];result=dict(status='complete',source238_events=len(a),source251252_events=len(b),source238_coincident_with251252_within0p2ms=co,global_reference_event_waveform_peak_uv=float(abs(ref).max()),channels_with_prereference_template_cosine_gt0p9=int((cosine>.9).sum()),channels_with_prereference_template_abs_peak_gt50uv=int((amp>50).sum()),highest_prereference_channels=dominant.tolist(),limitation='Already phase/blank/interpolation-conditioned cached voltage; this does not identify hardware origin or the effects of those earlier stages. Trigger selection and conditional averaging can emphasize coherent components.')
+ np.savez_compressed(OUT/'full_probe_waveforms.npz',time_ms=tt,median_prereference=medpre,median_postreference=medpost,median_reference_trace=ref,channel_locations=loc,reference_cosine=cosine);pd.DataFrame(dict(channel=np.arange(384),depth_um=loc[:,1],prereference_peak_uv=amp,reference_cosine=cosine,postreference_peak_uv=np.max(abs(medpost),axis=0))).to_csv(OUT/'channel_coherence.csv',index=False)
+ fig,axes=plt.subplots(1,3,figsize=(15,6),gridspec_kw={'width_ratios':[1,1,1.2]});lim=float(max(abs(medpre).max(),abs(medpost).max()))
+ for ax,w,title in zip(axes[:2],[medpre,medpost],['Before global median reference','After global median reference']):
+  im=ax.imshow(w.T,origin='lower',aspect='auto',extent=[tt[0],tt[-1],0,384],vmin=-lim,vmax=lim,cmap='RdBu_r');ax.set(xlabel='Time from aligned event (ms)',ylabel='Channel index',title=title);fig.colorbar(im,ax=ax,label='µV',fraction=.04)
+ axes[2].plot(tt,ref,c='k',label='Subtracted global median');axes[2].plot(tt,medpre[:,252],label='Ch252 before reference');axes[2].plot(tt,medpost[:,252],label='Ch252 after reference');axes[2].set(xlabel='Time (ms)',ylabel='Voltage (µV)',title=f'Global event waveform: {abs(ref).max():.0f} µV peak\n{(cosine>.9).sum()}/384 channels cosine >0.9');axes[2].legend(fontsize=8);fig.suptitle(f'Stationary source groups coincide in {co:.1%} of ch238 events (±0.2 ms)\nMedian of 300 source251/252 events over 4180–4200 s; identical voltage scales',fontsize=12);fig.tight_layout(rect=[0,0,1,.91]);fig.savefig(OUT/'01_common_signal.png',dpi=160);fig.savefig(OUT/'01_common_signal.pdf');(OUT/'summary.json').write_text(json.dumps(result,indent=2));print(json.dumps(result),flush=True)
+if __name__=='__main__':main()
