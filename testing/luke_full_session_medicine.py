@@ -337,7 +337,36 @@ def run(cfg):
          estimation_owner='huklaban1', fit_count_full_session=1,
          correction_applied=False, sorting_launched=False,
          next_step='Review field support and rigid/nonrigid application before either sort'))
+    publish(out, cfg)
     progress('complete')
+
+
+def publish(out, cfg):
+    """Publish compact, hash-bound evidence once; never publish voltage or peak caches."""
+    shared = Path(cfg['shared_output'])
+    shared.mkdir(parents=True, exist_ok=True)
+    destination = shared/'estimation_huklaban1_v1'
+    partial = shared/'estimation_huklaban1_v1.partial'
+    if destination.exists() or partial.exists() or (shared/'field_manifest.json').exists():
+        raise RuntimeError('Shared destination already exists; preserve it and investigate')
+    partial.mkdir()
+    names = ['candidate_fields.npz', 'coverage.npz', 'field_review.json', 'full_session_fields.png',
+             'full_session_fields.pdf', 'reproduction.json', 'source_verified.json', 'summary.json',
+             'settings.json', 'fit/field.npz', 'fit/fit_audit.json', 'fit/loss.npy']
+    for name in names:
+        target = partial/name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(out/name, target)
+    package = dict(schema='luke-shared-medicine-field-v1', estimation_owner='huklaban1',
+                   status='estimation_artifacts_complete', scientific_status='requires_review',
+                   correction_ready=False, source_output=str(out),
+                   field_package='estimation_huklaban1_v1',
+                   recording_content_sha256=cfg['recording_content_sha256'],
+                   files={name: sha(partial/name) for name in names},
+                   final_job_exit_receipt='Check the independent service receipt; artifact completion is not exit status')
+    save(partial/'manifest.json', package)
+    os.rename(partial, destination)
+    save(shared/'field_manifest.json', package)
 
 
 def report(out, manifest):

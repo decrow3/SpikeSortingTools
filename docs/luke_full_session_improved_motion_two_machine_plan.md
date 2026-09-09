@@ -3,6 +3,12 @@
 Status: user-requested plan and coordination package, 2026-09-09 UTC.
 No estimation, correction materialization, or sorting launched by this plan.
 
+Subsequent instruction: the user explicitly requested pushing the repository
+handoff and running motion estimation **once, here on huklaban1**, with the
+selected MEDiCINe parameters. See [the estimation run record](luke_full_session_medicine_run_20260909.md)
+for implementation and actual launch status. huklaban5 consumes this shared
+estimate; it must not launch a second estimation run.
+
 ## Requested experiment
 
 Use the improved waveform-screened motion estimate for two new Kilosort sorts

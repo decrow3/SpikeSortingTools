@@ -6,6 +6,11 @@ rigid on huklaban1, nonrigid on huklaban5. Existing full-session no-correction
 and legacy sorts are reused. This handoff is preparation for the new experiment;
 it is not a restart of the cancelled native-rigid v1 job.
 
+**User clarification:** all full-session motion estimation runs on huklaban1
+only. Do not extract another peak population or fit MEDiCINe on huklaban5.
+Consume the shared hash-verified field package after it is published and reviewed.
+The producing job is documented in [the estimation run record](luke_full_session_medicine_run_20260909.md).
+
 ## Work to do after pulling
 
 1. Check the working tree and preserve unrelated changes. Record hostname,
