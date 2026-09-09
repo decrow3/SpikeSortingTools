@@ -7,6 +7,14 @@ Currently maintained by Declan Rowley
 
 ## Start here
 
+- **[Motion validation: pipeline integration and scientific context](docs/motion_validation_pipeline_integration.md)**
+  — evidence, limitations, cross-dataset design, and the proposed testing stages.
+- **[Preferred lighthouse candidate discovery](docs/lighthouse_candidate_discovery.md)**
+  — find distinctive relative multichannel waveforms without absolute-depth
+  identity priors, reuse cached whole-probe scores, and inspect their depth/time
+  overlays with strict and exploratory evidence shown separately.
+- **[Screened MEDiCINe workflow and scaling benchmark](docs/screened_medicine_workflow.md)**
+  — the Luke configuration, executable benchmark, and resource/reproduction checks.
 - **[Hindsight-first development prescription](docs/spikesorting_hindsight_development_prescription.md)**
   — the current strategy: validate the evaluator, compare mature pipelines on
   long recordings, advance by longitudinal efficacy plus guardrails, and require

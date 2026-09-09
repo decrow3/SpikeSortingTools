@@ -14,9 +14,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--unit', required=True)
     parser.add_argument('--module', required=True, choices=[
-        'testing.luke_shallow_reference_overnight_v1',
-        'testing.luke_motion_transfer_overnight_v1'])
-    parser.add_argument('--post-module', choices=['testing.luke_shallow_reference_overnight_report_v1'])
+        'testing.luke_shallow_reference_overnight_v1', 'testing.luke_waveform_only_global_v1', 'testing.luke_early_sigma_screen250_v1', 'testing.luke_ap_methods_sweep_v1', 'testing.luke_ap_methods_remaining_v1', 'testing.luke_screened_medicine', 'testing.luke_lighthouse_extension_300s_v1', 'testing.luke_ap_methods_remaining_report_v1', 'testing.luke_ap_methods_remaining_fit_v1',
+        'testing.luke_motion_transfer_overnight_v1', 'testing.luke_early_screen_shortlist_v1', 'testing.luke_early_lighthouse_events_v2', 'testing.luke_early_unit445_v1', 'testing.luke_early_unit445_depth_v2', 'testing.luke_population_depth_v1', 'testing.luke_population_depth_v2', 'testing.luke_population_consensus_wait_v1'])
+    parser.add_argument('--post-module', choices=['testing.luke_shallow_reference_overnight_report_v1', 'testing.luke_early_screen_report_v1', 'testing.luke_early_lighthouse_binning_v2'])
     parser.add_argument('arguments', nargs=argparse.REMAINDER)
     args = parser.parse_args()
     if not args.unit.startswith('luke-') or any(c not in 'abcdefghijklmnopqrstuvwxyz0123456789-' for c in args.unit):

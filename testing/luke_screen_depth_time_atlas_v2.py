@@ -43,8 +43,8 @@ def main():
    fig,axes=plt.subplots(3,2,figsize=(13,9),sharex=True,sharey=True,layout='constrained')
    for ri,(title,data) in enumerate([('Unscreened compensated 5σ baseline',base),('Retained',retained),('Removed',removed)]):
     for col in range(2):
-     ax=axes[ri,col];im=ax.imshow(np.log1p(data[col]),origin='lower',aspect='auto',extent=[te[0],te[-1],de[0],de[-1]],interpolation='nearest',cmap='magma',vmin=0,vmax=vmax[col]);ax.set(title=title+' · '+('peak count' if col==0 else 'amplitude sum'),ylabel='Localized depth (µm)',xlabel='Recording time (s)');ax.ticklabel_format(axis='x',style='plain',useOffset=False)
-     fig.colorbar(im,ax=ax,label='log(1 + '+('count)' if col==0 else 'summed |peak amplitude| in µV)'))
+     ax=axes[ri,col];im=ax.imshow(np.log1p(data[col]),origin='lower',aspect='auto',extent=[te[0],te[-1],de[0],de[-1]],interpolation='nearest',cmap='magma',vmin=0,vmax=vmax[col]);ax.set(title=title+' · '+('peak count' if col==0 else 'amplitude sum (µV)'),ylabel='Localized depth (µm)',xlabel='Recording time (s)');ax.ticklabel_format(axis='x',style='plain',useOffset=False)
+     fig.colorbar(im,ax=ax,label='log(1 + bin total)')
    outside=int(np.count_nonzero(keep&~inside));rows.append(dict(name=r.name,retained=int(keep.sum()),plotted_retained=int(retained[0].sum()),outside_plot=outside))
    fig.suptitle(f'{page:02d}/21 · {TITLES[r.name]}\n{r.peaks:,} / {len(peaks):,} peaks retained ({r.retained_fraction:.1%}) · 4,160–4,260 s',fontsize=15)
    fig.supxlabel(f'0.25 s × 10 µm bins; shared colors saturate at pooled 99.5th percentile. {outside:,} retained events outside plotted time/depth bounds.\nColor represents detected population density or amplitude mass, not biological identity or motion accuracy.',fontsize=10)

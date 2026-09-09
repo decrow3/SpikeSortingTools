@@ -50,3 +50,8 @@ Primary screening review: [21-page PDF](../testing/outputs/luke_screen_all_light
 ## Peak depth/time plots for every screening variant
 
 [All21pages PDF](../testing/outputs/luke_screen_depth_time_atlas_v1/all_21_depth_time.pdf) · [Per-variant index paired with lighthouse overlays](../testing/outputs/luke_screen_depth_time_atlas_v1/README.md). Baseline/retained/removed counts and amplitude mass use common color limits,1s×10µm bins and cached masks/locations. See [screening shortlist](luke_screening_shortlist_20260908.md) for local gains and regressions; no arm is promoted from these development scores.
+
+
+## Screening atlas in the earlier 930–1,030 s plotting style
+
+[Matched-view 21-page PDF](../testing/outputs/luke_screen_depth_time_atlas_v2/all_21_depth_time.pdf) · [Individual figures](../testing/outputs/luke_screen_depth_time_atlas_v2/README.md). Uses0.25s×10µm bins, magma, log1p and pooled99.5th-percentile color saturation, matching the earlier figure's display conventions. Numeric color limits are calculated once across this atlas, not copied from a different recording interval. Data remain4160–4260s with the same5σ baseline and saved screening masks; earlier renders are preserved.

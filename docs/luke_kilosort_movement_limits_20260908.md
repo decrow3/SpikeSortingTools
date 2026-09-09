@@ -1,0 +1,15 @@
+# Largest apparent movers and Kilosort movement limits
+
+Ranked observed0.25s median-depth knots byP95−P05, avoiding spline-gap samples as ranking evidence. Top12displayed require≥20occupied bins and≥100spikes. Highest:CID41299.18µm,38594.98µm,7982.84µm,37474.63µm,41071.29µm,10570.00µm. These are observed Kilosort depth spans, not independently validated tissue motion. All609CIDrankings are saved alongside top12plots.
+
+Actual recording/sort metadata identify Kilosort4.0.27, `do_correction=false`, effective `nblocks=0`, and no external voltage motion correction. Curated `ops.npy` retains nominal `nblocks=1` but `dshift=None`; wrapper parameters and pinned sort identity resolve the effective setting. Do not infer that native drift correction ran from nominalnblocks alone.
+
+Saved exported-position settings: `position_limit=100`µm, `nearest_chans=20`. `prepare_extract` chooses20nearest channels around each detection template's strongest channel and masks channels whose Euclidean distance is≥100µm. `compute_spike_positions` uses nonnegative squared-PC-feature weights on those channels. Its depth is therefore bounded by the minimum/maximum depth of the allowed channel set for that detection template. Checked all252,955spikes in930–1030s against their actual `spike_detection_templates` / saved `iU`, `iCC`, `iCC_mask`:zero outside bounds (1e−3µm tolerance).
+
+This is not a100µm total displacement cap perCID. Clustering can assign multiple detection templates to oneCID; CID412has18in this interval with strongest-channel depths2120–2220µm. Every top12CIDuses4–18detection templates. Saved per-CID template counts and anchor extents accompany the plots. Local channel support and template/detection thresholds also impose implicit recognition limits: a changing waveform may lose matches or be assigned another cluster. Exported depth agreement alone does not guarantee identity preservation.
+
+If native Kilosort drift correction were enabled, the local4.0.27code searches±15depthbins per coarse iteration, accumulates9coarse updates, then adds a±5bin fine shift. At saved5µm binning this is±75µm per coarse iteration and±25µm fine search, not a±75µm total cap. Batch size60000at29999.836Hz gives approximately2s resolution before interpolation; saved Gaussian drift_smoothing=[0.5,0.5,0.5] smooths correlation/time/depth. Those native registration settings did not correct this sort.
+
+Primary sources: local Kilosort `template_matching.py:14`, `postprocessing.py:33`, `io.py:382`, `datashift.py:66`; SpikeInterface `kilosort4.py:313`; saved recording/sort manifests under the rescue output. Official parameter reference: https://github.com/MouseLand/Kilosort/blob/main/kilosort/parameters.py and https://kilosort.readthedocs.io/en/latest/parameters.html . Current documentation is supporting context; run-specific claims use saved settings/local4.0.27code.
+
+Outputs: `testing/outputs/luke_kilosort_largest_movers_v1/`; reproducible cached-only script: `testing/luke_kilosort_largest_movers_v1.py`. No new sorting or fitting was run.

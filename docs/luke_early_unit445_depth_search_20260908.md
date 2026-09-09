@@ -1,0 +1,17 @@
+# Unit 445: exploratory depth search at 930–1,030 s
+
+The depth-aware search found **42 provisional unique matches**, including six displaced template hypotheses (four −40 µm, two −80 µm). These sparse observations do **not** establish a continuous neuronal trajectory or adjudicate DREDGE's excursions. None of the accepted matches hits the ±120 µm search boundary. No 10-second, single-shift group contains the ten events required for a median-waveform summary.
+
+[Depth/time scatter, DREDGE, alternatives and support](../testing/outputs/luke_early_unit445_depth_v2/01_depth_search_dredge.png) · [PDF](../testing/outputs/luke_early_unit445_depth_v2/01_depth_search_dredge.pdf)
+
+The frozen unit445 template was searched across exact geometry translations −120:40:+120 µm, using original 300–6,000 Hz/global-median referenced voltage. The detector covers the search band. Every nearby competitor template and shift is scored with the same weights and channel context as the selected target hypothesis; gain eligibility precedes competition. Sixty-seven rival templates were reconstructed from 4,080–4,090 s. A weighted cosine ≥0.885, gain 0.4–2.5, identity margin ≥0.03, and distinct-shift margin ≥0.03 are required for a uniquely assigned event. DREDGE does not enter selection. Its displayed vertical anchor is identical to the historical fixed-template figure.
+
+All seven synthetic, exact-geometry signed translations recovered the planted shift. This validates mapping/sign, not biological motion calibration. A zero-grid hypothesis does not imply no fine movement. Event centroids on transported support are descriptive waveform measurements, not calibrated physical depth.
+
+There were 123 identity-accepted candidate decisions before duplicate suppression, all with a unique coarse shift; suppression leaves 42 unique events. Independent identity and shift flags are saved in `decisions_flags.csv`. All candidate target scores, best competitor identity/shift scores, unmatched decisions, accepted waveforms, and chunk counts are retained. Some nonzero accepted hypotheses have margins close to the 0.03 cutoff; sparse competitors include templates formed from only one or two training spikes. Competitors active only in the early interval may be absent from the later training bank.
+
+The historical matcher produced 141 matches with narrower spatial detection and a much smaller competitor bank. The new count cannot isolate the effect of depth search because the rival inventory changed simultaneously. Search expansion uses historical thresholds without multiplicity recalibration. This is a bounded exploratory result, not lighthouse identity qualification.
+
+The independently managed service `luke-early-unit445-depth-v2` completed with exit 0, inactive state, and MainPID 0. Its launcher had disconnected while the process remained active. Core computation took 228.4 seconds; the managed execution including rendering took about 234 seconds. Commands, logs, settings, input hashes, and exit receipts are in `testing/outputs/luke_early_unit445_depth_v2_job/` and `testing/outputs/luke_early_unit445_depth_v2/`. Completed chunk decisions/waveforms persist, but no automatic interrupted-chunk resume is implemented. No sorting job was launched.
+
+Implementation: `testing/luke_early_unit445_depth_v2.py`, `testing/luke_early_unit445_depth_report_v2.py`. The existing managed launcher now admits the versioned tracker module. Historical outputs remain intact.
