@@ -6,6 +6,9 @@ describe the initial metric audit. The metric flaws remain valid, but the
 [updated method selection](luke_method_selection_20260907.md) now nominates
 12/9 off based on large unsupported excursions in both saved native fields,
 without using overlap asymmetry as an efficacy endpoint.
+The [saved-field audit](luke_saved_motion_field_audit_20260907.md) documents the
+unstable native trajectories. Neuron-family/raw-waveform recovery validation
+remains outstanding.
 
 **Assessment: the evidence does not support closing the motion question.**
 The completed strip comparison contains adverse results, but the directional

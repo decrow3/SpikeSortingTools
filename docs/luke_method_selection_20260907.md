@@ -9,6 +9,30 @@ motion-off's biological superiority. This is a recommendation, not a claim that
 motion correction is unhelpful or that completeness has been validated. No sort
 was launched; the explicit hold on the cancelled full-session rigid job remains.
 
+**Full-probe registration follow-up completed:** Expanding to 384 contacts did
+not remove the native-field excursions. The [registration report](luke_full_probe_rigid_registration_audit_20260907.md)
+classifies the global rigid field as unsupported for application, while retaining
+mixed native-raster evidence and uncertainty about physical cause. No full sort
+was launched; the 12/9 off reference and full-sort hold remain in place.
+
+See the [completed motion audit](luke_saved_motion_field_audit_20260907.md) for
+measurements, sign/time checks, limitations, and the shared `/mnt/NPX` handoff.
+The missing-files/hostname blocker below is now resolved. The remaining text is
+the preserved **pre-audit comparison**, including the still-useful threshold
+tradeoffs; its provisional native-motion nomination and missing-access status
+are superseded by this update.
+
+---
+
+**Provisional recommendation: retain rescue 12/9, motion off, as the operational
+reference and first candidate if a full-probe choice must be made now. Do not
+treat this as a proven biological winner or commit another full run yet.**
+Native rigid at 12/9 is the strongest unresolved challenger: it has positive
+known-truth motion evidence, but its real-data implementation is not qualified.
+The immediate decision is to finish the existing-motion-output audit, not to
+launch a full sort. The explicit hold on the cancelled full-session rigid job
+remains in force.
+
 **Decision correction published:** the comparison implementation now reports
 `motion_diagnostics_required` rather than deriving closure/promotion from
 directional overlap. The executed corrected notebook is
