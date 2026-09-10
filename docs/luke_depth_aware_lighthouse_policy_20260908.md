@@ -1,5 +1,28 @@
 # Depth-aware lighthouse tracking
 
+## Decision: verification panel, not motion estimator
+
+As of 2026-09-09, lighthouse cells are reserved for independent motion
+verification and are not an input to a production motion field. Preserve the
+waveform-only discovery, identity alternatives, accepted-event depths, and
+family structure as a frozen validation panel. Do not interpolate, smooth, or
+RANSAC-fit lighthouse observations into a depth-by-time motion estimate for use
+in sorting or correction.
+
+For validation, freeze lighthouse identities and acceptance rules before
+examining the motion estimate under test. Evaluate each candidate field only at
+the lighthouse observations' actual times and reference depths. Report
+per-family signed residuals, absolute residuals, temporal correlation on common
+support, dropout/unmatched evidence, lattice phase, and support counts. Give
+each independent identity family one vote; pool labels 673/675 unless later
+evidence separates them. Preserve strict, lower-score, ambiguous, and unmatched
+events separately and do not use DREDGE or another candidate field to select or
+repair lighthouse tracks.
+
+The failed affine RANSAC pilot is retained as a negative control in
+[the RANSAC field audit](luke_lighthouse_ransac_field_20260909.md). Its saved
+field is explicitly unvalidated and must not be treated as a motion product.
+
 ## Current preferred discovery method
 
 Use [waveform-only, whole-probe candidate discovery](lighthouse_candidate_discovery.md)

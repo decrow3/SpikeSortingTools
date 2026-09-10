@@ -1,5 +1,9 @@
 # Preferred lighthouse candidate discovery: waveform-only, whole-probe matching
 
+> **Use boundary (2026-09-09):** this workflow builds an independent motion-
+> verification panel. It does not estimate, interpolate, or supply the motion
+> field. See the [depth-aware lighthouse policy](luke_depth_aware_lighthouse_policy_20260908.md).
+
 Promoted by user direction on 2026-09-08. Use this as the default starting method
 for finding lighthouse candidates: **remove absolute depth from identity matching
 while retaining the waveform's relative shape across neighboring channels**.

@@ -9,6 +9,12 @@ selected MEDiCINe parameters. See [the estimation run record](luke_full_session_
 for implementation and actual launch status. huklaban5 consumes this shared
 estimate; it must not launch a second estimation run.
 
+The user subsequently requested automatic rigid correction and Kilosort after
+estimation. [The persistent rigid queue](luke_medicine_rigid_queue_20260909.md)
+implements that authorization with producer-exit, integrity, domain and runtime
+checks. A second manual launch approval is no longer part of this rigid arm's
+sequence. Scientific qualification labels and old cancelled-run holds remain.
+
 ## Requested experiment
 
 Use the improved waveform-screened motion estimate for two new Kilosort sorts

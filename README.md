@@ -13,6 +13,27 @@ Currently maintained by Declan Rowley
   — find distinctive relative multichannel waveforms without absolute-depth
   identity priors, reuse cached whole-probe scores, and inspect their depth/time
   overlays with strict and exploratory evidence shown separately.
+- **[Lighthouse tracker method audit](docs/luke_lighthouse_method_audit_20260909.md)**
+  — cached and synthetic controls on the tracker: lattice-node acceptance bias,
+  selection null, identity ambiguity, and candidate family structure.
+- **[Cheap Kilosort-family plausibility audit](docs/luke_kilosort_family_plausibility_20260909.md)**
+  — tests which depth-blind template groups remain coherent after depth/time is
+  revealed and compares their displacement with the previous lighthouse cells.
+- **[Depth-blind family threshold sweep](docs/luke_kilosort_family_threshold_sweep_20260909.md)**
+  — independently rebuilds the waveform graph at cosine 0.95, 0.97, and 0.98;
+  0.97 is useful, while 0.98 removes every coherent family.
+- **[Kilosort premerge lighthouse screen](docs/luke_kilosort_premerge_lighthouse_20260909.md)**
+  — applies the same depth-blind screen before Kilosort's final merge and finds
+  one coherent 11-tracklet candidate spanning about 200 um of displacement.
+- **[Prior lighthouse / Kilosort premerge reconciliation](docs/luke_premerge_prior_lighthouse_reconciliation_20260909.md)**
+  — traces all 17 prior labels into the cached premerge detections and shows that
+  15 were omitted from family plots only because their dominant clusters are singletons.
+- **[Lighthouse consensus reproduction](docs/luke_lighthouse_consensus_reproduction_20260909.md)**
+  — independently rebuilds the original waveform-traced population median and
+  verifies that the result survives collapsing labels 673/675 to one family vote.
+- **[Lighthouse RANSAC depth/time field pilot](docs/luke_lighthouse_ransac_field_20260909.md)**
+  — constructs the cheapest affine depth/time prototype and rejects it after it
+  performs worse than a rigid median in leave-one-family-out validation.
 - **[Screened MEDiCINe workflow and scaling benchmark](docs/screened_medicine_workflow.md)**
   — the Luke configuration, executable benchmark, and resource/reproduction checks.
 - **[Hindsight-first development prescription](docs/spikesorting_hindsight_development_prescription.md)**

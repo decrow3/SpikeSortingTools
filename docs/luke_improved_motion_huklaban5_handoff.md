@@ -11,6 +11,13 @@ only. Do not extract another peak population or fit MEDiCINe on huklaban5.
 Consume the shared hash-verified field package after it is published and reviewed.
 The producing job is documented in [the estimation run record](luke_full_session_medicine_run_20260909.md).
 
+The rigid arm on huklaban1 is now requested as an automatic persistent queue;
+see [the queue record](luke_medicine_rigid_queue_20260909.md). After the field
+finishes, it publishes `rigid_application_contract_v1.json` in the shared
+directory with the common channel set and operator policy. Reuse those for
+the nonrigid arm; do not independently select channels or change interpolation.
+This queue does not launch anything on huklaban5.
+
 ## Work to do after pulling
 
 1. Check the working tree and preserve unrelated changes. Record hostname,
