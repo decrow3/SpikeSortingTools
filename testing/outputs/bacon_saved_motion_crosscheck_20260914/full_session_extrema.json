@@ -1,0 +1,16 @@
+[
+  {
+    "probe": "probeA",
+    "rigid_full_range_um": 43.5,
+    "max_single_depth_full_range_um": 56.0,
+    "max_rigid_step_um": 32.5,
+    "largest_step_batch_boundary_s": 102
+  },
+  {
+    "probe": "probeB",
+    "rigid_full_range_um": 43.5,
+    "max_single_depth_full_range_um": 73.5,
+    "max_rigid_step_um": 37.5,
+    "largest_step_batch_boundary_s": 6438
+  }
+]

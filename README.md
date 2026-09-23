@@ -7,6 +7,9 @@ Currently maintained by Declan Rowley
 
 ## Start here
 
+- **[Research synthesis: what we tested, why, and what we concluded](docs/research_synthesis.md)**
+  — one overview of the major experiments, corrected conclusions, current
+  evidence limits, and unresolved questions, with links to detailed records.
 - **[Motion validation: pipeline integration and scientific context](docs/motion_validation_pipeline_integration.md)**
   — evidence, limitations, cross-dataset design, and the proposed testing stages.
 - **[Preferred lighthouse candidate discovery](docs/lighthouse_candidate_discovery.md)**

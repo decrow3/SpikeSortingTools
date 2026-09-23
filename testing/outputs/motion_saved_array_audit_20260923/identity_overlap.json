@@ -1,0 +1,13 @@
+{
+  "candidate_a": "p06_f010",
+  "candidate_b": "p08_f044",
+  "n_a": 115,
+  "n_b": 23,
+  "pairs_within_0p5ms": 0,
+  "fraction_a": 0.0,
+  "fraction_b": 0.0,
+  "compact_geometry_aware_best_lag_cosine": 0.9266892348487631,
+  "minimum_energy_coverage": 0.730265411106895,
+  "common_channels": 10,
+  "matched_pairs": []
+}

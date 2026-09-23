@@ -1,0 +1,17 @@
+{
+  "source_sha256": {
+    "/mnt/NPX/Bacon halo_declan/20251016/probeA/ops.npy": "cebeea99ac13223aa36592a126879dd86ebd689800273768226e364062ade320",
+    "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/outputs/cross_dataset_fast_motion_v2/bacon_probeA_p10/fit/field.npz": "d542e9edf22dc090594104fed8f8af929c01d316df0eac62f3ca7c86e608dadd",
+    "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/outputs/cross_dataset_fast_motion_v2/bacon_probeA_p50/fit/field.npz": "bf3939a396040e0f86f3afd725e428a3895e6ff6622161e63e788e1e21593895",
+    "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/outputs/cross_dataset_fast_motion_v2/bacon_probeA_p90/fit/field.npz": "5f83ec13636679eaa49785c690a9f74ca8aea7642b3d9f786262c0efda202d44",
+    "/mnt/NPX/Bacon halo_declan/20251016/probeB/ops.npy": "312d9a42e8222ca236429803676e8dce0a14728d593953ce7d2e3e753611a06d",
+    "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/outputs/cross_dataset_fast_motion_v2/bacon_probeB_p10/fit/field.npz": "f0a2619c28e431f5fa28ac20c186026d8ec0cc320d4e056ef7c7815d10926cdd",
+    "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/outputs/cross_dataset_fast_motion_v2/bacon_probeB_p50/fit/field.npz": "8db6d692603f436a473b1acb3744674fc1b7929d6387d0d510d7e6c847c675c7",
+    "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/outputs/cross_dataset_fast_motion_v2/bacon_probeB_p90/fit/field.npz": "0387f14f5df8b6b02d810c7980844f853554bd8df722be2f2ea1f311c9a202b3"
+  },
+  "script_sha256": "e102d8f90bb9819213f89fe6c72d042ac9be90bccefe8f5b5060f5c8cd92fdc5",
+  "time_mapping": "KS4 batch i covers [i*batch_size/fs,(i+1)*batch_size/fs); tmin=0, dt=2 s. Only complete batches within pilot windows; average eight native MED samples/batch.",
+  "spatial_mapping": "Linearly sample four-depth MED field at nine saved KS yblk centers, without extrapolation. Nine sampled values do not add spatial resolution.",
+  "metrics": "Remove each depth temporal median; rigid=across-depth median; nonrigid=residual. Median across-depth temporal P95-P5 for residual excursion. Median across three windows for summaries.",
+  "limitation": "Different frontends and estimator smoothing remain. This checks older saved estimates, not an independent validation of physical motion or exclusion of faster missed motion."
+}

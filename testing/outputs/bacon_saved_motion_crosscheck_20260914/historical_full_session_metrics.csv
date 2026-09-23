@@ -1,0 +1,3 @@
+probe,method,rigid_excursion_um,median_depth_spread_um,p95_depth_spread_um,p99_rigid_step_um,time_step_s,n_depth_bins
+probeA,saved_KS4_full_session,7.5,2.0999999999999996,9.9,3.875000000000001,2.0,9
+probeB,saved_KS4_full_session,2.9999999999999982,1.9000000000000004,4.600000000000001,7.749999999999998,2.0,9
