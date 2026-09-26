@@ -300,3 +300,19 @@ sorter domain. The smallest proposed CPU pass is still one read-only W2 pass
 (about 7.83 GB read, 15.67 GB RAM, under 0.2 GB persistent, provisionally
 20--35 minutes) and can compute support plus lineage/stability diagnostics
 together. It remains unapproved and unlaunched.
+
+### AW support-denominator clarification, 2026-09-26 16:20 PDT
+
+The prospective design now defines mandatory retention exactly as translated
+energy on actual AP202--AP383 target channels divided by the donor's total
+measured 384-channel energy before translation. The denominator is never
+renormalized after crop, and retention must be at least 99% for every placement
+and occupied state. Actual remap and deterministic operator-fidelity gates are
+unchanged.
+
+The earlier 20--35 minute estimate applied to approximately 30 templates, not
+all 90 scalar-prescreen candidates. The unapproved prospective extraction is
+therefore capped at 90 candidates, two CPU threads, 20 GB RAM, 60 minutes wall
+time and 0.2 GB persistent output. Reaching a cap stops with a report rather
+than silently dropping candidates. The corrected design is ready for a user
+decision and awaits explicit extraction authorization; no job was launched.

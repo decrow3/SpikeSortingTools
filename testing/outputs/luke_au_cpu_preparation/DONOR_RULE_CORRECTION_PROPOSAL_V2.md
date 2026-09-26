@@ -79,9 +79,11 @@ For every occupied W2 state `{0, -40, -80, -120, -160, -200, -240}` um:
 1. translate the newly measured 384-channel donor by the exact same-column
    physical mapping and then project it into AP202--AP383, the actual injected
    and matching domain;
-2. require >99% of the donor energy needed for that translated injected
-   waveform to be supported by real measured channels, without padding,
-   extrapolation or many-to-one channel mappings;
+2. require the translated energy landing on actual AP202--AP383 target channels,
+   divided by the donor's **total measured 384-channel energy before
+   translation**, to be >=99% at every placement and occupied state. Do not
+   renormalize the denominator after cropping. Require real measured channels,
+   without padding, extrapolation or many-to-one channel mappings;
 3. exact inverse remapping of the same deterministic template must reproduce it
    with centred cosine >=0.99 and PTP ratio in `[0.98,1.02]`. This is explicitly
    an operator-fidelity test, not biological stability;
@@ -125,6 +127,10 @@ on arm performance.
 6. Persist only templates, per-unit measurements and receipts (under 0.2 GB),
    then make the separate cohort-size/precision decision.
 
-The provisional CPU estimate remains 20--35 minutes, with a crop-overlap dry
-run first to confirm builder/config fidelity. This recipe performs no sort,
-does not modify voltage and does not change the 182-channel production domain.
+The earlier 20--35 minute estimate covered an approximately 30-template pass
+and is not used as the cap for the 90-candidate prescreen. For a prospective
+authorized pass, cap measurement at 90 candidates, two CPU threads, 20 GB RAM,
+60 minutes wall time and 0.2 GB persistent output, with a crop-overlap dry run
+first to confirm builder/config fidelity. Stop and report at a cap rather than
+silently dropping candidates. This recipe performs no sort, does not modify
+voltage and does not change the 182-channel production domain.

@@ -49,7 +49,8 @@
   },
   "mandatory_actual_state_support": {
     "states_um": [0.0, -40.0, -80.0, -120.0, -160.0, -200.0, -240.0],
-    "minimum_measured_energy_support_exclusive": 0.99,
+    "energy_retention_definition": "translated energy on actual AP202--AP383 target channels divided by total measured 384-channel donor energy before translation; never renormalize after crop",
+    "minimum_measured_energy_retention_inclusive": 0.99,
     "no_padding_extrapolation_or_many_to_one_mapping": true,
     "exact_copy_operator_fidelity": {
       "minimum_centered_cosine": 0.99,
@@ -72,7 +73,15 @@
     "raw_read_gb": 7.83,
     "temporary_ram_gb": 15.67,
     "persistent_output_upper_gb": 0.2,
-    "provisional_wall_minutes": [20, 35],
+    "earlier_approximately_30_template_wall_minutes": [20, 35],
+    "prospective_measurement_cap_not_authorized": {
+      "maximum_candidates": 90,
+      "cpu_threads": 2,
+      "ram_gb": 20,
+      "wall_minutes": 60,
+      "persistent_output_gb": 0.2,
+      "on_cap": "stop and report; do not silently drop candidates"
+    },
     "passes": "one read-only W2 preprocessing pass builds final-label full-probe templates and computes support, stability and lineage diagnostics",
     "first_check": "crop-overlap builder/config dry run",
     "gpu": false,
