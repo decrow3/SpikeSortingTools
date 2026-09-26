@@ -1,0 +1,37 @@
+{
+  "schema": "luke-au-worker-context-v1",
+  "status": "template_only_not_worker_ready",
+  "worker_ready": false,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "2",
+    "nice": 10
+  },
+  "concurrency": {
+    "cpu_threads_max": 2,
+    "input_readers_max": 1,
+    "gpu_processes": 0
+  },
+  "preflight": [
+    "free output bytes >= 30000000000",
+    "all AV artifacts present and hash-valid",
+    "D2L field authority explicitly confirmed",
+    "exact S/W2 preprocessing and channel identity match",
+    "30 donors selected under frozen rule",
+    "every donor/state qualification passes",
+    "33 CPU scorer/injection regression tests pass"
+  ],
+  "forbidden": [
+    "sort launch",
+    "GPU or CUDA use",
+    "new MEDiCINe fit",
+    "raw-voltage scan",
+    "continuous or fractional spatial interpolation",
+    "threshold relaxation after seeing outcomes",
+    "claiming worker readiness from placeholder assets"
+  ],
+  "next_command": null,
+  "reason_next_command_is_null": "AV handoff is not present and validated"
+}

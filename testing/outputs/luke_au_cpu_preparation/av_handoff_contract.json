@@ -1,0 +1,57 @@
+{
+  "schema": "luke-au-av-handoff-contract-v1",
+  "handoff_root_policy": "all paths relative to one sealed handoff root",
+  "required_artifacts": [
+    {
+      "role": "static_s_w2_template_bank",
+      "required_metadata": ["path", "sha256", "dtype", "shape", "time_support_samples"]
+    },
+    {
+      "role": "static_s_w2_unit_metadata",
+      "required_metadata": ["path", "sha256", "schema", "row_count"]
+    },
+    {
+      "role": "static_s_w2_channel_ids",
+      "required_metadata": ["path", "sha256", "dtype", "shape"]
+    },
+    {
+      "role": "static_s_w2_geometry_um",
+      "required_metadata": ["path", "sha256", "dtype", "shape"]
+    },
+    {
+      "role": "static_s_w2_preprocessing_manifest",
+      "required_metadata": ["path", "sha256", "code_identity", "source_recording_identity"]
+    },
+    {
+      "role": "d2l_exact_two_layer_v1_field",
+      "required_metadata": ["path", "sha256", "time_grid_origin", "sign_convention"]
+    },
+    {
+      "role": "canonical_episode_mask",
+      "required_metadata": ["path", "sha256", "time_grid_origin", "interval_convention"]
+    },
+    {
+      "role": "dartsort_matching_config",
+      "required_metadata": ["path", "sha256", "dartsort_commit", "chunk_length_samples"]
+    }
+  ],
+  "required_unit_metadata_columns": [
+    "unit_id",
+    "quality",
+    "depth_um",
+    "ptp_uv",
+    "refractory_violation_fraction",
+    "rest_spike_fraction",
+    "isolation_score"
+  ],
+  "fail_closed_on": [
+    "missing artifact",
+    "hash mismatch",
+    "preprocessing mismatch",
+    "channel id or geometry mismatch",
+    "sampling-frequency mismatch",
+    "field sign or time-origin ambiguity",
+    "matching chunk-length ambiguity"
+  ]
+}
+
