@@ -1,0 +1,95 @@
+{
+  "schema": "luke-aw-donor-rule-v2-proposal",
+  "status": "prospective_for_review_not_applied",
+  "replaces_original_rule": false,
+  "selection_run": false,
+  "extraction_authorized": false,
+  "donor_target": 30,
+  "rationale": "Remove preparation-added unavailable quality and isolation_score gates without inventing substitutes; retain user-requested measurable criteria.",
+  "provenance": {
+    "qc_supplement_manifest_sha256": "483d7233d31d5b5d95efb6d464d82f4b986c5524a0bb9741a37a625d3689ea13",
+    "qc_supplement_complete_sha256": "70b8febef3a3d44c2f8921a2f632154d29264e458f3872f5b7a01017194457c5",
+    "qc_csv_sha256": "e0ff5f1a61b2b07a8632dfcaf59dca282fdc213b3983557ee5d67fb1f0aaf7dc",
+    "static_template_bank_sha256": "a99b12c3075f038fbad8c05c36c96f63221fd0eac5ba71caee8f18ff97acb75c",
+    "final_sorting_sha256": "be6106ed0cb0f99759fd23629dd3bcb5f50657dbffa238ad3721c15d1b21fba7",
+    "d2l_v1_field_sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+    "canonical_ae_mask_sha256": "31b39a494ede16e3f5919caf1cf53a6222dd5e737f027d59155e96a9ce9179ed"
+  },
+  "identity_gate": {
+    "require_explicit_one_to_one_template_final_label_lineage": true,
+    "numeric_id_overlap_is_proof": false,
+    "ambiguous_merge_split_or_representative_policy": "exclude"
+  },
+  "saved_scalar_gate": {
+    "minimum_final_spike_count": 800,
+    "maximum_raw_adjacent_isi_lt_1ms_fraction": 0.005,
+    "minimum_rest_spike_fraction": 0.8,
+    "minimum_valid_rest_waveforms": 400,
+    "current_prescreen_count_not_selected": 90,
+    "forbidden_substitutions": [
+      "isi_violations_ratio for raw adjacent-ISI fraction",
+      "rp_contamination_estimate for isolation_score",
+      "presence_ratio for rest_spike_fraction"
+    ]
+  },
+  "waveform_stability_gate": {
+    "full_template_builder": "exact saved DARTsort 121-sample TemplateData.from_config/peelreduce median path, 500-spike cap",
+    "stability_subset": "400 valid rest spikes evenly spaced in time",
+    "split": "alternating 200/200",
+    "minimum_centered_cosine_each_half_to_full": 0.99,
+    "ptp_ratio_each_half_to_full": [0.98, 1.02],
+    "crop_reproduction_minimum_centered_cosine": 0.99,
+    "crop_reproduction_ptp_ratio": [0.98, 1.02]
+  },
+  "support_gates": {
+    "conservative_interior": {
+      "minimum_energy_fraction_exclusive": 0.99,
+      "margin_um_each_edge": 440.0,
+      "components_um": {
+        "maximum_occupied_state": 240.0,
+        "matcher_interpolation_neighborhood": 200.0
+      }
+    },
+    "actual_exact_remap": {
+      "states_um": [0.0, -40.0, -80.0, -120.0, -160.0, -200.0, -240.0],
+      "minimum_energy_retention_exclusive": 0.99,
+      "roundtrip_ptp_ratio": [0.98, 1.02],
+      "minimum_roundtrip_centered_cosine": 0.99
+    }
+  },
+  "placement_gate": {
+    "freeze_before_arm_outcomes": true,
+    "all_states_in_bounds": true,
+    "exclude_native_peak_translations": true,
+    "native_clone_exclusion": {
+      "minimum_centered_cosine": 0.99,
+      "ptp_ratio": [0.98, 1.02]
+    }
+  },
+  "ranking": {
+    "depth_strata": 6,
+    "quota_per_stratum": 5,
+    "order": [
+      "calibrated_static_full_probe_ptp_desc",
+      "raw_adjacent_isi_lt_1ms_fraction_asc",
+      "valid_rest_spike_count_desc",
+      "final_unit_id_asc"
+    ],
+    "shortfall": "global fill by same order; stop if total remains below 30"
+  },
+  "truth_population": {
+    "kind": "independent_per_unit_seeded_dead_time_renewal",
+    "mean_rate_hz": 5.0,
+    "minimum_refractory_ms": 3.0,
+    "regular_synchronized_train": "scorer fixture only"
+  },
+  "remaining_read_only_work": {
+    "lineage": "stage or derive exact matching-template to final-label transforms",
+    "raw_read_gb": 7.83,
+    "temporary_ram_gb": 15.67,
+    "persistent_output_upper_gb": 0.2,
+    "provisional_cpu_wall_minutes": [20, 35],
+    "first_gate": "dry-run crop overlap reproduction before full candidate extraction"
+  },
+  "stop_policy": "Do not tune gates, reduce donor target, or inspect motion-arm outcomes to reach 30."
+}

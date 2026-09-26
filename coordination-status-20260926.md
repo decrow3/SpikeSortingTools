@@ -230,3 +230,38 @@ These are documentation qualifications only. They do not alter any frozen field,
 - Completed AM.2 checkpoint, including the tested infrastructure fix: `0721ab2474f754d1dac102a2bc96da37979e4bf4`.
 - Frozen AM.3 fitting orchestration: `20ec186fcdc676b838b39fca2fdd31f99717c5ea`.
 - Frozen AM.3 validation/package follower: `c2a6ad81b2b06f5a1fd8650fa3299421f4fa0ac1`.
+
+### AW supplemental-QC correction checkpoint, 2026-09-26 15:17 PDT
+
+The supplemental AV QC bundle is byte-verified. Its manifest is
+`483d7233d31d5b5d95efb6d464d82f4b986c5524a0bb9741a37a625d3689ea13`,
+its completion marker is
+`70b8febef3a3d44c2f8921a2f632154d29264e458f3872f5b7a01017194457c5`,
+and the 538-row QC table is
+`e0ff5f1a61b2b07a8632dfcaf59dca282fdc213b3983557ee5d67fb1f0aaf7dc`.
+The table contains an exact 1 ms adjacent-ISI fraction but contains neither
+`quality` nor `isolation_score`. Those two requirements were introduced during
+AW preparation and were not part of the user/coordinator criteria. Their
+absence is not evidence of poor isolation.
+
+A self-contained prospective correction is saved in
+`testing/outputs/luke_au_cpu_preparation/DONOR_RULE_CORRECTION_PROPOSAL.md` and
+`donor_rule_v2_proposal.json`. It retires the unavailable fields without
+substituting refractory-contamination, presence-ratio or other non-equivalent
+metrics. The original frozen blocked result remains unchanged in
+`preparation_manifest.json` and `handoff_validation.json`; the proposal has not
+been applied and authorizes neither extraction nor a benchmark.
+
+The read-only scalar pre-screen finds 90/538 final labels satisfying at least
+800 spikes, raw adjacent-ISI fraction at most 0.005 and rest-spike fraction at
+least 0.80. This is not an eligible or selected cohort. Exact one-to-one lineage
+from the 654 matching-template units to the 538 final labels remains unresolved,
+and full-probe waveform construction, stability, support and placement gates
+remain unmeasured. Numeric ID overlap is explicitly not treated as lineage.
+
+If the prospective rule is approved, the remaining no-sort work begins with a
+small lineage artifact if available, then one read-only W2 full-probe template
+extraction: about 7.83 GB read, 15.67 GB temporary RAM, under 0.2 GB persistent
+output and provisionally 20--35 CPU minutes. It must first reproduce the saved
+crop overlap before expanding to candidates, and it stops rather than relaxing
+gates or reducing the target if fewer than 30 donors qualify.

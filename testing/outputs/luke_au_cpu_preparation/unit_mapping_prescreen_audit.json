@@ -1,0 +1,46 @@
+{
+  "schema": "luke-aw-unit-mapping-prescreen-audit-v1",
+  "status": "read_only_prescreen_not_selection",
+  "template_bank": {
+    "unit_id_count": 654,
+    "unique_unit_id_count": 654,
+    "minimum_unit_id": 0,
+    "maximum_unit_id": 653,
+    "template_spike_count_percentiles": {
+      "minimum": 15,
+      "p25": 318,
+      "median": 500,
+      "maximum": 500
+    }
+  },
+  "final_sorting": {
+    "nonnegative_label_count": 538,
+    "minimum_label": 0,
+    "maximum_label": 537
+  },
+  "qc_supplement": {
+    "row_count": 538,
+    "unit_ids_equal_final_sorting_labels": true,
+    "spike_counts_equal_final_sorting_counts": true
+  },
+  "mapping": {
+    "numeric_template_ids_overlapping_final_labels": 538,
+    "template_ids_without_same_numeric_final_label": 116,
+    "numeric_overlap_accepted_as_lineage": false,
+    "remaining_requirement": "explicit saved label transforms or spike-event lineage proving one-to-one template/final-label identity"
+  },
+  "prospective_saved_scalar_prescreen": {
+    "minimum_spike_count_800_pass": 249,
+    "raw_adjacent_isi_fraction_le_0p005_pass": 312,
+    "rest_spike_fraction_ge_0p80_pass": 389,
+    "all_three_pass": 90,
+    "eligible_or_selected_count": null,
+    "reason_null": "prospective rule is not approved/applied and lineage/full-probe gates are unresolved"
+  },
+  "mask": {
+    "sha256": "31b39a494ede16e3f5919caf1cf53a6222dd5e737f027d59155e96a9ce9179ed",
+    "interval_convention": "half-open [start_s,end_s)",
+    "w2_spikes_inside_mask": 76719,
+    "w2_spike_fraction_inside_mask": 0.1281004914033632
+  }
+}
