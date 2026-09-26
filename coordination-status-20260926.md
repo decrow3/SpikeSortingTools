@@ -74,19 +74,31 @@ Per-depth results retain the frozen four-block test. Accepted counts and accepte
   explicitly. Since `am3_fit_complete.json` is sealed, the next durable job
   starts directly at `am3-validate` and does not refit anything.
 
-## AM.3 active background compute
+## AM.3 complete: imec0 two-layer field passes
 
-The AM.2 report-before-start hold was satisfied and the frozen AM.3 recipe was preregistered before fitting. `luke-imec0-am3-fit-20260926.service` is active under main PID `1820851`. At 10:26 it had completed 35/174 `amp50_d1` fast windows in 2,652.7 s wall time, using 2,528.1 s of MEDiCINe runtime. The GPU is healthy and no pre-existing AM.3 fit was duplicated. Durable follower `luke-imec0-am3-validate-20260926.service` (PID `1823164`) is waiting for fit completion, then runs the frozen validation and packages only on a pass.
+The AM.2 report-before-start hold was satisfied and the frozen AM.3 recipe was preregistered before fitting. The final fit retry and validation retry both terminated normally with exit status 0. The run reused all 174 completed `amp50_d1` fast windows, stitched them with per-window median centering, chained overlap offsets and triangular blending, then fitted the unchanged 30 s-kernel slow layer after excluding the mapped AE mask plus 3 s. Total MEDiCINe runtime was 12,625.68 s (3.51 GPU-hours), below the 4 h budget.
 
-The service will fit the 120 s / 60 s-step fast windows, stitch them with per-window median centering, chained overlap offsets and triangular blending, enforce the 10 µm median seam gate, and then fit the 30 s-kernel slow layer after excluding the mapped AE mask plus 3 s. The 35-fit checkpoint projects 2.93 hours remaining; expected fit completion is approximately 13:22 PDT, followed by validation and packaging. Expected user-facing completion is approximately 14:00–14:30 PDT if all gates pass.
+The frozen validation **passed**:
+
+| Metric | Fast | Two-layer | Gate/result |
+|---|---:|---:|---|
+| episode error | 14.84 µm | 17.66 µm | degradation 2.82 µm, <=3 µm |
+| episode ratio | 0.956 | 0.958 | retained |
+| quiet 5 s increment RMS | 5.37 µm | 2.50 µm | quiet is better |
+| quiet absolute displacement | 4.43 µm | 2.91 µm | descriptive |
+| false-motion fraction | 0.058% | 0.000% | descriptive |
+
+The fast stitch median absolute seam was 1.04 µm against the 10 µm limit. The two-layer boundary distribution had median 2.24 µm, P95 7.70 µm and maximum 13.59 µm; its boundary gate and all top-10 matched nulls passed. The label-free slow-reference null resolved 200/200 samples, mode 0 µm and median absolute shift 0 µm. Both fields were scored on the same 282 accepted episodes, 32,841 quiet samples and 26,193 quiet increment pairs.
+
+The deployable package is `stage5_imec0/luke0804_imec0_two_layer_motion.npz`, SHA-256 `4c769125020aad3263bf6eaa1889cdaa7eccbf19dcf0aa3a068b185221fadb9f`. Its manifest uses AP-frame-zero seconds and sign convention `corrected = observed - displacement`. No sorting or voltage modification occurred.
 
 ## Holds, budgets and next action
 
-- AM.3 fitting started at 2026-09-26 09:41:17 PDT after the AM.2 result was reported. Validation and packaging remain pending.
+- AM.3 fitting started at 2026-09-26 09:41:17 PDT after the AM.2 result was reported. Validation and packaging completed at approximately 13:30 PDT.
 - No sorting, new sweep or voltage modification occurred.
 - AM MEDiCINe fitting budget is 4 GPU-hours. Consumption is recorded from completed receipts between windows; no completed AM.3 receipt existed at this 09:42 checkpoint.
 - Data filesystem free: 186,128,961,536 bytes (about 173 GiB), above the 30 GB guard.
-- Current blocker: none. Stop immediately if a frozen seam, validation, disk or budget gate fails; do not tune.
+- Current AM blocker: none; AM.1--AM.4 are complete.
 
 ## AW CPU preparation (parallel, no sort/GPU/new fit)
 
@@ -114,10 +126,14 @@ Sweep directory: `/media/huklab/Data/NPX/Ryansorting/Luke/luke_imec1_medicine_re
 | `am2_per_depth_blocks.csv` | `e4d7ddc2d16d782cf48712f77a4388cb06f7176313c835271fc738e54b5f7325` |
 | `am2_summary.json` | `bb6ab38b9fa3c847e13831fe37c534eaf9ef2ae0719cdae750389c9447000702` |
 | `peak_cache_manifest.csv` | `a3f6d8b9101b77d1749033365ab368a9242f7eb3a13cd75dbbf2b0ce5074ba14` |
+| `luke0804_imec0_two_layer_motion.npz` | `4c769125020aad3263bf6eaa1889cdaa7eccbf19dcf0aa3a068b185221fadb9f` |
+| `am3_validation_gate.json` | `6cd41834b3077115e82e0051996e1e065b63e677900bd80785e8c83718596bb2` |
+| `am3_scores.csv` | `f4c3eeba59b1af31a3d7f7e411388a28c9e200830ef81d3e3241afb3937940b5` |
+| `am3_fit_complete.json` | `93a5971e9ef6c249201a13152e8d8afac9be8819c21a53df82836cd404bf64be` |
 
 The colourblind-safe summary figure is `am2_cross_probe_summary.png`. The failed and successful durable logs are `am2.service.log` and `am2.retry1.service.log`.
 
-AM.3 preregistration is `am3_preregistration.json`; the active durable log is `am3_fit.service.log`; per-window receipts are written below `fields/full/`, and progress is checkpointed in `am3_fit_progress.json`.
+AM.3 preregistration is `am3_preregistration.json`. The initial failure is preserved in `am3_fit.service.log`; successful fit retry evidence is in `am3_fit.retry1.service.log`; successful final validation/package evidence is in `am3_validate.retry2.service.log`. Per-window receipts remain below `fields/full/` and the slow receipt is below `fields/slow/medicine_amp50_d1_k30_exclude3s/`.
 
 ## AT source confirmation and interpretation qualifications
 
@@ -134,7 +150,7 @@ These are documentation qualifications only. They do not alter any frozen field,
 
 ## Instruction and code state
 
-- Latest operative scientific instruction on this host: AO.
+- Latest operative scientific instruction on this host: AW CPU preparation alongside the now-complete AM.3 run; AO remains the AM retry/reporting authority.
 - Latest coordination/source-review instruction: AT, following AR.
 - AP/AQ are DARTsort diagnostics requiring no work here per AR; no AP.6 operative instruction has reached this task.
 - Branch: `codex/motionqc-phase1`.
