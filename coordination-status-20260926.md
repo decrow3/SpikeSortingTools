@@ -51,6 +51,20 @@ Per-depth results retain the frozen four-block test. Accepted counts and accepte
 - Focused tests after the fix: 9 passed.
 - Retry 1 service: `luke-imec0-am2-20260926-r1.service`; completed successfully with exit status 0.
 - Cumulative AM.2 infrastructure relaunches: 1 of 3 allowed.
+- The first AM.3 fit service completed and preserved all 174 fast-window
+  receipts, then failed before the slow fit because the rescue-environment
+  controller imported `medicine` directly. MEDiCINe exists only in the frozen
+  `MEDPY` environment already used by every fast fit. No scientific gate ran or
+  failed. The correction delegates the unchanged slow fit to `MEDPY`, requires
+  its receipt, and reuses all 174 completed fast fits. This is AM.3
+  infrastructure relaunch 1 of 3 under AO; no field, mask, parameter, metric or
+  budget changed.
+- The required same-filesystem retry dummy passed. The MEDPY process imported
+  MEDiCINe/CUDA, read `full_block_000` (692,200 cached peaks), imported the AM.3
+  slow dispatch, and loaded the stitched field. The rescue environment then
+  loaded the same field and verified the saved seam gate. AM has no sort stage,
+  and sorting remains unauthorized. Receipt:
+  `stage5_imec0/am3_infrastructure_dummy_retry1.json`.
 
 ## AM.3 active background compute
 

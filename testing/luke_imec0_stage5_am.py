@@ -316,7 +316,16 @@ def am3_fit_all() -> None:
     fast=qstage.stitch(OUT,"full");seams=json.loads((OUT/"seams_full.json").read_text())
     if seams["median_abs_seam_discontinuity_um"]>10:
         atomic_json(OUT/"am3_stop.json",{"stage":"fast stitch","reason":"median seam gate failed","seams":seams});raise RuntimeError("AM.3 fast seam gate failed")
-    am3_slow_fit()
+    # The controller runs in the rescue environment, while MEDiCINe is
+    # installed only in MEDPY. Fast fits already cross this environment
+    # boundary one window at a time; keep the slow fit on the same boundary.
+    result=subprocess.run(
+        [str(stage1.MEDPY),str(Path(__file__).resolve()),"am3-slow-fit"],
+        timeout=stage1.FIT_TIMEOUT_S,
+    )
+    if result.returncode:raise RuntimeError("AM.3 slow fit failed")
+    if not (OUT/"fields/slow/medicine_amp50_d1_k30_exclude3s/receipt.json").exists():
+        raise RuntimeError("AM.3 slow fit returned without a receipt")
     atomic_json(OUT/"am3_fit_complete.json",{"status":"complete","fast_fits":len(specs),"slow_fits":1,
         "medicine_runtime_s":am3_fit_runtime(),"budget_s":AM_GPU_BUDGET_S,
         "fast_field":str(OUT/"stitched_full.npz"),"fast_field_sha256":sha256(OUT/"stitched_full.npz"),
@@ -454,13 +463,14 @@ def am3_wait_validate() -> None:
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument("phase",choices=("prepare","extract-one","extract-all","am2","am3-prepare","am3-fast-one","am3-fit-all","am3-validate","am3-wait-validate"));p.add_argument("--block");p.add_argument("--window");a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("phase",choices=("prepare","extract-one","extract-all","am2","am3-prepare","am3-fast-one","am3-slow-fit","am3-fit-all","am3-validate","am3-wait-validate"));p.add_argument("--block");p.add_argument("--window");a=p.parse_args()
     if a.phase=="prepare":prepare()
     elif a.phase=="extract-one":extract_one(a.block)
     elif a.phase=="extract-all":extract_all()
     elif a.phase=="am2":am2()
     elif a.phase=="am3-prepare":am3_prepare()
     elif a.phase=="am3-fast-one":am3_fast_one(a.window)
+    elif a.phase=="am3-slow-fit":am3_slow_fit()
     elif a.phase=="am3-fit-all":am3_fit_all()
     elif a.phase=="am3-validate":am3_validate()
     else:am3_wait_validate()
