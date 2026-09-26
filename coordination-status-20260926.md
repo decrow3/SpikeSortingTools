@@ -54,9 +54,9 @@ Per-depth results retain the frozen four-block test. Accepted counts and accepte
 
 ## AM.3 active background compute
 
-The AM.2 report-before-start hold was satisfied and the frozen AM.3 recipe was preregistered before fitting. `luke-imec0-am3-fit-20260926.service` is active under main PID `1820851`. It is fitting the first of 174 `amp50_d1` fast windows; the GPU is healthy and no pre-existing AM.3 fit was duplicated.
+The AM.2 report-before-start hold was satisfied and the frozen AM.3 recipe was preregistered before fitting. `luke-imec0-am3-fit-20260926.service` is active under main PID `1820851`. At 09:45 it had completed 3/174 `amp50_d1` fast windows in 225.5 s wall time, using 213.3 s of MEDiCINe runtime. The GPU is healthy and no pre-existing AM.3 fit was duplicated. Durable follower `luke-imec0-am3-validate-20260926.service` (PID `1823164`) is waiting for fit completion, then runs the frozen validation and packages only on a pass.
 
-The service will fit the 120 s / 60 s-step fast windows, stitch them with per-window median centering, chained overlap offsets and triangular blending, enforce the 10 µm median seam gate, and then fit the 30 s-kernel slow layer after excluding the mapped AE mask plus 3 s. Historical imec1 receipts project about 3.44 GPU-hours for the 174 fast fits. Expected fit completion is approximately 13:15–13:45 PDT, followed by validation and packaging; expected user-facing completion is approximately 14:00–14:30 PDT if all gates pass.
+The service will fit the 120 s / 60 s-step fast windows, stitch them with per-window median centering, chained overlap offsets and triangular blending, enforce the 10 µm median seam gate, and then fit the 30 s-kernel slow layer after excluding the mapped AE mask plus 3 s. The first-three measured projection is 3.57 hours remaining; expected fit completion is approximately 13:20 PDT, followed by validation and packaging. Expected user-facing completion is approximately 14:00–14:30 PDT if all gates pass.
 
 ## Holds, budgets and next action
 
@@ -93,3 +93,4 @@ AM.3 preregistration is `am3_preregistration.json`; the active durable log is `a
 - Base commit before the infrastructure fix: `22de67700afe39249887700c0006bfbd91460842`.
 - Completed AM.2 checkpoint, including the tested infrastructure fix: `0721ab2474f754d1dac102a2bc96da37979e4bf4`.
 - Frozen AM.3 fitting orchestration: `20ec186fcdc676b838b39fca2fdd31f99717c5ea`.
+- Frozen AM.3 validation/package follower: `c2a6ad81b2b06f5a1fd8650fa3299421f4fa0ac1`.
