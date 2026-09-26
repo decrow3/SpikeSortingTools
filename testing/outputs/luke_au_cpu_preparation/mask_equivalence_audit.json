@@ -1,0 +1,23 @@
+{
+  "schema": "luke-aw-mask-equivalence-audit-v1",
+  "status": "read_only",
+  "prescreen_mask": {
+    "path": "/media/huklab/Data/NPX/Ryansorting/Luke/luke_imec1_medicine_reference_sweep_v2/stage4_ab/censor_mask_v1.csv",
+    "bytes": 9151,
+    "sha256": "31b39a494ede16e3f5919caf1cf53a6222dd5e737f027d59155e96a9ce9179ed",
+    "rows": 422
+  },
+  "hub_canonical_mask": {
+    "path": "/media/huklab/Data/NPX/Ryansorting/Luke/incoming/censor_mask_v1/censor_mask_v1.csv",
+    "bytes": 8750,
+    "sha256": "86425e8a6627a10ac8932ba01b799cb7be7141f731ebb4ecc01e303326b9da55",
+    "rows": 422
+  },
+  "comparison": {
+    "start_end_intervals_equal_in_order": true,
+    "normalized_A_U_E_sources_equal_in_order": true,
+    "different_normalized_rows": 0,
+    "byte_identical": false,
+    "explanation": "serialization-only source labels such as A+E versus AE"
+  }
+}

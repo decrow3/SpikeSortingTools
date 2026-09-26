@@ -1,0 +1,82 @@
+{
+  "schema": "luke-aw-donor-rule-v3-proposal",
+  "status": "prospective_for_review_not_applied",
+  "preserves_original_blocked_result": true,
+  "preserves_prior_proposal_as_history": true,
+  "selection_run": false,
+  "extraction_authorized": false,
+  "sorting_authorized": false,
+  "identity": {
+    "donor_definition": "new template built directly from an explicitly selected final S label and its saved spike times",
+    "one_to_one_prematching_lineage_required_for_donor": false,
+    "lineage_use": "diagnostic and interpretation caveat; required only to claim reproduction of a historical matching template",
+    "lineage_categories": ["one_to_one", "many_to_one", "split", "representative_only", "ambiguous", "absent"]
+  },
+  "domains": {
+    "recorded_sampling_frequency_hz": 29999.759166666667,
+    "measurement_channels": 384,
+    "deployed_sorter_channels": 182,
+    "deployed_sorter_channel_ids": "AP202--AP383",
+    "full_probe_sorting": false
+  },
+  "mask": {
+    "prescreen_path": "/media/huklab/Data/NPX/Ryansorting/Luke/luke_imec1_medicine_reference_sweep_v2/stage4_ab/censor_mask_v1.csv",
+    "prescreen_bytes": 9151,
+    "prescreen_sha256": "31b39a494ede16e3f5919caf1cf53a6222dd5e737f027d59155e96a9ce9179ed",
+    "hub_canonical_path": "/media/huklab/Data/NPX/Ryansorting/Luke/incoming/censor_mask_v1/censor_mask_v1.csv",
+    "hub_canonical_bytes": 8750,
+    "hub_canonical_sha256": "86425e8a6627a10ac8932ba01b799cb7be7141f731ebb4ecc01e303326b9da55",
+    "interval_count_each": 422,
+    "numeric_intervals_equal": true,
+    "normalized_sources_equal": true,
+    "byte_difference": "source serialization such as A+E versus AE"
+  },
+  "scalar_prescreen_proposed_pending_approval": {
+    "minimum_final_spike_count": 800,
+    "maximum_raw_adjacent_isi_lt_1ms_fraction": 0.005,
+    "minimum_rest_spike_fraction": 0.8,
+    "minimum_valid_rest_waveforms": 400,
+    "current_first_three_pass_count_not_selected": 90,
+    "quality_or_isolation_substitute": null
+  },
+  "template_construction": {
+    "source": "final S label spike times",
+    "full_probe_measurement": true,
+    "builder": "recorded DARTsort 121-sample TemplateData.from_config/peelreduce median path",
+    "maximum_spikes": 500,
+    "split_half_stability": "diagnostic only; no unvalidated hard threshold",
+    "historical_crop_reproduction": "diagnostic unless historical-template identity is the claim"
+  },
+  "mandatory_actual_state_support": {
+    "states_um": [0.0, -40.0, -80.0, -120.0, -160.0, -200.0, -240.0],
+    "minimum_measured_energy_support_exclusive": 0.99,
+    "no_padding_extrapolation_or_many_to_one_mapping": true,
+    "exact_copy_operator_fidelity": {
+      "minimum_centered_cosine": 0.99,
+      "ptp_ratio": [0.98, 1.02],
+      "biological_stability_test": false
+    }
+  },
+  "conservative_440um_margin": {
+    "status": "diagnostic_not_hard_gate_without_separate_padding_or_extrapolation_justification",
+    "components_um": [240.0, 200.0]
+  },
+  "ranking": {
+    "freeze_before_arm_outcomes": true,
+    "depth_strata": 6,
+    "order": ["calibrated_full_probe_ptp_desc", "raw_adjacent_isi_lt_1ms_fraction_asc", "valid_rest_spike_count_desc", "final_label_id_asc"],
+    "target": "approximately 30, not an exact evidence-backed stop",
+    "if_count_differs": "report count, depth coverage and outcome-blind paired-comparison precision; pause for explicit review"
+  },
+  "smallest_cpu_recipe": {
+    "raw_read_gb": 7.83,
+    "temporary_ram_gb": 15.67,
+    "persistent_output_upper_gb": 0.2,
+    "provisional_wall_minutes": [20, 35],
+    "passes": "one read-only W2 preprocessing pass builds final-label full-probe templates and computes support, stability and lineage diagnostics",
+    "first_check": "crop-overlap builder/config dry run",
+    "gpu": false,
+    "sort": false,
+    "voltage_write": false
+  }
+}

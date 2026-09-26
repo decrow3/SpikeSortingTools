@@ -265,3 +265,38 @@ extraction: about 7.83 GB read, 15.67 GB temporary RAM, under 0.2 GB persistent
 output and provisionally 20--35 CPU minutes. It must first reproduce the saved
 crop overlap before expanding to candidates, and it stops rather than relaxing
 gates or reducing the target if fewer than 30 donors qualify.
+
+### AW proposal revision after hub review, 2026-09-26 15:47 PDT
+
+The prior proposal remains preserved at commit `54b6f00`, but its design advice
+has been corrected prospectively in `DONOR_RULE_CORRECTION_PROPOSAL_V2.md` and
+`donor_rule_v3_proposal.json`. Nothing has been applied: no extraction, donor
+selection, GPU work or sort ran.
+
+The revised design constructs a donor directly from a chosen final S label's
+saved spike times. A bijection to the 654-unit pre-matching bank is no longer an
+automatic eligibility blocker; lineage is a diagnostic/caveat unless the claim
+is reproduction of a historical matching template. Biological split-half
+stability is diagnostic because the 0.99 cosine/2% PTP tolerances were validated
+for deterministic exact-copy/remap fidelity, not two noisy 200-spike estimates.
+
+Actual support at every occupied shift remains mandatory: more than 99% measured
+energy support, no padding/extrapolation/many-to-one maps, and deterministic
+round-trip operator fidelity. The 440 um interior margin is now explicitly a
+conservative diagnostic, not a hard gate absent a separate padding/extrapolation
+justification. The design aims for approximately 30 donors; if the count differs,
+it reports outcome-blind precision and pauses for an explicit cohort-size
+decision rather than enforcing exact 30 or silently reducing the target.
+
+The prescreen used the 9,151-byte stage4 AB mask, SHA-256 `31b39a494ede16e3f5919caf1cf53a6222dd5e737f027d59155e96a9ce9179ed`.
+Read-only comparison confirms its 422 intervals and normalized A/U/E sources are
+identical to the 8,750-byte hub canonical mask, SHA-256 `86425e8a6627a10ac8932ba01b799cb7be7141f731ebb4ecc01e303326b9da55`;
+the bytes differ only in source serialization such as `A+E` versus `AE`.
+
+The recorded frequency is 29,999.759166666667 Hz. Full 384-channel voltage is
+used only to measure final-label templates and their support. Injection and any
+future benchmark remain on AP202--AP383, the historical 182-channel deployed
+sorter domain. The smallest proposed CPU pass is still one read-only W2 pass
+(about 7.83 GB read, 15.67 GB RAM, under 0.2 GB persistent, provisionally
+20--35 minutes) and can compute support plus lineage/stability diagnostics
+together. It remains unapproved and unlaunched.
