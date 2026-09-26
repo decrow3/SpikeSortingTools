@@ -19,9 +19,10 @@
     "all AV artifacts present and hash-valid",
     "D2L field authority explicitly confirmed",
     "exact S/W2 preprocessing and channel identity match",
+    "full-probe donor source available, or explicit authorization narrows the design to the shallow crop",
     "30 donors selected under frozen rule",
     "every donor/state qualification passes",
-    "33 CPU scorer/injection regression tests pass"
+    "35 CPU scorer/injection regression tests pass"
   ],
   "forbidden": [
     "sort launch",

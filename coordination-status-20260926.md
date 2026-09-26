@@ -113,6 +113,43 @@ Two AV handoff items are hard dependencies and will not be guessed from nearby l
 
 The donor-selection rule and exact same-column 40 µm qualification are being frozen before any outcome inspection. CPU fixtures will exercise the corrected exclusive +/-0.4 ms matching boundary, immutable 5 Hz trains, exact channel remapping, per donor/state energy retention >99%, PTP ratio 1.00 +/-0.02, cosine >=0.99, and fail-closed hash/provenance checks. The preparation will be marked worker-ready only after the AV assets arrive and all donors/states qualify; no placeholder HDF5 or synthetic donor bank will be called worker-ready.
 
+### AW dependency update, received 2026-09-26 13:36:29 PDT
+
+The hub independently confirmed the AM.3 receipt/gates/package hash above, so
+AM is closed without new fitting. AV found no saved full-probe static W2 bank.
+The exact saved S bank is a shallow AP202--AP383 crop with shape 654 x 121 x
+182 and SHA-256
+`a99b12c3075f038fbad8c05c36c96f63221fd0eac5ba71caee8f18ff97acb75c`;
+the final sorting SHA-256 is
+`be6106ed0cb0f99759fd23629dd3bcb5f50657dbffa238ad3721c15d1b21fba7`.
+The AV manifest exists on huklaban5 with SHA-256
+`b3c591f0bde45942c1f5b6e0cf063ffc5685dabf09cf98da31248017d16552cc`,
+but neither it nor the h5-local bank path is mounted here. AV/h5 is staging a
+compact shared-path bundle and adding the missing authoritative D2L-v1 field
+provenance. No nearby local field will be substituted.
+
+The crop supports a necessary interior observed-support screen: >99% of the
+energy present in the 182 saved channels must lie farther than maximum state
+excursion plus matching interpolation radius from both edges, and every exact
+state must pass the remap/PTP/cosine checks. It cannot establish full-probe
+energy because AP0--AP201 are unobserved, not observed zeros. Consequently the
+strict full-probe AW donor design remains blocked on new full-probe donor
+extraction or an equivalent full-probe waveform source. Narrowing the claim to
+the shallow deployed crop would make a restricted cohort testable, but requires
+explicit scientific authorization and is not assumed here.
+
+DARTsort source inspection also corrects the operator description. The default
+`drifty` matcher continuously spatially kernel-interpolates the registered
+template basis at the unrounded external displacement evaluated at the matching
+chunk centre. Integer pitch selection is a separate path and does not prove
+fractional interpolation was absent. The staged matching config must determine
+which path S/D2L actually used before qualification.
+
+AW CPU fixture deadline was met at 13:49 PDT: nine focused AW tests and the
+existing injected-truth/scorer suite pass; the preparation remains small and
+CUDA-free. Next dependency check is 14:00 PDT. If the shared bundle is still
+absent, AW remains blocked without a worker launch or deadline guess for AV.
+
 ## Outputs and hashes
 
 Sweep directory: `/media/huklab/Data/NPX/Ryansorting/Luke/luke_imec1_medicine_reference_sweep_v2/stage5_imec0/`

@@ -52,7 +52,17 @@
     "sample_clock": "actual DARTsort matching chunk centre samples",
     "quantization_um": 40.0,
     "rounding": "nearest_integer_half_away_from_zero",
-    "allowed_operator": "exact same-column channel remap only"
+    "injection_operator": "exact same-column channel remap only",
+    "matching_operator": "pending exact AV config; drifty implies continuous spatial kernel interpolation at unrounded chunk-centre displacement"
+  },
+  "crop_feasibility": {
+    "saved_bank_shape": [654, 121, 182],
+    "saved_bank_channels": "AP202-AP383",
+    "saved_bank_sha256": "a99b12c3075f038fbad8c05c36c96f63221fd0eac5ba71caee8f18ff97acb75c",
+    "final_sorting_sha256": "be6106ed0cb0f99759fd23629dd3bcb5f50657dbffa238ad3721c15d1b21fba7",
+    "observed_support_interior_screen_available": true,
+    "full_probe_energy_identifiable_from_crop": false,
+    "strict_full_probe_design_requires": "new full-probe donor extraction or equivalent saved full-probe waveform source"
   },
   "qualification": {
     "every_donor_every_occupied_state": true,
@@ -69,13 +79,14 @@
     "exclusive": true,
     "tolerance_ms_inclusive": 0.4,
     "tolerance_samples_at_30khz": 12,
-    "tests": "7 passed"
+    "focused_aw_tests": "9 passed",
+    "combined_injection_and_scorer_tests": "35 passed"
   },
   "code_identity": {
     "spike_sorting_tools_base_commit": "6ae06f5",
     "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
-    "preparation_source_sha256": "dc226fb5a7cfd09b68bff8848b6c39257cf60d797f85f906fa421599dbaa0631",
-    "preparation_test_sha256": "3b7261261f2c23448b27d38b56550c363871604a537f48bb67f73bd716642aea"
+    "preparation_source_sha256": "3959da2907617c8bce1b61ef3db5a91b5ee0b8f5d381ee9e5e927c8ee9ab1a2f",
+    "preparation_test_sha256": "c5ed351d1f881614a0a70fabf7dc57f3d36f9a56601b1069726241634a961fe5"
   },
   "required_av_handoff": [
     "accepted static DARTsort S/W2 900-1240s bank",
@@ -85,4 +96,3 @@
     "DARTsort matching config/code identity and chunk length"
   ]
 }
-

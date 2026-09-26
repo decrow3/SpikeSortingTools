@@ -6,6 +6,7 @@ from testing.luke_au_cpu_preparation import (
     exact_remap,
     exact_same_column_map,
     immutable_regular_train,
+    observed_interior_energy,
     qualify_exact_state,
     sample_and_quantize_trajectory,
     score_one_cluster,
@@ -66,6 +67,35 @@ def test_qualification_fails_when_energy_leaves_probe():
     template = np.zeros((9, geom.shape[0]), dtype=np.float32)
     template[3:6, -2:] = 1.0
     assert qualify_exact_state(template, geom, 40.0)["passed"] is False
+
+
+def test_crop_energy_check_is_explicitly_observed_support_only():
+    geom = staggered_geometry(80)
+    template = np.zeros((9, len(geom)), dtype=np.float32)
+    template[3:6, 38:42] = 1.0
+    result = observed_interior_energy(
+        template,
+        geom,
+        max_abs_shift_um=280.0,
+        interpolation_radius_um=200.0,
+    )
+    assert result["observed_support_only"] is True
+    assert result["full_probe_energy_known"] is False
+    assert result["margin_um_each_edge"] == 480.0
+    assert result["passes_observed_99pct"] is True
+
+
+def test_crop_energy_check_rejects_edge_supported_donor():
+    geom = staggered_geometry(80)
+    template = np.zeros((9, len(geom)), dtype=np.float32)
+    template[3:6, :4] = 1.0
+    result = observed_interior_energy(
+        template,
+        geom,
+        max_abs_shift_um=280.0,
+        interpolation_radius_um=200.0,
+    )
+    assert result["passes_observed_99pct"] is False
 
 
 def test_corrected_exclusive_scorer_is_inclusive_at_point4ms_only():

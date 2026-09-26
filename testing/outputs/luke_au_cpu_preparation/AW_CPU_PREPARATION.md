@@ -1,6 +1,6 @@
 # AW CPU preparation for AU
 
-Status: **CPU fixtures pass; waiting for the AV handoff. Not worker-ready.**
+Status: **CPU fixtures pass; waiting for the staged AV bundle. Not worker-ready.**
 
 This preparation performs no sorting, raw-voltage read, GPU work, new motion
 fit, or continuous-trajectory injection. It is safe to run beside AM.3 with
@@ -40,11 +40,25 @@ seconds, and asks the template bank for its state at that time.
 `templates/template_util.py:62-78` then evaluates the external field and turns
 the result into pitch shifts used to select static-channel template support.
 
-AU therefore samples the exact D2L two-layer v1 field at those actual chunk
-centres, then rounds half away from zero to verified 40 µm same-column states.
-It will report quantization error separately for rest and canonical episode
-time. It will not interpolate donor voltage between states and will not use
-AI-v2 or the imec0 AM.3 field.
+AW's *injected trajectory* samples the exact D2L two-layer v1 field at those
+actual chunk centres, then rounds half away from zero to verified 40 µm
+same-column states. It will report quantization error separately for rest and
+canonical episode time. The injection operator will not interpolate donor
+voltage between states and will not use AI-v2 or the imec0 AM.3 field.
+
+That does **not** describe all matching implementations. In the inspected
+DARTsort checkout, the default `drifty` matcher constructs a
+`FromFullProbeInterpolator` whenever motion is active
+(`peel/matching_util/drifty.py:105-123`). At each chunk centre it evaluates the
+unrounded external displacement and spatially kernel-interpolates the registered
+template basis onto `geom - displacement`
+(`util/interpolation_util.py:1264-1292`). The external rigid field itself is
+linearly interpolated in time by `dredge.motion_util.RigidMotionEstimate`.
+`MotionInfo.pitch_shifts` separately rounds displacement/pitch to an integer
+(`util/motion.py:329-380`), and `templates_at_time` uses those integers for
+static-channel support selection (`templates/template_util.py:62-80`), but that
+is not evidence that a `drifty` run omitted fractional spatial interpolation.
+The exact S/D2L matching config from AV decides which path was used.
 
 The remapper preserves x-column identity and requires an exact site at
 `(x, y + state_um)`. Missing sites are explicit; ambiguous or many-to-one maps
@@ -58,7 +72,8 @@ between one truth train and one output cluster, not between truth and the pooled
 spike river. Candidate-cluster competition is downstream of that match. The AU
 fixture additionally freezes the requested +/-0.4 ms boundary: offsets of 12
 samples match and offsets of 13 do not. One output event cannot satisfy two
-truth events. Seven CPU-only regression tests pass.
+truth events. Nine focused AW CPU regressions and 35 combined
+AW/injected-truth/scorer regressions pass.
 
 The August injected-truth adapter is used only for its validated float32,
 no-clipping/no-truncation, immutable-template contract. C2-v4 supplies the
@@ -80,6 +95,30 @@ ready. There is no local substitute:
 3. The frozen DARTsort matching settings/config and code identity used by S and
    D2L, especially the matching chunk length and recording time mapping.
 
+AV's 13:36 PDT update identifies the only saved S bank as a shallow crop:
+654 x 121 x 182, AP202--AP383, SHA-256
+`a99b12c3075f038fbad8c05c36c96f63221fd0eac5ba71caee8f18ff97acb75c`;
+the final sorting hash is
+`be6106ed0cb0f99759fd23629dd3bcb5f50657dbffa238ad3721c15d1b21fba7`.
+The h5-local source and AV manifest are not mounted on this host. A compact
+shared-path bundle and authoritative D2L-v1 provenance have been requested.
+
+### Crop feasibility decision
+
+The crop can be screened for an *interior, crop-specific* cohort. A necessary
+check requires >99% of each donor's **observed crop energy** to lie at least
+`max_abs_state + interpolation_radius` from both crop edges, followed by all
+per-state exact-remap qualifications. The preparation now implements that check
+and labels its denominator explicitly as observed support.
+
+It cannot establish the frozen full-probe >99% energy requirement: voltage on
+AP0--AP201 is absent, so its energy is unknown rather than zero. Therefore the
+current strict full-probe donor design requires new full-probe donor extraction
+or an equivalent saved full-probe waveform/template source. A restricted
+interior cohort is feasible only if the scientific scope is explicitly narrowed
+to reproducing this shallow crop's deployed matcher; AW does not make that scope
+change on its own.
+
 A local file named `luke0804_imec1_two_layer_motion.npz` has SHA-256
 `85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9`, but it is
 recorded only as a candidate locator. It is not accepted as the D2L authority
@@ -87,7 +126,7 @@ until AV confirms the same hash.
 
 ## Stage dependency order
 
-1. Validate every AV file/hash and preprocessing/channel identity.
+1. Validate every staged AV file/hash and preprocessing/channel identity.
 2. Run the frozen donor selection and save all eligible, selected and excluded
    rows with reasons.
 3. Sample and quantize D2L at the real matching chunk centres; report rest and
@@ -100,4 +139,3 @@ until AV confirms the same hash.
 The historical C2-v4 output archive is about 82 GB and is intentionally not
 copied. Its small prespec/results and source hashes are sufficient for this
 preparation; AU must use the AV bank, not the 14 compact C2 donors.
-

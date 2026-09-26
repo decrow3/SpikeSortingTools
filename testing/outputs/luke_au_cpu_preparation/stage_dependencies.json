@@ -4,12 +4,12 @@
     {
       "id": "av_handoff_validation",
       "requires": [],
-      "status": "blocked_waiting_for_av"
+      "status": "blocked_waiting_for_staged_shared_bundle_and_d2l_v1_authority"
     },
     {
       "id": "donor_selection",
       "requires": ["av_handoff_validation"],
-      "status": "rule_frozen_not_run"
+      "status": "strict_full_probe_design_blocked_by_shallow_only_bank"
     },
     {
       "id": "chunk_center_motion_states",

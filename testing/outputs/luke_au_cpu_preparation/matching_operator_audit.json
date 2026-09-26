@@ -1,0 +1,44 @@
+{
+  "schema": "luke-au-dartsort-matching-operator-audit-v1",
+  "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+  "findings": [
+    {
+      "claim": "matching evaluates one field state at each chunk centre",
+      "source": "src/dartsort/peel/matching.py",
+      "lines": "260-269"
+    },
+    {
+      "claim": "external rigid displacement is linearly interpolated in time with endpoint hold",
+      "source": "dredge.motion_util.RigidMotionEstimate.__init__/disp_at_s",
+      "implementation": "scipy.interpolate.interp1d"
+    },
+    {
+      "claim": "the drifty matcher enables continuous spatial interpolation whenever motion is active",
+      "source": "src/dartsort/peel/matching_util/drifty.py",
+      "lines": "105-123,280-305"
+    },
+    {
+      "claim": "continuous template interpolation targets geom minus the unrounded displacement",
+      "source": "src/dartsort/util/interpolation_util.py",
+      "lines": "1264-1292"
+    },
+    {
+      "claim": "integer pitch selection rounds displacement divided by probe pitch",
+      "source": "src/dartsort/util/motion.py",
+      "lines": "329-380"
+    },
+    {
+      "claim": "the separate templates_at_time path uses integer pitch shifts for static-channel selection",
+      "source": "src/dartsort/templates/template_util.py",
+      "lines": "62-80"
+    }
+  ],
+  "conclusion": "integer pitch indices do not prove fractional spatial interpolation was absent; the exact AV matching config must identify the S/D2L template_type and interpolation parameters",
+  "pending_handoff_fields": [
+    "template_type",
+    "chunk_length_samples",
+    "drift_interp_params",
+    "matching up_factor and up_method",
+    "recording time mapping"
+  ]
+}

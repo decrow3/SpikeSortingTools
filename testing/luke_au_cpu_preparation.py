@@ -228,6 +228,41 @@ def qualify_exact_state(
     }
 
 
+def observed_interior_energy(
+    template: np.ndarray,
+    geometry_um: np.ndarray,
+    *,
+    max_abs_shift_um: float,
+    interpolation_radius_um: float,
+) -> dict:
+    """Necessary observed-support check for a cropped template bank.
+
+    The returned fraction has the *observed cropped-bank energy* as its
+    denominator. It cannot bound energy on channels absent from the bank and
+    must never be described as full-probe retention.
+    """
+    template = np.asarray(template)
+    geom = np.asarray(geometry_um, dtype=np.float64)
+    if template.ndim != 2 or geom.shape != (template.shape[1], 2):
+        raise ValueError("template and geometry shapes disagree")
+    if max_abs_shift_um < 0 or interpolation_radius_um < 0:
+        raise ValueError("margins must be nonnegative")
+    y = geom[:, 1]
+    margin = float(max_abs_shift_um + interpolation_radius_um)
+    core = (y >= y.min() + margin) & (y <= y.max() - margin)
+    energy_by_channel = np.sum(np.square(template, dtype=np.float64), axis=0)
+    total = float(energy_by_channel.sum())
+    retained = float(energy_by_channel[core].sum() / total) if total else float("nan")
+    return {
+        "observed_support_only": True,
+        "full_probe_energy_known": False,
+        "margin_um_each_edge": margin,
+        "core_channel_count": int(core.sum()),
+        "observed_energy_in_core_fraction": retained,
+        "passes_observed_99pct": bool(np.isfinite(retained) and retained > 0.99),
+    }
+
+
 def exclusive_pairs(truth_samples: Iterable[int], output_samples: Iterable[int], tol: int):
     """Maximum-cardinality interval-order 1:1 matching, inclusive at +/-tol."""
     truth = np.sort(np.asarray(list(truth_samples), dtype=np.int64))
@@ -283,7 +318,12 @@ def sample_and_quantize_trajectory(
     fs_hz: float = FS_HZ,
     pitch_um: float = PITCH_UM,
 ) -> dict:
-    """Sample a rigid field at DARTsort chunk centres and round to 40 um states."""
+    """Build exact injection states from values sampled at matching chunk centres.
+
+    This describes AW's lattice-safe injected trajectory. It does not reproduce
+    DARTsort's `drifty` matcher, which continuously spatially interpolates its
+    template basis at the unrounded displacement.
+    """
     times = np.asarray(field_time_s, dtype=np.float64)
     disp = np.asarray(displacement_um, dtype=np.float64).reshape(-1)
     starts = np.asarray(chunk_start_samples, dtype=np.int64)
@@ -305,4 +345,3 @@ def sample_and_quantize_trajectory(
         "quantized_displacement_um": quantized,
         "quantization_error_um": quantized - sampled,
     }
-

@@ -4,7 +4,12 @@
   "required_artifacts": [
     {
       "role": "static_s_w2_template_bank",
-      "required_metadata": ["path", "sha256", "dtype", "shape", "time_support_samples"]
+      "known_av_value": {
+        "shape": [654, 121, 182],
+        "channels": "AP202-AP383",
+        "sha256": "a99b12c3075f038fbad8c05c36c96f63221fd0eac5ba71caee8f18ff97acb75c"
+      },
+      "required_metadata": ["shared_path", "sha256", "dtype", "shape", "time_support_samples"]
     },
     {
       "role": "static_s_w2_unit_metadata",
@@ -51,7 +56,8 @@
     "channel id or geometry mismatch",
     "sampling-frequency mismatch",
     "field sign or time-origin ambiguity",
-    "matching chunk-length ambiguity"
+    "matching chunk-length ambiguity",
+    "describing absent AP0-AP201 channels as observed zero support",
+    "describing crop-relative energy as full-probe energy"
   ]
 }
-
