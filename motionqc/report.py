@@ -29,9 +29,14 @@ def mask_from_intervals(time_s, intervals, margin_s=0):
 
 
 def matched_grid(fields: list[MotionField], grid_s=.25):
-    start=max(field.time_s[0] for field in fields);stop=min(field.time_s[-1] for field in fields)
-    if stop<=start:raise ValueError("fields have no shared time support")
-    return np.arange(np.ceil(start/grid_s)*grid_s,np.floor(stop/grid_s)*grid_s+grid_s/2,grid_s)
+    support_start=max(field.time_s[0] for field in fields);support_stop=min(field.time_s[-1] for field in fields)
+    if support_stop<=support_start:raise ValueError("fields have no shared time support")
+    # Preserve the first field's sample phase (Q uses 0.125 + 0.25*k), rather
+    # than silently shifting evaluation to integer grid multiples.
+    anchor=float(fields[0].time_s[0])
+    start=anchor+np.ceil((support_start-anchor)/grid_s-1e-12)*grid_s
+    stop=anchor+np.floor((support_stop-anchor)/grid_s+1e-12)*grid_s
+    return np.arange(start,stop+grid_s/2,grid_s)
 
 
 def score_fields(fields: list[MotionField], episodes: pd.DataFrame, mask_intervals: pd.DataFrame,
@@ -45,15 +50,22 @@ def score_fields(fields: list[MotionField], episodes: pd.DataFrame, mask_interva
         errors=[];ratios=[];block_errors=[]
         for episode in accepted.itertuples(index=False):
             start=float(getattr(episode,"start_s"));end=float(episode.end_s if hasattr(episode,"end_s") else episode.stop_s)
-            core=(grid>=start)&(grid<end);rest=(grid>=start-4)&(grid<start-1)&(~masked)
-            if not core.any() or not rest.any():continue
-            measured=float(getattr(episode,measured_column));pred=float(np.nanmedian(rigid[core])-np.nanmedian(rigid[rest]))
+            # M samples each episode on its own bin-centre phase, because
+            # episode boundaries need not align to the session grid.
+            episode_time=np.arange(start+grid_s/2,end,grid_s)
+            rest_time=np.arange(start-4+grid_s/2,start-1,grid_s)
+            if not len(episode_time) or not len(rest_time):continue
+            if episode_time[0]<grid[0] or episode_time[-1]>grid[-1] or rest_time[0]<grid[0] or rest_time[-1]>grid[-1]:continue
+            z=np.full(len(episode_time),np.median(field.depth_um));rz=np.full(len(rest_time),np.median(field.depth_um))
+            measured=float(getattr(episode,measured_column));pred=float(np.nanmedian(field.at(episode_time,z))-np.nanmedian(field.at(rest_time,rz)))
             errors.append(abs(pred-measured));ratios.append(pred/measured if measured else np.nan)
             episode_rows.append({"field":field.source,"start_s":start,"end_s":end,"measured_shift_um":measured,"field_shift_um":pred})
             for i in range(4):
                 key=f"block{i}_shift_um"
                 if hasattr(episode,key) and np.isfinite(getattr(episode,key)):
-                    z=(i+.5)*960;value=field.at(grid,z);block_pred=float(np.nanmedian(value[core])-np.nanmedian(value[rest]));block_errors.append(abs(block_pred-float(getattr(episode,key))))
+                    depth=(i+.5)*960
+                    block_pred=float(np.nanmedian(field.at(episode_time,np.full(len(episode_time),depth)))-np.nanmedian(field.at(rest_time,np.full(len(rest_time),depth))))
+                    block_errors.append(abs(block_pred-float(getattr(episode,key))))
         inc=rigid[step:]-rigid[:-step]
         finite_ratios=np.asarray(ratios,float);finite_ratios=finite_ratios[np.isfinite(finite_ratios)]
         rows.append({"field":field.source,"episode_err":float(np.nanmedian(errors)) if errors else np.nan,
@@ -98,6 +110,11 @@ def bias_diagnostics(fields, peaks, mask_intervals, *, grid_s=.25):
 def _figures(fields,peaks,out):
     import matplotlib;matplotlib.use("Agg");import matplotlib.pyplot as plt
     t0=max(min(f.time_s) for f in fields);t1=min(max(f.time_s) for f in fields);p=peaks[(peaks.time_s>=t0)&(peaks.time_s<=t1)]
+    # Whole-session pilot frontends can contain tens of millions of peaks.
+    # Keep all peaks for score/bias calculations but cap only the rendered
+    # raster/density sample deterministically so reports stay bounded.
+    if len(p)>500_000:
+        p=p.iloc[np.linspace(0,len(p)-1,500_000,dtype=int)]
     fig,ax=plt.subplots(figsize=(12,6));take=np.ones(len(p),bool)
     if "amplitude" in p and len(p):take=np.abs(p.amplitude)>=np.quantile(np.abs(p.amplitude),.8)
     ax.scatter(p.time_s[take],p.depth_um[take],s=.5,color="0.65",lw=0,rasterized=True)
