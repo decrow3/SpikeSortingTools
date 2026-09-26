@@ -85,6 +85,9 @@ def matched_null(peaks, durations_s, flagged_intervals, window, *, n=20, seed=0,
                  peak_targets=None, placement_margin_s=2.0, quantisation_um=10.0, **shift_kwargs):
     """Duration/count-matched pseudo episodes placed outside flagged time."""
     t,_,_=_columns(peaks);rng=np.random.default_rng(seed);durations=np.asarray(durations_s,float)
+    targets=None if peak_targets is None else np.asarray(peak_targets,int)
+    if targets is not None and len(targets)!=len(durations):
+        raise ValueError("peak_targets must pair one-to-one with durations_s")
     if np.any(np.diff(t)<0):
         order=np.argsort(t,kind="stable")
         peaks=peaks.iloc[order].reset_index(drop=True) if isinstance(peaks,pd.DataFrame) else {k:np.asarray(peaks[k])[order] for k in peaks}
@@ -93,12 +96,16 @@ def matched_null(peaks, durations_s, flagged_intervals, window, *, n=20, seed=0,
     if len(flagged):flagged=flagged[np.argsort(flagged[:,0])]
     rows=[];tries=0
     while len(rows)<n and tries<max(5000,n*500):
-        tries+=1;duration=float(rng.choice(durations));a=float(rng.uniform(window[0]+4,window[1]-duration));b=a+duration
+        tries+=1;draw=int(rng.integers(len(durations)));duration=float(durations[draw]);a=float(rng.uniform(window[0]+4,window[1]-duration));b=a+duration
         if len(flagged) and np.any((flagged[:,0]-placement_margin_s<b)&(flagged[:,1]+placement_margin_s>a-4)):continue
         lo,hi=np.searchsorted(t,[a-4,b]);local=peaks.iloc[lo:hi].reset_index(drop=True) if isinstance(peaks,pd.DataFrame) else {k:np.asarray(peaks[k])[lo:hi] for k in peaks}
         lt,_,_=_columns(local);ep=(lt>=a)&(lt<b);rest=(lt>=a-4)&(lt<a-1)
-        target=int(rng.choice(peak_targets)) if peak_targets is not None else int(ep.sum())
+        target=int(targets[draw]) if targets is not None else int(ep.sum())
         ei=np.flatnonzero(ep);ri=np.flatnonzero(rest)
+        # A count-matched null must actually contain the requested number of
+        # peaks in both maps.  Silently retaining fewer peaks changes the null
+        # SNR and is not count matching.
+        if len(ei)<target or len(ri)<target:continue
         if len(ei)>target:ei=rng.choice(ei,target,replace=False)
         if len(ri)>target:ri=rng.choice(ri,target,replace=False)
         em=np.zeros(len(lt),bool);rm=em.copy();em[ei]=True;rm[ri]=True
