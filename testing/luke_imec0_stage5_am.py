@@ -23,7 +23,8 @@ if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
 from motionqc.crossprobe import compare_episodes, fit_clock_map, map_intervals
 from motionqc.field import MotionField, load_field
 from motionqc.deployment import compose_two_layer
-from motionqc.reference import matched_null
+from motionqc.reference import matched_null, shift_test
+from motionqc.report import OKABE_ITO, LINESTYLES, build_report, score_fields
 from testing import luke_imec1_medicine_reference_sweep_v1 as stage1
 from testing import luke_imec1_medicine_stage3_q_v1 as qstage
 
@@ -323,15 +324,146 @@ def am3_fit_all() -> None:
         "slow_field_sha256":sha256(OUT/"fields/slow/medicine_amp50_d1_k30_exclude3s/field.npz"),"completed_at":time.time()})
 
 
+def am3_quiet_reference(peaks: pd.DataFrame, mask: pd.DataFrame) -> tuple[pd.DataFrame,dict]:
+    from testing import luke_imec1_slow_layer_ab_v1 as ab
+    starts=np.arange(0,np.floor(SESSION_DURATION_S/10)*10,10.);intervals=mask[["start_s","end_s"]].to_numpy(float)
+    quiet=np.asarray([not np.any((intervals[:,0]<a+10)&(intervals[:,1]>a)) for a in starts])
+    shape=(len(ab.DEPTH_EDGES)-1,len(ab.X_EDGES)-1);counts=np.zeros(len(starts),int);raw=np.zeros((len(starts),*shape),np.int32)
+    time=peaks.time_s.to_numpy();depth=peaks.depth_um.to_numpy();x=peaks.x_um.to_numpy()
+    for index in np.flatnonzero(quiet):
+        lo,hi=np.searchsorted(time,[starts[index],starts[index]+10]);counts[index]=hi-lo
+        raw[index]=np.histogram2d(depth[lo:hi],x[lo:hi],bins=(ab.DEPTH_EDGES,ab.X_EDGES))[0]
+    maps=np.log1p(raw);rows=[]
+    for lag_s in (60,300):
+        lag=lag_s//10
+        for i in range(lag,len(starts)):
+            if counts[i]<150 or counts[i-lag]<150:continue
+            shift,zero,best,prominence=ab.correlate_shift(maps[i],maps[i-lag]);resolved=np.isfinite(best) and best>=.1 and prominence>=.05
+            rows.append({"time_s":starts[i]+5,"previous_time_s":starts[i-lag]+5,"lag_s":lag_s,
+                "current_peaks":counts[i],"previous_peaks":counts[i-lag],"shift_um":shift,"corr_zero":zero,
+                "corr_best":best,"corr_prominence":prominence,"resolved":bool(resolved)})
+    reference=pd.DataFrame(rows);reference.to_csv(OUT/"am3_slow_shift_reference.csv",index=False)
+    rng=np.random.default_rng(20260925);eligible=np.flatnonzero(quiet&(counts>=300));chosen=rng.choice(eligible,size=min(200,len(eligible)),replace=False)
+    null_rows=[]
+    for i in chosen:
+        lo,hi=np.searchsorted(time,[starts[i],starts[i]+10]);p=np.c_[depth[lo:hi],x[lo:hi]];order=rng.permutation(len(p));n=len(p)//2;a,b=p[order[:n]],p[order[n:2*n]]
+        shift,zero,best,prominence=ab.correlate_shift(ab.histogram(a[:,0],a[:,1]),ab.histogram(b[:,0],b[:,1]))
+        null_rows.append({"time_s":starts[i]+5,"peaks_each":n,"shift_um":shift,"corr_zero":zero,"corr_best":best,"corr_prominence":prominence})
+    null_frame=pd.DataFrame(null_rows);null_frame.to_csv(OUT/"am3_slow_shift_null.csv",index=False);finite=null_frame.shift_um.dropna()
+    mode=float(finite.mode().iloc[0]) if len(finite) else np.nan;median_abs=float(np.median(np.abs(finite))) if len(finite) else np.nan
+    gate={"resolved_nulls":len(finite),"requested":min(200,len(eligible)),"mode_shift_um":mode,"median_abs_shift_um":median_abs,
+          "required_mode_um":0,"max_median_abs_um":2,"pass":bool(len(finite)>=20 and mode==0 and median_abs<=2)}
+    atomic_json(OUT/"am3_slow_shift_null_gate.json",gate);return reference,gate
+
+
+def _edge_sample(field: MotionField, time_s: np.ndarray, depth: np.ndarray) -> np.ndarray:
+    return np.column_stack([np.interp(time_s,field.time_s,field.displacement_um[:,k]) for k in range(len(depth))])
+
+
+def _prediction(field: MotionField, start: float, end: float, depth: float) -> float:
+    episode=np.arange(start+.125,end,.25);rest=np.arange(start-4+.125,start-1,.25)
+    return float(np.median(field.at(episode,np.full(len(episode),depth)))-np.median(field.at(rest,np.full(len(rest),depth))))
+
+
+def am3_boundary_check(field: MotionField, peaks: pd.DataFrame, mask: pd.DataFrame) -> tuple[pd.DataFrame,dict]:
+    time=field.time_s;rigid=field.rigid(centre=False);rows=[]
+    for interval in mask.itertuples(index=False):
+        for kind,boundary in (("start",float(interval.start_s)),("stop",float(interval.end_s))):
+            index=int(np.searchsorted(time,boundary));
+            if 0<index<len(time):rows.append({"boundary_kind":kind,"time_s":boundary,"step_um":float(rigid[index]-rigid[index-1])})
+    frame=pd.DataFrame(rows);frame["abs_step_um"]=frame.step_um.abs();frame=frame.sort_values("abs_step_um",ascending=False).reset_index(drop=True)
+    rng=np.random.default_rng(20260925);details=[];pt=peaks.time_s.to_numpy()
+    for rank,row in enumerate(frame.head(10).itertuples(index=False),1):
+        lo,hi=np.searchsorted(pt,[row.time_s-2,row.time_s+2]);local=peaks.iloc[lo:hi].reset_index(drop=True)
+        value=shift_test(local,(row.time_s,row.time_s+2),(row.time_s-2,row.time_s),refine_um=2,shift_min_um=-320,shift_max_um=320,
+            min_peaks=150,min_gain=.05,depth_range_um=(0,3840),x_range_um=(-32,80));null=[]
+        n=len(local);half=n//2
+        for _ in range(20):
+            order=rng.permutation(n);a=np.zeros(n,bool);b=np.zeros(n,bool);a[order[:half]]=True;b[order[half:2*half]]=True
+            nv=shift_test(local,a,b,refine_um=2,shift_min_um=-320,shift_max_um=320,min_peaks=150,min_gain=0,
+                depth_range_um=(0,3840),x_range_um=(-32,80));null.append(nv["best_shift_um"])
+        finite=pd.Series(null).dropna();mode=float(finite.mode().iloc[0]) if len(finite) else np.nan;median_abs=float(np.median(np.abs(finite))) if len(finite) else np.nan
+        details.append({"rank":rank,"boundary_kind":row.boundary_kind,"time_s":row.time_s,"step_um":row.step_um,
+            "measured_shift_um":value["best_shift_um"],"gain":value["gain"],"resolved":value["accepted"],
+            "null_resolved":len(finite),"null_mode_um":mode,"null_median_abs_um":median_abs,"null_pass":bool(mode==0 and median_abs<=2)})
+    detail=pd.DataFrame(details);detail.to_csv(OUT/"am3_boundary_top10.csv",index=False);frame.to_csv(OUT/"am3_boundary_steps.csv",index=False)
+    gate={"boundary_count":len(frame),"median_abs_step_um":float(frame.abs_step_um.median()),"p95_abs_step_um":float(frame.abs_step_um.quantile(.95)),
+          "max_abs_step_um":float(frame.abs_step_um.max()),"median_limit_um":10,"top10_nulls_pass":bool(detail.null_pass.all()),
+          "pass":bool(frame.abs_step_um.median()<=10 and detail.null_pass.all())}
+    return detail,gate
+
+
+def am3_validate() -> None:
+    if not (OUT/"am3_fit_complete.json").exists():raise RuntimeError("AM.3 fitting is incomplete")
+    disk_guard("before AM.3 validation");peaks,_=load_peaks();mask=pd.read_csv(OUT/"imec1_ae_mask_mapped_to_imec0.csv")
+    reference,ref_gate=am3_quiet_reference(peaks,mask)
+    if not ref_gate["pass"]:
+        atomic_json(OUT/"am3_stop.json",{"stage":"slow-reference refinement null","gate":ref_gate});raise RuntimeError("AM.3 slow-reference null failed")
+    fast=load_field(OUT/"stitched_full.npz",source="imec0_fast_amp50_d1");slow=load_field(OUT/"fields/slow/medicine_amp50_d1_k30_exclude3s/field.npz",source="imec0_slow_k30_exclude3s")
+    grid=fast.time_s;slow_grid=MotionField(grid,slow.depth_um,_edge_sample(slow,grid,slow.depth_um),source=slow.source,config=slow.config)
+    intervals=mask[["start_s","end_s"]].to_numpy(float);active=_in_intervals(grid,intervals)
+    two,weight=compose_two_layer(slow_grid,fast,grid,active,crossfade_s=1,source="imec0_two_layer")
+    episodes=pd.read_csv(OUT/"am2_cross_probe_episodes.csv");episodes=episodes[episodes.accepted.astype(bool)].copy();episodes["status"]="accepted"
+    scores,episode_values,support=score_fields([fast,two],episodes,mask);scores.to_csv(OUT/"am3_scores.csv",index=False);episode_values.to_csv(OUT/"am3_episode_values.csv",index=False)
+    ref_rows=[]
+    for field in (slow_grid,two,fast):
+        errors=[]
+        for row in reference[reference.resolved.astype(bool)].itertuples(index=False):
+            pred=float(field.at(np.asarray([row.time_s]),np.asarray([np.median(field.depth_um)]))[0]-field.at(np.asarray([row.previous_time_s]),np.asarray([np.median(field.depth_um)]))[0])
+            errors.append(pred-row.shift_um);ref_rows.append({"field":field.source,"time_s":row.time_s,"previous_time_s":row.previous_time_s,"measured_shift_um":row.shift_um,"predicted_shift_um":pred,"error_um":pred-row.shift_um})
+        atomic_json(OUT/f"am3_{field.source}_slow_reference_score.json",{"comparisons":len(errors),"mae_um":float(np.median(np.abs(errors))),"bias_um":float(np.median(errors)),"rmse_um":float(np.sqrt(np.mean(np.square(errors))))})
+    pd.DataFrame(ref_rows).to_csv(OUT/"am3_slow_reference_field_values.csv",index=False)
+    _,boundary_gate=am3_boundary_check(two,peaks,mask);fast_row=scores[scores.field.eq(fast.source)].iloc[0];two_row=scores[scores.field.eq(two.source)].iloc[0]
+    seams=json.loads((OUT/"seams_full.json").read_text());gate={"status":"pass","reference_null":ref_gate,
+        "fast_stitch_median_abs_seam_um":seams["median_abs_seam_discontinuity_um"],"fast_stitch_seam_limit_um":10,
+        "fast_episode_err_um":fast_row.episode_err,"two_layer_episode_err_um":two_row.episode_err,"episode_max_degradation_um":3,
+        "fast_quiet_increment_rms_um":fast_row.quiet_inc,"two_layer_quiet_increment_rms_um":two_row.quiet_inc,
+        "quiet_no_worse":bool(two_row.quiet_inc<=fast_row.quiet_inc),"boundary":boundary_gate,"matched_support":support}
+    passed=(gate["fast_stitch_median_abs_seam_um"]<=10 and gate["two_layer_episode_err_um"]<=gate["fast_episode_err_um"]+3 and gate["quiet_no_worse"] and boundary_gate["pass"])
+    gate["status"]="pass" if passed else "fail";atomic_json(OUT/"am3_validation_gate.json",gate)
+    if not passed:
+        atomic_json(OUT/"am3_stop.json",{"stage":"motionqc phase-1 validation","gate":gate});raise RuntimeError(f"AM.3 validation failed: {gate}")
+    package=OUT/"luke0804_imec0_two_layer_motion.npz";manifest=two.save(package,OUT/"luke0804_imec0_two_layer_motion.manifest.json")
+    shutil.copy2(OUT/"imec1_ae_mask_mapped_to_imec0.csv",OUT/"censor_mask_v1_imec0.csv")
+    report_dir=OUT/"motionqc_report";build_report([fast,slow_grid,two],peaks,episodes,mask,report_dir)
+    import matplotlib;matplotlib.use("Agg");import matplotlib.pyplot as plt
+    fig,axes=plt.subplots(2,1,figsize=(12,7));show=np.linspace(0,len(grid)-1,min(5000,len(grid)),dtype=int)
+    for i,field in enumerate((fast,slow_grid,two)):
+        axes[0].plot(grid[show],field.rigid(centre=True)[show],color=OKABE_ITO[i],ls=LINESTYLES[i],lw=1,label=field.source)
+    axes[0].set(xlabel="Seconds from imec0 AP frame zero",ylabel="Centred displacement (µm)",title="Luke0804 imec0 two-layer motion");axes[0].legend();axes[0].grid(alpha=.2)
+    axes[1].bar(["fast","two-layer"],[fast_row.quiet_inc,two_row.quiet_inc],color=[OKABE_ITO[0],OKABE_ITO[2]],hatch=["//",".."])
+    axes[1].set(ylabel="Quiet 5 s increment RMS (µm)",title=f"Episode error: fast {fast_row.episode_err:.1f}, two-layer {two_row.episode_err:.1f} µm");axes[1].grid(axis="y",alpha=.2)
+    fig.tight_layout();fig.savefig(OUT/"imec0_two_layer_summary.png",dpi=180);plt.close(fig)
+    outputs=[package,OUT/"luke0804_imec0_two_layer_motion.manifest.json",OUT/"censor_mask_v1_imec0.csv",OUT/"am3_validation_gate.json",OUT/"am3_scores.csv",OUT/"imec0_two_layer_summary.png"]
+    (OUT/"SHA256SUMS").write_text("".join(f"{sha256(path)}  {path.name}\n" for path in outputs))
+    (OUT/"README.md").write_text(f"""# Luke0804 imec0 two-layer motion field\n\n**AM.2 verdict: co-moving.** The imec0 label-free test accepted 282/339 mapped imec1 episodes (83.19%); Spearman rho was 0.508 and the median imec0 shift was -200 um.\n\nThe field uses the frozen AI-v2 recipe: amp50_d1 fast fits in 120 s windows stepped by 60 s, median-centred, offset-chained and triangular-blended; an always-on amp50_d1 30 s-kernel slow layer fitted after excluding the mapped AE mask plus 3 s; and a 1 s crossfade to the fast field inside the mapped mask.\n\nValidation status: **{gate['status']}**. Fast/two-layer episode errors were {fast_row.episode_err:.2f}/{two_row.episode_err:.2f} um; quiet increment RMS values were {fast_row.quiet_inc:.2f}/{two_row.quiet_inc:.2f} um; median boundary step was {boundary_gate['median_abs_step_um']:.2f} um. The slow-reference refinement null passed with mode {ref_gate['mode_shift_um']:.0f} um and median absolute shift {ref_gate['median_abs_shift_um']:.0f} um.\n\nDeploy `luke0804_imec0_two_layer_motion.npz` as an external motion field with corrected depth = observed - displacement. Keep AP voltage unwarped. No sorting or voltage modification was performed.\n""")
+    atomic_json(OUT/"am3_complete.json",{"status":"complete","package":str(package),"package_sha256":manifest["npz_sha256"],
+        "mask_sha256":sha256(OUT/"censor_mask_v1_imec0.csv"),"validation_gate":gate,"medicine_runtime_s":am3_fit_runtime(),
+        "gpu_budget_s":AM_GPU_BUDGET_S,"completed_at":time.time(),"sort_run":False,"voltage_modified":False})
+    disk_guard("after AM.3 package")
+
+
+def am3_wait_validate() -> None:
+    deadline=time.time()+6*3600
+    while time.time()<deadline:
+        if (OUT/"am3_fit_complete.json").exists():return am3_validate()
+        result=subprocess.run(["systemctl","--user","is-failed","--quiet","luke-imec0-am3-fit-20260926.service"])
+        if result.returncode==0:raise RuntimeError("AM.3 fit service failed before validation")
+        time.sleep(30)
+    raise TimeoutError("AM.3 fit did not complete within six hours")
+
+
 def main():
-    p=argparse.ArgumentParser();p.add_argument("phase",choices=("prepare","extract-one","extract-all","am2","am3-prepare","am3-fast-one","am3-fit-all"));p.add_argument("--block");p.add_argument("--window");a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("phase",choices=("prepare","extract-one","extract-all","am2","am3-prepare","am3-fast-one","am3-fit-all","am3-validate","am3-wait-validate"));p.add_argument("--block");p.add_argument("--window");a=p.parse_args()
     if a.phase=="prepare":prepare()
     elif a.phase=="extract-one":extract_one(a.block)
     elif a.phase=="extract-all":extract_all()
     elif a.phase=="am2":am2()
     elif a.phase=="am3-prepare":am3_prepare()
     elif a.phase=="am3-fast-one":am3_fast_one(a.window)
-    else:am3_fit_all()
+    elif a.phase=="am3-fit-all":am3_fit_all()
+    elif a.phase=="am3-validate":am3_validate()
+    else:am3_wait_validate()
 
 
 if __name__=="__main__":main()

@@ -1,6 +1,6 @@
 # Luke motion coordination status
 
-Updated: 2026-09-26T16:28:36Z (2026-09-26 09:28:36 PDT)
+Updated: 2026-09-26T16:42:00Z (2026-09-26 09:42:00 PDT)
 
 ## Verdict first
 
@@ -52,13 +52,19 @@ Per-depth results retain the frozen four-block test. Accepted counts and accepte
 - Retry 1 service: `luke-imec0-am2-20260926-r1.service`; completed successfully with exit status 0.
 - Cumulative AM.2 infrastructure relaunches: 1 of 3 allowed.
 
+## AM.3 active background compute
+
+The AM.2 report-before-start hold was satisfied and the frozen AM.3 recipe was preregistered before fitting. `luke-imec0-am3-fit-20260926.service` is active under main PID `1820851`. It is fitting the first of 174 `amp50_d1` fast windows; the GPU is healthy and no pre-existing AM.3 fit was duplicated.
+
+The service will fit the 120 s / 60 s-step fast windows, stitch them with per-window median centering, chained overlap offsets and triangular blending, enforce the 10 µm median seam gate, and then fit the 30 s-kernel slow layer after excluding the mapped AE mask plus 3 s. Historical imec1 receipts project about 3.44 GPU-hours for the 174 fast fits. Expected fit completion is approximately 13:15–13:45 PDT, followed by validation and packaging; expected user-facing completion is approximately 14:00–14:30 PDT if all gates pass.
+
 ## Holds, budgets and next action
 
-- AM.3 has **not** started. AO/AR requires this AM.2 result to be reported before AM.3.
+- AM.3 fitting started at 2026-09-26 09:41:17 PDT after the AM.2 result was reported. Validation and packaging remain pending.
 - No sorting, new sweep or voltage modification occurred.
-- AM MEDiCINe fitting budget consumed: 0 of 4 GPU-hours; extraction and AM.2 do not consume that fitting budget.
+- AM MEDiCINe fitting budget is 4 GPU-hours. Consumption is recorded from completed receipts between windows; no completed AM.3 receipt existed at this 09:42 checkpoint.
 - Data filesystem free: 186,128,961,536 bytes (about 173 GiB), above the 30 GB guard.
-- Current blocker/hold: coordination handoff of this AM.2 result. After that acknowledgement, AM.3 may use the already-authorized frozen recipe unless a more restrictive instruction arrives.
+- Current blocker: none. Stop immediately if a frozen seam, validation, disk or budget gate fails; do not tune.
 
 ## Outputs and hashes
 
@@ -76,6 +82,8 @@ Sweep directory: `/media/huklab/Data/NPX/Ryansorting/Luke/luke_imec1_medicine_re
 
 The colourblind-safe summary figure is `am2_cross_probe_summary.png`. The failed and successful durable logs are `am2.service.log` and `am2.retry1.service.log`.
 
+AM.3 preregistration is `am3_preregistration.json`; the active durable log is `am3_fit.service.log`; per-window receipts are written below `fields/full/`, and progress is checkpointed in `am3_fit_progress.json`.
+
 ## Instruction and code state
 
 - Latest operative scientific instruction on this host: AO.
@@ -84,3 +92,4 @@ The colourblind-safe summary figure is `am2_cross_probe_summary.png`. The failed
 - Branch: `codex/motionqc-phase1`.
 - Base commit before the infrastructure fix: `22de67700afe39249887700c0006bfbd91460842`.
 - Completed AM.2 checkpoint, including the tested infrastructure fix: `0721ab2474f754d1dac102a2bc96da37979e4bf4`.
+- Frozen AM.3 fitting orchestration: `20ec186fcdc676b838b39fca2fdd31f99717c5ea`.
