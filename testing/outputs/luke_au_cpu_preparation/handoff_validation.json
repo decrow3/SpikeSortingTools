@@ -1,0 +1,394 @@
+{
+  "field_authority": {
+    "authoritative_sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+    "filters_applied": false,
+    "local_adapter_field_sha256": "ee34e8a6a036b10d77a0bc8563b65d171368e8869be5e96f654ee072c5bb24cf",
+    "local_interface_audit_sha256": "68dcb52763d304d8bf68a14dd90f0cc679b427c35ba906a4ad9ebc655801d577",
+    "matches": true,
+    "max_abs_copied_sample_difference_um": 0.0,
+    "resampling_applied": false,
+    "sign_convention": "corrected = observed - displacement",
+    "source_sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+    "time_origin": "ap_frame_zero"
+  },
+  "handoff": {
+    "all_files_pass": true,
+    "complete_sha256": "71ee43721c7e952d677a32a3f4b7b07b9c54579c11389c382ebe8d766656ff46",
+    "file_validation": [
+      {
+        "actual_bytes": 58370593,
+        "actual_sha256": "a99b12c3075f038fbad8c05c36c96f63221fd0eac5ba71caee8f18ff97acb75c",
+        "expected_bytes": 58370593,
+        "expected_sha256": "a99b12c3075f038fbad8c05c36c96f63221fd0eac5ba71caee8f18ff97acb75c",
+        "pass": true,
+        "relative_path": "static_w2/template_data.npz"
+      },
+      {
+        "actual_bytes": 98830055,
+        "actual_sha256": "be6106ed0cb0f99759fd23629dd3bcb5f50657dbffa238ad3721c15d1b21fba7",
+        "expected_bytes": 98830055,
+        "expected_sha256": "be6106ed0cb0f99759fd23629dd3bcb5f50657dbffa238ad3721c15d1b21fba7",
+        "pass": true,
+        "relative_path": "static_w2/dartsort_sorting.npz"
+      },
+      {
+        "actual_bytes": 58056,
+        "actual_sha256": "054ad31de00f63aa6b657da3ce99d05f0c9349a0097689cf7bb2ea97ec4347f0",
+        "expected_bytes": 58056,
+        "expected_sha256": "054ad31de00f63aa6b657da3ce99d05f0c9349a0097689cf7bb2ea97ec4347f0",
+        "pass": true,
+        "relative_path": "static_w2/effective-config.json"
+      },
+      {
+        "actual_bytes": 42870,
+        "actual_sha256": "a886797236223aebe50c651664a29ee3520d7bea36f0e0be2435b5161b952664",
+        "expected_bytes": 42870,
+        "expected_sha256": "a886797236223aebe50c651664a29ee3520d7bea36f0e0be2435b5161b952664",
+        "pass": true,
+        "relative_path": "static_w2/internal-config.json"
+      },
+      {
+        "actual_bytes": 13587,
+        "actual_sha256": "5600b58ad300d4cb0a5305aac0ab56bc188b72fff81515e08938b284675c2cfa",
+        "expected_bytes": 13587,
+        "expected_sha256": "5600b58ad300d4cb0a5305aac0ab56bc188b72fff81515e08938b284675c2cfa",
+        "pass": true,
+        "relative_path": "static_w2/config.json"
+      },
+      {
+        "actual_bytes": 30171,
+        "actual_sha256": "0975b3ee9e23b6792936a168700b306a44a2fb980070603832106c858c799938",
+        "expected_bytes": 30171,
+        "expected_sha256": "0975b3ee9e23b6792936a168700b306a44a2fb980070603832106c858c799938",
+        "pass": true,
+        "relative_path": "static_w2/input-manifest.json"
+      },
+      {
+        "actual_bytes": 128605,
+        "actual_sha256": "1e2fb52ed3b74f9e1c7ac1f7f1ff0284921535fbf6889be42bfab3702d785e05",
+        "expected_bytes": 128605,
+        "expected_sha256": "1e2fb52ed3b74f9e1c7ac1f7f1ff0284921535fbf6889be42bfab3702d785e05",
+        "pass": true,
+        "relative_path": "static_w2/receipt.json"
+      },
+      {
+        "actual_bytes": 10385,
+        "actual_sha256": "160cc2d6567d361564e253f421220646b02ceca48eed9023e276539d1e8d569e",
+        "expected_bytes": 10385,
+        "expected_sha256": "160cc2d6567d361564e253f421220646b02ceca48eed9023e276539d1e8d569e",
+        "pass": true,
+        "relative_path": "static_w2/provenance.json"
+      },
+      {
+        "actual_bytes": 619,
+        "actual_sha256": "2d083e755de1a9adf379d286faa17c7f5f878fe10cb2669f027edf3f569c6356",
+        "expected_bytes": 619,
+        "expected_sha256": "2d083e755de1a9adf379d286faa17c7f5f878fe10cb2669f027edf3f569c6356",
+        "pass": true,
+        "relative_path": "static_w2/timing.json"
+      },
+      {
+        "actual_bytes": 3120,
+        "actual_sha256": "ff65eda5d2053702643453fed0351243483e4e10ef0d865afbf40d315522e255",
+        "expected_bytes": 3120,
+        "expected_sha256": "ff65eda5d2053702643453fed0351243483e4e10ef0d865afbf40d315522e255",
+        "pass": true,
+        "relative_path": "static_w2/motion.pkl"
+      },
+      {
+        "actual_bytes": 372378,
+        "actual_sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+        "expected_bytes": 372378,
+        "expected_sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+        "pass": true,
+        "relative_path": "d2l_field/luke0804_imec1_two_layer_motion.npz"
+      },
+      {
+        "actual_bytes": 1096,
+        "actual_sha256": "421aa0b31459763fb529b797118e8be156a5252cdf3796f42c4c31a681eeccc1",
+        "expected_bytes": 1096,
+        "expected_sha256": "421aa0b31459763fb529b797118e8be156a5252cdf3796f42c4c31a681eeccc1",
+        "pass": true,
+        "relative_path": "d2l_field/DEPLOYMENT.md"
+      },
+      {
+        "actual_bytes": 1560,
+        "actual_sha256": "08c3e9c712995b1720a56a1b0e22f49c9013393527304a69fc1922db6525fd30",
+        "expected_bytes": 1560,
+        "expected_sha256": "08c3e9c712995b1720a56a1b0e22f49c9013393527304a69fc1922db6525fd30",
+        "pass": true,
+        "relative_path": "d2l_field/TWO_LAYER_PROCEDURE.md"
+      },
+      {
+        "actual_bytes": 783,
+        "actual_sha256": "8cbee6197723b661139518e2c3014704c6445bf1c82ba422a0322bd3ccc0baf0",
+        "expected_bytes": 783,
+        "expected_sha256": "8cbee6197723b661139518e2c3014704c6445bf1c82ba422a0322bd3ccc0baf0",
+        "pass": true,
+        "relative_path": "d2l_field/two_layer_gate.json"
+      },
+      {
+        "actual_bytes": 2451,
+        "actual_sha256": "e5d100f3edb056d4424982a84ea46ca73c692d44406fc4bfffecda5ffbd9696c",
+        "expected_bytes": 2451,
+        "expected_sha256": "e5d100f3edb056d4424982a84ea46ca73c692d44406fc4bfffecda5ffbd9696c",
+        "pass": true,
+        "relative_path": "d2l_field/two_layer_manifest.json"
+      },
+      {
+        "actual_bytes": 14109,
+        "actual_sha256": "51bded49da454bfe7d38252610ff6dc1a22426baff1738bd795a84919e64726c",
+        "expected_bytes": 14109,
+        "expected_sha256": "51bded49da454bfe7d38252610ff6dc1a22426baff1738bd795a84919e64726c",
+        "pass": true,
+        "relative_path": "d2l_acceptance/config.json"
+      },
+      {
+        "actual_bytes": 30171,
+        "actual_sha256": "0975b3ee9e23b6792936a168700b306a44a2fb980070603832106c858c799938",
+        "expected_bytes": 30171,
+        "expected_sha256": "0975b3ee9e23b6792936a168700b306a44a2fb980070603832106c858c799938",
+        "pass": true,
+        "relative_path": "d2l_acceptance/input-manifest.json"
+      },
+      {
+        "actual_bytes": 132722,
+        "actual_sha256": "c9ee139feae361b0e1ad3341504d4d6c9bd40a0857f3a6a8858d803989288f0f",
+        "expected_bytes": 132722,
+        "expected_sha256": "c9ee139feae361b0e1ad3341504d4d6c9bd40a0857f3a6a8858d803989288f0f",
+        "pass": true,
+        "relative_path": "d2l_acceptance/receipt.json"
+      },
+      {
+        "actual_bytes": 13476,
+        "actual_sha256": "0aacfaf44f37e93141f8dce4d29674d57e2307f706df187d5e64a5d16e48e869",
+        "expected_bytes": 13476,
+        "expected_sha256": "0aacfaf44f37e93141f8dce4d29674d57e2307f706df187d5e64a5d16e48e869",
+        "pass": true,
+        "relative_path": "d2l_acceptance/provenance.json"
+      },
+      {
+        "actual_bytes": 338,
+        "actual_sha256": "85c5343c35fc4a8f7a8e5398c0e397a0896d4231ccb0b1eae3bf9a5bb9411063",
+        "expected_bytes": 338,
+        "expected_sha256": "85c5343c35fc4a8f7a8e5398c0e397a0896d4231ccb0b1eae3bf9a5bb9411063",
+        "pass": true,
+        "relative_path": "d2l_acceptance/motion-receipt.json"
+      },
+      {
+        "actual_bytes": 57929,
+        "actual_sha256": "faf1a58dbc999f7b5550d316ce3bda8f0f4c73f8e748e1b0dccd02941ab25f03",
+        "expected_bytes": 57929,
+        "expected_sha256": "faf1a58dbc999f7b5550d316ce3bda8f0f4c73f8e748e1b0dccd02941ab25f03",
+        "pass": true,
+        "relative_path": "d2l_acceptance/effective-config.json"
+      }
+    ],
+    "files_expected": 21,
+    "files_hash_and_size_valid": 21,
+    "manifest_sha256": "3cc7b0a3840e3d48cdcb0fe5b5707dd2eeea06942cab792294b1ab3e459ac843",
+    "root": "/mnt/NPX/Luke/DARTsort_motion_experiments/av_aw_handoff_20260926_v1"
+  },
+  "matching_operator": {
+    "d2l": {
+      "channel_selection": "template",
+      "chunk_length_samples": 7500,
+      "drift_interp_params": {
+        "extrap_kernel": null,
+        "extrap_method": "clampna",
+        "kernel": "thinplate",
+        "kriging_poly_degree": 1,
+        "method": "kriging",
+        "neighborhood_radius": 200.0,
+        "polyharmonic_order": 2,
+        "rq_alpha": 0.5,
+        "sigma": 10.0,
+        "smoothing_lambda": 0.0
+      },
+      "effective_config_sha256": "faf1a58dbc999f7b5550d316ce3bda8f0f4c73f8e748e1b0dccd02941ab25f03",
+      "internal_motion_estimation": false,
+      "matching_iterations": 1,
+      "template_type": "drifty",
+      "threshold": 6.0,
+      "up_factor": 4
+    },
+    "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+    "interpretation": "Both are drifty matchers. D2L evaluates the unrounded rigid field at 0.25 s chunk centres and continuously spatially kernel-interpolates the registered template basis; integer pitch support is a separate path.",
+    "static_s": {
+      "channel_selection": "template",
+      "chunk_length_samples": 30000,
+      "drift_interp_params": {
+        "extrap_kernel": null,
+        "extrap_method": "clampna",
+        "kernel": "thinplate",
+        "kriging_poly_degree": 1,
+        "method": "kriging",
+        "neighborhood_radius": 200.0,
+        "polyharmonic_order": 2,
+        "rq_alpha": 0.5,
+        "sigma": 10.0,
+        "smoothing_lambda": 0.0
+      },
+      "effective_config_sha256": "054ad31de00f63aa6b657da3ce99d05f0c9349a0097689cf7bb2ea97ec4347f0",
+      "internal_motion_estimation": false,
+      "matching_iterations": 1,
+      "template_type": "drifty",
+      "threshold": 6.0,
+      "up_factor": 4
+    }
+  },
+  "remaining_blockers": [
+    "The only saved donor bank omits AP0-AP201, so full-probe energy is not identifiable.",
+    "The frozen donor quality label and isolation score are not present in the bundle."
+  ],
+  "saved_bank": {
+    "crop_qualification": {
+      "all_occupied_exact_states_pass": 375,
+      "both_crop_screens_pass": 7,
+      "both_crop_screens_pass_unit_ids": [
+        313,
+        323,
+        337,
+        346,
+        354,
+        406,
+        411
+      ],
+      "core_channel_count": 94,
+      "frozen_30_donor_target_feasible_from_crop": false,
+      "full_probe_energy_known": false,
+      "interpolation_radius_um": 200.0,
+      "margin_um_each_crop_edge": 440.0,
+      "max_abs_occupied_state_um": 240.0,
+      "observed_interior_energy_fraction": {
+        "max": 0.993365371104766,
+        "median": 0.7876880725709434,
+        "min": 0.003192752004428582,
+        "p95": 0.9763132198894313
+      },
+      "observed_interior_energy_gt_0p99": 7,
+      "per_state_exact_pass_counts": {
+        "-0": 654,
+        "-120": 566,
+        "-160": 511,
+        "-200": 443,
+        "-240": 375,
+        "-40": 623,
+        "-80": 597
+      },
+      "scope": "observed 182-channel crop only",
+      "templates_total": 654
+    },
+    "directly_available_required_columns": [
+      "unit_id"
+    ],
+    "geometry_depth_span_um": [
+      2020.0,
+      3820.0
+    ],
+    "geometry_shape": [
+      182,
+      2
+    ],
+    "missing_hard_columns": [
+      "quality",
+      "isolation_score"
+    ],
+    "required_quality_columns": {
+      "depth_um": "derivable from registered_geom and template support; no sealed column",
+      "isolation_score": "absent and not uniquely derivable from bundled arrays",
+      "ptp_uv": "template PTP derivable, but physical-uV identity is not sealed as a column",
+      "quality": "absent; qc-phy outputs are referenced by receipt but not bundled",
+      "refractory_violation_fraction": "derivable only after freezing a metric definition; no sealed column",
+      "rest_spike_fraction": "derivable from labels/times plus the verified mask; no sealed column",
+      "unit_id": "direct: template_data.unit_ids"
+    },
+    "sorting_npz_keys": [
+      "channels",
+      "ephemeral_feature_names",
+      "geom",
+      "gmm_candidates",
+      "gmm_log_liks",
+      "gmm_responsibilities",
+      "gmm_train",
+      "labels",
+      "loaded_persistent_features",
+      "merged_candidates",
+      "merged_log_liks",
+      "merged_responsibilities",
+      "neighborhood_ids",
+      "parent_h5_path",
+      "sampling_frequency",
+      "times_samples",
+      "unit_log_proportions"
+    ],
+    "template_npz_keys": [
+      "covariance",
+      "featurization_basis",
+      "registered_geom",
+      "sampling_frequency",
+      "spike_counts",
+      "spike_counts_by_channel",
+      "templates",
+      "temporal_kernel",
+      "trough_offset_samples",
+      "tsvd_components",
+      "tsvd_explained_variance",
+      "tsvd_mean",
+      "tsvd_whiten",
+      "unit_ids",
+      "whiten_strategy",
+      "whitener"
+    ],
+    "templates_shape": [
+      654,
+      121,
+      182
+    ],
+    "unique_unit_id_count": 654,
+    "unit_id_count": 654
+  },
+  "schema": "luke-aw-handoff-validation-v1",
+  "sealed_population_constraint": "Production uses seeded independent per-unit trains with >=3 ms refractory; the regular 5 Hz train is fixture-only.",
+  "status": "handoff_valid_full_probe_worker_blocked",
+  "trajectory": {
+    "canonical_mask_sha256": "31b39a494ede16e3f5919caf1cf53a6222dd5e737f027d59155e96a9ce9179ed",
+    "chunk_count": 1360,
+    "chunk_length_samples": 7500,
+    "episode_quantization_abs_error_um": {
+      "max": 19.989852836666586,
+      "median": 9.474518736335625,
+      "n": 263,
+      "p95": 19.20301694129217
+    },
+    "max_abs_local_vs_authoritative_chunk_sample_um": 4.231992534187157e-11,
+    "occupied_quantized_states_um": {
+      "-0": 1140,
+      "-120": 34,
+      "-160": 67,
+      "-200": 41,
+      "-240": 7,
+      "-40": 42,
+      "-80": 29
+    },
+    "quantization_abs_error_um": {
+      "max": 19.989852836666586,
+      "median": 7.5269907541373975,
+      "n": 1360,
+      "p95": 17.807967169877347
+    },
+    "rest_quantization_abs_error_um": {
+      "max": 19.946740683841163,
+      "median": 7.340472264689966,
+      "n": 1097,
+      "p95": 15.035798834075905
+    },
+    "sampling_frequency_hz": 29999.759166666667,
+    "window_samples": 10199918,
+    "window_seconds": [
+      900.0,
+      1240.0
+    ]
+  },
+  "worker_ready": false
+}

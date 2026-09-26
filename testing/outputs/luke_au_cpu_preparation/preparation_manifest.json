@@ -1,6 +1,6 @@
 {
   "schema": "luke-au-cpu-preparation-v1",
-  "status": "cpu_fixtures_pass_waiting_for_av_not_worker_ready",
+  "status": "handoff_valid_full_probe_worker_blocked",
   "worker_ready": false,
   "scientific_constraints": {
     "sort_authorized": false,
@@ -25,7 +25,7 @@
     "end_s": 1240.0,
     "duration_s": 340.0
   },
-  "truth_train": {
+  "scorer_fixture_train": {
     "rate_hz": 5.0,
     "guard_s": 1.0,
     "sampling_frequency_hz": 30000.0,
@@ -33,6 +33,15 @@
     "first_local_sample": 30000,
     "last_local_sample": 10164000,
     "array_sha256": "17e3cd15fb4965d973dc7d328deda5d0c3525387e17b207f4aefb770c9a13314"
+  },
+  "intended_population_train": {
+    "kind": "independent_per_unit_dead_time_renewal",
+    "mean_rate_hz": 5.0,
+    "minimum_refractory_ms": 3.0,
+    "guard_s": 1.0,
+    "base_seed": 20260926,
+    "unit_specific_seed": true,
+    "donor_order_invariant": true
   },
   "donor_rule": {
     "target_count": 30,
@@ -46,9 +55,9 @@
     "shortfall_policy": "fail_without_relaxing_thresholds"
   },
   "motion": {
-    "authoritative_input": "AV exact two-layer v1 used by D2L",
+    "authoritative_input": "/mnt/NPX/Luke/DARTsort_motion_experiments/av_aw_handoff_20260926_v1/d2l_field/luke0804_imec1_two_layer_motion.npz",
     "candidate_local_path": "/media/huklab/Data/NPX/Ryansorting/Luke/luke_imec1_medicine_reference_sweep_v2/stage4_ab/luke0804_imec1_two_layer_motion.npz",
-    "candidate_local_sha256_not_yet_authoritative": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+    "authoritative_sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
     "sample_clock": "actual DARTsort matching chunk centre samples",
     "quantization_um": 40.0,
     "rounding": "nearest_integer_half_away_from_zero",
@@ -62,6 +71,8 @@
     "final_sorting_sha256": "be6106ed0cb0f99759fd23629dd3bcb5f50657dbffa238ad3721c15d1b21fba7",
     "observed_support_interior_screen_available": true,
     "full_probe_energy_identifiable_from_crop": false,
+    "observed_interior_and_all_state_pass_count": 7,
+    "frozen_30_donor_target_feasible_from_crop": false,
     "strict_full_probe_design_requires": "new full-probe donor extraction or equivalent saved full-probe waveform source"
   },
   "qualification": {
@@ -79,20 +90,20 @@
     "exclusive": true,
     "tolerance_ms_inclusive": 0.4,
     "tolerance_samples_at_30khz": 12,
-    "focused_aw_tests": "9 passed",
-    "combined_injection_and_scorer_tests": "35 passed"
+    "focused_aw_tests": "10 passed",
+    "combined_injection_and_scorer_tests": "40 passed"
   },
   "code_identity": {
     "spike_sorting_tools_base_commit": "6ae06f5",
     "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
-    "preparation_source_sha256": "3959da2907617c8bce1b61ef3db5a91b5ee0b8f5d381ee9e5e927c8ee9ab1a2f",
-    "preparation_test_sha256": "c5ed351d1f881614a0a70fabf7dc57f3d36f9a56601b1069726241634a961fe5"
+    "preparation_source_sha256": "60dacad9c2ff04e82987635a363f665845b734a05828f44700ea38983911f0cd",
+    "preparation_test_sha256": "8d32b36a791ea9d438d11a5bcd92ed0452ac929f28a960e7e7b3b788a7523c0b",
+    "handoff_audit_source_sha256": "c4e7660634f9a862fd62239f46eed47ee0e0c7c8b7b68ea38e1354510137c078",
+    "handoff_audit_test_sha256": "201e3c4b062b849ee5d038db80ca0ae773aa92ca5eb7ac162b7bfa776c4eb058"
   },
-  "required_av_handoff": [
-    "accepted static DARTsort S/W2 900-1240s bank",
-    "unit metadata and preprocessing/channel identity",
-    "frozen bank and metadata hashes",
-    "exact D2L two-layer v1 field and authoritative hash",
-    "DARTsort matching config/code identity and chunk length"
+  "remaining_dependencies": [
+    "exact S/W2 quality and isolation table referenced by qc-phy receipt",
+    "bounded full-probe templates for the 30 frozen-rule donors",
+    "full-probe donor/state qualification"
   ]
 }

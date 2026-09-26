@@ -1,11 +1,10 @@
 # AW CPU preparation for AU
 
-Status: **CPU fixtures pass; waiting for the staged AV bundle. Not worker-ready.**
+Status: **AV handoff valid; full-probe worker remains blocked.**
 
-This preparation performs no sorting, raw-voltage read, GPU work, new motion
-fit, or continuous-trajectory injection. It is safe to run beside AM.3 with
-`CUDA_VISIBLE_DEVICES=''`, at most two numerical threads, one input reader and
-low process priority. No active AM.3 source or output is an input.
+This preparation performed no sorting, raw-voltage read, GPU work, new motion
+fit, or continuous-trajectory injection. It used at most two CPU threads and
+the sealed, compact AV handoff.
 
 ## Frozen preparation
 
@@ -13,129 +12,121 @@ low process priority. No active AM.3 source or output is an input.
 |---|---|
 | Evaluation interval | imec1 W2, 900--1240 s (340 s) |
 | Donor target | 30 accepted static DARTsort S units |
-| Train | regular 5 Hz, 1 s guard at both ends, 1,690 events |
-| Train array SHA-256 | `17e3cd15fb4965d973dc7d328deda5d0c3525387e17b207f4aefb770c9a13314` |
-| Motion states | exact same-column multiples of 40 µm only |
+| Scorer fixture train | synchronized regular 5 Hz, 1 s guards, 1,690 events |
+| Fixture array SHA-256 | `17e3cd15fb4965d973dc7d328deda5d0c3525387e17b207f4aefb770c9a13314` |
+| Intended population | independent seeded dead-time renewal train per donor; mean 5 Hz; minimum 3 ms refractory; base seed 20260926 |
+| Injection states | exact same-column multiples of 40 µm only |
 | Matching tolerance | inclusive +/-0.4 ms = 12 samples at 30 kHz |
 | Qualification | every donor/state: energy retention >0.99, round-trip PTP ratio 1.00 +/-0.02, centred cosine >=0.99 |
-| Resources | CUDA disabled; <=2 CPU threads; one reader; nice 10; working-set target <=8 GB |
-| Persistent-output ceiling | <=5 GB; current preparation is below 0.1 MB |
-| Disk guard | stop below 30 GB free on the output filesystem |
+| Resources | CUDA disabled; <=2 CPU threads; one reader; nice 10; target <=8 GB working set |
+| Persistent-output ceiling | <=5 GB |
+| Disk guard | stop below 30 GB free |
 
-The donor rule is frozen before any injected outcome is visible. Eligibility
-requires the accepted static-bank label `good`, refractory-violation fraction
-<=0.005, rest-spike fraction >=0.80 and isolation score >=0.80. Eligible units
-are divided into six equal depth strata. Within each stratum they rank by larger
-static PTP, then smaller refractory fraction, then unit id; five are selected.
-Unfilled quota slots are filled globally by that same ranking. Fewer than 30
-eligible units is a hard gate and does not relax the thresholds.
+The donor rule remains frozen before injected outcomes: accepted static-bank
+label `good`, refractory-violation fraction <=0.005, rest-spike fraction >=0.80
+and isolation score >=0.80. Six equal depth strata contribute five donors each,
+ranked by static PTP descending, refractory fraction ascending, then unit id.
+Fewer than 30 eligible donors is a hard gate.
 
-## Motion-state semantics
+## Handoff and field validation
 
-DARTsort does not consume a distinct displacement for every spike during
-matching. In the inspected checkout (`edcfe1b51d672b4136eb13cc78c0875da804b851`),
-`peel/matching.py:260-269` computes
-`chunk_start_samples + chunk_length_samples // 2`, converts that sample to
-seconds, and asks the template bank for its state at that time.
-`templates/template_util.py:62-78` then evaluates the external field and turns
-the result into pitch shifts used to select static-channel template support.
+The sealed bundle is
+`/mnt/NPX/Luke/DARTsort_motion_experiments/av_aw_handoff_20260926_v1/`.
+All 21 files pass their recorded size and SHA-256. The manifest hash is
+`3cc7b0a3840e3d48cdcb0fe5b5707dd2eeea06942cab792294b1ab3e459ac843`;
+`COMPLETE.json` is
+`71ee43721c7e952d677a32a3f4b7b07b9c54579c11389c382ebe8d766656ff46`.
 
-AW's *injected trajectory* samples the exact D2L two-layer v1 field at those
-actual chunk centres, then rounds half away from zero to verified 40 µm
-same-column states. It will report quantization error separately for rest and
-canonical episode time. The injection operator will not interpolate donor
-voltage between states and will not use AI-v2 or the imec0 AM.3 field.
+The D2L-v1 source is authoritatively confirmed at
+`85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9`,
+on the AP-frame-zero 0.25 s grid with sign
+`corrected = observed - displacement`. The exact local adapter copy differs by
+0 µm at copied samples and applied neither filtering nor resampling.
 
-That does **not** describe all matching implementations. In the inspected
-DARTsort checkout, the default `drifty` matcher constructs a
-`FromFullProbeInterpolator` whenever motion is active
-(`peel/matching_util/drifty.py:105-123`). At each chunk centre it evaluates the
-unrounded external displacement and spatially kernel-interpolates the registered
-template basis onto `geom - displacement`
-(`util/interpolation_util.py:1264-1292`). The external rigid field itself is
-linearly interpolated in time by `dredge.motion_util.RigidMotionEstimate`.
-`MotionInfo.pitch_shifts` separately rounds displacement/pitch to an integer
-(`util/motion.py:329-380`), and `templates_at_time` uses those integers for
-static-channel support selection (`templates/template_util.py:62-80`), but that
-is not evidence that a `drifty` run omitted fractional spatial interpolation.
-The exact S/D2L matching config from AV decides which path was used.
+## Actual matching operator and trajectory
 
-The remapper preserves x-column identity and requires an exact site at
-`(x, y + state_um)`. Missing sites are explicit; ambiguous or many-to-one maps
-fail. The qualification applies the forward map and its exact inverse. No donor
-or state may be silently clipped, attenuated, time-shifted, rescaled or dropped.
+At DARTsort commit `edcfe1b51d672b4136eb13cc78c0875da804b851`,
+`peel/matching.py:260-269` evaluates the field at the matching-chunk centre.
+Both S and D2L used `template_type=drifty`, template channel selection and
+thin-plate kriging with a 200 µm neighborhood. S used 30,000-sample chunks;
+D2L used 7,500-sample chunks. Thus D2L used the unrounded field at 0.25 s chunk
+centres to continuously spatially interpolate the registered template basis.
+Integer pitch support selection is a separate path and does not imply that
+fractional interpolation was absent.
 
-## Corrected scorer and fixtures
+W2 has 1,360 D2L chunk centres. Quantized injection-state counts are 0: 1,140;
+-40: 42; -80: 29; -120: 34; -160: 67; -200: 41; -240: 7. Median absolute
+quantization error is 7.53 µm (P95 17.81, maximum 19.99); the episode median is
+9.47 µm and rest median 7.34 µm. Local-adapter versus authoritative source
+sampling differs by at most `4.24e-11` µm at these centres.
 
-The scorer follows decision 0014: exclusive interval-order matching is run
-between one truth train and one output cluster, not between truth and the pooled
-spike river. Candidate-cluster competition is downstream of that match. The AU
-fixture additionally freezes the requested +/-0.4 ms boundary: offsets of 12
-samples match and offsets of 13 do not. One output event cannot satisfy two
-truth events. Nine focused AW CPU regressions and 35 combined
-AW/injected-truth/scorer regressions pass.
+AW's injection operator remains intentionally lattice-safe: it rounds half away
+from zero, preserves x-column identity, and requires an exact target at
+`(x, y + state)`. Missing, ambiguous or many-to-one mappings fail. This injected
+operator is not mis-described as DARTsort's continuous matcher; their difference
+is explicitly measured as quantization error.
 
-The August injected-truth adapter is used only for its validated float32,
-no-clipping/no-truncation, immutable-template contract. C2-v4 supplies the
-corrected per-cluster scorer and exact-lattice operator controls. The old C2
-5/11/22 µm fractional arms are not reused because their forward model attenuated
-rather than faithfully translated compact donors.
+## Fixture versus intended population
 
-## AV handoff dependencies
+The regular synchronized 5 Hz train is retained only to test the exclusive
+per-cluster scorer and its +/-0.4 ms boundary. It must not become the eventual
+population truth. The production primitive now creates distinct, immutable,
+order-independent per-unit trains using a unit-specific seeded renewal process,
+mean 5 Hz and minimum 3 ms refractory. Ten focused preparation tests and 40
+combined AW/injected-truth/scorer regressions pass.
 
-The following are required before a worker manifest or HDF5 can be called
-ready. There is no local substitute:
+## Donor columns and crop feasibility
 
-1. The accepted static DARTsort **S/W2 900--1240 s** template bank and unit
-   metadata, including the preprocessing identity, channel ids/geometry,
-   sampling frequency, template time origin/support, quality fields used by the
-   frozen donor rule, and authoritative hashes.
-2. The exact **two-layer v1 field used by D2L**, with authoritative SHA-256,
-   time grid, displacement array, sign convention and canonical episode mask.
-3. The frozen DARTsort matching settings/config and code identity used by S and
-   D2L, especially the matching chunk length and recording time mapping.
-
-AV's 13:36 PDT update identifies the only saved S bank as a shallow crop:
-654 x 121 x 182, AP202--AP383, SHA-256
+The saved S bank is 654 x 121 x 182, AP202--AP383, SHA-256
 `a99b12c3075f038fbad8c05c36c96f63221fd0eac5ba71caee8f18ff97acb75c`;
 the final sorting hash is
 `be6106ed0cb0f99759fd23629dd3bcb5f50657dbffa238ad3721c15d1b21fba7`.
-The h5-local source and AV manifest are not mounted on this host. A compact
-shared-path bundle and authoritative D2L-v1 provenance have been requested.
 
-### Crop feasibility decision
+The crop directly supplies `unit_id`. Depth, template PTP, refractory fraction
+and rest fraction are potentially derivable, but are not present as sealed
+columns. Template PTP cannot silently be relabelled physical `ptp_uv`, and the
+refractory definition must be frozen before calculation. The required `quality`
+label and `isolation_score` are absent and not uniquely derivable. The receipt
+references small `qc-phy` outputs; staging those exact files is preferable to
+redefining quality.
 
-The crop can be screened for an *interior, crop-specific* cohort. A necessary
-check requires >99% of each donor's **observed crop energy** to lie at least
-`max_abs_state + interpolation_radius` from both crop edges, followed by all
-per-state exact-remap qualifications. The preparation now implements that check
-and labels its denominator explicitly as observed support.
+With a 440 µm edge margin (240 µm maximum state plus the actual 200 µm matcher
+neighborhood), only 7/654 templates have >99% of their observed crop energy in
+the interior. 375/654 pass every occupied exact-state round trip; only 7 pass
+both screens. This cannot reach the frozen 30-donor target, even as a
+crop-specific cohort. The crop also cannot establish full-probe energy because
+AP0--AP201 are unobserved, not zeros.
 
-It cannot establish the frozen full-probe >99% energy requirement: voltage on
-AP0--AP201 is absent, so its energy is unknown rather than zero. Therefore the
-current strict full-probe donor design requires new full-probe donor extraction
-or an equivalent saved full-probe waveform/template source. A restricted
-interior cohort is feasible only if the scientific scope is explicitly narrowed
-to reproducing this shallow crop's deployed matcher; AW does not make that scope
-change on its own.
+## Smallest bounded full-probe extraction
 
-A local file named `luke0804_imec1_two_layer_motion.npz` has SHA-256
-`85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9`, but it is
-recorded only as a candidate locator. It is not accepted as the D2L authority
-until AV confirms the same hash.
+After the missing quality table selects 30 donors, reuse their accepted S spike
+times and the exact W2 preprocessing graph, stopping before any sort:
 
-## Stage dependency order
+1. Read only imec1 AP 900--1240 s once (about 7.83 GB raw).
+2. Apply the recorded 384-channel `ibllikecmr` float32 reference before crop;
+   hold the approximately 15.67 GB temporary cache in RAM.
+3. Extract the recorded 121-sample waveforms for at most 500 accepted S spikes
+   per selected donor in small batches, reproduce the median/SVD template
+   recipe, and persist only the 30 full-probe templates, geometry, channel ids
+   and receipt (raw float32 template payload about 5.58 MB).
+4. Delete the RAM cache after hashes and crop-overlap equivalence pass.
 
-1. Validate every staged AV file/hash and preprocessing/channel identity.
-2. Run the frozen donor selection and save all eligible, selected and excluded
-   rows with reasons.
-3. Sample and quantize D2L at the real matching chunk centres; report rest and
-   episode state/error distributions.
-4. Qualify every selected donor in every occupied state. All rows must pass.
-5. Build and hash the immutable 5 Hz truth contracts and only then render the
-   small worker assets. A `worker_ready` assertion remains false until steps
-   1--4 pass.
+The saved W2 preprocessing took 634 s while already referencing all 384
+channels. Allow 10--15 minutes for preprocessing and 10--20 minutes for bounded
+waveform/template extraction: about 20--35 minutes CPU wall time, one 7.83 GB
+source read, 15.67 GB temporary RAM and under 0.2 GB persistent output. This is
+an estimate and recipe, not authorization to run it.
 
-The historical C2-v4 output archive is about 82 GB and is intentionally not
-copied. Its small prespec/results and source hashes are sufficient for this
-preparation; AU must use the AV bank, not the 14 compact C2 donors.
+## Remaining order and interpretation limits
+
+1. Stage the exact S/W2 quality/isolation table.
+2. Select 30 donors under the frozen rule.
+3. Perform the bounded full-probe template extraction or receive an equivalent
+   saved full-probe source.
+4. Qualify every selected donor in every occupied state.
+5. Materialize and hash the independent per-unit truth trains and worker assets.
+
+`worker_ready` remains false until these gates pass. AV's chronological split,
+fixed left/right builder self-review and unpaired representative templates are
+accepted corrections. AV continuity observations remain exploratory, and T6
+is not used to infer unit quality.

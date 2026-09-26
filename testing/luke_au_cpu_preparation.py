@@ -21,6 +21,8 @@ WINDOW_START_S = 900.0
 WINDOW_END_S = 1240.0
 TRAIN_RATE_HZ = 5.0
 TRAIN_GUARD_S = 1.0
+TRAIN_REFRACTORY_MS = 3.0
+TRAIN_BASE_SEED = 20260926
 MATCH_TOLERANCE_MS = 0.4
 PITCH_UM = 40.0
 N_DONORS = 30
@@ -73,6 +75,60 @@ def immutable_regular_train(
     train = np.arange(first, stop, step, dtype=np.int64)
     train.flags.writeable = False
     return train
+
+
+def seeded_independent_train(
+    unit_id: int,
+    *,
+    base_seed: int = TRAIN_BASE_SEED,
+    fs_hz: float = FS_HZ,
+    start_s: float = WINDOW_START_S,
+    end_s: float = WINDOW_END_S,
+    rate_hz: float = TRAIN_RATE_HZ,
+    guard_s: float = TRAIN_GUARD_S,
+    refractory_ms: float = TRAIN_REFRACTORY_MS,
+) -> np.ndarray:
+    """Build one immutable, order-independent seeded renewal train.
+
+    This is the intended eventual benchmark population primitive.  The regular
+    5 Hz train above remains only a small scorer fixture.  A unit-specific
+    SeedSequence makes the result independent of donor iteration order.  The
+    dead-time-adjusted exponential interval has the requested mean rate while
+    enforcing the minimum refractory interval after sample quantization.
+    """
+    if rate_hz <= 0 or fs_hz <= 0 or refractory_ms < 0:
+        raise ValueError("rate and sampling frequency must be positive")
+    refractory_s = float(refractory_ms) / 1000.0
+    if refractory_s >= 1.0 / float(rate_hz):
+        raise ValueError("refractory interval must be shorter than mean ISI")
+    local_duration_s = float(end_s - start_s)
+    lo_s = float(guard_s)
+    hi_s = local_duration_s - float(guard_s)
+    if not lo_s < hi_s:
+        raise ValueError("guards leave no train support")
+    rng = np.random.default_rng(np.random.SeedSequence([int(base_seed), int(unit_id)]))
+    exponential_mean_s = 1.0 / float(rate_hz) - refractory_s
+    events_s: list[float] = []
+    t_s = lo_s + float(rng.exponential(1.0 / float(rate_hz)))
+    while t_s < hi_s:
+        events_s.append(t_s)
+        t_s += refractory_s + float(rng.exponential(exponential_mean_s))
+    train = np.rint(np.asarray(events_s, dtype=np.float64) * fs_hz).astype(np.int64)
+    min_samples = int(np.ceil(refractory_s * fs_hz))
+    if train.size > 1 and np.any(np.diff(train) < min_samples):
+        raise AssertionError("sample quantization violated the refractory gate")
+    train.flags.writeable = False
+    return train
+
+
+def seeded_independent_population(
+    unit_ids: Iterable[int], **kwargs
+) -> dict[int, np.ndarray]:
+    """Return distinct per-unit trains without coupling to input order."""
+    ids = [int(unit_id) for unit_id in unit_ids]
+    if len(set(ids)) != len(ids):
+        raise ValueError("unit ids must be unique")
+    return {unit_id: seeded_independent_train(unit_id, **kwargs) for unit_id in ids}
 
 
 def _require_metadata_fields(rows: Sequence[Mapping]) -> None:

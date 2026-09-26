@@ -4,22 +4,22 @@
     {
       "id": "av_handoff_validation",
       "requires": [],
-      "status": "blocked_waiting_for_staged_shared_bundle_and_d2l_v1_authority"
+      "status": "complete_21_of_21_hashes_valid_d2l_authority_confirmed"
     },
     {
       "id": "donor_selection",
       "requires": ["av_handoff_validation"],
-      "status": "strict_full_probe_design_blocked_by_shallow_only_bank"
+      "status": "blocked_missing_quality_isolation_and_full_probe_templates"
     },
     {
       "id": "chunk_center_motion_states",
       "requires": ["av_handoff_validation"],
-      "status": "implementation_tested_not_run_on_authority"
+      "status": "complete_on_authoritative_field"
     },
     {
       "id": "donor_state_qualification",
       "requires": ["donor_selection", "chunk_center_motion_states"],
-      "status": "implementation_tested_not_run"
+      "status": "crop_screen_complete_7_of_654_pass_full_probe_not_run"
     },
     {
       "id": "worker_assets",

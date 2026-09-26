@@ -16,23 +16,23 @@
   },
   "preflight": [
     "free output bytes >= 30000000000",
-    "all AV artifacts present and hash-valid",
-    "D2L field authority explicitly confirmed",
+    "all AV artifacts present and hash-valid (complete)",
+    "D2L field authority explicitly confirmed (complete)",
     "exact S/W2 preprocessing and channel identity match",
     "full-probe donor source available, or explicit authorization narrows the design to the shallow crop",
     "30 donors selected under frozen rule",
     "every donor/state qualification passes",
-    "35 CPU scorer/injection regression tests pass"
+    "40 CPU scorer/injection regression tests pass"
   ],
   "forbidden": [
     "sort launch",
     "GPU or CUDA use",
     "new MEDiCINe fit",
     "raw-voltage scan",
-    "continuous or fractional spatial interpolation",
+    "continuous or fractional interpolation in the injected-voltage operator (the actual drifty matcher remains continuous)",
     "threshold relaxation after seeing outcomes",
     "claiming worker readiness from placeholder assets"
   ],
   "next_command": null,
-  "reason_next_command_is_null": "AV handoff is not present and validated"
+  "reason_next_command_is_null": "full-probe donor templates and sealed quality/isolation columns are unavailable; crop has only 7/30 qualifying templates"
 }

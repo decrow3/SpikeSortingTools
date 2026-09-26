@@ -33,12 +33,23 @@
       "lines": "62-80"
     }
   ],
-  "conclusion": "integer pitch indices do not prove fractional spatial interpolation was absent; the exact AV matching config must identify the S/D2L template_type and interpolation parameters",
-  "pending_handoff_fields": [
-    "template_type",
-    "chunk_length_samples",
-    "drift_interp_params",
-    "matching up_factor and up_method",
-    "recording time mapping"
-  ]
+  "validated_configs": {
+    "static_s": {
+      "template_type": "drifty",
+      "chunk_length_samples": 30000,
+      "drift_method": "kriging",
+      "drift_kernel": "thinplate",
+      "drift_neighborhood_radius_um": 200.0,
+      "up_factor": 4
+    },
+    "d2l": {
+      "template_type": "drifty",
+      "chunk_length_samples": 7500,
+      "drift_method": "kriging",
+      "drift_kernel": "thinplate",
+      "drift_neighborhood_radius_um": 200.0,
+      "up_factor": 4
+    }
+  },
+  "conclusion": "Both actual runs used the drifty continuous spatial interpolation path. D2L evaluated the unrounded external field at 7500-sample chunk centres; integer pitch support remained a separate path."
 }

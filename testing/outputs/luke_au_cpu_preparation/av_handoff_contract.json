@@ -1,5 +1,9 @@
 {
   "schema": "luke-au-av-handoff-contract-v1",
+  "validation_status": "bundle_valid_with_unit_quality_metadata_incomplete",
+  "validated_root": "/mnt/NPX/Luke/DARTsort_motion_experiments/av_aw_handoff_20260926_v1",
+  "manifest_sha256": "3cc7b0a3840e3d48cdcb0fe5b5707dd2eeea06942cab792294b1ab3e459ac843",
+  "files_valid": "21/21",
   "handoff_root_policy": "all paths relative to one sealed handoff root",
   "required_artifacts": [
     {
@@ -49,6 +53,16 @@
     "rest_spike_fraction",
     "isolation_score"
   ],
+  "unit_metadata_audit": {
+    "directly_present": ["unit_id"],
+    "derivable_but_not_sealed": [
+      "depth_um",
+      "ptp_uv",
+      "refractory_violation_fraction",
+      "rest_spike_fraction"
+    ],
+    "missing_hard": ["quality", "isolation_score"]
+  },
   "fail_closed_on": [
     "missing artifact",
     "hash mismatch",

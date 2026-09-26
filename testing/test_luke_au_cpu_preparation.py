@@ -10,6 +10,8 @@ from testing.luke_au_cpu_preparation import (
     qualify_exact_state,
     sample_and_quantize_trajectory,
     score_one_cluster,
+    seeded_independent_population,
+    seeded_independent_train,
     select_donors,
 )
 
@@ -26,6 +28,17 @@ def test_frozen_train_is_5hz_local_and_immutable():
     assert train.size == 1690
     assert np.all(np.diff(train) == 6000)
     assert train.flags.writeable is False
+
+
+def test_seeded_population_is_independent_refractory_and_order_stable():
+    forward = seeded_independent_population([11, 22, 33])
+    reverse = seeded_independent_population([33, 22, 11])
+    for unit_id in forward:
+        assert np.array_equal(forward[unit_id], reverse[unit_id])
+        assert forward[unit_id].flags.writeable is False
+        assert np.all(np.diff(forward[unit_id]) >= 90)
+    assert not np.array_equal(forward[11], forward[22])
+    assert np.array_equal(forward[11], seeded_independent_train(11))
 
 
 def test_donor_rule_balances_depth_then_fills_without_outcomes():

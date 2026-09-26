@@ -1,6 +1,6 @@
 # Luke motion coordination status
 
-Updated: 2026-09-26T20:05:00Z (2026-09-26 13:05:00 PDT)
+Updated: 2026-09-26T21:04:00Z (2026-09-26 14:04:00 PDT)
 
 ## Verdict first
 
@@ -149,6 +149,41 @@ AW CPU fixture deadline was met at 13:49 PDT: nine focused AW tests and the
 existing injected-truth/scorer suite pass; the preparation remains small and
 CUDA-free. Next dependency check is 14:00 PDT. If the shared bundle is still
 absent, AW remains blocked without a worker launch or deadline guess for AV.
+
+### AW handoff validation, 2026-09-26 14:04 PDT
+
+The AV handoff is now staged at
+`/mnt/NPX/Luke/DARTsort_motion_experiments/av_aw_handoff_20260926_v1/`.
+All 21 files pass their manifest sizes and SHA-256 values. The manifest hash is
+`3cc7b0a3840e3d48cdcb0fe5b5707dd2eeea06942cab792294b1ab3e459ac843`;
+the completion-marker hash is
+`71ee43721c7e952d677a32a3f4b7b07b9c54579c11389c382ebe8d766656ff46`.
+The D2L-v1 field is authoritatively confirmed at
+`85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9`.
+The local DARTsort adapter copied it without filtering or resampling and is
+identical at copied samples.
+
+Actual configs show that both S and D2L used the `drifty` continuous spatial
+interpolation matcher. S used 30,000-sample chunks; D2L used 7,500-sample
+(0.25 s) chunks. The authoritative W2 trajectory has 1,360 matching centres and
+occupied lattice states 0 through -240 um. Median absolute lattice quantization
+error is 7.53 um (P95 17.81, maximum 19.99). The local-adapter and whole-session
+source evaluations agree to `4.24e-11` um at those centres.
+
+The handoff does not make the full-probe worker ready. Only 7/654 shallow-crop
+templates pass both the >99% observed-interior-energy screen and all occupied
+exact-state round trips, versus the frozen target of 30. AP0--AP201 remain
+unobserved, and the bundle lacks the frozen `quality` and `isolation_score`
+columns. The exact small `qc-phy` table should be staged; no quality definition
+will be invented.
+
+The smallest full-probe remedy is a read-only, no-sort W2 template extraction
+after donor selection: one approximately 7.83 GB raw read, 15.67 GB temporary
+RAM cache, under 0.2 GB persistent output, and an estimated 20--35 minutes CPU
+wall time. It has not been launched. The synchronized 5 Hz train is now labelled
+fixture-only; the intended population generator uses independent per-unit
+seeded renewal trains with a minimum 3 ms refractory interval. Forty combined
+CPU regressions pass.
 
 ## Outputs and hashes
 
