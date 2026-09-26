@@ -1,6 +1,6 @@
 # Luke motion coordination status
 
-Updated: 2026-09-26T17:26:34Z (2026-09-26 10:26:34 PDT)
+Updated: 2026-09-26T20:05:00Z (2026-09-26 13:05:00 PDT)
 
 ## Verdict first
 
@@ -65,6 +65,19 @@ The service will fit the 120 s / 60 s-step fast windows, stitch them with per-wi
 - AM MEDiCINe fitting budget is 4 GPU-hours. Consumption is recorded from completed receipts between windows; no completed AM.3 receipt existed at this 09:42 checkpoint.
 - Data filesystem free: 186,128,961,536 bytes (about 173 GiB), above the 30 GB guard.
 - Current blocker: none. Stop immediately if a frozen seam, validation, disk or budget gate fails; do not tune.
+
+## AW CPU preparation (parallel, no sort/GPU/new fit)
+
+AW was received and CPU-only preparation has started while AM.3 remains active. The preparation is constrained to at most two CPU threads, one reader, CUDA disabled, low priority, an approximately 8 GB working-set target, no more than 5 GB of new persistent assets, and the existing 30 GB disk guard. It does not touch the active AM.3 source snapshots or services.
+
+The existing C2-v4 result, corrected per-cluster exclusive scorer, operator calibration and lattice-commensurate staircase implementation have been identified and hash-audited for reuse. DARTsort source inspection confirms that matching obtains the template state at the centre sample of each matching chunk (`peel/matching.py`, lines 260--269) and converts the external displacement at that time into integer pitch shifts before selecting static-channel template support (`templates/template_util.py`, lines 62--78). AW will therefore preserve actual chunk-centre sampling rather than treating the deployed field as a continuous per-spike trajectory.
+
+Two AV handoff items are hard dependencies and will not be guessed from nearby local products:
+
+- the accepted static DARTsort S/W2 900--1240 s donor bank, unit metadata, preprocessing identity, and frozen hashes;
+- the exact two-layer v1 field used by D2L, with its authoritative hash and time/sign metadata (AI-v2 and the active imec0 AM.3 field are explicitly ineligible substitutes).
+
+The donor-selection rule and exact same-column 40 µm qualification are being frozen before any outcome inspection. CPU fixtures will exercise the corrected exclusive +/-0.4 ms matching boundary, immutable 5 Hz trains, exact channel remapping, per donor/state energy retention >99%, PTP ratio 1.00 +/-0.02, cosine >=0.99, and fail-closed hash/provenance checks. The preparation will be marked worker-ready only after the AV assets arrive and all donors/states qualify; no placeholder HDF5 or synthetic donor bank will be called worker-ready.
 
 ## Outputs and hashes
 

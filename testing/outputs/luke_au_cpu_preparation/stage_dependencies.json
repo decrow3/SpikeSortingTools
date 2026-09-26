@@ -1,0 +1,30 @@
+{
+  "schema": "luke-au-stage-dependencies-v1",
+  "stages": [
+    {
+      "id": "av_handoff_validation",
+      "requires": [],
+      "status": "blocked_waiting_for_av"
+    },
+    {
+      "id": "donor_selection",
+      "requires": ["av_handoff_validation"],
+      "status": "rule_frozen_not_run"
+    },
+    {
+      "id": "chunk_center_motion_states",
+      "requires": ["av_handoff_validation"],
+      "status": "implementation_tested_not_run_on_authority"
+    },
+    {
+      "id": "donor_state_qualification",
+      "requires": ["donor_selection", "chunk_center_motion_states"],
+      "status": "implementation_tested_not_run"
+    },
+    {
+      "id": "worker_assets",
+      "requires": ["donor_state_qualification"],
+      "status": "not_ready"
+    }
+  ]
+}

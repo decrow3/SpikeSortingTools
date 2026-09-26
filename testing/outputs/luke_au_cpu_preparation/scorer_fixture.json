@@ -1,0 +1,20 @@
+{
+  "schema": "luke-au-exclusive-scorer-fixture-v1",
+  "sampling_frequency_hz": 30000.0,
+  "tolerance_ms": 0.4,
+  "tolerance_samples": 12,
+  "truth_samples": [100, 124, 300],
+  "output_samples": [88, 112, 137, 500],
+  "expected": {
+    "tp": 2,
+    "fp": 2,
+    "fn": 1,
+    "accuracy": 0.4
+  },
+  "boundary_assertions": {
+    "plus_or_minus_12_samples_matches": true,
+    "plus_or_minus_13_samples_does_not_match": true,
+    "one_output_cannot_match_two_truth_events": true
+  }
+}
+

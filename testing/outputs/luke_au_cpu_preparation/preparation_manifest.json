@@ -1,0 +1,88 @@
+{
+  "schema": "luke-au-cpu-preparation-v1",
+  "status": "cpu_fixtures_pass_waiting_for_av_not_worker_ready",
+  "worker_ready": false,
+  "scientific_constraints": {
+    "sort_authorized": false,
+    "gpu_authorized": false,
+    "new_motion_fit_authorized": false,
+    "raw_voltage_read_authorized": false,
+    "continuous_trajectory_injection_forbidden": true
+  },
+  "resources": {
+    "cuda_visible_devices": "",
+    "cpu_threads_max": 2,
+    "readers_max": 1,
+    "nice": 10,
+    "working_set_target_gb": 8,
+    "new_persistent_assets_max_gb": 5,
+    "disk_guard_gb": 30
+  },
+  "window": {
+    "probe": "imec1",
+    "id": "W2",
+    "start_s": 900.0,
+    "end_s": 1240.0,
+    "duration_s": 340.0
+  },
+  "truth_train": {
+    "rate_hz": 5.0,
+    "guard_s": 1.0,
+    "sampling_frequency_hz": 30000.0,
+    "n_events": 1690,
+    "first_local_sample": 30000,
+    "last_local_sample": 10164000,
+    "array_sha256": "17e3cd15fb4965d973dc7d328deda5d0c3525387e17b207f4aefb770c9a13314"
+  },
+  "donor_rule": {
+    "target_count": 30,
+    "quality": "good",
+    "max_refractory_violation_fraction": 0.005,
+    "min_rest_spike_fraction": 0.8,
+    "min_isolation_score": 0.8,
+    "depth_strata": 6,
+    "quota_per_stratum": 5,
+    "rank": ["ptp_uv_desc", "refractory_violation_fraction_asc", "unit_id_asc"],
+    "shortfall_policy": "fail_without_relaxing_thresholds"
+  },
+  "motion": {
+    "authoritative_input": "AV exact two-layer v1 used by D2L",
+    "candidate_local_path": "/media/huklab/Data/NPX/Ryansorting/Luke/luke_imec1_medicine_reference_sweep_v2/stage4_ab/luke0804_imec1_two_layer_motion.npz",
+    "candidate_local_sha256_not_yet_authoritative": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+    "sample_clock": "actual DARTsort matching chunk centre samples",
+    "quantization_um": 40.0,
+    "rounding": "nearest_integer_half_away_from_zero",
+    "allowed_operator": "exact same-column channel remap only"
+  },
+  "qualification": {
+    "every_donor_every_occupied_state": true,
+    "min_energy_retention_exclusive": 0.99,
+    "ptp_ratio_target": 1.0,
+    "ptp_ratio_tolerance_inclusive": 0.02,
+    "min_centered_cosine_inclusive": 0.99,
+    "timing_change_allowed": false,
+    "unit_change_allowed": false,
+    "clipping_allowed": false
+  },
+  "scorer": {
+    "scope": "per_truth_train_per_output_cluster",
+    "exclusive": true,
+    "tolerance_ms_inclusive": 0.4,
+    "tolerance_samples_at_30khz": 12,
+    "tests": "7 passed"
+  },
+  "code_identity": {
+    "spike_sorting_tools_base_commit": "6ae06f5",
+    "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+    "preparation_source_sha256": "dc226fb5a7cfd09b68bff8848b6c39257cf60d797f85f906fa421599dbaa0631",
+    "preparation_test_sha256": "3b7261261f2c23448b27d38b56550c363871604a537f48bb67f73bd716642aea"
+  },
+  "required_av_handoff": [
+    "accepted static DARTsort S/W2 900-1240s bank",
+    "unit metadata and preprocessing/channel identity",
+    "frozen bank and metadata hashes",
+    "exact D2L two-layer v1 field and authoritative hash",
+    "DARTsort matching config/code identity and chunk length"
+  ]
+}
+
