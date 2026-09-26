@@ -83,4 +83,4 @@ The colourblind-safe summary figure is `am2_cross_probe_summary.png`. The failed
 - AP/AQ are DARTsort diagnostics requiring no work here per AR; no AP.6 operative instruction has reached this task.
 - Branch: `codex/motionqc-phase1`.
 - Base commit before the infrastructure fix: `22de67700afe39249887700c0006bfbd91460842`.
-- The tested one-line cross-probe infrastructure fix is currently in the working tree and should be committed separately from unrelated user changes.
+- Completed AM.2 checkpoint, including the tested infrastructure fix: `0721ab2474f754d1dac102a2bc96da37979e4bf4`.
