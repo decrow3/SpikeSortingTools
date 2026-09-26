@@ -1,6 +1,6 @@
 # Luke motion coordination status
 
-Updated: 2026-09-26T16:42:00Z (2026-09-26 09:42:00 PDT)
+Updated: 2026-09-26T17:26:34Z (2026-09-26 10:26:34 PDT)
 
 ## Verdict first
 
@@ -54,9 +54,9 @@ Per-depth results retain the frozen four-block test. Accepted counts and accepte
 
 ## AM.3 active background compute
 
-The AM.2 report-before-start hold was satisfied and the frozen AM.3 recipe was preregistered before fitting. `luke-imec0-am3-fit-20260926.service` is active under main PID `1820851`. At 09:45 it had completed 3/174 `amp50_d1` fast windows in 225.5 s wall time, using 213.3 s of MEDiCINe runtime. The GPU is healthy and no pre-existing AM.3 fit was duplicated. Durable follower `luke-imec0-am3-validate-20260926.service` (PID `1823164`) is waiting for fit completion, then runs the frozen validation and packages only on a pass.
+The AM.2 report-before-start hold was satisfied and the frozen AM.3 recipe was preregistered before fitting. `luke-imec0-am3-fit-20260926.service` is active under main PID `1820851`. At 10:26 it had completed 35/174 `amp50_d1` fast windows in 2,652.7 s wall time, using 2,528.1 s of MEDiCINe runtime. The GPU is healthy and no pre-existing AM.3 fit was duplicated. Durable follower `luke-imec0-am3-validate-20260926.service` (PID `1823164`) is waiting for fit completion, then runs the frozen validation and packages only on a pass.
 
-The service will fit the 120 s / 60 s-step fast windows, stitch them with per-window median centering, chained overlap offsets and triangular blending, enforce the 10 µm median seam gate, and then fit the 30 s-kernel slow layer after excluding the mapped AE mask plus 3 s. The first-three measured projection is 3.57 hours remaining; expected fit completion is approximately 13:20 PDT, followed by validation and packaging. Expected user-facing completion is approximately 14:00–14:30 PDT if all gates pass.
+The service will fit the 120 s / 60 s-step fast windows, stitch them with per-window median centering, chained overlap offsets and triangular blending, enforce the 10 µm median seam gate, and then fit the 30 s-kernel slow layer after excluding the mapped AE mask plus 3 s. The 35-fit checkpoint projects 2.93 hours remaining; expected fit completion is approximately 13:22 PDT, followed by validation and packaging. Expected user-facing completion is approximately 14:00–14:30 PDT if all gates pass.
 
 ## Holds, budgets and next action
 
@@ -84,10 +84,23 @@ The colourblind-safe summary figure is `am2_cross_probe_summary.png`. The failed
 
 AM.3 preregistration is `am3_preregistration.json`; the active durable log is `am3_fit.service.log`; per-window receipts are written below `fields/full/`, and progress is checkpointed in `am3_fit_progress.json`.
 
+## AT source confirmation and interpretation qualifications
+
+These are documentation qualifications only. They do not alter any frozen field, score, verdict, mask, threshold or active AM.3 source snapshot.
+
+- The hub independently reproduced the AE mask with zero differing bins, the saved AI-v2 displacement with zero maximum error under the historical endpoint-clamping rule, and the AI adoption scores to below 1.8e-15 error. AI-v2's episode-error margin to its frozen limit is only 0.06493 µm. Outside the mask, v2 minus the selected slow layer is the constant +3.50481 µm caused by final recentering; the two fields are equal there modulo that constant offset.
+- Source provenance confirms that `fast_shared_jitter_three_windows.csv` was produced by `testing/luke_imec1_slow_layer_ab_v1.py`'s `fast_jitter` path. The table was written at 2026-09-25 14:21:19 PDT; the v1 manifest written five minutes later names that script and records SHA-256 `b3ac06862e87968a7a4d27fef12427cb229708fab9cf20c678d6d9cf40d2be51`. The script was subsequently modified for AG at 14:45 and its current SHA-256 is `41db6d40866ff3398275321f7456c551f4562f184914b4bb629985931efea0e4`; the historical byte-for-byte snapshot is not retained here beyond the manifest hash.
+- The historical three-window 2–10 Hz result is qualified. Its observed spectrum interpolates gaps on the original 50 ms grid, whereas its circular-shift null deletes invalid/episode bins and still uses 50 ms sampling. Retained-bin fractions were 56.7%, 93.1% and 66.0%. Therefore it is not valid to claim a full-session absence of 2–10 Hz shared jitter from that table. The original contiguous-segment T13 result is not affected by this specific defect.
+- `motionqc.reference.unit_common_mode` likewise deletes gaps before CSD while retaining the original sample rate and is not a faithful reproduction of T13. AI's `motionqc` report did not supply the optional unit input, so this routine did not contribute to AI's saved field scores or adoption decision. Current `motionqc/reference.py` SHA-256 is `56032d610552e32be0b7909c94c3804b6bc71b683f13fc4d7c60fba0323cf3aa`.
+- AM.2's saved baseline is the full `[start-4,start-1)` interval and does not exclude other accepted episodes. Thirteen of 339 mapped baselines overlap another accepted episode; only one of those 13 is an accepted AM.2 row. As a robustness check of the existing rows, omitting all 13 leaves 281 strong shifts among 326 eligible episodes and accepted Spearman rho 0.50806. This is not a rescore and does not replace the frozen co-moving verdict.
+- `shift_test` has an identifiability limit: a controlled stationary population rate-swap can pass at -200 µm with gain 0.06687. Ordinary quiet nulls therefore do not rule out every structured activity confound. This is not evidence that Luke's measured episodes are artifacts; positive, negative and zero translations, random thinning, and independent correlation arithmetic all passed review.
+- Generic `compose_two_layer` can propagate unsupported endpoint NaNs through its ordinary median. Historical AI explicitly clamped endpoints, and active AM.3 explicitly pre-aligns the slow field with `_edge_sample`, so the observed case is avoided without changing the generic library.
+- Frozen fields named `MAE` are median absolute errors, not arithmetic mean absolute errors. Quiet-increment gates require quiet endpoints; a five-second pair can span an intervening episode.
+
 ## Instruction and code state
 
 - Latest operative scientific instruction on this host: AO.
-- Latest coordination instruction: AR.
+- Latest coordination/source-review instruction: AT, following AR.
 - AP/AQ are DARTsort diagnostics requiring no work here per AR; no AP.6 operative instruction has reached this task.
 - Branch: `codex/motionqc-phase1`.
 - Base commit before the infrastructure fix: `22de67700afe39249887700c0006bfbd91460842`.
