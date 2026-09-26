@@ -65,6 +65,11 @@ def compare_episodes(peaks, episodes: pd.DataFrame, *, blocks=((0,950),(950,1900
         rows.append({"episode_index":index,"start_s":start_s,"end_s":end_s,
                      "source_shift_um":float(getattr(row,measured)),
                      **{k:v for k,v in value.items() if k not in ("shifts_um","correlations")}})
-        table=per_block(local,episode,rest,blocks=blocks,margin_um=depth_block_margin_um,**shift_kwargs)
+        # The whole-probe call may carry an explicit depth range. Per-block
+        # evaluation defines its own range (block +/- margin), so forwarding
+        # the global range would both conflict at the Python call boundary and
+        # defeat the block restriction.
+        block_kwargs={k:v for k,v in shift_kwargs.items() if k!="depth_range_um"}
+        table=per_block(local,episode,rest,blocks=blocks,margin_um=depth_block_margin_um,**block_kwargs)
         table.insert(0,"episode_index",index);block_rows.append(table)
     return pd.DataFrame(rows),pd.concat(block_rows,ignore_index=True) if block_rows else pd.DataFrame()

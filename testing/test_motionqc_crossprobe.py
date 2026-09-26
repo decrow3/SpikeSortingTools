@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from motionqc.crossprobe import fit_clock_map, map_intervals
+from motionqc.crossprobe import compare_episodes, fit_clock_map, map_intervals
 from motionqc.reference import matched_null
 
 
@@ -30,3 +30,15 @@ def test_matched_null_pairs_duration_and_peak_target():
         assert row.target_peaks==expected
         assert row.episode_peaks==expected
         assert row.rest_peaks==expected
+
+
+def test_compare_episodes_global_depth_range_does_not_collide_with_blocks():
+    rng=np.random.default_rng(8);centres=np.repeat([250.,700.],400);x=np.tile(np.repeat([0.,32.],200),2)
+    rest=pd.DataFrame({"time_s":rng.uniform(0,3,len(centres)),"depth_um":centres+rng.normal(0,1,len(centres)),"x_um":x})
+    episode=pd.DataFrame({"time_s":rng.uniform(4,5,len(centres)),"depth_um":centres-80+rng.normal(0,1,len(centres)),"x_um":x})
+    episodes=pd.DataFrame([{"start_s":4.,"end_s":5.,"measured_shift_um":-80.}])
+    whole,blocks=compare_episodes(pd.concat([rest,episode],ignore_index=True),episodes,
+                                  blocks=((0,950),),depth_block_margin_um=150,
+                                  depth_range_um=(0,3840),x_range_um=(-32,80),min_peaks=100)
+    assert whole.loc[0,"best_shift_um"]==-80
+    assert blocks.loc[0,"best_shift_um"]==-80
