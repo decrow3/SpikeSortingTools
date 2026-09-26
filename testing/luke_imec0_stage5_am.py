@@ -21,6 +21,8 @@ ROOT=Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
 
 from motionqc.crossprobe import compare_episodes, fit_clock_map, map_intervals
+from motionqc.field import MotionField, load_field
+from motionqc.deployment import compose_two_layer
 from motionqc.reference import matched_null
 from testing import luke_imec1_medicine_reference_sweep_v1 as stage1
 from testing import luke_imec1_medicine_stage3_q_v1 as qstage
@@ -35,6 +37,7 @@ SYNC_ROOT=Path("/mnt/NPX/Luke/20250804/Luke0804_V2V1_g0")
 MIN_FREE_BYTES=30_000_000_000
 MIN_MEM_BYTES=40_000_000_000
 SESSION_DURATION_S=314204894/29999.835983263598
+AM_GPU_BUDGET_S=4*3600.0
 
 
 def sha256(path: Path) -> str:
@@ -219,12 +222,116 @@ def am2() -> None:
     (OUT/"AM2_REPORT.md").write_text("\n".join(lines))
 
 
+def am3_prepare() -> None:
+    summary=json.loads((OUT/"am2_summary.json").read_text());null=json.loads((OUT/"am2_null_gate.json").read_text())
+    if summary["verdict"] not in ("co-moving","mixed") or not null["pass"]:
+        raise RuntimeError("AM.3 mapped-mask precondition is not satisfied")
+    if list((OUT/"fields/full").glob("*/receipt.json")) if (OUT/"fields/full").exists() else []:
+        raise RuntimeError("AM.3 prepare must precede the first fit")
+    choice,settings,seed=qstage.selected_settings()
+    if choice["config"]!="amp50_d1" or settings["amplitude_threshold_quantile"]!=.5 or settings["num_depth_bins"]!=1:
+        raise RuntimeError(f"Frozen amp50_d1 configuration mismatch: {choice}, {settings}")
+    windows=qstage.window_specs("full")
+    atomic_json(OUT/"am3_preregistration.json",{
+        "status":"frozen_before_any_imec0_field_fit","am2_verdict":summary["verdict"],
+        "am2_summary_sha256":sha256(OUT/"am2_summary.json"),"null_gate":null,
+        "fast":{"configuration":"amp50_d1","settings":settings,"seed":seed,"windows":windows,
+                "centering":"per-window temporal median","offsets":"chained overlap median difference",
+                "blend":"triangular in 60 s overlaps","output_grid_s":.25},
+        "slow":{"configuration":"amp50_d1","time_kernel_width_s":30,"mask":str(OUT/"imec1_ae_mask_mapped_to_imec0.csv"),
+                "mask_sha256":sha256(OUT/"imec1_ae_mask_mapped_to_imec0.csv"),"additional_exclusion_s_each_side":3},
+        "composition":{"mask":"mapped imec1 canonical AE mask because AM.2 is co-moving","crossfade_s":1},
+        "validation":"motionqc phase-1: episode agreement, quiet slow reference/increments, and boundary checks; stop without tuning on failure",
+        "medicine_fit_budget_s":AM_GPU_BUDGET_S,"disk_guard_min_free_bytes":MIN_FREE_BYTES,
+        "no_sort":True,"voltage_modified":False,"prepared_at":time.time()})
+    atomic_json(OUT/"u_full_mode.json",{"mode":"block_concat","reason":"AM frozen recipe uses the validated U block-concatenation path"})
+
+
+def am3_fit_runtime() -> float:
+    total=0.0
+    for path in list(OUT.glob("fields/full/*/receipt.json"))+list(OUT.glob("fields/slow/*/receipt.json")):
+        total+=float(json.loads(path.read_text())["runtime_s"])
+    return total
+
+
+def am3_fast_one(window: str) -> None:
+    if not (OUT/"am3_preregistration.json").exists():raise RuntimeError("AM.3 is not preregistered")
+    disk_guard("before fast fit "+window)
+    qstage.fit_one(OUT,"full",window)
+    receipt=OUT/f"fields/full/{window}/receipt.json"
+    if not receipt.exists():raise RuntimeError(f"Missing fast-fit receipt: {window}")
+    disk_guard("after fast fit "+window)
+
+
+def _in_intervals(time_s: np.ndarray, intervals: np.ndarray) -> np.ndarray:
+    starts=intervals[:,0];stops=intervals[:,1];index=np.searchsorted(starts,time_s,side="right")-1
+    return (index>=0)&(time_s<stops[np.maximum(index,0)])
+
+
+def am3_slow_fit() -> None:
+    target=OUT/"fields/slow/medicine_amp50_d1_k30_exclude3s"
+    receipt=target/"receipt.json"
+    if receipt.exists():return
+    import medicine, torch
+    mask=pd.read_csv(OUT/"imec1_ae_mask_mapped_to_imec0.csv")
+    intervals=np.c_[np.maximum(0,mask.start_s.to_numpy(float)-3),np.minimum(SESSION_DURATION_S,mask.end_s.to_numpy(float)+3)]
+    pieces={k:[] for k in ("time_s","depth_um","amplitude")};total=kept=0
+    config=json.loads((OUT/"extraction_config.json").read_text());spec={x["id"]:x for x in config["windows"]}
+    for block in blocks():
+        path=OUT/f"peak_cache/{block['id']}/extraction/population.npz"
+        with np.load(path,allow_pickle=False) as z:
+            t=np.asarray(z["time_s"],float)+spec[block["id"]]["start_s"];use=~_in_intervals(t,intervals)
+            total+=len(t);kept+=int(use.sum());pieces["time_s"].append(t[use])
+            pieces["depth_um"].append(np.asarray(z["depth_um"])[use]);pieces["amplitude"].append(np.asarray(z["amplitude"])[use])
+    times,depths,amps=(np.concatenate(pieces[k]) for k in ("time_s","depth_um","amplitude"))
+    settings=dict(stage1.BASE_MED);settings.update(amplitude_threshold_quantile=.5,num_depth_bins=1,time_kernel_width=30.)
+    if am3_fit_runtime()+120>AM_GPU_BUDGET_S:raise RuntimeError("AM 4 GPU-hour fit budget would be exceeded before slow fit")
+    target.mkdir(parents=True,exist_ok=False);np.random.seed(0);torch.manual_seed(0);torch.cuda.manual_seed_all(0);torch.set_num_threads(4)
+    if not torch.cuda.is_available():raise RuntimeError("CUDA unavailable")
+    begun=time.monotonic();trainer=medicine.run_medicine(peak_times=times,peak_depths=depths,peak_amplitudes=amps,
+        output_dir=target/"medicine",optimizer=torch.optim.Adam,**settings);runtime=time.monotonic()-begun
+    med=target/"medicine";ft,fz,fm=(np.load(med/name) for name in ("time_bins.npy","depth_bins.npy","motion.npy"))
+    if not (np.isfinite(ft).all() and np.isfinite(fz).all() and np.isfinite(fm).all()):raise RuntimeError("Nonfinite AM.3 slow field")
+    np.savez_compressed(target/"field.npz",time_s=ft,depth_um=fz,displacement_um=fm,sign_convention=np.asarray("corrected = observed - displacement"))
+    np.save(target/"loss.npy",np.asarray(trainer.losses));atomic_json(receipt,{"status":"complete","runtime_s":runtime,
+        "settings":settings,"seed":0,"input_peaks":total,"masked_peaks":total-kept,"kept_peaks":kept,
+        "mask_sha256":sha256(OUT/"imec1_ae_mask_mapped_to_imec0.csv"),"additional_exclusion_s_each_side":3,
+        "field_sha256":sha256(target/"field.npz"),"sort_run":False,"voltage_modified":False})
+
+
+def am3_fit_all() -> None:
+    if not (OUT/"am3_preregistration.json").exists():raise RuntimeError("AM.3 is not preregistered")
+    specs=qstage.window_specs("full");begun=time.time()
+    for index,spec in enumerate(specs):
+        receipt=OUT/f"fields/full/{spec['id']}/receipt.json"
+        if receipt.exists():continue
+        if am3_fit_runtime()+90>AM_GPU_BUDGET_S:raise RuntimeError("AM 4 GPU-hour fit budget would be exceeded")
+        result=subprocess.run([str(stage1.MEDPY),str(Path(__file__).resolve()),"am3-fast-one","--window",spec["id"]],timeout=stage1.FIT_TIMEOUT_S)
+        if result.returncode:raise RuntimeError(f"AM.3 fast fit failed: {spec['id']}")
+        completed=len(list(OUT.glob("fields/full/*/receipt.json")));elapsed=time.time()-begun
+        atomic_json(OUT/"am3_fit_progress.json",{"status":"running","completed_fast_fits":completed,"planned_fast_fits":len(specs),
+            "medicine_runtime_s":am3_fit_runtime(),"wall_s_this_service":elapsed,
+            "projected_remaining_wall_s":elapsed/completed*(len(specs)-completed) if completed else None,"updated_at":time.time()})
+    fast=qstage.stitch(OUT,"full");seams=json.loads((OUT/"seams_full.json").read_text())
+    if seams["median_abs_seam_discontinuity_um"]>10:
+        atomic_json(OUT/"am3_stop.json",{"stage":"fast stitch","reason":"median seam gate failed","seams":seams});raise RuntimeError("AM.3 fast seam gate failed")
+    am3_slow_fit()
+    atomic_json(OUT/"am3_fit_complete.json",{"status":"complete","fast_fits":len(specs),"slow_fits":1,
+        "medicine_runtime_s":am3_fit_runtime(),"budget_s":AM_GPU_BUDGET_S,
+        "fast_field":str(OUT/"stitched_full.npz"),"fast_field_sha256":sha256(OUT/"stitched_full.npz"),
+        "slow_field":str(OUT/"fields/slow/medicine_amp50_d1_k30_exclude3s/field.npz"),
+        "slow_field_sha256":sha256(OUT/"fields/slow/medicine_amp50_d1_k30_exclude3s/field.npz"),"completed_at":time.time()})
+
+
 def main():
-    p=argparse.ArgumentParser();p.add_argument("phase",choices=("prepare","extract-one","extract-all","am2"));p.add_argument("--block");a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("phase",choices=("prepare","extract-one","extract-all","am2","am3-prepare","am3-fast-one","am3-fit-all"));p.add_argument("--block");p.add_argument("--window");a=p.parse_args()
     if a.phase=="prepare":prepare()
     elif a.phase=="extract-one":extract_one(a.block)
     elif a.phase=="extract-all":extract_all()
-    else:am2()
+    elif a.phase=="am2":am2()
+    elif a.phase=="am3-prepare":am3_prepare()
+    elif a.phase=="am3-fast-one":am3_fast_one(a.window)
+    else:am3_fit_all()
 
 
 if __name__=="__main__":main()
