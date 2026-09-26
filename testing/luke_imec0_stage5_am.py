@@ -452,18 +452,18 @@ def am3_validate() -> None:
     disk_guard("after AM.3 package")
 
 
-def am3_wait_validate() -> None:
+def am3_wait_validate(fit_service: str) -> None:
     deadline=time.time()+6*3600
     while time.time()<deadline:
         if (OUT/"am3_fit_complete.json").exists():return am3_validate()
-        result=subprocess.run(["systemctl","--user","is-failed","--quiet","luke-imec0-am3-fit-20260926.service"])
+        result=subprocess.run(["systemctl","--user","is-failed","--quiet",fit_service])
         if result.returncode==0:raise RuntimeError("AM.3 fit service failed before validation")
         time.sleep(30)
     raise TimeoutError("AM.3 fit did not complete within six hours")
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument("phase",choices=("prepare","extract-one","extract-all","am2","am3-prepare","am3-fast-one","am3-slow-fit","am3-fit-all","am3-validate","am3-wait-validate"));p.add_argument("--block");p.add_argument("--window");a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("phase",choices=("prepare","extract-one","extract-all","am2","am3-prepare","am3-fast-one","am3-slow-fit","am3-fit-all","am3-validate","am3-wait-validate"));p.add_argument("--block");p.add_argument("--window");p.add_argument("--fit-service",default="luke-imec0-am3-fit-20260926.service");a=p.parse_args()
     if a.phase=="prepare":prepare()
     elif a.phase=="extract-one":extract_one(a.block)
     elif a.phase=="extract-all":extract_all()
@@ -473,7 +473,7 @@ def main():
     elif a.phase=="am3-slow-fit":am3_slow_fit()
     elif a.phase=="am3-fit-all":am3_fit_all()
     elif a.phase=="am3-validate":am3_validate()
-    else:am3_wait_validate()
+    else:am3_wait_validate(a.fit_service)
 
 
 if __name__=="__main__":main()

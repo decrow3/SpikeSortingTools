@@ -65,6 +65,14 @@ Per-depth results retain the frozen four-block test. Accepted counts and accepte
   loaded the same field and verified the saved seam gate. AM has no sort stage,
   and sorting remains unauthorized. Receipt:
   `stage5_imec0/am3_infrastructure_dummy_retry1.json`.
+- AM.3 fit retry 1 then completed successfully: 174 fast fields plus the one
+  frozen slow field, 12,625.68 s (3.51 h) total MEDiCINe runtime against the
+  4 h budget. The retry validation follower failed before validation because
+  its wait loop still checked the original fit service name, which is expected
+  to remain failed as evidence. This is a second, distinct infrastructure
+  relaunch for the validation job; the wait helper now takes the service name
+  explicitly. Since `am3_fit_complete.json` is sealed, the next durable job
+  starts directly at `am3-validate` and does not refit anything.
 
 ## AM.3 active background compute
 
