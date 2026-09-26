@@ -85,19 +85,24 @@ def matched_null(peaks, durations_s, flagged_intervals, window, *, n=20, seed=0,
                  peak_targets=None, placement_margin_s=2.0, quantisation_um=10.0, **shift_kwargs):
     """Duration/count-matched pseudo episodes placed outside flagged time."""
     t,_,_=_columns(peaks);rng=np.random.default_rng(seed);durations=np.asarray(durations_s,float)
-    blocked=np.zeros(len(t),bool)
-    for a,b in flagged_intervals:blocked|=(t>=a-placement_margin_s)&(t<b+placement_margin_s)
+    if np.any(np.diff(t)<0):
+        order=np.argsort(t,kind="stable")
+        peaks=peaks.iloc[order].reset_index(drop=True) if isinstance(peaks,pd.DataFrame) else {k:np.asarray(peaks[k])[order] for k in peaks}
+        t,_,_=_columns(peaks)
+    flagged=np.asarray(flagged_intervals,float).reshape(-1,2) if len(flagged_intervals) else np.empty((0,2))
+    if len(flagged):flagged=flagged[np.argsort(flagged[:,0])]
     rows=[];tries=0
     while len(rows)<n and tries<max(5000,n*500):
         tries+=1;duration=float(rng.choice(durations));a=float(rng.uniform(window[0]+4,window[1]-duration));b=a+duration
-        ep=(t>=a)&(t<b);rest=(t>=a-4)&(t<a-1)
-        if blocked[ep|rest].any():continue
+        if len(flagged) and np.any((flagged[:,0]-placement_margin_s<b)&(flagged[:,1]+placement_margin_s>a-4)):continue
+        lo,hi=np.searchsorted(t,[a-4,b]);local=peaks.iloc[lo:hi].reset_index(drop=True) if isinstance(peaks,pd.DataFrame) else {k:np.asarray(peaks[k])[lo:hi] for k in peaks}
+        lt,_,_=_columns(local);ep=(lt>=a)&(lt<b);rest=(lt>=a-4)&(lt<a-1)
         target=int(rng.choice(peak_targets)) if peak_targets is not None else int(ep.sum())
         ei=np.flatnonzero(ep);ri=np.flatnonzero(rest)
         if len(ei)>target:ei=rng.choice(ei,target,replace=False)
         if len(ri)>target:ri=rng.choice(ri,target,replace=False)
-        em=np.zeros(len(t),bool);rm=em.copy();em[ei]=True;rm[ri]=True
-        value=shift_test(peaks,em,rm,**shift_kwargs)
+        em=np.zeros(len(lt),bool);rm=em.copy();em[ei]=True;rm[ri]=True
+        value=shift_test(local,em,rm,**shift_kwargs)
         if np.isfinite(value["best_shift_um"]):rows.append({"start_s":a,"end_s":b,"target_peaks":target,**{k:v for k,v in value.items() if k not in ("shifts_um","correlations")}})
     frame=pd.DataFrame(rows);finite=frame.best_shift_um.dropna() if len(frame) else pd.Series(dtype=float)
     mode=float(finite.mode().iloc[0]) if len(finite) else np.nan;median_abs=float(np.median(np.abs(finite))) if len(finite) else np.nan

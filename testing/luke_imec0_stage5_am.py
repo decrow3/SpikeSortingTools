@@ -15,11 +15,13 @@ import time
 import numpy as np
 import pandas as pd
 from scipy.io import loadmat
+from scipy import stats
 
 ROOT=Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
 
-from motionqc.crossprobe import fit_clock_map, map_intervals
+from motionqc.crossprobe import compare_episodes, fit_clock_map, map_intervals
+from motionqc.reference import matched_null
 from testing import luke_imec1_medicine_reference_sweep_v1 as stage1
 from testing import luke_imec1_medicine_stage3_q_v1 as qstage
 
@@ -154,11 +156,75 @@ def extract_all() -> None:
     atomic_json(OUT/"extraction_complete.json",{"status":"complete","completed":len(rows),"wall_s":time.time()-receipt["started_at"],"rows":rows})
 
 
+def load_peaks() -> tuple[pd.DataFrame,dict]:
+    config=json.loads((OUT/"extraction_config.json").read_text());spec={x["id"]:x for x in config["windows"]};pieces=[];manifest=[]
+    for block in blocks():
+        path=OUT/f"peak_cache/{block['id']}/extraction/population.npz"
+        if not path.exists():raise FileNotFoundError(path)
+        with np.load(path,allow_pickle=False) as z:
+            n=len(z["time_s"]);pieces.append(pd.DataFrame({"time_s":np.asarray(z["time_s"],float)+spec[block["id"]]["start_s"],
+                "depth_um":np.asarray(z["depth_um"],float),"x_um":np.asarray(z["x_um"],float),"amplitude":np.asarray(z["amplitude"],float)}))
+        manifest.append({"block":block["id"],"path":str(path),"sha256":sha256(path),"bytes":path.stat().st_size,"peaks":n})
+    manifest_frame=pd.DataFrame(manifest);manifest_frame.to_csv(OUT/"peak_cache_manifest.csv",index=False,lineterminator="\n")
+    frame=pd.concat(pieces,ignore_index=True)
+    receipt={"source":"87 independently extracted 120 s pilot-frontend caches","manifest":str(OUT/"peak_cache_manifest.csv"),
+             "manifest_sha256":sha256(OUT/"peak_cache_manifest.csv"),"peak_count":len(frame),
+             "depth_min_um":float(frame.depth_um.min()),"depth_max_um":float(frame.depth_um.max()),
+             "time_min_s":float(frame.time_s.min()),"time_max_s":float(frame.time_s.max())}
+    atomic_json(OUT/"peak_source_receipt.json",receipt);return frame,receipt
+
+
+def am2() -> None:
+    if not (OUT/"extraction_complete.json").exists():raise RuntimeError("AM.1 extraction is incomplete")
+    peaks,source=load_peaks();episodes=pd.read_csv(OUT/"imec1_accepted_episodes_mapped_to_imec0.csv")
+    durations=(episodes.end_s-episodes.start_s).to_numpy();time=peaks.time_s.to_numpy()
+    targets=[]
+    for row in episodes.itertuples(index=False):
+        lo,hi=np.searchsorted(time,[row.start_s,row.end_s]);targets.append(hi-lo)
+    null,gate=matched_null(peaks,durations,list(zip(episodes.start_s,episodes.end_s)),(0,SESSION_DURATION_S),n=60,seed=20260925,
+        peak_targets=targets,placement_margin_s=2,quantisation_um=10,depth_bin_um=10,x_bin_um=8,shift_min_um=-320,
+        shift_max_um=120,min_peaks=150,min_gain=0,depth_range_um=(0,3840),x_range_um=(-32,80))
+    null.to_csv(OUT/"am2_null.csv",index=False);atomic_json(OUT/"am2_null_gate.json",gate)
+    if not gate["pass"]:
+        atomic_json(OUT/"am_stop.json",{"stage":"AM.2 null","reason":"null failed","gate":gate});raise RuntimeError(f"AM.2 null failed: {gate}")
+    results,depth=compare_episodes(peaks,episodes,depth_bin_um=10,x_bin_um=8,shift_min_um=-320,shift_max_um=120,
+        min_peaks=150,min_gain=.05,depth_range_um=(0,3840),x_range_um=(-32,80))
+    results.to_csv(OUT/"am2_cross_probe_episodes.csv",index=False);depth.to_csv(OUT/"am2_per_depth_blocks.csv",index=False)
+    accepted=results.accepted.astype(bool);source_shift=results.source_shift_um.to_numpy();target_shift=results.best_shift_um.to_numpy()
+    same=np.sign(source_shift)==np.sign(target_shift);strong=accepted&same&(np.abs(target_shift)>=80)
+    rho=float(stats.spearmanr(source_shift[accepted],target_shift[accepted]).statistic) if accepted.sum()>=3 else np.nan
+    accepted_fraction=float(accepted.mean());strong_fraction=float(strong.mean())
+    if strong_fraction>=.60 and rho>=.4:verdict="co-moving"
+    elif accepted_fraction<=.20:verdict="imec1-only"
+    else:verdict="mixed"
+    summary={"verdict":verdict,"imec1_accepted_episodes":len(results),"imec0_accepted":int(accepted.sum()),
+        "imec0_accepted_fraction":accepted_fraction,"strong_same_sign_abs_ge80":int(strong.sum()),
+        "strong_same_sign_abs_ge80_fraction":strong_fraction,"spearman_rho_accepted":rho,
+        "imec0_shift_median_um":float(np.nanmedian(target_shift[accepted])) if accepted.any() else np.nan,
+        "imec0_shift_p05_um":float(np.nanpercentile(target_shift[accepted],5)) if accepted.any() else np.nan,
+        "imec0_shift_p95_um":float(np.nanpercentile(target_shift[accepted],95)) if accepted.any() else np.nan,
+        "null":gate,"peak_source":source,"interpretation":"frozen AM.2 thresholds; mixed receives no mechanism interpretation"}
+    atomic_json(OUT/"am2_summary.json",summary)
+    import matplotlib;matplotlib.use("Agg");import matplotlib.pyplot as plt
+    fig,axes=plt.subplots(1,2,figsize=(12,5));colors=np.where(accepted,"#0072B2","#999999")
+    axes[0].scatter(source_shift,target_shift,s=14,c=colors,alpha=.65);axes[0].plot([-320,120],[-320,120],color="#D55E00",ls="--",lw=1)
+    axes[0].set(xlabel="imec1 measured shift (µm)",ylabel="imec0 measured shift (µm)",title=f"Cross-probe episodes: {verdict}, Spearman ρ={rho:.3f}")
+    resolved=depth[depth.accepted.astype(bool)];
+    for block,group in resolved.groupby("block"):
+        axes[1].plot(group.episode_index,group.best_shift_um,ls=("-","--","-.",":")[int(block)%4],color=("#0072B2","#D55E00","#009E73","#CC79A7")[int(block)%4],alpha=.4,label=f"block {block}")
+    axes[1].set(xlabel="Episode index",ylabel="imec0 block shift (µm)",title="Accepted per-depth-block shifts");axes[1].legend();
+    for ax in axes:ax.grid(alpha=.2)
+    fig.tight_layout();fig.savefig(OUT/"am2_cross_probe_summary.png",dpi=180);plt.close(fig)
+    lines=["# AM.2 imec0 cross-probe episode test","",f"Frozen verdict: **{verdict}**.","",f"- imec0 accepted: {int(accepted.sum())}/{len(results)} ({accepted_fraction:.3%})",f"- same-sign accepted |shift|≥80 µm: {int(strong.sum())}/{len(results)} ({strong_fraction:.3%})",f"- Spearman rho among accepted episodes: {rho:.3f}",f"- null: {gate}","",f"Peak source: `{source['manifest']}` (SHA-256 `{source['manifest_sha256']}`), {source['peak_count']:,} peaks, depth {source['depth_min_um']:.1f}–{source['depth_max_um']:.1f} µm.",""]
+    (OUT/"AM2_REPORT.md").write_text("\n".join(lines))
+
+
 def main():
-    p=argparse.ArgumentParser();p.add_argument("phase",choices=("prepare","extract-one","extract-all"));p.add_argument("--block");a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("phase",choices=("prepare","extract-one","extract-all","am2"));p.add_argument("--block");a=p.parse_args()
     if a.phase=="prepare":prepare()
     elif a.phase=="extract-one":extract_one(a.block)
-    else:extract_all()
+    elif a.phase=="extract-all":extract_all()
+    else:am2()
 
 
 if __name__=="__main__":main()

@@ -50,14 +50,21 @@ def compare_episodes(peaks, episodes: pd.DataFrame, *, blocks=((0,950),(950,1900
                      depth_block_margin_um=150, **shift_kwargs):
     """Run one frozen episode/rest test and per-depth tests for every row."""
     rows=[];block_rows=[]
+    time=np.asarray(peaks.time_s if isinstance(peaks,pd.DataFrame) else peaks["time_s"],float)
+    if np.any(np.diff(time)<0):
+        order=np.argsort(time,kind="stable")
+        peaks=peaks.iloc[order].reset_index(drop=True) if isinstance(peaks,pd.DataFrame) else {k:np.asarray(peaks[k])[order] for k in peaks}
+        time=np.asarray(peaks.time_s if isinstance(peaks,pd.DataFrame) else peaks["time_s"],float)
     measured="measured_shift_um" if "measured_shift_um" in episodes else "best_shift_um"
     end="end_s" if "end_s" in episodes else "stop_s"
     for index,row in enumerate(episodes.itertuples(index=False)):
-        start_s=float(row.start_s);end_s=float(getattr(row,end));episode=(start_s,end_s);rest=(start_s-4,start_s-1)
-        value=shift_test(peaks,episode,rest,**shift_kwargs)
+        start_s=float(row.start_s);end_s=float(getattr(row,end));lo,hi=np.searchsorted(time,[start_s-4,end_s])
+        local=peaks.iloc[lo:hi].reset_index(drop=True) if isinstance(peaks,pd.DataFrame) else {k:np.asarray(peaks[k])[lo:hi] for k in peaks}
+        episode=(start_s,end_s);rest=(start_s-4,start_s-1)
+        value=shift_test(local,episode,rest,**shift_kwargs)
         rows.append({"episode_index":index,"start_s":start_s,"end_s":end_s,
                      "source_shift_um":float(getattr(row,measured)),
                      **{k:v for k,v in value.items() if k not in ("shifts_um","correlations")}})
-        table=per_block(peaks,episode,rest,blocks=blocks,margin_um=depth_block_margin_um,**shift_kwargs)
+        table=per_block(local,episode,rest,blocks=blocks,margin_um=depth_block_margin_um,**shift_kwargs)
         table.insert(0,"episode_index",index);block_rows.append(table)
     return pd.DataFrame(rows),pd.concat(block_rows,ignore_index=True) if block_rows else pd.DataFrame()
