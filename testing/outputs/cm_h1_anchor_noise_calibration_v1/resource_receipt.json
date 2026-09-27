@@ -1,14 +1,14 @@
 {
   "task": "CM W3 capture integrity and cached anchor-noise calibration",
-  "status": "calibration_complete_w3_replay_pending",
+  "status": "complete_calibration_and_w3_independent_audit",
   "revised_operational_ceiling_s": 15300.0,
   "prior_cumulative_s": 13433.22,
-  "cl_capture_audit_cpu_seconds_charged": 300.0,
-  "cl_remaining_seconds": 300.0,
+  "cl_capture_and_replay_audit_cpu_seconds_charged": 600.0,
+  "cl_remaining_seconds": 0.0,
   "cm_cpu_seconds_charged": 300.0,
   "cm_allowance_seconds": 900.0,
   "cm_remaining_seconds": 600.0,
-  "cumulative_after_interim_s": 14033.22,
+  "cumulative_final_s": 14333.22,
   "raw_voltage_reads": 0,
   "gpu_seconds": 0.0,
   "prefix_runs": 0,
@@ -16,5 +16,6 @@
   "sorts": 0,
   "method_commit": "36da5eb",
   "calibration_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/cm_anchor_noise_calibration_20260927",
-  "w3_status": "capture_verified_replay_pending"
+  "w3_status": "sealed_replay_verified_with_source_inspection_access_caveat",
+  "w3_audit_report": "docs/dartsort_cm_w3_independent_audit_20260927.md"
 }

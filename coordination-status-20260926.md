@@ -1,6 +1,6 @@
 # Luke motion coordination status
 
-## CM h1 cached anchor-noise calibration — complete; W3 replay audit pending
+## CM h1 cached calibration and independent W3 replay audit — complete
 
 The CM method was frozen as `36da5eb` before outcomes. On predetermined CK units
 23/120, reliability rises strongly from 25 to 100 events and mean templates
@@ -11,20 +11,33 @@ observed training-noise scale. The zero-signal control is positively biased
 (median 0.269--0.297 at 100), so the short-edge surrogate is not a calibrated
 biological null. CK remains 0/8; no threshold or estimator was replaced.
 
-The W3 capture manifest and same-run namespace/clock/schema pass independent
-checks. Post-TMM and pre-agglomeration rows/times/channels/labels match exactly;
-saved all-force final arrays match the final-sorting packet; SI is explicitly
-absent. Independently reconstructing direct edges at distance <0.3 gives 122
-edges, exactly expands to the saved 220 force relations, and unchanged QDA gives
-the saved 223-relation union. The h5 replay is still being repaired; H1 has not
-rerun the prefix or gate and will audit its sealed result when published.
+The completed W3 packet has 36/36 valid products. Post-TMM and
+pre-agglomeration rows/times/channels/labels match exactly; SI is explicitly
+absent. Direct distance <0.3 gives 122 edges and exactly expands to 220 force
+relations. The frozen gate passes seven, fails ten and leaves 105 unresolved;
+seven direct edges expand to eight relations and unchanged QDA gives 13 union
+relations. Unresolved is not negative identity evidence.
+
+All-force replay is exact for discrete arrays, finite float values (max error
+zero) and nonfinite support. Gated/no-force contingencies each close over all
+571,935 rows. Actual assigned/noise counts are 565063/6872 all-force,
+566611/5324 gated and 566629/5306 no-force. Gated is close to no-force (ARI
+0.98157) and has slightly higher short-ISI fractions; splitting makes lower ISI
+mechanically favorable, so no benefit claim is made. All 424 compatibility rows
+have exact common physical positive support (median 26 positions); median cosine
+is 0.945. Deterministic panels independently resolve to parents 124 and 293.
+
+H1 could not inspect huklaban5 replay source: its alias did not resolve and the
+configured address rejected the available SSH key; source is absent from the
+sealed packet. Exact replay and receipts support consumer integrity, but
+service-dependency removal and hidden-RNG absence are not independently
+source-certified. Report: `docs/dartsort_cm_w3_independent_audit_20260927.md`.
 
 The revised operational ceiling is **15300 s**, recorded before exceeding the
-old 14400-s ceiling. Interim conservative accounting reserves 300 s of the
-remaining CL allowance for completed capture checks and charges 300/900 CM s,
-taking cumulative h1 usage from 13433.22 to **14033.22 s**. CL retains 300 s and
-CM 600 s for final W3/review work. No raw voltage, GPU, prefix, full gate, sort,
-field fit or threshold change occurred on h1.
+old 14400-s ceiling. Final accounting charges the full remaining 600 CL seconds
+and 300/900 CM seconds, taking cumulative h1 usage from 13433.22 to
+**14333.22 s**. CM retains 600 s unused. No raw voltage, GPU, prefix, full gate,
+sort, field fit or threshold change occurred on h1.
 
 ## CL h1 portable gate and CK measurement audit — ready, W3 pending
 
