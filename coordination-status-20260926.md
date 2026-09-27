@@ -1,5 +1,33 @@
 # Luke motion coordination status
 
+## CJ h1 saved-W2 secondary force gate — complete
+
+The preregistered fixed-clock diagnostic retained **6/222** direct force edges;
+28 resolved edges failed and 188 remained unresolved without threshold
+relaxation (39 insufficient common blocks, 1 insufficient events, 148
+insufficient expected central counts). Recomputed connectivity contains six
+force relations, no indirect-only relations and no rejected edge reconnected by
+an accepted path. Union with the unchanged 16 accepted-QDA relations produces
+21 final relations because one passing force edge already belongs to QDA.
+
+All-pass exactly reconstructs CE's saved expanded-force mask; zero-pass exactly
+equals QDA-only/no-force. Product hashes/sizes, four graph arrays, 222 edge rows
+and 48 complete rest blocks pass independent checks; the exact-lag/derangement
+fixtures bring the focused test total to three passed. This is hard-partition
+and graph accounting only: actual aggregation/deduplication did not run, so no
+downstream biological or sorting-benefit claim is made. W3 was untouched.
+
+The correction to exact -29..+29 central lags, absolute 45..89 shoulders, no
+new evaluated-pair event censor and within-segment nonwrapping derangements was
+committed as `07811bc` before outcomes. A first command-form launch failed at
+import before creating outputs; unchanged code completed in module form in
+22.17 s. Report: `docs/dartsort_cj_w2_force_gate_result_20260927.md`. Shared
+packet: `/mnt/NPX/Luke/DARTsort_motion_experiments/cj_force_gate_w2_20260927/`.
+
+CJ charges 300/1800 s, taking historical cumulative h1 usage to
+**12533.22/14400 s**. No raw/voltage access, GPU, W3 launch, sort,
+aggregation/dedup outcome, threshold search or scientific retry occurred.
+
 ## CI h1 secondary force-gate feasibility — complete
 
 A third force treatment is feasible only by gating strict-upper-triangle direct

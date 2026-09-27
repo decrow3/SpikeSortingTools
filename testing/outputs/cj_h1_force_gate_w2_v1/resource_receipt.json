@@ -1,0 +1,19 @@
+{
+  "task": "CJ saved-W2 secondary force-gate diagnostic",
+  "status": "complete_saved_fixed_clock_hard_partition_only",
+  "cpu_seconds_charged": 300.0,
+  "cpu_seconds_allowance": 1800.0,
+  "diagnostic_elapsed_seconds": 22.1731915473938,
+  "historical_cumulative_before_s": 12233.22,
+  "historical_cumulative_after_s": 12533.22,
+  "gpu_seconds": 0.0,
+  "raw_voltage_reads": 0,
+  "w3_launches": 0,
+  "sorts": 0,
+  "aggregation_dedup_runs": 0,
+  "threshold_searches": 0,
+  "tests": "3 passed",
+  "method_commit_before_outcome": "07811bc",
+  "shared_output": "/mnt/NPX/Luke/DARTsort_motion_experiments/cj_force_gate_w2_20260927",
+  "report": "docs/dartsort_cj_w2_force_gate_result_20260927.md"
+}
