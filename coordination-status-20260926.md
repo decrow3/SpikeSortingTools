@@ -600,3 +600,30 @@ RMS, no padding/extrapolation, and the declared post-ibllikecmr standardized
 pre-spatial-whitening donor domain. Any failure consumes this BA relaunch. The
 service limit is exactly 20,000,000,000 bytes, two numerical threads, one
 reader and 3,600 s inner wall time. No GPU or sort is involved.
+
+### BK standalone diagnostic provenance, 2026-09-27 03:24 PDT
+
+BK is complete locally. A default-disabled standalone writer/validator now
+lives at `testing/experimental/diagnostic_provenance.py`; it is not imported by
+DARTsort and no sorting or voltage path ran. Its synthetic suite passes 7/7,
+covering disabled/no-output behavior, deterministic round trips, exact,
+ambiguous and unknown template membership, incomplete bundles, corrupted and
+missing content-addressed objects, runner-up scope separation and the output
+cap. The completed fixture manifest SHA-256 is
+`e261243be107cc2ac2a8fb94da849cbf21accd36be3a01f779d3696695398999`.
+
+The local evidence packet is
+`testing/outputs/bk_h1_diagnostic_provenance_v1/`. Its read-only hook review is
+against DARTsort commit `edcfe1b51d672b4136eb13cc78c0875da804b851`.
+The key correctness finding is that current drifty fine matching refines only
+the coarse-selected template, so its coarse second-place score cannot be called
+a global-final runner-up. Future instrumentation must retain and fine-evaluate
+a defined alternative set or record that global-final rank as unavailable.
+Missing upstream template membership must likewise remain explicitly unknown.
+
+BK is charged a conservative 30.00 s against its separate 1,200 s allowance;
+the substantive metered runs used 0.76 s. Known cumulative charged process wall
+is 6,653.22/14,400 s. BI's 2,440.86 s remaining is unchanged, GPU use is zero,
+and the packet is below 100 MB. No blocked huklaban5 payload was published or
+relayed. The next BI.2 action remains dependent on an explicitly approved BH
+packet; this agent is not polling or launching it.
