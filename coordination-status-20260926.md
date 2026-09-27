@@ -1,5 +1,38 @@
 # Luke motion coordination status
 
+## CI h1 secondary force-gate feasibility — complete
+
+A third force treatment is feasible only by gating strict-upper-triangle direct
+force edges before connectivity expansion, then unioning the recomputed force
+components with unchanged QDA and optional SI routes. On both saved CE arms,
+all-pass exactly reconstructs the published expanded force mask; zero-pass is
+exactly QDA-only/no-force, so an all-reject gate is not a distinct treatment.
+The helper reports accepted direct edges, transitive-only relations and rejected
+direct edges indirectly reconnected through accepted paths. Two focused tests
+pass.
+
+One secondary rule is frozen: a rest-time cross-refractory dip on fixed
+pre-recluster clocks, outside canonical censor time, with >=100 events/unit,
+>=20 common 5-s blocks and expected central count >=20. It compares the
+0.3–1.0-ms annulus to 1.5–3.0-ms shoulders. A force edge passes only if the
+1,000-draw block-bootstrap 95% upper ratio is <=0.50 and the observed ratio is
+at or below the fifth percentile of 1,000 within-segment circular-shift nulls.
+Thresholds cannot be tuned on later ISI benefit. Unknown/missing is unresolved,
+not a failed QDA test; accepted QDA and SI routes remain unchanged.
+
+The CD compatible pairs are BQ-lineage implementation safeguards, not truth or
+threshold labels; CE/W3 integer-ID joins are forbidden. A concrete held-out W3
+capture plan lists the exact post-TMM rows/clock, direct distances, QDA/SI route
+state, masks and hashes needed. With those inputs already saved, projected work
+is <100 MB and <5 CPU minutes; otherwise the missing same-run W3 route capture is
+the exact blocker. No launch occurred. This finite test should precede a
+speculative large-field feedback loop. Report:
+`docs/dartsort_ci_secondary_force_gate_20260927.md`.
+
+CI charges 300/600 s, taking historical cumulative h1 usage to
+**12233.22/14400 s**. No raw/voltage access, GPU, W3 launch, new field, sort or
+threshold search occurred.
+
 ## CH h1 CF packet review and episode-residual design — complete
 
 CF passes its bounded operator-lineage audit. Full-source row/time/label/channel
