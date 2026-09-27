@@ -166,14 +166,15 @@ medians; they should not collapse the panel into a truth accuracy.
 
 The original maximum of 7,200 snippets follows from 18 pairs × 2 units × 2
 halves × 100 events. At 121 samples × 18 channels, that is about 62.7 MB of
-float32 selected waveform payload. Reading full 384-channel int16 rows is about
-669 MB decimal (about 638 MiB) before filesystem chunk amplification, filtering,
-buffers and temporary arrays, so the proposed 635 MB is a plausible nominal
-payload but not a measured I/O total. The proposed 900 s CPU, 2 GB peak RAM and
-25 MB output are unmeasured estimates. Preflight actual source dtype/chunking,
+float32 selected waveform payload. The actual target is the accepted
+**182-channel float32 cache**, not 384-channel int16 raw voltage: logical
+full-row payload is exactly `7200 × 121 × 182 × 4 = 634,233,600` bytes
+(about 604.9 MiB). This remains a logical payload, not measured physical I/O;
+cache layout, filesystem amplification, duplicate/coalesced reads, filtering,
+buffers and temporary arrays are unknown. The proposed 900 s CPU, 2 GB peak RAM
+and 25 MB output are unmeasured estimates. Preflight actual cache dtype/chunking,
 deduplicated read intervals, filter padding, batch size and temporary-array
-factor; report projected and actual values. Full-row reads may exceed nominal
-payload substantially if storage chunks are repeatedly touched.
+factor; report projected and actual values.
 
 ## Readiness and next dependency
 
@@ -187,4 +188,3 @@ diagnostic. It is not biological truth and does not authorize merge changes.
 
 No voltage, raw data, GPU, held BH payload, scientific computation, framework,
 test campaign or launch was used in this review.
-

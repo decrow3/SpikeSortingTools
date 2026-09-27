@@ -967,17 +967,49 @@ partner exclusions. Different-parent pairs remain controls, not known-different
 cells. Calls are narrowed to waveform compatibility or evidence against a merge
 on the qualified state/support.
 
-The 635 MB full-row-read estimate is nominally plausible for 7,200 × 121 ×
-384 int16 samples (~638 MiB), but filesystem amplification, filtering and
-temporaries are unknown. The proposed 900 s CPU, 2 GB RAM and 25 MB output are
-unmeasured. A frozen manifest and cost preflight are the next dependency; no
-launch is authorized by this review. Full report:
+The target is the accepted 182-channel float32 cache, not 384-channel int16 raw:
+7,200 × 121 × 182 × 4 is exactly 634,233,600 logical bytes (~604.9 MiB),
+but physical I/O, filtering and temporaries are unknown. The proposed 900 s CPU,
+2 GB RAM and 25 MB output are unmeasured. A frozen manifest and cost preflight
+are the next dependency; no launch is authorized by this review. Full report:
 `docs/dartsort_bx_waveform_pair_design_review_20260927.md`.
 
 BX charges a conservative 30.00 s, taking cumulative h1 to
 **6,953.22/14,400 s**; BI remains separate. No voltage/raw data, GPU, held BH
 payload, real analysis, new framework/test campaign, sort, replay or service
 launch occurred. Next unused queue label is BY.
+
+### BY h1 BQ packet input-availability review, 2026-09-27
+
+BY is complete. The approved BQ packet is a strong prospective reference/output
+packet but is not self-contained input for the 30,000-versus-3,000-sample
+template-construction control. It saves exact row IDs, pre labels/times, GMM
+candidates/log likelihoods, the old `[748,121,206]` template bank and TSVD basis,
+registered geometry/counts, distances/shifts, route masks and maps. It omits
+event channels, sampled construction row IDs, the accepted 182-channel recording
+reference and physical geometry, motion/time origin, full configs, GMM
+responsibilities and merged score arrays.
+
+The paired construction test does not require a prefix rerun once those inputs
+are resolved. A newly generated deterministic membership, frozen and shared by
+both arms, is valid prospectively but is not historical membership. Full QDA is
+not available from this packet: `get_gmm_scores` requires responsibilities, the
+capture lacks them, QDA completion/status masks are explicitly unavailable, and
+new distance candidates can fall outside the old requested mask. Construction-
+only templates and force distances remain feasible after a resolver manifest
+and exact channel-row alignment; full QDA/agglomeration does not.
+
+BY also corrects BX's cost wording: the accepted 182-channel float32 cache gives
+exactly 634,233,600 logical bytes for 7,200 × 121-sample full-row reads; actual
+I/O remains unmeasured. Full report:
+`docs/dartsort_by_bq_input_availability_20260927.md`.
+
+BY charges a conservative 30.00 s, taking cumulative h1 to
+**6,983.22/14,400 s**; BI remains separate. Read-only packet headers and small
+lineage arrays were inspected in place. No voltage/raw access, template or
+distance regeneration, QDA, GPU, held BH payload, replay, sort or launch
+occurred. Next unused queue label is BZ.
+
 
 
 
