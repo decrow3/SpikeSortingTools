@@ -1,5 +1,21 @@
 # Luke motion coordination status
 
+## CB h1 review of BZ construction v2 — complete
+
+The paired fresh 3,000/30,000-sample constructions use identical 748 units,
+exact spike counts and 299,635 sampled rows, but are not equivalent. Template
+cosine is 0.9898 median / 0.9461 P5 / 0.0296 minimum. Of upper-triangle direct
+force edges, 37 flip (229 vs 236; Jaccard 0.8526); 206 force-linkage relations
+flip (483 vs 611), and force components are 559 vs 560. This establishes
+construction-chunk sensitivity, not which arm is scientifically correct. The
+packet correctly retains BQ's failed numerical gate and omits QDA/final labels
+because post-TMM score state is absent. Report:
+`docs/dartsort_cb_bz_construction_v2_review_20260927.md`.
+
+Read-only review charge is 120 s, bringing CB to 480/600 s, cumulative
+BZ/CA/CB to 1530/3600 s, and historical active elapsed to 8633.22/14400 s. No
+raw read, GPU, voltage, sort or packet mutation.
+
 ## CB h1 BZ helper v3 integration guards — complete
 
 V3 is authoritative for H5 integration. It retains every common-block bootstrap
