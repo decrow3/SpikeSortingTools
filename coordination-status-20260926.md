@@ -918,3 +918,11 @@ from locally reviewed `edcfe1b...`; installed DARTsort 0.5.16 remains distinct.
 BU charges 30.00/900 s, taking cumulative h1 to 6,863.22/14,400 s; BI remains
 separate. No BH access, h5 source copy, raw/GPU work, replay, sort or engine
 integration occurred. BU stops pending h5's separate clock/fragmentation audit.
+
+Direct `send_message_to_thread` transport was not callable in the h1 task's
+toolset when BU completed. This root-status entry and the final task reply carry
+the required completion notice instead. BU's report is
+`docs/dartsort_bq_bu_independent_review_20260927.md`; its receipt is
+`testing/outputs/bu_h1_bq_independent_review_v1/resource_receipt.json`;
+cumulative h1 charge is 6,863.22/14,400 s. The next ready dependency is h5's
+fixed-versus-stage-clock and fragmentation audit.
