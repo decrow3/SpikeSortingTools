@@ -1,5 +1,46 @@
 # Luke motion coordination status
 
+## BI h1 queue — independent items complete; BH review dependency absent
+
+BI was approved under the user's standing low-risk authorization on
+2026-09-27. Item BI.1 is complete: five tiny immutable-row correspondence
+fixtures plus shifted-control common-support trimming pass. They cover duplicate
+timestamps, inclusive +/-12-sample and 30-um boundaries, competing candidates,
+input reordering, finite/nonfinite coordinates, an excluded interval between
+same-state endpoints, and -1 unmatched versus -2 unavailable. Two valid greedy
+policies are reported for the policy-sensitive case; neither is presented as a
+replacement for h5's frozen matcher or as maximum-cardinality matching.
+
+Item BI.3 is also complete. The read-only provenance audit finds the measured
+90-unit donor bank, candidate table, five-unit qualification, placement audit,
+generator and scorer sources. Missing by design while AZ remains blocked are:
+the selected 30-donor cohort, materialized population event rows, injection
+membership, and a worker bundle manifest. A compact backward-compatible schema
+and passing fixture specify immutable event IDs, local/absolute sample clocks,
+donor/template/hash foreign keys, half-open write bounds and optional row IDs in
+scorer output. No donor gate was changed.
+
+BI.2 is dependent on a stable packet at
+`/mnt/NPX/Luke/DARTsort_motion_experiments/bh_review_handoff_20260927/`.
+It was absent at the final single check, so no implementation review or polling
+loop was started. Next ready item: BI.2 when the packet has an explicit stable
+completion/version marker. h5 owns any implementation repair.
+
+Evidence:
+
+- `testing/outputs/bi_h1_event_correspondence_qa_v1/`
+- `testing/outputs/bi_h1_hybrid_provenance_audit_v1/`
+- `testing/outputs/bi_h1_queue_v1/receipt.json`
+
+Resources: previous conservative active-process wall was 6364.080/14400 s.
+BI metered scientific/test subprocess wall was 1.30 s; adding a conservative
+120 s reserve for read-only orchestration and short failed commands gives
+121.30/2700 s used and cumulative 6485.380/14400 s. BI retains 2578.70 s and
+the original envelope retains 7914.62 s. Output is about 56 KB of 100 MB. Disk
+preflight passed (186.1 GB Data, 254.9 GB shared). Two-thread/one-reader limits
+were used. No extraction, raw read, GPU, sort, matcher replay, field fit or
+donor modification occurred.
+
 ## BC spatial reliability diagnostic — complete; hybrid remains blocked
 
 **V2 correction (2026-09-27):** the v1 centered-cosine calculation used
