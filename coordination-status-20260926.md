@@ -666,3 +666,46 @@ metered through final repaired validation). Known cumulative charged process
 wall is 6,683.22/14,400 s. BI's 2,440.86 s remains separate. No GPU, real data,
 sort, matcher replay, voltage access, or blocked huklaban5 payload transfer
 occurred.
+
+### BM h1 merge-map identifiability fixtures, 2026-09-27 05:12 PDT
+
+BM's independent local-source/synthetic queue is complete. The frozen method
+intersects target-ID sets over every paired row containing a source ID, but
+accepts a singleton only after the proposed map reproduces every applicable
+row with source-equivalent aggregation. Resolved, ambiguous, absent and
+contradictory source IDs remain separate; there is no majority vote or guess
+for unseen IDs.
+
+The 5/5 targeted fixtures cover unique and symmetric cases, unseen IDs,
+contradictions, mapped duplicate alternatives, `-1` padding/noise, stable ties,
+logaddexp/responsibility aggregation, a fixed-map winner change and an explicit
+majority-vote counterexample. A direct two-row comparison against DARTsort
+commit `edcfe1b51d672b4136eb13cc78c0875da804b851` matched candidates and labels
+exactly, with 0.0 maximum absolute error for likelihoods and responsibilities.
+With map `[0,1,1]`, pre-aggregation noise-aware hard labels `[0,0]` become
+aggregate-score labels `[1,1]`: grouping is fixed while aggregate evidence
+changes the winner. This is why final-winner voting cannot recover the map.
+
+The local packet is
+`testing/outputs/bm_h1_merge_map_identifiability_v1/`. Its minimal provenance
+note records `map_origin=derived_partial`, explicit source/target namespace
+IDs, per-ID status/evidence and reproduction coverage. A saved actual map is a
+different origin and requires a content-addressed artifact reference. BK's
+existing scalar `parent_stage` cannot make that distinction by itself.
+
+The fixtures establish only an observable map for covered IDs under the source
+contract. They cannot recover unobserved/truncated candidates, prove the map
+was serialized, reconstruct full component membership or merge history,
+recover an unsaved immediate pre-stage clock, or demonstrate neuronal
+recovery. The smallest future hook remains persistence of actual `new_ids`,
+the before/after namespaces and score arrays, applied shifts, dedup survivor
+edges and depth-reorder mapping.
+
+BM's known metered process wall is 13.11 s, including three preserved failed
+source-import/fixture attempts; a conservative 30.00/900 s is charged. Known
+cumulative charged h1 process wall is 6,713.22/14,400 s. BI's 2,440.86 s and
+BK's historical 60 s remain separate. No GPU, real data, sort, voltage,
+matcher replay, external publication or blocked huklaban5 payload access
+occurred. Current BM work is complete; no BN specification is present. The
+next known dependent BI action still waits for an explicitly approved BH
+packet and is not being polled or transferred here.
