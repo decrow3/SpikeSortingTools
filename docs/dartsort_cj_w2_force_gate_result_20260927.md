@@ -1,5 +1,12 @@
 # CJ: saved-W2 secondary force-gate result
 
+> **Superseded exploratory result.** CK review found that this v1 calculation
+> incorrectly included inherited dedup-censored lags 0--8 in its central window
+> and inferred rest boundaries from spike extrema. The corrected pre-outcome
+> method is frozen in commit `48868fc`; its result is reported in
+> `docs/dartsort_cj_w2_force_gate_v2_result_20260927.md`. Do not use v1 as the
+> intended gate.
+
 ## Verdict
 
 The preregistered fixed-clock rest-time diagnostic retained **6 of 222** direct

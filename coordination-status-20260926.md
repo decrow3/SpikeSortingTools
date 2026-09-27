@@ -1,6 +1,37 @@
 # Luke motion coordination status
 
-## CJ h1 saved-W2 secondary force gate — complete
+## CJ v2 h1 corrected saved-W2 force gate — complete
+
+CK's two pre-outcome corrections were frozen as commit `48868fc`: the intended
+central annulus is 9 <= abs(lag) <= 29 (42 values), excluding inherited
+dedup-censored lags 0--8, and complete rest blocks come from the exact canonical
+mask complement plus W2 frame bounds/time origin rather than spike extrema. The
+authoritative mask hash is `86425e8a...`; its 81,156 censored source rows match
+CE fixed state exactly, all 492,117 retained block rows are rest, and every one
+of 48 blocks lies inside the exact complement. The off-grid and excluded-lag
+fixtures pass.
+
+V2 retains the same six direct edges as exploratory v1, but correctly resolves
+only 15/222: six pass, nine fail and 207 are unresolved (39 blocks, one events,
+167 exposure). The graph has six direct/no-indirect force relations and 21 final
+relations after unchanged QDA. All-pass and zero-pass controls, product hashes
+and four graph arrays pass independent checks. The same pass graph does not
+rescue v1's invalid evidence accounting; v1 is explicitly superseded.
+
+The held-out W3 scope is now frozen in the v2 report: identical v2 rules, exact
+same-run clock/mask/route inputs, full unresolved and connectivity accounting,
+and no cross-run ID join or threshold search. The required same-run W3 route
+capture is not present, so no W3 execution or reconstruction was attempted.
+The derangement reference is a same-segment support control, not biological
+identity proof; no aggregation/dedup or sorting-benefit claim is made. Report:
+`docs/dartsort_cj_w2_force_gate_v2_result_20260927.md`. Packet:
+`/mnt/NPX/Luke/DARTsort_motion_experiments/cj_force_gate_w2_20260927/v2/`.
+
+The repair charges 300/900 s, taking cumulative h1 usage to
+**12833.22/14400 s**. Prior CJ accounting remains counted once. No raw/voltage
+access, GPU, W3 launch, sort, aggregation/dedup run or threshold search occurred.
+
+## CJ v1 h1 saved-W2 secondary force gate — superseded exploratory
 
 The preregistered fixed-clock diagnostic retained **6/222** direct force edges;
 28 resolved edges failed and 188 remained unresolved without threshold
