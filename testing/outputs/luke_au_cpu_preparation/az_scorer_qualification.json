@@ -1,0 +1,34 @@
+{
+  "schema": "luke-az-hybrid-scorer-qualification-v1",
+  "status": "qualified_before_arm_outcomes",
+  "qualified_at": "2026-09-26 17:35:19 PDT",
+  "sampling_frequency_hz": 29999.759166666667,
+  "tolerance_ms": 0.4,
+  "tolerance_samples": 12,
+  "contract": {
+    "association_order": "associate each donor to one label on its full truth train before episode/rest splitting",
+    "association_ranking": [
+      "exclusive true positives descending",
+      "precision descending",
+      "recall descending",
+      "integer label ascending"
+    ],
+    "event_matching": "global one-to-one exclusivity after frozen donor-label association; inclusive at +/-12 samples",
+    "duplicate_evidence": "preserve compatible and any-label candidates before exclusivity",
+    "ambiguity": "preserve rank ties, candidate-label multiplicity, false-merge label reuse and complete donor-label pair table",
+    "chance_control": "seeded donor-train circular shifts with full reassociation",
+    "episode_rest": "score only after full-train association and matching; flags remain event-level",
+    "native_identity": "unknown; label renaming alone is not an error"
+  },
+  "hashes": {
+    "testing/luke_az_hybrid_scorer.py": "fec6388e60f1582bf7e3a12e4b0fba2d677f21f8fb6299b91b73ab237eae7291",
+    "testing/test_luke_az_hybrid_scorer.py": "09511739da67d891c4d829f6bfe98c71333eb6a432ee4f8268352769ee9e441f",
+    "testing/luke_au_cpu_preparation.py": "60dacad9c2ff04e82987635a363f665845b734a05828f44700ea38983911f0cd",
+    "testing/test_luke_au_cpu_preparation.py": "8d32b36a791ea9d438d11a5bcd92ed0452ac929f28a960e7e7b3b788a7523c0b"
+  },
+  "tests": {
+    "command": "pytest -q testing/test_luke_az_hybrid_scorer.py testing/test_luke_aw_full_probe_extract.py testing/test_luke_au_cpu_preparation.py testing/test_luke_aw_validate_handoff.py",
+    "result": "21 passed"
+  },
+  "arm_outputs_seen": false
+}
