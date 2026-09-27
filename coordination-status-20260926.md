@@ -709,3 +709,42 @@ matcher replay, external publication or blocked huklaban5 payload access
 occurred. Current BM work is complete; no BN specification is present. The
 next known dependent BI action still waits for an explicitly approved BH
 packet and is not being polled or transferred here.
+
+### BN h1 CCG/null and merge-graph contracts, 2026-09-27 05:48 PDT
+
+BN's two independent synthetic/source reviews are complete. The 7/7 fixtures
+freeze oriented all-pair CCG enumeration (`target-reference`), inclusive lag
+limits, explicit histogram boundaries, empty-train behavior, half-open segment
+isolation, no-wrap shifted nulls on identical support, lag exposure and
+pre/post 0.25 ms censoring. One fixture's offset rows have equal exposures
+`[30,40,30]` samples while raw zero-lag counts are `[2,4,2]`, demonstrating why
+both raw counts and exposure-normalized rates must be reported.
+
+CCG shape is not an identity classifier. Two distinct synthetic sources with a
+shared driver produce a zero-centre dip plus a narrow delayed peak, while an
+alternating partition of one refractory train produces symmetric cross-label
+peaks. In a censor fixture, two +6-sample pairs before censoring become zero
+after the events share one label and source-equivalent within-label censoring
+keeps the higher-score events. These are accounting/mechanism examples, not
+biological decision rules.
+
+The graph fixture follows DARTsort commit
+`edcfe1b51d672b4136eb13cc78c0875da804b851`. QDA, forced-distance and optional
+SpikeInterface masks are unioned. Thus force bypasses QDA's correlation,
+coverage/IoU and score/min-ratio gates, while the optional refractory route is
+an independent acceptance route rather than a veto. With edges 0-1 (force) and
+1-2 (QDA) but no 0-2 edge, single linkage creates one component and complete
+linkage creates two. This is intended single-link transitivity, not by itself a
+defect. Route attribution for a real edge still requires saved route masks.
+
+The local packet is `testing/outputs/bn_h1_ccg_linkage_contract_v1/`. Its
+smallest future candidate safeguard is component-level validation before
+reclustering, with all-pairs waveform/refractory evidence and explicit recovery
+and episode-continuity checks. A lower ISI count produced by splitting labels
+alone is not recovery. No rule or threshold was changed.
+
+BN known metered process wall is 2.00 s; a conservative 30.00/900 s is charged.
+Known cumulative h1 charge is 6,743.22/14,400 s; BI's 2,440.86 s remains
+separate. No GPU, real data/raw voltage, sort, matcher replay, integration,
+external publication or blocked payload access occurred. BN is complete and
+no BO specification is present, so this branch stops as instructed.
