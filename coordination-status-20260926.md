@@ -878,3 +878,43 @@ BR conservatively charges 30.00/600 s, taking cumulative h1 to
 6,833.22/14,400 s; BI remains separate. No GPU, raw/real data, sort, replay,
 waveform/QDA execution, engine integration, h5/BH payload or service launch
 occurred. BR stops here.
+
+### BU h1 independent review of completed BQ, 2026-09-27
+
+BU is complete and is **shareable with caveats**. The three requested hashes
+match, and every file listed in `COMPLETE.json` matches its individual hash and
+size. The aggregate byte count is low by 1,891 bytes—the listed preflight plus
+publication manifest—a bookkeeping defect rather than array corruption.
+
+The saved arrays independently reproduce the prospective current-state result:
+641,588 exact row IDs, one preserved fixed-clock noise row, exact actual-map and
+no-force-map application, 85 force-on groups split, zero no-force groups merged,
+733 non-noise contingency cells and 284,832 affected rows. Route counts also
+reproduce: 236 direct force/232 force-exclusive, 611 expanded/606 exclusive,
+15 QDA accepted and 621 union edges. Four direct and five expanded force
+connections overlap QDA, so routes are not additive. Graph connected components
+reproduce the saved 551 current and 733 no-force component maps.
+
+Gate H is a substantive exact historical-reproduction failure, not just label
+permutation: rows/channels/train mask match, but times, labels, candidate/score/
+responsibility arrays, finite likelihood support, map, rest ISI and model size
+differ (748 versus 760 log-proportion entries). But H comparison arrays and
+mismatch magnitudes were not published. The evidence strongly rejects exact
+historical attribution while leaving mismatch magnitude ungraded. It does not
+invalidate Gate P's internally paired current-state counterfactual. H's own
+template reconstruction and P's separately frozen state are not interchangeable.
+
+Fixed-clock whole-window checks give inclusive 9–29-sample ISIs of 2,882 pre,
+7,406 current and 2,900 no-force. The reported state-stratified 6,894/621 versus
+2,707/193 cannot be independently recomputed because canonical catalogue/
+AS-padded masks, current post-stage arrays, clock origin and bounds are absent.
+Finite constructed templates and registered geometry permit template-level
+checks on P, but no competing identity/per-event waveform/historical template
+evidence supports continuity or neuronal yield. Units-active-both 544→724 is a
+partition count only. D2L-only BQ cannot establish motion specificity.
+
+The capture's executed source commit `fdaad621...` has no relevant source diffs
+from locally reviewed `edcfe1b...`; installed DARTsort 0.5.16 remains distinct.
+BU charges 30.00/900 s, taking cumulative h1 to 6,863.22/14,400 s; BI remains
+separate. No BH access, h5 source copy, raw/GPU work, replay, sort or engine
+integration occurred. BU stops pending h5's separate clock/fragmentation audit.
