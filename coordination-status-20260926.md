@@ -748,3 +748,58 @@ Known cumulative h1 charge is 6,743.22/14,400 s; BI's 2,440.86 s remains
 separate. No GPU, real data/raw voltage, sort, matcher replay, integration,
 external publication or blocked payload access occurred. BN is complete and
 no BO specification is present, so this branch stops as instructed.
+
+### BO h1 attributable agglomeration contract, 2026-09-27 06:27 PDT
+
+BO's independent local-source/synthetic queue is complete. A small standalone
+adapter at `testing/experimental/agglomeration_route_provenance.py` reuses the
+existing default-disabled atomic provenance writer. It records provided stage
+observations only and performs no QDA, linkage, merge, dedup or sorting.
+
+The 10/10 targeted tests cover a true no-writer disabled path, atomic enabled
+capture, copy immutability, sparse unit IDs, explicit `-1` noise/padding,
+finite-versus-unavailable numeric entries, direct versus linkage-expanded
+distance/force masks, QDA tested/rejected/untested pairs, optional-route
+availability, overlapping multi-route acceptance, union connectivity,
+nontrivial depth reordering and fail-before-publication invalid cases. The
+completed synthetic manifest SHA-256 is
+`bd48ee41e3406a32afa9a38f3830c9f1dc412da24f631b014ac99ffbc13151a0`.
+
+The counterexample gives the same final three-unit component two different
+QDA/force/optional edge histories. Thus final mapping/component membership is
+not route attribution. Sufficient future observations are immutable direct
+pair measurements, tested/accepted masks per route, expanded masks, their
+multi-valued union, actual mapping and event/clock/reorder lineage. Direct
+edges and transitive connectivity remain separate.
+
+The local packet is
+`testing/outputs/bo_h1_agglomeration_route_contract_v1/`. Its reviewed hook
+sketch targets agglomerate stage entry, template-distance output, distance and
+force thresholds before/after linkage, firing/QDA inputs and outputs, optional
+route state, union, pre-depth mapping, applied shifts/dedup lineage and final
+depth reorder. No active engine file was changed. Tiny matrices are inline only
+for qualification; a real capture must use separately content-addressed arrays
+and bounded/streamed event rows, with dummy-measured overhead.
+
+The concrete future proposal is an exact control reproduction at the immediate
+pre-agglomeration boundary, capture disabled then enabled with bitwise output/
+RNG equivalence. Only after that passes, and under separate authorization, the
+smallest contrast is one stage-only control versus force-route removal with
+identical captured state and fixed QDA/optional results/linkage. Direct and
+expanded graphs distinguish force-exclusive effects from transitive closure.
+Any missing immediate pre-stage state, component templates or QDA inputs makes
+faithful replay impossible and requires regeneration from the earliest
+equivalent checkpoint; final labels/times or matching-bank templates are not
+substitutes.
+
+Adoption still requires immutable retained/lost/new/ambiguous event accounting,
+independent waveform identity, rest/episode recovery and continuity, plus cheap
+duplicate/refractory/coherence checks. Lower ISI after splitting alone is not
+improved recovery and does not justify RF.
+
+BO known metered process wall is 21.00 s, including repository staging; a
+conservative 30.00/600 s is charged.
+Known cumulative h1 charge is 6,773.22/14,400 s; BI's 2,440.86 s remains
+separate. No GPU, real data/raw voltage, sort, stage replay, production
+integration, external publication or blocked payload access occurred. BO is
+complete; no BP specification is present, so this independent branch stops.
