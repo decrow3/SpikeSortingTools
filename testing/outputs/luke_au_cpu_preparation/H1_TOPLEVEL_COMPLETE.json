@@ -1,0 +1,10 @@
+{
+  "schema": "az-hybrid-h1-scorer-packet-v1",
+  "status": "SCORER_READY_DONORS_PENDING",
+  "launch_permitted": false,
+  "manifest": "H1_HANDOFF_MANIFEST.json",
+  "manifest_sha256": "cd0bf94bab59e7e6d2940629da1ce4d5575f8f34da899faa9b7f8bd34c569eb8",
+  "h5_schema_crosschecked": true,
+  "published_after_payload": true,
+  "fourth_extraction_launch": false
+}

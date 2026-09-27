@@ -1,0 +1,49 @@
+{
+  "schema": "luke-az-h1-to-h5-schema-crosscheck-v1",
+  "status": "scorer_subset_ready_launch_blocked_on_donors",
+  "h5_coordination_root": "/mnt/NPX/Luke/DARTsort_motion_experiments/az_hybrid_h5_coordination_v2",
+  "h5_complete_sha256": "237df0df336c88873506931336531006ef93a827a9514e41bfb9454a39344440",
+  "h5_expected_handoff_schema": "az-hybrid-handoff-v1",
+  "h5_stage_inventory_root": "/mnt/NPX/Luke/DARTsort_motion_experiments/az_hybrid_h5_stage_inventory_v1",
+  "stage_inventory_qualification": "historical accepted W2 S/D2L metadata only; not new-hybrid lineage",
+  "actual_sampling_frequency_hz": 29999.759166666667,
+  "h5_example_sampling_frequency_hz": 30000.0,
+  "sampling_frequency_action": "replace the example placeholder with the recorded frequency in an eventual real handoff",
+  "field_sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+  "field_hash_matches_h5": true,
+  "scorer_fields": {
+    "frozen": true,
+    "tests_pass": true,
+    "exclusive_event_scoring": true,
+    "tolerance_ms": 0.4,
+    "tolerance_samples_at_actual_rate": 12,
+    "deterministic_ties": true,
+    "full_train_association_before_split": true,
+    "split_merge_chance_controls": true,
+    "pre_exclusivity_duplicate_candidates": true,
+    "ambiguity_reported": true
+  },
+  "pending_not_passing": [
+    "donor_count_20_to_30",
+    "all donor gates and native-clone avoidance",
+    "materialized immutable independent donor trains",
+    "query-time operator and transition agreement",
+    "new-hybrid stage inventory and lineage",
+    "worker compatibility on actual injected source",
+    "launch permission"
+  ],
+  "template_injection_stage_contract": {
+    "domain": "post-ibllikecmr standardized float32, no spatial whitening",
+    "injection_count": "exactly once before S_h/DZ_h/D2L_h branching",
+    "second_ibllikecmr_forbidden": true,
+    "second_spatial_whitening_forbidden": true,
+    "pre_gpu_validation": [
+      "waveform units",
+      "shared source hash identical across arms",
+      "no double preprocessing",
+      "donor-dependent gates complete"
+    ]
+  },
+  "launch_permitted": false,
+  "voltage_read_for_crosscheck": false
+}

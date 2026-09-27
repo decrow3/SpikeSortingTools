@@ -1,0 +1,66 @@
+{
+  "schema": "az-hybrid-h1-scorer-packet-v1",
+  "status": "SCORER_READY_DONORS_PENDING",
+  "launch_permitted": false,
+  "real_handoff_schema_target": "az-hybrid-handoff-v1",
+  "sampling_frequency_hz": 29999.759166666667,
+  "accepted_d2l_v1_sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+  "scorer_qualified": true,
+  "donors_measured": false,
+  "operator_audit_passed": false,
+  "new_hybrid_stage_inventory_frozen": false,
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "83a8eb2e3d022d0aef3a1c6ec754d8fa42765b9934daf78b2244f3545d4c1734"
+    },
+    {
+      "path": "luke_az_hybrid_scorer.py",
+      "sha256": "fec6388e60f1582bf7e3a12e4b0fba2d677f21f8fb6299b91b73ab237eae7291"
+    },
+    {
+      "path": "test_luke_az_hybrid_scorer.py",
+      "sha256": "09511739da67d891c4d829f6bfe98c71333eb6a432ee4f8268352769ee9e441f"
+    },
+    {
+      "path": "luke_au_cpu_preparation.py",
+      "sha256": "60dacad9c2ff04e82987635a363f665845b734a05828f44700ea38983911f0cd"
+    },
+    {
+      "path": "test_luke_au_cpu_preparation.py",
+      "sha256": "8d32b36a791ea9d438d11a5bcd92ed0452ac929f28a960e7e7b3b788a7523c0b"
+    },
+    {
+      "path": "az_scorer_qualification.json",
+      "sha256": "468e6ba845791fa52955fc9c5d9b3d6d9aaf665d4b819b476011bc5896a153db"
+    },
+    {
+      "path": "d0348ca_regression_test_receipt.json",
+      "sha256": "2f5ac0587878cbff5f228bfea09ca9dacb2c9917a7e2ecd5e05b179b014d6683"
+    },
+    {
+      "path": "template_domain_contract.json",
+      "sha256": "3d9b1bee7ccaa068d8b1340d19d40841e83e8c2266f03fe02675b1538d03af77"
+    },
+    {
+      "path": "future_extraction_preflight_design.json",
+      "sha256": "7065753f148054fe7190da0b8fdd52f337598591d480c6d01ef6b12a3e11c1bc"
+    },
+    {
+      "path": "az_attempt_accounting.json",
+      "sha256": "dee14806a26d098d19a0dfdd21c0b6729fa9a0fe5a09d53059815bb31ed0c149"
+    },
+    {
+      "path": "h5_schema_crosscheck.json",
+      "sha256": "b70d683038a3158c3d1ac4e0b181f7fed966bcc0a89f3d7d1c88b4609411d30c"
+    }
+  ],
+  "pending_donor_dependent_fields": [
+    "qualified cohort and templates",
+    "native-clone avoidance",
+    "immutable materialized event trains",
+    "query-time transition agreement",
+    "new-hybrid lineage",
+    "worker compatibility on actual injected source"
+  ]
+}

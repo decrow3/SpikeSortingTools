@@ -358,3 +358,31 @@ The root cause is repaired prospectively by passing `start_frame` and
 `end_frame` as explicit keywords, with a regression test that rejects positional
 arguments. This repair is committed and ready, but rerunning it requires a new
 retry authorization. Existing independent scorer qualification remains valid.
+
+### AZ scorer-only shared packet, 2026-09-26 18:35 PDT
+
+No fourth extraction was launched. The already-qualified scorer, deterministic
+generator primitives, resource accounting, regression receipt and explicit
+template-domain contract are published at
+`/mnt/NPX/Luke/DARTsort_motion_experiments/az_hybrid_h1_scorer_v1/`.
+`H1_HANDOFF_MANIFEST.json` has SHA-256
+`cd0bf94bab59e7e6d2940629da1ce4d5575f8f34da899faa9b7f8bd34c569eb8`;
+the last-written `COMPLETE.json` has SHA-256
+`01af7891e9034fde6bbd304d5180a463e1fd478472fb26514e30b819d3d7bd64`.
+All 11 manifest-bound payload hashes passed before completion publication.
+
+The packet was cross-checked against h5's completed coordination packet at
+`az_hybrid_h5_coordination_v2/` (COMPLETE SHA-256
+`237df0df336c88873506931336531006ef93a827a9514e41bfb9454a39344440`)
+and its historical stage inventory. The scorer subset is ready, but donors,
+materialized independent trains, native-clone avoidance, query-time transition
+agreement, actual new-hybrid lineage and worker compatibility remain pending;
+`launch_permitted` is false. The h5 example's 30,000 Hz value is a placeholder;
+the real contract retains 29,999.759166666667 Hz.
+
+The experiment contract now states that no-spatial-whitening templates live in
+the post-ibllikecmr standardized float32 domain. Event injection occurs exactly
+once at that stage before arm branching. A second ibllikecmr or spatial-
+whitening pass is forbidden, and waveform units plus identical shared-source
+hashes must pass before any eventual GPU launch. This is not an equivalence
+claim for the accepted spatially whitened bank.
