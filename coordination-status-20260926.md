@@ -1,5 +1,20 @@
 # Luke motion coordination status
 
+## CB h1 BZ helper v3 integration guards — complete
+
+V3 is authoritative for H5 integration. It retains every common-block bootstrap
+draw after the original common-domain point passes `min_events`, eliminating
+selective sparse-draw conditioning. Final calls now require complete accepted /
+requested accounting and finite ordered intervals for the applicable branch;
+otherwise the outcome is explicitly unresolved. No scientific margin changed.
+A standalone import example and frozen event/row/block/physical-channel/noise/
+support contract accompany the packet. Nine focused tests pass. Shared packet:
+`/mnt/NPX/Luke/DARTsort_motion_experiments/bz_identity_helper_20260927/v3/`.
+Report: `docs/dartsort_cb_bz_identity_helper_v3_20260927.md`.
+
+CB charges 360/600 s; cumulative BZ/CA/CB charge is 1410/3600 s and cumulative
+historical active elapsed is 8513.22/14400 s. No reader, GPU, voltage or sort.
+
 ## CA h1 review of completed BV v1 packet — descriptive only
 
 The newly published BV v1 packet is complete and hash-manifested, but it cannot

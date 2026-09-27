@@ -24,22 +24,29 @@ def _intervals(**changes):
     return result
 
 
+ACCOUNTING = {"accepted_replicates": 100, "requested_replicates": 100}
+
+
 def test_point_metrics_do_not_claim_final_label_without_intervals():
     values = [_wave(seed) for seed in range(4)]
     score = score_waveform_pair(*values, noise_std=np.ones(6))
     assert score["eligible"] and score["status"] == "descriptive_metrics_only"
-    assert qualify_with_intervals(score, _intervals()) == "limited_waveform_compatibility"
+    assert qualify_with_intervals(score, _intervals(),
+                                  bootstrap_accounting=ACCOUNTING) == "limited_waveform_compatibility"
     assert qualify_with_intervals(score, _intervals(
-        cross_minus_within_gap=(-0.20, -0.05))) == "inconclusive"
+        cross_minus_within_gap=(-0.20, -0.05)),
+        bootstrap_accounting=ACCOUNTING) == "inconclusive"
 
 
 def test_difference_call_requires_reliable_units_and_intervals():
     point = {"eligible": True}
     evidence = _intervals(cross_minus_within_gap=(-0.3, -0.2),
                           cross_deficit=(0.20, 0.30), difference_cosine=(0.90, 0.99))
-    assert qualify_with_intervals(point, evidence) == "stable_waveform_difference"
+    assert qualify_with_intervals(point, evidence,
+                                  bootstrap_accounting=ACCOUNTING) == "stable_waveform_difference"
     evidence["within_a_cosine"] = (0.85, 0.99)
-    assert qualify_with_intervals(point, evidence) == "inconclusive"
+    assert qualify_with_intervals(point, evidence,
+                                  bootstrap_accounting=ACCOUNTING) == "inconclusive"
 
 
 def test_training_state_is_locked_for_heldout_and_episode():
@@ -82,7 +89,8 @@ def test_bootstrap_freezes_lag_gain_and_uses_same_common_domain_for_point():
     # Bootstrap exposes no fitted-state distribution because the state is frozen.
     assert "fitted_lag_samples" not in result["samples"]
     assert state.lag_samples == result["point"]["fitted_lag_samples"]
-    assert set(percentile_intervals(result["samples"])) == set(result["samples"])
+    assert set(percentile_intervals(result["samples"],
+        expected_replicates=result["requested_replicates"])) == set(result["samples"])
 
 
 def test_bootstrap_requires_ten_common_blocks():
@@ -114,3 +122,30 @@ def test_noise_control_and_same_parent_vote_is_not_duplicated():
     assert result["parent_count"] == 2
     assert result["parent_values"]["a"] == 0.4
     assert result["parent_values"]["b"] == 0.6
+
+
+def test_sparse_bootstrap_draws_are_not_conditioned_on_point_event_gate():
+    # One event per common block, exactly the point minimum. Some resamples have
+    # repeated blocks but must still count; no draw is filtered by min_events.
+    values = [_wave(seed, events=10) for seed in range(30, 34)]
+    blocks = np.arange(10)
+    result = temporal_block_bootstrap(*values, blocks_a_half1=blocks,
+        blocks_b_half1=blocks, blocks_a_half2=blocks + 10,
+        blocks_b_half2=blocks + 10, noise_std=np.ones(6), min_events=10,
+        n_bootstrap=40, seed=4)
+    assert result["point"]["eligible"]
+    assert result["accepted_replicates"] == result["requested_replicates"] == 40
+
+
+def test_final_label_requires_complete_finite_bootstrap_accounting():
+    point = {"eligible": True}
+    intervals = _intervals(difference_cosine=(np.nan, np.nan))
+    assert qualify_with_intervals(point, intervals,
+        bootstrap_accounting={"accepted_replicates": 99,
+                              "requested_replicates": 100}) == "unresolved"
+    # Degenerate difference is irrelevant to a fully qualified compatibility call.
+    assert qualify_with_intervals(point, intervals,
+        bootstrap_accounting=ACCOUNTING) == "limited_waveform_compatibility"
+    bad_gap = _intervals(cross_minus_within_gap=(np.nan, np.nan))
+    assert qualify_with_intervals(point, bad_gap,
+        bootstrap_accounting=ACCOUNTING) == "unresolved"

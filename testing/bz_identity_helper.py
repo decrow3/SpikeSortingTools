@@ -187,7 +187,11 @@ def temporal_block_bootstrap(a_half1, b_half1, a_half2, b_half2, *,
         draw2 = rng.choice(common2, len(common2), replace=True)
         draw = [_resample(selected[0], sb[0], draw1), _resample(selected[1], sb[1], draw1),
                 _resample(selected[2], sb[2], draw2), _resample(selected[3], sb[3], draw2)]
-        score = score_with_frozen_state(*draw, state=state, min_events=min_events)
+        # min_events qualifies the original common-domain estimand above. Every
+        # common block contains at least one event from A and B; applying the
+        # point gate again to variable-count draws would selectively discard
+        # sparse draws and bias the conditional interval.
+        score = score_with_frozen_state(*draw, state=state, min_events=1)
         if score["eligible"]:
             for metric in METRICS:
                 samples[metric].append(score[metric])
@@ -198,27 +202,55 @@ def temporal_block_bootstrap(a_half1, b_half1, a_half2, b_half2, *,
             "requested_replicates": n_bootstrap}
 
 
-def percentile_intervals(samples: Mapping[str, np.ndarray], alpha=0.05):
-    return {key: (float(np.quantile(value, alpha / 2)),
-                  float(np.quantile(value, 1 - alpha / 2)))
-            for key, value in samples.items() if len(value)}
+def percentile_intervals(samples: Mapping[str, np.ndarray], alpha=0.05,
+                         expected_replicates=None):
+    """Intervals only for metrics finite in every expected block draw."""
+    intervals = {}
+    for key, value in samples.items():
+        value = np.asarray(value, dtype=float)
+        finite = value[np.isfinite(value)]
+        expected = len(value) if expected_replicates is None else int(expected_replicates)
+        if expected > 0 and len(value) == expected and len(finite) == expected:
+            intervals[key] = (float(np.quantile(finite, alpha / 2)),
+                              float(np.quantile(finite, 1 - alpha / 2)))
+    return intervals
 
 
-def qualify_with_intervals(point, intervals):
+def qualify_with_intervals(point, intervals, *, bootstrap_accounting=None):
     """Apply BX's original 0.90, +/-0.03, 0.10 and 0.80 margins."""
     if not point.get("eligible"):
         return "unresolved"
-    required = ("within_a_cosine", "within_b_cosine", "cross_minus_within_gap",
-                "cross_deficit", "difference_cosine")
-    if any(key not in intervals or len(intervals[key]) != 2 for key in required):
-        return "inconclusive"
-    low = {key: float(intervals[key][0]) for key in required}
-    high = {key: float(intervals[key][1]) for key in required}
+    if bootstrap_accounting is None:
+        return "unresolved"
+    accepted = int(bootstrap_accounting.get("accepted_replicates", -1))
+    requested = int(bootstrap_accounting.get("requested_replicates", -1))
+    if requested <= 0 or accepted != requested:
+        return "unresolved"
+
+    def valid(key):
+        if key not in intervals or len(intervals[key]) != 2:
+            return False
+        lo, hi = map(float, intervals[key])
+        return np.isfinite(lo) and np.isfinite(hi) and lo <= hi
+
+    reliability_keys = ("within_a_cosine", "within_b_cosine")
+    if not all(valid(key) for key in reliability_keys):
+        return "unresolved"
+    low = {key: float(intervals[key][0]) for key in reliability_keys}
     reliable = low["within_a_cosine"] >= 0.90 and low["within_b_cosine"] >= 0.90
-    if reliable and low["cross_minus_within_gap"] >= -0.03 and high["cross_minus_within_gap"] <= 0.03:
+    if valid("cross_minus_within_gap"):
+        gap_low, gap_high = map(float, intervals["cross_minus_within_gap"])
+    else:
+        gap_low = gap_high = np.nan
+    if reliable and gap_low >= -0.03 and gap_high <= 0.03:
         return "limited_waveform_compatibility"
-    if reliable and low["cross_deficit"] > 0.10 and low["difference_cosine"] >= 0.80:
+    if not valid("cross_deficit") or not valid("difference_cosine"):
+        return "unresolved"
+    if (reliable and float(intervals["cross_deficit"][0]) > 0.10
+            and float(intervals["difference_cosine"][0]) >= 0.80):
         return "stable_waveform_difference"
+    if not valid("cross_minus_within_gap"):
+        return "unresolved"
     return "inconclusive"
 
 
