@@ -939,6 +939,16 @@ BW charges a conservative 30.00 s, taking cumulative h1 to
 test expansion, raw/GPU work, reconstruction, replay, sort, voltage access or
 service launch occurred.
 
+BW timing clarification was incorporated without a new task charge or arm.
+At a 0.25 s field-knot spacing, 0.1 s centre queries add no motion information;
+they evaluate the same interpolant more closely in time and remain the preferred
+mechanism diagnostic. A 0.25 s arm is only a cheaper candidate. Equal nominal
+chunk durations do not prove equivalence without matching origins/centres,
+partial-chunk handling, buffers, query interpolation/quantization, field
+representation and transform direction. The reviewer's corrected W2/W3 0.1 s
+figures (`>20 µm`: 0.2%/0.0%; P95: 11.2/9.0 µm) are recorded as unverified
+external context, not recomputed evidence or a lower bound on true error.
+
 
 ### BU h1 independent review of completed BQ, 2026-09-27
 

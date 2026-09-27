@@ -159,6 +159,43 @@ null cannot by itself show that the field is wrong, BJ's `.989` is not a causal
 percentage of any cross-bank gap, and cross-probe co-motion does not establish
 that a rigid residual is conservative.
 
+### Timing clarification: 0.1 s diagnostic versus 0.25 s candidate
+
+The deployed field's 0.25 s knot spacing and a matcher's nominal 0.25 s chunks
+do not make 0.25 s template-construction chunks automatically equivalent.
+`MotionInfo` exposes the original estimator's time bins but delegates every
+query to that estimator's `disp_at_s` implementation
+(`util/motion.py:254-296`). For the deployed linear interpolant, querying at
+0.1 s centres introduces no motion samples or bandwidth beyond those 0.25 s
+knots; it evaluates the same piecewise-linear representation closer to each
+event time. Thus 0.1 s is the cleaner mechanism diagnostic, while 0.25 s is a
+cheaper deployment candidate. The latter is not an additional treatment arm
+in this review.
+
+Equal nominal durations are insufficient. Equivalence also requires identical
+sample-zero/time origin, chunk starts and centres, final partial-chunk rule,
+left/right waveform buffers, motion-query interpolation and edge
+extrapolation/quantization, field representation, registered geometry, and
+transform direction. Template grabbing computes a centre from the actual
+`[chunk_start, chunk_end)` interval (`peel/peel_base.py:556-580`), whereas
+matching uses `chunk_start + configured_chunk_length // 2`
+(`peel/matching.py:247-276`); their last partial chunks can therefore query
+different times even with equal configured durations. Registration to the full
+probe shifts target registered geometry by `+disp`, while the inverse full-probe
+transform shifts source geometry by `-disp`
+(`util/interpolation_util.py:1201-1232, 1264-1292`). A same-duration comparison
+must verify that it is exercising the same representation and direction rather
+than assuming this from names.
+
+The reviewer supplied, but this audit did not recompute, a corrected summary
+for the 0.1 s centre-hold comparison: fraction above 20 µm W2/W3 =
+`0.2%/0.0%`, and P95 = `11.2/9.0 µm`, versus a reported `7–11%` above
+20 µm for 0.25 s. These values are external context only until their sample
+mask, origins, interpolation direction and calculation artifact are reviewed.
+They do not establish a lower bound on true motion error: field-relative error
+measures disagreement with the field representation, while the unknown true
+displacement may differ from both.
+
 For a later residual-loop evaluation, prediction must be frozen on held-out
 time: fit/calibrate only on development intervals, predict signed residual
 shift and uncertainty for untouched intervals, and score error/calibration
@@ -170,7 +207,9 @@ claims should be restricted to intervals where the reference resolves.
 
 Before any BW.2 launch, the executor must publish a compact preregistration
 containing the exact frozen row-ID hash, basis/whitener/template-config hashes,
-recording/motion/geometry hashes, chunk origin, worker assignment, equality
-sentinels, output footprint and projected GPU/wall time. No new prefix run is
-scientifically required if that state is available.
-
+recording/motion/geometry hashes, field-knot/interpolation identity, chunk
+origin/centres/buffers and transform direction, worker assignment, equality
+sentinels, output footprint and projected GPU/wall time. The 0.1 s arm is the
+preferred diagnostic; a 0.25 s version is a cheaper candidate only after those
+equivalence details are explicit. No new prefix run is scientifically required
+if that state is available.
