@@ -1,0 +1,56 @@
+{
+  "schema": "luke-az-h1-attempt-accounting-v1",
+  "status": "retry_count_exhausted_no_fourth_launch",
+  "time_zone": "America/Los_Angeles",
+  "attempts": [
+    {
+      "attempt": 1,
+      "service": "luke-aw-full-probe-extract-20260926.service",
+      "start": "2026-09-26T17:20:11-07:00",
+      "stop": "2026-09-26T17:23:08-07:00",
+      "process_wall_s": 177,
+      "cpu_usage_ns": 171319006000,
+      "result": "exit-code",
+      "exit_status": 1
+    },
+    {
+      "attempt": 2,
+      "service": "luke-aw-full-probe-extract-az-attempt2-20260926.service",
+      "start": "2026-09-26T17:32:06-07:00",
+      "stop": "2026-09-26T17:37:12-07:00",
+      "process_wall_s": 306,
+      "cpu_usage_ns": 270615892000,
+      "result": "exit-code",
+      "exit_status": 1,
+      "failed_json_qualification": "FAILED.json says terminated by wall-time supervisor because SIGTERM is translated to TimeoutError; resource-stop evidence and service timestamps are authoritative for why it was stopped"
+    },
+    {
+      "attempt": 3,
+      "service": "luke-aw-full-probe-extract-az-attempt3-20260926.service",
+      "start": "2026-09-26T17:39:32-07:00",
+      "stop": "2026-09-26T17:44:27-07:00",
+      "process_wall_s": 295,
+      "cpu_usage_ns": 272136670000,
+      "result": "signal",
+      "exit_status": 9,
+      "observed_memory_before_stop_bytes": 19325603840
+    }
+  ],
+  "totals": {
+    "extraction_process_wall_s": 778,
+    "extraction_process_wall_minutes": 12.9666666667,
+    "systemd_cpu_usage_ns": 714071568000,
+    "systemd_cpu_usage_s": 714.071568,
+    "authorized_cumulative_extraction_wall_s": 7200,
+    "authorized_additional_relaunches": 2,
+    "additional_relaunches_used": 2,
+    "latest_metered_regression_wall_s": 0.55,
+    "latest_metered_regression_user_s": 1.87,
+    "latest_metered_regression_system_s": 0.04,
+    "known_extraction_plus_latest_regression_process_wall_s": 778.55,
+    "historical_small_interactive_test_wall_exactly_reconstructable": false,
+    "accounting_note": "systemd extraction charges are exact; earlier sub-second/minute interactive qualification tests were not individually metered and are not fabricated"
+  },
+  "scientific_output_produced": false,
+  "fourth_launch_performed": false
+}

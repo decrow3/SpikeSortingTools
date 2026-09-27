@@ -1,0 +1,7 @@
+{
+  "schema": "luke-az-h1-scorer-handoff-complete-v1",
+  "status": "complete_scorer_only_donor_dependent_fields_pending",
+  "manifest_sha256": "13bba0749716703fba871952f794175783514144d57fd749e842591ac5939a7e",
+  "published_after_payload": true,
+  "fourth_extraction_launch": false
+}

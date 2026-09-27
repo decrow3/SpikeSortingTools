@@ -1,0 +1,29 @@
+{
+  "schema": "luke-az-h1-scorer-handoff-v1",
+  "status": "scorer_qualified_donor_dependent_fields_pending",
+  "arm_outputs_seen_when_frozen": false,
+  "sorting_authorized_by_packet": false,
+  "voltage_extraction_authorized_by_packet": false,
+  "accepted_d2l_v1_sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+  "sampling_frequency_hz": 29999.759166666667,
+  "files": {
+    "README.md": "30ff1cebd8fba7ab89691f619861e3d1dddc875b88bea2df2d2df2ea84c4761b",
+    "luke_az_hybrid_scorer.py": "fec6388e60f1582bf7e3a12e4b0fba2d677f21f8fb6299b91b73ab237eae7291",
+    "test_luke_az_hybrid_scorer.py": "09511739da67d891c4d829f6bfe98c71333eb6a432ee4f8268352769ee9e441f",
+    "luke_au_cpu_preparation.py": "60dacad9c2ff04e82987635a363f665845b734a05828f44700ea38983911f0cd",
+    "test_luke_au_cpu_preparation.py": "8d32b36a791ea9d438d11a5bcd92ed0452ac929f28a960e7e7b3b788a7523c0b",
+    "az_scorer_qualification.json": "468e6ba845791fa52955fc9c5d9b3d6d9aaf665d4b819b476011bc5896a153db",
+    "d0348ca_regression_test_receipt.json": "2f5ac0587878cbff5f228bfea09ca9dacb2c9917a7e2ecd5e05b179b014d6683",
+    "template_domain_contract.json": "76669eb6da8a88ebcb0f935a85b9d21335a21228384c04192d3d7c0d4e058dd9",
+    "future_extraction_preflight_design.json": "7065753f148054fe7190da0b8fdd52f337598591d480c6d01ef6b12a3e11c1bc",
+    "az_attempt_accounting.json": "dee14806a26d098d19a0dfdd21c0b6729fa9a0fe5a09d53059815bb31ed0c149"
+  },
+  "pending_donor_dependent_fields": [
+    "qualified donor IDs and templates",
+    "native-clone avoidance",
+    "relocation placements and every-state support",
+    "immutable per-donor event trains",
+    "query-time transition agreement",
+    "arm outputs"
+  ]
+}

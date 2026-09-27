@@ -1,0 +1,24 @@
+{
+  "schema": "luke-az-d0348ca-regression-receipt-v1",
+  "status": "pass_no_voltage_read",
+  "root_cause_commit": "d0348ca",
+  "root_cause_fix": "explicit named start_frame/end_frame arguments plus a regression recorder that rejects positional arguments",
+  "at_commit_test": {
+    "command": "/home/huklab/Documents/DARTsort/.venv/bin/python -m pytest -q testing/test_luke_aw_full_probe_extract.py testing/test_luke_az_hybrid_scorer.py testing/test_luke_au_cpu_preparation.py",
+    "result": "20 passed"
+  },
+  "current_guard_extension_test": {
+    "command": "/home/huklab/Documents/DARTsort/.venv/bin/python -m pytest -q testing/test_luke_aw_full_probe_extract.py testing/test_luke_az_hybrid_scorer.py testing/test_luke_au_cpu_preparation.py",
+    "result": "22 passed",
+    "elapsed_s": 0.55,
+    "user_s": 1.87,
+    "system_s": 0.04,
+    "max_rss_kb": 56656,
+    "extractor_sha256": "d7181e190a4988907e955970471dc35ff300449f0f5894b114aced8d5f48a08c",
+    "extractor_test_sha256": "87bb494b383998235728234cebc65d3b27b805c246ef6fa4c1f1fc581b05d2cd",
+    "scorer_sha256": "fec6388e60f1582bf7e3a12e4b0fba2d677f21f8fb6299b91b73ab237eae7291",
+    "scorer_test_sha256": "09511739da67d891c4d829f6bfe98c71333eb6a432ee4f8268352769ee9e441f"
+  },
+  "voltage_read": false,
+  "fourth_extraction_launch": false
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "luke-az-template-domain-contract-v1",
+  "status": "frozen_pending_donor_extraction",
+  "measurement_channels": 384,
+  "energy_denominator": "total energy on all 384 measured channels before translation",
+  "preprocessing_domain": "post-ibllikecmr standardized float32",
+  "spatial_whitening": "none",
+  "whitening_interpretation": "intentional measurement/injection domain because the compact handoff has no full-probe residual whitening model; not evidence of equivalence to the accepted spatially whitened template bank",
+  "future_injection_requirement": "inject the measured no-spatial-whitening templates into the same post-ibllikecmr standardized float32 domain before matching; every arm consumes the identical injected source",
+  "ap191": {
+    "status": "detected bad but retained as an actual measured trace",
+    "processing": "high-pass and phase shift; both common references use the 383 detected-good channels; scale uses AP191's measured noise after the first reference",
+    "padding_or_extrapolation": false,
+    "ordinary_path_comparison": "all 383 good-channel traces must match the ordinary channel-removal path within max absolute 1e-5 on three guarded one-second intervals",
+    "caveat": "the ordinary accepted path removes AP191, so AP191 itself has no accepted-path equivalence claim; retaining it only keeps the measured-384 denominator auditable"
+  },
+  "donor_dependent_fields": "pending authorized successful extraction"
+}

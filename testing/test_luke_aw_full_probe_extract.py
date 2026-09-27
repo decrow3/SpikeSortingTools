@@ -1,6 +1,7 @@
 import numpy as np
 
 from testing.luke_aw_full_probe_extract import (
+    bounded_read_preflight,
     centered_cosine,
     evenly_spaced,
     exact_map,
@@ -44,6 +45,12 @@ def test_centered_cosine_identical():
 
 def test_trace_frame_chunk_uses_named_frame_bounds():
     class Recorder:
+        def get_num_channels(self):
+            return 2
+
+        def get_num_frames(self):
+            return 100
+
         def get_traces(self, *args, **kwargs):
             assert args == ()
             assert kwargs == {
@@ -55,3 +62,39 @@ def test_trace_frame_chunk_uses_named_frame_bounds():
 
     got = trace_frame_chunk(Recorder(), 11, 23, channel_ids=["AP0", "AP1"])
     assert got.shape == (12, 2)
+
+
+def test_trace_frame_chunk_rejects_large_request_before_recording_read():
+    class Recorder:
+        called = False
+
+        def get_num_channels(self):
+            return 384
+
+        def get_num_frames(self):
+            return 100_000
+
+        def get_traces(self, *args, **kwargs):
+            self.called = True
+            raise AssertionError("guard did not fail before voltage read")
+
+    rec = Recorder()
+    with np.testing.assert_raises(MemoryError):
+        trace_frame_chunk(rec, 0, 30_001)
+    assert rec.called is False
+
+
+def test_bounded_read_preflight_reports_forbidden_full_allocation():
+    receipt = bounded_read_preflight(
+        {
+            "sampling_frequency": 29999.759166666667,
+            "start_frame": 26999783,
+            "end_frame": 37199701,
+            "source_channel_ids": [f"AP{i}" for i in range(384)],
+        }
+    )
+    assert receipt["status"] == "pass_before_voltage_open"
+    assert receipt["window_frames"] == 10_199_918
+    assert receipt["maximum_explicit_audit_request_frames"] == 30_000
+    assert receipt["maximum_explicit_audit_request_float32_bytes"] == 46_080_000
+    assert receipt["full_float32_window_bytes_forbidden"] == 15_667_074_048

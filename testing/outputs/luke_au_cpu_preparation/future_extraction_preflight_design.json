@@ -1,0 +1,23 @@
+{
+  "schema": "luke-az-future-extraction-preflight-v1",
+  "status": "designed_and_tested_not_authorized_to_launch",
+  "window_frames": 10199918,
+  "source_channels": 384,
+  "raw_int16_window_bytes": 7833537024,
+  "full_float32_window_bytes_forbidden": 15667074048,
+  "maximum_explicit_audit_request_frames": 30000,
+  "maximum_explicit_audit_request_float32_bytes": 46080000,
+  "hard_request_frame_cap": 30000,
+  "hard_request_float32_byte_cap": 50000000,
+  "checks_before_voltage_open": [
+    "positive manifest frame interval",
+    "exact 384 source-channel contract",
+    "planned explicit audit frame count at or below 30000",
+    "planned explicit audit float32 allocation at or below 50000000 bytes",
+    "full-window float32 materialization explicitly forbidden",
+    "single reader and lazy preprocessing"
+  ],
+  "runtime_guard": "trace_frame_chunk repeats bounds/frame/byte checks and calls get_traces with named start_frame/end_frame arguments",
+  "large_request_test": "a 30001-frame request raises MemoryError before Recorder.get_traces is called",
+  "voltage_read_during_design": false
+}

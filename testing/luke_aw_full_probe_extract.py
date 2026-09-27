@@ -49,6 +49,8 @@ MAX_PERSISTENT_BYTES = 200_000_000
 # recording jobs are therefore serialized; BLAS/OpenMP are capped at two by
 # the durable launcher.
 READ_JOBS = 1
+MAX_DIRECT_TRACE_FRAMES = 30_000
+MAX_DIRECT_TRACE_BYTES = 50_000_000
 STATES_UM = np.array([0.0, -40.0, -80.0, -120.0, -160.0, -200.0, -240.0])
 
 
@@ -107,11 +109,54 @@ def centered_cosine(a: np.ndarray, b: np.ndarray) -> float:
 
 def trace_frame_chunk(recording, start_frame: int, end_frame: int, channel_ids=None):
     """Read an explicit frame interval without positional API ambiguity."""
+    start_frame = int(start_frame)
+    end_frame = int(end_frame)
+    frames = end_frame - start_frame
+    channels = recording.get_num_channels() if channel_ids is None else len(channel_ids)
+    requested_bytes = frames * channels * np.dtype(np.float32).itemsize
+    if not 0 <= start_frame < end_frame <= recording.get_num_frames():
+        raise ValueError("trace request is outside recording bounds")
+    if frames > MAX_DIRECT_TRACE_FRAMES:
+        raise MemoryError(f"trace request {frames} exceeds {MAX_DIRECT_TRACE_FRAMES} frames")
+    if requested_bytes > MAX_DIRECT_TRACE_BYTES:
+        raise MemoryError(
+            f"trace request {requested_bytes} exceeds {MAX_DIRECT_TRACE_BYTES} float32 bytes"
+        )
     return recording.get_traces(
-        start_frame=int(start_frame),
-        end_frame=int(end_frame),
+        start_frame=start_frame,
+        end_frame=end_frame,
         channel_ids=channel_ids,
     )
+
+
+def bounded_read_preflight(window: dict) -> dict:
+    """Validate every explicit audit allocation before opening raw voltage."""
+    fs = float(window["sampling_frequency"])
+    start = int(window["start_frame"])
+    end = int(window["end_frame"])
+    source_channels = len(window["source_channel_ids"])
+    frames = end - start
+    if frames <= 0 or source_channels != 384:
+        raise ValueError("unexpected extraction window or source-channel count")
+    audit_frames = min(int(round(fs)), frames)
+    audit_bytes = audit_frames * source_channels * np.dtype(np.float32).itemsize
+    if audit_frames > MAX_DIRECT_TRACE_FRAMES or audit_bytes > MAX_DIRECT_TRACE_BYTES:
+        raise MemoryError("planned audit request exceeds its allocation guard")
+    return {
+        "status": "pass_before_voltage_open",
+        "window_frames": frames,
+        "source_channels": source_channels,
+        "raw_int16_window_bytes": frames * source_channels * np.dtype(np.int16).itemsize,
+        "full_float32_window_bytes_forbidden": frames
+        * source_channels
+        * np.dtype(np.float32).itemsize,
+        "maximum_explicit_audit_request_frames": audit_frames,
+        "maximum_explicit_audit_request_float32_bytes": audit_bytes,
+        "hard_request_frame_cap": MAX_DIRECT_TRACE_FRAMES,
+        "hard_request_float32_byte_cap": MAX_DIRECT_TRACE_BYTES,
+        "materialize_full_window": False,
+        "reader_jobs": READ_JOBS,
+    }
 
 
 def exact_map(geom: np.ndarray, shift_um: float) -> np.ndarray:
@@ -302,6 +347,7 @@ def run() -> None:
     sort_ids = np.asarray(window["requested_sort_channel_ids"])
     if source_ids.size != 384 or sort_ids.size != 182:
         raise RuntimeError("unexpected 384/182 channel contract")
+    atomic_json(OUT / "bounded_read_preflight.json", bounded_read_preflight(window))
 
     with np.load(static / "dartsort_sorting.npz", allow_pickle=False) as z:
         times = np.asarray(z["times_samples"], dtype=np.int64)
@@ -389,12 +435,11 @@ def run() -> None:
         },
     )
 
-    # Keep the preprocessing graph lazy. Attempt 2 materialized the complete
-    # 340 s x 384 channel float32 recording in tmpfs; tmpfs pages count toward
-    # the process cgroup and crossed AZ's 20 GB ceiling. DARTsort asks this
-    # graph only for the waveform neighborhoods it needs, so this is the same
-    # deterministic operator with a bounded working set and a single reader.
-    # No preprocessed samples are saved or substituted.
+    # Keep the preprocessing graph lazy. Attempts 2--3 did not reach a full
+    # tmpfs materialization: their resource growth came from a positional
+    # get_traces audit bug, now guarded above by explicit frame and byte caps.
+    # DARTsort asks this graph only for waveform neighborhoods; no preprocessed
+    # samples are saved or substituted.
     if SCRATCH.exists():
         shutil.rmtree(SCRATCH)
     SCRATCH.mkdir(parents=True, exist_ok=True)
@@ -409,7 +454,7 @@ def run() -> None:
             "materialized_full_window": False,
             "saved_preprocessed_voltage": False,
             "operator": "ibllikecmr_retain_measured_bad_channels",
-            "reason": "mathematically equivalent repair after attempt2 exceeded the 20 GB cgroup cap while materializing tmpfs",
+            "reason": "bounded lazy execution after attempts2-3 exposed a positional get_traces audit bug; explicit frame and byte guards now fail before a large read",
         },
     )
 
@@ -428,8 +473,11 @@ def run() -> None:
         n_jobs_small_gpu=0,
     )
     # Full-probe residual whitening cannot be reconstructed from the compact
-    # handoff. Support is therefore measured before spatial whitening, while
-    # retaining the sealed temporal SVD and DARTsort peelreduce-median builder.
+    # handoff. These are intentionally post-ibllikecmr standardized,
+    # pre-spatial-whitening measurement/injection templates. A future hybrid
+    # worker must inject these units in that same float32 domain before matching
+    # and must not claim equivalence to the accepted spatially whitened bank.
+    # The sealed temporal SVD and DARTsort peelreduce-median builder remain.
     template_cfg = dataclasses.replace(
         cfg.template_cfg,
         whitening=dataclasses.replace(cfg.template_cfg.whitening, strategy="none"),
@@ -572,7 +620,7 @@ def run() -> None:
         "mask_sha256": digest(MASK),
         "hub_mask_sha256": digest(HUB_MASK),
         "masks_numerically_equal": True,
-        "spatial_whitening": "disabled because compact handoff lacks a full-probe residual model; support measured on standardized temporally denoised templates",
+        "spatial_whitening": "intentionally disabled: compact handoff lacks a full-probe residual model; measured templates are post-ibllikecmr standardized and pre-spatial-whitening, and future injection must use that same float32 domain; this is not evidence of equivalence to accepted whitened templates",
         "retained_detected_bad_channel_ids": [str(x) for x in bad_ids],
         "ordinary_good_trace_equivalence_max_abs": good_equivalence_max_abs,
         "preprocessing_execution": "lazy_memory_bounded_single_reader",
