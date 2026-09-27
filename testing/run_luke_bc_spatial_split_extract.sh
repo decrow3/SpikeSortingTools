@@ -25,6 +25,6 @@ export LUKE_AW_PRIOR_CHARGED_S=${LUKE_AW_PRIOR_CHARGED_S:-3272.6309895813465}
 export LUKE_BC_SPATIAL_SPLITS=1
 
 cd "$repo"
-exec /usr/bin/timeout --signal=TERM --kill-after=120s 3600s \
+exec /usr/bin/timeout --signal=TERM --kill-after=120s 3500s \
   /home/huklab/Documents/DARTsort/.venv/bin/python \
   testing/luke_aw_full_probe_extract.py
