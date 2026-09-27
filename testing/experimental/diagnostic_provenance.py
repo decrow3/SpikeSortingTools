@@ -10,6 +10,7 @@ import copy
 import hashlib
 import io
 import json
+import math
 import os
 from pathlib import Path
 
@@ -45,6 +46,14 @@ def _is_hash(value) -> bool:
     return isinstance(value, str) and len(value) == 64 and all(c in "0123456789abcdef" for c in value)
 
 
+def _is_int(value) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def _is_finite_number(value) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+
+
 def _array_bytes(array: np.ndarray) -> bytes:
     value = np.ascontiguousarray(array)
     if value.dtype.hasobject:
@@ -75,6 +84,28 @@ def _require_fields(row: dict, names: set[str], label: str) -> None:
         raise ProvenanceValidationError(f"{label} missing {sorted(missing)}")
 
 
+def _validate_representation_ref(name: str, ref: dict) -> None:
+    _require_fields(ref, {"status", "path", "sha256", "shape", "dtype", "encoding", "bytes"},
+                    f"representation {name}")
+    valid_shape = (
+        isinstance(ref["shape"], list)
+        and all(_is_int(size) and size >= 0 for size in ref["shape"])
+    )
+    try:
+        dtype = np.dtype(ref["dtype"])
+    except (TypeError, ValueError):
+        dtype = None
+    if (ref["status"] != "available" or not _is_hash(ref["sha256"])
+            or ref["encoding"] != "npy-v1-content-addressed"
+            or not _is_int(ref["bytes"]) or ref["bytes"] <= 0
+            or not valid_shape or dtype is None or dtype.hasobject):
+        raise ProvenanceValidationError(f"invalid representation {name}")
+    if Path(ref["path"]).is_absolute() or ".." in Path(ref["path"]).parts:
+        raise ProvenanceValidationError("array references must stay inside the bundle")
+    if ref["path"] != f"objects/{ref['sha256']}.npy":
+        raise ProvenanceValidationError("array reference is not content-addressed")
+
+
 def validate_manifest_semantics(manifest: dict) -> None:
     _require_fields(
         manifest,
@@ -87,7 +118,14 @@ def validate_manifest_semantics(manifest: dict) -> None:
     clock = manifest["clock"]
     _require_fields(clock, {"kind", "origin_sample", "origin_time_s", "sampling_frequency_hz",
                             "start_sample", "stop_sample", "bounds"}, "clock")
-    if clock["bounds"] != "half-open" or clock["sampling_frequency_hz"] <= 0:
+    for name in ("origin_sample", "start_sample", "stop_sample"):
+        if not _is_int(clock[name]):
+            raise ProvenanceValidationError(f"clock {name} must be an integer sample")
+    if not _is_finite_number(clock["origin_time_s"]):
+        raise ProvenanceValidationError("clock origin_time_s must be finite")
+    if (clock["bounds"] != "half-open"
+            or not _is_finite_number(clock["sampling_frequency_hz"])
+            or clock["sampling_frequency_hz"] <= 0):
         raise ProvenanceValidationError("clock must have positive rate and half-open bounds")
     if not clock["start_sample"] < clock["stop_sample"]:
         raise ProvenanceValidationError("empty or reversed clock bounds")
@@ -110,15 +148,7 @@ def validate_manifest_semantics(manifest: dict) -> None:
             if any(key in ref for key in ("path", "sha256", "shape", "dtype", "bytes")):
                 raise ProvenanceValidationError(f"unavailable {name} must not manufacture a reference")
             continue
-        _require_fields(ref, {"status", "path", "sha256", "shape", "dtype", "encoding", "bytes"},
-                        f"representation {name}")
-        if (ref["status"] != "available" or not _is_hash(ref["sha256"])
-                or ref["encoding"] != "npy-v1-content-addressed" or ref["bytes"] <= 0):
-            raise ProvenanceValidationError(f"invalid representation {name}")
-        if Path(ref["path"]).is_absolute() or ".." in Path(ref["path"]).parts:
-            raise ProvenanceValidationError("array references must stay inside the bundle")
-        if ref["path"] != f"objects/{ref['sha256']}.npy":
-            raise ProvenanceValidationError("array reference is not content-addressed")
+        _validate_representation_ref(name, ref)
 
     template_ids = set()
     for i, row in enumerate(manifest["template_construction"]):
@@ -148,6 +178,8 @@ def validate_manifest_semantics(manifest: dict) -> None:
                               "availability"}, f"event row {i}")
         if row["event_id"] in events:
             raise ProvenanceValidationError("duplicate event_id")
+        if not _is_int(row["sample_index"]):
+            raise ProvenanceValidationError("event sample_index must be an integer sample")
         if not clock["start_sample"] <= row["sample_index"] < clock["stop_sample"]:
             raise ProvenanceValidationError("event outside half-open clock bounds")
         if row["availability"] not in ("available", "unavailable"):
@@ -155,7 +187,7 @@ def validate_manifest_semantics(manifest: dict) -> None:
         events[row["event_id"]] = row
 
     candidate_ids = set()
-    selected_by_event = {}
+    selected_by_snapshot = {}
     for i, row in enumerate(manifest["candidates"]):
         _require_fields(row, {"candidate_id", "event_id", "template_id", "parent_stage", "stage",
                               "iteration", "evaluation_status", "role", "ranking_scope", "score",
@@ -167,30 +199,45 @@ def validate_manifest_semantics(manifest: dict) -> None:
             raise ProvenanceValidationError("candidate references unknown event")
         if row["template_id"] is not None and row["template_id"] not in template_ids:
             raise ProvenanceValidationError("candidate references unknown template")
+        if not _is_int(row["iteration"]) or row["iteration"] < 0:
+            raise ProvenanceValidationError("candidate iteration must be a nonnegative integer")
         status, role, scope = row["evaluation_status"], row["role"], row["ranking_scope"]
         if status == "not_evaluated":
             if row["score"] is not None or role != "not_evaluated" or scope != "none":
                 raise ProvenanceValidationError("not-evaluated candidate must not have a score/rank")
         elif status == "evaluated_unmatched":
-            if role != "unmatched" or row["template_id"] is not None:
+            if (role != "unmatched" or scope != "global_final"
+                    or row["stage"] == "coarse" or row["template_id"] is not None
+                    or row["score"] is not None):
                 raise ProvenanceValidationError("evaluated-unmatched must remain template-free")
         elif status == "evaluated":
-            if row["score"] is None or row["template_id"] is None:
+            if not _is_finite_number(row["score"]) or row["template_id"] is None:
                 raise ProvenanceValidationError("evaluated candidate needs score and template")
-            if role == "coarse_runner_up" and scope != "coarse_local":
-                raise ProvenanceValidationError("coarse runner-up scope mismatch")
-            if role == "global_final_runner_up" and scope != "global_final":
-                raise ProvenanceValidationError("global runner-up scope mismatch")
-            if role == "selected":
-                if scope != "global_final":
-                    raise ProvenanceValidationError("selected candidate must be global-final")
-                selected_by_event[row["event_id"]] = selected_by_event.get(row["event_id"], 0) + 1
+            allowed_role_scopes = {
+                ("coarse_selected", "coarse_local"),
+                ("coarse_runner_up", "coarse_local"),
+                ("selected", "global_final"),
+                ("global_final_runner_up", "global_final"),
+            }
+            if (role, scope) not in allowed_role_scopes:
+                raise ProvenanceValidationError("invalid evaluated role/ranking scope")
+            if scope == "coarse_local" and row["stage"] != "coarse":
+                raise ProvenanceValidationError("coarse-local candidate must use coarse stage")
+            if scope == "global_final" and row["stage"] == "coarse":
+                raise ProvenanceValidationError("coarse candidate cannot claim global-final rank")
+            if role in ("coarse_selected", "selected"):
+                snapshot = (row["event_id"], row["stage"], row["iteration"])
+                selected_by_snapshot[snapshot] = selected_by_snapshot.get(snapshot, 0) + 1
         else:
             raise ProvenanceValidationError("invalid evaluation status")
         _require_fields(row["scale"], {"value", "convention"}, "scale convention")
         _require_fields(row["threshold"], {"value", "convention"}, "threshold convention")
-    if any(count > 1 for count in selected_by_event.values()):
-        raise ProvenanceValidationError("multiple selected candidates for one event")
+        if not _is_finite_number(row["scale"]["value"]):
+            raise ProvenanceValidationError("scale value must be finite")
+        if not _is_finite_number(row["threshold"]["value"]):
+            raise ProvenanceValidationError("threshold value must be finite")
+    if any(count > 1 for count in selected_by_snapshot.values()):
+        raise ProvenanceValidationError("multiple selected candidates in one event/stage/iteration snapshot")
 
 
 class DiagnosticProvenanceWriter:
@@ -199,6 +246,13 @@ class DiagnosticProvenanceWriter:
         self.max_output_bytes = int(max_output_bytes)
 
     def write(self, output: Path, manifest: dict, *, arrays: dict[str, np.ndarray] | None = None) -> dict:
+        """Write one validated bundle atomically.
+
+        Available representation payloads must be supplied through ``arrays``.
+        References already present in ``manifest`` are deliberately unsupported:
+        accepting them would make their provenance and local availability
+        ambiguous. Missing representations must be explicitly unavailable.
+        """
         output = Path(output)
         if not self.enabled:
             return {"status": "disabled", "written": False, "path": str(output)}
@@ -209,6 +263,12 @@ class DiagnosticProvenanceWriter:
             raise FileExistsError(partial)
         value = copy.deepcopy(manifest)
         value.setdefault("representations", {})
+        for name, ref in value["representations"].items():
+            if ref.get("status") == "available":
+                _validate_representation_ref(name, ref)
+                raise ProvenanceValidationError(
+                    f"preexisting available reference unsupported; supply array payload: {name}"
+                )
         payloads = {}
         for name, array in (arrays or {}).items():
             if name not in ARRAY_NAMES:
@@ -236,8 +296,8 @@ class DiagnosticProvenanceWriter:
             "total_bytes": sum(p.stat().st_size for p in partial.rglob("*") if p.is_file()),
         }
         (partial / "COMPLETE.json").write_bytes(_canonical_json(complete))
+        validate_bundle(partial)
         os.replace(partial, output)
-        validate_bundle(output)
         return {"status": "complete", "written": True, "path": str(output), **complete}
 
 

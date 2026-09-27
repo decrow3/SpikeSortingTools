@@ -627,3 +627,42 @@ is 6,653.22/14,400 s. BI's 2,440.86 s remaining is unchanged, GPU use is zero,
 and the packet is below 100 MB. No blocked huklaban5 payload was published or
 relayed. The next BI.2 action remains dependent on an explicitly approved BH
 packet; this agent is not polling or launching it.
+
+### BL h1 BK review repairs, 2026-09-27 04:25 PDT
+
+The concrete standalone-writer review repairs are complete. Publication now
+validates `bundle.partial` before atomic rename; an injected validation failure
+leaves only the partial evidence and no final destination. Available object
+references cannot be inherited implicitly: callers must provide their payloads
+through `arrays`, while absent objects remain explicitly unavailable. Invalid
+hashes/shapes and missing available payloads are rejected before publication.
+
+The snapshot contract now keys selection uniqueness by
+`event_id + stage + iteration`. Coarse selection is explicitly
+`coarse_selected/coarse_local`; a coarse candidate cannot claim global-final
+rank. Evaluated role/scope pairs are closed, contradictory and duplicate
+selections fail, and the public bundle validator rejects nonfinite clock/score
+values plus fractional samples or iterations. Unknown template membership and
+evaluated-unmatched candidates retain their distinct semantics.
+
+The targeted suite passes 21/21. A repaired deterministic fixture is in
+`testing/outputs/bk_h1_diagnostic_provenance_v1/synthetic_bundle_bl/`; its
+manifest hash remains
+`e261243be107cc2ac2a8fb94da849cbf21accd36be3a01f779d3696695398999`.
+The packet README, hook review and resource receipt are updated.
+
+The local-source namespace review finds that `parent_stage` alone cannot
+losslessly express pre-noise, post-merge, shifted, deduplicated and
+depth-reordered identity spaces. Future hooks need immutable namespace IDs and
+typed row/label lineage edges: candidate/noise decision at
+`mixture.py:5728-5741`, merge map and score combination at
+`agglomerate.py:236-248`, applied shifts at `cluster_util.py:79-101`, dedup
+survivor/drop mapping at `agglomerate.py:248`, and depth reorder mapping at
+`agglomerate.py:250-251` / `cluster_util.py:333-382`. No engine integration was
+performed and no executed real-run branch is inferred from this source review.
+
+BK's conservative total charge is now 60.00/1,200 s (2.05 s substantive
+metered through final repaired validation). Known cumulative charged process
+wall is 6,683.22/14,400 s. BI's 2,440.86 s remains separate. No GPU, real data,
+sort, matcher replay, voltage access, or blocked huklaban5 payload transfer
+occurred.

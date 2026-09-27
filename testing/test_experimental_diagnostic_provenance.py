@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import json
 from pathlib import Path
 
@@ -10,6 +11,7 @@ from testing.experimental.diagnostic_provenance import (
     ProvenanceValidationError,
     SCHEMA,
     validate_bundle,
+    validate_manifest_semantics,
 )
 
 
@@ -88,6 +90,36 @@ def arrays():
     }
 
 
+def semantic_manifest():
+    manifest = synthetic_manifest()
+    manifest["representations"].update({
+        "temporal_components": {"status": "unavailable", "reason": "semantic fixture"},
+        "spatial_components": {"status": "unavailable", "reason": "semantic fixture"},
+    })
+    return manifest
+
+
+def available_ref(*, sha256="b" * 64, shape=None):
+    return {
+        "status": "available", "logical_name": "temporal_components",
+        "path": f"objects/{sha256}.npy", "sha256": sha256,
+        "shape": [3, 5] if shape is None else shape, "dtype": "<f4",
+        "encoding": "npy-v1-content-addressed", "bytes": 188,
+    }
+
+
+def rewrite_bundle_manifest(out, mutate):
+    manifest_path = out / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    mutate(manifest)
+    payload = (json.dumps(manifest, sort_keys=True, separators=(",", ":")) + "\n").encode()
+    manifest_path.write_bytes(payload)
+    complete_path = out / "COMPLETE.json"
+    complete = json.loads(complete_path.read_text())
+    complete["manifest_sha256"] = hashlib.sha256(payload).hexdigest()
+    complete_path.write_text(json.dumps(complete))
+
+
 def test_default_disabled_writes_nothing(tmp_path):
     out = tmp_path / "disabled"
     result = DiagnosticProvenanceWriter().write(out, synthetic_manifest(), arrays=arrays())
@@ -133,11 +165,114 @@ def test_missing_content_addressed_reference_is_rejected(tmp_path):
         validate_bundle(out)
 
 
+def test_writer_rejects_preexisting_available_reference_without_publishing(tmp_path):
+    out = tmp_path / "missing-payload"
+    manifest = synthetic_manifest()
+    manifest["representations"].update({
+        "temporal_components": available_ref(),
+        "spatial_components": {"status": "unavailable", "reason": "fixture"},
+    })
+    with pytest.raises(ProvenanceValidationError, match="supply array payload"):
+        DiagnosticProvenanceWriter(enabled=True).write(out, manifest)
+    assert not out.exists()
+
+
+@pytest.mark.parametrize(
+    "ref, match",
+    [
+        (available_ref(sha256="bad"), "invalid representation"),
+        (available_ref(shape=[3, 1.5]), "invalid representation"),
+    ],
+)
+def test_writer_rejects_invalid_preexisting_reference_without_publishing(tmp_path, ref, match):
+    out = tmp_path / "invalid-reference"
+    manifest = synthetic_manifest()
+    manifest["representations"].update({
+        "temporal_components": ref,
+        "spatial_components": {"status": "unavailable", "reason": "fixture"},
+    })
+    with pytest.raises(ProvenanceValidationError, match=match):
+        DiagnosticProvenanceWriter(enabled=True).write(out, manifest)
+    assert not out.exists()
+
+
+def test_validation_happens_before_publish_and_preserves_partial(tmp_path, monkeypatch):
+    from testing.experimental import diagnostic_provenance as provenance
+
+    out = tmp_path / "publish"
+
+    def reject_partial(path):
+        assert Path(path).name.endswith(".partial")
+        raise ProvenanceValidationError("synthetic validation failure")
+
+    monkeypatch.setattr(provenance, "validate_bundle", reject_partial)
+    with pytest.raises(ProvenanceValidationError, match="synthetic validation failure"):
+        DiagnosticProvenanceWriter(enabled=True).write(out, synthetic_manifest(), arrays=arrays())
+    assert not out.exists()
+    assert out.with_name(out.name + ".partial").is_dir()
+
+
 def test_missing_reference_and_conflated_runner_up_are_rejected(tmp_path):
     bad = synthetic_manifest()
     bad["candidates"][0]["ranking_scope"] = "global_final"
-    with pytest.raises(ProvenanceValidationError, match="coarse runner-up"):
+    with pytest.raises(ProvenanceValidationError, match="invalid evaluated role"):
         DiagnosticProvenanceWriter(enabled=True).write(tmp_path / "bad", bad, arrays=arrays())
+
+
+@pytest.mark.parametrize(
+    "stage, role, scope",
+    [
+        ("coarse", "selected", "global_final"),
+        ("fine", "coarse_selected", "coarse_local"),
+        ("fine", "runner_up", "global_final"),
+    ],
+)
+def test_contradictory_evaluated_role_stage_scope_is_rejected(stage, role, scope):
+    bad = semantic_manifest()
+    bad["candidates"][2].update(stage=stage, role=role, ranking_scope=scope)
+    with pytest.raises(ProvenanceValidationError):
+        validate_manifest_semantics(bad)
+
+
+def test_selection_is_unique_per_event_stage_iteration_snapshot():
+    manifest = semantic_manifest()
+    manifest["candidates"][0]["role"] = "coarse_selected"
+    validate_manifest_semantics(manifest)
+
+    duplicate = copy.deepcopy(manifest["candidates"][2])
+    duplicate["candidate_id"] = "c5"
+    duplicate["template_id"] = "t1"
+    manifest["candidates"].append(duplicate)
+    with pytest.raises(ProvenanceValidationError, match="event/stage/iteration snapshot"):
+        validate_manifest_semantics(manifest)
+
+    duplicate["iteration"] = 1
+    validate_manifest_semantics(manifest)
+
+
+def test_evaluated_unmatched_cannot_claim_global_final_from_coarse_stage():
+    manifest = semantic_manifest()
+    manifest["candidates"][4]["stage"] = "coarse"
+    with pytest.raises(ProvenanceValidationError, match="evaluated-unmatched"):
+        validate_manifest_semantics(manifest)
+
+
+@pytest.mark.parametrize(
+    "mutate, match",
+    [
+        (lambda m: m["clock"].__setitem__("sampling_frequency_hz", float("nan")), "positive rate"),
+        (lambda m: m["clock"].__setitem__("origin_time_s", float("inf")), "must be finite"),
+        (lambda m: m["clock"].__setitem__("start_sample", 100.5), "integer sample"),
+        (lambda m: m["events"][0].__setitem__("sample_index", 120.5), "integer sample"),
+        (lambda m: m["candidates"][0].__setitem__("iteration", 0.5), "nonnegative integer"),
+    ],
+)
+def test_public_bundle_validator_rejects_nonfinite_or_fractional_fields(tmp_path, mutate, match):
+    out = tmp_path / "numeric"
+    DiagnosticProvenanceWriter(enabled=True).write(out, synthetic_manifest(), arrays=arrays())
+    rewrite_bundle_manifest(out, mutate)
+    with pytest.raises(ProvenanceValidationError, match=match):
+        validate_bundle(out)
 
 
 def test_output_bound_is_enforced_before_write(tmp_path):
