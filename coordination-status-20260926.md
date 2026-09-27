@@ -1,5 +1,23 @@
 # Luke motion coordination status
 
+## CD h1 residual-motion one-update readiness — source-ready
+
+A bounded one-update diagnostic can reuse saved outputs without voltage or a
+fit loop. Namespace-safe filtering maps final candidate IDs back through
+`depth_reorder`, excludes 85 force-dependent current groups and any group with
+an off-diagonal force-linked stage unit in either long or corrected-short bank,
+then applies existing >=0.90 BC reliability and W2 contiguous-half count gates.
+This leaves 48 anchors, frozen into 24 depth-alternating fit and 24 held-out
+units plus contiguous session halves 900–1070 and 1070–1240 s. A minimal cache
+is 56,658 row-aligned localization records (~2.4 MB), not waveforms. The causal
+comparison is one proposed update versus zero and sign-reversed magnitude/
+smoothness-matched controls, with held-out unit/block inference and independent
+T8 agreement. Report: `docs/dartsort_cd_residual_motion_readiness_20260927.md`.
+
+CD charges 480/600 s, taking authoritative historical active elapsed from
+9053.22 to 9533.22/14400 s and the controlling BZ remainder from 1530 to 1050 s.
+No raw voltage read, GPU, extraction, fit, sort or field mutation occurred.
+
 ## CC h1 BV v2 consumer review — compatibility unresolved
 
 BV v2 has strong row/time provenance but used helper v2, default `min_events=4`
@@ -12,10 +30,9 @@ waveform-energy coverage evidence for its 90–230 um excursions. Report:
 `docs/dartsort_cc_bv_v2_consumer_review_20260927.md`.
 
 Accounting, charged once: historical 6983.22 + BZ 720 + CA repair 330 + CA BV-v1
-review 120 + CB guard/construction work 360 = 8513.22 s before CC. The earlier
-construction-review receipt is corrected to zero additional charge because its
-time is absorbed by CB's conservative 360 s. CC charges 420 s, yielding
-8933.22/14400 s. The coordinator's controlling BZ remainder is 1590 s. No raw
+review 120 + CB helper 360 + CB construction review 120 = 8633.22 s before CC.
+CC charges 420 s, yielding 9053.22/14400 s. The coordinator's controlling BZ
+remainder is 1530 s before CD. No raw
 voltage read, GPU, extraction, full scoring campaign or packet mutation.
 
 ## CB h1 review of BZ construction v2 — complete
@@ -31,10 +48,9 @@ packet correctly retains BQ's failed numerical gate and omits QDA/final labels
 because post-TMM score state is absent. Report:
 `docs/dartsort_cb_bz_construction_v2_review_20260927.md`.
 
-The construction review is included inside CB's existing conservative 360 s
-charge and adds zero seconds; it is not charged twice. Historical active elapsed
-therefore remained 8513.22/14400 s before CC. No raw read, GPU, voltage, sort or
-packet mutation.
+The distinct construction review charges 120 s once, bringing CB helper plus
+construction review to 480 s and historical active elapsed to
+8633.22/14400 s before CC. No raw read, GPU, voltage, sort or packet mutation.
 
 ## CB h1 BZ helper v3 integration guards — complete
 
