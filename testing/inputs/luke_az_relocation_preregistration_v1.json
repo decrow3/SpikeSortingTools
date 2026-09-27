@@ -1,0 +1,48 @@
+{
+  "schema": "luke-az-relocation-preregistration-v1",
+  "status": "frozen_before_template_outcomes",
+  "frozen_at": "2026-09-26T20:55:00-07:00",
+  "source_templates": "testing/outputs/luke_au_cpu_preparation/full_probe_extraction_v1/ba_attempt4/full_probe_final_label_templates.npz",
+  "target_channel_ids": "imec1.ap#AP202 through imec1.ap#AP383 inclusive",
+  "occupied_motion_states_um": [0.0, -40.0, -80.0, -120.0, -160.0, -200.0, -240.0],
+  "placement_enumeration": {
+    "base_lattice_um": 40.0,
+    "base_bounds": "all 40 um multiples from negative to positive full geometry depth span inclusive",
+    "geometric_prefilter": "for every base+state total shift, at least one exact same-column source-to-target mapping must exist",
+    "zero_total_shift_allowed": false,
+    "ordering": [
+      "ascending maximum absolute base+state shift",
+      "ascending absolute base shift",
+      "ascending signed base shift"
+    ],
+    "candidate_choice": "first passing base in the frozen order"
+  },
+  "per_state_gates": {
+    "energy_denominator": "original measured 384-channel template energy",
+    "minimum_energy_on_actual_182_channel_target": 0.99,
+    "minimum_exact_inverse_centered_cosine": 0.99,
+    "inverse_ptp_ratio_range": [0.98, 1.02],
+    "interpolation": false,
+    "padding": false,
+    "extrapolation": false
+  },
+  "native_clone_gate": {
+    "comparison_bank": "all 90 measured candidate templates at native position, restricted to the actual 182-channel target",
+    "reject_if_centered_cosine_at_least": 0.99,
+    "and_ptp_ratio_inclusive": [0.98, 1.02],
+    "applies_at_every_occupied_state": true
+  },
+  "cohort_rule": {
+    "minimum_to_continue": 20,
+    "maximum": 30,
+    "if_20_to_29": "use all",
+    "if_more_than_30": "take five from each of six equal target-depth strata, then globally fill any empty quota",
+    "within_stratum_rank": [
+      "descending full-probe standardized PTP",
+      "ascending raw adjacent ISI under 1 ms fraction",
+      "descending valid rest waveform count",
+      "ascending unit id"
+    ],
+    "selection_outcome_blind": true
+  }
+}
