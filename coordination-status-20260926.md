@@ -879,6 +879,32 @@ BR conservatively charges 30.00/600 s, taking cumulative h1 to
 waveform/QDA execution, engine integration, h5/BH payload or service launch
 occurred. BR stops here.
 
+### BV h1 BQ call-boundary source audit, 2026-09-27
+
+BV is complete. At executed DARTsort source `fdaad621...`, the apparent
+one-call pcmerge → TMM → agglomerate path is only nested function
+composition. Splitting after TMM neither resets RNG nor selects alternate
+agglomeration/postprocessing, provided the exact returned in-memory sorting
+(including ephemeral GMM properties), inputs/configs and template construction
+are preserved. The production wrapper passes `template_data=None`, so a
+separate call supplying templates is equivalent only after the same
+GMM-aware flatten and with templates built from precisely that state. Gate P's
+identity flatten map and equal sorting/template/sampling/RNG lineage establish
+that condition for BQ's paired prospective arms.
+
+This does not repair Gate H: BQ's reconstructed pre-agglomeration state differs
+from the historical accepted state, whose exact TMM-boundary arrays and
+templates were not saved. The h5 BU `.697/.693` overlap values compare a fixed
+pre-label-map partition with historical final, not a saved prospective-final
+partition (absent), and cannot resolve historical equivalence. Full source
+references and conditions are in
+`docs/dartsort_bq_bv_call_boundary_20260927.md`.
+
+BV charges a conservative 30.00 s, taking cumulative h1 to
+**6,893.22/14,400 s**; BI remains separate. No fixture, duplicate BU graph test,
+raw/GPU work, real stage, replay, sort, voltage access, BH/h5 source copying or
+service launch occurred.
+
 ### BU h1 independent review of completed BQ, 2026-09-27
 
 BU is complete and is **shareable with caveats**. The three requested hashes
