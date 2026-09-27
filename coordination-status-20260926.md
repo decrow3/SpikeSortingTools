@@ -803,3 +803,39 @@ Known cumulative h1 charge is 6,773.22/14,400 s; BI's 2,440.86 s remains
 separate. No GPU, real data/raw voltage, sort, stage replay, production
 integration, external publication or blocked payload access occurred. BO is
 complete; no BP specification is present, so this independent branch stops.
+
+### BP h1 agglomeration provenance semantic repair, 2026-09-27
+
+BP is complete at commit `7de2522`. The BO adapter now uses a 40-hex Git object
+ID rather than confusing it with 64-hex artifact SHA-256 values; accepts only
+strict boolean masks and integer row/label identities; enforces the declared
+pre-stage namespace; preserves signed/directed raw observations; and stores
+separate distance- and force-threshold upper-triangle linkage representations.
+Finite zero, positive/negative infinity and missingness remain distinct.
+
+QDA requested, firing-eligible, upper-triangle scheduled, early-exit/unknown,
+completed and accepted states are explicit. An unknown or early-exit pair is
+not called a completed rejection. The independent design review records that
+same final components do not imply the same pairwise route, zero does not prove
+QDA completion, expanded linkage does not prove a direct edge, and a symmetric
+linkage input does not prove the raw observation was symmetric. The three-node
+counterexample has the same final `A-B-C` component under two different
+force/QDA edge histories.
+
+The final targeted BP suite passed 10/10 in 0.22 s. It was run once earlier
+during repair, before separating the distance/force infinity substitutions;
+that invocation also passed 10/10, so no unchanged suite was repeated. No old
+21/7/10 suite was rerun. The initial commit attempt failed on the sandbox's
+read-only `.git/index.lock`; that failure is retained in the receipt and the
+approved escalated retry succeeded.
+
+Future recorder-off/on controls require one shared frozen RNG state and one
+shared frozen template-construction state in addition to immutable event rows.
+That supports a prospective same-state noninterference inference only; it does
+not reconstruct historical state or historical route evidence.
+
+BP known metered process wall is 22.10 s and the conservative charge is
+30.00/600 s. Known cumulative h1 charge is 6,803.22/14,400 s; BI remains
+separate. No BH payload, real/raw data, GPU, QDA execution, replay, sort,
+voltage or engine integration was used. A possible W2 run still awaits user
+approval and was not launched. BP stops at this receipt and concise review.

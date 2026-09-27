@@ -66,5 +66,13 @@ identity and namespaces, missingness versus infinity, and the graph
 counterexample.
 
 No BH payload, production engine integration, real data, GPU work, sort, or
-replay was used. Prior cumulative huklaban1 time remains 6773.22 seconds; BI is
-accounted separately. BP stayed within its 600-second cap.
+replay was used. BP's conservative charge is 30.00/600 seconds, taking
+cumulative huklaban1 time from 6773.22 to 6803.22/14400 seconds; BI is accounted
+separately.
+
+Recorder-off/on equivalence is prospective experimental evidence only when the
+two arms share one frozen RNG state and one frozen template-construction state;
+deep-copying event rows alone is insufficient. A future same-state control can
+test whether recording perturbs the stage. It cannot retrospectively prove that
+an historical run used an uncaptured state or reproduce missing historical
+route evidence.
