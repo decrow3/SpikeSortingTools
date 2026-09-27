@@ -62,12 +62,19 @@ motion object:
   supplied rank-5 TSVD basis/mean, whitening=`none`, RNG state, worker/rank
   assignment, device/dtype, distance settings, threshold and linkage.
 
-The QDA source uses candidates, log likelihoods and responsibilities only
-(`util/data_util.py:1501-1524`; `clustering/agglomerate.py:537-571`). The silently
-empty `source_proportions` item is therefore a provenance defect to record, but
-it is not an input to this construction/distance comparison and is not used by
-the shown QDA call. QDA still must not be run from the public BQ packet because
-its complete responsibility state and coverage semantics are absent.
+In addition, native radial weights must be computed from the identical **full
+post-TMM population** in both arms. Construction rows are only the template
+subsample. Reusing the full pre-grouping sorting for the actual arm but the
+selected construction rows for the zero arm is an invalid population contrast.
+
+The numerical QDA context directly uses source labels, candidates and log
+likelihoods (`clustering/agglomerate.py:537-571`). `get_gmm_scores` currently
+also asserts and packages responsibilities (`util/data_util.py:1501-1524`), but
+`qda()` does not read that member. The silently empty `source_proportions` item
+is therefore a provenance defect to record, but it is not a numerical input to
+this construction/distance comparison or the shown QDA context. QDA still must
+not be reconstructed from the old public BQ packet because its executed state
+and requested-pair coverage were incomplete there.
 
 ### Required equality sentinels before interpretation
 
@@ -80,8 +87,10 @@ its complete responsibility state and coverage semantics are absent.
    do not require their shapes or channel indices to match.
 4. Save native templates, per-channel counts, radial weights, spatial IoU,
    symmetric distances, directed shifts, direct threshold mask, linkage-expanded
-   mask and component map. Verify symmetry/antisymmetry and strict-upper-triangle
-   accounting.
+   mask and component map. Verify distance symmetry and strict-upper-triangle
+   accounting. Preserve the directed shift matrix under its declared source
+   convention; do not require antisymmetry unless that executed source path
+   explicitly guarantees it.
 5. Run a zero-versus-zero repeat sentinel with the same frozen membership. Any
    difference beyond the declared numeric tolerance is implementation noise and
    blocks scientific interpretation.
@@ -165,4 +174,3 @@ present. Therefore pair 1 (parent 91, units 6/9) and pair 5 (parent 12, units
 535/538) still satisfy worker-reported inequalities, but their intervals and
 finite replicate accounting are not independently reproduced. H5's healthy
 sidecar work was not duplicated.
-
