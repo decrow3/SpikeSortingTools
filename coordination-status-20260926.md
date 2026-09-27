@@ -840,3 +840,41 @@ separate. No BH payload, real/raw data, GPU, QDA execution, replay, sort,
 voltage or engine integration was used. The user approved the BQ W2 diagnostic
 at 14:11 UTC, with h5 as sole executor; h1 did not launch it and remains
 review-only. BP stops at this receipt and concise review.
+
+### BR h1 BQ worker orchestration review, 2026-09-27
+
+BR is complete. Independent review of DARTsort checkout
+`edcfe1b51d672b4136eb13cc78c0875da804b851` found that another keyword repair
+alone is insufficient. Motion and agglomeration APIs are keyword-only; the
+effective accepted prefix is pcmerge → TMM → agglomerate; no-template
+agglomeration flattens labels/GMM properties in place, while supplied templates
+skip flattening; and reclustering requires dense template IDs. The worker must
+freeze one dense state, retain sparse→flat lineage, capture the actual recluster
+map, and compose it with the actual depth reorder rather than substituting a
+union-derived partition.
+
+The checkout also differs consequentially from installed DARTsort 0.5.16: it
+uses in-place flatten/reorder and negates the correlation lag under explicit
+`reference_peak_minus_source_peak_v1` semantics. Exact imported source identity
+is therefore required. Current union is QDA OR force OR optional SI followed by
+binary reclustering; direct force edges, expanded co-members and component
+changes are distinct. QDA zeros do not establish completion. Dedup happens
+before depth reorder, sets discarded labels to -1 and must retain row lineage.
+
+The targeted BR suite passed 9/9 in 0.23 s. It demonstrates keyword-only source
+signatures, version differences, prefix refusal, sparse flatten/map composition,
+permutation-invariant O(N) partition accounting, frozen state-boundary ISIs,
+missing-both Gate H failure, unknown QDA status and direct-versus-expanded force
+counts. No old suite was rerun. The required end-to-end dummy assertions are in
+`docs/dartsort_bq_worker_contract_br_20260927.md`.
+
+Recommendation is zero launches now. After h5 reconciles the durable ledger and
+its one mocked traversal passes, the coordinator may request exactly one finite
+infrastructure extension within unchanged BQ budgets. Scientific mismatch is
+not retryable. D2L-only BQ cannot establish motion specificity; no S/W2 arm was
+added.
+
+BR conservatively charges 30.00/600 s, taking cumulative h1 to
+6,833.22/14,400 s; BI remains separate. No GPU, raw/real data, sort, replay,
+waveform/QDA execution, engine integration, h5/BH payload or service launch
+occurred. BR stops here.
