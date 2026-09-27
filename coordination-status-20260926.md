@@ -316,3 +316,23 @@ therefore capped at 90 candidates, two CPU threads, 20 GB RAM, 60 minutes wall
 time and 0.2 GB persistent output. Reaching a cap stops with a report rather
 than silently dropping candidates. The corrected design is ready for a user
 decision and awaits explicit extraction authorization; no job was launched.
+
+### AZ approved batch received, 2026-09-26 17:25 PDT
+
+The complete approved AZ instruction is saved as `AZ_APPROVED_BATCH.md`.
+Receipt is acknowledged before its first checkpoint deadline of 2026-09-27
+12:23 UTC (05:23 PDT). AZ removes the separate extraction and 20--30-donor
+cohort approval pauses within its stated bounds. This host owns CPU donor
+measurement/qualification, generator/scorer qualification and CPU analysis;
+huklaban5 owns the hybrid worker and GPU arms. The accepted D2L-v1 hash remains
+`85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9`.
+
+The first authorized extraction attempt ran from 17:20:11 to 17:23:08 PDT and
+failed closed before caching/templates because exact `ibllikecmr` preprocessing
+changed the expected 384-channel contract. The failed service, log,
+`RUNNING.json`, prescreen and `FAILED.json` are preserved. This is currently an
+infrastructure/preflight mismatch, not a donor scientific verdict. It used
+about 2.95 process-wall minutes of the cumulative 120-minute extraction budget.
+The next action is a bounded read-only audit of the removed channel IDs, then an
+equivalent repair or a concrete scientific blocker; no GPU, sort or voltage
+write is authorized on this host.

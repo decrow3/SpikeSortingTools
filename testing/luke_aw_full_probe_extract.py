@@ -37,7 +37,8 @@ HUB_MASK = Path(
     "/media/huklab/Data/NPX/Ryansorting/Luke/incoming/censor_mask_v1/"
     "censor_mask_v1.csv"
 )
-OUT = ROOT / "testing/outputs/luke_au_cpu_preparation/full_probe_extraction_v1"
+OUT_BASE = ROOT / "testing/outputs/luke_au_cpu_preparation/full_probe_extraction_v1"
+OUT = OUT_BASE / os.environ.get("LUKE_AW_ATTEMPT", "attempt2")
 SCRATCH = Path("/dev/shm/luke_aw_full_probe_extract_v1")
 START_S = 900.0
 END_S = 1240.0
@@ -135,6 +136,50 @@ def build_sorting(times: np.ndarray, channels: np.ndarray, labels: np.ndarray, f
         labels=np.asarray(labels, dtype=np.int32),
         sampling_frequency=fs,
     )
+
+
+def ibllikecmr_retain_measured_bad_channels(rec):
+    """Exact ibllikecmr on good channels while retaining real bad-channel traces.
+
+    DARTsort's standard strategy removes detected bad channels. The AZ support
+    denominator is explicitly all 384 measured channels. We therefore use the
+    same detected-good set for both common references and the same per-channel
+    noise scaling, but retain the real trace of any detected bad channel rather
+    than padding or extrapolating it. The returned good-channel traces are
+    numerically checked against the ordinary removed-channel construction.
+    """
+    import spikeinterface.full as si
+
+    filtered = rec.astype(np.float32)
+    filtered = si.highpass_filter(filtered)
+    if "inter_sample_shift" in filtered.get_property_keys():
+        filtered = si.phase_shift(filtered)
+    bad_ids, bad_labels = si.detect_bad_channels(filtered, seed=0)
+    bad_ids = np.asarray(bad_ids)
+    all_ids = np.asarray(filtered.get_channel_ids())
+    good_ids = all_ids[~np.isin(all_ids, bad_ids)]
+    if not good_ids.size:
+        raise RuntimeError("bad-channel detector removed every channel")
+
+    first_full = si.common_reference(filtered, ref_channel_ids=good_ids.tolist())
+    noise = si.get_noise_levels(
+        first_full,
+        return_in_uV=False,
+        random_slices_kwargs=dict(seed=0, num_chunks_per_segment=100),
+    )
+    retained = si.scale(first_full, gain=1.0 / noise)
+    retained = si.common_reference(retained, ref_channel_ids=good_ids.tolist())
+    retained = retained.astype("float32")
+
+    # Independent operator construction for the good subset, reusing only the
+    # already measured per-channel noise values. This does not trigger a second
+    # noise/random-read pass.
+    good_pos = np.flatnonzero(np.isin(all_ids, good_ids))
+    ordinary = filtered.select_channels(good_ids.tolist())
+    ordinary = si.common_reference(ordinary)
+    ordinary = si.scale(ordinary, gain=1.0 / noise[good_pos])
+    ordinary = si.common_reference(ordinary).astype("float32")
+    return retained, ordinary, bad_ids, np.asarray(bad_labels)
 
 
 def build_templates(recording, sorting, template_cfg, waveform_cfg, computation_cfg, tsvd):
@@ -235,7 +280,6 @@ def run() -> None:
     from experiments.dataset_pipeline.pipeline import resolved_sorter_config
     from spikeinterface.extractors import read_spikeglx
     from dartsort.templates import TemplateData
-    from dartsort.util.preprocess_util import preprocess
 
     static = HANDOFF / "static_w2"
     config = json.loads((static / "config.json").read_text())
@@ -299,9 +343,39 @@ def run() -> None:
     end_frame = int(window["end_frame"])
     rec = raw.frame_slice(start_frame=start_frame, end_frame=end_frame)
     rec.reset_times()
-    pre = preprocess(rec, "ibllikecmr", "float32")
+    pre, ordinary_good, bad_ids, bad_labels = ibllikecmr_retain_measured_bad_channels(rec)
     if pre.get_num_channels() != 384 or not np.array_equal(pre.get_channel_ids(), source_ids):
-        raise RuntimeError("preprocessing changed the sealed 384-channel contract")
+        raise RuntimeError("retained-channel preprocessing changed the sealed 384-channel contract")
+    good_ids = source_ids[~np.isin(source_ids, bad_ids)]
+    check_chunks = [
+        (0, min(round(fs), pre.get_num_frames())),
+        (pre.get_num_frames() // 2, pre.get_num_frames() // 2 + round(fs)),
+        (max(0, pre.get_num_frames() - round(fs)), pre.get_num_frames()),
+    ]
+    good_equivalence_max_abs = 0.0
+    for a, b in check_chunks:
+        retained_good = pre.get_traces(a, b, channel_ids=good_ids.tolist())
+        ordinary_trace = ordinary_good.get_traces(a, b)
+        good_equivalence_max_abs = max(
+            good_equivalence_max_abs,
+            float(np.max(np.abs(retained_good - ordinary_trace))),
+        )
+    if good_equivalence_max_abs > 1e-5:
+        raise RuntimeError(
+            f"retained-channel repair changed ordinary good traces by {good_equivalence_max_abs}"
+        )
+    atomic_json(
+        OUT / "preprocessing_repair_receipt.json",
+        {
+            "status": "equivalent_good_channels_plus_measured_bad_channels",
+            "detected_bad_channel_ids": [str(x) for x in bad_ids],
+            "channel_labels_in_source_order": [str(x) for x in bad_labels],
+            "good_channel_count": int(good_ids.size),
+            "retained_channel_count": int(pre.get_num_channels()),
+            "good_trace_equivalence_max_abs_three_1s_chunks": good_equivalence_max_abs,
+            "bad_channel_policy": "retain actual filtered/referenced/noise-scaled trace; no padding or extrapolation",
+        },
+    )
 
     if SCRATCH.exists():
         shutil.rmtree(SCRATCH)
@@ -477,6 +551,8 @@ def run() -> None:
         "hub_mask_sha256": digest(HUB_MASK),
         "masks_numerically_equal": True,
         "spatial_whitening": "disabled because compact handoff lacks a full-probe residual model; support measured on standardized temporally denoised templates",
+        "retained_detected_bad_channel_ids": [str(x) for x in bad_ids],
+        "ordinary_good_trace_equivalence_max_abs": good_equivalence_max_abs,
         "persistent_bytes": persistent,
         "scratch_removed_on_exit": True,
         "outputs": {p.name: digest(p) for p in files},

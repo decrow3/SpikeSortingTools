@@ -13,6 +13,7 @@ export OMP_NUM_THREADS=2
 export MKL_NUM_THREADS=2
 export OPENBLAS_NUM_THREADS=2
 export PYTHONPATH=/home/huklab/Documents/DARTsort/src:/home/huklab/Documents/DARTsort
+export LUKE_AW_ATTEMPT=attempt2
 
 cd "$repo"
 exec /usr/bin/timeout --signal=TERM --kill-after=120s 3600s \
