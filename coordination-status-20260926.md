@@ -1,5 +1,62 @@
 # Luke motion coordination status
 
+## BC spatial reliability diagnostic — complete; hybrid remains blocked
+
+BC was explicitly approved by the user at 2026-09-27 05:08 UTC. It remains a
+diagnostic measurement only; AZ hybrid launch stays scientifically blocked.
+
+The durable service started at 2026-09-26 22:15:30 PDT, survived launcher
+disconnection, and completed successfully at 22:57:02 PDT. Its exact repeated
+full-template bank passed reproduction (maximum absolute difference 0; minimum
+centered cosine 0.9999999999999998), so interpretation was allowed. The
+independent wall watchdog was cancelled after successful completion.
+
+- Service: `luke-bc-spatial-splits-attempt5-20260926.service` (success)
+- Output: `testing/outputs/luke_au_cpu_preparation/full_probe_extraction_v1/bc_attempt5/`
+- Durable log: `testing/outputs/luke_au_cpu_preparation/full_probe_extraction_v1/bc_attempt5/service.log`
+- Live status: `testing/outputs/luke_au_cpu_preparation/bc_spatial_reliability_v1/bc_attempt5_live_status.json`
+- Prelaunch receipt: `testing/outputs/luke_au_cpu_preparation/bc_spatial_reliability_v1/bc_prelaunch_receipt.json`
+- Frozen domains: SHA-256 `bea435cbc61af4e661e5a9476416657d20fc4d14d72b4b909465493844e19d77`
+- Original measured bank remains preserved at SHA-256 `e9bc0db1a0bf8b197ec9c0ceebba790e9cbfdf1a39a007c9868ebafc8553172f`.
+
+The domain freeze completed before a new voltage read. Each donor's domain is
+fixed from its previously measured best minimum all-state retention; no repeat
+outcome can alter placement. The left and right memberships are disjoint, but
+both use the same sealed 5 x 121 temporal basis (array SHA-256
+`6114d7e3c58a20eacae3f52cd87fef10df65f63fcefce972b2ec50a7893393d9`)
+and the same preprocessing/common-reference operator. They are therefore not
+statistically independent, and BC cross-products will be reported as
+descriptive rather than unbiased signal-energy estimates.
+
+Each donor has disjoint 200-spike left/right memberships. Across the frozen
+per-state support domains, centered cosine is 0.938 median / 0.898 P10 and
+normalized agreement is 0.937 median / 0.896 P10. Those domains hold 91.3% of
+the full-probe measured energy. Outside them, median agreement is 0.289 and
+only 8.7% of energy remains. Seventy-six of 90 donors have minimum per-state
+agreement at least 0.90. The result supports a narrower signal-supported
+per-state benchmark and independent-basis/bootstrap estimator redesign, but it
+does not alter AZ's frozen rule: the same five units (407, 415, 433, 461, 512)
+qualify and hybrid launch remains blocked.
+
+Resource preflight had 186,094,612,480 bytes free on `/media/huklab/Data`,
+96,965,005,312 bytes free on `/dev/shm`, and 182,105,320 KiB MemAvailable. No
+duplicate AW/BC worker was found. The service is capped at 3,500 s, 20 GB RAM,
+two numerical threads and one reader. Actual service elapsed time was
+2,440.426 s and summed service CPU was 2,523.455 s. Prior extraction wall was
+3,272.631 s, making cumulative extraction wall 5,713.057/7,200 s. Conservative
+BC wall including prelaunch and analysis was 2,485.246/3,600 s.
+
+Known extraction CPU is 3,233.642 s. Qualification, explanation and BC
+preflight add 48.86 s metered CPU; a conservative 120 s reserve covers
+unmetered tests and orchestration. Conservative active CPU before launch is
+3,402.502 s before service. Adding service and measured analysis CPU gives a
+conservative 5,944.887/14,400 s. Process wall and summed CPU are deliberately
+reported separately. This launch used BA recovery slot 2 of 3 and BC attempt 1
+of at most 2.
+
+Local report: `testing/outputs/luke_au_cpu_preparation/bc_spatial_reliability_v1/README.md`.
+Shared packet: `/mnt/NPX/Luke/DARTsort_motion_experiments/az_hybrid_h1_bc_spatial_reliability_v1/`.
+
 Updated: 2026-09-26T21:04:00Z (2026-09-26 14:04:00 PDT)
 
 ## Verdict first
