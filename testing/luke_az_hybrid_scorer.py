@@ -96,16 +96,34 @@ def associate_full_train(truth_samples, donor_ids, output_samples, output_labels
     for row in rows:
         by_donor[row["donor_id"]].append(row)
     associations = []
-    for donor in sorted(by_donor):
+    for donor in sorted(map(int, np.unique(np.asarray(donor_ids, dtype=np.int64)))):
         ranked = sorted(
             by_donor[donor],
             key=lambda r: (-r["exclusive_tp"], -r["precision"], -r["recall"], r["label"]),
         )
+        positive = [row for row in ranked if row["exclusive_tp"] > 0]
+        if not positive:
+            associations.append(
+                {
+                    "donor_id": donor,
+                    "association_status": "unmatched",
+                    "primary_label": None,
+                    "exclusive_tp": 0,
+                    "full_train_recall": 0.0,
+                    "full_train_precision": None,
+                    "runner_up_label": None,
+                    "tp_margin": None,
+                    "exact_rank_tie": False,
+                }
+            )
+            continue
+        ranked = positive
         best = ranked[0]
         second = ranked[1] if len(ranked) > 1 else None
         associations.append(
             {
                 "donor_id": donor,
+                "association_status": "matched",
                 "primary_label": best["label"],
                 "exclusive_tp": best["exclusive_tp"],
                 "full_train_recall": best["recall"],
@@ -122,7 +140,8 @@ def associate_full_train(truth_samples, donor_ids, output_samples, output_labels
         )
     labels_to_donors = defaultdict(list)
     for row in associations:
-        labels_to_donors[row["primary_label"]].append(row["donor_id"])
+        if row["primary_label"] is not None:
+            labels_to_donors[row["primary_label"]].append(row["donor_id"])
     false_merge_candidates = [
         {"label": int(label), "donor_ids": sorted(ds), "donor_count": len(ds)}
         for label, ds in sorted(labels_to_donors.items())
@@ -153,7 +172,12 @@ def score_with_frozen_association(
     oe = np.asarray(output_is_episode, dtype=bool)
     if te.shape != truth.shape or oe.shape != output.shape:
         raise ValueError("episode flags must align to their event arrays")
-    primary = {int(r["donor_id"]): int(r["primary_label"]) for r in associations}
+    primary = {
+        int(r["donor_id"]): (
+            None if r["primary_label"] is None else int(r["primary_label"])
+        )
+        for r in associations
+    }
     if set(primary) != set(map(int, np.unique(donors))):
         raise ValueError("association must cover every donor exactly once")
 
@@ -165,7 +189,12 @@ def score_with_frozen_association(
         all_ix = np.flatnonzero(np.abs(output - sample) <= tolerance)
         any_label_counts[ti] = all_ix.size
         any_label_sets.append(sorted(set(map(int, labels[all_ix]))))
-        compatible = all_ix[labels[all_ix] == primary[int(donor)]]
+        label = primary[int(donor)]
+        compatible = (
+            np.empty(0, dtype=np.int64)
+            if label is None
+            else all_ix[labels[all_ix] == label]
+        )
         pre_counts[ti] = compatible.size
         for oi in compatible:
             edges.append(
@@ -192,11 +221,17 @@ def score_with_frozen_association(
     rows = []
     merge_labels = defaultdict(list)
     for donor, label in primary.items():
-        merge_labels[label].append(donor)
+        if label is not None:
+            merge_labels[label].append(donor)
     for donor in sorted(primary):
         for region, flag in (("episode", True), ("rest", False)):
             truth_ix = np.flatnonzero((donors == donor) & (te == flag))
-            output_ix = np.flatnonzero((labels == primary[donor]) & (oe == flag))
+            label = primary[donor]
+            output_ix = (
+                np.empty(0, dtype=np.int64)
+                if label is None
+                else np.flatnonzero((labels == label) & (oe == flag))
+            )
             tp_truth = [i for i in truth_ix if int(i) in match_by_truth]
             tp_output = {
                 match_by_truth[int(i)][0]
@@ -214,13 +249,15 @@ def score_with_frozen_association(
                     "tp": tp,
                     "fn": int(truth_ix.size - tp),
                     "fp": int(output_ix.size - tp),
-                    "recall": float(tp / truth_ix.size) if truth_ix.size else float("nan"),
-                    "precision": float(tp / output_ix.size) if output_ix.size else float("nan"),
+                    "recall": float(tp / truth_ix.size) if truth_ix.size else None,
+                    "precision": float(tp / output_ix.size) if output_ix.size else None,
                     "preexclusive_compatible_candidates": int(pre_counts[truth_ix].sum()),
                     "preexclusive_duplicate_candidates": int(np.maximum(pre_counts[truth_ix] - 1, 0).sum()),
                     "preexclusive_any_label_candidates": int(any_label_counts[truth_ix].sum()),
                     "ambiguous_truth_events": int(sum(len(any_label_sets[i]) > 1 for i in truth_ix)),
-                    "primary_label_shared_by_donors": len(merge_labels[primary[donor]]),
+                    "primary_label_shared_by_donors": (
+                        0 if label is None else len(merge_labels[label])
+                    ),
                 }
             )
     match_rows = [
