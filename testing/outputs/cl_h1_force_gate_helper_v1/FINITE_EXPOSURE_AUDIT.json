@@ -1,0 +1,17 @@
+{
+  "status": "bounded_nonmarginal_sensitivity",
+  "symmetric_trim_samples_each_side": 89,
+  "block_length_samples": {
+    "149998": 9,
+    "149999": 39
+  },
+  "primary_nominal_exposure_ratio": 0.4666666666666667,
+  "exact_discrete_exposure_ratio_min": 0.46681624530897337,
+  "exact_discrete_exposure_ratio_max": 0.4668162463078091,
+  "relative_difference_min": 0.0003205256620857355,
+  "relative_difference_max": 0.00032052780244806733,
+  "closest_passing_bootstrap_upper_margin_to_0p50": 0.03872894077401068,
+  "closest_failing_bootstrap_upper_margin_above_0p50": 0.17164179104477606,
+  "existing_edge_decisions_marginal_to_exposure_approximation": false,
+  "interpretation": "42/90 is the frozen primary approximation, not an exact finite-window exposure ratio. The exact correction is about 0.0321 percent and cannot change any current W2 decision. One-sample block differences change the exact ratio by about 1e-9 absolute."
+}

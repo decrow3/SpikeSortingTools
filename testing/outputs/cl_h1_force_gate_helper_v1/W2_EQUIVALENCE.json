@@ -1,0 +1,15 @@
+{
+  "status": "exact",
+  "reference": "/mnt/NPX/Luke/DARTsort_motion_experiments/cj_force_gate_w2_20260927/v2",
+  "portable_helper_commit": "18b0fbb",
+  "si_status": "absent",
+  "edge_results_csv_byte_equal": true,
+  "rest_blocks_csv_byte_equal": true,
+  "graph_arrays_equal": {
+    "secondary_pass_mask": true,
+    "accepted_direct_mask": true,
+    "gated_force_mask": true,
+    "final_union_mask": true,
+    "component_ids": true
+  }
+}
