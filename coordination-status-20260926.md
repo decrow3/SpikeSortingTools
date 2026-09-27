@@ -1,5 +1,22 @@
 # Luke motion coordination status
 
+## CA h1 review of completed BV v1 packet — descriptive only
+
+The newly published BV v1 packet is complete and hash-manifested, but it cannot
+support a corrected final call. Six of 18 pairs refit a different lag in episode
+than rest, interval columns cover only difference projection, and the packet
+does not retain event waveforms, 5-second block IDs, frozen support or noise
+vectors. Therefore its sole `supports_merging` row (pair 5, units 535/538,
+parent 12) is useful descriptive compatibility evidence but is inconclusive
+under BZ v2. H5 should first check for retained worker-side event arrays and
+rescore them with v2; mean waveforms alone cannot reconstruct the required
+common-block intervals. No new raw read is justified yet. Report:
+`docs/dartsort_ca_bv_packet_review_20260927.md`.
+
+The read-only packet review charges a further 120 s. Total CA charge is 450/900
+s and cumulative historical active elapsed is 8153.22/14400 s. Receipt:
+`testing/outputs/ca_h1_bv_packet_review_v1/resource_receipt.json`.
+
 ## CA h1 BZ helper v2 repair — complete
 
 BZ v1 is preserved for audit, but v2 is authoritative. The repaired helper
