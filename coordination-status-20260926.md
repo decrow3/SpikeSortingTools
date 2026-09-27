@@ -949,6 +949,37 @@ representation and transform direction. The reviewer's corrected W2/W3 0.1 s
 figures (`>20 µm`: 0.2%/0.0%; P95: 11.2/9.0 µm) are recorded as unverified
 external context, not recomputed evidence or a lower bound on true error.
 
+### BX h1 independent waveform-pair design review, 2026-09-27
+
+BX is complete: **needs revision before execution, but the bounded question is
+useful**. The proposed balanced 18-pair panel, common-bin gate, held-out lag and
+fixed multichannel support can test qualified waveform compatibility or stable
+difference. It cannot certify biological identity, truth-label merges, or tell
+duplicate matching from two overlapping spikes.
+
+Required corrections are: parent-clustered rather than 18-IID inference; exact
+half/state composition; complete 18-channel physical support through Luke's
+~200-µm episodes; rest-stratified primary plus a separately gated episode
+transfer supplement; frozen signed lag/padding/channel conventions; amplitude,
+noise, gain and coverage controls beside cosine; 5-s-block and parent-level
+bootstrap rather than event bootstrap; and explicit accounting for the 30-sample
+partner exclusions. Different-parent pairs remain controls, not known-different
+cells. Calls are narrowed to waveform compatibility or evidence against a merge
+on the qualified state/support.
+
+The 635 MB full-row-read estimate is nominally plausible for 7,200 × 121 ×
+384 int16 samples (~638 MiB), but filesystem amplification, filtering and
+temporaries are unknown. The proposed 900 s CPU, 2 GB RAM and 25 MB output are
+unmeasured. A frozen manifest and cost preflight are the next dependency; no
+launch is authorized by this review. Full report:
+`docs/dartsort_bx_waveform_pair_design_review_20260927.md`.
+
+BX charges a conservative 30.00 s, taking cumulative h1 to
+**6,953.22/14,400 s**; BI remains separate. No voltage/raw data, GPU, held BH
+payload, real analysis, new framework/test campaign, sort, replay or service
+launch occurred. Next unused queue label is BY.
+
+
 
 ### BU h1 independent review of completed BQ, 2026-09-27
 
