@@ -1,5 +1,31 @@
 # Luke motion coordination status
 
+## CM h1 cached anchor-noise calibration — complete; W3 replay audit pending
+
+The CM method was frozen as `36da5eb` before outcomes. On predetermined CK units
+23/120, reliability rises strongly from 25 to 100 events and mean templates
+outscore medians. At 100 events, observed median scores are 0.767/0.839 and a
+fixed known-stable training-noise surrogate scores 0.867/0.910. Thus the current
+100-event/high-dimensional measurement can reject a stable waveform at the
+observed training-noise scale. The zero-signal control is positively biased
+(median 0.269--0.297 at 100), so the short-edge surrogate is not a calibrated
+biological null. CK remains 0/8; no threshold or estimator was replaced.
+
+The W3 capture manifest and same-run namespace/clock/schema pass independent
+checks. Post-TMM and pre-agglomeration rows/times/channels/labels match exactly;
+saved all-force final arrays match the final-sorting packet; SI is explicitly
+absent. Independently reconstructing direct edges at distance <0.3 gives 122
+edges, exactly expands to the saved 220 force relations, and unchanged QDA gives
+the saved 223-relation union. The h5 replay is still being repaired; H1 has not
+rerun the prefix or gate and will audit its sealed result when published.
+
+The revised operational ceiling is **15300 s**, recorded before exceeding the
+old 14400-s ceiling. Interim conservative accounting reserves 300 s of the
+remaining CL allowance for completed capture checks and charges 300/900 CM s,
+taking cumulative h1 usage from 13433.22 to **14033.22 s**. CL retains 300 s and
+CM 600 s for final W3/review work. No raw voltage, GPU, prefix, full gate, sort,
+field fit or threshold change occurred on h1.
+
 ## CL h1 portable gate and CK measurement audit — ready, W3 pending
 
 The portable unchanged CJ-v2 gate is committed as `18b0fbb` and published at
