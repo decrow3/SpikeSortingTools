@@ -1,5 +1,43 @@
 # Luke motion coordination status
 
+## CF h1 actual-field versus zero-field construction review — complete
+
+The paired 3,000-sample actual-field/zero-field control must publish two
+separate results. The primary native DARTsort result lets each arm use its own
+motion-dependent registered geometry, registered templates, per-channel counts,
+event-derived radial weights and IoU. A fixed-common-physical-support projection
+is a useful waveform diagnostic, but it must use identical physical contact
+coordinates and coverage gates; raw registered indices and padded-array energy
+are invalid because the actual field has 206 registered sites over 182 physical
+contacts while zero need not.
+
+Concrete frozen checks now cover ordered row IDs, event state, unit membership,
+basis/mean, geometry/recording/field/config/RNG/worker identity, one-use row
+accounting, finite masks/counts, native weights/IoU/distances/shifts and direct
+versus linkage-expanded graphs, plus a zero-versus-zero repeat sentinel. The
+empty `source_proportions` is an explicit provenance defect, but the reviewed
+QDA call uses candidates/log-likelihoods/responsibilities, not that field. Full
+QDA remains unavailable from the public packet.
+
+The smallest proposed same-state anchor replacement is eight depth-stratified
+D2L/BQ stage units outside disputed native force groups, 100 events in each of
+two disjoint halves, and at most 48 physical channels: 35.4 MiB logical waveform
+payload, one reader/two threads, <2 GB RAM, <100 MB output and about 4–6 minutes
+CPU. It preserves competitors/unmatched events and stops before any residual
+fit. No static-AW ID join is allowed.
+
+A single CD-sidecar availability check found no new sidecar. Pair 1 and pair 5
+therefore still meet worker-reported inequalities but do not yet have
+independently reproduced intervals/replicate accounting. H5 work was not
+duplicated. Zero omits true motion, so neither a large nor small contrast proves
+field error, cell composition, or genuine units; the failed BW/BQ criterion is
+unchanged. Full report:
+`docs/dartsort_cf_actual_zero_construction_review_20260927.md`.
+
+CF charges 300/600 s, taking historical cumulative h1 usage to
+**10433.22/14400 s**. No raw/voltage access, GPU work, construction, full
+18-pair rescore, residual fit, QDA, sort or launch occurred.
+
 ## CE h1 full-channel review and anchor correction — CD cohort withdrawn
 
 The full-channel packet is complete and its two inspected raw rows are finite,
