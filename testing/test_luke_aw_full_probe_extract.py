@@ -6,6 +6,7 @@ from testing.luke_aw_full_probe_extract import (
     exact_map,
     remap,
     support_rows,
+    trace_frame_chunk,
 )
 
 
@@ -39,3 +40,18 @@ def test_support_denominator_is_total_full_probe_energy():
 def test_centered_cosine_identical():
     x = np.arange(20, dtype=np.float32).reshape(4, 5)
     assert np.isclose(centered_cosine(x, x), 1.0)
+
+
+def test_trace_frame_chunk_uses_named_frame_bounds():
+    class Recorder:
+        def get_traces(self, *args, **kwargs):
+            assert args == ()
+            assert kwargs == {
+                "start_frame": 11,
+                "end_frame": 23,
+                "channel_ids": ["AP0", "AP1"],
+            }
+            return np.zeros((12, 2), dtype=np.float32)
+
+    got = trace_frame_chunk(Recorder(), 11, 23, channel_ids=["AP0", "AP1"])
+    assert got.shape == (12, 2)

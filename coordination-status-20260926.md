@@ -337,19 +337,24 @@ The next action is a bounded read-only audit of the removed channel IDs, then an
 equivalent repair or a concrete scientific blocker; no GPU, sort or voltage
 write is authorized on this host.
 
-### AZ extraction attempt 2 resource stop, 2026-09-26 17:37 PDT
+### AZ extraction attempts 2--3 resource stop, corrected 2026-09-26 17:44 PDT
 
-The retained-channel repair independently reproduced the ordinary 383-good-
-channel operator while keeping the measured AP191 trace, but materializing the
-complete 340 s preprocessed window in `/dev/shm` raised the service cgroup above
-AZ's 20 GB RAM ceiling (about 35 GB observed). The service was stopped before
-template output, exited failed at 17:37:12 PDT, and its failed-run evidence was
-preserved. Its private RAM scratch was removed; scientific disk free space was
-174 GB. This is the first of AZ's two allowed additional infrastructure
-relaunches.
+The original attempt-2 diagnosis was incomplete. The retained-channel repair
+kept measured AP191, but the three-chunk equivalence audit supplied frame bounds
+positionally to SpikeInterface. They were interpreted as
+`segment_index,start_frame`, so the first nominal one-second check read almost
+the complete 340 s window. This, not materializing the lazy preprocessing graph,
+explains the roughly 35 GB attempt-2 observation.
 
-The final allowed relaunch uses the identical lazy SpikeInterface preprocessing
-graph directly, so DARTsort reads only requested waveform neighborhoods. It
-serializes voltage reads, allows at most two numerical threads, writes no
-preprocessed voltage, and will run under a hard 20 GB service memory limit. This
-is a memory-bounded execution repair, not a scientific-operator change.
+Attempt 3 used the identical lazy graph, one reader and a hard 20 GB service
+limit, but inherited that audit-call bug. Live inspection identified it when
+the cgroup reached 19,325,603,840 bytes. The service was stopped before the hard
+limit, required SIGKILL after its active read did not respond to SIGTERM, and
+released its allocation at 17:44:27 PDT. No template or scientific verdict was
+produced; disk free space remained 174 GB. Both additional AZ infrastructure
+relaunches are now consumed, so no fourth extraction was launched.
+
+The root cause is repaired prospectively by passing `start_frame` and
+`end_frame` as explicit keywords, with a regression test that rejects positional
+arguments. This repair is committed and ready, but rerunning it requires a new
+retry authorization. Existing independent scorer qualification remains valid.

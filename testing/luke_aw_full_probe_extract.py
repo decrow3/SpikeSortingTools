@@ -105,6 +105,15 @@ def centered_cosine(a: np.ndarray, b: np.ndarray) -> float:
     return float(np.dot(av, bv) / denom) if denom else float("nan")
 
 
+def trace_frame_chunk(recording, start_frame: int, end_frame: int, channel_ids=None):
+    """Read an explicit frame interval without positional API ambiguity."""
+    return recording.get_traces(
+        start_frame=int(start_frame),
+        end_frame=int(end_frame),
+        channel_ids=channel_ids,
+    )
+
+
 def exact_map(geom: np.ndarray, shift_um: float) -> np.ndarray:
     geom = np.asarray(geom, dtype=np.float64)
     out = np.full(geom.shape[0], -1, dtype=np.int64)
@@ -357,8 +366,8 @@ def run() -> None:
     ]
     good_equivalence_max_abs = 0.0
     for a, b in check_chunks:
-        retained_good = pre.get_traces(a, b, channel_ids=good_ids.tolist())
-        ordinary_trace = ordinary_good.get_traces(a, b)
+        retained_good = trace_frame_chunk(pre, a, b, channel_ids=good_ids.tolist())
+        ordinary_trace = trace_frame_chunk(ordinary_good, a, b)
         good_equivalence_max_abs = max(
             good_equivalence_max_abs,
             float(np.max(np.abs(retained_good - ordinary_trace))),

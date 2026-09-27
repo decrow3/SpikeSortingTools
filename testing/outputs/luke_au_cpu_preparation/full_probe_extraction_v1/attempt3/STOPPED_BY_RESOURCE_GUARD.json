@@ -1,0 +1,13 @@
+{
+  "status": "stopped_by_resource_guard",
+  "scientific_output_produced": false,
+  "reason": "equivalence audit passed frame bounds positionally; SpikeInterface interpreted them as segment_index/start_frame and read nearly the full 340 s window",
+  "observed_memory_current_bytes_before_stop": 19325603840,
+  "approved_memory_max_bytes": 20000000000,
+  "service": "luke-aw-full-probe-extract-az-attempt3-20260926.service",
+  "service_exit_status": 9,
+  "service_result": "signal",
+  "stopped_pdt": "2026-09-26T17:44:27-07:00",
+  "root_cause_fixed_prospectively": "get_traces now receives explicit start_frame/end_frame keywords",
+  "relaunch_authorized": false
+}
