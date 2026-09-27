@@ -336,3 +336,20 @@ about 2.95 process-wall minutes of the cumulative 120-minute extraction budget.
 The next action is a bounded read-only audit of the removed channel IDs, then an
 equivalent repair or a concrete scientific blocker; no GPU, sort or voltage
 write is authorized on this host.
+
+### AZ extraction attempt 2 resource stop, 2026-09-26 17:37 PDT
+
+The retained-channel repair independently reproduced the ordinary 383-good-
+channel operator while keeping the measured AP191 trace, but materializing the
+complete 340 s preprocessed window in `/dev/shm` raised the service cgroup above
+AZ's 20 GB RAM ceiling (about 35 GB observed). The service was stopped before
+template output, exited failed at 17:37:12 PDT, and its failed-run evidence was
+preserved. Its private RAM scratch was removed; scientific disk free space was
+174 GB. This is the first of AZ's two allowed additional infrastructure
+relaunches.
+
+The final allowed relaunch uses the identical lazy SpikeInterface preprocessing
+graph directly, so DARTsort reads only requested waveform neighborhoods. It
+serializes voltage reads, allows at most two numerical threads, writes no
+preprocessed voltage, and will run under a hard 20 GB service memory limit. This
+is a memory-bounded execution repair, not a scientific-operator change.

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Authorized AW CPU-only full-probe final-label template extraction.
 
-This reads W2 voltage without modifying it, caches exact ibllikecmr output in
-/dev/shm, constructs full-probe templates for the approved scalar prescreen,
-and measures support. It never launches a sort and never uses CUDA.
+This reads W2 voltage without modifying it, applies exact ibllikecmr lazily in
+bounded chunks, constructs full-probe templates for the approved scalar
+prescreen, and measures support. It never launches a sort and never uses CUDA.
 """
 
 from __future__ import annotations
@@ -38,14 +38,17 @@ HUB_MASK = Path(
     "censor_mask_v1.csv"
 )
 OUT_BASE = ROOT / "testing/outputs/luke_au_cpu_preparation/full_probe_extraction_v1"
-OUT = OUT_BASE / os.environ.get("LUKE_AW_ATTEMPT", "attempt2")
+OUT = OUT_BASE / os.environ.get("LUKE_AW_ATTEMPT", "attempt3")
 SCRATCH = Path("/dev/shm/luke_aw_full_probe_extract_v1")
 START_S = 900.0
 END_S = 1240.0
 MAX_CANDIDATES = 90
 MAX_WALL_S = 60.0 * 60.0
 MAX_PERSISTENT_BYTES = 200_000_000
-N_JOBS = 2
+# AZ allows two numerical CPU threads but only one voltage reader. DARTsort's
+# recording jobs are therefore serialized; BLAS/OpenMP are capped at two by
+# the durable launcher.
+READ_JOBS = 1
 STATES_UM = np.array([0.0, -40.0, -80.0, -120.0, -160.0, -200.0, -240.0])
 
 
@@ -377,19 +380,29 @@ def run() -> None:
         },
     )
 
+    # Keep the preprocessing graph lazy. Attempt 2 materialized the complete
+    # 340 s x 384 channel float32 recording in tmpfs; tmpfs pages count toward
+    # the process cgroup and crossed AZ's 20 GB ceiling. DARTsort asks this
+    # graph only for the waveform neighborhoods it needs, so this is the same
+    # deterministic operator with a bounded working set and a single reader.
+    # No preprocessed samples are saved or substituted.
     if SCRATCH.exists():
         shutil.rmtree(SCRATCH)
-    cache_dir = SCRATCH / "preprocessed"
-    cache_dir.parent.mkdir(parents=True, exist_ok=True)
-    cached = pre.save(
-        folder=cache_dir,
-        format="binary",
-        n_jobs=N_JOBS,
-        chunk_duration="1s",
-        progress_bar=True,
-    )
+    SCRATCH.mkdir(parents=True, exist_ok=True)
+    cached = pre
     if cached.get_num_channels() != 384:
-        raise RuntimeError("cached preprocessing lost channels")
+        raise RuntimeError("lazy preprocessing lost channels")
+    atomic_json(
+        OUT / "streaming_preprocessing_receipt.json",
+        {
+            "mode": "lazy_memory_bounded",
+            "reader_jobs": READ_JOBS,
+            "materialized_full_window": False,
+            "saved_preprocessed_voltage": False,
+            "operator": "ibllikecmr_retain_measured_bad_channels",
+            "reason": "mathematically equivalent repair after attempt2 exceeded the 20 GB cgroup cap while materializing tmpfs",
+        },
+    )
 
     full_index = {str(cid): i for i, cid in enumerate(cached.get_channel_ids())}
     crop_ix = np.asarray([full_index[str(cid)] for cid in sort_ids], dtype=np.int64)
@@ -400,9 +413,9 @@ def run() -> None:
     computation_cfg = dataclasses.replace(
         cfg.computation_cfg,
         device="cpu",
-        n_jobs_cpu=N_JOBS,
+        n_jobs_cpu=READ_JOBS,
         n_jobs_gpu=0,
-        n_jobs_small=N_JOBS,
+        n_jobs_small=READ_JOBS,
         n_jobs_small_gpu=0,
     )
     # Full-probe residual whitening cannot be reconstructed from the compact
@@ -553,6 +566,7 @@ def run() -> None:
         "spatial_whitening": "disabled because compact handoff lacks a full-probe residual model; support measured on standardized temporally denoised templates",
         "retained_detected_bad_channel_ids": [str(x) for x in bad_ids],
         "ordinary_good_trace_equivalence_max_abs": good_equivalence_max_abs,
+        "preprocessing_execution": "lazy_memory_bounded_single_reader",
         "persistent_bytes": persistent,
         "scratch_removed_on_exit": True,
         "outputs": {p.name: digest(p) for p in files},

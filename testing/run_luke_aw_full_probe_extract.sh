@@ -2,7 +2,8 @@
 set -euo pipefail
 
 repo=/home/huklab/Documents/RyanSorting/SpikeSortingTools
-out="$repo/testing/outputs/luke_au_cpu_preparation/full_probe_extraction_v1"
+attempt=${LUKE_AW_ATTEMPT:-attempt3}
+out="$repo/testing/outputs/luke_au_cpu_preparation/full_probe_extraction_v1/$attempt"
 mkdir -p "$out"
 exec >>"$out/service.log" 2>&1
 
@@ -13,7 +14,7 @@ export OMP_NUM_THREADS=2
 export MKL_NUM_THREADS=2
 export OPENBLAS_NUM_THREADS=2
 export PYTHONPATH=/home/huklab/Documents/DARTsort/src:/home/huklab/Documents/DARTsort
-export LUKE_AW_ATTEMPT=attempt2
+export LUKE_AW_ATTEMPT="$attempt"
 
 cd "$repo"
 exec /usr/bin/timeout --signal=TERM --kill-after=120s 3600s \
