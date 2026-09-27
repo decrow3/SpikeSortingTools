@@ -84,6 +84,21 @@ def test_trace_frame_chunk_rejects_large_request_before_recording_read():
     assert rec.called is False
 
 
+def test_trace_frame_chunk_rejects_wrong_real_shape():
+    class Recorder:
+        def get_num_channels(self):
+            return 2
+
+        def get_num_frames(self):
+            return 100
+
+        def get_traces(self, *args, **kwargs):
+            return np.zeros((11, 2), dtype=np.float32)
+
+    with np.testing.assert_raises(RuntimeError):
+        trace_frame_chunk(Recorder(), 11, 23, channel_ids=["AP0", "AP1"])
+
+
 def test_bounded_read_preflight_reports_forbidden_full_allocation():
     receipt = bounded_read_preflight(
         {

@@ -419,3 +419,27 @@ background, exactly once before arm branching. That restriction does not
 disable DARTsort's normal downstream operations. Configured internal whitening
 and all other downstream sorting steps remain enabled and identical in S_h,
 DZ_h and D2L_h.
+
+### BA extraction recovery approved and preflighted, 2026-09-26 20:08 PDT
+
+The user's explicit “Approve BA and resume extraction” was recorded by the hub
+at 2026-09-27 03:05 UTC. `BA_APPROVED_RECOVERY.md` preserves the complete local
+execution contract. The three prior attempts and 778 s exact extraction wall
+remain charged; 60 s is conservatively added for historically unmetered small
+setup checks, leaving 6,362 s of the original 7,200 s allowance. BA permits at
+most three additional infrastructure relaunches, not a reset.
+
+The no-voltage preflight passes for `ba_attempt4`: 10,199,918 frames, 384 source
+channels, 7,833,537,024 raw int16 bytes, and a forbidden 15,667,074,048-byte
+full float32 materialization. Explicit audit requests are capped at 30,000
+frames and 50,000,000 bytes, use named bounds and validate returned shape before
+use. The 27 guard/scorer/generator tests pass. Data free space is 186.09 GB,
+`/dev/shm` free space 96.97 GB and MemAvailable 182,274,256 kB.
+
+The real gate runs inside the hard-limited service before any template
+measurement: three exact one-second reads, all 383 ordinary-good traces within
+1e-5, AP191 exactly the expected measured bad channel, finite nonzero AP191
+RMS, no padding/extrapolation, and the declared post-ibllikecmr standardized
+pre-spatial-whitening donor domain. Any failure consumes this BA relaunch. The
+service limit is exactly 20,000,000,000 bytes, two numerical threads, one
+reader and 3,600 s inner wall time. No GPU or sort is involved.

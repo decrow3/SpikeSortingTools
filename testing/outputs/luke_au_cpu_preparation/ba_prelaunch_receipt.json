@@ -1,0 +1,85 @@
+{
+  "schema": "luke-az-ba-prelaunch-v1",
+  "status": "static_preflight_pass_real_short_read_pending_inside_service",
+  "authorization": "BA explicitly approved; hub record 2026-09-27 03:05 UTC",
+  "recorded_at": "2026-09-26T20:08:13-07:00",
+  "attempt": "ba_attempt4",
+  "accounting": {
+    "prior_exact_extraction_wall_s": 778,
+    "conservative_unmetered_setup_charge_s": 60,
+    "charged_before_launch_s": 838,
+    "original_cumulative_cap_s": 7200,
+    "remaining_before_launch_s": 6362,
+    "this_attempt_wall_cap_s": 3600,
+    "ba_additional_relaunches_authorized": 3,
+    "ba_additional_relaunches_used_before_launch": 0
+  },
+  "static_no_voltage_preflight": {
+    "window_frames": 10199918,
+    "source_channels": 384,
+    "raw_int16_window_bytes": 7833537024,
+    "full_float32_window_bytes_forbidden": 15667074048,
+    "maximum_explicit_audit_request_frames": 30000,
+    "maximum_explicit_audit_request_float32_bytes": 46080000,
+    "hard_request_frame_cap": 30000,
+    "hard_request_float32_byte_cap": 50000000,
+    "named_frame_bounds": true,
+    "returned_shape_runtime_check": true,
+    "materialize_full_window": false,
+    "reader_jobs": 1,
+    "voltage_read": false,
+    "pass": true
+  },
+  "real_short_read_gate_inside_service": {
+    "chunks": 3,
+    "frames_each": 30000,
+    "ordinary_good_channel_count": 383,
+    "maximum_good_trace_difference": 0.00001,
+    "expected_measured_bad_channel_ids": [
+      "imec1.ap#AP191"
+    ],
+    "bad_trace_requirements": [
+      "actual measured channel",
+      "finite",
+      "nonzero RMS",
+      "no padding or extrapolation"
+    ],
+    "failure_consumes_ba_relaunch": true
+  },
+  "hard_service_limits": {
+    "memory_max_bytes": 20000000000,
+    "memory_high_bytes": 18000000000,
+    "runtime_max_s": 3700,
+    "inner_timeout_s": 3600,
+    "numerical_threads": 2,
+    "reader_jobs": 1
+  },
+  "resources_before_launch": {
+    "data_filesystem_free_bytes": 186094612480,
+    "shm_free_bytes": 96965005312,
+    "mem_available_kb": 182274256,
+    "private_scratch_present": false,
+    "disk_margin_pass": true
+  },
+  "prior_services": {
+    "attempt1": "failed exit 1",
+    "attempt2": "failed exit 1",
+    "attempt3": "failed signal 9"
+  },
+  "tests": {
+    "command": "/home/huklab/Documents/DARTsort/.venv/bin/python -m pytest -q testing/test_luke_aw_full_probe_extract.py testing/test_luke_az_hybrid_scorer.py testing/test_luke_au_cpu_preparation.py",
+    "result": "27 passed in 0.26s",
+    "elapsed_s": 0.58,
+    "user_s": 1.90,
+    "system_s": 0.04,
+    "max_rss_kb": 56608
+  },
+  "hashes": {
+    "BA_APPROVED_RECOVERY.md": "9a22f15dc349852d24cf4367b1452682d87ab5f52aa36fdc71220f4a18e6b356",
+    "testing/luke_aw_full_probe_extract.py": "443af24c8270fcd184771136c31e52e087be3132ba28679c3fef9e4a26312c28",
+    "testing/test_luke_aw_full_probe_extract.py": "a8d35b3326ed0dc9c954df65e0903b0d66efaf25c75faea8f226ca165d5698cc",
+    "testing/run_luke_aw_full_probe_extract.sh": "d0ce350e923411070f70df0585308021b566deea3fde870f0023ea2b05ca4f89"
+  },
+  "launch_permitted_by_receipt": true,
+  "gpu_used": false
+}

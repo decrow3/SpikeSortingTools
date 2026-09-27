@@ -38,7 +38,7 @@ HUB_MASK = Path(
     "censor_mask_v1.csv"
 )
 OUT_BASE = ROOT / "testing/outputs/luke_au_cpu_preparation/full_probe_extraction_v1"
-OUT = OUT_BASE / os.environ.get("LUKE_AW_ATTEMPT", "attempt3")
+OUT = OUT_BASE / os.environ.get("LUKE_AW_ATTEMPT", "unconfigured")
 SCRATCH = Path("/dev/shm/luke_aw_full_probe_extract_v1")
 START_S = 900.0
 END_S = 1240.0
@@ -122,11 +122,15 @@ def trace_frame_chunk(recording, start_frame: int, end_frame: int, channel_ids=N
         raise MemoryError(
             f"trace request {requested_bytes} exceeds {MAX_DIRECT_TRACE_BYTES} float32 bytes"
         )
-    return recording.get_traces(
+    traces = recording.get_traces(
         start_frame=start_frame,
         end_frame=end_frame,
         channel_ids=channel_ids,
     )
+    expected = (frames, channels)
+    if traces.shape != expected:
+        raise RuntimeError(f"trace request returned {traces.shape}, expected {expected}")
+    return traces
 
 
 def bounded_read_preflight(window: dict) -> dict:
@@ -316,6 +320,9 @@ def write_csv(path: Path, rows: list[dict]) -> None:
 
 def run() -> None:
     started = time.monotonic()
+    attempt = os.environ.get("LUKE_AW_ATTEMPT")
+    if not attempt or not attempt.startswith("ba_attempt"):
+        raise RuntimeError("BA extraction requires an explicit ba_attempt identifier")
     OUT.mkdir(parents=True, exist_ok=True)
     atomic_json(
         OUT / "RUNNING.json",
@@ -323,7 +330,11 @@ def run() -> None:
             "status": "running",
             "pid": os.getpid(),
             "started_unix": time.time(),
-            "authorization": "user approved 2026-09-26",
+            "authorization": "BA approved by user; hub record 2026-09-27 03:05 UTC",
+            "attempt": attempt,
+            "prior_conservative_extraction_charge_s": float(
+                os.environ.get("LUKE_AW_PRIOR_CHARGED_S", "838")
+            ),
         },
     )
     masks = normalized_mask(MASK)
@@ -411,6 +422,7 @@ def run() -> None:
         (max(0, pre.get_num_frames() - round(fs)), pre.get_num_frames()),
     ]
     good_equivalence_max_abs = 0.0
+    bad_trace_rms = []
     for a, b in check_chunks:
         retained_good = trace_frame_chunk(pre, a, b, channel_ids=good_ids.tolist())
         ordinary_trace = trace_frame_chunk(ordinary_good, a, b)
@@ -418,10 +430,23 @@ def run() -> None:
             good_equivalence_max_abs,
             float(np.max(np.abs(retained_good - ordinary_trace))),
         )
+        retained_bad = trace_frame_chunk(pre, a, b, channel_ids=bad_ids.tolist())
+        if not np.all(np.isfinite(retained_bad)):
+            raise RuntimeError("retained measured bad-channel trace is nonfinite")
+        bad_trace_rms.extend(
+            np.sqrt(np.mean(np.square(retained_bad, dtype=np.float64), axis=0)).tolist()
+        )
     if good_equivalence_max_abs > 1e-5:
         raise RuntimeError(
             f"retained-channel repair changed ordinary good traces by {good_equivalence_max_abs}"
         )
+    expected_bad = ["imec1.ap#AP191"]
+    if [str(x) for x in bad_ids] != expected_bad:
+        raise RuntimeError(
+            f"detected bad channels changed from sealed {expected_bad}: {list(map(str, bad_ids))}"
+        )
+    if not bad_trace_rms or min(bad_trace_rms) <= 0:
+        raise RuntimeError("retained AP191 trace is zero and would be padding")
     atomic_json(
         OUT / "preprocessing_repair_receipt.json",
         {
@@ -431,7 +456,18 @@ def run() -> None:
             "good_channel_count": int(good_ids.size),
             "retained_channel_count": int(pre.get_num_channels()),
             "good_trace_equivalence_max_abs_three_1s_chunks": good_equivalence_max_abs,
+            "real_short_read_frames_each": [int(b - a) for a, b in check_chunks],
+            "real_short_read_return_shapes_good": [
+                [int(b - a), int(good_ids.size)] for a, b in check_chunks
+            ],
+            "real_short_read_return_shapes_bad": [
+                [int(b - a), int(bad_ids.size)] for a, b in check_chunks
+            ],
+            "retained_bad_trace_rms_three_chunks": bad_trace_rms,
+            "retained_bad_trace_all_finite": True,
+            "retained_bad_trace_all_nonzero": True,
             "bad_channel_policy": "retain actual filtered/referenced/noise-scaled trace; no padding or extrapolation",
+            "waveform_domain": "post-ibllikecmr standardized float32 before spatial whitening; normal downstream sorter internals remain enabled",
         },
     )
 
