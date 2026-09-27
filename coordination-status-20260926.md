@@ -1,5 +1,43 @@
 # Luke motion coordination status
 
+## CH h1 CF packet review and episode-residual design — complete
+
+CF passes its bounded operator-lineage audit. Full-source row/time/label/channel
+hashes independently match BQ capture and matching1 metadata, so actual and zero
+native radial weights use the same 641,588-row population. Both banks share 748
+units, construction counts, basis/config and 299,635 construction rows. The
+reused actual BZ bank lacks a historical RNG-state digest; only its seed-zero
+code contract is recoverable.
+
+Native finite domains differ (12,083 actual versus 8,968 zero; overlap 8,409),
+so native NN medians 0.3378/0.3588 mix support and pair availability. The fixed
+operator maps both banks to the same 182 physical contacts and exactly the same
+8,968 finite pairs. Despite direct totals 214/213, 65 direct edges flip and 194
+linkage relations change. Native comparison has 90/236 flips. Net totals conceal
+rewiring; the common projection is not a factorial causal percentage and neither
+gap establishes field error or biological identity.
+
+A compact raw-amplitude physical-contact figure uses deterministic q10/q50/q95
+units 399/591/264. The conditional episode diagnostic is frozen: CG-qualified
+rest anchors must separately pass episode coverage; the rigid 0.25-s-bin residual
+uses fixed 150-um support, half-1 noise, zero lag/unit gain, a -40..+40-um 2-um
+grid and equal-anchor loss. Unit-heldout and true-time prediction are explicitly
+separate; controls are zero, sign reversal and 1,000 matched circular-phase
+nulls, with label-free T8 bootstrap/quantization and the unchanged 3-um gate.
+Additional cache is capped at 140,940,800 bytes; no fit ran. Report:
+`docs/dartsort_ch_cf_packet_review_20260927.md`.
+
+The CD sibling supplement also closes the two-pair reproducibility caveat. Pair
+1 and pair 5 each have exact support/noise/state, four unique 100-event banks and
+1,000/1,000 finite draws; helper v3 independently returns limited waveform
+compatibility for both. This remains waveform compatibility, not identity.
+
+CE supplement review charges 300/600 remaining seconds (CE now 900/1200). CH
+charges 600/900 s, taking historical cumulative h1 usage to
+**11933.22/14400 s**. CG's remaining 600 s stays reserved for the actual
+selection/result review. No raw voltage, GPU, new bank, graph rerun, full
+18-pair rescore, residual fit or sort occurred.
+
 ## CG h1 CE audit and native same-state anchor contract — complete
 
 CE is internally valid as a prospective same-state construction comparison.

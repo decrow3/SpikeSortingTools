@@ -9,6 +9,18 @@ Separately, the earlier 48-anchor residual-motion proposal is invalid because
 its reliability IDs came from a different sort. The 48 count and lists are
 withdrawn. No residual update may be fitted from them.
 
+### 2026-09-27 supplement
+
+The later sibling packet
+`luke0804-imec1-cd-fullchannel-v1-supplement-v1/` closes the narrow
+reproducibility caveat below for pairs 1 and 5. Its hashes match the original
+selection, raw cache, metrics and intervals. Both pairs have exact saved
+support/noise/frozen state, four unique 100-event banks, and 1,000/1,000 finite
+block draws; independently reapplying helper v3 returns
+`limited_waveform_compatibility` for both. The cross-sort 48-anchor withdrawal
+and all limits on identity/merge interpretation remain unchanged. Independent
+details: `docs/dartsort_ch_cf_packet_review_20260927.md`.
+
 ## Full-channel packet: bounded two-row review
 
 Packet:
