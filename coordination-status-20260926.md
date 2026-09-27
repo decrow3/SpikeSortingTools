@@ -1,5 +1,22 @@
 # Luke motion coordination status
 
+## CA h1 BZ helper v2 repair — complete
+
+BZ v1 is preserved for audit, but v2 is authoritative. The repaired helper
+freezes rest-half-1 support/noise/lag/gain for held-out, bootstrap and episode
+scoring; makes point estimates and intervals share the same >=10-common-block
+domain; treats missing held-out frozen support as unresolved; and reserves final
+labels for interval-qualified evidence. The original BX thresholds are
+unchanged. Stable-difference calls now also require reliable within-unit lower
+bounds, and same-parent pairs no longer duplicate a parent vote. Seven targeted
+regressions pass. No raw read, GPU, voltage, sort or H5-owned worker duplication
+occurred.
+
+Report: `docs/dartsort_ca_bz_identity_helper_v2_20260927.md`. Shared v2 packet:
+`/mnt/NPX/Luke/DARTsort_motion_experiments/bz_identity_helper_20260927/v2/`.
+CA charges 330 s from the initial 900 s repair allowance; cumulative historical
+active elapsed is 8033.22/14400 s.
+
 ## BZ h1 bounded identity helper — complete
 
 The independent BZ scoring helper is implemented and validated. It is strictly
