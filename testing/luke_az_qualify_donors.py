@@ -130,7 +130,11 @@ def state_metrics(
 
 def placement_bases(geom: np.ndarray, target_mask: np.ndarray) -> list[float]:
     span = float(geom[:, 1].max() - geom[:, 1].min())
-    bases = np.arange(-span, span + 20.0, 40.0)
+    # The NP1 geometry spans 3820 um, but the frozen relocation lattice is
+    # 40 um.  Bound the integer lattice by the span; starting at -span would
+    # incorrectly enumerate the 20 mod 40 coset.
+    lattice_limit = np.floor(span / 40.0) * 40.0
+    bases = np.arange(-lattice_limit, lattice_limit + 40.0, 40.0)
     accepted = []
     for base in bases:
         totals = base + STATES_UM
@@ -230,6 +234,8 @@ def run(extraction: Path, prereg: Path, output: Path) -> dict:
     bases = placement_bases(geom, target_mask)
     if not bases:
         raise RuntimeError("geometric placement enumeration is empty")
+    if bases[:2] != [-40.0, 280.0]:
+        raise RuntimeError(f"frozen geometric placement order changed: {bases[:2]}")
     unique_shifts = sorted({float(base + state) for base in bases for state in STATES_UM} | set(map(float, STATES_UM)))
     mappings = {shift: exact_map(geom, shift) for shift in unique_shifts}
     metrics = {
