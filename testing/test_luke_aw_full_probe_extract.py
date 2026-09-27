@@ -1,14 +1,32 @@
 import numpy as np
 
 from testing.luke_aw_full_probe_extract import (
+    array_digest,
     bounded_read_preflight,
     centered_cosine,
     evenly_spaced,
     exact_map,
+    pack_membership,
     remap,
     support_rows,
     trace_frame_chunk,
 )
+
+
+def test_array_digest_binds_dtype_shape_and_values():
+    values = np.arange(6, dtype=np.float32).reshape(2, 3)
+    assert array_digest(values) == array_digest(values.copy())
+    assert array_digest(values) != array_digest(values.astype(np.float64))
+    assert array_digest(values) != array_digest(values.reshape(3, 2))
+
+
+def test_pack_membership_is_sorted_and_lossless():
+    units, offsets, indices = pack_membership(
+        {8: np.array([30, 31]), 3: np.array([10, 11, 12])}
+    )
+    np.testing.assert_array_equal(units, [3, 8])
+    np.testing.assert_array_equal(offsets, [0, 3, 5])
+    np.testing.assert_array_equal(indices, [10, 11, 12, 30, 31])
 
 
 def test_evenly_spaced_is_deterministic_unique():

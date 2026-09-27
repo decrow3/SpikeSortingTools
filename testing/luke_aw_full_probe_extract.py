@@ -52,6 +52,9 @@ READ_JOBS = 1
 MAX_DIRECT_TRACE_FRAMES = 30_000
 MAX_DIRECT_TRACE_BYTES = 50_000_000
 STATES_UM = np.array([0.0, -40.0, -80.0, -120.0, -160.0, -200.0, -240.0])
+PRIOR_BANK = OUT_BASE / "ba_attempt4/full_probe_final_label_templates.npz"
+BC_DOMAINS = ROOT / "testing/outputs/luke_au_cpu_preparation/bc_spatial_reliability_v1/frozen_domains.npz"
+BC_DOMAIN_RECEIPT = ROOT / "testing/outputs/luke_au_cpu_preparation/bc_spatial_reliability_v1/domain_freeze_receipt.json"
 
 
 def digest(path: Path) -> str:
@@ -60,6 +63,12 @@ def digest(path: Path) -> str:
         for block in iter(lambda: stream.read(1 << 20), b""):
             h.update(block)
     return h.hexdigest()
+
+
+def array_digest(values: np.ndarray) -> str:
+    values = np.ascontiguousarray(values)
+    header = f"{values.dtype.str}|{values.shape}".encode("ascii")
+    return hashlib.sha256(header + values.tobytes()).hexdigest()
 
 
 def atomic_json(path: Path, payload: dict) -> None:
@@ -275,6 +284,17 @@ def select_event_rows(
     return times[ix], channels[ix], labels[ix]
 
 
+def pack_membership(selection: dict[int, np.ndarray]) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    unit_ids = np.asarray(sorted(selection), dtype=np.int64)
+    offsets = np.zeros(unit_ids.size + 1, dtype=np.int64)
+    chunks = []
+    for i, unit_id in enumerate(unit_ids):
+        chunk = np.asarray(selection[int(unit_id)], dtype=np.int64)
+        chunks.append(chunk)
+        offsets[i + 1] = offsets[i] + chunk.size
+    return unit_ids, offsets, np.concatenate(chunks)
+
+
 def support_rows(templates: np.ndarray, geom: np.ndarray, crop_ix: np.ndarray, unit_ids: np.ndarray):
     total = np.square(templates, dtype=np.float64).sum(axis=(1, 2))
     rows = []
@@ -321,8 +341,11 @@ def write_csv(path: Path, rows: list[dict]) -> None:
 def run() -> None:
     started = time.monotonic()
     attempt = os.environ.get("LUKE_AW_ATTEMPT")
-    if not attempt or not attempt.startswith("ba_attempt"):
-        raise RuntimeError("BA extraction requires an explicit ba_attempt identifier")
+    is_bc = bool(attempt and attempt.startswith("bc_attempt"))
+    if not attempt or not (attempt.startswith("ba_attempt") or is_bc):
+        raise RuntimeError("extraction requires an explicit ba_attempt or bc_attempt identifier")
+    if is_bc and os.environ.get("LUKE_BC_SPATIAL_SPLITS") != "1":
+        raise RuntimeError("BC extraction requires LUKE_BC_SPATIAL_SPLITS=1")
     OUT.mkdir(parents=True, exist_ok=True)
     atomic_json(
         OUT / "RUNNING.json",
@@ -330,7 +353,11 @@ def run() -> None:
             "status": "running",
             "pid": os.getpid(),
             "started_unix": time.time(),
-            "authorization": "BA approved by user; hub record 2026-09-27 03:05 UTC",
+            "authorization": (
+                "BC approved by user; hub record 2026-09-27 05:08 UTC"
+                if is_bc
+                else "BA approved by user; hub record 2026-09-27 03:05 UTC"
+            ),
             "attempt": attempt,
             "prior_conservative_extraction_charge_s": float(
                 os.environ.get("LUKE_AW_PRIOR_CHARGED_S", "838")
@@ -523,6 +550,28 @@ def run() -> None:
     tsvd = sealed_td.tsvd
     if tsvd is None or tsvd.components_.shape != (5, 121):
         raise RuntimeError("sealed temporal SVD is missing or has wrong shape")
+    if is_bc:
+        if not PRIOR_BANK.is_file() or not BC_DOMAINS.is_file() or not BC_DOMAIN_RECEIPT.is_file():
+            raise RuntimeError("BC requires the preserved BA bank and pre-voltage frozen domains")
+        atomic_json(
+            OUT / "shared_temporal_basis_receipt.json",
+            {
+                "status": "shared_basis_dependency_confirmed_before_split_measurement",
+                "basis_shape": list(tsvd.components_.shape),
+                "basis_array_sha256": array_digest(np.asarray(tsvd.components_)),
+                "source_template_data_npz": str(static / "template_data.npz"),
+                "source_template_data_sha256": digest(static / "template_data.npz"),
+                "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+                "shared_between_halves": True,
+                "shared_preprocessing_operator": True,
+                "disjoint_spike_membership": True,
+                "statistically_independent_halves": False,
+                "interpretation": "Both disjoint spike halves use the same sealed temporal projection and the same preprocessing/common-reference construction. Cross-products are descriptive and can include correlated estimator error.",
+                "domain_receipt_sha256": digest(BC_DOMAIN_RECEIPT),
+                "frozen_domains_sha256": digest(BC_DOMAINS),
+                "prior_bank_sha256": digest(PRIOR_BANK),
+            },
+        )
 
     if not unit_to_rest:
         raise RuntimeError("no candidate has 400 valid rest waveforms")
@@ -557,8 +606,9 @@ def run() -> None:
     if time.monotonic() - started >= MAX_WALL_S:
         raise TimeoutError("wall cap reached after preflight")
 
+    main_selection = {u: evenly_spaced(ix, 500) for u, ix in unit_to_rest.items()}
     main_times, main_channels, main_labels = select_event_rows(
-        times, full_channels, labels, unit_to_rest, 500
+        times, full_channels, labels, main_selection, 500
     )
     main_sorting = build_sorting(main_times, main_channels, main_labels, fs)
     td = build_templates(cached, main_sorting, template_cfg, cfg.waveform_cfg, computation_cfg, tsvd)
@@ -595,6 +645,41 @@ def run() -> None:
             }
         )
     write_csv(OUT / "split_half_diagnostics.csv", split_data)
+    if is_bc:
+        main_units, main_offsets, main_indices = pack_membership(main_selection)
+        left_units, left_offsets, left_indices = pack_membership(left)
+        right_units, right_offsets, right_indices = pack_membership(right)
+        if not (np.array_equal(main_units, left_units) and np.array_equal(main_units, right_units)):
+            raise RuntimeError("BC split membership unit order differs")
+        if np.intersect1d(left_indices, right_indices).size:
+            raise RuntimeError("BC left and right spike memberships overlap")
+        np.savez_compressed(
+            OUT / "split_half_membership.npz",
+            unit_ids=main_units,
+            main_offsets=main_offsets,
+            main_sorting_row_indices=main_indices,
+            left_offsets=left_offsets,
+            left_sorting_row_indices=left_indices,
+            right_offsets=right_offsets,
+            right_sorting_row_indices=right_indices,
+            source_interval_s=np.asarray([START_S, END_S]),
+            main_per_unit_cap=np.asarray(500),
+            split_source_per_unit_cap=np.asarray(400),
+            half_per_unit_cap=np.asarray(200),
+        )
+        np.savez_compressed(
+            OUT / "split_half_spatial_templates.npz",
+            left_templates=np.asarray(split_templates[0], dtype=np.float32),
+            right_templates=np.asarray(split_templates[1], dtype=np.float32),
+            unit_ids=np.asarray(td.unit_ids, dtype=np.int64),
+            channel_ids=source_ids,
+            geometry_um=np.asarray(cached.get_channel_locations(), dtype=np.float64),
+            sampling_frequency=np.asarray(fs),
+            trough_offset_samples=np.asarray(td.trough_offset_samples),
+            shared_tsvd_components=np.asarray(tsvd.components_, dtype=np.float32),
+            measurement_domain=np.asarray("384-channel ibllikecmr, no spatial whitening"),
+            statistical_independence=np.asarray(False),
+        )
 
     support = support_rows(td.templates, cached.get_channel_locations(), crop_ix, td.unit_ids)
     write_csv(OUT / "actual_state_support.csv", support)
@@ -632,6 +717,52 @@ def run() -> None:
         measurement_domain=np.asarray("384-channel ibllikecmr, no spatial whitening"),
     )
 
+    if is_bc:
+        with np.load(PRIOR_BANK, allow_pickle=False) as prior:
+            prior_templates = np.asarray(prior["templates"], dtype=np.float32)
+            prior_units = np.asarray(prior["unit_ids"], dtype=np.int64)
+        if not np.array_equal(prior_units, td.unit_ids):
+            raise RuntimeError("BC repeat unit IDs differ from the preserved BA bank")
+        if prior_templates.shape != td.templates.shape:
+            raise RuntimeError("BC repeat template shape differs from the preserved BA bank")
+        reproduction_rows = []
+        for i, unit_id in enumerate(td.unit_ids):
+            old = prior_templates[i]
+            new = np.asarray(td.templates[i], dtype=np.float32)
+            old_ptp = float(np.ptp(old, axis=0).max())
+            new_ptp = float(np.ptp(new, axis=0).max())
+            reproduction_rows.append(
+                {
+                    "unit_id": int(unit_id),
+                    "max_abs_difference": float(np.max(np.abs(old - new))),
+                    "centered_cosine": centered_cosine(old, new),
+                    "ptp_ratio_repeat_over_original": new_ptp / old_ptp if old_ptp else float("nan"),
+                    "energy_ratio_repeat_over_original": float(
+                        np.square(new, dtype=np.float64).sum()
+                        / np.square(old, dtype=np.float64).sum()
+                    ),
+                }
+            )
+        write_csv(OUT / "full_template_reproduction.csv", reproduction_rows)
+        reproduction_pass = all(
+            row["max_abs_difference"] <= 1e-5
+            and row["centered_cosine"] >= 0.999999
+            and abs(row["ptp_ratio_repeat_over_original"] - 1.0) <= 1e-5
+            for row in reproduction_rows
+        )
+        atomic_json(
+            OUT / "full_template_reproduction_gate.json",
+            {
+                "pass": reproduction_pass,
+                "units": len(reproduction_rows),
+                "maximum_abs_difference": max(row["max_abs_difference"] for row in reproduction_rows),
+                "minimum_centered_cosine": min(row["centered_cosine"] for row in reproduction_rows),
+                "maximum_abs_ptp_ratio_error": max(abs(row["ptp_ratio_repeat_over_original"] - 1.0) for row in reproduction_rows),
+                "interpretation_allowed": reproduction_pass,
+                "failure_policy": "Preserve spatial arrays but do not interpret them until a discrepancy is explained.",
+            },
+        )
+
     elapsed = time.monotonic() - started
     if elapsed > MAX_WALL_S:
         raise TimeoutError("wall cap exceeded")
@@ -640,8 +771,8 @@ def run() -> None:
     if persistent > MAX_PERSISTENT_BYTES:
         raise RuntimeError(f"persistent output {persistent} exceeds approved cap")
     summary = {
-        "schema": "luke-aw-full-probe-extraction-v1",
-        "status": "measurement_complete_selection_pending",
+        "schema": "luke-bc-spatial-split-extraction-v1" if is_bc else "luke-aw-full-probe-extraction-v1",
+        "status": "bc_spatial_split_measurement_complete" if is_bc else "measurement_complete_selection_pending",
         "elapsed_s": elapsed,
         "candidate_first_three_count": int(sum(r["first_three_pass"] for r in candidates)),
         "candidate_with_400_valid_rest_count": len(unit_to_rest),
@@ -662,6 +793,8 @@ def run() -> None:
         "preprocessing_execution": "lazy_memory_bounded_single_reader",
         "persistent_bytes": persistent,
         "scratch_removed_on_exit": True,
+        "bc_spatial_split_arrays_saved": is_bc,
+        "bc_frozen_domains_sha256": digest(BC_DOMAINS) if is_bc else None,
         "outputs": {p.name: digest(p) for p in files},
     }
     atomic_json(OUT / "extraction_summary.json", summary)
