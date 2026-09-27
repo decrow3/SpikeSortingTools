@@ -1,5 +1,24 @@
 # Luke motion coordination status
 
+## BZ h1 bounded identity helper — complete
+
+The independent BZ scoring helper is implemented and validated. It is strictly
+array-in/array-out: rest primary, episode evidence separately eligible, half-1
+lag and B-to-A gain locked for half 2, fixed channel-noise weighting, explicit
+support rejection, temporal-block bootstrap, and parent-equal aggregation. Its
+labels are limited waveform compatibility / stable waveform difference /
+inconclusive, never identity truth. Seven targeted fixtures pass, including
+known equal/different, gain/lag/noise and lag-boundary controls. H5 still owns
+all actual BV extraction/cache work and BW.2 GPU construction; h1 read no
+voltage and did not duplicate that worker.
+
+Local report: `docs/dartsort_bz_identity_helper_20260927.md`. Scoped shared
+handoff: `/mnt/NPX/Luke/DARTsort_motion_experiments/bz_identity_helper_20260927/`.
+The packet contains only source, tests, report and provenance; no held BH
+content. Historical charge before BZ was 6983.22 s. BZ conservatively charges
+720.00 s including packaging, for 7703.22/14400 s cumulative. Resource receipt:
+`testing/outputs/bz_h1_identity_helper_v1/resource_receipt.json`.
+
 ## BJ h1 source audit — complete; BH packet remains approval-dependent
 
 BJ's independent h1 audit used only the local DARTsort checkout at commit
