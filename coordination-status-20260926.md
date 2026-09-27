@@ -837,5 +837,6 @@ not reconstruct historical state or historical route evidence.
 BP known metered process wall is 22.10 s and the conservative charge is
 30.00/600 s. Known cumulative h1 charge is 6,803.22/14,400 s; BI remains
 separate. No BH payload, real/raw data, GPU, QDA execution, replay, sort,
-voltage or engine integration was used. A possible W2 run still awaits user
-approval and was not launched. BP stops at this receipt and concise review.
+voltage or engine integration was used. The user approved the BQ W2 diagnostic
+at 14:11 UTC, with h5 as sole executor; h1 did not launch it and remains
+review-only. BP stops at this receipt and concise review.
