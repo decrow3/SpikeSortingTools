@@ -1,0 +1,18 @@
+{
+  "task": "CL portable force gate and CK saved-cache measurement audit",
+  "status": "complete_waiting_for_w3_result",
+  "cpu_seconds_charged": 600.0,
+  "cpu_seconds_allowance": 1200.0,
+  "historical_cumulative_before_s": 12833.22,
+  "historical_cumulative_after_s": 13433.22,
+  "prior_ck_worker_seconds_separate": 133.33689449261874,
+  "gpu_seconds": 0.0,
+  "raw_voltage_reads": 0,
+  "sorts": 0,
+  "new_output_bytes_limit": 262144000,
+  "portable_gate_commit": "18b0fbb",
+  "audit_method_commit": "e66d25d",
+  "helper_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/cl_force_gate_helper_20260927",
+  "audit_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/cl_anchor_measurement_audit_20260927",
+  "w3_status": "waiting_for_independent_h5_capture_and_result"
+}

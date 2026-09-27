@@ -1,5 +1,35 @@
 # Luke motion coordination status
 
+## CL h1 portable gate and CK measurement audit — ready, W3 pending
+
+The portable unchanged CJ-v2 gate is committed as `18b0fbb` and published at
+`/mnt/NPX/Luke/DARTsort_motion_experiments/cl_force_gate_helper_20260927/`.
+It has no W2 path/origin/hash assumptions, requires explicit absent-or-array SI,
+and preserves supplied SI after force connectivity. Its one W2 check is exact:
+both CSVs are byte-identical and all five graph arrays equal CJ v2.
+
+The frozen 42/90 exposure is correctly relabeled an approximation. Exact
+finite-window ratios are 0.4668162453--0.4668162463 versus 0.4666666667, a
+0.0321% relative difference; one-sample block lengths contribute about 1e-9
+absolute. The closest pass/fail bootstrap margins are 0.0387/0.1716, so no W2
+decision is marginal. The primary rule remains unchanged.
+
+Independent CK saved-cache audit reproduces all eight point scores/noise arrays,
+all 1,600 row/clock/channel joins and the first 100 bootstrap draws for units 23
+and 120 exactly. Raw trough timing differs by at most one sample, but raw PTP
+depth centroids shift up to 24.58 um across halves. Half-difference/mean energy
+is 0.349--0.527 and the median effective signal dimension is 219. A frozen
+stable-cell synthetic shows bootstrap depression with equal blocks (point
+0.9734, lower 0.9334) and more with unequal blocks (lower 0.8774); unequal block
+weights can amplify but do not uniquely cause the gap. No anchor passes the
+unchanged rule. Report:
+`docs/dartsort_cl_anchor_measurement_audit_20260927.md`.
+
+CL h1 charges 600/1200 s, taking cumulative h1 usage to
+**13433.22/14400 s**. CK's prior 133.337 worker seconds remain separate and were
+not reset. No raw voltage, GPU, refit, sort or threshold change occurred. H1 is
+ready to audit W3 when h5 publishes it; no duplicate prefix/raw work will run.
+
 ## CJ v2 h1 corrected saved-W2 force gate — complete
 
 CK's two pre-outcome corrections were frozen as commit `48868fc`: the intended

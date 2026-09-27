@@ -90,8 +90,10 @@ is the established no-force control, not a new treatment. W3's required same-run
 route capture is not currently present on the shared experiment filesystem, so
 execution is blocked without launching or reconstructing a sort stage.
 
-Actual aggregation/deduplication and cheap held-out M3/M4/M5 outcomes require
-separate authorization and are the only basis for a downstream benefit claim.
+Actual aggregation/deduplication and cheap held-out M3/M4/M5 outcomes require a
+concrete scoped experiment under the existing broad authority; CL supplies that
+scope, so another user approval hold is not required. Those outcomes remain the
+only basis for a downstream benefit claim.
 The graph-only result cannot establish ISI, duplicate, coherence or identity
 improvement.
 
