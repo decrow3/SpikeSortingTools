@@ -1,0 +1,29 @@
+{
+  "schema": "luke-az-template-domain-contract-v2",
+  "status": "frozen_pending_donor_extraction",
+  "measurement_channels": 384,
+  "energy_denominator": "total energy on all 384 measured channels before translation",
+  "donor_measurement_domain": "post-ibllikecmr standardized float32, before spatial whitening",
+  "injection_stage": "apply donor additions exactly once to the accepted post-ibllikecmr standardized float32 background before S_h/DZ_h/D2L_h arm branching",
+  "before_arm_branching": {
+    "second_ibllikecmr_forbidden": true,
+    "preinjection_spatial_whitening_forbidden": true,
+    "shared_injected_source_hash_required": true,
+    "waveform_unit_validation_required": true
+  },
+  "downstream_sorting": {
+    "normal_configured_operations_preserved": true,
+    "normal_internal_whitening_preserved": true,
+    "identical_across_arms": true,
+    "clarification": "the no-double-processing rule applies only before the declared injection/branch stage; it does not disable or bypass normal downstream DARTsort internals"
+  },
+  "equivalence_claim": "none between donor measurement templates and the accepted spatially whitened template bank",
+  "ap191": {
+    "status": "measurement-only detected-bad channel retained as an actual processed trace",
+    "processing": "high-pass and phase shift; both common references use 383 detected-good channels; scaling uses AP191 measured noise after the first reference",
+    "padding_or_extrapolation": false,
+    "ordinary_good_channel_equivalence_gate": "maximum absolute difference <=1e-5 on three guarded one-second intervals",
+    "accepted_sort_domain": "AP202-AP383; AP191 is not injected or sorted"
+  },
+  "donor_dependent_fields": "pending authorized successful extraction"
+}

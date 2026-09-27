@@ -386,3 +386,36 @@ once at that stage before arm branching. A second ibllikecmr or spatial-
 whitening pass is forbidden, and waveform units plus identical shared-source
 hashes must pass before any eventual GPU launch. This is not an equivalence
 claim for the accepted spatially whitened bank.
+
+### AZ scorer v2 unmatched-donor repair, 2026-09-26 19:09 PDT
+
+h5's independent v1 verification correctly identified that a zero-TP donor
+could receive an arbitrary output label and that empty output dropped all donor
+associations. Scorer v2, source commit `ac5c4ea`, now retains every truth donor.
+No positive match yields `primary_label: null`, recall 0 where truth exists and
+undefined precision as JSON null. Null associations do not enter false-merge
+links. Empty-output, all-zero-TP, mixed matched/unmatched and multiple-unmatched
+chance-control fixtures were added while the positive-match fixtures remain.
+The 19 scorer/generator tests pass, including strict `allow_nan=false` JSON
+serialization.
+
+The immutable v2 packet is at
+`/mnt/NPX/Luke/DARTsort_motion_experiments/az_hybrid_h1_scorer_v2/`.
+Its manifest SHA-256 is
+`c7f927b5f4a6b757d11809fc0e4abe47428d127c7ffec093ffe4cf565ac710f5`;
+the last-written COMPLETE SHA-256 is
+`e0c074d5995df18ade65213f6208aeb5788809f86d633d5df1ba25dfd524f280`.
+All eight manifest payloads validated before completion. Scorer v1 remains
+unchanged at its prior shared path.
+
+The repair and qualification test runs consumed exactly 0.98 s process wall
+(3.65 s user CPU and 0.08 s system CPU); known cumulative metered process wall
+is 779.53 s. No voltage read, fourth extraction, GPU process or arm outcome was
+used. Donor-dependent gates and launch permission remain pending/false.
+
+The domain wording is clarified in v2: donors and their additions are
+unwhitened before injection into the already ibllikecmr-standardized float32
+background, exactly once before arm branching. That restriction does not
+disable DARTsort's normal downstream operations. Configured internal whitening
+and all other downstream sorting steps remain enabled and identical in S_h,
+DZ_h and D2L_h.

@@ -1,0 +1,51 @@
+{
+  "schema": "luke-az-hybrid-scorer-qualification-v2",
+  "status": "qualified_before_arm_outcomes",
+  "qualified_at": "2026-09-26T19:06:22-07:00",
+  "source_commit": "ac5c4ea",
+  "supersedes_scorer_v1_sha256": "fec6388e60f1582bf7e3a12e4b0fba2d677f21f8fb6299b91b73ab237eae7291",
+  "sampling_frequency_hz": 29999.759166666667,
+  "tolerance_ms": 0.4,
+  "tolerance_samples": 12,
+  "repair": {
+    "zero_tp_association": "every truth donor is retained as unmatched with primary_label null",
+    "empty_sorter_output": "all truth donors remain in associations and regional scores",
+    "unmatched_recall": "0.0 wherever truth exists",
+    "unmatched_precision": null,
+    "false_merge_policy": "null labels never enter label-reuse or false-merge links",
+    "serialization": "undefined labels, precision and empty-region recall use JSON null; strict allow_nan=false fixture passes",
+    "chance_controls": "retain every unmatched donor with best_label null"
+  },
+  "preserved_contract": {
+    "association_order": "full truth train before episode/rest splitting",
+    "positive_match_ranking": [
+      "exclusive true positives descending",
+      "precision descending",
+      "recall descending",
+      "integer label ascending"
+    ],
+    "event_matching": "global one-to-one exclusivity after frozen association; inclusive at +/-12 samples",
+    "duplicates_and_ambiguity": "preserved before exclusivity",
+    "native_identity": "unknown; label renaming alone is not an error"
+  },
+  "hashes": {
+    "luke_az_hybrid_scorer.py": "c6b5d7f47ce5e6c1231ea1804c41f0028ffb53b80f5c161495d63704a7e3287a",
+    "test_luke_az_hybrid_scorer.py": "63545839331487b73a6d4cca5cb10b3f3604b68c2187af096ec8a4dd58e0eab7",
+    "luke_au_cpu_preparation.py": "60dacad9c2ff04e82987635a363f665845b734a05828f44700ea38983911f0cd",
+    "test_luke_au_cpu_preparation.py": "8d32b36a791ea9d438d11a5bcd92ed0452ac929f28a960e7e7b3b788a7523c0b"
+  },
+  "tests": {
+    "command": "/home/huklab/Documents/DARTsort/.venv/bin/python -m pytest -q testing/test_luke_az_hybrid_scorer.py testing/test_luke_au_cpu_preparation.py",
+    "result": "19 passed in 0.19s",
+    "required_new_fixtures": [
+      "empty output",
+      "all labels zero TP",
+      "mixed matched/unmatched",
+      "multiple unmatched donors in chance controls"
+    ]
+  },
+  "h5_defect_report_complete_sha256": "72825849bac07bb9c595c21b685e309a28be8762bf558973e89372da80d0c0fe",
+  "arm_outputs_seen": false,
+  "voltage_read": false,
+  "gpu_used": false
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "luke-az-scorer-v2-resource-receipt-v1",
+  "status": "complete_no_voltage_no_gpu",
+  "test_runs": [
+    {
+      "role": "repair development verification",
+      "result": "19 passed",
+      "elapsed_s": 0.50,
+      "user_s": 1.83,
+      "system_s": 0.04,
+      "max_rss_kb": 55812
+    },
+    {
+      "role": "final qualification",
+      "result": "19 passed",
+      "elapsed_s": 0.48,
+      "user_s": 1.82,
+      "system_s": 0.04,
+      "max_rss_kb": 55836
+    }
+  ],
+  "scorer_v2_test_process_wall_s": 0.98,
+  "scorer_v2_test_user_s": 3.65,
+  "scorer_v2_test_system_s": 0.08,
+  "prior_exact_extraction_process_wall_s": 778,
+  "prior_latest_metered_regression_wall_s": 0.55,
+  "known_cumulative_process_wall_s": 779.53,
+  "historical_small_interactive_test_wall_exactly_reconstructable": false,
+  "voltage_read": false,
+  "gpu_used": false,
+  "fourth_extraction_launch": false
+}
