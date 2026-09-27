@@ -1,5 +1,44 @@
 # Luke motion coordination status
 
+## BJ h1 source audit — complete; BH packet remains approval-dependent
+
+BJ's independent h1 audit used only the local DARTsort checkout at commit
+`edcfe1b51d672b4136eb13cc78c0875da804b851`; the blocked BH payload was not
+accessed or relayed. DARTsort samples motion at matching chunk centre
+(`matching.py:260-275`). Drifty interpolation recomputes spatial components,
+whitened/discounted normsq, main channel and pairwise convolution at that time
+(`matching_util/drifty.py:285-377`). Default matching uses threshold 6,
+amplitude-scaling variance 1e-4 and boundary 1/3, implying inverse lambda
+10000 and scale bounds [0.75, 1.333...].
+
+The algebra result is conditional and concrete. For fixed signal `x` and
+candidate `alpha*t`, free unbounded scaling gives `conv^2/normsq`, cancelling a
+positive scalar exactly. Cancellation fails when `1/alpha` is outside the scale
+bounds, when the default prior pulls scale toward one, when signal and template
+co-scale, or when interpolation changes shape/whitening/support rather than a
+single scalar. The installed CPU `_scaled_coarse_objective` matched the
+independent formula within 1.4e-12. A first import failed before scientific code
+because of a Numba cache-locator error; an equivalent retry with
+`NUMBA_DISABLE_JIT=1` passed and is preserved in the receipt.
+
+The smooth physical-sampling fixture keeps the continuous waveform peak at
+1.0 while exact maximum electrode-sampled PTP varies from 1.0 to 0.8007 over a
+half-pitch on a 40-um grid. Linear interpolation has separately measured error
+(maximum relative L2 0.1573; minimum cosine 0.99085). Thus lower sampled PTP can
+arise without waveform corruption, and PTP alone cannot justify norm
+restoration or post-interpolation normalization.
+
+Smallest justified next step: after approved BH publication, bind its executed
+config, whitener and compressed representation to this source commit and
+compare conv, normsq, fitted scale and objective on identical saved templates.
+No production patch is justified from PTP alone. Evidence:
+`testing/outputs/bj_h1_matching_objective_audit_v1/`.
+
+Resources: BJ h1 used a conservative 137.84/900 s (17.84 s metered plus 120 s
+reserve), leaving 762.16 s in the BJ target and 2440.86 s in BI. Cumulative
+conservative active-process wall is 6623.220/14400 s. Output is about 172 KB.
+No raw read, GPU, sort, matcher replay, field fit or donor change occurred.
+
 ## BI h1 queue — independent items complete; BH review dependency absent
 
 BI was approved under the user's standing low-risk authorization on
