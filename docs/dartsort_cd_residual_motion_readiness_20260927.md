@@ -1,8 +1,17 @@
 # CD residual-motion one-update readiness inventory
 
+> **WITHDRAWN / FAILED PROPOSAL (CE correction, 2026-09-27).** The 90 donor IDs
+> and BC reliability measurements come from the separate static-W2 final sort,
+> not BQ's prospective D2L run. No cross-run unit correspondence was proved.
+> Therefore the inverse-`depth_reorder` mapping, 48-anchor count, anchor lists,
+> row count and all downstream split claims below are invalid. They are retained
+> only to preserve the failed proposal. See
+> `docs/dartsort_ce_fullchannel_and_anchor_correction_20260927.md` for the
+> authoritative audit and replacement design. No residual update was fitted.
+
 ## Verdict
 
-**A small causal one-update test is source-ready without a voltage read, but it
+**Superseded claim:** A small causal one-update test is source-ready without a voltage read, but it
 must use a conservative 48-anchor rest-only cohort and explicit label-namespace
 mapping.** This is a prospective residual-motion diagnostic, not an identity
 test, motion-field fit, or sorting evaluation. No loop or update was run.

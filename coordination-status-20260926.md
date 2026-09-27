@@ -1,5 +1,32 @@
 # Luke motion coordination status
 
+## CE h1 full-channel review and anchor correction — CD cohort withdrawn
+
+The full-channel packet is complete and its two inspected raw rows are finite,
+correctly shaped `[121,182]`, and aligned to plausible selection/geometry
+metadata. Worker-reported limited compatibility for parent 91 (units 6/9) and
+parent 12 (535/538) meets the fixed interval margins, but the packet omits
+replicate accounting, per-pair support indices, noise vectors and frozen states;
+the two-row audit cannot independently reproduce final labels. They remain
+limited waveform compatibility, not identity truth.
+
+More importantly, AW/BC donor evidence is from
+`av_aw_handoff_20260926_v1/static_w2`, proven by
+`testing/luke_aw_full_probe_extract.py:379-390,549` and exact hashes. BQ is a
+different prospective D2L run. No cross-run mapping exists, so numeric IDs
+cannot be inverted through BQ `depth_reorder`. CD's 48-anchor count, lists,
+56,658-row estimate and folds are withdrawn; the old report is retained as a
+failed proposal. Replacement design requires auditable correspondence or fresh
+same-state raw-snippet reliability. Matching point localizations are diagnostic,
+not raw-snippet residual validation. Contemporaneous other-unit fitting is only
+unit-heldout, and future controls must add a genuine circular phase null plus
+zero/sign reversal and T8 uncertainty. Report:
+`docs/dartsort_ce_fullchannel_and_anchor_correction_20260927.md`.
+
+CE charges 600/1200 s, taking historical active elapsed to
+10133.22/14400 s. No extraction, full rescore, residual fit, GPU, sort or voltage
+change occurred; exactly two saved waveform rows were inspected.
+
 ## CD h1 residual-motion one-update readiness — source-ready
 
 A bounded one-update diagnostic can reuse saved outputs without voltage or a
