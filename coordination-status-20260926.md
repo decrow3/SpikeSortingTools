@@ -905,6 +905,41 @@ BV charges a conservative 30.00 s, taking cumulative h1 to
 raw/GPU work, real stage, replay, sort, voltage access, BH/h5 source copying or
 service launch occurred.
 
+### BW h1 force-operator and chunk-control source review, 2026-09-27
+
+BW is complete. The force route depends on the exact constructed templates,
+construction membership, temporal basis, whitening, per-channel counts,
+empirical motion-registered support weights, physical/registered geometry,
+distance parameters, threshold and linkage—not waveform templates alone.
+Cross-matching-bank nearest-neighbour distributions therefore confound bank
+size/density, membership, basis, whitening and support and are descriptive, not
+a registration contrast.
+
+The proposed 30,000-versus-3,000-sample peel-reduce control can isolate the
+chunk-centre registration approximation without rerunning pcmerge/TMM if it
+uses one fixed post-TMM sorting and exact construction row membership, and
+freezes preprocessing, motion/clock/geometry, basis, whitening, configs,
+device/dtype and worker ranks. Source tracing shows subsampling precedes the
+chunk setting and uses an explicit seed; raw snippets use fixed absolute event
+times plus margins. The changed mechanism is that interpolation queries motion
+once at the chunk centre for every event in that chunk. Median reduction is
+largely order-insensitive, while mean/basis/whitening refits could introduce
+additional numerical changes and must be controlled.
+
+This establishes an isolatable mechanism, not causal degradation. No
+short-chunk-null implication about field error, BJ `.989` causal fraction, or
+cross-probe proof of conservative rigid residual is accepted. The next
+dependency is a compact executor preregistration with exact state hashes,
+origin/worker semantics, equality sentinels and cost/footprint; BW.2 GPU work
+and residual-loop work remain proposals. Details:
+`docs/dartsort_bw_force_operator_and_chunk_control_20260927.md`.
+
+BW charges a conservative 30.00 s, taking cumulative h1 to
+**6,923.22/14,400 s**; BI remains separate. No real payload, fixture, generic
+test expansion, raw/GPU work, reconstruction, replay, sort, voltage access or
+service launch occurred.
+
+
 ### BU h1 independent review of completed BQ, 2026-09-27
 
 BU is complete and is **shareable with caveats**. The three requested hashes
