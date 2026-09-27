@@ -35,6 +35,8 @@ def sha256(path: Path) -> str:
 
 def waveform_metrics(left: np.ndarray, right: np.ndarray) -> dict[str, float]:
     """Metrics after restricting the channel dimension; center each channel in time."""
+    if left.ndim != 2 or right.ndim != 2 or left.shape != right.shape:
+        raise ValueError("waveform views must have matching [time, channel] shapes")
     if left.size == 0:
         return {k: np.nan for k in (
             "left_energy", "right_energy", "cross_product", "difference_energy",
@@ -122,7 +124,10 @@ def main() -> None:
         for si, state in enumerate(states):
             inside = state_masks[i, si]
             for label, mask in (("inside", inside), ("outside", ~inside)):
-                metrics = waveform_metrics(left[i, :, mask], right[i, :, mask])
+                left_view = left[i][:, mask]
+                right_view = right[i][:, mask]
+                assert left_view.shape == (left.shape[1], int(mask.sum()))
+                metrics = waveform_metrics(left_view, right_view)
                 rows.append({
                     "unit_id": int(unit), "state_um": float(state), "domain": label,
                     "primary_per_state_domain": True, "channel_count": int(mask.sum()),
@@ -138,9 +143,12 @@ def main() -> None:
     secondary_rows = []
     for i, unit in enumerate(unit_ids):
         for label, mask in (("inside", intersection_masks[i]), ("outside", ~intersection_masks[i])):
+            left_view = left[i][:, mask]
+            right_view = right[i][:, mask]
+            assert left_view.shape == (left.shape[1], int(mask.sum()))
             secondary_rows.append({
                 "unit_id": int(unit), "domain": label, "primary_per_state_domain": False,
-                "channel_count": int(mask.sum()), **waveform_metrics(left[i, :, mask], right[i, :, mask]),
+                "channel_count": int(mask.sum()), **waveform_metrics(left_view, right_view),
             })
     secondary = pd.DataFrame(secondary_rows)
     secondary.to_csv(args.output / "descriptive_all_state_intersection_metrics.csv", index=False)
@@ -233,7 +241,12 @@ def main() -> None:
 
     outside = detail.query("domain == 'outside'")
     result = {
-        "schema": "luke-bc-spatial-reliability-analysis-v1",
+        "schema": "luke-bc-spatial-reliability-analysis-v2",
+        "correction": (
+            "Channel masks are applied with template[:, mask], preserving [time, channel] "
+            "axis order before per-channel temporal centering. This supersedes the v1 "
+            "centered-cosine values only."
+        ),
         "status": "complete",
         "interpretation_allowed": True,
         "reproduction_gate": gate,

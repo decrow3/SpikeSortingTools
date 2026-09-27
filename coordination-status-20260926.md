@@ -2,6 +2,24 @@
 
 ## BC spatial reliability diagnostic — complete; hybrid remains blocked
 
+**V2 correction (2026-09-27):** the v1 centered-cosine calculation used
+advanced boolean indexing that reversed the selected view to `[channel,time]`
+before centering. V2 preserves `[time,channel]` and is the authoritative
+centered-cosine result. Raw energy, cross-product and normalized agreement are
+invariant (maximum normalized-agreement delta about 1.3e-15). Inside-domain
+centered cosine changes from 0.938371588 to 0.937752084; outside changes from
+0.182519351 to 0.289662240, with maximum individual change 0.312386338. Thus
+the core/tail raw-agreement result survives, but v1 understated centered tail
+reproducibility. The hub's independent saved-array calculation matches v2.
+Original v1 is preserved; corrected assets are in `analysis_v2/` and
+`CORRECTION_V2.md`. The 5/90 AZ outcome and hybrid hold are unchanged.
+
+Corrected extraction/preflight wall charge includes the previously omitted
+41.16 s prelaunch: 3272.630990 + 2440.425616 + 41.160000 = 5754.216606 s,
+leaving 1445.783394 s of the 7200 s envelope. Analysis/review wall is recorded
+separately. Conservative summed active CPU after v1, v2 and the one-thread hub
+check is approximately 5975.990/14400 s; it is not conflated with process wall.
+
 BC was explicitly approved by the user at 2026-09-27 05:08 UTC. It remains a
 diagnostic measurement only; AZ hybrid launch stays scientifically blocked.
 
