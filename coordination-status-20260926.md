@@ -17,8 +17,11 @@ Original v1 is preserved; corrected assets are in `analysis_v2/` and
 Corrected extraction/preflight wall charge includes the previously omitted
 41.16 s prelaunch: 3272.630990 + 2440.425616 + 41.160000 = 5754.216606 s,
 leaving 1445.783394 s of the 7200 s envelope. Analysis/review wall is recorded
-separately. Conservative summed active CPU after v1, v2 and the one-thread hub
-check is approximately 5975.990/14400 s; it is not conflated with process wall.
+separately. Known cumulative active process wall including v1/v2 analysis and
+the one-thread hub check is 5764.079606 s. Adding a conservative 600 s reserve
+for unmetered short commands gives 6364.079606/14400 s: PASS, with 8035.920394 s
+remaining. Summed CPU (approximately 5975.990 s) is a separate utilization
+diagnostic and is not the 4 h authorization clock.
 
 BC was explicitly approved by the user at 2026-09-27 05:08 UTC. It remains a
 diagnostic measurement only; AZ hybrid launch stays scientifically blocked.
@@ -64,13 +67,12 @@ two numerical threads and one reader. Actual service elapsed time was
 3,272.631 s, making cumulative extraction wall 5,713.057/7,200 s. Conservative
 BC wall including prelaunch and analysis was 2,485.246/3,600 s.
 
-Known extraction CPU is 3,233.642 s. Qualification, explanation and BC
-preflight add 48.86 s metered CPU; a conservative 120 s reserve covers
-unmetered tests and orchestration. Conservative active CPU before launch is
-3,402.502 s before service. Adding service and measured analysis CPU gives a
-conservative 5,944.887/14,400 s. Process wall and summed CPU are deliberately
-reported separately. This launch used BA recovery slot 2 of 3 and BC attempt 1
-of at most 2.
+Historical CPU accounting (superseded as a budget test): extraction CPU was
+3,233.642 s; qualification, explanation and BC preflight added 48.86 s, with a
+120 s reserve. These CPU figures describe utilization only. They must not be
+compared with the 14,400 s authorization, which is enforced using cumulative
+active process wall in the corrected paragraph above. This launch used BA
+recovery slot 2 of 3 and BC attempt 1 of at most 2.
 
 Local report: `testing/outputs/luke_au_cpu_preparation/bc_spatial_reliability_v1/README.md`.
 Shared packet: `/mnt/NPX/Luke/DARTsort_motion_experiments/az_hybrid_h1_bc_spatial_reliability_v1/`.
