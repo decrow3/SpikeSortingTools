@@ -1,20 +1,40 @@
 # Luke motion coordination status
 
+## CC h1 BV v2 consumer review — compatibility unresolved
+
+BV v2 has strong row/time provenance but used helper v2, default `min_events=4`
+instead of the declared 100, and omitted accepted/requested bootstrap counts.
+The sole compatibility pair (6/9, parent 91) has 100 raw events per bank but
+only 75/100 and 73/100 after its common-block intersection. A direct v3 call on
+that saved subset with `min_events=100` returns `insufficient_events`; no full
+rescore was run. Episode rows are all unresolved and the 18-site crop has no
+waveform-energy coverage evidence for its 90–230 um excursions. Report:
+`docs/dartsort_cc_bv_v2_consumer_review_20260927.md`.
+
+Accounting, charged once: historical 6983.22 + BZ 720 + CA repair 330 + CA BV-v1
+review 120 + CB guard/construction work 360 = 8513.22 s before CC. The earlier
+construction-review receipt is corrected to zero additional charge because its
+time is absorbed by CB's conservative 360 s. CC charges 420 s, yielding
+8933.22/14400 s. The coordinator's controlling BZ remainder is 1590 s. No raw
+voltage read, GPU, extraction, full scoring campaign or packet mutation.
+
 ## CB h1 review of BZ construction v2 — complete
 
 The paired fresh 3,000/30,000-sample constructions use identical 748 units,
 exact spike counts and 299,635 sampled rows, but are not equivalent. Template
 cosine is 0.9898 median / 0.9461 P5 / 0.0296 minimum. Of upper-triangle direct
-force edges, 37 flip (229 vs 236; Jaccard 0.8526); 206 force-linkage relations
-flip (483 vs 611), and force components are 559 vs 560. This establishes
+force edges, 37 flip. Short -> long is 229 -> 236 edges, 483 -> 611 linkage
+pairs and 559 -> 560 components; the actual long -> short intervention is the
+reverse, 236 -> 229, 611 -> 483 and 560 -> 559 (edge Jaccard 0.8526). This establishes
 construction-chunk sensitivity, not which arm is scientifically correct. The
 packet correctly retains BQ's failed numerical gate and omits QDA/final labels
 because post-TMM score state is absent. Report:
 `docs/dartsort_cb_bz_construction_v2_review_20260927.md`.
 
-Read-only review charge is 120 s, bringing CB to 480/600 s, cumulative
-BZ/CA/CB to 1530/3600 s, and historical active elapsed to 8633.22/14400 s. No
-raw read, GPU, voltage, sort or packet mutation.
+The construction review is included inside CB's existing conservative 360 s
+charge and adds zero seconds; it is not charged twice. Historical active elapsed
+therefore remained 8513.22/14400 s before CC. No raw read, GPU, voltage, sort or
+packet mutation.
 
 ## CB h1 BZ helper v3 integration guards — complete
 

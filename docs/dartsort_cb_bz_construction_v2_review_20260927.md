@@ -13,10 +13,13 @@ is unchanged. Nevertheless, templates are not equivalent: per-unit template
 cosine is 0.9898 median, 0.9461 P5 and 0.0296 minimum. Finite pair-distance
 absolute changes are 0.0073 median, 0.1984 P95 and 1.014 maximum.
 
-On the upper triangle, direct force edges change from 229 to 236; 37 edges flip
-(Jaccard 0.8526). Force-linkage pair relations change from 483 to 611, with 206
-flips. Force components change from 559 to 560. Thus a small typical template
-difference crosses thresholds and propagates through connected components.
+Reading the comparison from the short construction to the long construction,
+upper-triangle direct force edges change 229 -> 236; 37 edges flip (Jaccard
+0.8526). Force-linkage pair relations change 483 -> 611, with 206 flips, and
+force components change 559 -> 560. The experimental intervention was the
+opposite direction, long -> short: 236 -> 229 edges, 611 -> 483 linkage pairs
+and 560 -> 559 components. Thus a small typical template difference crosses
+thresholds and propagates through connected components.
 
 The packet correctly preserves the original BQ gate as `failed_unchanged` and
 does not manufacture QDA/final labels: required post-TMM responsibilities and
