@@ -60,10 +60,17 @@ alone are insufficient.
 - Use unique pre-agglomeration event rows on the fixed pre-recluster sample
   clock, before force alignment and post-merge deduplication.
 - Use verified rest time outside the canonical episode/censor mask and its
-  padding. Apply waveform-bound and collision exclusions before counting.
+  padding. Apply only the already-frozen recording-bound eligibility. Do not
+  remove evaluated-pair collision or coincident events: that would manufacture
+  the dip being tested.
 - Require at least 100 eligible events per unit and 20 common nonoverlapping
   5-s blocks. Missing support is `unresolved`, never evidence of biological
   difference.
+
+The rows already inherit matching competition, collision cleaning and prior
+deduplication from the saved post-TMM state. Those upstream operations can
+suppress zero-lag coincidences and limit biological interpretation; they are
+documented censoring, not reapplied or corrected after seeing outcomes.
 
 QDA-request status is not an input. An unrequested or otherwise unknown QDA test
 is not a failed QDA test. Accepted QDA edges remain active regardless of the
@@ -71,20 +78,28 @@ force gate.
 
 ### Statistic and frozen pass rule
 
-For each eligible pair, compute the cross-correlogram on the common rest domain:
+For each eligible pair, compute the cross-correlogram on the common rest domain.
+At the saved 29,999.759-Hz clock, the exact lag sets are:
 
-- exclude `|lag| < 0.3 ms`, the collision/coincident-event zone;
-- central refractory annulus: `0.3 <= |lag| < 1.0 ms` (1.4-ms total width);
-- shoulder: `1.5 <= |lag| < 3.0 ms` (3.0-ms total width);
+- central: integer sample lags `-29..+29`, including zero (59 lag values);
+- shoulder: `-89..-45` and `+45..+89` (90 lag values);
 - dip ratio
-  `R = (central_count + 0.5) / (shoulder_count × 1.4/3.0 + 0.5)`.
+  `R = (central_count + 0.5) / (shoulder_count × 59/90 + 0.5)`.
+
+No evaluated-pair event or lag is removed for collision/coincidence. Counts use
+only pairs wholly inside the same eligible 5-s block, with the first and last
+89 samples excluded from both trains so central and shoulder have identical
+boundary exposure.
 
 Require an expected central count of at least 20. Draw 1,000 common-5-s-block
 bootstrap replicates and require all finite. Independently create 1,000 seeded
-nulls by circularly shifting one train within each eligible contiguous rest
-segment by a nonzero offset of at least 5 s; segments shorter than 10 s do not
-contribute. This preserves per-segment rate, missingness and censor boundaries
-while breaking submillisecond alignment.
+nulls by randomly deranging complete 5-s blocks of one train **within each
+contiguous rest segment**. A segment contributes only when it contains at least
+two complete blocks; incomplete blocks are excluded from observed and null
+domains alike. Within-block sample offsets are preserved, pairs are counted only
+inside the target block, and the same 89-sample edge trim applies. This is
+nonwrapping and gives observed and null statistics identical temporal support;
+it cannot introduce last-to-first boundary pairs.
 
 The direct force edge passes only when both are true:
 
@@ -139,4 +154,3 @@ refractory signature can retain a nonempty subset of force edges without the
 known rest-time harm. A zero-edge result is simply the established no-force
 control; an all-edge result is the original force arm. Any intermediate result
 must be evaluated on held-out W3 with cheap M3/M4/M5 outcomes before RF work.
-

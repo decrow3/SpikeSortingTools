@@ -13,10 +13,13 @@ pass.
 
 One secondary rule is frozen: a rest-time cross-refractory dip on fixed
 pre-recluster clocks, outside canonical censor time, with >=100 events/unit,
->=20 common 5-s blocks and expected central count >=20. It compares the
-0.3–1.0-ms annulus to 1.5–3.0-ms shoulders. A force edge passes only if the
+>=20 common 5-s blocks and expected central count >=20. It compares exact
+sample lags -29..+29, including zero, against shoulders ±45..89. No evaluated-
+pair collision/coincidence filtering is allowed; upstream matching competition,
+collision cleaning and deduplication are inherited censoring. A force edge passes only if the
 1,000-draw block-bootstrap 95% upper ratio is <=0.50 and the observed ratio is
-at or below the fifth percentile of 1,000 within-segment circular-shift nulls.
+at or below the fifth percentile of 1,000 within-segment nonwrapping block-
+derangement nulls on identical trimmed support.
 Thresholds cannot be tuned on later ISI benefit. Unknown/missing is unresolved,
 not a failed QDA test; accepted QDA and SI routes remain unchanged.
 
