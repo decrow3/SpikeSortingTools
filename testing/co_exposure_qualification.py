@@ -247,6 +247,12 @@ def main():
         writer.writeheader(); writer.writerows(rows)
     state = summarize_state_pairs(args.h5_cn / "STATE_COMPLEMENTARY_CHILDREN.csv",
                                   args.h5_cn / "ACTUAL_STATE_OCCUPANCY.csv")
+    segment_block_counts = {
+        segment_id: sum(block["segment_id"] == segment_id for block in blocks)
+        for segment_id in range(len(segments))
+    }
+    eligible_blocks = [block for block in blocks
+                       if segment_block_counts[block["segment_id"]] >= 2]
     exact = {
         **meta,
         "mask_sha256": sha256(args.mask),
@@ -256,12 +262,22 @@ def main():
         "rest_s": float(sum(right - left for left, right in segments)),
         "complete_5s_blocks": len(blocks),
         "segments_with_at_least_2_complete_blocks": int(sum(
-            np.floor((right-left)/5.0 + 1e-12) >= 2 for left, right in segments)),
+            count >= 2 for count in segment_block_counts.values())),
+        "eligible_complete_5s_blocks": len(eligible_blocks),
         "complete_block_duration_s": float(sum(
             b["end_sample"] - b["start_sample"] for b in blocks) / meta["sampling_frequency_hz"]),
         "trimmed_block_duration_s": float(sum(
             max(0, b["end_sample"] - b["start_sample"] - 178) for b in blocks)
             / meta["sampling_frequency_hz"]),
+        "eligible_complete_block_duration_s": float(sum(
+            b["end_sample"] - b["start_sample"] for b in eligible_blocks)
+            / meta["sampling_frequency_hz"]),
+        "eligible_trimmed_block_duration_s": float(sum(
+            max(0, b["end_sample"] - b["start_sample"] - 178)
+            for b in eligible_blocks) / meta["sampling_frequency_hz"]),
+        "eligible_central_lag_exposure_samples": int(sum(
+            lag_exposure_samples(b["end_sample"] - b["start_sample"])
+            for b in eligible_blocks)),
     }
     counts = {}
     for window in ("W2", "W3"):

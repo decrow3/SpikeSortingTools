@@ -1,0 +1,12 @@
+{
+  "status": "cn_forecast_interpretation_qualified_by_co",
+  "original_cn_outputs_preserved": true,
+  "original_interpretation": "optimistic all-rest expected-support screen",
+  "qualified_interpretation": "expected scorer-domain support under stationary independent Poisson rates; not realization probability, gate power, identity, recovery, or yield",
+  "qualified_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/co_exposure_and_sample_size_review_20260928",
+  "qualified_1x_counts": {
+    "W2_independent_shoulder": [180, 166],
+    "W3_independent_shoulder": [98, 85]
+  },
+  "policy_decision": "neither unresolved-edge default selected for production; frozen primary preserved only as recorded experimental definition"
+}

@@ -2,19 +2,22 @@
 
 ## Verdict
 
-**Keep the frozen pass-only primary.** Accepting every unresolved edge is a
-useful post-primary sensitivity, but it is not supported as a new default. In
+**Preserve the frozen pass-only primary as its recorded experimental
+definition; neither unresolved-edge default is selected for production.**
+Accepting every unresolved edge is a useful post-primary sensitivity, but it is
+not supported as a new default. In
 W3 it accepts 112/122 direct edges and produces 175 force relations, only 45
 relations short of all-force. The graph contains the primary by construction
 and reconnects none of the ten resolved failures, but `unresolved` still means
 that the prespecified gate could not decide—not that the pair is one neuron.
 
-The stationary full-session forecast says that longer observation could make
-the support minima evaluable for many edges. At the observed-rate scenario,
-185/222 W2 edges and 99/122 W3 edges meet all independent-rate support minima;
-the shoulder-derived calculation gives 165/222 and 84/122. These are exposure
-forecasts only. They do not forecast gate passage, identity, recovery, or
-stable-unit yield, and they assume rates and availability continue unchanged.
+The original CN stationary forecast is an optimistic all-rest support screen,
+not a claim that all actual scorer minima will be met. CO subsequently applied
+the common-positive scoring domain and within-segment rule in expectation. At
+the observed-rate scenario the qualified independent screen is 180/222 W2 and
+98/122 W3 edges; the shoulder-derived screen is 166/222 and 85/122. These do not
+forecast realized support, gate passage, identity, recovery, or stable-unit
+yield, and they assume rates and availability continue unchanged.
 
 ## Saved-window result
 
@@ -29,23 +32,37 @@ The W2 sensitivity reconnects two resolved-failed direct pairs through paths;
 the W3 sensitivity reconnects none. This graph consequence is reported, not
 treated as evidence for either identity decision.
 
-## Full-session support forecast
+## Full-session support forecast, qualified by CO
 
 The exact retained canonical-rest support is 239.715 s in W2 and 194.769 s in
-W3, versus 8,210.05 s over the full session. Every direct edge was recomputed,
-including early failures whose saved diagnostic row contained zero sentinels.
-Zeros remain zeros; they are not treated as missing values.
+W3. Full-session AP metadata gives 314,204,094 frames and 10,473.553879 s; after
+the verified canonical mask, exact rest is 8,210.053879 s. Only 7,210.000 s is
+covered by 1,442 complete 5 s blocks, and 1,382 blocks (6,910.000 s; 6,901.800 s
+after the 89-sample trim) belong to segments with at least two complete blocks.
+Every direct edge was recomputed, including early failures whose saved
+diagnostic row contained zero sentinels. Zeros remain zeros; they are not
+treated as missing values.
 
-| Rate scenario | W2 independent / shoulder | W3 independent / shoulder |
+| Rate scenario | W2 qualified independent / shoulder | W3 qualified independent / shoulder |
 | --- | ---: | ---: |
-| 0.5x | 119 / 142 | 74 / 78 |
-| 1.0x | 185 / 165 | 99 / 84 |
-| 2.0x | 196 / 173 | 100 / 88 |
+| 0.5x | 108 / 142 | 65 / 78 |
+| 1.0x | 180 / 166 | 98 / 85 |
+| 2.0x | 195 / 173 | 99 / 88 |
 
-At 1x this is 83.3% / 74.3% of W2 direct edges and 81.1% / 68.9% of W3.
-Three W2 edges and one W3 edge have zero independent-rate expectation; 49 W2
-and 34 W3 edges have zero shoulder expectation. Their corresponding required
-duration is unbounded rather than silently imputed.
+The qualified calculation projects expected common-positive blocks, scorer-
+domain events and central exposure, including the rule that a segment must
+contribute at least two common-positive blocks. At 1x, five W2 and one W3 edges
+drop from CN's independent all-rest screen. Shoulder scaling gains one edge in
+each window because exact eligible lag exposure differs slightly from CN's
+scalar duration scaling. These are expected-value screens, not probabilities of
+realizing the thresholds. Three W2 edges and one W3 edge have zero independent-
+rate expectation; 49 W2 and 34 W3 edges have zero shoulder expectation.
+
+The saved state-complementary counts are also exposure-sensitive descriptions:
+822/824 primary pairs have fewer than 20 spikes in at least one named child
+(833/835 no-force; 122/122 accept-unresolved). They are cross-products within
+36, 38 and eight all-force parents under asymmetric state exposure, not 824
+recovered/lost biological fragments.
 
 ## W3 consumer sensitivity
 

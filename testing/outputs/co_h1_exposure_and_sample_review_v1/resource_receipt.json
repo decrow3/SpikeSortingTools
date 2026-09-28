@@ -1,0 +1,23 @@
+{
+  "task": "CO saved-data forecast qualification and independent 400-waveform review",
+  "status": "complete_zero_of_two_primary_qualified",
+  "prior_cumulative_s": 15053.22,
+  "co_cpu_seconds_charged": 600.0,
+  "co_allowance_s": 1200.0,
+  "co_remaining_s": 600.0,
+  "revised_operational_ceiling_s": 16800.0,
+  "cumulative_after_co_s": 15653.22,
+  "forecast_runs": 2,
+  "forecast_second_run_reason": "report explicit eligible multi-block totals; forecast CSV was byte-identical",
+  "forecast_wall_seconds_each": [35.34, 35.11],
+  "forecast_peak_rss_mb": 85.8,
+  "saved_waveform_cache_logical_read_bytes": 67915848,
+  "source_voltage_reads": 0,
+  "duplicate_400_event_rescores": 0,
+  "gpu_seconds": 0.0,
+  "threads": 2,
+  "method_commit": "4779fd2",
+  "h5_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-co-two-unit-400waveforms-v1",
+  "shared_h1_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/co_exposure_and_sample_size_review_20260928",
+  "report": "docs/dartsort_co_exposure_and_sample_size_result_20260928.md"
+}

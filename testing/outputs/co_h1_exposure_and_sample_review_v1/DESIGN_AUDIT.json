@@ -1,0 +1,57 @@
+{
+  "status": "complete_zero_of_two_primary_qualified",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-co-two-unit-400waveforms-v1",
+  "source_manifest_products_verified": 6,
+  "selection_manifest_products_verified": 14,
+  "predetermined_ce_units": [23, 120],
+  "units_replaced": 0,
+  "selection_rows": 1600,
+  "selection_row_duplicates": 0,
+  "old_ck_scoring_row_overlap": 0,
+  "rows_per_unit_half": 400,
+  "nested_rows_per_unit_half": 100,
+  "full_block_ranges": [28, 34],
+  "nested_subset_spans_all_selected_blocks": true,
+  "frozen_ck_noise_arrays_exact": true,
+  "frozen_physical_support_channels_per_unit": 30,
+  "selection_frozen_before_voltage": true,
+  "worker_constraints_present": {
+    "timeout_seconds": 1200,
+    "memory_max": "20G",
+    "cpu_quota": "400%",
+    "cuda_disabled": true
+  },
+  "scoring_contract": {
+    "primary": "median, zero lag, unit gain, frozen CK noise/support",
+    "sample_sizes_per_half": [100, 400],
+    "nested_100_in_400": true,
+    "bootstrap_draws": 1000,
+    "qualification": "400-event median lower 95% bound >= 0.90",
+    "mean_is_secondary": true
+  },
+  "limitations": [
+    "CO and CK scoring rows are disjoint but their block/time compositions differ",
+    "rest reproducibility does not establish neuronal identity or episode continuity",
+    "bootstrap intervals quantify block-resampling variability, not independent repeated 400-event experiments"
+  ],
+  "h5_manifest_products_verified": 29,
+  "h5_summary_sha256": "49db94dcc6832e91e238965d7b35db012be98d8c313c1b5ac0b431be4bf6ae27",
+  "qualified_400_median": 0,
+  "qualification_denominator": 2,
+  "primary_results": {
+    "23": {"point": 0.9273198880499964, "ci_lower": 0.8399759247060393, "ci_upper": 0.8868503970502692},
+    "120": {"point": 0.9501518863408893, "ci_lower": 0.892352017395553, "ci_upper": 0.9238806769011552}
+  },
+  "independent_saved_template_point_max_abs_error": 1.1102230246251565e-16,
+  "independent_first_draw_check": {
+    "unit": 120,
+    "events_per_half": 400,
+    "draw": 0,
+    "value": 0.9105880761234881,
+    "saved_value": 0.910588076123488,
+    "absolute_error": 1.1102230246251565e-16,
+    "logical_saved_cache_bytes": 67915848
+  },
+  "visual_panel_inspected": true,
+  "recommended_next_step": "saved-cache per-block median templates and leave-one-block-out correlations for the same two fixed IDs; no new voltage read, field fit, unit selection, or threshold change"
+}

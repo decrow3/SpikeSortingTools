@@ -1,0 +1,39 @@
+{
+  "status": "complete_saved_data_qualification",
+  "method_commit": "4779fd2",
+  "ap_frames": 314204094,
+  "sampling_frequency_hz": 29999.759166666667,
+  "duration_s": 10473.553879363088,
+  "ap_meta_sha256": "89832b7afd62e96bce1e7441fc132d53c4da2eac812a88bde19effad9f1be23d",
+  "canonical_mask_sha256": "86425e8a6627a10ac8932ba01b799cb7be7141f731ebb4ecc01e303326b9da55",
+  "canonical_rest_s": 8210.053879363088,
+  "complete_5s_blocks": 1442,
+  "eligible_multi_block_segments": 249,
+  "eligible_complete_5s_blocks": 1382,
+  "eligible_complete_block_s": 6909.999938610618,
+  "eligible_trimmed_block_s": 6901.800006116716,
+  "qualified_counts": {
+    "W2": {
+      "0.5x_independent_shoulder": [108, 142],
+      "1x_independent_shoulder": [180, 166],
+      "2x_independent_shoulder": [195, 173]
+    },
+    "W3": {
+      "0.5x_independent_shoulder": [65, 78],
+      "1x_independent_shoulder": [98, 85],
+      "2x_independent_shoulder": [99, 88]
+    }
+  },
+  "original_cn_1x_independent_shoulder": {
+    "W2": [185, 165],
+    "W3": [99, 84]
+  },
+  "interpretation": "expected scorer-domain support under stationary independent Poisson rates; not realization probability, gate power, identity, recovery, or yield",
+  "state_complementary_lt20_either_child": {
+    "primary_withhold": [822, 824],
+    "no_force": [833, 835],
+    "sensitivity_accept_unresolved": [122, 122]
+  },
+  "primary_policy_statement": "frozen experimental definition preserved; not recommended as production winner",
+  "production_deployment_question": "open"
+}

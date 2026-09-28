@@ -1,8 +1,42 @@
 # Luke motion coordination status
 
+## CO h1 exposure qualification and 400-waveform review — complete
+
+CN's original full-rest counts are now explicitly an optimistic support screen.
+Verified AP metadata gives 314,204,094 frames and 10,473.553879 s. The canonical
+mask leaves 8,210.053879 s rest, but only 1,442 complete 5 s blocks (7,210.000 s)
+exist; 1,382 blocks in 249 multi-block segments are eligible before pair-specific
+common-positive filtering. Applying common-positive scoring and the frozen
+within-segment rule in expectation changes the 1x independent support screen
+from 185 to 180 W2 edges and 99 to 98 W3 edges. The qualified shoulder screen
+is 166 W2 and 85 W3. These remain stationary expected-support scenarios, not
+realized-minimum probabilities, test power, identity, recovery or yield.
+
+The state-complementary screen is minimum-count-sensitive: 822/824 primary
+pairs have fewer than 20 spikes in at least one named child (833/835 no-force;
+122/122 accept-unresolved). Those rows are descriptive within-parent
+cross-products under unequal exposure, not biological fragments.
+
+The h5 CO packet passes source, selection and overall manifest verification.
+Both predetermined CE-W2 units use 400 disjoint events/half, nested 100 controls,
+the exact old CK noise arrays and unchanged 30-channel physical support. Neither
+passes the new primary rule: unit 23 has point 0.9273 and lower bound 0.8400;
+unit 120 has point 0.9502 and lower bound 0.8924. Mean is secondary and cannot
+substitute. CK remains 0/8. A saved-template point check and one 67.9-MB cached
+first bootstrap draw reproduce to floating precision. No h1 raw-voltage read or
+duplicate 400-event rescore ran. Report:
+`docs/dartsort_co_exposure_and_sample_size_result_20260928.md`.
+
+CO charges 600/1200 s, appended to the verified 15053.22 s cumulative total:
+**15653.22/16800 s**. The revised ceiling was recorded before crossing 15600 s.
+H1 used two CPU threads, 85.8 MB peak RSS for the forecast, 67.9 MB logical
+saved-cache reads for the independent draw, no GPU and no source-voltage read.
+
 ## CN h1 unresolved-default and exposure review — complete
 
-The frozen pass-only primary remains the recommendation. The post-primary W3
+The frozen pass-only primary remains the recorded experimental definition, not
+an evidence-based production recommendation. Neither unresolved-edge default is
+selected for deployment. The post-primary W3
 accept-unresolved sensitivity independently reconstructs to 112 direct, 175
 expanded-force and 178 final-union relations (500 components), versus the
 primary's 7/8/13. It reconnects none of W3's ten resolved failures. This is
