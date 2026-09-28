@@ -70,25 +70,29 @@ in unresolved time. The all-near-pair denominator (14,040 candidate pairs) is
 kept separate from the consecutive-ISI denominator (13,441 pre-dedup and
 634,963 final consecutive pairs).
 
-The fixed nonwrapping null contains 73,536 rows: all 9,192 published groups at
--4, -2, -1, -0.5, +0.5, +1, +2 and +4 seconds. Its `possible_*_pairs`
-denominators multiply event counts pooled across state segments rather than
-summing within-segment count products. That admits impossible cross-segment
-exposure and invalidates normalized rate comparisons. The null is also a
-**pre-dedup association null**, not a dedup-survival null. Its raw table is
-therefore retained only as a qualified sensitivity product; it is not used in
-the mechanism verdict.
+The original fixed nonwrapping null contains 73,536 rows: all 9,192 published
+groups at -4, -2, -1, -0.5, +0.5, +1, +2 and +4 seconds. Its
+`possible_*_pairs` denominators multiplied event counts pooled across state
+segments rather than summing within-segment count products, admitting
+impossible cross-segment exposure. Those original files are preserved but
+superseded.
 
-The analysis source used nominal 900 s as W2's origin and rounded catalogue
+H5 subsequently published `*_CORRECTED` products using exact source-frame
+timing and the required sum of within-segment count products. H1 verifies that
+all eight offsets retain 9,192 rows, the detailed table sums exactly to the
+overall corrected summary, the state summaries sum exactly to that same table,
+and usable plus too-short segments close for every offset/state row. The null
+remains a **pre-dedup association null**, not a dedup-survival null, and is not
+needed for the mechanism verdict.
+
+The initial analysis source used nominal 900 s as W2's origin and rounded catalogue
 boundaries rather than using exact source-frame membership. The saved manifest
 gives start frame 26,999,783 and 29,999.759166666667 Hz, so the exact origin is
 899.9999916666 s (0.25 sample earlier). A direct reclassification of all
 641,588 saved events found zero state changes, and the 6,250 target pairs retain
 the reported 6,074 rest / 170 accepted / 6 unresolved split. Thus the
-implementation should still be fixed for reuse, but this tiny origin error did
-not change the current result. The null products do not expose per-state
-available duration or unavailable short segments, so those denominators cannot
-be independently certified from the packet.
+initial implementation did not change the current result. The repaired packet
+now reports per-state usable duration and unavailable short segments explicitly.
 
 Route labels and deterministic lag agreement do not establish neuronal
 identity.
