@@ -13,10 +13,6 @@ import pandas as pd
 
 
 FS = 29_999.759166666667
-ORIGIN = 26_999_783
-WINDOW_START_S = 900.0
-WINDOW_END_S = 1240.0
-WINDOW_SAMPLES = 10_200_000
 
 
 def sha256(path: Path) -> str:
@@ -37,23 +33,30 @@ def merge(intervals: list[tuple[float, float]]) -> list[tuple[float, float]]:
     return [(left, right) for left, right in out]
 
 
-def accepted_segments(catalogue: Path) -> list[tuple[int, int]]:
+def accepted_segments(
+    catalogue: Path, start_frame: int, end_frame: int, sampling_frequency: float
+) -> list[tuple[int, int]]:
     table = pd.read_csv(catalogue)
-    table = table[
-        (table.status == "accepted")
-        & (table.end_s > WINDOW_START_S)
-        & (table.start_s < WINDOW_END_S)
-    ]
+    starts = np.ceil(table.start_s.to_numpy(float) * sampling_frequency).astype(np.int64)
+    ends = np.ceil(table.end_s.to_numpy(float) * sampling_frequency).astype(np.int64)
+    table = table.assign(start_frame=starts, end_frame=ends)
+    table = table[(table.status == "accepted") & (table.end_frame > start_frame) & (table.start_frame < end_frame)]
     intervals = merge(
         [
-            (max(WINDOW_START_S, float(row.start_s)), min(WINDOW_END_S, float(row.end_s)))
+            (max(start_frame, int(row.start_frame)), min(end_frame, int(row.end_frame)))
             for row in table.itertuples()
         ]
     )
-    return [(int(np.ceil(left * FS)), int(np.ceil(right * FS))) for left, right in intervals]
+    return [(int(left), int(right)) for left, right in intervals]
 
 
-def summarize(path: Path, segments: list[tuple[int, int]]) -> dict:
+def summarize(
+    path: Path,
+    segments: list[tuple[int, int]],
+    start_frame: int,
+    end_frame: int,
+    metadata_sampling_frequency: float,
+) -> dict:
     with np.load(path, allow_pickle=False) as z:
         times = np.asarray(z["times_samples"])
         labels = np.asarray(z["labels"])
@@ -61,7 +64,7 @@ def summarize(path: Path, segments: list[tuple[int, int]]) -> dict:
         sampling_frequency = float(z["sampling_frequency"])
         geom = np.asarray(z["geom"])
     assigned = labels >= 0
-    source_frames = ORIGIN + times
+    source_frames = start_frame + times
     accepted = np.zeros(len(times), dtype=bool)
     segment_id = np.full(len(times), -1, dtype=np.int32)
     for sid, (left, right) in enumerate(segments):
@@ -99,37 +102,48 @@ def summarize(path: Path, segments: list[tuple[int, int]]) -> dict:
         "label_min": int(labels.min()),
         "label_max": int(labels.max()),
         "sampling_frequency": sampling_frequency,
-        "sampling_frequency_exact": sampling_frequency == FS,
+        "sampling_frequency_exact": sampling_frequency == metadata_sampling_frequency == FS,
         "geometry_shape": list(geom.shape),
         "channel_min": int(channels.min()),
         "channel_max": int(channels.max()),
         "local_time_min": int(times.min()),
         "local_time_max": int(times.max()),
-        "local_times_in_window": bool(np.all((times >= 0) & (times < WINDOW_SAMPLES))),
+        "metadata_start_frame": start_frame,
+        "metadata_end_frame": end_frame,
+        "metadata_window_samples": end_frame - start_frame,
+        "local_times_in_window": bool(np.all((times >= 0) & (times < end_frame - start_frame))),
         "source_frame_min": int(source_frames.min()),
         "source_frame_max": int(source_frames.max()),
-        "source_clock_rule": "source_frame = 26999783 + local times_samples",
+        "source_clock_rule": f"source_frame = {start_frame} + local times_samples",
         "endpoints_all_states": endpoints,
         "endpoints_accepted_only": accepted_endpoints,
-        "accepted_rows": int(np.count_nonzero(accepted)),
+        "accepted_rows_total": int(np.count_nonzero(accepted)),
+        "accepted_rows_assigned": int(np.count_nonzero(accepted & assigned)),
+        "accepted_rows_noise": int(np.count_nonzero(accepted & ~assigned)),
+        "accepted_assigned_plus_noise_closes": int(np.count_nonzero(accepted & assigned) + np.count_nonzero(accepted & ~assigned)) == int(np.count_nonzero(accepted)),
     }
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--catalogue", type=Path, required=True)
+    parser.add_argument("--window-manifest", type=Path, required=True)
     parser.add_argument("--baseline", type=Path, required=True)
     parser.add_argument("--rematch0", type=Path, required=True)
     parser.add_argument("--cd1", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    segments = accepted_segments(args.catalogue)
+    metadata = json.loads(args.window_manifest.read_text())["window"]
+    start_frame = int(metadata["start_frame"])
+    end_frame = int(metadata["end_frame"])
+    metadata_fs = float(metadata["sampling_frequency"])
+    segments = accepted_segments(args.catalogue, start_frame, end_frame, metadata_fs)
     arms = {
-        "accepted_baseline": summarize(args.baseline, segments),
-        "REMATCH0": summarize(args.rematch0, segments),
+        "accepted_baseline": summarize(args.baseline, segments, start_frame, end_frame, metadata_fs),
+        "REMATCH0": summarize(args.rematch0, segments, start_frame, end_frame, metadata_fs),
     }
     if args.cd1 is not None and args.cd1.exists():
-        arms["CD1_FULL"] = summarize(args.cd1, segments)
+        arms["CD1_FULL"] = summarize(args.cd1, segments, start_frame, end_frame, metadata_fs)
     base_rows = arms["accepted_baseline"]["rows"]
     for value in arms.values():
         value["row_delta_vs_baseline"] = value["rows"] - base_rows
@@ -146,6 +160,19 @@ def main() -> None:
         ) else "fail",
         "accepted_segment_count": len(segments),
         "accepted_segments_source_frames": segments,
+        "window_metadata": {
+            "start_frame": start_frame,
+            "end_frame": end_frame,
+            "window_samples": end_frame - start_frame,
+            "sampling_frequency": metadata_fs,
+            "local_time_origin_seconds": metadata.get("local_time_origin_seconds"),
+            "split_channel_preprocessing": metadata.get("split_channel_preprocessing"),
+            "source_channel_count": len(metadata.get("source_channel_ids", [])),
+            "sort_channel_count": len(metadata.get("channel_ids", [])),
+            "first_sort_channel": metadata.get("channel_ids", [None])[0],
+            "last_sort_channel": metadata.get("channel_ids", [None])[-1],
+            "probe": "imec1",
+        },
         "arms": arms,
         "interpretation_limits": [
             "new matching rows have no valid index join to baseline rows",

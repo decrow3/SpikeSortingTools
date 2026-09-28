@@ -3,30 +3,30 @@
 ## Verdict first
 
 Both completed CY arms pass independent saved-output accounting and exact
-AP-frame clock checks. The extra full-resolution coordinate-descent round does
-not improve the frozen accepted-episode adjacency endpoint: after final
-refinement REMATCH0 and CD1_FULL each have 104 accepted-state 9--29-sample
-pairs. CD1_FULL instead produces 17,915 more final rows than REMATCH0 and 27
-more final units, with a slightly larger all-state endpoint (4,453 versus
-4,347). These are descriptive sorter outcomes, not biological identities.
+AP-frame clock checks. After final refinement REMATCH0 and CD1_FULL each have
+104 accepted-state 9--29-sample pairs, but this raw interval count does **not**
+select an arm. Its denominators differ, and it is a descriptive sorter output,
+not a biological-identity or functional-quality metric. CD1_FULL produces
+17,915 more final rows than REMATCH0 and 27 more final units, with a slightly
+larger all-state endpoint (4,453 versus 4,347).
 
-The cleanest finite recommendation is therefore to retain **REMATCH0** as the
-method variant if the producer's paired metrics confirm no material CD1_FULL
-benefit. Do not start another calibration, RF evaluation, or sorter arm. The
-one useful next step would be transfer of this already-frozen REMATCH0 method
-to a genuinely held-out window/session, conditional on the paired result.
+The finite next decision input is the preregistered development-only RF
+comparison on the unchanged original stimulus/cell universe. No recommendation
+between REMATCH0 and CD1_FULL is made from row count, unit count, or adjacency
+alone.
 
 ## Independent accounting
 
-| Output | Rows | Assigned | Noise | Final units | 9--29 all | 9--29 accepted |
-|---|---:|---:|---:|---:|---:|---:|
-| Accepted D2L baseline | 641,588 | 635,734 | 5,854 | 566 | 7,493 | 312 |
-| REMATCH0 | 648,483 | 645,448 | 3,035 | 586 | 4,347 | 104 |
-| CD1_FULL | 666,398 | 663,388 | 3,010 | 613 | 4,453 | 104 |
+| Output | Rows | Assigned | Noise | Final units | Accepted total | Accepted assigned | Accepted noise | 9--29 accepted |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Accepted D2L baseline | 641,588 | 635,734 | 5,854 | 566 | 15,051 | 14,803 | 248 | 312 |
+| REMATCH0 | 648,483 | 645,448 | 3,035 | 586 | 14,770 | 14,611 | 159 | 104 |
+| CD1_FULL | 666,398 | 663,388 | 3,010 | 613 | 15,015 | 14,863 | 152 | 104 |
 
-Every row closes as assigned plus noise. All outputs use exactly
-29,999.7591667 Hz, 182 physical channels, local sample coordinates inside the
-340-s W2 recording, and the frozen mapping
+Every whole-window and accepted-state row count closes as assigned plus noise.
+All outputs use exactly 29,999.7591667 Hz, 182 physical channels, local sample
+coordinates inside the metadata window `[26,999,783, 37,199,701)` (10,199,918
+samples), and the frozen mapping
 `source_frame = 26,999,783 + local times_samples`. Ten accepted catalogue
 segments overlap W2. The endpoint counts require consecutive events within a
 final label and both event times in the same accepted segment.
@@ -35,7 +35,8 @@ At the matching stage before refinement, REMATCH0 has 648,483 rows, 743 used
 bank units, 2,639 all-state endpoints, and 49 accepted endpoints. CD1_FULL has
 666,398 rows, 742 used bank units, 3,288 all-state endpoints, and 50 accepted
 endpoints. Thus the additional CD round changes the broad event partition but
-does not improve this accepted-state endpoint.
+does not change this raw accepted-state count materially. That statement is
+descriptive and not an arm-selection rule.
 
 ## Model and interpretation audit
 

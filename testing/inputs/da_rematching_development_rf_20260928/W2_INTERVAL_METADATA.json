@@ -1,0 +1,11 @@
+{
+  "exact_source_frame_interval_half_open": [
+    26999783,
+    37199701
+  ],
+  "local_frame_count": 10199918,
+  "sampling_frequency_hz": 29999.759166666667,
+  "source": "/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-ao-d2l-v2/windows/W2/runs/D2L/input-manifest.json",
+  "source_probe": "imec1",
+  "source_time_rule": "source_frame = 26999783 + local times_samples"
+}
