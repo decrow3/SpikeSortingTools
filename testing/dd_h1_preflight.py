@@ -23,6 +23,7 @@ def wj(p,x):
  q=p.with_suffix(p.suffix+".partial"); q.write_text(json.dumps(x,indent=2,sort_keys=True)+"\n"); os.replace(q,p)
 
 def main():
+ raise RuntimeError("SUPERSEDED: this preflight used 384 output sites and remap-before-Kilosort preprocessing; DD requires AP202:383 at the reviewed filtered-parent boundary")
  started=time.perf_counter(); out=ROOT/"preflight"
  if out.exists(): raise FileExistsError(out)
  out.mkdir(parents=True); (out/"source").mkdir()

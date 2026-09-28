@@ -43,7 +43,7 @@ def merge(parts):
     out=[]
     for a,b,label in parts:
         if b<=a: continue
-        if out and out[-1][2]==label and np.isclose(a,out[-1][1],atol=1e-12): out[-1][1]=b
+        if out and out[-1][2]==label and np.isclose(a,out[-1][1],rtol=0,atol=1e-12): out[-1][1]=b
         else: out.append([a,b,label])
     return [(float(a),float(b),str(c)) for a,b,c in out]
 
@@ -86,11 +86,13 @@ def load_arm(spec, start, end, fs):
             ch=np.asarray(z["channels"],np.int64); geom=np.asarray(z["geom"],float)
             if not np.isclose(float(z["sampling_frequency"]),fs,rtol=0,atol=1e-9): raise ValueError("FS mismatch")
         if np.any((local<0)|(local>=end-start)): raise ValueError("local event outside support")
-        times=local+start; depth=geom[ch,1]; assigned=labels>=0; good=np.zeros(labels.size,bool)
-        noise_available=True
+        times=local+start; depth=geom[ch,1]; assigned=labels>=0; good=None
+        noise_available=True; clock_type="window_local"
     elif kind=="kilosort_folder":
-        times_all=np.load(path/"spike_times.npy",mmap_mode="r").reshape(-1)
-        take=(times_all>=start)&(times_all<end); times=np.asarray(times_all[take],np.int64)
+        times_all=np.load(path/"spike_times.npy",mmap_mode="r").reshape(-1); clock_type=spec.get("clock")
+        if clock_type=="full_source": take=(times_all>=start)&(times_all<end); times=np.asarray(times_all[take],np.int64)
+        elif clock_type=="window_local": take=(times_all>=0)&(times_all<end-start); times=np.asarray(times_all[take],np.int64)+start
+        else: raise ValueError("Kilosort spec requires clock=full_source or window_local")
         labels=np.asarray(np.load(path/"spike_clusters.npy",mmap_mode="r").reshape(-1)[take],np.int64)
         pos=np.asarray(np.load(path/"spike_positions.npy",mmap_mode="r")[take]); depth=pos[:,1]
         assigned=np.ones(labels.size,bool); noise_available=False
@@ -98,7 +100,7 @@ def load_arm(spec, start, end, fs):
         idcol="cluster_id" if "cluster_id" in tab else tab.columns[0]; labcol="KSLabel" if "KSLabel" in tab else tab.columns[-1]
         good_ids=set(tab.loc[tab[labcol].astype(str).str.lower()=="good",idcol].astype(int)); good=np.array([x in good_ids for x in labels])
     else: raise ValueError(kind)
-    return times,labels,depth,assigned,good,noise_available
+    return times,labels,depth,assigned,good,noise_available,clock_type
 
 
 def main():
@@ -122,28 +124,33 @@ def main():
         exposure=iv.groupby("domain").duration_s.sum().reindex(DOMAINS)
         if not np.isclose(exposure.sum(),right-left,atol=1e-9): raise ValueError(f"{name} exposure closure")
         for arm,spec in w["arms"].items():
-            times,labels,depth,assigned,good,noise_available=load_arm(spec,start,end,fs); sec=times/fs
+            times,labels,depth,assigned,good,noise_available,clock_type=load_arm(spec,start,end,fs); sec=times/fs
             domain=assign_domain(sec,ft,dev,mask); cstate=catalogue_state(sec,cat)
             for d in DOMAINS:
                 inside=domain==d; seg=segment_id(sec,ivals,d); ix=np.flatnonzero(inside&assigned)
+                if np.any(seg[inside] < 0) or np.any(seg[~inside] >= 0):
+                    raise AssertionError(f"{name}/{arm}/{d}: domain/segment membership mismatch")
                 order=ix[np.lexsort((times[ix],labels[ix]))]; same=(labels[order[1:]]==labels[order[:-1]])&(seg[order[1:]]==seg[order[:-1]]) if order.size>1 else np.zeros(0,bool); delta=np.diff(times[order])[same]
-                for subset,subkeep in (("all_units",np.ones(times.size,bool)),("good_units",good)):
+                subsets=[("all_units",np.ones(times.size,bool))]
+                if good is not None: subsets.append(("good_units",good))
+                for subset,subkeep in subsets:
                     den=inside&subkeep
-                    count_rows.append({"window":name,"arm":arm,"subset":subset,"domain":d,"exposure_s":exposure[d],"all_events":int(den.sum()),"assigned_events":int((den&assigned).sum()),"noise_events":int((den&~assigned).sum()) if noise_available else np.nan,"assigned_rate_hz":float((den&assigned).sum()/exposure[d]),"units":int(np.unique(labels[den&assigned]).size),"noise_representation_available":noise_available})
+                    count_rows.append({"window":name,"arm":arm,"subset":subset,"domain":d,"domain_exposure_s":exposure[d],"subset_exposure_s":exposure[d],"all_events":int(den.sum()),"assigned_events":int((den&assigned).sum()),"noise_events":int((den&~assigned).sum()) if noise_available else np.nan,"assigned_rate_hz":float((den&assigned).sum()/exposure[d]),"units":int(np.unique(labels[den&assigned]).size),"noise_representation_available":noise_available,"good_label_availability":"available" if good is not None else "unavailable","clock_type":clock_type})
                 isi_rows.append({"window":name,"arm":arm,"domain":d,"adjacent_denominator":delta.size,"lag8":int((delta==8).sum()),"lag9_29":int(((delta>=9)&(delta<=29)).sum()),"lag30":int((delta==30).sum()),"fraction9_29":float(((delta>=9)&(delta<=29)).mean()) if delta.size else np.nan})
                 for cs in ("catalogue_accepted","catalogue_unresolved","outside_catalogue"):
-                    x=inside&(cstate==cs); count_rows.append({"window":name,"arm":arm,"subset":cs,"domain":d,"exposure_s":exposure[d],"all_events":int(x.sum()),"assigned_events":int((x&assigned).sum()),"noise_events":int((x&~assigned).sum()) if noise_available else np.nan,"assigned_rate_hz":np.nan,"units":int(np.unique(labels[x&assigned]).size),"noise_representation_available":noise_available})
+                    x=inside&(cstate==cs); count_rows.append({"window":name,"arm":arm,"subset":cs,"domain":d,"domain_exposure_s":exposure[d],"subset_exposure_s":np.nan,"all_events":int(x.sum()),"assigned_events":int((x&assigned).sum()),"noise_events":int((x&~assigned).sum()) if noise_available else np.nan,"assigned_rate_hz":np.nan,"units":int(np.unique(labels[x&assigned]).size),"noise_representation_available":noise_available,"good_label_availability":"available" if good is not None else "unavailable","clock_type":clock_type})
             rows=[]
             for u in np.unique(labels[assigned]):
-                uu=assigned&(labels==u); row={"window":name,"arm":arm,"unit_id":int(u),"median_event_depth_um":float(np.median(depth[uu]))}
+                uu=assigned&(labels==u); flat=uu&(domain==DOMAINS[1]); row={"window":name,"arm":arm,"unit_id":int(u),"median_flat_event_depth_um":float(np.median(depth[flat])) if flat.any() else np.nan}
                 for d in DOMAINS:
                     n=int(np.sum(uu&(domain==d))); row[f"count_{d}"]=n; row[f"log_rate_{d}"]=float(np.log((n+.5)/exposure[d]))
+                row["negative_to_flat_rate_ratio"]=(row[f"count_{DOMAINS[0]}"]/exposure[DOMAINS[0]])/(row[f"count_{DOMAINS[1]}"]/exposure[DOMAINS[1]]) if row[f"count_{DOMAINS[1]}"] else np.nan
                 rows.append(row)
-            uf=pd.DataFrame(rows); eligible=uf[uf.count_outside_mask_flat>=100].copy(); controls=[]
+            uf=pd.DataFrame(rows); uf["eligible_flat_count_ge_100"]=uf.count_outside_mask_flat>=100; uf["exclusion_reason"]=np.where(uf.eligible_flat_count_ge_100,"","flat_count_lt_100"); eligible=uf[uf.eligible_flat_count_ge_100].copy(); controls=[]
             for row in eligible.itertuples():
-                near=eligible[(np.abs(eligible.median_event_depth_um-row.median_event_depth_um)<=10)&(eligible.unit_id!=row.unit_id)]
+                near=eligible[(np.abs(eligible.median_flat_event_depth_um-row.median_flat_event_depth_um)<=10)&(eligible.unit_id!=row.unit_id)]
                 controls.append(float(near.log_rate_outside_mask_flat.mean()) if len(near) else np.nan)
-            eligible["same_row_other_unit_flat_log_rate"]=controls; unit_rows.extend(eligible.to_dict("records"))
+            eligible["same_row_other_unit_flat_log_rate"]=controls; uf=uf.merge(eligible[["unit_id","same_row_other_unit_flat_log_rate"]],on="unit_id",how="left"); unit_rows.extend(uf.to_dict("records"))
             r=spearmanr(eligible.log_rate_outside_mask_flat,eligible.log_rate_negative_excursion) if len(eligible)>=3 else (np.nan,np.nan)
             ok=np.isfinite(eligible.same_row_other_unit_flat_log_rate); rc=spearmanr(eligible.loc[ok,"same_row_other_unit_flat_log_rate"],eligible.loc[ok,"log_rate_negative_excursion"]) if ok.sum()>=3 else (np.nan,np.nan)
             rho_rows.append({"window":name,"arm":arm,"eligible_units":len(eligible),"excluded_units":len(uf)-len(eligible),"rho_negative_vs_flat":float(r.statistic if hasattr(r,"statistic") else r[0]),"rho_negative_vs_same_row_other_flat":float(rc.statistic if hasattr(rc,"statistic") else rc[0]),"same_row_control_units":int(ok.sum()),"identity_interpretation":False})

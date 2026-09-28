@@ -18,6 +18,7 @@ def sha(p):
 def wj(p,x):
  q=p.with_suffix(p.suffix+'.partial');q.write_text(json.dumps(x,indent=2,sort_keys=True,default=str)+'\n');os.replace(q,p)
 def main():
+ raise RuntimeError("SUPERSEDED: NC=384 worker is not authorized; use reviewed AP202:383 filtered-parent input and explicit whitening policy")
  ap=argparse.ArgumentParser();ap.add_argument('--arm',choices=['KS_0','KS_L'],required=True);ap.add_argument('--input',type=Path,required=True);ap.add_argument('--output',type=Path,required=True);a=ap.parse_args()
  out=a.output.resolve();partial=out.with_name(out.name+'.partial')
  if out.exists() or partial.exists():raise FileExistsError(out)

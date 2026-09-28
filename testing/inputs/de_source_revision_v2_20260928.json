@@ -1,0 +1,18 @@
+{
+  "status": "published_before_new_DD_outcomes",
+  "published_local": "2026-09-27T23:43:07-07:00",
+  "source_version": 2,
+  "source_sha256": "8827bb2a8e85ed6bdebe8e369b743966e7e349d063fbb28cce9e75682d935c08",
+  "h1_manifest_sha256": "6a3f37d5f08ca1c835bab0eddd068f11158148b75a9f3c2d7ef58b4f7d9b0df9",
+  "repairs": [
+    "same-row depth uses the unit's outside_mask_flat events only",
+    "catalogue cross-tabs expose domain_exposure_s and leave subset_exposure_s unavailable",
+    "DARTsort good labels are unavailable rather than an all-zero pseudo-subset",
+    "all units retain eligibility flag, exclusion reason, counts, logs and rate ratio",
+    "domain/segment membership is asserted before ISI adjacency",
+    "boundary merging uses rtol=0",
+    "Kilosort clock is explicit: full_source or window_local"
+  ],
+  "preserved_outputs": "host_h1/results remains the original completed scorecard; unchanged domain counts and RF were not rerun",
+  "outer_rf_holdout_opened": false
+}

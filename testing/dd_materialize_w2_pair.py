@@ -18,6 +18,7 @@ def sha(p):
 def wj(p,x):
  q=p.with_suffix(p.suffix+'.partial');q.write_text(json.dumps(x,indent=2,sort_keys=True)+'\n');os.replace(q,p)
 def main():
+ raise RuntimeError("SUPERSEDED: full-384 remap and remap-before-time-filter violate the frozen DD AP202:383 preprocessing boundary")
  ap=argparse.ArgumentParser();ap.add_argument('--output',type=Path,required=True);ap.add_argument('--chunk-seconds',type=float,default=1.0);a=ap.parse_args()
  out=a.output.resolve();
  if out.exists():raise FileExistsError(out)

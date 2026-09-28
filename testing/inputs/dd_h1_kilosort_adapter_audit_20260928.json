@@ -1,0 +1,14 @@
+{
+  "status": "native_wrapper_cannot_insert_required_boundary",
+  "installed_paths": {
+    "wrapper": "environments/rescue-production/.venv/lib/python3.12/site-packages/spikeinterface/sorters/external/kilosort4.py",
+    "binary_filter": "environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/io.py",
+    "preprocessing": "environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/run_kilosort.py"
+  },
+  "native_order": "channel map -> per-channel mean/CAR -> highpass -> whitening -> optional drift",
+  "required_insertion": "temporal highpass -> AP202:383 exact-coordinate time-varying remap -> CAR -> adaptive whitening",
+  "wrapper_limit": "skip_kilosort_preprocessing bypasses highpass and whitening together; later BinaryFiltered still applies mean/CAR when do_CAR=true. The wrapper exposes no supported remap hook or external hp_filter/whiten_mat injection point.",
+  "safe_supported_route": "materialize a fully preprocessed paired input with an independently verified adapter, then use skip_kilosort_preprocessing=true and do_CAR=false for both arms; this requires exact external highpass/CAR/adaptive-whitening receipts and is not implemented by the superseded h1 source",
+  "current_action": "await/review the h5 canonical filtered-parent182 implementation; do not begin a broad Kilosort rewrite or launch the pair",
+  "sorts_launched": 0
+}

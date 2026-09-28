@@ -1,0 +1,18 @@
+{
+  "status": "current_full_pair_launch_revoked_before_sort",
+  "defects": [
+    "the preserved preflight/materializer used 384 output sites instead of physical AP202:383 (182 sites)",
+    "the preserved materializer remapped before Kilosort highpass, CAR and whitening",
+    "the preserved label-free result subtracted q from cached old peak coordinates and is coordinate consistency only, not remapped-voltage evidence"
+  ],
+  "preserved_artifacts": [
+    "preflight_superseded_full384",
+    "coordinate_consistency_only",
+    "coordinate_consistency_only.superseded_gain_resolution"
+  ],
+  "sorts_launched": 0,
+  "materialization_launched_h1": false,
+  "required_output_sites": "physical AP202:383 inclusive, 182 sites",
+  "required_boundary": "temporal filtering before time-varying remap; no double highpass/reference; adaptive whitening policy explicit",
+  "next_action": "review h5 canonical filtered-parent182 source and compare independent sign/geometry/seam fixture before h1 materialization"
+}

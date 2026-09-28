@@ -1,0 +1,13 @@
+{
+  "status": "checkpoint_no_sort_launched",
+  "h1_cumulative_before_de_revision_s": 17783.22,
+  "de_revision_v2_charge_s": 150.0,
+  "dd_preflight_gate_and_adapter_audit_charge_s": 60.0,
+  "h1_cumulative_after_s": 17993.22,
+  "h1_operational_ceiling_s": 26000.0,
+  "dd_gpu_service_used_s": 0,
+  "dd_raw_voltage_read_bytes": 0,
+  "dd_materialized_voltage_bytes": 0,
+  "dd_sorts_launched": 0,
+  "notes": "Full-384 preflight and coordinate-only check were preserved but revoked before materialization/sort; DE v2 recomputed affected summaries only."
+}

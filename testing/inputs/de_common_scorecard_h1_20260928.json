@@ -20,16 +20,16 @@
   },
   "windows": [
     {"name":"W2","frames_half_open":[26999783,37199701],"arms":{
-      "STATIC_S":{"format":"dartsort_npz","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/av_aw_handoff_20260926_v1/static_w2/dartsort_sorting.npz"},
-      "D2L":{"format":"dartsort_npz","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-ao-d2l-v2/windows/W2/runs/D2L/sort/dartsort_sorting.npz"},
-      "REMATCH0":{"format":"dartsort_npz","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/cy_fixed_bank_rematching_20260928/arms/REMATCH0_v3/dartsort_sorting.npz"},
-      "CD1_FULL":{"format":"dartsort_npz","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/cy_fixed_bank_rematching_20260928/arms/CD1_FULL_v1/dartsort_sorting.npz"},
-      "NATIVE_REMATCH0":{"format":"dartsort_npz","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/dc_native_bank_control_20260928/NATIVE_REMATCH0/dartsort_sorting.npz"},
-      "RESCUE_KS12_9":{"format":"kilosort_folder","path":"/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec1/kilosort4/sorter_output"}
+      "STATIC_S":{"format":"dartsort_npz","clock":"window_local","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/av_aw_handoff_20260926_v1/static_w2/dartsort_sorting.npz"},
+      "D2L":{"format":"dartsort_npz","clock":"window_local","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-ao-d2l-v2/windows/W2/runs/D2L/sort/dartsort_sorting.npz"},
+      "REMATCH0":{"format":"dartsort_npz","clock":"window_local","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/cy_fixed_bank_rematching_20260928/arms/REMATCH0_v3/dartsort_sorting.npz"},
+      "CD1_FULL":{"format":"dartsort_npz","clock":"window_local","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/cy_fixed_bank_rematching_20260928/arms/CD1_FULL_v1/dartsort_sorting.npz"},
+      "NATIVE_REMATCH0":{"format":"dartsort_npz","clock":"window_local","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/dc_native_bank_control_20260928/NATIVE_REMATCH0/dartsort_sorting.npz"},
+      "RESCUE_KS12_9":{"format":"kilosort_folder","clock":"full_source","path":"/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec1/kilosort4/sorter_output"}
     }},
     {"name":"W3","frames_half_open":[239998073,250197992],"arms":{
-      "D2L":{"format":"dartsort_npz","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-ao-d2l-v2/windows/W3/runs/D2L/sort/dartsort_sorting.npz"},
-      "RESCUE_KS12_9":{"format":"kilosort_folder","path":"/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec1/kilosort4/sorter_output"}
+      "D2L":{"format":"dartsort_npz","clock":"window_local","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-ao-d2l-v2/windows/W3/runs/D2L/sort/dartsort_sorting.npz"},
+      "RESCUE_KS12_9":{"format":"kilosort_folder","clock":"full_source","path":"/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec1/kilosort4/sorter_output"}
     }}
   ]
 }

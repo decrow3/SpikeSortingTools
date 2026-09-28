@@ -1,4 +1,4 @@
-"""Frozen T8 label-free correctness gate for the DD W2 lattice remap."""
+"""Coordinate-consistency check only; not the DD remapped-voltage gate."""
 from __future__ import annotations
 import hashlib,json,os,sys
 from pathlib import Path
@@ -61,6 +61,6 @@ def main():
   r=measure(peaks,pseudo,inside,rng,target);nulls.append({'index':len(nulls),'start_s':start,**{k:v for k,v in r.items() if k!='correlations'},'resolved':bool(np.isfinite(r['best_shift_um']))})
  nf=pd.DataFrame(nulls);nf.to_csv(out/'MATCHED_NULL.csv',index=False);vals=nf.loc[nf.resolved,'best_shift_um'].to_numpy();unique,count=np.unique(vals,return_counts=True);mode=float(unique[np.argmax(count)]) if len(vals) else np.nan;median_abs=float(np.median(np.abs(vals))) if len(vals) else np.nan
  q0=frame[(frame.arm=='KS_0_INPUT')&frame.resolved];ql=frame[(frame.arm=='KS_L_INPUT')&frame.resolved];merged=q0.merge(ql,on='episode_id',suffixes=('_q0','_ql'));unreproduced=np.abs(merged.best_shift_um_q0-merged.catalogue_shift_um_q0)>40;residual_ok=np.abs(merged.best_shift_um_ql)<=40
- gate={'status':'pass' if len(vals)>=20 and mode==0 and median_abs<=10 and len(merged)>0 and residual_ok.mean()>=.8 and not unreproduced.any() else 'fail','resolved_nulls':len(vals),'null_mode_um':mode,'null_median_abs_shift_um':median_abs,'resolved_episode_pairs':len(merged),'remapped_residual_le40_fraction':float(residual_ok.mean()) if len(merged) else np.nan,'unremapped_catalogue_reproduction_failures':int(unreproduced.sum()),'criterion':'null mode 0 and median abs <=10; >=80% resolved episodes residual abs<=40; unremapped within40 of catalogue','interpretation':'input correctness only; not biological identity'}
+ gate={'status':'coordinate_consistency_pass' if len(vals)>=20 and mode==0 and median_abs<=10 and len(merged)>0 and residual_ok.mean()>=.8 and not unreproduced.any() else 'coordinate_consistency_fail','resolved_nulls':len(vals),'null_mode_um':mode,'null_median_abs_shift_um':median_abs,'resolved_episode_pairs':len(merged),'remapped_residual_le40_fraction':float(residual_ok.mean()) if len(merged) else np.nan,'unremapped_catalogue_reproduction_failures':int(unreproduced.sum()),'criterion':'null mode 0 and median abs <=10; >=80% resolved episodes residual abs<=40; unremapped within40 of catalogue','interpretation':'coordinate-consistency only: q was subtracted from cached old peak depths; no remapped voltage was materialized or re-detected; this is not the required DD voltage gate and cannot authorize a sort'}
  wj(out/'GATE.json',gate);wj(out/'COMPLETE.json',{'status':gate['status'],'gate_sha256':sha(out/'GATE.json'),'written_last':True})
 if __name__=='__main__':main()
