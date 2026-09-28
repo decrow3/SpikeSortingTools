@@ -1,0 +1,19 @@
+{
+  "task": "CO saved-data forecast qualification and independent 400-waveform review",
+  "status": "started_method_frozen_before_outcome",
+  "started_local": "2026-09-27T17:20:00-07:00",
+  "prior_cumulative_s": 15053.22,
+  "co_allowance_s": 1200.0,
+  "revised_operational_ceiling_s": 16800.0,
+  "accounting_rule": "append actual/conservative CO charge to 15053.22; prior CM/CN balances remain separate",
+  "limits": {
+    "threads": 2,
+    "readers": 1,
+    "memory_gb": 20,
+    "logical_reads_mb": 250,
+    "minimum_free_gb": 30
+  },
+  "raw_voltage_reads_authorized_on_h1": 0,
+  "gpu_seconds_authorized_on_h1": 0,
+  "expected_elapsed_minutes": [10, 15]
+}
