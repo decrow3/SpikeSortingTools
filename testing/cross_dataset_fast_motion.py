@@ -147,7 +147,12 @@ def noise_rows(rec, window):
     pad = round(.05 * fs)
     n = round(fs)
     result = []
-    for i, start in enumerate(np.linspace(window['start_frame'], window['stop_frame'] - n, 12).round().astype(int)):
+    requested = np.linspace(window['start_frame'], window['stop_frame'] - n, 12).round().astype(int)
+    # Full-session deployment includes frame zero and the terminal AP frame.
+    # Keep the filter pad inside the recording at those two boundaries. This
+    # is a no-op for all prior interior stage-1/2 windows.
+    starts = np.clip(requested, pad, rec.get_num_frames()-n-pad)
+    for i, start in enumerate(starts):
         x = rec.get_traces(start_frame=int(start-pad), end_frame=int(start+n+pad), return_in_uV=True)
         x = sosfiltfilt(sos, x, axis=0)[pad:pad+n].astype('float32')
         shared = np.median(x, axis=1)
@@ -213,30 +218,170 @@ def extract(out, cfg, w):
     spec = next(s for s in cfg['records'] if (s['dataset'], s['probe']) == (w['dataset'], w['probe']))
     rawstat = Path(spec['raw_path']).stat()
     assert [rawstat.st_size, rawstat.st_mtime_ns] == spec['raw_stat']
-    rec = load_recording(spec)
-    assert np.array_equal(rec.get_channel_locations(), spec['geometry_um'])
     started = time.monotonic()
-    write_csv(stage/'noise_channel_samples.csv', noise_rows(rec, w))
-    # One second of real context at each side prevents slice filtering edges entering the fit.
-    context = round(rec.get_sampling_frequency())
-    slice_rec = rec.frame_slice(w['start_frame']-context, w['stop_frame']+context)
-    c = to_internal_config(DARTsortUserConfig(preprocessing='ibllikecmr',
-        preprocessing_dtype='float32', subsampling_presence=1.,
-        subsampling_spikes_per_channel=5000, n_jobs_cpu=4, n_jobs_gpu=1,
-        n_jobs_small=4, n_jobs_small_gpu=1, device='cuda:0'), rec.get_num_channels())
-    save(stage/'resolved_dartsort.json', dataclasses.asdict(c))
-    if cfg.get('channel_gate') == 'coherence_without_absolute_psd':
-        pre = preprocess_comparison(slice_rec, stage)
-    else:
-        pre = preprocess(slice_rec, 'ibllikecmr', 'float32')
-    assert pre.get_num_channels() > 0, 'All channels rejected by preprocessing'
-    pre = pre.frame_slice(context, context+w['stop_frame']-w['start_frame'])
-    save(stage/'channels.json', dict(channel_ids=pre.channel_ids.tolist(), geometry_um=pre.get_channel_locations().tolist()))
-    cached_path = stage/'temporary_preprocessed'
-    cached = pre.save(folder=cached_path, format='binary', n_jobs=4, chunk_duration='1s', progress_bar=False)
+    # Q/V can serialize the only phase which reads the USB source.  The lock is
+    # opt-in so all earlier sealed extraction contexts retain their behavior.
+    lock_path = os.environ.get('DARTSORT_RAW_PREPROCESS_LOCK')
+    lock_file = None
+    lock_wait_started = time.monotonic()
+    if lock_path:
+        import fcntl
+        lock_file = open(lock_path, 'a+b')
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+    lock_wait_s = time.monotonic() - lock_wait_started
+    try:
+        raw_started = time.monotonic()
+        rec = load_recording(spec)
+        assert np.array_equal(rec.get_channel_locations(), spec['geometry_um'])
+        write_csv(stage/'noise_channel_samples.csv', noise_rows(rec, w))
+        raw_read_s = time.monotonic() - raw_started
+        preprocess_started = time.monotonic()
+        # One second of real context at each side prevents slice filtering edges entering the fit.
+        context = round(rec.get_sampling_frequency())
+        # Clip context at recording boundaries.  Ordinary pilot windows still get
+        # one full second on each side; a full-session Q cache starts at AP frame
+        # zero and therefore has no unavailable left context.
+        slice_start = max(0, w['start_frame'] - context)
+        slice_stop = min(rec.get_num_frames(), w['stop_frame'] + context)
+        left_context = w['start_frame'] - slice_start
+        slice_rec = rec.frame_slice(slice_start, slice_stop)
+        c = to_internal_config(DARTsortUserConfig(preprocessing='ibllikecmr',
+            preprocessing_dtype='float32', subsampling_presence=1.,
+            subsampling_spikes_per_channel=5000, n_jobs_cpu=4, n_jobs_gpu=1,
+            n_jobs_small=4, n_jobs_small_gpu=1, device='cuda:0'), rec.get_num_channels())
+        save(stage/'resolved_dartsort.json', dataclasses.asdict(c))
+        if cfg.get('channel_gate') == 'coherence_without_absolute_psd':
+            pre = preprocess_comparison(slice_rec, stage)
+        else:
+            pre = preprocess(slice_rec, 'ibllikecmr', 'float32')
+        assert pre.get_num_channels() > 0, 'All channels rejected by preprocessing'
+        pre = pre.frame_slice(left_context, left_context+w['stop_frame']-w['start_frame'])
+        save(stage/'channels.json', dict(channel_ids=pre.channel_ids.tolist(), geometry_um=pre.get_channel_locations().tolist()))
+        cached_path = stage/'temporary_preprocessed'
+        cached = pre.save(folder=cached_path, format='binary', n_jobs=4, chunk_duration='1s', progress_bar=False)
+        preprocess_s = time.monotonic() - preprocess_started
+    finally:
+        if lock_file is not None:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+            lock_file.close()
     detection = stage/'detection'
     detection.mkdir()
-    initial_detection(detection, cached, c, show_progress=False, load_simple_features=False)
+    detection_started = time.monotonic()
+    gpu_lock_path = os.environ.get('DARTSORT_GPU_DETECTION_LOCK')
+    gpu_lock_file = None
+    gpu_slot_file = None
+    gpu_global_lock_held = False
+    gpu_schedule_mode = 'single_locked'
+    gpu_lock_wait_started = time.monotonic()
+    probe_index = None
+    gpu_samples = []
+    monitor_thread = None
+    monitor_stop = None
+    detection_compute_started = None
+    if gpu_lock_path:
+        import fcntl
+        gpu_lock_file = open(gpu_lock_path, 'a+b')
+        fcntl.flock(gpu_lock_file.fileno(), fcntl.LOCK_EX)
+        gpu_global_lock_held = True
+        mode_path_value = os.environ.get('DARTSORT_GPU_MODE_FILE')
+        while mode_path_value:
+            mode_path = Path(mode_path_value)
+            mode = json.loads(mode_path.read_text()).get('mode', 'single_locked') if mode_path.exists() else 'single_locked'
+            if mode == 'dual_trial':
+                trial_counter = Path(os.environ['DARTSORT_GPU_TRIAL_COUNTER'])
+                with open(str(trial_counter)+'.lock', 'a+b') as trial_lock:
+                    fcntl.flock(trial_lock.fileno(), fcntl.LOCK_EX)
+                    claimed = int(trial_counter.read_text()) if trial_counter.exists() else 0
+                    if claimed < 2:
+                        trial_counter.write_text(str(claimed+1))
+                        gpu_schedule_mode = 'dual_trial'
+                    fcntl.flock(trial_lock.fileno(), fcntl.LOCK_UN)
+                if gpu_schedule_mode != 'dual_trial':
+                    time.sleep(1)
+                    continue
+            elif mode == 'dual_keep':
+                gpu_schedule_mode = 'dual_keep'
+            else:
+                gpu_schedule_mode = 'single_locked'
+            if gpu_schedule_mode.startswith('dual_'):
+                fcntl.flock(gpu_lock_file.fileno(), fcntl.LOCK_UN)
+                gpu_global_lock_held = False
+                slots = [open(gpu_lock_path+f'.slot{i}', 'a+b') for i in range(2)]
+                while gpu_slot_file is None:
+                    for candidate in slots:
+                        try:
+                            fcntl.flock(candidate.fileno(), fcntl.LOCK_EX|fcntl.LOCK_NB)
+                            gpu_slot_file = candidate
+                            break
+                        except BlockingIOError:
+                            pass
+                    if gpu_slot_file is None: time.sleep(.25)
+                for candidate in slots:
+                    if candidate is not gpu_slot_file: candidate.close()
+            break
+    gpu_lock_wait_s = time.monotonic() - gpu_lock_wait_started
+    try:
+        probe_counter = os.environ.get('DARTSORT_GPU_PROBE_COUNTER')
+        if probe_counter:
+            counter_path = Path(probe_counter)
+            counter_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(str(counter_path)+'.lock', 'a+b') as counter_lock:
+                fcntl.flock(counter_lock.fileno(), fcntl.LOCK_EX)
+                count = int(counter_path.read_text()) if counter_path.exists() else 0
+                if count < 2:
+                    probe_index = count + 1
+                    counter_path.write_text(str(probe_index))
+                fcntl.flock(counter_lock.fileno(), fcntl.LOCK_UN)
+        if probe_index is not None:
+            import threading
+            monitor_stop = threading.Event()
+            def sample_gpu():
+                while not monitor_stop.is_set():
+                    sample_time = time.time()
+                    result = subprocess.run([
+                        'nvidia-smi', '--query-gpu=utilization.gpu,memory.used',
+                        '--format=csv,noheader,nounits'], capture_output=True, text=True)
+                    if result.returncode == 0:
+                        try:
+                            util, memory = result.stdout.strip().splitlines()[0].split(',')
+                            gpu_samples.append((sample_time, float(util), float(memory)))
+                        except (ValueError, IndexError):
+                            pass
+                    monitor_stop.wait(1.0)
+            monitor_thread = threading.Thread(target=sample_gpu, daemon=True)
+            monitor_thread.start()
+        gpu_stage_start_epoch = time.time()
+        detection_compute_started = time.monotonic()
+        initial_detection(detection, cached, c, show_progress=False, load_simple_features=False)
+        gpu_stage_stop_epoch = time.time()
+    finally:
+        if monitor_stop is not None:
+            monitor_stop.set()
+        if monitor_thread is not None:
+            monitor_thread.join(timeout=5)
+        if gpu_slot_file is not None:
+            fcntl.flock(gpu_slot_file.fileno(), fcntl.LOCK_UN)
+            gpu_slot_file.close()
+        if gpu_lock_file is not None and gpu_global_lock_held:
+            fcntl.flock(gpu_lock_file.fileno(), fcntl.LOCK_UN)
+        if gpu_lock_file is not None:
+            gpu_lock_file.close()
+    detection_s = time.monotonic() - detection_compute_started
+    gpu_probe_summary = None
+    if probe_index is not None:
+        gpu_probe_summary = dict(index=probe_index, samples=len(gpu_samples),
+            mean_utilization_percent=float(np.mean([x[1] for x in gpu_samples])) if gpu_samples else None,
+            peak_memory_mib=float(np.max([x[2] for x in gpu_samples])) if gpu_samples else None)
+        log_dir = os.environ.get('DARTSORT_GPU_LOG_DIR')
+        if log_dir:
+            log_path = Path(log_dir)
+            log_path.mkdir(parents=True, exist_ok=True)
+            temporary = log_path/f"{w['id']}.csv.tmp"
+            with open(temporary, 'w') as f:
+                f.write('time_epoch,utilization_percent,memory_mib\n')
+                for sample_time, util, memory in gpu_samples:
+                    f.write(f'{sample_time:.6f},{util:.3f},{memory:.3f}\n')
+            os.replace(temporary, log_path/f"{w['id']}.csv")
     with h5py.File(detection/'subtraction.h5', 'r') as h:
         samples = h['times_samples'][:]
         depths = h['point_source_localizations'][:, 2]
@@ -251,7 +396,13 @@ def extract(out, cfg, w):
         time_range_s=[float(samples[valid].min()/fs), float(samples[valid].max()/fs)],
         amplitude_units='DARTsort denoised PTP in standardized voltage units',
         package_versions={k:importlib.metadata.version(k) for k in ['dartsort', 'spikeinterface', 'torch']},
-        raw_stat=spec['raw_stat'], no_sort_or_voltage_motion_correction=True))
+        raw_stat=spec['raw_stat'], no_sort_or_voltage_motion_correction=True,
+        phase_seconds=dict(lock_wait=lock_wait_s, raw_read=raw_read_s,
+                           preprocess=preprocess_s, gpu_lock_wait=gpu_lock_wait_s,
+                           detection_and_denoiser_fit=detection_s),
+        gpu_schedule=dict(mode=gpu_schedule_mode,start_epoch=gpu_stage_start_epoch,
+                          stop_epoch=gpu_stage_stop_epoch),
+        gpu_probe=gpu_probe_summary))
     del cached
     # Only remove this job's disposable materialization after successful extraction.
     shutil.rmtree(cached_path)

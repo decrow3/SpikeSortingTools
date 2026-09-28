@@ -20,6 +20,37 @@ that wait for the sort and then run curation, QC, or comparisons.
 
 Background: [Luke full-session interruption investigation](docs/luke_full_session_interruption_20260906.md).
 
+# Standing publication authorization for Luke motion/sorting work
+
+The user has given standing authorization to publish verified, compact
+scientific outputs produced while pursuing the Luke spike-sorting improvements
+under `/mnt/NPX/Luke/DARTsort_motion_experiments/`. Do not pause for a new
+per-packet or exact-destination approval when that publication is an ordinary
+handoff step in an already authorized analysis.
+
+- Verify hashes and write `COMPLETE.json` last.
+- Never overwrite a conflicting existing packet; compare it and report.
+- Do not publish raw voltage, large scratch/cache files, or another host's held
+  payload unless the user separately authorizes that material.
+- This standing publication authority does not authorize a new spike sort,
+  voltage modification, deletion, scientific parameter change, or budget
+  expansion. Those remain governed by their run-specific instructions.
+
+# RF evaluation hold for Luke spike-sorting work
+
+Do not automatically start or repeat per-arm, per-pair, or development RF
+fitting, rescoring, or comparison loops. Preserve the completed RF results and
+keep the 20-trial outer holdout sealed. RF may return once as a final-candidate
+non-inferiority harm check only after a separate instruction freezes its primary
+endpoint, minimum meaningful effect, support/power assumptions, pass/fail rule,
+95% confidence-interval plan, and resulting pipeline decision.
+
+Rate correlation is a continuity proxy and short-interval counts are a
+contamination proxy; neither proves biological identity or purity. Do not call
+historical W2 thresholds preregistered retroactively. Prefer a concrete W3 or
+independent-window replication with a precommitted decision rule over more
+four-pair diagnostics or RF loops.
+
 # Lighthouse motion validation
 
 The preferred method for finding new lighthouse candidates is

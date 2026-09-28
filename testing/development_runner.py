@@ -18,6 +18,7 @@ from pipeline.downstream import (
     run_curation_stage,
     run_matlab_export_stage,
     run_qc_stage,
+    run_standard_qc_stage,
 )
 from pipeline.preprocess import validate_accepted_recording
 from pipeline.runtime import validate_production_environment
@@ -210,6 +211,13 @@ def run_development_arms(
                 )
                 qc_dir = arm_dir / "qc"
                 run_matlab_export_stage(curated, qc_dir, identity)
+            standard_qc_receipt = run_standard_qc_stage(
+                recording_dir,
+                curated,
+                qc_dir,
+                qc_dir / "standard",
+                identity,
+            )
             arm_manifest = {
                 "schema_version": "longitudinal-development-arm-v1",
                 "contract_digest": contract.digest,
@@ -223,6 +231,7 @@ def run_development_arms(
                 "qc_directory": str(qc_dir),
                 "curation_request_digest": curation_receipt["request_digest"],
                 "qc_request_digest": qc_receipt["request_digest"],
+                "standard_qc_request_digest": standard_qc_receipt["request_digest"],
                 "pre_curation_summary": sort_manifest.get("summary"),
                 "post_curation_summary": curation_receipt.get("summary"),
                 "environment": environment,
@@ -230,8 +239,16 @@ def run_development_arms(
                 "complete": True,
             }
             manifest_path = arm_dir / "candidate_manifest.json"
-            if manifest_path.exists() and json.loads(manifest_path.read_text()) != arm_manifest:
-                raise RuntimeError(f"arm manifest changed for {candidate['name']}")
+            if manifest_path.exists():
+                saved_manifest = json.loads(manifest_path.read_text())
+                if saved_manifest != arm_manifest:
+                    # One-way additive migration for arms completed before the
+                    # standard-QC stage existed. No other manifest drift is
+                    # accepted.
+                    pre_standard_manifest = dict(arm_manifest)
+                    pre_standard_manifest.pop("standard_qc_request_digest")
+                    if saved_manifest != pre_standard_manifest:
+                        raise RuntimeError(f"arm manifest changed for {candidate['name']}")
             _atomic_json(manifest_path, arm_manifest)
             summary["arms"][candidate["name"]] = arm_manifest
     group_receipt = {

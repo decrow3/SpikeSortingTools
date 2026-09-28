@@ -145,7 +145,10 @@ def execute(cfg, stage):
     from pipeline.preprocess import validate_accepted_recording
     from pipeline.runtime import validate_production_environment
     from pipeline.sorting import build_kilosort4_params, _json_safe_params, run_kilosort4
-    from pipeline.downstream import pin_sort_identity, run_curation_stage, run_qc_stage, run_matlab_export_stage
+    from pipeline.downstream import (
+        pin_sort_identity, run_curation_stage, run_qc_stage,
+        run_standard_qc_stage, run_matlab_export_stage,
+    )
     from testing.luke_external_warp_pipeline import _materialize_arm
 
     out, estimation = Path(cfg['output']), Path(cfg['estimation_output'])
@@ -255,6 +258,10 @@ def execute(cfg, stage):
     run_curation_stage(out/'kilosort4/sorter_output', out/'cur', identity)
     assert_no_hold(cfg); stage('qc')
     run_qc_stage(out/'recording', out/'cur/cur_output', out/'qc', identity)
+    assert_no_hold(cfg); stage('standard_qc')
+    run_standard_qc_stage(
+        out/'recording', out/'cur/cur_output', out/'qc', out/'qc/standard', identity,
+    )
     assert_no_hold(cfg); stage('matlab_export')
     run_matlab_export_stage(out/'cur/cur_output', out/'qc', identity)
     save(out/'summary.json', dict(status='complete', development_only=True,

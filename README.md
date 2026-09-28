@@ -642,7 +642,7 @@ Three QC metrics are computed per unit:
 
 | Metric | File | Description |
 |--------|------|-------------|
-| Waveform statistics | `waveforms/waveforms.npz` | Mean waveform shape, peak channel, amplitude |
+| Waveform statistics | `waveforms/waveforms.npz` | Median of up to 512 sampled waveforms per unit, stored using the legacy fixed scale |
 | Refractory period violations | `refractory/refractory_qc.npz` | RVL tensor — fraction of spike pairs within the refractory period |
 | Amplitude truncation | `amp_truncation/truncation_qc.npz` | Detects units whose amplitude distribution is clipped by the detection threshold, indicating incomplete spike capture |
 | Unit presence | `amp_truncation/present_qc.npz` | Temporal stability of firing rate across the session |
@@ -650,6 +650,13 @@ Three QC metrics are computed per unit:
 ---
 
 ### Step 6 — Export to MATLAB
+
+Before export, identity-guarded runners also write an additive standard unit-QC
+bundle under `qc/standard/`. It contains one row per curated unit, a separate
+policy/flag table, metric definitions, a run summary, and request/completion
+receipts. This bundle does not relabel units or alter legacy QC artifacts. See
+[`docs/standard_unit_quality.md`](docs/standard_unit_quality.md) for the schema,
+interpretation limits, and backfill API.
 
 All QC results are saved as `.mat` files in `qc/` for downstream analysis in MATLAB:
 
@@ -681,6 +688,7 @@ dredge_pipeline_results_<session>_<stream>/
     ├── waveforms/
     ├── refractory/
     ├── amp_truncation/
+    ├── standard/
     └── *.mat
 ```
 

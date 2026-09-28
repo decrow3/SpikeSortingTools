@@ -1,0 +1,10 @@
+{
+  "schema": "luke-imec1-lfp-motion-receipt-v1",
+  "received_date": "2026-09-13",
+  "archive_path": "/mnt/NPX/Luke/luke_imec1_lighthouse_motion_comparison_v1/lfp_handoff/luke_imec1_lfp_motion_handoff_v1.tar.gz",
+  "archive_sha256": "707721bcbf181c9d11dd687eb9b1922d33c29123301a7b3f169dc23634dcebeb",
+  "expected_sha256": "707721bcbf181c9d11dd687eb9b1922d33c29123301a7b3f169dc23634dcebeb",
+  "archive_hash_verified": true,
+  "payload_sha256sums_verified": true,
+  "extraction_policy": "archive paths inspected before extraction; single relative top-level directory; stripped into this fresh directory"
+}

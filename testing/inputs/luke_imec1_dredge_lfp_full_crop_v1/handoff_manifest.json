@@ -1,0 +1,156 @@
+{
+  "schema": "luke-imec1-lfp-motion-handoff-v1",
+  "created_utc": "2026-09-13T08:07:52.612659+00:00",
+  "source_directory": "/home/huklaban5/Documents/SpikeSortingTools/NPX_preprocessing/outputs/dredge-lfp-imec1-dartsort-crop-v1",
+  "dataset": "Luke0804_V2V1",
+  "recording": "imec1_ap",
+  "scope": "Full DARTsort crop; external motion diagnostic only",
+  "only_existing_native_rate_motion_arrays": true,
+  "large_lf_context_arrays_included": false,
+  "motion_variants": {
+    "unsharpened_80um_motion.npz": {
+      "samples_total": 291191,
+      "samples_in_sorter_crop": 289576,
+      "supported_total": 273665,
+      "supported_total_fraction": 0.939812700255159,
+      "supported_in_sorter_crop": 272307,
+      "supported_in_sorter_crop_fraction": 0.9403645329723458,
+      "finite_displacement_total": 291191,
+      "finite_but_unsupported_total": 17526,
+      "depth_reference_um": 1910.0
+    },
+    "unsharpened_260um_motion.npz": {
+      "samples_total": 291191,
+      "samples_in_sorter_crop": 289576,
+      "supported_total": 277948,
+      "supported_total_fraction": 0.9545212592422155,
+      "supported_in_sorter_crop": 276526,
+      "supported_in_sorter_crop_fraction": 0.9549341105616488,
+      "finite_displacement_total": 291191,
+      "finite_but_unsupported_total": 13243,
+      "depth_reference_um": 1910.0
+    },
+    "second_derivative_80um_motion.npz": {
+      "samples_total": 291191,
+      "samples_in_sorter_crop": 289576,
+      "supported_total": 24,
+      "supported_total_fraction": 8.24201297430209e-05,
+      "supported_in_sorter_crop": 0,
+      "supported_in_sorter_crop_fraction": 0.0,
+      "finite_displacement_total": 291191,
+      "finite_but_unsupported_total": 291167,
+      "depth_reference_um": 1910.0
+    },
+    "second_derivative_260um_motion.npz": {
+      "samples_total": 291191,
+      "samples_in_sorter_crop": 289576,
+      "supported_total": 24,
+      "supported_total_fraction": 8.24201297430209e-05,
+      "supported_in_sorter_crop": 0,
+      "supported_in_sorter_crop_fraction": 0.0,
+      "finite_displacement_total": 291191,
+      "finite_but_unsupported_total": 291167,
+      "depth_reference_um": 1910.0
+    }
+  },
+  "axis": {
+    "sampling_frequency_hz": 29999.759166666667,
+    "ap_origin_s": 3057.6775463558583,
+    "lf_origin_s": 3057.6773463542527,
+    "raw_ap_frame_interval": [
+      193737,
+      34942956
+    ],
+    "crop_stream_interval_s": [
+      6.457951843002295,
+      1164.774550551253
+    ],
+    "crop_duration_s": 1158.3165987082507,
+    "saved_time_s_interval_acquisition": [
+      3057.6773463542527,
+      4222.446696863761
+    ],
+    "lf_to_ap_offset_s": -0.00020000160566269187,
+    "time_map": "t_field_s = ap_origin_s + raw_ap_frame / sampling_frequency_hz",
+    "crop_map": "t_crop_s = (raw_ap_frame - crop_start_frame) / sampling_frequency_hz"
+  },
+  "probe_input": {
+    "channels": 192,
+    "depth_um": [
+      0.0,
+      3820.0
+    ],
+    "stored_rigid_depth_reference_um": 1910.0
+  },
+  "invalid_mask_policy": "invalid = (~supported) | (~isfinite(displacement_um)); never bridge unsupported gaps",
+  "correction_sign": {
+    "source": "SpikeInterface Motion.displacement; estimate_motion(method=dredge_lfp, rigid=True)",
+    "inverse_correction": "corrected_depth_um = observed_depth_um - displacement_um",
+    "producer_spikeinterface_version": "0.104.7"
+  },
+  "overlap_audit": {
+    "interval_clock": "seconds from AP stream time origin",
+    "interval_s": [
+      930.0,
+      1030.0
+    ],
+    "estimates": {
+      "second_derivative_260um": {
+        "full_crop_supported_fraction": 0.0,
+        "subset_supported_fraction": 0.0,
+        "support_agreement_fraction": 1.0,
+        "matched_samples": 20861
+      },
+      "second_derivative_80um": {
+        "full_crop_supported_fraction": 0.0,
+        "subset_supported_fraction": 0.0,
+        "support_agreement_fraction": 1.0,
+        "matched_samples": 20861
+      },
+      "unsharpened_260um": {
+        "full_crop_supported_fraction": 0.9571449115574517,
+        "subset_supported_fraction": 0.9571449115574517,
+        "support_agreement_fraction": 1.0,
+        "matched_samples": 20861
+      },
+      "unsharpened_80um": {
+        "full_crop_supported_fraction": 0.9434830545036192,
+        "subset_supported_fraction": 0.9434830545036192,
+        "support_agreement_fraction": 1.0,
+        "matched_samples": 20861
+      }
+    }
+  },
+  "producer_checksums": {
+    "spec_sha256": "b352eaac3d664aa5855fb7022ff5acad7a30a0159cfaf56112a7fd91fe44ac63",
+    "run_script_sha256": "b846178230c02e6eb5fc93a9ad9132eaaf317c056feaf307a72f0fe97fc98d86",
+    "plot_script_sha256": "bcfe38f400cad45fcb3aad0279c17ce3a325bef7ffb84e25482d2e7ea37d0464",
+    "overlap_audit_sha256": "deb85db4f7d8249c042920d1977c8a5d7d510fb43194b6e12628f1ead970b25b",
+    "overlap_result_sha256": "44ad9030d3827b17de24793fd8e3ed183422d85ca2e487c4fdc8ae88adf2597a",
+    "npz_output_sha256": {
+      "unsharpened_80um_motion.npz": "b61cd006ab8d8b7b99b83c14bd2ed1b856bd0c51b763d097b67ae7eaca3efe99",
+      "unsharpened_260um_motion.npz": "91e30a8b47f79007c69b49056a8d8307113d893238b40a3115a356b67eacd653",
+      "second_derivative_80um_motion.npz": "a294454c5df675242931de2f9be18dcde62d222a39cf367540af23e553f9efc5",
+      "second_derivative_260um_motion.npz": "5681c49acd176ee8bbaaa356fd3914bbffb80b392f0aecc6bbe0bea8fd625e49"
+    }
+  },
+  "source_file_sha256": {
+    "unsharpened_80um_motion.npz": "b61cd006ab8d8b7b99b83c14bd2ed1b856bd0c51b763d097b67ae7eaca3efe99",
+    "unsharpened_260um_motion.npz": "91e30a8b47f79007c69b49056a8d8307113d893238b40a3115a356b67eacd653",
+    "second_derivative_80um_motion.npz": "a294454c5df675242931de2f9be18dcde62d222a39cf367540af23e553f9efc5",
+    "second_derivative_260um_motion.npz": "5681c49acd176ee8bbaaa356fd3914bbffb80b392f0aecc6bbe0bea8fd625e49",
+    "spec.json": "b352eaac3d664aa5855fb7022ff5acad7a30a0159cfaf56112a7fd91fe44ac63",
+    "complete.json": "ad407878265d3fd35e2d1f60a6b0d86666af2791078fa584084cd015a2060148",
+    "subset-overlap-comparison.json": "44ad9030d3827b17de24793fd8e3ed183422d85ca2e487c4fdc8ae88adf2597a"
+  },
+  "included_files": [
+    "unsharpened_80um_motion.npz",
+    "unsharpened_260um_motion.npz",
+    "second_derivative_80um_motion.npz",
+    "second_derivative_260um_motion.npz",
+    "spec.json",
+    "complete.json",
+    "subset-overlap-comparison.json",
+    "ADAPTER.md"
+  ]
+}

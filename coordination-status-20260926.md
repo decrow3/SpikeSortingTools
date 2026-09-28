@@ -1551,10 +1551,301 @@ BU charges 30.00/900 s, taking cumulative h1 to 6,863.22/14,400 s; BI remains
 separate. No BH access, h5 source copy, raw/GPU work, replay, sort or engine
 integration occurred. BU stops pending h5's separate clock/fragmentation audit.
 
-Direct `send_message_to_thread` transport was not callable in the h1 task's
-toolset when BU completed. This root-status entry and the final task reply carry
-the required completion notice instead. BU's report is
+Historical note only: when BU completed, its notice was recorded in this file
+and the task reply. This is not a standing transport limitation and must not be
+repeated in later status reports unless it becomes operationally relevant.
+BU's report is
 `docs/dartsort_bq_bu_independent_review_20260927.md`; its receipt is
 `testing/outputs/bu_h1_bq_independent_review_v1/resource_receipt.json`;
 cumulative h1 charge is 6,863.22/14,400 s. The next ready dependency is h5's
 fixed-versus-stage-clock and fragmentation audit.
+
+### DN h1 S_L_h source preparation, 2026-09-28
+
+One finite source-level preparation audit is complete at
+`testing/outputs/dn_h1_sl_source_preparation_20260928/`. The sign is correct:
+DH injects `y -> y + q`, while the proposed inverse operator
+`target(y) = source(y + q)` maps the state-shifted signal back to its fixed
+placement depth. It must use exact same-column indexing and zero fill at the
+182-channel crop edge. Depending on state, 0--24 of 182 output channels require
+zero fill; all 175 published donor/state support rows retain their frozen pass.
+
+The operator acts on the whole already-preprocessed hybrid, so native
+background is countershifted too. Of 42,181 injections, 708 waveforms cross a
+7,500-sample boundary and 78 cross a state change. The trough-fixed construction
+can differ from a continuous inverse for at most 77 samples (2.567 ms) at those
+state changes; it is exact for the discrete trough-state contract, not blanket
+continuous-time motion. Actual h5 worker source and its single endpoint remain
+held and unreviewed. No materialization, matching, sort, raw read, GPU work,
+calibration, new donor work, or export occurred. DN charges 60.00 s, taking
+cumulative h1 active time to 18,653.22/26,000 s.
+
+### DQ h1 EnforceDecrease zero-PTP fixture, 2026-09-28
+
+One focused accessible-source fixture is complete at
+`testing/outputs/dq_enforce_decrease_zero_ptp_20260928/`. H1's installed
+DARTsort 0.5.16 source computes `parent_min_ptps / ptps` before multiplying the
+waveform. The fixture reproduces child-channel NaNs from finite 0/0 for both an
+exact-zero waveform and a temporally constant nonzero waveform. Therefore PTP
+zero is not equivalent to waveform zero.
+
+The minimal recommendation is to save the finite `(parent_min_ptps == 0) &
+(ptps == 0)` mask before division, replace only those ratios with scale 1, and
+retain the existing maximum-1 clamp. The fixture confirms that this preserves
+zero and constant channels, leaves structural padded-channel NaNs as NaN,
+preserves the legitimate positive/zero -> infinity -> clamp-to-1 path, and is
+identical on an ordinary finite case. Installed source hash is
+`ca2643f33b913351d0b3b92ce44f5740d09107546a74fd72aff42e663a7ee952`.
+This is a compatible failure mechanism in the h1 version, not independent proof
+of the h5 failure cause; h5 source and input remain unreviewed. No broad suite,
+full fit, donor qualification, voltage, held payload, GPU work or sort was used.
+DQ charges 60.00 s, taking cumulative h1 active time to 18,713.22/26,000 s.
+
+### DT h1 donor 407/415 source review, 2026-09-28
+
+The finite accessible-source review is complete at
+`testing/outputs/dt_h1_donor_407_415_review_20260928/`. Donors 407 and 415 are
+highly similar and colocated after frozen placement: both actual tapered
+templates have maximum PTP at physical site `(32, 3500)` um, both use base
+shift -40 um, and their taper supports overlap on 32 of 36 union channels.
+Exact common relocation preserves a centered cosine of 0.889434 across all
+seven occupied states, with 100% frozen retained energy for both.
+
+The templates are not identical. Their peak PTPs are 29.836 and 19.764
+(ratio 1.510), L2 difference is 23.986, and maximum pointwise difference is
+5.777 in inherited source-array units; explicit physical units are absent from
+the saved metadata. Therefore the repaired hybrid's shared label 324 is
+plausible shared-label ambiguity, not evidence by itself that the donors are
+equivalent, biologically pure, or scored incorrectly. Keep 407 and 415 separate
+in injection truth and use h5's independently bounded actual-hybrid waveform
+comparison to classify the output as donor-like, mixed, or unresolved.
+Distinct native IDs or original-location metadata alone are insufficient.
+
+Source-template hash is
+`e9bc0db1a0bf8b197ec9c0ceebba790e9cbfdf1a39a007c9868ebafc8553172f`;
+taper hash is
+`9b2593cd0081490c47a833df56b896bf5b1ba9044a4db27517bda244017ad250`.
+No new selection, qualification rule, field, sort, voltage, GPU work, or held
+h5 payload access occurred. DT charges 60.00 s, taking cumulative h1 active time
+to 18,773.22/26,000 s.
+
+### DV h1 agglomeration-linkage source review, 2026-09-28
+
+The finite accessible-source review is complete at
+`testing/outputs/dv_h1_agg_linkage_source_review_20260928/`. In h1's installed
+DARTsort 0.5.16, `agg_qda_linkage` is one global topology choice used three
+times: to form template-distance QDA candidate groups, to form lower-distance
+force groups, and to partition the final symmetric binary acceptance mask.
+Single linkage permits chains and yields connected components; complete linkage
+requires complete-link groups and blocks a merge when a necessary cross-group
+edge is absent.
+
+Changing only this setting therefore leaves numerical gate values intact but
+can change which QDA pairs are evaluated, which pairs enter force groups, and
+the final partition. QDA pair metrics and linkage-derived masks are symmetric,
+but the final accepted relation need not be transitive before reclustering.
+Complete linkage on the tied binary mask is deterministic for fixed unit order,
+yet overlapping-clique partitions can depend on order/tie resolution; it is not
+a maximum-clique solver. Subsequent best-SNR alignment, GMM candidate
+combination/stable sorting, deduplication, and depth relabeling mean per-donor
+endpoints need not change monotonically.
+
+The one supported global comparison should preserve unit order and source
+hashes and report the first of the candidate, force, or final-mask partitions at
+which each donor path diverges. A shared or separated final label remains
+posthoc injection evidence, not biological purity. These line-level conclusions
+are version-qualified to h1; h5 equivalence requires its executed-source hashes.
+No experiment, fixture suite, sort, voltage, GPU, export, or held h5 access was
+performed. DV charges 45.00 s, taking cumulative h1 active time to
+18,818.22/26,000 s.
+
+### EB h1 accepted DA D2L RF provenance review, 2026-09-28
+
+The bounded source review is complete at
+`testing/outputs/eb_h1_da_d2l_rf_provenance_review_20260928/`. The accepted DA
+real-data D2L endpoint hash is
+`03c339b4af8081e7e09bcbf23ebb2ae439b4cc8d468538d352cb8e79b61fc0b0`,
+and the original RF config hash is
+`e23297fb79ec4aca9150a42c4611c39f8fd33ff23647f4170514581d11e19d15`.
+DA's saved validation passes both.
+
+The effective evaluation exactly matches the stated frozen design: AP frames
+`[26999783,37199701)`, explicit imec1-to-NIDAQ clock, 12 complete development
+trials in 7/5 inner folds, 6,052 gaze/lag-safe frames, 500 total and 200-per-fold
+spike eligibility, one shared right-eye gaze calibration trained on all 61
+development trials, and 20 sealed outer trials. Five outer trials are complete
+inside W2 but unopened. RF bins are 1/60 s, lags are 2--8 inclusive, spatial
+support is +/-4 degrees at 0.25-degree spacing, reverse correlation is true,
+and symmetric held-out-fold cvSNR is primary. The D2L endpoint has 566 units,
+80 eligible, median cvSNR 0.261794 and mean 1.046052.
+
+No explicit current portability RF config was accessible, so that exact config
+comparison is unavailable. A legacy portable feasibility worker uses different
+lags and spatial scoring and is not treated as the comparator. Historical
+Rowley/gaze/CV helper sources are imported by path but not hash-frozen in DA;
+claims about their exact historical code remain qualified.
+
+Resource exception: despite sufficient receipt provenance, EB unnecessarily
+rehashed the 105,874,778-byte D2L NPZ. No arrays were loaded, but this exceeded
+the 64 MiB saved-read cap. The exception is preserved explicitly; no further
+large reads occurred. No RF rerun, raw voltage, GPU, sort, export, or held h5/DG
+access occurred. EB charges 60.00 s, taking cumulative h1 active time to
+18,878.22/26,000 s.
+
+EB receipt chronology correction: the original `created_utc` value `13:20Z`
+was guessed and wrong. The receipt's filesystem birth time is
+`2026-09-28T15:07:11.573184757Z`, inside the coordinator-confirmed 15:03--15:08
+UTC task window, and is now the recorded timestamp. This correction does not
+change the 60 s charge or the explicit 105,874,778-byte saved-read cap failure.
+
+### EE h1 fractional-position engineering fixture and park, 2026-09-28
+
+The finite non-RF fixture is complete at
+`testing/outputs/ee_h1_fractional_translation_fixture_20260928/`; source is
+`testing/ee_fractional_translation_fixture.py` with SHA-256
+`fbb990b739b94862d428b0a5b73130f591ebbdafef5062756a91be06c760e5a2`.
+The same-x piecewise-linear operator passes identity, integer-pitch equivalence,
+linear-depth and half-pitch impulse checks. `source_unrounded_um` exactly matches
+the declared session field and saved local D2L field at all 1,360 chunk centres;
+sign, local clock, half-open 7,500-sample boundary ownership and trough-fixed
+121-sample waveform conventions pass. All 708 published cross-boundary
+waveforms cross an unrounded state change under the fractional staircase.
+
+The engineering contract passes but launch readiness does not. Donors 407/415
+retain only 0.626/0.656 of squared energy at half pitch, and about 0.643/0.671
+at the frozen positive extreme, without renormalization. A benchmark outcome
+would therefore mix motion handling with generator attenuation. The sub-pitch
+benchmark is parked: no 7.4 GB materialization, GPU arm, three-arm launch,
+expanded fixture, donor reselection, tuning, or export occurred.
+
+The first setup invocation was preserved at
+`testing/outputs/ee_h1_fractional_translation_fixture_20260928.failed_analytic_expectation_v1/`;
+its hard-coded expected half-pitch impulse indices were reversed while the
+operator output was correct. The failed setup conservatively read 44,385,305
+saved bytes and the successful run 56,512,816, totaling 100,898,121 bytes.
+Thus aggregate EE saved reads exceeded the 64 MiB cap and are explicitly not
+compliant. EE conservatively charges 120 s for both attempts, moving h1 to
+18,998.22/26,000 s.
+
+The user's RF hold is active. No RF-only process owned by this task was running,
+so none was stopped. Completed RF results remain retained; no development RF
+reruns or automatic RF chains remain ready, and the 20-trial outer holdout stays
+sealed. RF may return only once under a separately frozen final-candidate
+non-inferiority harm-check design. Future priority is a concrete W3 or
+independent-window replication with a primary endpoint, minimum meaningful
+effect, pass/fail rule, 95% CI plan, and stated pipeline decision.
+
+### DH h1 executed hybrid contract, 2026-09-28
+
+DH's finite local contract is complete at
+`testing/outputs/dh_hybrid_truth_contract_20260928/`. It freezes the exact
+25-donor CX intersection and 42,181 deterministic source events across the
+seven occupied pitch states (-240 through 0 um). All 175 donor/state support
+checks, 570 boundary queries and seven independent coordinate/sign fixtures
+pass. The packet manifest SHA-256 is
+`e629317ca6468e66499d0e415825dd6ebd86ad04220eb6cd9f6e237017db886a`.
+
+The exact motion adapter was exercised through the installed DARTsort
+`MotionInfo.from_motion_est/disp_at_s` consumer at all 1,360 actual matching
+chunk query times. Its grid shape is 182 x 1,360; the installed matching source
+lines are 273, 275 and 280. Wrong-origin and out-of-support queries now raise
+instead of clipping, while the final declared chunk's 82-sample padding is
+explicit. Fresh assigned outputs start `unknown`; the executed fresh-output
+fixture yields zero certain TP and zero injection FP. The separate synthetic
+oracle fixture exercises the maximum-cardinality counterexample and is not
+fresh-sort provenance. Ten scorer/adapter tests pass.
+
+No raw voltage, GPU work, fitting, sort or hybrid full run occurred. The packet
+is 12,175,013 bytes and read 16,135,992 saved-source bytes. DH conservatively
+charges 120 s, moving h1 from 18,263.22 to **18,383.22/26,000 s**. The earlier
+per-destination publication hold was an overly narrow reading of authorization
+and is superseded by the user's standing authorization for verified compact
+Luke motion/sorting outputs under the established shared experiment tree.
+The compact non-voltage DH packet is now published and hash-verified at
+`/mnt/NPX/Luke/DARTsort_motion_experiments/dh_hybrid_truth_contract_20260928/host_h1/`:
+22 files, 12,158,955 bytes, shared-manifest SHA-256
+`91bfb1b220ed1e9beeda06fca366b60ec76f331a374016929c40f360f56d9205`.
+
+### DJ h1 independent CPU review, 2026-09-28
+
+DJ is complete to the accessible boundary. The hash-verified DA source and D2L
+endpoint independently reproduce 80/566 RF-eligible units, median cvSNR
+0.261794, mean 1.046052, sum 83.684163 and 48 positive units. The frozen screen
+remains development-only (12 trials, 7/5 folds, 6,052 valid frames); the outer
+holdout is unopened.
+
+The DG shared directory exists but has zero files. H1 therefore could not
+inspect S0/SL arrays or candidate-match source, execute the frozen reciprocal-
+best Jaccard correspondence, or validate the hub-relayed RF endpoints. The
+original CX limitations remain explicit: 5/90 unmodified qualifiers, 25/90
+modified dual-half qualifiers, six swap disagreements and median taper-mask
+cosine 0.55. This is engineering feasibility, not biological identity or a
+non-detriment conclusion.
+
+No matching, RF fit, sort, raw read, GPU work or holdout evaluation ran. DJ
+charges 60 s, moving h1 to **18,443.22/26,000 s**; DH's two short setup failures
+remain covered by DH's prior 120 s rather than double charged. Shared packet:
+`/mnt/NPX/Luke/DARTsort_motion_experiments/dj_h1_independent_cpu_review_20260928/`.
+
+### DK h1 source review started, 2026-09-28
+
+The directly approved DK h1 source/one-endpoint review is active under its
+1,200 CPU-second allowance. Exact h5 integration guidance is complete and
+published at
+`/mnt/NPX/Luke/DARTsort_motion_experiments/dk_hybrid_w2_20260928/host_h1_source_guidance/`
+(manifest SHA-256
+`d87ff06e428369d4b83da75a0bd95b042bb44fba5c608ccec0e4596586148c52`).
+It freezes the physical AP202:383 preprocessing/injection boundary, exact
+recording-local chunk queries, object construction and pickle/resume contract,
+and unknown-background scoring rules. H1's installed DARTsort reference is
+0.5.16; h5's actually executed source must still be independently hashed and
+checked. The one-endpoint review remains pending h5 publication. No DK raw
+read, GPU work, sort, RF fit or synthetic-truth RF evaluation has run on h1.
+
+DK's accessible-source review is now complete; the endpoint remains pending h5
+publication. All 42,181 saved events pass the trough-state contract. There are
+708 waveforms crossing a 7,500-sample boundary, including 78 state-change
+boundaries, and four troughs exactly on a boundary; all use the correct matching
+chunk state. Cross-process DARTsort `MotionInfo` pickle/reload preserves all
+1,360 exact states on the 182-channel grid. The fresh-output scorer fixture
+keeps all assigned outputs unknown (four unresolved candidates, zero certain
+TP and zero injection FP).
+
+The accepted S_h and D2L_h configs use 30,000- versus 7,500-sample matching
+chunks, respectively, so DK is explicitly a whole-pipeline contrast rather
+than motion-field-only. Actual h5 base-CSV binding, template/background units
+lineage, worker construction and one fresh-output endpoint remain unverified
+because publication of h5's new DK source/config/receipts was separately
+rejected and awaits exact approval. H1 did not seek an alternate relay.
+
+The original source-guidance packet was preserved unchanged after an attempted
+in-place update was rejected by review. The completed source review was instead
+published as a new versioned packet at
+`/mnt/NPX/Luke/DARTsort_motion_experiments/dk_hybrid_w2_20260928/host_h1_source_review_v2/`
+(10 files, 26,227 bytes; manifest SHA-256
+`1ba77da525f863cfbfe97af905164deb3195ceb682544114bd6fa51def1fcb4d`).
+This source phase charges 90 s, moving h1 to **18,533.22/26,000 s**.
+
+### DK scorer/boundary correction, 2026-09-28
+
+The finite independent audit found and corrected one regional-accounting
+defect: a globally matched truth event whose output crossed episode/rest could
+still enter `fn_without_candidate`. Global unmatched truth and global candidate
+recall now use all exact matches; regional outflow/inflow, same-region deficit
+and same-region recall are separate. A new shared-primary-label fixture proves
+that two donors cannot reuse one output. Eleven focused tests pass.
+
+The boundary statement is narrowed: the 78 state-change-crossing waveforms are
+held at the trough chunk's state. Their opposite-side spans are at most 77
+samples (2.567 ms). This is exact for the discrete DARTsort matching consumer,
+not blanket exact continuous-time motion. No h5 payload, calibration, matching,
+sort, raw read, RF fit or GPU work was used.
+
+The first shared correction packet had a publication-manifest self-collision;
+all other scientific payload hashes matched. It is preserved with an
+`INVALIDATED.json` marker. Use only the verified v2 packet:
+`/mnt/NPX/Luke/DARTsort_motion_experiments/dk_hybrid_w2_20260928/host_h1_scorer_correction_v2/`
+(8 files, 29,569 bytes; manifest SHA-256
+`32214f6c7fc843ac9b4c70f297fee45178a8f9fcb3a5d68d1022d361ac7fb959`).
+This correction charges 60 s, moving h1 to **18,593.22/26,000 s**. Actual h5
+source and one fresh-output endpoint remain pending authorized publication.

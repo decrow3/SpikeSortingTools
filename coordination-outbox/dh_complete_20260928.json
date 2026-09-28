@@ -1,0 +1,14 @@
+{
+  "artifact": "testing/outputs/dh_hybrid_truth_contract_20260928",
+  "complete_manifest_sha256": "e629317ca6468e66499d0e415825dd6ebd86ad04220eb6cd9f6e237017db886a",
+  "external_publication": {
+    "authorization": "standing project authorization",
+    "destination": "/mnt/NPX/Luke/DARTsort_motion_experiments/dh_hybrid_truth_contract_20260928/host_h1/",
+    "file_count": 22,
+    "shared_manifest_sha256": "91bfb1b220ed1e9beeda06fca366b60ec76f331a374016929c40f360f56d9205",
+    "status": "published_and_verified"
+  },
+  "new_h1_cumulative_active_s": 18383.22,
+  "next_action": "Proceed with the currently authorized downstream queue; any new scientific launch follows its current run-specific instructions.",
+  "status": "complete"
+}

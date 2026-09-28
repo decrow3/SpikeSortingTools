@@ -413,6 +413,106 @@ def run_qc_stage(
     )
 
 
+def run_standard_qc_stage(
+    recording_dir: Path,
+    curated_output: Path,
+    legacy_qc_dir: Path,
+    output_dir: Path,
+    sort_identity: dict[str, Any],
+) -> dict[str, Any]:
+    """Write identity-bound, per-unit standard metrics and policy annotations.
+
+    This stage is deliberately additive: it neither rewrites the historical QC
+    caches nor changes curation labels.  It reads recording metadata, Kilosort
+    arrays, and the already-computed legacy truncation cache, but no raw traces.
+    """
+    from spikeinterface.core import load
+    from .unit_quality import (
+        DEFAULT_PARAMETERS,
+        STANDARD_QC_SCHEMA,
+        build_unit_quality_tables,
+        write_unit_quality_artifacts,
+    )
+
+    recording_dir = Path(recording_dir)
+    curated_output = Path(curated_output)
+    legacy_qc_dir = Path(legacy_qc_dir)
+    output_dir = Path(output_dir)
+    input_names = (
+        "spike_times.npy",
+        "spike_clusters.npy",
+        "amplitudes.npy",
+        "spike_positions.npy",
+        "templates.npy",
+        "similar_templates.npy",
+        "cluster_KSLabel.tsv",
+        "cluster_ContamPct.tsv",
+        "ops.npy",
+    )
+    inputs = {}
+    for name in input_names:
+        path = curated_output / name
+        if path.is_file():
+            inputs[name] = {"size_bytes": path.stat().st_size, "sha256": _sha256(path)}
+    for name in ("truncation_qc.npz", "present_qc.npz"):
+        path = legacy_qc_dir / "amp_truncation" / name
+        if path.is_file():
+            inputs[f"legacy/{name}"] = {
+                "size_bytes": path.stat().st_size,
+                "sha256": _sha256(path),
+            }
+    request = ensure_stage_request(
+        output_dir / "standard_qc_request.json",
+        stage="standard_unit_quality",
+        sort_identity=sort_identity,
+        settings={
+            "schema_version": STANDARD_QC_SCHEMA,
+            "recording_dir": str(recording_dir.resolve()),
+            "curated_output": str(curated_output.resolve()),
+            "legacy_qc_dir": str(legacy_qc_dir.resolve()),
+            "parameters": DEFAULT_PARAMETERS,
+            "inputs": inputs,
+        },
+    )
+    required = (
+        output_dir / "unit_quality_metrics.csv",
+        output_dir / "unit_quality_flags.csv",
+        output_dir / "quality_summary.json",
+        output_dir / "metric_definitions.json",
+        output_dir / "quality_policy.json",
+    )
+    receipt_path = output_dir / "standard_qc_receipt.json"
+    if receipt := completed_stage_receipt(
+        receipt_path, request=request, required_files=required
+    ):
+        return receipt
+
+    recording = load(recording_dir)
+    sampling_frequency = float(recording.get_sampling_frequency())
+    duration_s = float(recording.get_total_duration())
+    metrics, flags, definitions, policy, summary = build_unit_quality_tables(
+        curated_output,
+        legacy_qc_dir,
+        sampling_frequency=sampling_frequency,
+        duration_s=duration_s,
+    )
+    summary = {
+        **summary,
+        "sort_identity_digest": sort_identity["identity_digest"],
+        "curated_output": str(curated_output.resolve()),
+        "legacy_qc_dir": str(legacy_qc_dir.resolve()),
+    }
+    write_unit_quality_artifacts(
+        output_dir, metrics, flags, definitions, policy, summary
+    )
+    return write_stage_receipt(
+        receipt_path,
+        request=request,
+        required_files=required,
+        summary=summary,
+    )
+
+
 def run_matlab_export_stage(
     curated_output: Path,
     qc_dir: Path,

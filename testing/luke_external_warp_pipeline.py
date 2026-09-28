@@ -22,6 +22,7 @@ from pipeline.downstream import (
     run_curation_stage,
     run_matlab_export_stage,
     run_qc_stage,
+    run_standard_qc_stage,
 )
 from pipeline.preprocess import (
     MANIFEST_NAME,
@@ -389,8 +390,12 @@ def _run_arm(recording_dir: Path, root: Path) -> dict[str, Any]:
     identity = pin_sort_identity(sort_dir, root / "sort_identity.json")
     curated = run_curation_stage(sort_dir / "sorter_output", root / "curation", identity)
     qc = run_qc_stage(recording_dir, root / "curation" / "cur_output", root / "qc", identity)
+    standard_qc = run_standard_qc_stage(
+        recording_dir, root / "curation" / "cur_output", root / "qc",
+        root / "qc/standard", identity,
+    )
     export = run_matlab_export_stage(root / "curation" / "cur_output", root / "qc", identity)
-    return {"sort": sort_manifest, "identity": identity, "curation": curated, "qc": qc, "export": export}
+    return {"sort": sort_manifest, "identity": identity, "curation": curated, "qc": qc, "standard_qc": standard_qc, "export": export}
 
 
 def _waveform_cosine(a: np.ndarray, b: np.ndarray) -> float:

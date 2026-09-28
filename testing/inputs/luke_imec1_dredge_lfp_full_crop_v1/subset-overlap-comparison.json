@@ -1,0 +1,62 @@
+{
+  "audit_script_sha256": "deb85db4f7d8249c042920d1977c8a5d7d510fb43194b6e12628f1ead970b25b",
+  "estimates": {
+    "second_derivative_260um": {
+      "full_crop_supported_fraction": 0.0,
+      "matched_samples": 20861,
+      "median_gauged_rmse_um": 0.2758777577794415,
+      "median_gauged_trajectory_correlation": 0.999975447426729,
+      "subset_supported_fraction": 0.0,
+      "support_agreement_fraction": 1.0
+    },
+    "second_derivative_80um": {
+      "full_crop_supported_fraction": 0.0,
+      "matched_samples": 20861,
+      "median_gauged_rmse_um": 0.7798686289808389,
+      "median_gauged_trajectory_correlation": 0.9998122532633577,
+      "subset_supported_fraction": 0.0,
+      "support_agreement_fraction": 1.0
+    },
+    "unsharpened_260um": {
+      "full_crop_supported_fraction": 0.9571449115574517,
+      "matched_samples": 20861,
+      "median_gauged_rmse_um": 242.43177633083863,
+      "median_gauged_trajectory_correlation": 0.5037540355770302,
+      "subset_supported_fraction": 0.9571449115574517,
+      "support_agreement_fraction": 1.0
+    },
+    "unsharpened_80um": {
+      "full_crop_supported_fraction": 0.9434830545036192,
+      "matched_samples": 20861,
+      "median_gauged_rmse_um": 127.04029662805526,
+      "median_gauged_trajectory_correlation": 0.15745583843995165,
+      "subset_supported_fraction": 0.9434830545036192,
+      "support_agreement_fraction": 1.0
+    }
+  },
+  "full_crop_spec_sha256": "b352eaac3d664aa5855fb7022ff5acad7a30a0159cfaf56112a7fd91fe44ac63",
+  "interpretation": "Same-window output comparison only. The full-crop estimate is the DARTsort-aligned result; the standalone 100 s result must not be spliced into or substituted for it.",
+  "interval_clock": "seconds from AP stream time origin",
+  "interval_s": [
+    930.0,
+    1030.0
+  ],
+  "lf_inputs": {
+    "second_derivative": {
+      "interpretation": "conditioning outputs agree to numerical precision",
+      "matched_channels": 192,
+      "matched_samples": 20861,
+      "max_abs_difference_adc": 1.862645149230957e-08,
+      "rms_difference_adc": 2.5510500653937815e-10
+    },
+    "unsharpened": {
+      "interpretation": "conditioning outputs agree to numerical precision",
+      "matched_channels": 192,
+      "matched_samples": 20861,
+      "max_abs_difference_adc": 6.103515625e-05,
+      "rms_difference_adc": 1.39647692130321e-06
+    }
+  },
+  "schema": "dredge-imec1-full-crop-subset-overlap-v1",
+  "standalone_subset_spec_sha256": "dec220ef569c8774c900fbd5b4d99d01e425ca588adeac92b36dd02636b59846"
+}

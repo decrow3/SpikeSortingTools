@@ -18,7 +18,7 @@ def fake_contract():
 
 
 def install_mocks(monkeypatch, *, accepted_digest="strip-request"):
-    calls = {"sort": [], "curation": [], "qc": [], "export": []}
+    calls = {"sort": [], "curation": [], "qc": [], "standard_qc": [], "export": []}
     monkeypatch.setattr("testing.development_runner.validate_development_selection", lambda *args: None)
     monkeypatch.setattr(
         "testing.development_runner.validate_accepted_recording",
@@ -48,6 +48,10 @@ def install_mocks(monkeypatch, *, accepted_digest="strip-request"):
         return {"request_digest": "qc", "summary": {"unit_count": 2}}
     monkeypatch.setattr("testing.development_runner.run_curation_stage", curation)
     monkeypatch.setattr("testing.development_runner.run_qc_stage", qc)
+    def standard_qc(recording, curated, legacy_qc, output, identity):
+        calls["standard_qc"].append((legacy_qc, output, identity["identity_digest"]))
+        return {"request_digest": "standard-qc", "summary": {"unit_count": 2}}
+    monkeypatch.setattr("testing.development_runner.run_standard_qc_stage", standard_qc)
     monkeypatch.setattr(
         "testing.development_runner.run_matlab_export_stage",
         lambda curated, qc, identity: calls["export"].append((curated, qc)),
@@ -62,11 +66,12 @@ def test_all_arms_use_shared_identity_bound_downstream(monkeypatch, tmp_path):
         output_root=tmp_path / "outputs", require_cuda=False,
     )
     assert calls["sort"] == ["rescue", "rescue_rigid"]
-    assert len(calls["curation"]) == len(calls["qc"]) == len(calls["export"]) == 2
+    assert len(calls["curation"]) == len(calls["qc"]) == len(calls["standard_qc"]) == len(calls["export"]) == 2
     assert all(call[2]["waveform_seed"] == 0 for call in calls["qc"])
     assert set(report["arms"]) == {"baseline", "rigid"}
     assert report["arms"]["rigid"]["pre_curation_summary"] == {"unit_count": 2}
     assert report["arms"]["rigid"]["post_curation_summary"] == {"unit_count": 2}
+    assert report["arms"]["rigid"]["standard_qc_request_digest"] == "standard-qc"
     assert (tmp_path / "outputs/arms_summary.json").is_file()
     assert (tmp_path / "outputs/group_receipts/all-arms.json").is_file()
 
@@ -83,6 +88,24 @@ def test_selected_group_runs_only_named_arms_and_does_not_finalize(monkeypatch, 
     assert report["group_receipt"]["candidate_names"] == ["rigid"]
     assert (tmp_path / "outputs/group_receipts/motion-axis.json").is_file()
     assert not (tmp_path / "outputs/arms_summary.json").exists()
+
+
+def test_pre_standard_manifest_is_migrated_additively(monkeypatch, tmp_path):
+    import json
+    install_mocks(monkeypatch)
+    common = dict(
+        contract=fake_contract(), recording_dir=tmp_path / "recording",
+        output_root=tmp_path / "outputs", require_cuda=False,
+        candidate_names=["baseline"], group_id="reference",
+    )
+    run_development_arms(**common)
+    path = tmp_path / "outputs/baseline/candidate_manifest.json"
+    old = json.loads(path.read_text())
+    old.pop("standard_qc_request_digest")
+    path.write_text(json.dumps(old))
+    run_development_arms(**common)
+    migrated = json.loads(path.read_text())
+    assert migrated["standard_qc_request_digest"] == "standard-qc"
 
 
 def test_candidate_selection_refuses_unknown_duplicate_or_unsafe_group(monkeypatch, tmp_path):

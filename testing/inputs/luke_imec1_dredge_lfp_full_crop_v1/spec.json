@@ -1,0 +1,92 @@
+{
+  "ap_origin_s": 3057.6775463558583,
+  "ap_sampling_frequency_hz": 29999.759166666667,
+  "crop_arm": "crop_full_probe_motion",
+  "crop_duration_s": 1158.3165987082507,
+  "crop_end_frame_exclusive": 34942956,
+  "crop_end_source_s": 1164.774550551253,
+  "crop_num_frames": 34749219,
+  "crop_result_path": "/media/huklaban5/Data/DARTsort_qualification/crop-full-motion-v1/sort/result.json",
+  "crop_result_sha256": "42f1d083b37e04245f8825fd80e996dac02500a9fca8d292bb89eb423f39903d",
+  "crop_start_frame": 193737,
+  "crop_start_source_s": 6.457951843002295,
+  "customary_warmup_s": 10.0,
+  "dataset": "Luke0804_V2V1",
+  "environment": {
+    "cuda_available": false,
+    "implementation_hashes": {
+      "/home/huklaban5/Documents/SpikeSortingTools/NPX_preprocessing/.venv/lib/python3.12/site-packages/scipy/signal/_fir_filter_design.py": "7129c4f80bec1884b3d6618fbafb68122303346ddecbd961b17d662408d52624",
+      "/home/huklaban5/Documents/SpikeSortingTools/NPX_preprocessing/.venv/lib/python3.12/site-packages/scipy/signal/_signaltools.py": "87d9dbb7f674ccfb9f13f138194ac14d0c87f856b970cf38553b24dfc9d71614",
+      "/home/huklaban5/Documents/SpikeSortingTools/NPX_preprocessing/.venv/lib/python3.12/site-packages/spikeinterface/preprocessing/average_across_direction.py": "524992b3e1872f04686ed44512e48ce409ed179fcf8876012716c2e37ecd0107",
+      "/home/huklaban5/Documents/SpikeSortingTools/NPX_preprocessing/.venv/lib/python3.12/site-packages/spikeinterface/preprocessing/common_reference.py": "693b07cad023a564a53039d49d200761765a1cab5077cdc989c034a3856273d8",
+      "/home/huklaban5/Documents/SpikeSortingTools/NPX_preprocessing/.venv/lib/python3.12/site-packages/spikeinterface/preprocessing/directional_derivative.py": "aa51493608a8618e6d43a59a414ed4c1e3019c8f358119d6a35feb4eec90fb15",
+      "/home/huklaban5/Documents/SpikeSortingTools/NPX_preprocessing/.venv/lib/python3.12/site-packages/spikeinterface/preprocessing/filter.py": "9e4cd2b184c727393f394ab29e422103844843d4084f3709792ce3d9f0b2192d",
+      "/home/huklaban5/Documents/SpikeSortingTools/NPX_preprocessing/.venv/lib/python3.12/site-packages/spikeinterface/preprocessing/interpolate_bad_channels.py": "ceafd771a2f44c50e904e671c76b8e2747498426d2aceaf834f56a7ba13a0d33",
+      "/home/huklaban5/Documents/SpikeSortingTools/NPX_preprocessing/.venv/lib/python3.12/site-packages/spikeinterface/preprocessing/phase_shift.py": "80d836eff5704ed165b6efa30968c0d8231348270470f7411fe9db97064b4fc6",
+      "/home/huklaban5/Documents/SpikeSortingTools/NPX_preprocessing/.venv/lib/python3.12/site-packages/spikeinterface/preprocessing/resample.py": "8eb0e709fc6d11cf6d2b448a4ea23987ab875ef510867df97e1c8e9d13fc9867",
+      "/home/huklaban5/Documents/SpikeSortingTools/NPX_preprocessing/.venv/lib/python3.12/site-packages/spikeinterface/sortingcomponents/motion/dredge.py": "73b9d4056371217338d1e9fd26b7e60ab1d3d39f1530ec95f3dc1212dd522ef4"
+    },
+    "spikeinterface_version": "0.104.7",
+    "threads": 4,
+    "torch_file": "/home/huklaban5/anaconda3/envs/spikeinterface-claimmask/lib/python3.12/site-packages/torch/__init__.py",
+    "torch_site_packages": "/home/huklaban5/anaconda3/envs/spikeinterface-claimmask/lib/python3.12/site-packages",
+    "torch_version": "2.6.0+cu124"
+  },
+  "estimation": {
+    "chunk_len_s": 10.0,
+    "device": "cpu",
+    "max_disp_um": 80.0,
+    "maximum_boundary_fraction": 0.05,
+    "maximum_cycle_q95_um": 20.0,
+    "mincorr": 0.8,
+    "minimum_nonself_links": 10,
+    "minimum_supported_fraction": 0.95,
+    "rigid": true,
+    "threads": 4,
+    "time_horizon_s": null
+  },
+  "lf_channel_mask": [
+    "imec1.lf#LF191"
+  ],
+  "lf_origin_s": 3057.6773463542527,
+  "parent_freeze_digest": "ba1d58704082ef0d3a9cf13cfa05ca7bde33d3febc193aa88f3a9cc91f3bf6a6",
+  "preprocessing": {
+    "arms": [
+      "second_derivative",
+      "unsharpened"
+    ],
+    "band_hz": [
+      0.5,
+      250.0
+    ],
+    "calibration_duration_s": 2.0,
+    "calibration_starts_s": [
+      600.0,
+      2400.0,
+      6000.0
+    ],
+    "dead_mad_ratio": 0.2,
+    "decimation_factor": 10,
+    "filter_margin_ms": 10000,
+    "fir_kaiser_beta": 5.0,
+    "fir_taps_per_factor": 20,
+    "maximum_bad_fraction": 0.05,
+    "noisy_mad_ratio": 5.0,
+    "reference": "global_median",
+    "resample_hz": 250,
+    "resample_margin_ms": 1000,
+    "resampling_method": "clock_aligned_polyphase"
+  },
+  "recording": "imec1_ap",
+  "scope": "Full DARTsort crop; external motion diagnostic only",
+  "script_sha256": "b846178230c02e6eb5fc93a9ad9132eaaf317c056feaf307a72f0fe97fc98d86",
+  "search_limits_um": [
+    80.0,
+    260.0
+  ],
+  "source_context_start_s": 0.0,
+  "source_lf": "/media/huklaban5/Data/Testing/Luke0804_V2V1_g0/Luke0730_V2V1_g0_imec1",
+  "time_origin_seconds": 0.0,
+  "warmup_context_before_crop_s": 6.457951843002295,
+  "warmup_limitation": "Only available source context before the crop was used; the first 6.458 s of the sorter crop has less than the customary 10 s estimator warm-up."
+}

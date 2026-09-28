@@ -45,6 +45,7 @@ from .downstream import (
     run_pair_audit_stage,
     run_postcuration_comparison_stage,
     run_qc_stage,
+    run_standard_qc_stage,
     validate_sort_identity,
     write_conservative_decision,
 )
@@ -137,6 +138,7 @@ __all__ = [
     "run_pair_audit_stage",
     "run_postcuration_comparison_stage",
     "run_qc_stage",
+    "run_standard_qc_stage",
     "run_motion_sidecar",
     "run_motion_sidecar_for_accepted_recording",
     "run_motion_sidecar_safely",

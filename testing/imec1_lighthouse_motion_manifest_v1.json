@@ -1,0 +1,59 @@
+{
+  "schema": "luke0804-imec1-lighthouse-motion-manifest-v1",
+  "prepared_date": "2026-09-13",
+  "probe": "imec1",
+  "stream": "imec1.ap",
+  "sampling_frequency_hz": 29999.759166666667,
+  "raw_ap_frame_interval": [193737, 34942956],
+  "crop_start_source_s": 6.457951843002295,
+  "clock_contract": "raw_ap_frame is canonical; crop_time_s=(raw_ap_frame-193737)/29999.759166666667; source time is never shifted twice",
+  "sign_contract": "corrected_depth = observed_depth - displacement",
+  "identity_contract": "waveform-only global competition; no sorter label, motion value, absolute-depth preference, or temporal-continuity repair",
+  "primary_candidate_ids": [
+    "p08_f025", "p08_f033", "p06_f010", "p08_f029",
+    "p06_f045", "p09_f020", "p09_f024", "p08_f044"
+  ],
+  "near_threshold_ids": ["p06_f047", "p06_f008", "p09_f006", "p09_f038"],
+  "split_required_ids": ["p09_f018", "p08_f047"],
+  "weak_ambiguous_ids": ["p06_f038", "p08_f010", "p08_f017", "p07_f021", "p08_f039", "p07_f008"],
+  "identity_namespace": "compact-v2:s300:{family_id}:{first16_template_sha256}",
+  "qualification_window_s_ap_recording": [310.0, 320.0],
+  "extra_windows_s_ap_recording": [
+    [120.0, 150.0], [320.0, 350.0], [484.0, 514.0],
+    [696.0, 726.0], [941.0, 971.0], [1120.0, 1150.0]
+  ],
+  "window_policy": "duration-only proposals shifted forward past all recorded seed/training/qualification/gentle/motion-review intervals; no motion estimate, candidate track, stimulus response, or RF outcome consulted",
+  "bin_seconds": 5.0,
+  "quiet_threshold_um": 20.0,
+  "minimum_adjacent_increments_per_family": 3,
+  "minimum_families_for_aggregate": 3,
+  "error_exceedance_um": [40.0, 80.0, 120.0],
+  "sort_match": {
+    "primary_tolerance_ms": 0.5,
+    "strict_sensitivity_tolerance_ms": 0.2,
+    "raw_coordinate_spatial_tolerance_um": 100.0,
+    "assignment": "deterministic one-to-one minimum absolute time error"
+  },
+  "source_sha256": {
+    "twenty_candidate_assessment.csv": "639223bbdf1af23c80d8cdcf08b79cbc9baec456a79a982e15a76bfb261f8891",
+    "qualification_events_compact.csv": "cd0592c5758e56e9e1a161260c99e5afa39d4839805177bcb94db66913d34f96",
+    "frozen_training_templates.npz": "b6d60f71655900312a6e447870b4dc9934313c38d43151880165a326f2f43aa7",
+    "families_after_depth_reveal_s300.csv": "c452cc78b1d036f7118aa9a20d850fcbb1c2d9709ac12d457275098b538a55f8",
+    "native_motion.pkl": "5e3836a63905a46e1b31b1f5e3702ecc5c9bd392164bd70ca5e48263541503c3",
+    "fine_medicine_motion.npy": "b599038bb9902edcb3757e675d68f5d7bf6801abc16a293195f8cb4227e7723f",
+    "native_dartsort_sorting.npz": "c5c2dd65b56c5590d9e834b4a46dd60f879a1f2373ea1d261c9e3f60e16fd165",
+    "medicine_dartsort_sorting.npz": "1257ea81fb806c479797d2ac72a8a3a948d521114f3d4c37503c5292d0414062",
+    "extra_window_strict_primary_events.csv": "5d0525aed89c1de56f992719ad2605e991c59ab790bfc8ba2580fe526659dc8a",
+    "extra_window_summary.json": "b4f188d210eef02cf3e4aa019a4e1bc2af26d998f001b261547709a4a09c45c1"
+  },
+  "lfp_transfer": {
+    "remote_path": "/home/huklaban5/Documents/SpikeSortingTools/NPX_preprocessing/outputs/handoffs/luke_imec1_lfp_motion_handoff_v1.tar.gz",
+    "received_path": "/mnt/NPX/Luke/luke_imec1_lighthouse_motion_comparison_v1/lfp_handoff/luke_imec1_lfp_motion_handoff_v1.tar.gz",
+    "reported_sha256": "707721bcbf181c9d11dd687eb9b1922d33c29123301a7b3f169dc23634dcebeb",
+    "verified_sha256": "707721bcbf181c9d11dd687eb9b1922d33c29123301a7b3f169dc23634dcebeb",
+    "status": "received through shared mount; archive and all payload SHA256SUMS verified",
+    "local_verification": true
+  },
+  "rf_policy": "RF stimulus responses and the 20-trial RF holdout remain unopened",
+  "decision_policy": "reduce large movement residuals and improve retained-event concentration without material quiet penalty, event loss, or cross-family mixing; do not force an unagreed weighted rank"
+}

@@ -5,7 +5,12 @@ import os
 import shutil
 import time
 
-from pipeline.downstream import pin_sort_identity, run_curation_stage, run_qc_stage
+from pipeline.downstream import (
+    pin_sort_identity,
+    run_curation_stage,
+    run_qc_stage,
+    run_standard_qc_stage,
+)
 from pipeline.preprocess import validate_accepted_recording
 from pipeline.runtime import validate_production_environment
 from testing.ladder_sorter import RESCUE_RIGID, RESCUE, run_sorter_config, check_effective_settings, _json_safe
@@ -74,6 +79,11 @@ def main():
     run_curation_stage(OUT / 'kilosort4/sorter_output', OUT / 'cur', identity)
     stage('waveform and amplitude QC')
     run_qc_stage(BASE / 'recording', OUT / 'cur/cur_output', OUT / 'qc', identity)
+    stage('standard per-unit QC summary')
+    run_standard_qc_stage(
+        BASE / 'recording', OUT / 'cur/cur_output', OUT / 'qc',
+        OUT / 'qc/standard', identity,
+    )
     stage('sort and QC complete; comparison pending')
 
 
