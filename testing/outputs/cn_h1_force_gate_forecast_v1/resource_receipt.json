@@ -1,0 +1,24 @@
+{
+  "task": "CN unresolved-default sensitivity and full-session exposure forecast",
+  "status": "complete_primary_unchanged",
+  "revised_operational_ceiling_s": 15600.0,
+  "prior_cumulative_s": 14453.22,
+  "cn_cpu_seconds_charged": 600.0,
+  "cn_allowance_seconds": 900.0,
+  "cn_remaining_seconds": 300.0,
+  "cumulative_after_cn_s": 15053.22,
+  "failed_attempts": [
+    "first forecast output completed calculation but failed on NumPy integer JSON serialization; preserved without scientific retry"
+  ],
+  "raw_voltage_reads": 0,
+  "gpu_seconds": 0.0,
+  "prefix_runs": 0,
+  "ccg_gate_runs": 0,
+  "all_force_consumer_replays": 0,
+  "sorts": 0,
+  "forecast_method_commit": "779ba5b",
+  "serialization_fix_commit": "cf980d3",
+  "forecast_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/cn_force_gate_exposure_forecast_20260927",
+  "w3_sensitivity_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-cn-default-sensitivity-v1",
+  "report": "docs/dartsort_cn_unresolved_exposure_result_20260927.md"
+}

@@ -2,8 +2,8 @@
 
 ## Verdict
 
-The completed W3 packet is **internally valid and prospective, with one source-
-inspection caveat**. The frozen CJ-v2 gate passes 7/122 direct force edges,
+The completed W3 packet is **internally valid and prospective**. The frozen
+CJ-v2 gate passes 7/122 direct force edges,
 fails 10 and leaves 105 unresolved. Connectivity creates eight force relations
 (one indirect) and the unchanged-QDA union contains 13 relations versus 223 for
 all-force and nine for no-force. Unresolved edges are withheld routes, not
@@ -36,12 +36,17 @@ recreated. The successful replay explicitly restores captured post-TMM times and
 channels and reports deterministic consumer operations with unchanged captured
 all-force RNG state.
 
-Direct source inspection on huklaban5 could not be completed from h1: the host
-alias did not resolve and the configured address rejected h1's SSH key, while
-the sealed packet does not include the replay source. Therefore service-
-dependency removal and the implementation-level absence of hidden RNG calls are
-supported by receipts and exact controls, not independently source-certified by
-h1. This is a delivery/access caveat, not an observed result mismatch.
+CN later published a hash-sealed supplement containing the exact source and
+service units used for capture, primary replay and the post-primary sensitivity.
+All 28 source products match `SOURCE_MANIFEST.json`, which states that the copy
+was published before the sensitivity consumer and identifies source-at-execution
+at git head `fdaad621`. Independent inspection closes the earlier access caveat:
+the primary replay and CN sensitivity units have no dependency on capture; the
+capture unit alone requires its preflight. The replay restores captured
+post-TMM times and channels before the consumer, explicitly compares finite and
+nonfinite control domains, and reports unchanged captured RNG state. No hidden
+consumer RNG call was found in the executed sources. The all-force control was
+reused by verified hash in CN and was not replayed a second time.
 
 ## Three distinct comparison domains
 
@@ -85,3 +90,5 @@ required before any neuronal-yield or merge-benefit claim.
 
 Source packet:
 `/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-cl-w3-force-gate-v1/`.
+Source supplement:
+`/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-cn-default-sensitivity-v1/source/`.

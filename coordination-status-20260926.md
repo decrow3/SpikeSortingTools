@@ -1,5 +1,35 @@
 # Luke motion coordination status
 
+## CN h1 unresolved-default and exposure review — complete
+
+The frozen pass-only primary remains the recommendation. The post-primary W3
+accept-unresolved sensitivity independently reconstructs to 112 direct, 175
+expanded-force and 178 final-union relations (500 components), versus the
+primary's 7/8/13. It reconnects none of W3's ten resolved failures. This is
+operational graph dominance by construction, not evidence that unresolved
+edges are valid.
+
+At the stationary 1x full-session exposure scenario, 185/222 W2 and 99/122 W3
+edges potentially meet every independent-rate support minimum; shoulder-derived
+counts are 165/222 and 84/122. These are support-only projections and do not
+predict gate passage or identity. The W3 consumer closes all 571,935 rows.
+Actual-final-clock all-force episode ISI is 0.009358 (1,630/174,183); the older
+fixed-clock 0.009329 uses 1,625 intervals on the same denominator. Five
+within-state timing changes explain the difference; there are zero state
+crossings.
+
+All 45 W3 sensitivity products and all 28 exact source/adaptor products verify.
+The source supplement closes CM's prior access caveat: replay and sensitivity
+have no capture dependency, captured post-TMM times/channels are restored, and
+the all-force consumer was reused by hash rather than repeated. Report:
+`docs/dartsort_cn_unresolved_exposure_result_20260927.md`.
+
+CN charges 600/900 s, taking cumulative h1 usage to **15053.22/15600 s**. No
+raw voltage, GPU, prefix, CCG gate, all-force consumer, sort, motion fit, or
+threshold change ran on h1. One output attempt completed the calculation but
+failed JSON serialization; it is preserved, and the unchanged calculation was
+serialized successfully.
+
 ## CM h1 cached calibration and independent W3 replay audit — complete
 
 The CM method was frozen as `36da5eb` before outcomes. On predetermined CK units
@@ -29,17 +59,17 @@ mechanically favorable, so no benefit claim is made. All 424 compatibility rows
 have exact common physical positive support (median 26 positions); median cosine
 is 0.945. Deterministic panels independently resolve to parents 124 and 293.
 
-H1 could not inspect huklaban5 replay source: its alias did not resolve and the
-configured address rejected the available SSH key; source is absent from the
-sealed packet. Exact replay and receipts support consumer integrity, but
-service-dependency removal and hidden-RNG absence are not independently
-source-certified. Report: `docs/dartsort_cm_w3_independent_audit_20260927.md`.
+CN subsequently supplied the exact source-at-execution snapshot and service
+units, with all 28 hashes verified. Independent inspection closes the earlier
+access caveat: replay and sensitivity have no capture dependency, captured
+post-TMM times/channels are restored before the consumer, and no hidden
+consumer RNG call was found. Report:
+`docs/dartsort_cm_w3_independent_audit_20260927.md`.
 
-The revised operational ceiling is **15300 s**, recorded before exceeding the
-old 14400-s ceiling. Final accounting charges the full remaining 600 CL seconds
-and 300/900 CM seconds, taking cumulative h1 usage from 13433.22 to
-**14333.22 s**. CM retains 600 s unused. No raw voltage, GPU, prefix, full gate,
-sort, field fit or threshold change occurred on h1.
+The revised operational ceiling is **15600 s**. Final accounting charges the
+full remaining 600 CL seconds and 420/900 CM seconds, taking cumulative h1 usage
+from 13433.22 to **14453.22 s**. CM retains 480 s unused. No raw voltage, GPU,
+prefix, full gate, sort, field fit or threshold change occurred on h1.
 
 ## CL h1 portable gate and CK measurement audit — ready, W3 pending
 

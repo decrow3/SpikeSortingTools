@@ -1,0 +1,35 @@
+{
+  "status": "complete_primary_unchanged",
+  "forecast_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/cn_force_gate_exposure_forecast_20260927",
+  "w3_sensitivity_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-cn-default-sensitivity-v1",
+  "w3_manifest_products_verified": 45,
+  "w3_source_products_verified": 28,
+  "w3_source_at_execution": true,
+  "primary_remains_pass_only": true,
+  "accept_unresolved_promoted": false,
+  "w2_primary_direct_force_union": [6, 6, 21],
+  "w2_sensitivity_direct_force_union": [213, 413, 424],
+  "w3_primary_direct_force_union": [7, 8, 13],
+  "w3_sensitivity_direct_force_union": [112, 175, 178],
+  "w3_sensitivity_components": 500,
+  "w3_resolved_failures_reconnected": 0,
+  "w2_support_1x_independent_shoulder": [185, 165],
+  "w3_support_1x_independent_shoulder": [99, 84],
+  "all_force_episode_isi_fixed_clock": {
+    "numerator": 1625,
+    "denominator": 174183,
+    "fraction": 0.009329268642749293
+  },
+  "all_force_episode_isi_actual_clock": {
+    "numerator": 1630,
+    "denominator": 174183,
+    "fraction": 0.009357974084726982
+  },
+  "timing_state_crossings": 0,
+  "raw_voltage_reads": 0,
+  "gpu_seconds": 0.0,
+  "prefix_runs": 0,
+  "ccg_gate_runs": 0,
+  "all_force_consumer_replays": 0,
+  "sorts": 0
+}
