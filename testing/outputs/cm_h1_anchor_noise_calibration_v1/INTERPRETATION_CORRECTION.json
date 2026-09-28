@@ -1,0 +1,12 @@
+{
+  "status": "corrected_without_rerun",
+  "surrogate_bank_pairs_per_unit": 1,
+  "subsample_draws_at_25_and_50": 100,
+  "subsample_draws_are_independent_monte_carlo_trials": false,
+  "subsample_draws_reuse_fixed_banks": true,
+  "result_at_100_events_is_deterministic": true,
+  "false_rejection_frequency_estimated": false,
+  "supported_claim": "one fixed-waveform realization can score below 0.90 under the saved measurement pipeline",
+  "outputs_preserved": true,
+  "rerun_performed": false
+}

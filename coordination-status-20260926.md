@@ -5,10 +5,12 @@
 The CM method was frozen as `36da5eb` before outcomes. On predetermined CK units
 23/120, reliability rises strongly from 25 to 100 events and mean templates
 outscore medians. At 100 events, observed median scores are 0.767/0.839 and a
-fixed known-stable training-noise surrogate scores 0.867/0.910. Thus the current
-100-event/high-dimensional measurement can reject a stable waveform at the
-observed training-noise scale. The zero-signal control is positively biased
-(median 0.269--0.297 at 100), so the short-edge surrogate is not a calibrated
+fixed known-stable training-noise surrogate realization scores 0.867/0.910. The
+code generated one 100-event surrogate-bank pair per unit and repeatedly
+subsampled it; the 100-event result is deterministic, not 100 independent Monte
+Carlo trials. Thus one fixed waveform realization can fall below 0.90, but no
+false-rejection frequency is estimated. The zero-signal realization is
+positively biased (median 0.269--0.297 at 100), so it is not a calibrated
 biological null. CK remains 0/8; no threshold or estimator was replaced.
 
 The completed W3 packet has 36/36 valid products. Post-TMM and

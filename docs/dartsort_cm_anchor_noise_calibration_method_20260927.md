@@ -17,8 +17,13 @@ structure, but tiling them to 121 samples cannot preserve covariance across tile
 boundaries or longer than 20 samples. Ten equal blocks of ten events are used.
 A zero-signal control uses the same generated noise without the waveform.
 
-There are 100 Monte Carlo repetitions per unit/sample-size/estimator/control,
-giving empirical tail-probability resolution about 0.01. No parameter is chosen
-to reproduce CK failure and no held-out-half output selects a setting. A stable
-surrogate result diagnoses the measurement pipeline only; it does not establish
-true-neuron reliability, biological identity or an anchor pass.
+One stable and one zero-signal 100-event bank pair are generated per unit. The
+100 draws at 25 and 50 events are overlapping, dependent block-balanced
+subsamples of those fixed banks; their empirical quantile grid is 0.01 but this
+is not independent Monte Carlo or inferential tail resolution. At 100 events
+the entire bank is used, so all 100 repeated values are identical and provide no
+simulation-frequency estimate. No parameter is chosen to reproduce CK failure
+and no held-out-half output selects a setting. A stable surrogate result
+diagnoses one realized measurement pipeline only; it does not estimate a false-
+rejection frequency, establish true-neuron reliability, biological identity or
+an anchor pass.
