@@ -32,6 +32,7 @@ from experiments.luke0804_imec1.evaluate_dots_rf import (  # noqa: E402
     lag_safe_mask,
     lagged_stimulus_gaze_mask,
     load_gaze,
+    validate_gaze_calibration_receipt,
 )
 
 
@@ -188,6 +189,9 @@ def main() -> None:
         selected_holdout = complete_trials & holdout
         if selected_holdout & selected_development:
             raise AssertionError("Outer split overlap")
+        gaze_calibration = validate_gaze_calibration_receipt(
+            config, args.gaze_csv.resolve(), development, holdout
+        )
 
         # Reuse the accepted evaluator's exact gaze, lag-safety and lagged-gaze logic.
         gaze_args = argparse.Namespace(
@@ -253,6 +257,16 @@ def main() -> None:
             )
             eligible_units = units[eligible]
             eligible_robs = robs[:, eligible]
+            pd.DataFrame(
+                {
+                    "arm": arm_name,
+                    "unit_id": units,
+                    "n_spikes": total_spikes,
+                    "n_spikes_fold0": fold_spikes[0],
+                    "n_spikes_fold1": fold_spikes[1],
+                    "eligible": eligible,
+                }
+            ).to_csv(partial / f"{arm_name}_rf_eligibility.csv", index=False)
             if eligible_units.size == 0:
                 arm_summaries[arm_name] = {
                     "status": "unavailable_no_eligible_units",
@@ -338,6 +352,7 @@ def main() -> None:
             "arms": arm_summaries,
             "support": support,
             "clock": clock_info,
+            "gaze_calibration": gaze_calibration,
             "hashes": {
                 "config": sha256(args.config),
                 "stimulus_manifest": sha256(cache / "manifest.json"),
