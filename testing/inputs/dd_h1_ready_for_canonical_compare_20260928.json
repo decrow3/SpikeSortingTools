@@ -1,0 +1,21 @@
+{
+  "status": "ready_for_canonical_source_comparison",
+  "written_local": "2026-09-27T23:39:15-07:00",
+  "host": "huklaban1",
+  "local_implementation_sha256": "f083caa760b2b928eb4ce79a3d531c2b3582b155f6673f444f6a6bc46dbd6b7b",
+  "corrected_pair_line_knot_q_sha256": "a3553933476456cb061d7668c78c20eda8b125158d97ccb7f8e5bd0b8028f386",
+  "corrected_full_knot_csv_sha256": "427501a1569560dc3800eb1cbebfd6c484d9351d623b8383dde17804fa300983",
+  "fixtures": "5/5 pass",
+  "actual_input_preflight": "pass",
+  "analytical_label_free_gate": {
+    "status": "pass",
+    "resolved_episode_pairs": 10,
+    "residual_abs_shift_le_40_fraction": 1.0,
+    "resolved_nulls": 20,
+    "null_mode_um": 0,
+    "null_median_abs_shift_um": 0
+  },
+  "next_action": "compare canonical h5 source on identical synthetic fixture; then materialize matched W2 pair and run actual paired-input gate",
+  "no_materialization_started": true,
+  "reason": "operative amendment assigns canonical remap source ownership to h5"
+}
