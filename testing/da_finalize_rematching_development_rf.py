@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -216,6 +217,11 @@ from 17,333.22 to 17,453.22 seconds, below the 20,500-second ceiling.
         "over REMATCH0. See `REPORT.md`, `DA_SCORES.csv`, "
         "`ELIGIBILITY_FAILURES.csv`, and `VALIDATION.json`.\n"
     )
+    source_dir = packet / "source"
+    source_dir.mkdir(exist_ok=True)
+    shutil.copy2(Path(__file__).resolve(), source_dir / Path(__file__).name)
+    result_doc = Path(__file__).resolve().parents[1] / "docs/dartsort_da_rematching_development_rf_result_20260928.md"
+    shutil.copy2(result_doc, source_dir / result_doc.name)
     receipt = {
         "successful_evaluator_elapsed_s": summary["elapsed_s"],
         "successful_service_wall_s": 30.35,
