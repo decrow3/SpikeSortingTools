@@ -1,0 +1,43 @@
+{
+  "status": "frozen_before_modified_donor_outcomes",
+  "source_units": 90,
+  "training_half": "left_templates",
+  "heldout_half": "right_templates",
+  "swapped_half_check": true,
+  "independence_qualification": "exploratory: disjoint spikes but shared temporal basis and preprocessing",
+  "support_rule": {
+    "domain": "source donor coordinates",
+    "training_channel_score": "per-channel temporally-centered energy, Gaussian-smoothed on physical geometry",
+    "gaussian_sigma_um": 40.0,
+    "amplitude_ratio_zero": 0.05,
+    "amplitude_ratio_one": 0.10,
+    "taper": "raised cosine between the two amplitude-ratio knots",
+    "connectivity": "retain only the <=45 um neighbor component containing the maximum-score channel",
+    "placement_dependency": false,
+    "sorter_outcome_dependency": false
+  },
+  "qualification": {
+    "base_lattice_um": 40.0,
+    "occupied_states_um": [0.0, -40.0, -80.0, -120.0, -160.0, -200.0, -240.0],
+    "minimum_modified_source_energy_retention": 0.99,
+    "minimum_inverse_centered_cosine": 0.99,
+    "inverse_ptp_ratio": [0.98, 1.02],
+    "native_clone_bank": "unmodified 90-source native target crop",
+    "native_clone_cosine": 0.99,
+    "native_clone_ptp_ratio": [0.98, 1.02],
+    "interpolation": false,
+    "fractional_shift": false
+  },
+  "stress_cases": {
+    "similar_distinct_real_overlap_unit_ids": [484, 487],
+    "isolated_strong_unit_id": 30,
+    "amplitude_multipliers": [0.5, 1.0, 2.0],
+    "temporal_mismatch_samples": [-1, 1],
+    "controls": ["zero", "unmodified_native_background_bank"]
+  },
+  "old_result_preserved": {
+    "qualified": 5,
+    "denominator": 90,
+    "unit_ids": [407, 415, 433, 461, 512]
+  }
+}
