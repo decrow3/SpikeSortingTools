@@ -68,10 +68,16 @@ offset-summary table explicitly retains zero-query cells.  The much larger
 segment ledger is intentionally sparse (positive-support rows only), which
 must be stated when that file is reused.
 
-The producer stopped after writing the analysis receipt and did not emit its
-promised final `COMPLETE.json`.  No compute process remains.  This is a
-closeout defect, not a failed numerical check; the independent result above
-is recorded in `CW_V2_INDEPENDENT_AUDIT.json` with status `pass`.
+The final packet, manifest, and `COMPLETE.json` now close cleanly; all 33
+manifest entries and the manifest self-hash pass. The independent result is
+recorded in `CW_V2_INDEPENDENT_AUDIT.json` with status `pass`.
+
+The saved rank-1-versus-other count (72 W2 plus 176 W3) is a descriptive
+amplitude-proxy partition, not a biological class. It allows every tiny or
+reassigned child, and the maximum proxy rank can be unstable for close or
+sparsely supported children. Its small fraction therefore supports only the
+narrow statement that this proxy subset does not dominate the endpoint; it
+does not identify which child pairs are biological neurons or artifacts.
 
 ## Saved-output readiness for the next bounded outcome check
 
