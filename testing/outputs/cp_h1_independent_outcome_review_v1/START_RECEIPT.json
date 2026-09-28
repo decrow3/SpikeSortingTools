@@ -1,0 +1,21 @@
+{
+  "task": "CP independent direct-outcome code review and bounded W2 RF endpoint",
+  "status": "started_before_new_outcome_review",
+  "started_local": "2026-09-27T17:40:00-07:00",
+  "prior_cumulative_s": 15653.22,
+  "cp_allowance_s": 3600.0,
+  "revised_operational_ceiling_s": 19300.0,
+  "accounting_rule": "append actual or conservative CP charge to 15653.22; no reset",
+  "limits": {
+    "threads": 2,
+    "readers": 1,
+    "memory_gb": 20,
+    "final_gb": 1,
+    "scratch_gb": 2,
+    "minimum_free_gb": 30,
+    "gpu": false,
+    "source_voltage_reads": 0
+  },
+  "initial_review_eta_minutes": [12, 18],
+  "scope": "source/outcome audit plus development-only W2 RF support/endpoint; no duplicate raw extraction or full h5 metric rerun"
+}
