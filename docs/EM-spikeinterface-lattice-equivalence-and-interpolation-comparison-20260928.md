@@ -1,81 +1,277 @@
-# EM — reproduce the lattice remap in SpikeInterface, then compare it with standard interpolation methods
+# EM — reproduce the exact lattice remap with SpikeInterface, then compare correction operators
 
-**Status:** DRAFT / UNSENT. Drafted by Claude (hourly review) on 2026-09-28.
-- **User request, relayed:** "We should ask our coordinator to do this test… It should probably live in SpikeSortingTools." That applies to this test only. The user's broader hold on new work otherwise stands. Please confirm scope with the user if your policy needs it in your own context.
-- **Home:** SpikeSortingTools, not the DARTsort repo. Specifically the huklaban5 **`/home/huklaban5/Documents/SpikeSortingTools/NPX_preprocessing`** git repo (HEAD `06d9c70`, venv with SpikeInterface **0.104.7**), because the W2/W3 recordings and the DD materialized remap are on huklaban5.
-  - Sorting reuses the existing DARTsort static worker and scorer, consuming the SpikeInterface outputs.
-  - huklaban1's `RyanSorting/SpikeSortingTools` (motionqc) does an independent source review only. No voltage leaves huklaban5.
-- **Next unused letter per the ledger:** EM. Please rename if it's already allocated.
+**Status:** EM.1 IMPLEMENTATION AND 0.104.7 SOURCE/GEOMETRY AUDIT COMPLETE; HUKLABAN5 VOLTAGE AUDIT PENDING.
 
-## Why
+- **Published handoff:**
+  `/mnt/NPX/Luke/DARTsort_motion_experiments/em_spikeinterface_lattice_20260928/huklaban1_v1`
+  (`MANIFEST.json` SHA-256
+  `10cc8045845efcb52adc3b19ba70c06b0e7a4766fc652badd650e9a657b5a27b`;
+  all 15 payload files verified before `COMPLETE.json` was written last).
 
-A literature check ([literature-lattice-remap-20260928.md](literature-lattice-remap-20260928.md)) found that raw-data registration before a static sorter is established (Kilosort 2.5 datashift; SpikeInterface `interpolate_motion` with kriging/IDW; Garcia et al. 2024). But no published method restricts the correction to **exact whole-period permutations**.
+- **Implemented here:** `npx_preprocessing/motion/lattice_remap_si.py`, its
+  geometry-audit runner, and synthetic tests. Under the local SpikeInterface
+  0.102.1 environment, the stock `nearest + force_zeros` control substitutes a
+  surviving electrode at an interior hole, while the exact adapter zero-fills
+  it.
+- **Actual-geometry result:** the no-voltage audit of all 1,456 realized
+  W2 `(q, target)` pairs found 1,448 exact mappings and eight unsupported
+  targets. Local SpikeInterface 0.102.1 zeroed the four outer-border targets
+  correctly but substituted a neighbor for four AP191-hole targets under both
+  local 0.102.1 and the required 0.104.7, so stock equivalence failed with four
+  mismatches. See
+  [EM local mapping result](EM-lattice-mapping-audit-result-20260928.md).
+  The bounded 9-second byte comparison against the huklaban5 materialization
+  remains necessary.
 
-SpikeInterface's `spatial_interpolation_method="nearest"` ("snapping") picks the nearest electrode in 2D, with no period constraint. It failed in Garcia et al. for **sub-period** drifts (12–40 µm, with a 44 µm period). For a **rigid, lattice-rounded** field, every target lands exactly on a real electrode, so snapping should **equal** our DD lattice remap. If it does:
-- the method gets a standard, one-call implementation;
-- the natural methods comparison (lattice vs kriging vs IDW vs plain snapping vs none) becomes cheap.
+- **Canonical home:** `/home/huklab/Documents/RyanSorting/SpikeSortingTools` (this repository). Put the reusable helper and tests here; do not modify the DARTsort repository.
+- **Execution locality:** raw voltage remains on huklaban5. If an actual-voltage check or sort must run there, execute this repository's reviewed commit (or an exact source snapshot with recorded SHA-256 hashes) in the installed SpikeInterface 0.104.7 environment. No voltage is copied off huklaban5.
+- **Scope:** EM authorizes the bounded source audit, geometry fixtures, and frozen voltage snippets below. EM.2a is a conditional CPU follow-up. Each new EM.2b spike sort requires explicit run authorization after arm selection and resource measurement. Nothing here authorizes production changes, RF work, outer-holdout access, or an automatic W3 run.
+- **Name:** retain EM unless the experiment ledger shows that EM has already been allocated.
 
-## EM.1 Equivalence (CPU; source-first; no sort)
+## Question and interpretation
 
-1. **Source and config.** From installed SpikeInterface 0.104.7, cite file and line for:
-   - `interpolate_motion` target construction (`channel_locations_moved[:, dim] += displacement`);
-   - the time-bin selection (nearest motion bin vs interpolation);
-   - `get_spatial_interpolation_kernel(method="nearest")`: argmin of the 2D distance, weight 1;
-   - border handling and `force_extrapolate`.
+DD applies a rigid, whole-period remap on the NP1.0 lattice. For output site
+`j` with coordinate `(x_j, y_j)` and shift `q`, its mapping is
 
-   From the executed DD source (h5 `dd_lattice_inputs`/materializer), cite:
-   - the lattice period (NP1.0, 40 µm; x alternates {0, 32}/{16, 48});
-   - the reference offset r (W2 −4.69558824159 µm) and rounding rule;
-   - the sign convention (`corrected = observed − displacement`);
-   - the time grid and knot selection;
-   - zero-fill;
-   - preprocessing order (383 supported channels after filter, phase, two global references and scale, then remap, then 182-site crop; AP191 excluded).
-2. **Build the SpikeInterface version:**
-   - a **rigid** `Motion` (one spatial bin) whose displacement is the DD lattice-rounded shift `40·round((d − r)/40)` on DD's exact time grid, with the sign set so that SpikeInterface's `location + displacement` sampling reproduces DD;
-   - `border_mode` set to reproduce DD's zero-fill (for example `force_zeros`), not `remove_channels`;
-   - applied at the same preprocessing stage and channel set as DD, then the same crop.
-3. **Sign fixture first:** one synthetic channel at a constant +40 µm. Assert that SpikeInterface output equals the expected channel permutation.
-4. **Equivalence check** against the DD materialized W2 remap (`/home/huklaban5/DARTsort_experiment_scratch/dd_lattice_w2_20260928/…`).
-   - Frozen sample: 3 s from low-deviation rest, 3 s from an episode core, and 3 s spanning an episode onset/offset transition, chosen deterministically from the DC state table before reading voltage.
-   - **Pass:** maximum absolute difference ≤ 1e-6 (float32), identical zero-fill positions, and identical per-time-bin channel mappings.
-   - **Fail:** report the first differing sample and channel and its cause (sign, reference, time bin, border, order). Don't tune until it passes. A documented, explained mismatch is acceptable if the cause is a DD convention SpikeInterface can't express.
-5. Commit the helper, for example `npx_preprocessing/motion/lattice_remap_si.py`, with its tests in SpikeSortingTools. **Nothing goes into the DARTsort repo.**
+```text
+M_q[j] = k  if (x_k, y_k) = (x_j, y_j + q)
+         -1 otherwise
+```
 
-## EM.2 Methods comparison (conditional on EM.1 passing; GPU)
+`-1` is zero-filled. The 40-µm shift preserves the alternating NP1.0 lateral
+phase, so ordinary fully supported sites have an exact source electrode.
+However, the actual parent contains 383 supported channels with AP191 excluded.
+That creates an interior support hole. SpikeInterface's stock `nearest` kernel
+selects the closest surviving electrode; it does not by itself mean “exact
+coordinate or zero.” `force_zeros` may handle outer probe borders without
+reproducing an interior missing site.
 
-- **Inputs, W2 first:**
+EM therefore tests two distinct claims:
 
-  | Arm | Method | Field |
-  |---|---|---|
-  | none | S0, existing | — |
-  | lattice | DD SL, existing; **or** the equivalent SpikeInterface nearest-on-lattice-rounded output (not both) | lattice-rounded |
-  | kriging | SpikeInterface kriging, default parameters | unrounded two-layer field, rigid |
-  | idw | SpikeInterface IDW, default parameters | unrounded two-layer field, rigid |
-  | snap | SpikeInterface nearest | **unrounded** field (plain snapping) |
+1. **Stock equivalence:** does SpikeInterface 0.104.7 `nearest` plus its border
+   policy reproduce DD everywhere on the executed 383-channel geometry?
+2. **Adapter equivalence:** if stock equivalence fails, can a thin
+   SpikeInterface recording/helper in this repository enforce DD's exact-support
+   mask while retaining SpikeInterface's lazy recording interface?
 
-  That's three new sorts per window.
-- **Sorter:** the existing static DARTsort S config and seed, unchanged; the same single-linkage/complete-linkage choice as the EF contract.
-- **Scoring:** the frozen EF scorecard. Identity rate-rank ρ, yield ratio, and short-interval fractions by field-defined state, with 2000-draw common-block bootstrap CIs. **No RF**, per the user's stop.
-- **Pre-registered reading, before outcomes:**
-  - **Lattice advantage:** lattice beats kriging and IDW on ρ (Δ ≥ 0.05, CI lower bound > 0), with yield and purity within the EF tolerances.
-  - **Interpolation equivalent:** |Δρ| < 0.05 with the CI including 0. Kriging/IDW is then an acceptable standard substitute.
-  - **Snapping check:** plain snapping is expected to trail lattice. If it doesn't, report that plainly.
-  - **Anything else is mixed.** Report it without tuning.
-- **Transfer:** W3 only if W2 is informative, with the same frozen reading.
-- **Optional:** the same five inputs on the DK hybrid (exact-lattice injection, so it favours lattice and snapping), labelled as an upper-bound check.
+A localized, explained stock failure is a useful result. Do not tune parameters
+to conceal it or call a custom exact-coordinate adapter “stock nearest.”
 
-## Resources and limits
+The later methods comparison is a comparison of correction pipelines. It must
+not attribute a difference to interpolation alone when field quantization also
+differs. Rate-rank correlation is a continuity proxy, not proof of biological
+identity or purity.
 
-- Set by the coordinator from measured costs. The expected envelope:
-  - EM.1: ≤ 20 min CPU, reading ≤ 1 GB of voltage;
-  - EM.2 on W2: three sorts of about 20 min each plus scoring.
-- Lazy SpikeInterface recordings are preferred; materialize only if the worker needs it, on local scratch within the existing caps.
-- No voltage export, no production change, no RF, and no outer-holdout access.
+## EM.1 — source, geometry, and exact equivalence (CPU; no sort)
+
+### 1. Freeze sources and conventions
+
+Record repository commit, file hashes, Python and dependency versions, and cite
+file/line ranges from the code actually executed.
+
+From installed SpikeInterface 0.104.7, document:
+
+- `interpolate_motion`/`InterpolateMotionRecording` target construction and
+  displacement sign;
+- conversion of motion centers to temporal-bin edges and frame assignment,
+  including midpoint ties and segment/chunk offsets;
+- `get_spatial_interpolation_kernel(method="nearest")`, including 2-D distance,
+  tie behavior, and any distance cutoff;
+- the exact meanings of `force_zeros`, `force_extrapolate`, and
+  `remove_channels` for outer and interior unsupported coordinates;
+- input/output dtype and whether a nominal one-hot kernel is numerically a pure
+  copy.
+
+From the executed DD source/materializer, document:
+
+- the actual 383-channel parent geometry and excluded AP191 coordinate;
+- the 40-µm NP1.0 period and alternating lateral coordinates;
+- reference offset `r` (W2: −4.69558824159 µm), half-away-from-zero rounding,
+  and `q = 40 * round((d-r)/40)` inside the frozen mask;
+- sign convention (`corrected depth = observed depth − displacement`);
+- exact motion centers and half-open cells `[t-0.125, t+0.125)`, with midpoint
+  ties assigned to the later cell;
+- exact-coordinate lookup, zero-fill, preprocessing boundary, channel order,
+  crop, scaling, and materialized dtype.
+
+Preserve the existing DD limitation in every report: the original actual-voltage
+gate failed (6/10 q0 and 9/10 remap catalogue results), although the paired input
+integrity check passed. EM must not silently relabel that gate as passing.
+
+### 2. Cheapest decisive check: compare mappings without voltage
+
+Before reading voltage, enumerate every realized W2 `q` value and every parent
+target channel. For each `(q, target)` compare:
+
+- DD exact-coordinate source index or `-1`;
+- SpikeInterface nearest source index and distance;
+- support class: exact, outer-border missing, AP191/interior missing, tie, or
+  other substitution.
+
+Write a compact CSV plus summary JSON containing counts and the first mismatch
+in each class. Assert equality on every exactly supported target. Stock full
+equivalence passes only if every DD `-1` target is also zero in the
+SpikeInterface output and no nearest substitution occurs.
+
+This geometry-only result determines the implementation path:
+
+- **Stock pass:** use the stock lazy recording with frozen arguments.
+- **Stock fail, localized and explained:** implement a small exact-coordinate
+  adapter that uses DD's mapping/mask and zero-fill semantics. Keep the stock
+  result as a control and test the adapter independently.
+- **Other failure:** stop EM.1 and report it before changing code or reading
+  voltage.
+
+### 3. Strong synthetic fixtures
+
+Use asymmetric, channel-coded traces on an NP1-like multirow geometry—not a
+single-channel fixture. Test:
+
+- `q in {-80, -40, 0, 40, 80}` and both correction signs;
+- a sequence containing multiple `q` transitions;
+- exact midpoint samples and samples immediately on either side;
+- outer top/bottom support loss;
+- an AP191-like interior missing coordinate;
+- chunked and unchunked reads of the same interval;
+- nonzero segment start frames;
+- preservation of channel order, dtype, and `q=0` bytes.
+
+For every case, compare the complete expected mapping and zero mask. If stock
+nearest substitutes across the interior hole, the fixture must demonstrate the
+failure rather than weakening the expected result.
+
+### 4. Frozen actual-voltage comparison
+
+Only after the mapping audit and fixtures pass for the chosen implementation,
+compare against the DD W2 materialization on huklaban5.
+
+- Select deterministically, before reading voltage: 3 s of low-deviation flat
+  time, 3 s from an episode core, and 3 s spanning an onset or offset. Save the
+  selection rule, source rows, sample bounds, and frame-level `q` vector.
+- First assert that the implementation's complete frame-level `q` vector and
+  mapping IDs equal DD's, including every seam sample.
+- Apply correction at DD's exact preprocessing boundary and on its exact parent
+  channel order, then perform the same crop and dtype conversion.
+- For a pure permutation of the same native parent values, require bytewise
+  equality. If the SpikeInterface interface necessarily converts dtype, also
+  compare before conversion and require exact equality where representable;
+  report maximum absolute error separately rather than using it to excuse a
+  mapping mismatch.
+- Require identical zero positions. Report first differing frame/channel,
+  values, `q`, mapping IDs, support class, and cause.
+
+EM.1 reports two verdicts separately: **stock pass/fail** and **exact-adapter
+pass/fail**. A passing adapter does not convert a stock failure into a stock
+pass.
+
+### 5. Repository deliverables
+
+Place the reusable code under, for example,
+`npx_preprocessing/motion/lattice_remap_si.py`, with unit tests in this
+repository's test tree. Also save the source audit, mapping table, summary JSON,
+and frozen snippet manifest. Commit only compact code and evidence; never commit
+voltage.
+
+## EM.2a — operator screen before sorting (CPU; cached snippets)
+
+EM.2a is conditional on an EM.1 pass for the selected exact implementation
+(stock or adapter). On the same frozen snippets,
+construct the following operator matrix with every parameter explicitly pinned
+(no unspecified “defaults”):
+
+| Field | Exact lattice | SI nearest | SI IDW | SI kriging |
+|---|---:|---:|---:|---:|
+| lattice-rounded | primary DD control | stock control | bridge | bridge |
+| unrounded two-layer rigid field | not applicable | snapping diagnostic | candidate | primary standard candidate |
+
+For each cell that is well-defined, report mapping/kernel hashes, zero-filled
+fraction by time and channel, RMS and maximum trace difference from the
+appropriate control, and direct waveform overlays/statistics on cached events.
+Inspect transition seams, outer borders, and the AP191 neighborhood separately.
+
+This screen establishes whether the arms are materially distinct and whether
+differences are dominated by quantization, interpolation, unsupported sites, or
+seams. It does not establish sorting benefit. Do not launch redundant full
+sorts whose snippet outputs are numerically identical.
+
+## EM.2b — conditional W2 correction-pipeline comparison (GPU)
+
+Proceed only after EM.2a has a signed report, the exact local scorecard contract
+and tolerances are present in this repository, and the coordinator records the
+selected nonredundant arms. The minimal candidate set is:
+
+| Arm | Operator and field | Role |
+|---|---|---|
+| none | existing S0 | no-correction reference |
+| lattice | existing verified DD SL, or the byte-equivalent exact adapter—not both | rounded exact-coordinate pipeline |
+| kriging | pinned SI kriging on the unrounded rigid two-layer field | primary standard comparator |
+| idw | pinned SI IDW on the same unrounded field | secondary comparator |
+| snap | pinned SI nearest on the same unrounded field | diagnostic comparator |
+
+If the scientific conclusion needs to distinguish field rounding from kernel
+choice, include at least one rounded-field bridge arm selected by EM.2a. Without
+that bridge, conclusions are limited to comparisons of complete pipelines; do
+not claim an interpolation-specific or quantization-specific effect.
+
+Use the unchanged static DARTsort configuration, seed, preprocessing boundary,
+and frozen clustering/linkage policy. Record complete input and configuration
+hashes. No RF fitting, rescoring, or outer-holdout access is permitted.
+
+### Endpoints and frozen reading
+
+- Treat state/rate rank `rho` as a continuity proxy only. Do not call it an
+  identity or purity metric.
+- Report yield and segment-safe short-interval fractions as separate guardrails;
+  neither alone establishes recovery or identity.
+- Compute arm differences with the frozen common-block bootstrap (2,000 draws)
+  and preserve common resamples across arms. The local scorecard must define
+  eligibility, exposures, matching/pairing if any, guardrail tolerances, and
+  behavior for undefined correlations before launch.
+- **Primary comparison:** lattice versus kriging. IDW is secondary and snap is
+  diagnostic unless the frozen scorecard explicitly states otherwise.
+- **Meaningful lattice advantage over comparator `c`:** point estimate
+  `Delta rho = rho_lattice - rho_c >= 0.05`, its 95% CI lower bound is above
+  zero, and all frozen yield/short-interval guardrails pass.
+- **Practical equivalence to comparator `c`:** the entire 95% CI for
+  `Delta rho` lies inside `[-0.05, 0.05]`, with all guardrails passing. A point
+  estimate within 0.05 and a CI merely containing zero is inconclusive, not
+  equivalence.
+- All other outcomes are mixed or inconclusive. Report them without tuning.
+
+W3 is a separately authorized transfer/replication step only after the W2
+reading is frozen. The DK exact-lattice injection may be used later as an
+explicitly favorable upper-bound control, not as validation on biological
+data.
+
+## Execution safety and limits
+
+- EM.1 target: at most 20 CPU minutes and 1 GB of voltage read.
+- EM.2a uses only the frozen snippets and cached events.
+- The coordinator sets and records the EM.2b resource cap after measuring one
+  selected arm; no silent budget expansion.
+- Every sort must run under an independent job manager such as a systemd user
+  service or batch scheduler. First verify the launch method with a cheap dummy
+  job that survives launcher disconnection.
+- Persist the exact launch command, resolved settings, repository commit/source
+  hashes, job identifier, stdout/stderr, actual process state, and final exit
+  status outside the chat. State explicitly whether interruption restarts the
+  whole sort; reuse of completed stages is not checkpointing.
+- Preserve failed-run evidence before any restart. Honor cancellation and
+  run-specific holds.
+- Prefer lazy recordings. Materialize only when required by the worker, within
+  local scratch caps. No voltage export, production change, or DARTsort source
+  modification.
 
 ## Report
 
-- Verdict first: EM.1 pass/fail, then the EM.2 reading.
-- One table: arm × {ρ, yield, short fractions} with CIs.
-- One figure: ρ by arm with CIs, Okabe–Ito colours plus markers.
-- The implementation checks performed.
-- The SpikeSortingTools commit hash for the helper and tests.
+Lead with:
+
+1. stock-equivalence verdict;
+2. exact-adapter verdict;
+3. AP191/interior-hole behavior;
+4. operator-screen decision and selected/nonselected sort arms;
+5. conditional W2 pipeline reading.
+
+Include one compact implementation table, one arm-by-endpoint table with CIs,
+one `rho` figure with CIs (Okabe–Ito colors plus redundant markers), limitations,
+job evidence for any sorts, and the SpikeSortingTools commit hash.

@@ -1,0 +1,21 @@
+"""Motion-correction recording operators."""
+
+from .lattice_remap_si import (
+    ExactLatticeRemapRecording,
+    audit_lattice_mappings,
+    audit_spikeinterface_nearest_kernel,
+    exact_coordinate_mapping,
+    nearest_coordinate_mapping,
+    sample_stepwise_shifts,
+    write_mapping_audit,
+)
+
+__all__ = [
+    "ExactLatticeRemapRecording",
+    "audit_lattice_mappings",
+    "audit_spikeinterface_nearest_kernel",
+    "exact_coordinate_mapping",
+    "nearest_coordinate_mapping",
+    "sample_stepwise_shifts",
+    "write_mapping_audit",
+]
