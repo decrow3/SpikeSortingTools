@@ -1,0 +1,26 @@
+{
+  "schema": "cp-h1-progress-v1",
+  "status": "rf_support_audit_complete_waiting_for_h5_outputs",
+  "recorded_at": "2026-09-27T18:06:11-07:00",
+  "actual_start": "2026-09-27T17:38:31-07:00",
+  "cumulative_cpu_seconds_before_cp": 15653.22,
+  "cp_cpu_allowance_seconds": 3600.0,
+  "enforced_cumulative_ceiling_seconds": 19300.0,
+  "initial_eta": "H1 source/support findings complete; independent saved-output review begins when the H5 packet appears",
+  "rf_support": {
+    "w2_source_frames_half_open": [26999783, 37199701],
+    "w2_mapped_nidaq_seconds_half_open": [900.0785938622961, 1240.1081978617308],
+    "complete_valid_trials": 17,
+    "complete_development_trials": 12,
+    "complete_outer_holdout_trials_not_opened": 5,
+    "development_inner_fold_trial_counts": {"0": 7, "1": 5},
+    "development_duration_seconds": 119.8166666665577,
+    "development_lag_safe_frames": 7093,
+    "outer_holdout_opened": false,
+    "w3_supported": false
+  },
+  "h5_packet_seen": false,
+  "raw_voltage_read": false,
+  "new_sort_run": false,
+  "calibration_or_forecast_followup": false
+}
