@@ -102,8 +102,14 @@ def main() -> None:
                 }
         result["windows"][window] = {
             "all_parent_set_exact": parent_set == expected_parents,
-            "parent_rows_close": int(parents.parent_rows.sum()) == len(force["labels"]),
-            "assigned_plus_noise_close": int((parents.noforce_assigned_rows + parents.noforce_noise_rows).sum()) == len(force["labels"]),
+            # The parent tables intentionally cover only rows assigned in the
+            # all-force branch.  All-force noise is outside the parent
+            # universe, so closure is against labels >= 0 rather than every
+            # immutable event row.
+            "all_force_assigned_rows": int(np.count_nonzero(force["labels"] >= 0)),
+            "all_force_noise_rows_outside_parent_universe": int(np.count_nonzero(force["labels"] < 0)),
+            "parent_rows_close": int(parents.parent_rows.sum()) == int(np.count_nonzero(force["labels"] >= 0)),
+            "assigned_plus_noise_close": int((parents.noforce_assigned_rows + parents.noforce_noise_rows).sum()) == int(np.count_nonzero(force["labels"] >= 0)),
             "relation_rows_close": int(children.within_parent_rows.sum()) == int(parents.noforce_assigned_rows.sum()),
             "multi_child_families": int((parents.actual_noforce_children >= 2).sum()),
             "all_pair_rows": int(len(pairs)), "expected_all_pair_rows": expected_pair_rows,

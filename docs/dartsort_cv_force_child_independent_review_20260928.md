@@ -50,6 +50,29 @@ different target coordinates. Its pair ledger also closes only over selected
 parents. CW v2 corrects these without changing any scientific threshold or
 rerunning a sort.
 
+## CW v2 final independent result
+
+CW v2 passes the bounded independent audit on the completed scientific
+artifacts.  It covers every assigned all-force parent and every actual
+no-force child: W2 has 552 parents, 91 multi-child families, 1,509
+parent/child relations, and 9,049 all-child pairs; W3 has 488, 62, 1,076,
+and 5,258 respectively.  The separate amplitude-maximum primary subsets
+contain 957 W2 and 588 W3 pairs.
+
+Whole-branch adjacency counts reproduce directly from the saved label/time
+arrays.  For W2, all-force versus no-force 9--29-sample endpoints are
+6,250 versus 2,903; for W3 they are 5,685 versus 3,051.  The saved complete
+ledger agrees exactly, including 8- and 30-sample boundary counts.  The
+common-target null contains all 200 signed offsets per window and its
+offset-summary table explicitly retains zero-query cells.  The much larger
+segment ledger is intentionally sparse (positive-support rows only), which
+must be stated when that file is reused.
+
+The producer stopped after writing the analysis receipt and did not emit its
+promised final `COMPLETE.json`.  No compute process remains.  This is a
+closeout defect, not a failed numerical check; the independent result above
+is recorded in `CW_V2_INDEPENDENT_AUDIT.json` with status `pass`.
+
 ## Saved-output readiness for the next bounded outcome check
 
 The completed imec1 rescue Kilosort 12/9 no-motion sort directly covers the
@@ -66,4 +89,4 @@ hashes, frame endpoints, and interpretation limits.
 - `testing/outputs/cv_force_child_independent_review_v1/EXCLUDED_FAMILY_COINCIDENCE.csv`
 - `testing/outputs/cv_force_child_independent_review_v1/SELECTED_FAMILY_OBSERVED_RECHECKS.csv`
 - `testing/outputs/cv_force_child_independent_review_v1/PAIR_LEDGER_INDEPENDENT_CHECKS.csv`
-
+- `testing/outputs/cv_force_child_independent_review_v1/CW_V2_INDEPENDENT_AUDIT.json`
