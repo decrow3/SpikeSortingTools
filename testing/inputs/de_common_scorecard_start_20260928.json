@@ -1,0 +1,23 @@
+{
+  "status": "source_published_before_outcomes",
+  "actual_start_local": "2026-09-27T23:23:59-07:00",
+  "source_sha256": "23a98f5d0ffb96973995e5bd275368b2a5ad8aa429b9960b93ef69826efdfcc7",
+  "h1_manifest_sha256": "64b28d9c9768ee65cd6f1c52b4904d9a0cfc77b355221b147e134c849c2d2205",
+  "expected_first_existing_arm_table_minutes": [15, 20],
+  "resource_limits": {
+    "cpu_seconds_all_work": 900,
+    "threads": 2,
+    "readers": 1,
+    "memory_gb": 20,
+    "scratch_gb": 1,
+    "final_mb": 500,
+    "minimum_free_gb": 30,
+    "raw_voltage_reads": 0,
+    "gpu": false
+  },
+  "accounting": {
+    "h1_cpu_cumulative_before_s": 17633.22,
+    "h1_cpu_operational_ceiling_s": 26000.0
+  },
+  "next_phase": "run h1 saved-output table, while independently reviewing DD rescue Kilosort loader and preprocessing"
+}

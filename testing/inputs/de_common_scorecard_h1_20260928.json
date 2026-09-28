@@ -1,0 +1,35 @@
+{
+  "sampling_frequency_hz": 29999.759166666667,
+  "field": "/media/huklab/Data/NPX/Ryansorting/Luke/luke_imec1_medicine_reference_sweep_v2/stage4_ab/luke0804_imec1_two_layer_motion.npz",
+  "mask": "/mnt/NPX/Luke/DARTsort_motion_experiments/ck_input_intervals_20260927/censor_mask_v1.csv",
+  "catalogue": "/media/huklab/Data/NPX/Ryansorting/Luke/luke_imec1_medicine_reference_sweep_v2/stage3_q/episode_catalogue.csv",
+  "expected_sha256": {
+    "/media/huklab/Data/NPX/Ryansorting/Luke/luke_imec1_medicine_reference_sweep_v2/stage4_ab/luke0804_imec1_two_layer_motion.npz": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/ck_input_intervals_20260927/censor_mask_v1.csv": "86425e8a6627a10ac8932ba01b799cb7be7141f731ebb4ecc01e303326b9da55",
+    "/media/huklab/Data/NPX/Ryansorting/Luke/luke_imec1_medicine_reference_sweep_v2/stage3_q/episode_catalogue.csv": "46463cda1348c0e0b0c39ad22ae9c71bc46f7c7347797c1c10588944cfc52df1",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/av_aw_handoff_20260926_v1/static_w2/dartsort_sorting.npz": "be6106ed0cb0f99759fd23629dd3bcb5f50657dbffa238ad3721c15d1b21fba7",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-ao-d2l-v2/windows/W2/runs/D2L/sort/dartsort_sorting.npz": "03c339b4af8081e7e09bcbf23ebb2ae439b4cc8d468538d352cb8e79b61fc0b0",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/cy_fixed_bank_rematching_20260928/arms/REMATCH0_v3/dartsort_sorting.npz": "82210d21996cee55aeef6c1bf73d23f0e3861cac867f404a2af96bbfb4024882",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/cy_fixed_bank_rematching_20260928/arms/CD1_FULL_v1/dartsort_sorting.npz": "ba69b03c4c62d57acd5b51407ffcc63c1f078ba2ab4bc6b96932fe56e4f3958d",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/dc_native_bank_control_20260928/NATIVE_REMATCH0/dartsort_sorting.npz": "6bbdc7442781d56c4991bb81344451b60e9bd9da6a434ce7bc49509206a8b15a",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-ao-d2l-v2/windows/W3/runs/D2L/sort/dartsort_sorting.npz": "91ea20f8c775c2d7dbfee7f53635e4a6c6a8bee5ec7fc8b6aa73ce3b24aa0cf0",
+    "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec1/kilosort4/sorter_output/spike_times.npy": "ecc6fe1244757fdaf4c326190b84930396a0b6e20ccb03e28ab9ca6e50c334e5",
+    "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec1/kilosort4/sorter_output/spike_clusters.npy": "483f04d365b221b70bb39d87f407c7082bc2d9f39397e4851d44dd29dd944b82",
+    "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec1/kilosort4/sorter_output/spike_positions.npy": "5153b87aa0b1b301e2c5a8ecc8420ff0c65c8e570a1a6416acfe9bc15f43fe6b",
+    "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec1/kilosort4/sorter_output/cluster_KSLabel.tsv": "b81d1a2e5597599cf3a9a263793334c45c72ebd967be94317239973f90588eb2"
+  },
+  "windows": [
+    {"name":"W2","frames_half_open":[26999783,37199701],"arms":{
+      "STATIC_S":{"format":"dartsort_npz","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/av_aw_handoff_20260926_v1/static_w2/dartsort_sorting.npz"},
+      "D2L":{"format":"dartsort_npz","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-ao-d2l-v2/windows/W2/runs/D2L/sort/dartsort_sorting.npz"},
+      "REMATCH0":{"format":"dartsort_npz","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/cy_fixed_bank_rematching_20260928/arms/REMATCH0_v3/dartsort_sorting.npz"},
+      "CD1_FULL":{"format":"dartsort_npz","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/cy_fixed_bank_rematching_20260928/arms/CD1_FULL_v1/dartsort_sorting.npz"},
+      "NATIVE_REMATCH0":{"format":"dartsort_npz","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/dc_native_bank_control_20260928/NATIVE_REMATCH0/dartsort_sorting.npz"},
+      "RESCUE_KS12_9":{"format":"kilosort_folder","path":"/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec1/kilosort4/sorter_output"}
+    }},
+    {"name":"W3","frames_half_open":[239998073,250197992],"arms":{
+      "D2L":{"format":"dartsort_npz","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-ao-d2l-v2/windows/W3/runs/D2L/sort/dartsort_sorting.npz"},
+      "RESCUE_KS12_9":{"format":"kilosort_folder","path":"/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec1/kilosort4/sorter_output"}
+    }}
+  ]
+}
