@@ -34,10 +34,13 @@ The selection was frozen before waveform outcomes. The full eligible table is
 exactly the 6,250 CS final 9--29-sample pairs, and the selected row/source-frame
 identities close against the 29,999.759166666667 Hz W2 source clock.
 
-The H5 analysis source itself is not in the published manifest. H1 therefore
-independently validated its selection, saved-window geometry, channel/support
-mapping, metric identities, summaries, and hashes, but cannot publish a hash of
-the residual-operator implementation from this packet. The receipt records a
+H5 subsequently published the exact executed source and a corrected copy. H1
+verifies their hashes and confirms the only difference is the two receipt paths
+for `properties/location.npy` and `properties/channel_name.npy`; the extraction
+and numerical analysis are identical. The source confirms fixed-time NNLS with
+no lag optimization, baseline subtraction from the first/last ten samples, a
+median reference waveform, exact registered/physical-coordinate support, and
+the same fit and score domain with no held-out samples. The receipt records a
 reporting-only path failure after extraction; finalization reused saved arrays
 and did not reread voltage.
 
@@ -94,6 +97,13 @@ fractional SSE denominator covers the full lag-dependent window. It cannot be
 used as a direct null distribution for target-group effect sizes. No second
 operator was introduced after seeing outcomes.
 
+Additional source qualifications are explicit: NNLS is fitted and scored on
+the same domain with no held-out samples; group medians pool state and time;
+the reference isolation proxy uses +/-8 **channel indices**, not an independent
+physical-isolation test; and comparison rows sorted by immutable row ID can
+reverse the displayed constituent-A/B order. The exact CU row links are shared
+selection bookkeeping, not independent validation.
+
 ## Decision and relation to CR/CS
 
 - CS rejects the current alignment-displacement mechanism as an explanation
@@ -117,7 +127,8 @@ H1 independent packet:
 Local H1 packet:
 `testing/outputs/cu_duplicate_independent_review_v1/`
 
-H5 charged 120 conservative CPU-s and read 195,864,760 voltage bytes including
-preflight, below the 512 MiB cap. H1 used no new raw read or GPU and charges 60
-conservative CPU-s. CU therefore adds 180 s to the 16,733.22 s post-CS total,
-for a cumulative 16,913.22 s, below the 19,300 s ceiling.
+H5 separately charged 120 conservative CPU-s and read 195,864,760 voltage bytes
+including preflight, below the 512 MiB cap. H1 used no new raw read or GPU and
+charges 60 conservative CPU-s, taking H1's cumulative total from 16,283.22 to
+16,343.22 s, below the 19,300 s ceiling. Host charges are not transferred or
+combined.

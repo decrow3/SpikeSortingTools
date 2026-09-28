@@ -149,6 +149,7 @@ or outer holdout was used. The compatible existing cache was inspected before
 waveform evidence was considered; it contained neither row of the 61
 nonzero-offset targets, so no waveform claim was made.
 
-H5's authoritative conservative CS charge is 450 s. H1's bounded source/product
-audit consumed less than 30 CPU-s. The combined CS charge is therefore 480 s,
-bringing the running cumulative charge from 16,253.22 to 16,733.22 s before CU.
+H1's bounded source/product audit charges 30 CPU-s, bringing H1's running
+cumulative charge from 16,253.22 to 16,283.22 s before CU. H5's separate
+conservative CS charge is 650 s; it is reported independently and is not added
+to H1's cumulative ceiling.
