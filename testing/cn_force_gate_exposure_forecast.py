@@ -177,8 +177,8 @@ def analyze_window(name, post_path, route_path, blocks_path, edge_path):
         tag = str(factor).replace(".", "p")
         for basis in ("independent", "shoulder"):
             key = f"support_multiplier_{basis}_{tag}"
-            summary[f"edges_potentially_meeting_support_{basis}_{tag}"] = sum(
-                np.isfinite(row[key]) and row[key] <= rest_multiplier for row in rows)
+            summary[f"edges_potentially_meeting_support_{basis}_{tag}"] = int(sum(
+                np.isfinite(row[key]) and row[key] <= rest_multiplier for row in rows))
     return rows, summary
 
 
