@@ -167,8 +167,21 @@ NPZ, row count, channel alignment, and matching2-to-final timing refinement.
 The generic upstream `COMPLETE.json` arm text is superseded by its authoritative
 NATIVE_REMATCH0 receipts. No cross-arm row-index join was performed.
 
-The exact motion-domain result in the first part of this packet is unchanged;
-its catalogue-outside remainder is not interpreted as true rest.
+## Exact W2 motion domains
+
+| Arm | Negative excursion assigned Hz | Outside-mask flat assigned Hz | Catalogue-outside remainder assigned Hz |
+|---|---:|---:|---:|
+| STATIC_S | 1115.33 | 1896.06 | 1201.18 |
+| D2L | 1148.75 | 2026.98 | 1281.27 |
+| REMATCH0 | 1132.28 | 2062.21 | 1299.74 |
+| CD1_FULL | 1150.76 | 2123.02 | 1319.76 |
+
+The exact piecewise-linear domains cover W2 without gaps or overlap.
+`DOMAIN_EVENT_COUNTS.csv` reports exposure, assigned/noise counts and rates;
+`SEGMENT_SAFE_ISI.csv` prevents intervals from crossing domain boundaries.
+The catalogue-outside remainder is explicitly **not true rest**. Across-unit
+rank correlations are descriptive only, with unequal arm-local cohorts; they
+are not neuron identity matches. No point-source depth from T16 is used.
 """
     (PACKET / "REPORT.md").write_text(report)
     (PACKET / "README.md").write_text("# DC complete packet\n\nSee `REPORT.md`, `FOUR_ARM_DEVELOPMENT_RF.csv`, and the native lineage review.\n")
