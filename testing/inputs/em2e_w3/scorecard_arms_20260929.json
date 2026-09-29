@@ -1,0 +1,29 @@
+{
+  "schema": "em2e-w3-scorecard-arms-v1",
+  "contract_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/em2e_w3_scorecard.v1.json",
+  "contract_sha256": "053dc5435ad1a457395c1842d2a702aa47bf1f2f37c8f3d4c98615c85c06d7b1",
+  "field": {
+    "path": "/media/huklaban5/writable/DARTsort_motion_experiments/incoming/luke0804_imec1_two_layer_v1/luke0804_imec1_two_layer_motion.npz",
+    "sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9"
+  },
+  "mask": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/ck_input_intervals_20260927/censor_mask_v1.csv",
+    "sha256": "86425e8a6627a10ac8932ba01b799cb7be7141f731ebb4ecc01e303326b9da55"
+  },
+  "catalogue": {
+    "path": "/media/huklaban5/writable/DARTsort_motion_experiments/incoming/luke0804_imec1_q_field_v1/episode_catalogue.csv",
+    "sha256": "46463cda1348c0e0b0c39ad22ae9c71bc46f7c7347797c1c10588944cfc52df1"
+  },
+  "arms": {
+    "rounded_exact_lattice": {
+      "path": "/home/huklaban5/DARTsort_experiment_scratch/ef_w3_lattice_20260928/ej_v1/runs/SL/dartsort_sorting.npz",
+      "sha256": "901de0ec769c62939b06b6472c36500afadd6c515a4ad8e38ad81b91e9b42190"
+    },
+    "rounded_kriging": {
+      "path": "/home/huklaban5/DARTsort_experiment_scratch/em2e_w3_20260929/rounded_kriging_v2/sort/dartsort_sorting.npz",
+      "sha256": "e82b0402057197a47f16fb5fefd98701fc18c2ebfdfe824f0d89722a62b5ec1b",
+      "run_receipt_path": "/home/huklaban5/DARTsort_experiment_scratch/em2e_w3_20260929/rounded_kriging_v2/receipt.json",
+      "run_receipt_sha256": "2e2b4375ebef098c0e3dceb9b55da7f490563fd507565de0a7f90760da5cf03f"
+    }
+  }
+}

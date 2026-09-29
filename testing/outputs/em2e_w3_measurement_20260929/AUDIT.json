@@ -1,0 +1,52 @@
+{
+  "schema": "em2e-w3-rounded-kriging-measurement-audit-v1",
+  "status": "complete",
+  "scope": {
+    "dataset": "Luke0804 imec1 W3",
+    "frames_half_open": [239998073, 250197991],
+    "rf_evaluated": false,
+    "outer_holdout_accessed": false
+  },
+  "service": {
+    "unit": "em2b-0a16a35f75669d90.service",
+    "final_active_state": "inactive",
+    "final_sub_state": "dead",
+    "result": "success",
+    "exec_main_status": 0,
+    "wall_seconds_to_qc_receipt": 1180.4109449386597,
+    "cpu_seconds": 3030.242,
+    "periodic_peak_scratch": "11G",
+    "final_scratch": "9.2G"
+  },
+  "stages_seconds": {
+    "preprocess": 214.68527030944824,
+    "detect": 490.2492015361786,
+    "sort": 457.2518813610077,
+    "qc_phy": 8.972198724746704
+  },
+  "candidate_sort": {
+    "path": "/home/huklaban5/DARTsort_experiment_scratch/em2e_w3_20260929/rounded_kriging_v2/sort/dartsort_sorting.npz",
+    "bytes": 88175528,
+    "sha256": "e82b0402057197a47f16fb5fefd98701fc18c2ebfdfe824f0d89722a62b5ec1b",
+    "units": 478,
+    "accepted_events": 531975,
+    "negative_labels": 2351
+  },
+  "run_receipt": {
+    "path": "/home/huklaban5/DARTsort_experiment_scratch/em2e_w3_20260929/rounded_kriging_v2/receipt.json",
+    "bytes": 56534,
+    "sha256": "2e2b4375ebef098c0e3dceb9b55da7f490563fd507565de0a7f90760da5cf03f"
+  },
+  "reference_sort": {
+    "path": "/home/huklaban5/DARTsort_experiment_scratch/ef_w3_lattice_20260928/ej_v1/runs/SL/dartsort_sorting.npz",
+    "sha256": "901de0ec769c62939b06b6472c36500afadd6c515a4ad8e38ad81b91e9b42190",
+    "units": 485,
+    "accepted_events": 535936
+  },
+  "outcomes": {
+    "scorecard_result_sha256": "2c6a87e43075d3fd77ea8557ca70c56fec9cb6a7569d388cc64c40f0f3b64176",
+    "scorecard_decision": "practical_equivalence",
+    "event_overlap_result_sha256": "dd6468b6ca2576ae3b33347050397fadb9d44e03671daef84998a577e99fd664"
+  },
+  "limitations": "W3 is exposed transfer evidence. Continuity and event coincidence do not prove biological identity or purity."
+}

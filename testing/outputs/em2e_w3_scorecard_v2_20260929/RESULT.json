@@ -1,0 +1,38 @@
+{
+  "arms_manifest_sha256": "11f76194f9b0d4f8657b2799ffb2231119a8d2dfcd85550322385acd16f137e0",
+  "common_bootstrap_multiplicities_sha256": "440bae6266bbcc8a33232fb030f8e108d3c741ac5bc89b295f7a00b548658512",
+  "comparisons": [
+    {
+      "ci95_high": 0.0004594252387243588,
+      "ci95_low": -0.02291941712090672,
+      "decision": "practical_equivalence",
+      "delta_rho": -0.011431949377936124,
+      "directional_isi_pass": true,
+      "directional_yield_pass": true,
+      "equivalence_isi_pass": true,
+      "equivalence_yield_pass": true,
+      "first_arm": "rounded_exact_lattice",
+      "role": "primary",
+      "second_arm": "rounded_kriging",
+      "valid_draws": 2000
+    }
+  ],
+  "contract_sha256": "053dc5435ad1a457395c1842d2a702aa47bf1f2f37c8f3d4c98615c85c06d7b1",
+  "interpretation": "Arm-local rate-rank continuity proxy; no cross-arm identity or purity claim.",
+  "point_estimates": [
+    {
+      "arm": "rounded_exact_lattice",
+      "eligible_units": 394,
+      "rho_negative_vs_flat": 0.7411516949627498,
+      "yield": 485
+    },
+    {
+      "arm": "rounded_kriging",
+      "eligible_units": 386,
+      "rho_negative_vs_flat": 0.7525836443406859,
+      "yield": 478
+    }
+  ],
+  "schema": "em2e-w3-scorecard-result-v1",
+  "status": "complete"
+}

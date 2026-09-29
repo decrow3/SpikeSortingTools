@@ -1,0 +1,53 @@
+{
+  "schema": "em2e-w3-scorecard-v1",
+  "result_schema": "em2e-w3-scorecard-result-v1",
+  "frozen_before_candidate_scoring": true,
+  "scope": {
+    "dataset": "Luke0804 imec1 W3",
+    "sampling_frequency_hz": 29999.759166666667,
+    "frames_half_open": [239998073, 250197991],
+    "outer_holdout_access": false,
+    "rf_analysis": false
+  },
+  "inputs": {
+    "field_sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+    "mask_sha256": "86425e8a6627a10ac8932ba01b799cb7be7141f731ebb4ecc01e303326b9da55",
+    "catalogue_sha256": "46463cda1348c0e0b0c39ad22ae9c71bc46f7c7347797c1c10588944cfc52df1"
+  },
+  "eligibility": {
+    "unit_scope": "arm-local assigned units; no cross-arm unit matching",
+    "minimum_flat_events": 100,
+    "bootstrap_policy": "freeze each arm's full-W3 eligible unit set for every draw",
+    "pseudocount": 0.5
+  },
+  "bootstrap": {
+    "draws": 2000,
+    "seed": 20260929,
+    "block_seconds": 5.0,
+    "minimum_valid_draws": 1900
+  },
+  "comparisons": {
+    "primary": ["rounded_exact_lattice", "rounded_kriging"],
+    "secondary": [],
+    "bridge": [],
+    "delta_orientation": "first arm rho minus second arm rho"
+  },
+  "guardrails": {
+    "yield": {
+      "directional_max_first_arm_relative_loss": 0.05,
+      "equivalence_max_absolute_relative_difference": 0.05
+    },
+    "segment_safe_short_isi": {
+      "directional_max_first_arm_increase": 0.01,
+      "equivalence_max_absolute_difference": 0.01,
+      "apply_in_each_domain": true
+    }
+  },
+  "decisions": {
+    "meaningful_first_arm_advantage": "delta_rho >= 0.05, 95% CI lower bound > 0, and directional yield/ISI guardrails pass",
+    "practical_equivalence": "entire 95% delta-rho CI lies within [-0.05, 0.05] and symmetric yield/ISI guardrails pass",
+    "otherwise": "mixed or inconclusive",
+    "undefined": "report unresolved rather than substituting zero"
+  },
+  "interpretation": "Arm-local W3 continuity transfer proxy; does not replace the existing exact-lattice versus static ADVANCE endpoint and does not establish identity or purity."
+}

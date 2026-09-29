@@ -1,0 +1,2 @@
+role,first_arm,second_arm,delta_rho,ci95_low,ci95_high,valid_draws,directional_yield_pass,equivalence_yield_pass,directional_isi_pass,equivalence_isi_pass,decision
+primary,rounded_exact_lattice,rounded_kriging,-0.011431949377936124,-0.02291941712090672,0.0004594252387243588,2000,True,True,True,True,practical_equivalence

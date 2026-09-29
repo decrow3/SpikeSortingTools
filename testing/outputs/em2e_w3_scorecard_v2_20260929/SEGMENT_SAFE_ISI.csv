@@ -1,0 +1,7 @@
+arm,domain,denominator,lag8,lag9_29,lag30,fraction9_29
+rounded_exact_lattice,negative_excursion,83865,22,614,26,0.007321290168723544
+rounded_exact_lattice,outside_mask_flat,352873,115,3313,169,0.009388646906960861
+rounded_exact_lattice,catalogue_outside_remainder,66009,17,638,36,0.009665348664576042
+rounded_kriging,negative_excursion,83563,25,557,30,0.00666562952502902
+rounded_kriging,outside_mask_flat,350140,115,3184,150,0.009093505454960873
+rounded_kriging,catalogue_outside_remainder,65577,25,682,44,0.010399987800600821

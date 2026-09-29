@@ -1,0 +1,24 @@
+{
+  "products": [
+    {
+      "bytes": 2090,
+      "path": "RESULT.json",
+      "sha256": "dd6468b6ca2576ae3b33347050397fadb9d44e03671daef84998a577e99fd664"
+    },
+    {
+      "bytes": 2103583,
+      "path": "rounded_kriging_PAIR_SCORES.csv",
+      "sha256": "f245c056acb1b143b0a2f0ff662f7d342f14f1dca4b486cbe607325eee493a01"
+    },
+    {
+      "bytes": 48057,
+      "path": "rounded_kriging_RECIPROCAL.csv",
+      "sha256": "77bcf42f770ead7c4015ff99609b0f72095e8c485f4fba3feb6c984026931e2a"
+    },
+    {
+      "bytes": 152351,
+      "path": "rounded_kriging_UNIT_BEST.csv",
+      "sha256": "24da90f5eac0ad5bd11674078d0c426b118790d7c08e5317cdbe32decdc9e0a4"
+    }
+  ]
+}

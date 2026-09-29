@@ -1,0 +1,35 @@
+{
+  "schema": "em2e-w3-event-overlap-v1",
+  "frozen_before_pair_scoring": true,
+  "scope": {
+    "dataset": "Luke0804 imec1 W3",
+    "clock": "recording-local samples",
+    "rf": false,
+    "voltage_read": false,
+    "outer_holdout": false
+  },
+  "reference_arm": {
+    "name": "rounded_exact_lattice",
+    "path": "/home/huklaban5/DARTsort_experiment_scratch/ef_w3_lattice_20260928/ej_v1/runs/SL/dartsort_sorting.npz",
+    "sha256": "901de0ec769c62939b06b6472c36500afadd6c515a4ad8e38ad81b91e9b42190"
+  },
+  "comparators": [
+    {
+      "name": "rounded_kriging",
+      "role": "W2-selected production-order operator transfer",
+      "path": "/home/huklaban5/DARTsort_experiment_scratch/em2e_w3_20260929/rounded_kriging_v2/sort/dartsort_sorting.npz",
+      "sha256": "e82b0402057197a47f16fb5fefd98701fc18c2ebfdfe824f0d89722a62b5ec1b"
+    }
+  ],
+  "matching": {
+    "primary_tolerance_samples": 2,
+    "exact_sample_sensitivity": true,
+    "minimum_candidate_matches": 5,
+    "score": "F1 = 2 * one_to_one_matches / (reference_events + comparator_events)",
+    "pairing": "reciprocal best F1; ties use more matches then lower unit ID",
+    "ambiguous": "best F1 minus second-best F1 <= 0.05",
+    "negative_labels": "exclude",
+    "cross_arm_integer_ids": "never treated as identities"
+  },
+  "interpretation": "Descriptive cached-event transfer association. Preserve reciprocal, nonreciprocal, ambiguous and unmatched units separately. Coincidence does not prove biological identity or purity and is not a promotion endpoint."
+}

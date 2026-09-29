@@ -291,7 +291,7 @@ def main() -> None:
     block_edges = np.unique(block_edges)
     exposure = block_domain_exposure(domain_intervals, block_edges)
     if not np.isclose(exposure.sum(), right - left, atol=1e-9):
-        raise RuntimeError("block-domain exposure does not close W2")
+        raise RuntimeError("block-domain exposure does not close scorecard window")
     minimum = int(contract["eligibility"]["minimum_flat_events"])
     arms = {}
     point_rows, isi_rows = [], []
@@ -305,7 +305,7 @@ def main() -> None:
             if not np.isclose(float(saved["sampling_frequency"]), fs, rtol=0, atol=1e-9):
                 raise RuntimeError(f"{arm} sampling frequency differs")
         if np.any((local < 0) | (local >= end - start)):
-            raise RuntimeError(f"{arm} event outside W2")
+            raise RuntimeError(f"{arm} event outside scorecard window")
         arms[arm] = arm_inputs(
             local,
             labels,
@@ -343,7 +343,7 @@ def main() -> None:
         args.output / "BLOCK_DOMAIN_EXPOSURE.csv", index=False
     )
     result = {
-        "schema": "em2b-w2-scorecard-result-v1",
+        "schema": contract.get("result_schema", "em2b-w2-scorecard-result-v1"),
         "status": "complete",
         "contract_sha256": sha256(args.contract),
         "arms_manifest_sha256": sha256(args.arms_manifest),

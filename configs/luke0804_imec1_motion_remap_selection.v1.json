@@ -1,6 +1,6 @@
 {
   "schema": "luke-imec1-motion-remap-selection-v1",
-  "status": "selected_on_w2_with_cached_w3_and_event_overlap_support",
+  "status": "selected_with_direct_w2_and_w3_transfer_support",
   "scope": {
     "dataset": "Luke0804_V2V1_g0",
     "stream": "imec1.ap",
@@ -65,6 +65,16 @@
     "w2_cross_arm_event_overlap_result_sha256": "640802b180b032f2f5582ab4ec23d243ef33e78837b62bc30ffd710c05e67e3b",
     "w2_cross_arm_event_overlap_manifest": "testing/outputs/em2d_w2_event_overlap_v2_20260929/MANIFEST.json",
     "w2_cross_arm_event_overlap_manifest_sha256": "6c113865aef908e4add31d07e7808afd63775aa54c1d020fdfb4758270881de3",
+    "w3_direct_scorecard_result": "testing/outputs/em2e_w3_scorecard_v2_20260929/RESULT.json",
+    "w3_direct_scorecard_result_sha256": "2c6a87e43075d3fd77ea8557ca70c56fec9cb6a7569d388cc64c40f0f3b64176",
+    "w3_direct_scorecard_manifest": "testing/outputs/em2e_w3_scorecard_v2_20260929/MANIFEST.json",
+    "w3_direct_scorecard_manifest_sha256": "f9c1f1e8f12876c1ddf6c43a0e95d1ccfe16ec4efa71ab66326fff9a914b8850",
+    "w3_direct_event_overlap_result": "testing/outputs/em2e_w3_event_overlap_20260929/RESULT.json",
+    "w3_direct_event_overlap_result_sha256": "dd6468b6ca2576ae3b33347050397fadb9d44e03671daef84998a577e99fd664",
+    "w3_direct_event_overlap_manifest": "testing/outputs/em2e_w3_event_overlap_20260929/MANIFEST.json",
+    "w3_direct_event_overlap_manifest_sha256": "3b172d678da2e87b877e6c8a23523db37a0f018c8c0f05f0f6589a2c57fed731",
+    "w3_direct_measurement_audit": "testing/outputs/em2e_w3_measurement_20260929/AUDIT.json",
+    "w3_direct_measurement_audit_sha256": "e0e5b8fe32222595091cdec97757c411cd547af593031f6e2e57e478f0af34b3",
     "result_document": "docs/EM2b-stage1-result-20260929.md",
     "comparisons": {
       "rounded_exact_dd_minus_rounded_kriging": {
@@ -85,14 +95,21 @@
         "unrounded_kriging_reciprocal_pairs": 292,
         "unrounded_kriging_median_f1": 0.4020873400209276,
         "interpretation": "descriptive support; not biological identity or purity"
+      },
+      "w3_direct_transfer": {
+        "exact_lattice_minus_rounded_kriging_delta_rho": -0.011431949377936124,
+        "ci95": [-0.02291941712090672, 0.0004594252387243588],
+        "decision": "practical_equivalence",
+        "reciprocal_event_pairs": 344,
+        "median_event_f1": 0.548004562247944
       }
     }
   },
   "routing": {
     "em2_stage_2_trigger_met": false,
     "idw_or_nearest_sort": "do_not_run",
-    "w3": "cached exact-lattice transfer supports the rounded field; direct rounded-kriging W3 sort not run because the only new state is inside the W2 kernel envelope",
-    "full_session": "not promoted from W2 alone",
-    "interpretation": "W2 selects the remap implementation. Cached event overlap supports closer population preservation but does not prove biological identity or purity."
+    "w3": "direct rounded-kriging transfer is practically equivalent to exact lattice and reproduces cross-arm event association",
+    "full_session": "prepare durable resource and recovery plan before the approximately 11-hour uncheckpointed sort; recover frozen imec1 lighthouse events for direct waveform review",
+    "interpretation": "W2 and W3 support the remap implementation. Event overlap supports population preservation but does not prove biological identity or purity."
   }
 }

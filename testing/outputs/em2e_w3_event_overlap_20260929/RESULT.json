@@ -1,0 +1,48 @@
+{
+  "comparisons": {
+    "rounded_kriging": {
+      "exact_sample_sensitivity": {
+        "ambiguous_comparator_best": 116,
+        "ambiguous_reference_best": 126,
+        "candidate_pairs": 4253,
+        "comparator_units": 478,
+        "comparator_units_without_candidate": 3,
+        "matched_events_in_reciprocal_pairs": 167987,
+        "matched_fraction_comparator_events": 0.31577987687391323,
+        "matched_fraction_reference_events": 0.3134460084786243,
+        "reciprocal_f1_median": 0.40707682499203063,
+        "reciprocal_f1_p10": 0.11778262223606353,
+        "reciprocal_f1_p90": 0.848028233169871,
+        "reciprocal_pairs": 345,
+        "reciprocal_pairs_f1_ge_0p5": 134,
+        "reciprocal_pairs_f1_ge_0p8": 50,
+        "reference_units": 485,
+        "reference_units_without_candidate": 8
+      },
+      "role": "W2-selected production-order operator transfer",
+      "summary": {
+        "ambiguous_comparator_best": 104,
+        "ambiguous_reference_best": 92,
+        "candidate_pairs": 19400,
+        "comparator_units": 478,
+        "comparator_units_without_candidate": 1,
+        "matched_events_in_reciprocal_pairs": 215911,
+        "matched_fraction_comparator_events": 0.40586681704967337,
+        "matched_fraction_reference_events": 0.4028671333890614,
+        "reciprocal_f1_median": 0.548004562247944,
+        "reciprocal_f1_p10": 0.19890126266904265,
+        "reciprocal_f1_p90": 0.9130307559856123,
+        "reciprocal_pairs": 344,
+        "reciprocal_pairs_f1_ge_0p5": 190,
+        "reciprocal_pairs_f1_ge_0p8": 87,
+        "reference_units": 485,
+        "reference_units_without_candidate": 2
+      },
+      "tolerance_samples": 2
+    }
+  },
+  "config_sha256": "4aec4e02edfec29fbffbcfdf1cb84bdf078ab4b85b1c25e3220e9b5047d9b8c2",
+  "interpretation": "Descriptive cached-event transfer association. Preserve reciprocal, nonreciprocal, ambiguous and unmatched units separately. Coincidence does not prove biological identity or purity and is not a promotion endpoint.",
+  "schema": "em2d-cross-arm-event-overlap-result-v1",
+  "status": "complete"
+}
