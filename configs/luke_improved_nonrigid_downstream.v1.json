@@ -1,0 +1,25 @@
+{
+  "schema_version": "luke-improved-nonrigid-downstream-v1",
+  "development_only": true,
+  "recording_dir": "/media/huklaban5/Data/luke_improved_motion_20260909_v1/corrected_recording",
+  "kilosort_dir": "/media/huklaban5/Data/luke_improved_motion_20260909_v1/kilosort4",
+  "output_root": "/media/huklaban5/Data/luke_improved_motion_20260909_v1/downstream",
+  "expected_recording_request_digest": "a2405d4d27cc3fef0d2da4ee67d3367c402d616fac6b0f7a49259e82f69cc701",
+  "expected_sort_request_digest": "ab4bfd190b6e7c15bd512d8c5f7672b1e6522a3cda11455230f6ff209a7f0a9d",
+  "expected_num_samples": 314204894,
+  "expected_num_channels": 346,
+  "sampling_frequency_hz": 29999.835983263598,
+  "curation": {
+    "cosine_threshold": 0.9,
+    "ccg_threshold": 0.5
+  },
+  "stages": [
+    "pin_sort_identity",
+    "curation",
+    "legacy_qc",
+    "standard_qc",
+    "completeness_timeline",
+    "matlab_export"
+  ],
+  "interpretation": "Complete the common downstream path for the already-finished full-session external-nonrigid 12/9 development sort. Outputs are comparison evidence and do not authorize production promotion."
+}
