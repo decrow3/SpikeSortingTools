@@ -67,6 +67,13 @@ present at or before universal detection. Cluster 21 lies at the 60 um probe
 edge, so it is retained as corroboration rather than the first general-purpose
 candidate target.
 
+A later sparse-voltage replication confirms the same failure class. Failing
+unmatched cluster-21 anchor times retain a recognizable median waveform
+(cosine 0.927) at 56.36% of reference-matched PTP. Local baseline noise is only
+1.14 times reference, below the frozen 1.25 material-rise boundary. Thus both
+independently anchored material-loss cases show waveform attenuation without a
+material local-noise increase, although cluster 21 remains an edge case.
+
 The first detection-lineage execution is invalid and preserved as a setup
 failure: it mapped 1,332 detection-template IDs through the 731-row final
 template bank. V2 uses the saved `iU` detection-template-to-channel map; two
@@ -154,6 +161,9 @@ supported repair.
   `180912933c3202d28344ed9b49bc327c7130bed99dceca14292b9f5ed0972e15`,
   and the noise-discriminator [`v2`](../configs/luke_cluster553_missing_anchor_waveforms.v2.json),
   SHA-256 `e95d3d6eb7bf348fe4b9f85d78fa6e02a6a6459f3c8878b8b10423a6ab8fdb7f`.
+- Cluster-21 replication config:
+  [`v1`](../configs/luke_cluster21_missing_anchor_waveforms.v1.json), SHA-256
+  `4e7a20b33a61af73748a69582357ad10ec1f1768137827a167910ad5ad3a5aee`.
 - Artifact-proximity config:
   [`v1`](../configs/luke_cluster553_artifact_proximity.v1.json), SHA-256
   `ab25df45a71ca6cfb90aae6be375c207962e5162f7bb2bdd59297cb809c52d0c`.

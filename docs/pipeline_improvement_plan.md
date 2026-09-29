@@ -47,6 +47,16 @@ future continuous detector scan, require a cheap calibration-only demonstration
 that individual healthy target events separate from prespecified background.
 Population-median waveform similarity alone is insufficient.
 
+**Replication update, 2026-09-28:** cluster 21, the only other case passing the
+independent 10-point loss rule, shows the same population-level signature:
+failing unmatched cosine 0.927, PTP 56.36% of reference, and local noise ratio
+1.14. This supports a two-cell weak-waveform/SNR-loss class across an interior
+and probe-edge unit. It does not rescue the rejected single-event template arm.
+The next pipeline deliverable should expose time-resolved completeness and fit
+trustworthiness as an analysis sidecar; it must label amplitude-fit dropout as
+a screening flag because only two of seven fitted deterioration cases had
+independently confirmed event loss.
+
 The practical goal is reliable recovery of individual neurons' spike trains
 throughout the recording. Progress means fixing a recognizable failure,
 preserving healthy periods, and confirming the improvement on independently

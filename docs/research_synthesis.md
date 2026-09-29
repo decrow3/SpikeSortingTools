@@ -183,6 +183,14 @@ a per-event rescue operation in this representation. Future detector candidates
 must first pass calibration-only single-event discrimination; continuous scans
 come later.
 
+The only other independently material-loss case, edge cluster 21, replicates
+the population signature: failing unmatched waveform cosine 0.927, PTP 56.36%
+of reference, and local-noise ratio 1.14. This establishes replication of weak
+waveforms without a material local-noise rise, but it does not make the events
+individually recoverable. A near-term pipeline improvement is therefore an
+explicit time-resolved completeness/fit-trust sidecar for downstream analyses,
+with screening status kept separate from independently validated event loss.
+
 Sources: [dropout audit](luke_amplitude_dropout_audit_result.md),
 [candidate v1](luke_first_pipeline_candidate_v1_result.md),
 [candidate v2](luke_first_pipeline_candidate_v2_result.md),

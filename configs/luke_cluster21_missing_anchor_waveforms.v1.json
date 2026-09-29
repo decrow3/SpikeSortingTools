@@ -1,0 +1,30 @@
+{
+  "schema": "luke-cluster21-missing-anchor-waveforms-v1",
+  "target_cluster": 21,
+  "legacy_anchor_cluster": 12,
+  "anchor_source": "luke-dropout-anchor-screen-v1 reference-only frozen selection",
+  "sorter_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output",
+  "legacy_curated": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output",
+  "raw_recording": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+  "binary_manifest": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/binary.json",
+  "sampling_frequency_hz": 29999.835983263598,
+  "maximum_depth_difference_um": 100.0,
+  "tolerance_ms": 0.5,
+  "windows": [
+    {"name": "reference", "role": "reference", "start_s": 6656.5524262001545, "stop_s": 6795.794054132068},
+    {"name": "failing", "role": "failing", "start_s": 6795.79975416323, "stop_s": 6949.296826699527}
+  ],
+  "waveform": {
+    "channels": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+    "pre_samples": 30,
+    "post_samples": 31,
+    "baseline_samples": 15,
+    "maximum_events_per_partition": 200,
+    "gain_uv_per_count": 2.34375,
+    "maximum_alignment_lag_samples": 2,
+    "minimum_reference_cosine": 0.80,
+    "maximum_unmatched_to_reference_ptp_ratio_for_attenuation": 0.90,
+    "maximum_noise_ratio_without_material_increase": 1.25
+  },
+  "decision": "Call the second independent dropout case a replication only if failing unmatched median waveform cosine is at least 0.80, PTP is at most 90% of reference matched, and local baseline noise is at most 1.25 times reference."
+}
