@@ -1,0 +1,61 @@
+{
+  "frame_slice_removed": {
+    "end_frame": 37199701,
+    "start_frame": 26999783
+  },
+  "inputs": {
+    "field_path": "/media/huklaban5/writable/DARTsort_motion_experiments/incoming/luke0804_imec1_two_layer_v1/luke0804_imec1_two_layer_motion.npz",
+    "field_sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+    "lattice_path": "testing/inputs/em2f_full/lattice_full.csv",
+    "lattice_sha256": "92d7a28ccc808f76924a6ba392eb71c1a9b0b867796615a15307d1c59bc7df4f",
+    "mask_path": "/home/huklaban5/Documents/DARTsort/experiments/luke0804_imec1/canonical_censor_mask_hub_v1/censor_mask_v1.csv",
+    "mask_sha256": "86425e8a6627a10ac8932ba01b799cb7be7141f731ebb4ecc01e303326b9da55",
+    "provenance_path": "/media/huklaban5/writable/DARTsort_motion_experiments/luke0804-imec1-deployable-motion-benchmark-v1/windows/W2/shared/recording/provenance.json",
+    "provenance_sha256": "0ea45d85a15b99e52d66e24691aef3e6a136cff1bcb0d8d5db64a5ea62281105",
+    "source_geometry_sha256": "c01d267823426cf3cd96609984105f9a5833890dec9801bbb15f5d14b54d8f71",
+    "target_geometry_sha256": "cb5a508f62f02ac6cd0774472e19cea99b56a3696ac6fc76c9610337437a8607"
+  },
+  "preprocessing_change": "removed only the W2 FrameSliceRecording; all surrounding wrappers retained",
+  "producer": {
+    "python": "/home/huklaban5/Documents/DARTsort/.venv/bin/python",
+    "spikeinterface": "0.104.8"
+  },
+  "recording": {
+    "bytes": 4625321,
+    "channels": 182,
+    "dtype": "float32",
+    "duration_seconds": 10473.553879363088,
+    "frames": 314204094,
+    "path": "testing/inputs/em2f_full/rounded_kriging_recording.json",
+    "sampling_frequency_hz": 29999.759166666667,
+    "sha256": "c4ce9cc969324d61035de9d3bc8d01d9377a7ffb674c3b0c43051d30bf72b0cf"
+  },
+  "rounded_states_um": [
+    -280,
+    -240,
+    -200,
+    -160,
+    -120,
+    -80,
+    -40,
+    0,
+    40,
+    80
+  ],
+  "schema": "em2f-full-rounded-kriging-recording-v1",
+  "sort_launched": false,
+  "state_counts": {
+    "-120": 1112,
+    "-160": 2134,
+    "-200": 1749,
+    "-240": 453,
+    "-280": 16,
+    "-40": 913,
+    "-80": 823,
+    "0": 34630,
+    "40": 61,
+    "80": 4
+  },
+  "status": "complete",
+  "voltage_read": false
+}

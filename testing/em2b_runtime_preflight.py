@@ -28,13 +28,16 @@ def main() -> None:
         "dtype": str(recording.get_dtype()),
         "sampling_frequency_hz": float(recording.get_sampling_frequency()),
     }
-    if signature != {
+    expected_signature = config.get("runtime_preflight_signature", {
         "frames": 10_199_918,
         "channels": 182,
         "dtype": "float32",
         "sampling_frequency_hz": 29999.759166666667,
-    }:
-        raise RuntimeError(f"unexpected stage-1 recording signature: {signature}")
+    })
+    if signature != expected_signature:
+        raise RuntimeError(
+            f"unexpected recording signature: {signature}; expected {expected_signature}"
+        )
     module_path = Path(sys.modules[type(recording).__module__].__file__).resolve()
     receipt = {
         "schema": "em2b-runtime-preflight-v1",
@@ -49,6 +52,7 @@ def main() -> None:
         "recording_module_path": str(module_path),
         "recording_module_sha256": hashlib.sha256(module_path.read_bytes()).hexdigest(),
         "recording_signature": signature,
+        "expected_recording_signature": expected_signature,
         "voltage_read": False,
         "sort_launched": False,
         "finished_epoch": time.time(),

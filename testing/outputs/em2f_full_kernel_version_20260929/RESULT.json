@@ -1,0 +1,44 @@
+{
+  "byte_identical": true,
+  "results": [
+    {
+      "column_sum_max": 1.0000001192092896,
+      "column_sum_min": 0.0,
+      "dtype": "float32",
+      "finite": true,
+      "kernel_sha256": "684560350249ef37eb4f533808fb61c60b7c95bff16045e15be15add004cde0d",
+      "shape": [
+        383,
+        182
+      ],
+      "spikeinterface": "0.104.7",
+      "state_um": 80.0,
+      "structural_zero_sha256": "557134aa152548d8334dcd23e19b28ac4545a0ad9bc7abd8f067414c85ea6b78",
+      "structural_zero_targets": 8
+    },
+    {
+      "column_sum_max": 1.0000001192092896,
+      "column_sum_min": 0.0,
+      "dtype": "float32",
+      "finite": true,
+      "kernel_sha256": "684560350249ef37eb4f533808fb61c60b7c95bff16045e15be15add004cde0d",
+      "shape": [
+        383,
+        182
+      ],
+      "spikeinterface": "0.104.8",
+      "state_um": 80.0,
+      "structural_zero_sha256": "557134aa152548d8334dcd23e19b28ac4545a0ad9bc7abd8f067414c85ea6b78",
+      "structural_zero_targets": 8
+    }
+  ],
+  "schema": "em2f-full-new-state-kernel-version-audit-v1",
+  "sort_launched": false,
+  "state_um": 80.0,
+  "status": "pass",
+  "versions": [
+    "0.104.7",
+    "0.104.8"
+  ],
+  "voltage_read": false
+}

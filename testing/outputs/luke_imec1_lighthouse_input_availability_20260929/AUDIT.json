@@ -1,0 +1,73 @@
+{
+  "archive": {
+    "exists": true,
+    "matching_source_members": [],
+    "members": 67,
+    "path": "/mnt/NPX/Luke/luke_imec1_lighthouse_motion_comparison_v1/saved-array-exports-20260923-v1.zip"
+  },
+  "git_object_name_matches": [],
+  "inputs": [
+    {
+      "actual_sha256": null,
+      "canonical_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/luke_imec1_twenty_candidate_assessment_v1/twenty_candidate_assessment.csv",
+      "exists": false,
+      "expected_sha256": "639223bbdf1af23c80d8cdcf08b79cbc9baec456a79a982e15a76bfb261f8891",
+      "hash_matches": false,
+      "name": "twenty_candidate_assessment.csv"
+    },
+    {
+      "actual_sha256": null,
+      "canonical_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/luke_imec1_compact_alignment_pilot_v2/qualification_events_compact.csv",
+      "exists": false,
+      "expected_sha256": "cd0592c5758e56e9e1a161260c99e5afa39d4839805177bcb94db66913d34f96",
+      "hash_matches": false,
+      "name": "qualification_events_compact.csv"
+    },
+    {
+      "actual_sha256": null,
+      "canonical_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/luke_imec1_compact_alignment_pilot_v2/frozen_training_templates.npz",
+      "exists": false,
+      "expected_sha256": "b6d60f71655900312a6e447870b4dc9934313c38d43151880165a326f2f43aa7",
+      "hash_matches": false,
+      "name": "frozen_training_templates.npz"
+    },
+    {
+      "actual_sha256": null,
+      "canonical_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/luke_imec1_dots_sorterfree_waveform_discovery_v3_s300/families_after_depth_reveal.csv",
+      "exists": false,
+      "expected_sha256": "c452cc78b1d036f7118aa9a20d850fcbb1c2d9709ac12d457275098b538a55f8",
+      "hash_matches": false,
+      "name": "families_after_depth_reveal.csv"
+    },
+    {
+      "actual_sha256": null,
+      "canonical_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/luke_imec1_lighthouse_extra_windows_v3/strict_primary_events.csv",
+      "exists": false,
+      "expected_sha256": "5d0525aed89c1de56f992719ad2605e991c59ab790bfc8ba2580fe526659dc8a",
+      "hash_matches": false,
+      "name": "strict_primary_events.csv"
+    },
+    {
+      "actual_sha256": null,
+      "canonical_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/luke_imec1_lighthouse_extra_windows_v3/summary.json",
+      "exists": false,
+      "expected_sha256": "b4f188d210eef02cf3e4aa019a4e1bc2af26d998f001b261547709a4a09c45c1",
+      "hash_matches": false,
+      "name": "extra_window_summary.json"
+    }
+  ],
+  "interpretation": "The frozen biological-identity event packet cannot be reconstructed from the retained hashes alone. Population scorecards and event overlap remain valid for their stated scope but are not substitutes for lighthouse identity evidence.",
+  "schema": "luke-imec1-lighthouse-input-availability-v1",
+  "searched_roots": [
+    "/home/huklaban5",
+    "/home/huklab",
+    "/media/huklaban5",
+    "/media/huklab",
+    "/mnt/NPX/Luke",
+    "/tmp",
+    "/var/tmp"
+  ],
+  "sort_launched": false,
+  "status": "blocked_missing_sources",
+  "voltage_read": false
+}

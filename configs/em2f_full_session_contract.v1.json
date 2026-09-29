@@ -1,0 +1,47 @@
+{
+  "schema": "em2f-full-session-contract-v1",
+  "status": "frozen_before_sort",
+  "scope": {
+    "dataset": "Luke0804_V2V1_g0",
+    "stream": "imec1.ap",
+    "duration_seconds": 10473.553728,
+    "frames": 314204094,
+    "outer_holdout_accessed": false,
+    "rf_evaluated": false
+  },
+  "selection": "rounded_kriging",
+  "production_order": [
+    "preprocess accepted 383-channel source",
+    "interpolate imec1.ap#AP191",
+    "round rigid displacement to the accepted 40-um lattice",
+    "apply SpikeInterface kriging remap",
+    "crop to the 182 target sites"
+  ],
+  "resources": {
+    "measured_w3_duration_seconds": 340.0,
+    "measured_w3_final_scratch_gib": 9.2,
+    "projected_full_wall_hours": 11.0,
+    "projected_full_scratch_gib": 284.0,
+    "minimum_free_space_before_launch_gib": 734,
+    "free_space_reserve_during_run_gib": 450,
+    "budget_hours": {
+      "preprocess": 3.0,
+      "detect": 6.0,
+      "motion": 0.08333333333333333,
+      "sort": 6.0,
+      "qc_phy": 1.0
+    }
+  },
+  "recovery": {
+    "preprocess_cache": "one-second aligned chunks with a durable completed-prefix checkpoint",
+    "later_stages": "completed stages may be reused only after runner receipt validation",
+    "within_detect_checkpoint": false,
+    "within_sort_checkpoint": false,
+    "interruption_policy": "preserve evidence, diagnose termination, and resume only validated completed stages; an interrupted detect or sort stage restarts that stage"
+  },
+  "analysis": {
+    "primary": "frozen common scorecard and event-overlap comparisons against accepted references",
+    "lighthouse": "pending recovery of the frozen imec1 event packet; do not substitute cached proxy metrics",
+    "rf": "out of scope for the initial full-session result"
+  }
+}
