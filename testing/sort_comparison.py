@@ -213,8 +213,12 @@ def chance_aware_coincidence(sort: Mapping[str, np.ndarray], *, duration_frames:
     rng = np.random.default_rng(seed)
     if duration_frames <= tolerance_frames + 1:
         raise ValueError("duration is too short for the coincidence null")
-    for unit in np.unique(clusters):
-        keep = clusters == unit
+    unit_ids, inverse, counts = np.unique(clusters, return_inverse=True, return_counts=True)
+    grouped_indices = np.argsort(inverse, kind="stable")
+    starts = np.r_[0, np.cumsum(counts)[:-1]]
+    for _unit, start, count in zip(unit_ids, starts, counts):
+        # Iteration order remains the sorted np.unique unit order used before.
+        keep = grouped_indices[start : start + count]
         offset = int(rng.integers(tolerance_frames + 1, duration_frames))
         shifted[keep] = (shifted[keep] + offset) % duration_frames
     order = np.argsort(shifted, kind="stable")
@@ -230,15 +234,25 @@ def _unit_metrics(sort: Mapping[str, Any], *, fs: float, duration_s: float,
     times = np.asarray(sort["st"]).reshape(-1)
     clusters = np.asarray(sort["cl"]).reshape(-1)
     labels = sort.get("labels", {})
+    unit_ids, inverse, counts = np.unique(clusters, return_inverse=True, return_counts=True)
+    grouped_indices = np.argsort(inverse, kind="stable")
+    grouped_times = times[grouped_indices]
+    grouped_amplitudes = (
+        np.asarray(sort["amp"])[grouped_indices] if "amp" in sort else None
+    )
+    grouped_depths = (
+        np.asarray(sort["depth"])[grouped_indices] if "depth" in sort else None
+    )
+    starts = np.r_[0, np.cumsum(counts)[:-1]]
     rows = []
-    for unit in np.unique(clusters):
-        keep = clusters == unit
-        unit_times = times[keep]
+    for unit, start, count in zip(unit_ids, starts, counts):
+        stop = start + count
+        unit_times = grouped_times[start:stop]
         row = {
             "cluster_id": int(unit),
             "label": str(labels.get(int(unit), "unknown")),
-            "spike_count": int(keep.sum()),
-            "mean_rate_hz": float(keep.sum() / duration_s),
+            "spike_count": int(count),
+            "mean_rate_hz": float(count / duration_s),
             "refractory_violation_fraction_1_5ms": (
                 float(np.mean(np.diff(unit_times) < round(0.0015 * fs))) if len(unit_times) > 1 else np.nan
             ),
@@ -253,8 +267,8 @@ def _unit_metrics(sort: Mapping[str, Any], *, fs: float, duration_s: float,
         rates = counts / np.diff(edges)
         row["presence_fraction"] = float(np.mean(counts > 0)) if len(counts) else np.nan
         row["firing_rate_cv"] = float(np.std(rates) / np.mean(rates)) if len(rates) and np.mean(rates) else np.nan
-        if "amp" in sort:
-            amplitudes = np.asarray(sort["amp"])[keep].astype(float)
+        if grouped_amplitudes is not None:
+            amplitudes = grouped_amplitudes[start:stop].astype(float)
             row["amplitude_cv"] = float(np.std(amplitudes) / np.mean(amplitudes)) if np.mean(amplitudes) else np.nan
             epoch = np.minimum((unit_times / (duration_s * fs) * 3).astype(int), 2)
             epoch_amp = [float(np.median(amplitudes[epoch == index])) if np.any(epoch == index) else np.nan for index in range(3)]
@@ -265,8 +279,8 @@ def _unit_metrics(sort: Mapping[str, Any], *, fs: float, duration_s: float,
         else:
             row.update(amplitude_cv=np.nan, early_amplitude=np.nan, middle_amplitude=np.nan,
                        late_amplitude=np.nan, late_early_amplitude_ratio=np.nan)
-        if "depth" in sort:
-            depths = np.asarray(sort["depth"])[keep].astype(float)
+        if grouped_depths is not None:
+            depths = grouped_depths[start:stop].astype(float)
             row["median_depth_um"] = float(np.median(depths))
             row["depth_excursion_p95_p5_um"] = float(np.quantile(depths, 0.95) - np.quantile(depths, 0.05))
             if spatial_region is not None:

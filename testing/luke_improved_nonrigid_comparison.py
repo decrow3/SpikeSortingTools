@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -26,6 +27,10 @@ def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
     partial = path.with_suffix(path.suffix + ".partial")
     partial.write_text(json.dumps(payload, indent=2) + "\n")
     os.replace(partial, path)
+
+
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _validated_config(path: Path) -> tuple[dict[str, Any], dict[str, Any]]:
@@ -74,9 +79,15 @@ def run(config_path: Path) -> dict[str, Any]:
     config, candidate_downstream = _validated_config(config_path)
     output = Path(config["output_dir"])
     output.mkdir(parents=True, exist_ok=True)
+    scientific_config = {key: value for key, value in config.items() if key != "manager"}
+    implementation = {
+        "comparison_controller_sha256": _sha256(Path(__file__)),
+        "generic_comparison_sha256": _sha256(Path(__file__).with_name("sort_comparison.py")),
+    }
     request = {
         "schema_version": SCHEMA,
-        "config": config,
+        "config": scientific_config,
+        "implementation": implementation,
         "candidate_sort_identity_digest": candidate_downstream["sort_identity_digest"],
     }
     request["request_digest"] = fingerprint(request)

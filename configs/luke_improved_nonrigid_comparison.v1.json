@@ -36,7 +36,7 @@
   },
   "manager": {
     "kind": "systemd_user_service",
-    "unit": "luke-improved-nonrigid-comparison-20260928-v1.service",
+    "unit": "luke-improved-nonrigid-comparison-20260928-v2.service",
     "working_directory": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools",
     "interpreter": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
     "argv": [
@@ -49,7 +49,8 @@
     "stdout": "/media/huklaban5/Data/luke_improved_motion_20260909_v1/downstream/comparison_stdout.log",
     "stderr": "/media/huklaban5/Data/luke_improved_motion_20260909_v1/downstream/comparison_stderr.log",
     "restart": "no",
-    "managed_oom_preference": "avoid"
+    "managed_oom_preference": "avoid",
+    "prior_attempt": "The v1 service was stopped during comparison after the generic evaluator exposed per-unit full-array scans that scale as spikes times units. Its partial output and logs are retained under downstream/failed_attempts/comparison_v1_quadratic_20260928. V2 uses equivalent stable grouped-array calculations covered by the generic comparison tests."
   },
   "interpretation": "Paired descriptive comparison of the completed full-session external-nonrigid 12/9 development sort against the 12/9 motion-off operational reference. Correspondence is not proof of biological identity and no automatic production promotion is permitted."
 }
