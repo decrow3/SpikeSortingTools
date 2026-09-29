@@ -174,11 +174,21 @@ circular-shift event-density controls. This supports one bounded local
 template-detector diagnostic; it does not establish recovered spikes or reopen
 the closed global-threshold arms.
 
+The first such detector diagnostic is now also closed. A target-local 3-sigma
+proposal stage covered only 21.16% of retained healthy cluster-553 spikes, and
+its frozen template gate accepted none. More fundamentally, retained target and
+shifted-background single-event matched-filter scores overlapped almost exactly
+at the prespecified tail boundary. The coherent population median cannot support
+a per-event rescue operation in this representation. Future detector candidates
+must first pass calibration-only single-event discrimination; continuous scans
+come later.
+
 Sources: [dropout audit](luke_amplitude_dropout_audit_result.md),
 [candidate v1](luke_first_pipeline_candidate_v1_result.md),
 [candidate v2](luke_first_pipeline_candidate_v2_result.md),
 [recovery census](luke_baseline_recovery_census_v1.md), and
-[cluster-553 stage attribution](luke_dropout_anchor_and_detection_lineage_20260928.md).
+[cluster-553 stage attribution](luke_dropout_anchor_and_detection_lineage_20260928.md),
+and [local-template result](luke_cluster553_local_template_rescue_result_20260928.md).
 
 ## 5. Why did some motion estimates look nearly stationary?
 

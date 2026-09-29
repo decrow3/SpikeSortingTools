@@ -28,8 +28,11 @@
     "proposal": {
       "negative_peak_threshold_sigma": 3.0,
       "noise_estimator": "per-channel median absolute deviation divided by 0.6744897501960817 in the template interval",
+      "noise_stride_samples": 30,
       "local_peak_radius_samples": 15,
-      "proposal_refractory_samples": 15
+      "proposal_refractory_samples": 15,
+      "chunk_duration_s": 10.0,
+      "maximum_total_proposals": 2000000
     },
     "gate": {
       "minimum_waveform_cosine": 0.80,

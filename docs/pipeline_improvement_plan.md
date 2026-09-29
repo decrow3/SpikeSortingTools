@@ -37,6 +37,16 @@ cluster-553 waveform-template gate. It uses retained healthy spikes to build
 the template and the independent legacy anchor only for evaluation. This is a
 diagnostic candidate, not a production change or authorization for a sort.
 
+**Candidate result, 2026-09-28:** reject that local-template operation. Its 3
+sigma proposal stage covers only 21.16% of retained reference target spikes,
+and the frozen cosine-plus-score gate accepts none. A calibration-only audit
+also rejects a score-only continuation: target and shifted-background acceptance
+are both 0.1001% at the fixed score boundary. See the
+[result](luke_cluster553_local_template_rescue_result_20260928.md). Before any
+future continuous detector scan, require a cheap calibration-only demonstration
+that individual healthy target events separate from prespecified background.
+Population-median waveform similarity alone is insufficient.
+
 The practical goal is reliable recovery of individual neurons' spike trains
 throughout the recording. Progress means fixing a recognizable failure,
 preserving healthy periods, and confirming the improvement on independently
