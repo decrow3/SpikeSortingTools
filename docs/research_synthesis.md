@@ -322,6 +322,13 @@ fields and interpolation variants, and compare Kilosort with native DARTsort.
   tradeoffs. Grouping corresponding DARTsort fragments reduced, but did not
   eliminate, rate differences. LFP-warped Kilosort outputs had adverse waveform
   and correspondence evidence despite some favorable movement scores.
+- The later frozen imec1 W2 development RF screen did not justify fresh
+  DARTsort rematching: accepted D2L retained 80 eligible units at median cvSNR
+  0.262, versus 75/0.235 for REMATCH0 and 68/0.221 for CD1_FULL. A force-edge
+  ablation mostly split already-assigned parent trains (median assignment
+  retention 1.000; top-two child share 0.986 across 148 substantial families).
+  These are saved-window development results with unmatched populations, so
+  DARTsort remains a diagnostic rather than a production candidate.
 
 **Conclusion:** retain regime-specific findings without promoting one scalar
 winner. These results do not establish a generally superior full-session

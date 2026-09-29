@@ -64,3 +64,26 @@ paired KS4-seeded motion-aware benchmark in priority.
 
 - `docs/sorter_architecture_bakeoff.md`
 - `testing/luke_sorter_unit_families.py`, `testing/luke_sorter_waveform_arbitration.py`
+
+## 2026-09-28 saved-output update
+
+Later imec1 W2/W3 work does not reopen the architecture gate. The frozen W2
+development RF screen favored the accepted D2L saved state over both fresh
+rematching outputs: D2L retained 80 eligible units with median cross-validated
+SNR 0.262, versus 75/0.235 for REMATCH0 and 68/0.221 for CD1_FULL. The
+force-edge ablation mostly partitioned existing parent trains: across 148
+substantial split families, median assignment retention was 1.000 and the top
+two children carried a median 0.986 of assigned parent rows. Removing force
+edges therefore did not establish added neurons, and adding coordinate descent
+did not improve the development RF endpoint.
+
+The common saved-output scorecard also remains contextual: DARTsort window arms
+and full-session rescue Kilosort have different training contexts, curation
+semantics, and unmatched unit populations. Their unit counts and arm-local
+motion/rate associations cannot select an architecture. No new sort is warranted
+from these results; a later architecture claim still requires the promotion
+endpoints above.
+
+Additional evidence: `docs/dartsort_cp_independent_outcome_review_20260928.md`,
+`docs/dartsort_da_rematching_development_rf_result_20260928.md`, and
+`docs/DE-common-outcome-scorecard-20260928.md` plus its completed shared result.
