@@ -8,6 +8,13 @@ all zero positions in the two nonzero-motion snippets, but it did not reproduce
 all float32 bytes under the required SpikeInterface 0.104.7 execution path.
 No sort was launched, no voltage was exported, and no outer holdout was read.
 
+The verified compact return packet is published at
+`/mnt/NPX/Luke/DARTsort_motion_experiments/em_spikeinterface_lattice_20260928/huklaban5_result_v1`.
+Its 17-file `MANIFEST.json` SHA-256 is
+`84281482db49255f3a5361570fc1930a53d39a44df736bb9071d6d7f4bf74071`;
+`COMPLETE.json` records the same hash, the failed scientific verdict, and that
+neither voltage nor a sort is included.
+
 ## Frozen actual-voltage result
 
 The final preserved attempt is

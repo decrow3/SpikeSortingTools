@@ -6,6 +6,11 @@ preserved v4 flat control is byte-exact, but the nonzero-motion snippets retain
 1–2-ULP upstream preprocessing-version differences. Do not start EM.2a or a
 sort from this handoff.
 
+The compact huklaban5 return packet is published under
+`/mnt/NPX/Luke/DARTsort_motion_experiments/em_spikeinterface_lattice_20260928/huklaban5_result_v1`
+with manifest SHA-256
+`84281482db49255f3a5361570fc1930a53d39a44df736bb9071d6d7f4bf74071`.
+
 The 0.104.7 source/kernel and actual-geometry audit is complete: stock nearest
 fails only at four AP191 interior-hole mappings. Run the exact adapter against
 the existing accepted DD parent and S_L materialization. Do not launch a sort.
