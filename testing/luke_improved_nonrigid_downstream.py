@@ -79,17 +79,33 @@ def run(config_path: Path) -> dict[str, Any]:
     config = _load_and_validate(config_path)
     output = Path(config["output_root"])
     output.mkdir(parents=True, exist_ok=True)
+    scientific_config = {key: value for key, value in config.items() if key != "manager"}
     request = {
         "schema_version": SCHEMA,
-        "config": config,
-        "config_digest": fingerprint(config),
+        "config": scientific_config,
+        "config_digest": fingerprint(scientific_config),
     }
     request["request_digest"] = fingerprint(request)
     request_path = output / "request.json"
     if request_path.exists():
         saved = json.loads(request_path.read_text())
         if saved.get("request_digest") != request["request_digest"]:
-            raise RuntimeError("existing downstream output belongs to another request")
+            saved_config = saved.get("config", {})
+            saved_scientific = {
+                key: value for key, value in saved_config.items() if key != "manager"
+            }
+            if saved_scientific != scientific_config:
+                raise RuntimeError("existing downstream output belongs to another request")
+            _atomic_json(
+                request_path,
+                {
+                    **request,
+                    "created_at": saved.get("created_at", _now()),
+                    "migrated_at": _now(),
+                    "migrated_from_request_digest": saved.get("request_digest"),
+                    "migration_reason": "Execution-manager metadata is excluded from scientific request identity.",
+                },
+            )
     else:
         _atomic_json(request_path, {**request, "created_at": _now()})
 
