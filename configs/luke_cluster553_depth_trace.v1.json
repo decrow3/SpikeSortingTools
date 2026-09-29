@@ -1,0 +1,33 @@
+{
+  "schema": "luke-cluster553-depth-trace-v1",
+  "target_cluster": 553,
+  "legacy_anchor_cluster": 425,
+  "sorter_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output",
+  "curated_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output",
+  "legacy_curated": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output",
+  "raw_recording": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+  "binary_manifest": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/binary.json",
+  "sampling_frequency_hz": 29999.835983263598,
+  "windows": [
+    {"name": "reference", "role": "reference", "start_s": 5802.133888235484, "stop_s": 5954.244219856822},
+    {"name": "failing", "role": "failing", "start_s": 5954.280520055284, "stop_s": 6360.328406676924}
+  ],
+  "trace": {
+    "depth_half_width_um": 500.0,
+    "local_detection_radius_um": 100.0,
+    "bin_duration_s": 50.0,
+    "minimum_anchor_events_per_bin": 50,
+    "maximum_events_per_bin": 200,
+    "pre_samples": 30,
+    "post_samples": 31,
+    "baseline_samples": 15,
+    "gain_uv_per_count": 2.34375,
+    "maximum_profile_shift_um": 200.0,
+    "minimum_shifted_profile_cosine": 0.80
+  },
+  "movement_support_rule": {
+    "minimum_absolute_shift_um": 40.0,
+    "minimum_coverage_loss_from_reference": 0.10
+  },
+  "decision": "Support a spatial-movement mechanism only if a failing bin preserves depth-profile cosine at least 0.80 after a shift of at least 40 um and its target-local full_st coverage is at least 10 points below reference coverage. Otherwise retain local SNR loss without a demonstrated movement repair."
+}

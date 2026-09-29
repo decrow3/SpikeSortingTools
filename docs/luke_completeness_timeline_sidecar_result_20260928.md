@@ -62,9 +62,17 @@ units.
 Known-answer tests cover time mapping, historical 999/1,000 semantics,
 censoring, fit disagreement, screening, explicit unsupported units, atomic
 artifact writing, identity-bound receipts, and exact reuse. Development-arm
-tests cover additive manifest migration. The relevant suite passes 23 tests in
+tests cover additive manifest migration. The expanded relevant suite passes 46 tests in
 the base environment. Imports of the new stage plus the existing Kilosort and
 PyTorch-dependent production modules succeed in the locked production runtime.
+
+The same identity-bound stage also completes on two independent cached
+full-duration development-strip sorts. The native-rigid arm reports 164 units,
+6,224 windows, and 71 units without support under sort identity `3fb3bcc6...`;
+the native-nonrigid arm reports 156 units, 6,175 windows, and 68 units without
+support under identity `3b242c94...`. These runs validate artifact portability
+and identity separation. They do not rehabilitate either motion arm or compare
+their scientific quality.
 
 No sort was launched and no production output was overwritten. The executed
 validation artifacts remain under

@@ -188,6 +188,12 @@ discrimination: target acceptance remains 0.05--0.10% at the background 0.10%
 tail boundary. This closes alignment-aware local matched filtering in the
 tested representation before another continuous scan.
 
+Direct spatial tracing reaches the same boundary. Cluster 553's anchored
+waveform profile remains at 3,000 um or shifts only 20 um while amplitude and
+target-local coverage collapse. The shift is inside the audited ±100 um region
+and does not support a motion-correction repair. The supported failure is local
+SNR loss whose individual events are not separable in the tested representation.
+
 The only other independently material-loss case, edge cluster 21, replicates
 the population signature: failing unmatched waveform cosine 0.927, PTP 56.36%
 of reference, and local-noise ratio 1.14. This establishes replication of weak

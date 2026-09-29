@@ -53,6 +53,14 @@ acceptance is only 0.05--0.10% at a shifted-background acceptance of 0.10%; no
 arm approaches the frozen 80% follow-up rule. Do not spend a continuous scan on
 wider alignment or reinterpret the rejected local-template candidate.
 
+A direct cluster-553 depth trace also closes motion correction as the local
+repair. Across failing 50 s bins, the anchored median profile remains at 3,000
+um or moves only one 20 um depth step while PTP falls to 77--93 uV and local
+coverage reaches 25%. The movement is inside the existing ±100 um detection
+radius and below the frozen 40 um rule. The historical legacy sort's 9/8
+thresholds and rigid correction remain coupled and cannot be credited
+separately; do not reopen either broad arm from this case.
+
 **Replication update, 2026-09-28:** cluster 21, the only other case passing the
 independent 10-point loss rule, shows the same population-level signature:
 failing unmatched cosine 0.927, PTP 56.36% of reference, and local noise ratio

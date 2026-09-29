@@ -145,6 +145,16 @@ null gain is 22.12 points. At 400 and 800 um, the observed gains are 27.07 and
 the frozen 10-point target-specific margin. Wider spatial matching is not a
 supported repair.
 
+A direct ±500 um voltage trace then followed the independent anchor in 50 s
+bins. The median waveform depth profile remains highly similar to reference
+(cosine 0.905--0.975 in failing bins) and stays at 3,000 um or shifts only one
+20 um lattice step to 2,980 um. That is well inside the existing ±100 um
+`full_st` audit radius and below the frozen 40 um movement rule. Meanwhile
+median PTP falls from 112--118 uV in reference bins to 77--93 uV in the lowest
+coverage failing bins. Direct waveform depth therefore does not justify rigid
+or nonrigid correction as this case's repair; local SNR loss remains the
+supported mechanism.
+
 ## Reproducibility and next action
 
 - Screen config:
@@ -173,6 +183,9 @@ supported repair.
   and the null-controlled radial
   [`v2`](../configs/luke_cluster553_radial_detection_null.v2.json), SHA-256
   `2d77709b9ca0aed4ad91e8e01299173196eb49d9567d664ed75afdb4be2e9824`.
+- Direct depth-trace config:
+  [`v1`](../configs/luke_cluster553_depth_trace.v1.json), SHA-256
+  `0ed9225b4fc8b7f4c3d0787f1e7d0bea870732a7941f27512dfd3906b3f6514a`.
 - Implementations:
   [`luke_dropout_anchor_screen.py`](../testing/luke_dropout_anchor_screen.py),
   [`luke_cluster21_detection_lineage.py`](../testing/luke_cluster21_detection_lineage.py), and
