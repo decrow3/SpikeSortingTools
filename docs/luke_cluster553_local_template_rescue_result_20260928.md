@@ -42,6 +42,13 @@ is 0.381. The population median template itself is coherent at 110.2 uV PTP,
 so this is a single-event separability failure rather than an absent average
 waveform.
 
+A prespecified alignment audit also closes timing misalignment as a repair.
+Maximum lags of 2, 5, 10, and 15 samples accept only 0.05--0.10% of retained
+target events at the shifted-background 99.9th-percentile boundary; background
+acceptance is 0.10% by construction. No lag approaches the frozen 80% follow-up
+criterion. Do not pursue a wider-lag continuous matched-filter scan in this
+waveform representation.
+
 ## Integrity checks
 
 The clocks and label lineage are aligned. In the reference window, 1,879 of
@@ -56,6 +63,9 @@ The executable is
 [`luke_cluster553_local_template_rescue.py`](../testing/luke_cluster553_local_template_rescue.py),
 and the calibration-only audit is
 [`luke_cluster553_template_calibration_audit.py`](../testing/luke_cluster553_template_calibration_audit.py).
+The alignment audit uses
+[`luke_cluster553_template_alignment_audit.v1.json`](../configs/luke_cluster553_template_alignment_audit.v1.json),
+SHA-256 `4a9fcc79f75a35c55b18e6db98f8de4dfb2fece2869a7dd9ec309395c0c1e192`.
 
 No sort was launched. No existing spike, label, threshold, production output,
 or raw recording was changed.

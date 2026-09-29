@@ -183,6 +183,11 @@ a per-event rescue operation in this representation. Future detector candidates
 must first pass calibration-only single-event discrimination; continuous scans
 come later.
 
+Widening waveform alignment from 2 to 15 samples does not improve that
+discrimination: target acceptance remains 0.05--0.10% at the background 0.10%
+tail boundary. This closes alignment-aware local matched filtering in the
+tested representation before another continuous scan.
+
 The only other independently material-loss case, edge cluster 21, replicates
 the population signature: failing unmatched waveform cosine 0.927, PTP 56.36%
 of reference, and local-noise ratio 1.14. This establishes replication of weak

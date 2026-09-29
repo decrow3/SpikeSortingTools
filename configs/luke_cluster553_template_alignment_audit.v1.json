@@ -1,0 +1,8 @@
+{
+  "schema": "luke-cluster553-template-alignment-audit-v1",
+  "source_candidate_config": "configs/luke_cluster553_local_template_rescue.v1.json",
+  "maximum_alignment_lag_samples": [2, 5, 10, 15],
+  "background_threshold_quantile": 0.999,
+  "minimum_target_acceptance_for_followup": 0.80,
+  "decision": "Support an alignment-aware follow-up only if a prespecified lag accepts at least 80% of retained calibration target events at the shifted-background 99.9th-percentile score boundary. Passing remains only a calibration screen and does not authorize a continuous scan or sort."
+}

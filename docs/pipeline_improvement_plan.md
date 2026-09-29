@@ -47,6 +47,12 @@ future continuous detector scan, require a cheap calibration-only demonstration
 that individual healthy target events separate from prespecified background.
 Population-median waveform similarity alone is insufficient.
 
+A calibration-only lag audit closes alignment-aware matched filtering in this
+representation. Across maximum lags of 2, 5, 10, and 15 samples, retained-target
+acceptance is only 0.05--0.10% at a shifted-background acceptance of 0.10%; no
+arm approaches the frozen 80% follow-up rule. Do not spend a continuous scan on
+wider alignment or reinterpret the rejected local-template candidate.
+
 **Replication update, 2026-09-28:** cluster 21, the only other case passing the
 independent 10-point loss rule, shows the same population-level signature:
 failing unmatched cosine 0.927, PTP 56.36% of reference, and local noise ratio
