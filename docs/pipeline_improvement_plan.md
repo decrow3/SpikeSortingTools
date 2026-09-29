@@ -22,6 +22,15 @@ The refractory check passes, but both efficacy gates fail. Do not pursue a
 high-field-only version of the unchanged candidate. See the
 [regime screen](luke_improved_nonrigid_regime_screen_20260928.md).
 
+**Operational-profile delivery, 2026-09-28:** the current best-supported
+pipeline is now one machine-readable, verifier-backed profile rather than a set
+of scattered run notes. It pins the accepted preprocessing, 12/9 motion-off
+sort identity, identity-bound curation and legacy QC, standard unit-quality
+metrics, and screening-only completeness timeline. The compact QC package is
+hash-manifested on shared storage. This is the operational reference while the
+completed external-rigid challenger awaits its paired comparison; see the
+[profile result](luke_operational_pipeline_profile_20260928.md).
+
 **Evidence update, 2026-09-28:** the cached cluster-452 follow-up is complete.
 Independent legacy-event anchoring found no transfer into a compatible rescue
 label, and exact pre/post-curation lineage found no differential final-curation

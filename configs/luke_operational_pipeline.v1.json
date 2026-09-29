@@ -1,0 +1,93 @@
+{
+  "schema_version": "luke-operational-pipeline-profile-v1",
+  "status": "operational_reference_pending_rigid_challenger",
+  "scope": {
+    "dataset": "Luke0804_V2V1_g0_imec0",
+    "stream": "imec0.ap",
+    "num_samples": 314204894,
+    "sampling_frequency_hz": 29999.835983263598,
+    "interpretation": "Dataset-specific operational reference. This profile records the best-supported current pipeline; it is not a universal sorter claim."
+  },
+  "identity": {
+    "recording_request_digest": "cc8a98f6a1352314c4442db0a6bb6ba17f7c81bfaa3be994a99b2febc0d0c0f0",
+    "recording_content_sha256": "2d6fac755db3182841bf121d822754f963ebada3bcb8cd9e96e0b63e6f9b7372",
+    "sort_request_digest": "6f1a2047706e50aafa5539f1da6481182435aba7cd42bfab53eef9d246ee7d3f",
+    "sort_identity_digest": "22ded4d503b6de8edf4851a08797ae4e594fe41118b913451365727ffbd616ac"
+  },
+  "processing": {
+    "pipeline_version": "spikeglx-ext-ref-rescue-testing-v2",
+    "preprocessing_graph": [
+      "neuropixels_phase_correction_if_present",
+      "samplewise_bilateral_blanking_500uv",
+      "bad_channel_interpolation"
+    ],
+    "external_filter": null,
+    "external_reference": null,
+    "external_voltage_motion_correction": false,
+    "sorter": "kilosort4",
+    "sorter_version": "4.0.27",
+    "critical_sorter_settings": {
+      "Th_universal": 12,
+      "Th_learned": 9,
+      "do_correction": false,
+      "effective_nblocks": 0,
+      "do_CAR": true,
+      "artifact_threshold": "Infinity"
+    }
+  },
+  "artifacts": {
+    "recording_manifest": {
+      "path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/rescue_recording_manifest.json",
+      "sha256": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67"
+    },
+    "sort_manifest": {
+      "path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/rescue_sort_manifest.json",
+      "sha256": "6996e6cb20ed802eef13ca29ad95db117489f3b628c9f123cf9771819f0bccc4"
+    },
+    "sort_identity": {
+      "path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/rescue_sort_identity.json",
+      "sha256": "af862c4979fca197ef4a43bbb867c8944f6e2879c4b7b675077c75c9aaf99e6d"
+    },
+    "curation_receipt": {
+      "path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/curation_receipt.json",
+      "sha256": "fc7492b5ce1821c8308b27788d743f046cb2ffe8d4046688afc92d3afc2c07a1"
+    },
+    "legacy_qc_receipt": {
+      "path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/qc/qc_receipt.json",
+      "sha256": "ff7f73bd5326b1df0b7b8116a4435bfb421cb1bd27628410bd29ef43282211b8"
+    },
+    "standard_qc_receipt": {
+      "path": "/mnt/NPX/Luke/20250804/shared_analysis/luke_operational_pipeline_v1/standard_qc/standard_qc_receipt.json",
+      "sha256": "4fddc6ff2fdb951cc09a806b023bc3261428d55573c2e0910a041770d945b766"
+    },
+    "completeness_timeline_receipt": {
+      "path": "/mnt/NPX/Luke/20250804/shared_analysis/luke_operational_pipeline_v1/completeness_timeline/completeness_timeline_receipt.json",
+      "sha256": "48deeab72ff63a4aceb1efb782a718385848eee863fc9b431563953322435306"
+    },
+    "sidecar_manifest": {
+      "path": "/mnt/NPX/Luke/20250804/shared_analysis/luke_operational_pipeline_v1/MANIFEST.json",
+      "sha256": "e4641037f894df14e7ea2847fca4788d7dba6d51ae6793790ce674897ae5eeba"
+    }
+  },
+  "downstream_policy": {
+    "required_stages": [
+      "legacy_compatible_curation",
+      "legacy_compatible_qc",
+      "standard_unit_quality",
+      "amplitude_completeness_timeline"
+    ],
+    "standard_qc_automatic_curation_changes": 0,
+    "completeness_timeline_screening_only": true,
+    "manual_review_required_for_warnings": true,
+    "unit_yield_is_not_a_promotion_endpoint": true
+  },
+  "candidate_status": {
+    "external_nonrigid": "rejected",
+    "external_nonrigid_selective_high_field": "rejected",
+    "external_rigid": "comparison_pending",
+    "threshold_8_8": "rejected",
+    "threshold_9_9": "rejected",
+    "cluster553_local_template": "rejected",
+    "dartsort_production": "deferred"
+  }
+}

@@ -68,6 +68,13 @@ to that policy. See [decisions](decisions/README.md), the
 [validation summary](validation-summary.md), and the
 [development plan](pipeline_improvement_plan.md).
 
+That recommendation is now also encoded in a
+[machine-readable operational profile](luke_operational_pipeline_profile_20260928.md).
+Its verifier passes against the full-session recording, sort identity, curation,
+legacy QC, standard QC, and screening-only completeness timeline. The compact
+QC artifacts are hash-manifested on shared storage so the improved downstream
+policy is reproducible while the rigid challenger remains pending.
+
 ## 1. Did preprocessing and motion application explain the original Luke failure?
 
 **Why:** Luke produced poor-looking or unstable sorting despite many detected
