@@ -24,6 +24,8 @@
       "/home/huklaban5/DARTsort_experiment_scratch/ef_w3_lattice_20260928/lattice_W3_pair.csv",
       "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/interpolated_motion_si.py",
       "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/lattice_remap_si.py",
+      "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/inputs/em2b_w2/kernel_version_audit.json",
+      "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/inputs/em2e_w3/kernel_version_audit.json",
       "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/em2e_w3_transfer_contract.v1.json"
     ]
   },

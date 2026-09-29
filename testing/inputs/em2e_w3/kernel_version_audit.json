@@ -1,0 +1,11 @@
+{
+  "schema": "em2e-w3-new-state-kernel-version-audit-v1",
+  "status": "pass",
+  "voltage_read": false,
+  "state_um": -280.0,
+  "shape": [383, 182],
+  "dtype": "float32",
+  "si_0_104_7_sha256": "f3331df75474c9795a50112bde293f46a0215ecf3f7614eb9e1db8dcdeced780",
+  "si_0_104_8_sha256": "f3331df75474c9795a50112bde293f46a0215ecf3f7614eb9e1db8dcdeced780",
+  "byte_identical": true
+}

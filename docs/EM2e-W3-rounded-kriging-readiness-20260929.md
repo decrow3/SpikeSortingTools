@@ -36,6 +36,14 @@ rounded-kriging arm. An interruption within a stage is not checkpointed and
 can require that stage, or the sort, to restart; completed runner stages may be
 reused only when their receipts and frozen inputs validate.
 
+The runtime environment uses SpikeInterface 0.104.8. All eight W2 rounded
+kernels were already byte-identical between 0.104.7 and 0.104.8. A new direct
+audit confirms that W3's only new state, -280 micrometers, is also
+byte-identical: both versions produce SHA-256
+`f3331df75474c9795a50112bde293f46a0215ecf3f7614eb9e1db8dcdeced780`
+for the 383 by 182 float32 kernel. The audit is
+`testing/inputs/em2e_w3/kernel_version_audit.json`.
+
 The first preparation attempt is preserved at
 `testing/inputs/em2e_w3_failed_v1`. It verified inputs and wrote the descriptor,
 then failed while formatting a relative path for its receipt. It read no
