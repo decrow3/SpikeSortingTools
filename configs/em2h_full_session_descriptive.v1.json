@@ -1,0 +1,53 @@
+{
+  "schema": "em2h-full-session-descriptive-v1",
+  "status": "frozen_before_full_session_outcome",
+  "scope": {
+    "dataset": "Luke0804_V2V1_g0",
+    "stream": "imec1.ap",
+    "frames_half_open": [0, 314204094],
+    "sampling_frequency_hz": 29999.759166666667,
+    "rf": false,
+    "outer_holdout": false,
+    "voltage_read": false
+  },
+  "candidate": {
+    "run": "/home/huklaban5/DARTsort_experiment_scratch/em2f_full_20260929/rounded_kriging_v1",
+    "sorting": "/home/huklaban5/DARTsort_experiment_scratch/em2f_full_20260929/rounded_kriging_v1/sort/dartsort_sorting.npz",
+    "resolved_config_sha256": "21d98e2a335b2ebdd9d1cb4619c9e0af60a4eb68f4ff8e4624adcb21ef06acea"
+  },
+  "reference": {
+    "kind": "rescue_kilosort_full_source",
+    "folder": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec1/kilosort4/sorter_output",
+    "files": {
+      "spike_times.npy": "ecc6fe1244757fdaf4c326190b84930396a0b6e20ccb03e28ab9ca6e50c334e5",
+      "spike_clusters.npy": "483f04d365b221b70bb39d87f407c7082bc2d9f39397e4851d44dd29dd944b82",
+      "spike_positions.npy": "5153b87aa0b1b301e2c5a8ecc8420ff0c65c8e570a1a6416acfe9bc15f43fe6b",
+      "cluster_KSLabel.tsv": "b81d1a2e5597599cf3a9a263793334c45c72ebd967be94317239973f90588eb2"
+    }
+  },
+  "domain_inputs": {
+    "field": {
+      "path": "/media/huklaban5/writable/DARTsort_motion_experiments/incoming/luke0804_imec1_two_layer_v1/luke0804_imec1_two_layer_motion.npz",
+      "sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9"
+    },
+    "mask": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/ck_input_intervals_20260927/censor_mask_v1.csv",
+      "sha256": "86425e8a6627a10ac8932ba01b799cb7be7141f731ebb4ecc01e303326b9da55"
+    }
+  },
+  "metrics": {
+    "domains": ["negative_excursion", "outside_mask_flat", "catalogue_outside_remainder"],
+    "minimum_flat_events": 100,
+    "time_block_seconds": 300.0,
+    "segment_safe_short_isi_samples": [9, 29],
+    "candidate_subsets": ["assigned_units"],
+    "reference_subsets": ["all_units", "ks_good_units"]
+  },
+  "resources": {
+    "cpu_seconds_max": 1800,
+    "memory_gib_max": 20,
+    "voltage_bytes_read": 0,
+    "gpu": false
+  },
+  "interpretation": "Descriptive whole-session stability audit. DARTsort assigned units, Kilosort all clusters, and Kilosort good labels have different detection, training, curation, and noise semantics. Raw yields, rates, rate-rank correlations, and short-ISI fractions are reported within those scopes and do not establish cross-sorter biological identity or a winner."
+}
