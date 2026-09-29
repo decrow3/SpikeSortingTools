@@ -38,3 +38,8 @@ designed. The recovery worker now validates the original copy receipt and the
 source/destination sizes, reuses those inputs, and then invokes the unchanged
 frozen DARTsort stage. Its failure receipt and logs are retained in the v1
 recovery job directory.
+
+The v2 dispatch likewise exited before DARTsort because importing the frozen
+pipeline as a library did not initially expose its sibling `stage_validation`
+module. The wrapper now adds the frozen source directory to its import path.
+The v2 logs are retained separately, and the matching checkpoint was unchanged.

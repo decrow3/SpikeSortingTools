@@ -37,6 +37,9 @@ def validate_existing_link_inputs(source: Path, target: Path, link_step: str) ->
 
 def load_frozen_pipeline(output: Path):
     path = output / "source/pipeline.py"
+    source_dir = str(path.parent)
+    if source_dir not in sys.path:
+        sys.path.insert(0, source_dir)
     spec = importlib.util.spec_from_file_location("em2f_frozen_pipeline", path)
     if spec is None or spec.loader is None:
         raise ImportError(path)
