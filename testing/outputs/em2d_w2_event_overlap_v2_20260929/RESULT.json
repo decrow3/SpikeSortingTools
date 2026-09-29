@@ -1,0 +1,88 @@
+{
+  "comparisons": {
+    "rounded_kriging": {
+      "exact_sample_sensitivity": {
+        "ambiguous_comparator_best": 136,
+        "ambiguous_reference_best": 133,
+        "candidate_pairs": 4681,
+        "comparator_units": 474,
+        "comparator_units_without_candidate": 2,
+        "matched_events_in_reciprocal_pairs": 167846,
+        "matched_fraction_comparator_events": 0.28329777609743584,
+        "matched_fraction_reference_events": 0.2782938860103627,
+        "reciprocal_f1_median": 0.3530720999402329,
+        "reciprocal_f1_p10": 0.11349467412153615,
+        "reciprocal_f1_p90": 0.8266666666666668,
+        "reciprocal_pairs": 328,
+        "reciprocal_pairs_f1_ge_0p5": 112,
+        "reciprocal_pairs_f1_ge_0p8": 36,
+        "reference_units": 477,
+        "reference_units_without_candidate": 6
+      },
+      "role": "selected production-order operator",
+      "summary": {
+        "ambiguous_comparator_best": 110,
+        "ambiguous_reference_best": 113,
+        "candidate_pairs": 25288,
+        "comparator_units": 474,
+        "comparator_units_without_candidate": 0,
+        "matched_events_in_reciprocal_pairs": 226240,
+        "matched_fraction_comparator_events": 0.3818577080435869,
+        "matched_fraction_reference_events": 0.37511295336787565,
+        "reciprocal_f1_median": 0.5343915343915344,
+        "reciprocal_f1_p10": 0.18733969720621502,
+        "reciprocal_f1_p90": 0.9114329414553479,
+        "reciprocal_pairs": 329,
+        "reciprocal_pairs_f1_ge_0p5": 174,
+        "reciprocal_pairs_f1_ge_0p8": 71,
+        "reference_units": 477,
+        "reference_units_without_candidate": 2
+      },
+      "tolerance_samples": 2
+    },
+    "unrounded_kriging": {
+      "exact_sample_sensitivity": {
+        "ambiguous_comparator_best": 188,
+        "ambiguous_reference_best": 177,
+        "candidate_pairs": 4813,
+        "comparator_units": 486,
+        "comparator_units_without_candidate": 20,
+        "matched_events_in_reciprocal_pairs": 141976,
+        "matched_fraction_comparator_events": 0.2649854046749834,
+        "matched_fraction_reference_events": 0.23540062176165802,
+        "reciprocal_f1_median": 0.2669737103264106,
+        "reciprocal_f1_p10": 0.08184151302902305,
+        "reciprocal_f1_p90": 0.6776496275042787,
+        "reciprocal_pairs": 296,
+        "reciprocal_pairs_f1_ge_0p5": 63,
+        "reciprocal_pairs_f1_ge_0p8": 11,
+        "reference_units": 477,
+        "reference_units_without_candidate": 7
+      },
+      "role": "prespecified field-rounding contrast",
+      "summary": {
+        "ambiguous_comparator_best": 164,
+        "ambiguous_reference_best": 150,
+        "candidate_pairs": 23084,
+        "comparator_units": 486,
+        "comparator_units_without_candidate": 11,
+        "matched_events_in_reciprocal_pairs": 195657,
+        "matched_fraction_comparator_events": 0.36517615176151763,
+        "matched_fraction_reference_events": 0.3244053886010363,
+        "reciprocal_f1_median": 0.4020873400209276,
+        "reciprocal_f1_p10": 0.13726408277529145,
+        "reciprocal_f1_p90": 0.8285657933633879,
+        "reciprocal_pairs": 292,
+        "reciprocal_pairs_f1_ge_0p5": 115,
+        "reciprocal_pairs_f1_ge_0p8": 34,
+        "reference_units": 477,
+        "reference_units_without_candidate": 4
+      },
+      "tolerance_samples": 2
+    }
+  },
+  "config_sha256": "0328f8b6df310cdc6bf4f0e4795b27bde7915c1a297f2b41c364d854ab502752",
+  "interpretation": "Descriptive cached-event association. Preserve reciprocal, nonreciprocal, ambiguous and unmatched units separately. Coincidence does not prove biological identity or purity and is not a promotion endpoint.",
+  "schema": "em2d-cross-arm-event-overlap-result-v1",
+  "status": "complete"
+}

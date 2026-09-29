@@ -1,0 +1,6 @@
+{
+  "status": "superseded_invalid_packet",
+  "reason": "Two launcher attempts overlapped in this directory after the first tool call yielded without returning a session identifier; MANIFEST.json consequently included stale bookkeeping files and failed validation.",
+  "scientific_result_matches_clean_rerun": true,
+  "replacement": "testing/outputs/em2d_w2_event_overlap_v2_20260929"
+}

@@ -1,6 +1,6 @@
 {
   "schema": "luke-imec1-motion-remap-selection-v1",
-  "status": "selected_on_w2_with_cached_w3_lattice_transfer_support",
+  "status": "selected_on_w2_with_cached_w3_and_event_overlap_support",
   "scope": {
     "dataset": "Luke0804_V2V1_g0",
     "stream": "imec1.ap",
@@ -61,6 +61,10 @@
     "w3_new_state_kernel_audit_sha256": "4f7f2c0149fe13ea555b29806cdb5e3b4a5eb0b732f2c59f65f5625e121f0038",
     "w3_cached_lattice_transfer_audit": "testing/outputs/em2c_w3_cached_lattice_transfer_20260929/AUDIT.json",
     "w3_cached_lattice_transfer_audit_sha256": "8de9ecfd80a10d2e70b7f2784eeb74294ab4eea565618c740bfc91854878a91c",
+    "w2_cross_arm_event_overlap_result": "testing/outputs/em2d_w2_event_overlap_v2_20260929/RESULT.json",
+    "w2_cross_arm_event_overlap_result_sha256": "640802b180b032f2f5582ab4ec23d243ef33e78837b62bc30ffd710c05e67e3b",
+    "w2_cross_arm_event_overlap_manifest": "testing/outputs/em2d_w2_event_overlap_v2_20260929/MANIFEST.json",
+    "w2_cross_arm_event_overlap_manifest_sha256": "6c113865aef908e4add31d07e7808afd63775aa54c1d020fdfb4758270881de3",
     "result_document": "docs/EM2b-stage1-result-20260929.md",
     "comparisons": {
       "rounded_exact_dd_minus_rounded_kriging": {
@@ -72,6 +76,15 @@
         "delta_rho": 0.051562907358317034,
         "ci95": [0.03026717110074042, 0.08154949570845502],
         "decision": "meaningful_first_arm_advantage"
+      },
+      "cross_arm_event_overlap": {
+        "reference": "rounded_exact_dd",
+        "primary_tolerance_samples": 2,
+        "rounded_kriging_reciprocal_pairs": 329,
+        "rounded_kriging_median_f1": 0.5343915343915344,
+        "unrounded_kriging_reciprocal_pairs": 292,
+        "unrounded_kriging_median_f1": 0.4020873400209276,
+        "interpretation": "descriptive support; not biological identity or purity"
       }
     }
   },
@@ -80,6 +93,6 @@
     "idw_or_nearest_sort": "do_not_run",
     "w3": "cached exact-lattice transfer supports the rounded field; direct rounded-kriging W3 sort not run because the only new state is inside the W2 kernel envelope",
     "full_session": "not promoted from W2 alone",
-    "interpretation": "W2 selects the remap implementation. The score is an arm-local continuity proxy and does not prove cross-arm identity or purity."
+    "interpretation": "W2 selects the remap implementation. Cached event overlap supports closer population preservation but does not prove biological identity or purity."
   }
 }

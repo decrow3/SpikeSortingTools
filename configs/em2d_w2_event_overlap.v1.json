@@ -1,0 +1,41 @@
+{
+  "schema": "em2d-w2-event-overlap-v1",
+  "frozen_before_pair_scoring": true,
+  "scope": {
+    "dataset": "Luke0804 imec1 W2",
+    "clock": "recording-local samples",
+    "rf": false,
+    "voltage_read": false,
+    "outer_holdout": false
+  },
+  "reference_arm": {
+    "name": "rounded_exact_dd",
+    "path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/sort/dartsort_sorting.npz",
+    "sha256": "85f1537a4ffbac430d36e84b1f71e7ed5c0760287338115724ee9d80d052e61a"
+  },
+  "comparators": [
+    {
+      "name": "rounded_kriging",
+      "role": "selected production-order operator",
+      "path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_kriging_bridge_v1/sort/dartsort_sorting.npz",
+      "sha256": "c19db164e69ebca6b21f8eb4f99245838543d805f6bab0aa30e7bef95fdef45e"
+    },
+    {
+      "name": "unrounded_kriging",
+      "role": "prespecified field-rounding contrast",
+      "path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/unrounded_kriging_v1/sort/dartsort_sorting.npz",
+      "sha256": "e6c521cb9efc40bb1fb19cf62681193ce47234cda9aa3e7159c814fc8d87605b"
+    }
+  ],
+  "matching": {
+    "primary_tolerance_samples": 2,
+    "exact_sample_sensitivity": true,
+    "minimum_candidate_matches": 5,
+    "score": "F1 = 2 * one_to_one_matches / (reference_events + comparator_events)",
+    "pairing": "reciprocal best F1; ties use more matches then lower unit ID",
+    "ambiguous": "best F1 minus second-best F1 <= 0.05",
+    "negative_labels": "exclude",
+    "cross_arm_integer_ids": "never treated as identities"
+  },
+  "interpretation": "Descriptive cached-event association. Preserve reciprocal, nonreciprocal, ambiguous and unmatched units separately. Coincidence does not prove biological identity or purity and is not a promotion endpoint."
+}

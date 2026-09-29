@@ -1,0 +1,39 @@
+{
+  "products": [
+    {
+      "bytes": 3727,
+      "path": "RESULT.json",
+      "sha256": "640802b180b032f2f5582ab4ec23d243ef33e78837b62bc30ffd710c05e67e3b"
+    },
+    {
+      "bytes": 2751831,
+      "path": "rounded_kriging_PAIR_SCORES.csv",
+      "sha256": "92a7f9842ff731953e7f9d3a6ba39afc1aa62799210b95400672d39ad664c2c2"
+    },
+    {
+      "bytes": 46005,
+      "path": "rounded_kriging_RECIPROCAL.csv",
+      "sha256": "bbdfe1a06a63e4ba0996f4fff9ffa75ab42ce4902f57724d2493894cf59e3af3"
+    },
+    {
+      "bytes": 150798,
+      "path": "rounded_kriging_UNIT_BEST.csv",
+      "sha256": "2abbe23b11137fecc1212546abeacda792b6f8876daca76b6d456291cd456768"
+    },
+    {
+      "bytes": 2507123,
+      "path": "unrounded_kriging_PAIR_SCORES.csv",
+      "sha256": "0cb6e6a6a3461d489cae57032652d606706e617e0e517bd671fc16165ca4d654"
+    },
+    {
+      "bytes": 40906,
+      "path": "unrounded_kriging_RECIPROCAL.csv",
+      "sha256": "f34080ef6ec1405724b937a8efa98320c533a5130f04569c5e175a2d7efd81d4"
+    },
+    {
+      "bytes": 150926,
+      "path": "unrounded_kriging_UNIT_BEST.csv",
+      "sha256": "2c995a5142f55b0feba54957e5a8cf2e91d33ed97208cf155ed2640230c2c070"
+    }
+  ]
+}
