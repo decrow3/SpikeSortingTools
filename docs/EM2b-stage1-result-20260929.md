@@ -41,6 +41,21 @@ The scorecard packet is
 `testing/outputs/em2b_w2_scorecard_stage1_20260929`; its manifest SHA-256 is
 `eba5947aabcd9f67fc6e04106170e2c4070fb2015d3a74e2daa07daf9e0d60db`.
 
+## Cached sorting-QC cross-check
+
+A direct read of the three saved sorting-only QC tables found no obvious
+quality cost hidden by the continuity result. Rounded exact-DD and rounded
+kriging both had median presence ratio 1.0, 104 units with raw adjacent
+short-ISI fraction above 0.01, and zero exact duplicate samples. Rounded
+kriging had 592,472 accepted events and a median 877.5 events per unit, versus
+603,125 and 854 for exact-DD. Unrounded kriging had 535,788 accepted events, a
+median 629 events per unit, and 123 units above the same short-ISI threshold.
+
+These are arm-local descriptive distributions, without unit matching or a new
+promotion endpoint. The compact packet is
+`testing/outputs/em2b_w2_cached_qc_summary_20260929`; its manifest SHA-256 is
+`fed89a9348a657e006db269f14b010ae2c25b1a03b0c0bf3ad2d08919f2594fc`.
+
 ## Execution and resources
 
 Both arms ran sequentially as independent systemd user services with a

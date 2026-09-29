@@ -1,0 +1,4 @@
+arm,units,accepted_events,median_events_per_unit,median_presence_ratio,full_presence_units,presence_ge_five_sixths_units,median_raw_refractory_fraction,p90_raw_refractory_fraction,units_raw_refractory_fraction_gt_0p01,exact_duplicate_sample_units,exact_duplicate_sample_count
+rounded_exact_dd,477,603125,854.0,1.0,446,462,0.003708281829419,0.01750217034534813,104,0,0
+rounded_kriging,474,592472,877.5,1.0,447,463,0.0038332543539671,0.01576269163583489,104,0,0
+unrounded_kriging,486,535788,629.0,1.0,449,468,0.0047790339157245,0.01613059428581335,123,0,0

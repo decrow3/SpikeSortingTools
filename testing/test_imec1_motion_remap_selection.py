@@ -20,7 +20,13 @@ def test_selected_imec1_remap_is_bound_to_tested_artifacts_and_result():
     for key in ("extractor_source", "tested_recording_descriptor", "tested_sort_config"):
         path = ROOT / selected["implementation"][key]
         assert sha256(path) == selected["implementation"][f"{key}_sha256"]
-    for key in ("scorecard_contract", "arms_manifest", "scorecard_result", "measurement_audit"):
+    for key in (
+        "scorecard_contract",
+        "arms_manifest",
+        "scorecard_result",
+        "measurement_audit",
+        "cached_qc_result",
+    ):
         path = ROOT / selected["evidence"][key]
         assert sha256(path) == selected["evidence"][f"{key}_sha256"]
 

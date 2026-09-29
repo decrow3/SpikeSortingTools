@@ -1,0 +1,14 @@
+{
+  "products": [
+    {
+      "bytes": 2528,
+      "path": "RESULT.json",
+      "sha256": "a5015aad276bf07e6678eed2c400e409de9971de36b65052640841f7f792205f"
+    },
+    {
+      "bytes": 554,
+      "path": "SUMMARY.csv",
+      "sha256": "af46dd90b941f91de34fede6b9f4bdd5d49e5ede14e5dd1339751e357d33af25"
+    }
+  ]
+}

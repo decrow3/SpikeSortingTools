@@ -1,0 +1,66 @@
+{
+  "arms": [
+    {
+      "accepted_events": 603125,
+      "arm": "rounded_exact_dd",
+      "exact_duplicate_sample_count": 0,
+      "exact_duplicate_sample_units": 0,
+      "full_presence_units": 446,
+      "median_events_per_unit": 854.0,
+      "median_presence_ratio": 1.0,
+      "median_raw_refractory_fraction": 0.003708281829419,
+      "p90_raw_refractory_fraction": 0.01750217034534813,
+      "presence_ge_five_sixths_units": 462,
+      "units": 477,
+      "units_raw_refractory_fraction_gt_0p01": 104
+    },
+    {
+      "accepted_events": 592472,
+      "arm": "rounded_kriging",
+      "exact_duplicate_sample_count": 0,
+      "exact_duplicate_sample_units": 0,
+      "full_presence_units": 447,
+      "median_events_per_unit": 877.5,
+      "median_presence_ratio": 1.0,
+      "median_raw_refractory_fraction": 0.0038332543539671,
+      "p90_raw_refractory_fraction": 0.01576269163583489,
+      "presence_ge_five_sixths_units": 463,
+      "units": 474,
+      "units_raw_refractory_fraction_gt_0p01": 104
+    },
+    {
+      "accepted_events": 535788,
+      "arm": "unrounded_kriging",
+      "exact_duplicate_sample_count": 0,
+      "exact_duplicate_sample_units": 0,
+      "full_presence_units": 449,
+      "median_events_per_unit": 629.0,
+      "median_presence_ratio": 1.0,
+      "median_raw_refractory_fraction": 0.0047790339157245,
+      "p90_raw_refractory_fraction": 0.01613059428581335,
+      "presence_ge_five_sixths_units": 468,
+      "units": 486,
+      "units_raw_refractory_fraction_gt_0p01": 123
+    }
+  ],
+  "inputs": {
+    "rounded_exact_dd": {
+      "bytes": 39406,
+      "path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/qc-phy/sorting_qc.csv",
+      "sha256": "55bb54c00140312bf8fcbb7a91b8c46b07c626cbf2ccfbeac4f2dcd10a51b4d8"
+    },
+    "rounded_kriging": {
+      "bytes": 38531,
+      "path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_kriging_bridge_v1/qc-phy/sorting_qc.csv",
+      "sha256": "c1ced665bd777af4168f029997194bd595b1dac9fe9ebc5acdf5878a5561ce1d"
+    },
+    "unrounded_kriging": {
+      "bytes": 39764,
+      "path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/unrounded_kriging_v1/qc-phy/sorting_qc.csv",
+      "sha256": "39bd96cd8f65e9eac3c3aa26fa6820bd7d44e6dc70094254754c28257a447ba8"
+    }
+  },
+  "interpretation": "Arm-local descriptive sorting QC only; no unit matching, biological identity, purity, or promotion claim.",
+  "schema": "em2b-cached-sorting-qc-summary-v1",
+  "status": "complete"
+}

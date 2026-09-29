@@ -55,6 +55,8 @@
     "scorecard_result_sha256": "78cdceae28cb0f9ceee08691de48e44ea12b761c972cd8d30169b78968e032eb",
     "measurement_audit": "testing/outputs/em2b_w2_stage1_measurement_20260929/AUDIT.json",
     "measurement_audit_sha256": "8bafd68dc60eb8850171ec8235e4e38cb4acc289fd4e676161ec23bdac8cb69c",
+    "cached_qc_result": "testing/outputs/em2b_w2_cached_qc_summary_20260929/RESULT.json",
+    "cached_qc_result_sha256": "a5015aad276bf07e6678eed2c400e409de9971de36b65052640841f7f792205f",
     "result_document": "docs/EM2b-stage1-result-20260929.md",
     "comparisons": {
       "rounded_exact_dd_minus_rounded_kriging": {
