@@ -9,11 +9,14 @@ launch a sort, or write sample values to its compact output.
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timezone
 import hashlib
 import inspect
 import json
 from pathlib import Path
+import sys
 import time
+import traceback
 
 import numpy as np
 import pandas as pd
@@ -46,6 +49,92 @@ def atomic_json(path: Path, value: object) -> None:
     temporary = path.with_suffix(path.suffix + ".partial")
     temporary.write_text(json.dumps(value, indent=2, sort_keys=True, default=str) + "\n")
     temporary.replace(path)
+
+
+def load_relative_recording(si_module: object, recording_json: Path):
+    """Load a portable SI recording relative to its own JSON directory."""
+
+    return si_module.load(recording_json, base_folder=recording_json.parent)
+
+
+def dd_source_time_origin(parent: object, receipt: dict[str, object]) -> float:
+    """Validate and return DD's absolute source-frame clock for the crop."""
+
+    window = receipt.get("source_window")
+    if not isinstance(window, dict):
+        raise ValueError("DD receipt lacks source_window")
+    required = {"start_frame", "end_frame_exclusive", "fs", "start_s", "end_s"}
+    if not required.issubset(window):
+        raise ValueError(f"DD source_window lacks {sorted(required - set(window))}")
+    start_frame = int(window["start_frame"])
+    end_frame = int(window["end_frame_exclusive"])
+    fs = float(window["fs"])
+    start_s = float(window["start_s"])
+    end_s = float(window["end_s"])
+    if end_frame <= start_frame:
+        raise ValueError("DD source window is empty")
+    if int(parent.get_num_samples()) != end_frame - start_frame:
+        raise ValueError("parent frame count differs from DD source window")
+    if not np.isclose(float(parent.get_sampling_frequency()), fs, rtol=0, atol=1e-9):
+        raise ValueError("parent sampling rate differs from DD source window")
+    if not np.isclose(start_s, start_frame / fs, rtol=0, atol=1e-9):
+        raise ValueError("DD source start time is inconsistent with frame and rate")
+    if not np.isclose(end_s, end_frame / fs, rtol=0, atol=1e-9):
+        raise ValueError("DD source end time is inconsistent with frame and rate")
+    return start_s
+
+
+def get_traces_with_aligned_parent_chunks(
+    recording: object,
+    start_frame: int,
+    end_frame: int,
+    *,
+    chunk_frames: int,
+) -> np.ndarray:
+    """Read complete DD materialization chunks, then slice the requested range."""
+
+    start = int(start_frame)
+    end = int(end_frame)
+    chunk = int(chunk_frames)
+    total = int(recording.get_num_samples())
+    if chunk <= 0:
+        raise ValueError("chunk_frames must be positive")
+    if start < 0 or end <= start or end > total:
+        raise ValueError("requested trace range is outside recording")
+    cover_start = (start // chunk) * chunk
+    cover_end = min(total, ((end + chunk - 1) // chunk) * chunk)
+    blocks = [
+        recording.get_traces(start_frame=left, end_frame=min(left + chunk, total))
+        for left in range(cover_start, cover_end, chunk)
+    ]
+    covered = blocks[0] if len(blocks) == 1 else np.concatenate(blocks, axis=0)
+    offset = start - cover_start
+    return covered[offset : offset + end - start]
+
+
+def preserve_failure(error: BaseException) -> None:
+    """Persist an execution failure when an output directory was allocated."""
+
+    if "--output-dir" not in sys.argv:
+        return
+    index = sys.argv.index("--output-dir") + 1
+    if index >= len(sys.argv):
+        return
+    output_dir = Path(sys.argv[index])
+    if not output_dir.is_dir() or (output_dir / "COMPLETE.json").exists():
+        return
+    atomic_json(
+        output_dir / "FAILURE.json",
+        {
+            "schema": "em-huklaban5-voltage-equivalence-failure-v1",
+            "status": "failed",
+            "failed_utc": datetime.now(timezone.utc).isoformat(),
+            "exception_type": type(error).__name__,
+            "exception": str(error),
+            "traceback": traceback.format_exc(),
+            "sort_launched": False,
+        },
+    )
 
 
 def choose_windows(knots: pd.DataFrame) -> list[dict[str, object]]:
@@ -155,9 +244,12 @@ def main() -> None:
     if not knots_path.exists():
         knots_path = args.dd_root / "receipts/lattice_W2_pair.csv"
     dd_recording_path = args.dd_root / "inputs/S_L/recording.json"
+    dd_receipt_path = args.dd_root / "INPUT_AND_SOURCE_RECEIPT.json"
     provenance = json.loads(provenance_path.read_text())
     parent = si.load(provenance["kwargs"]["parent_recording"], base_folder=args.base_recording)
-    expected = si.load(dd_recording_path)
+    expected = load_relative_recording(si, dd_recording_path)
+    dd_receipt = json.loads(dd_receipt_path.read_text())
+    source_time_origin = dd_source_time_origin(parent, dd_receipt)
     knots = pd.read_csv(knots_path)
 
     if si.__version__ != "0.104.7":
@@ -172,12 +264,17 @@ def main() -> None:
     centers = knots.time_s.to_numpy(float)
     shifts = knots.q_um.to_numpy(float)
     corrected_parent = ExactLatticeRemapRecording(
-        parent, centers, shifts, cell_width_s=DT
+        parent,
+        centers,
+        shifts,
+        cell_width_s=DT,
+        time_origins_s=[source_time_origin],
     )
     corrected = corrected_parent.select_channels(TARGET_IDS)
     selections = choose_windows(knots)
     fs = float(parent.get_sampling_frequency())
-    origin = float(parent.sample_index_to_time(0))
+    dd_chunk_frames = round(fs)
+    origin = source_time_origin
     frames = int(round(SNIPPET_S * fs))
     for selection in selections:
         start = int(np.ceil((float(selection["nominal_start_s"]) - origin) * fs - 1e-9))
@@ -201,7 +298,12 @@ def main() -> None:
     for selection in selections:
         start = int(selection["start_frame"])
         end = int(selection["end_frame_exclusive"])
-        actual = corrected.get_traces(start_frame=start, end_frame=end)
+        actual = get_traces_with_aligned_parent_chunks(
+            corrected,
+            start,
+            end,
+            chunk_frames=dd_chunk_frames,
+        )
         reference = expected.get_traces(start_frame=start, end_frame=end)
         equal = bool(np.array_equal(actual, reference))
         zero_equal = bool(np.array_equal(actual == 0, reference == 0))
@@ -241,12 +343,14 @@ def main() -> None:
         "si_kernel": Path(inspect.getsourcefile(get_spatial_interpolation_kernel)),
         "runner": Path(__file__).resolve(),
         "dd_knots": knots_path,
+        "dd_input_receipt": dd_receipt_path,
         "dd_materializer": args.dd_root / "source/dd_lattice_inputs.py",
     }
     receipt = {
         "schema": "em-huklaban5-voltage-equivalence-v1",
         "status": "pass" if all_pass else "fail",
         "spikeinterface_version": si.__version__,
+        "parent_read_chunk_frames": dd_chunk_frames,
         "voltage_exported": False,
         "sort_launched": False,
         "total_voltage_duration_s": len(selections) * SNIPPET_S,
@@ -265,4 +369,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except BaseException as error:
+        preserve_failure(error)
+        raise

@@ -72,9 +72,11 @@ The full 0.104.7 audit is under
 ## Scope of the verdict
 
 This establishes stock failure on the actual geometry under the required
-SpikeInterface 0.104.7 implementation. It does not establish byte equivalence
-of the exact adapter to DD's materialized voltage; that bounded huklaban5 check
-remains pending.
+SpikeInterface 0.104.7 implementation. The later bounded
+[huklaban5 voltage check](EM-huklaban5-voltage-equivalence-result-20260928.md)
+failed strict exact-adapter qualification: zero-fill decisions matched, but
+nonzero-motion source values retained 1–2-ULP differences between the required
+0.104.7 reconstruction and DD's 0.104.8 materialization.
 
 Generated detailed evidence is under
 `testing/outputs/em_lattice_mapping_audit_actual_v2_20260928/`; generated

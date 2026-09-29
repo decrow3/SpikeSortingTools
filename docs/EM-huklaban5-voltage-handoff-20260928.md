@@ -1,5 +1,11 @@
 # EM.1 huklaban5 voltage-equivalence handoff
 
+**Outcome:** completed with a strict qualification failure. See
+[the result report](EM-huklaban5-voltage-equivalence-result-20260928.md). The
+preserved v4 flat control is byte-exact, but the nonzero-motion snippets retain
+1–2-ULP upstream preprocessing-version differences. Do not start EM.2a or a
+sort from this handoff.
+
 The 0.104.7 source/kernel and actual-geometry audit is complete: stock nearest
 fails only at four AP191 interior-hole mappings. Run the exact adapter against
 the existing accepted DD parent and S_L materialization. Do not launch a sort.

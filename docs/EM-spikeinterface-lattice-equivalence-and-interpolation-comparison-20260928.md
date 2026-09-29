@@ -1,6 +1,16 @@
 # EM — reproduce the exact lattice remap with SpikeInterface, then compare correction operators
 
-**Status:** EM.1 IMPLEMENTATION AND 0.104.7 SOURCE/GEOMETRY AUDIT COMPLETE; HUKLABAN5 VOLTAGE AUDIT PENDING.
+**Status:** EM.1 CLOSED — STOCK FAIL AND EXACT-ADAPTER QUALIFICATION FAIL;
+EM.2A/EM.2B STOPPED.
+
+The bounded huklaban5 voltage audit is complete. The flat `q=0` control is
+byte-exact after reproducing DD's parent-read chunks, and all tested zero masks
+match. The two nonzero-motion snippets retain 1–2-float32-ULP differences because
+the required SpikeInterface 0.104.7 execution reconstructs some upstream parent
+values differently from DD's 0.104.8 materialization. See the
+[huklaban5 result](EM-huklaban5-voltage-equivalence-result-20260928.md). This is
+an EM.1 qualification failure, so the conditional operator screen and sorts do
+not proceed.
 
 - **Published handoff:**
   `/mnt/NPX/Luke/DARTsort_motion_experiments/em_spikeinterface_lattice_20260928/huklaban1_v1`
@@ -20,8 +30,10 @@
   local 0.102.1 and the required 0.104.7, so stock equivalence failed with four
   mismatches. See
   [EM local mapping result](EM-lattice-mapping-audit-result-20260928.md).
-  The bounded 9-second byte comparison against the huklaban5 materialization
-  remains necessary.
+  The bounded 9-second huklaban5 comparison is complete and failed strict byte
+  equivalence for the exact adapter under the required 0.104.7 path. The
+  mapping and zero-fill decisions matched, but upstream preprocessing-version
+  differences remained in the nonzero-motion source channels.
 
 - **Canonical home:** `/home/huklab/Documents/RyanSorting/SpikeSortingTools` (this repository). Put the reusable helper and tests here; do not modify the DARTsort repository.
 - **Execution locality:** raw voltage remains on huklaban5. If an actual-voltage check or sort must run there, execute this repository's reviewed commit (or an exact source snapshot with recorded SHA-256 hashes) in the installed SpikeInterface 0.104.7 environment. No voltage is copied off huklaban5.
