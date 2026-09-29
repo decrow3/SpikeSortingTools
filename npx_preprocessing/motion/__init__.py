@@ -1,5 +1,9 @@
 """Motion-correction recording operators."""
 
+from .interpolated_motion_si import InterpolatedMotionRecording, bad_channel_insertion
+
+__all__ = ["InterpolatedMotionRecording", "bad_channel_insertion"]
+
 from .lattice_remap_si import (
     ExactLatticeRemapRecording,
     audit_lattice_mappings,
