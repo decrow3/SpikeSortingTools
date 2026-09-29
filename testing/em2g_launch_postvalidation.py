@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -22,6 +23,11 @@ def atomic_json(path: Path, value: object) -> None:
     temporary = path.with_suffix(path.suffix + ".partial")
     temporary.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
     temporary.replace(path)
+
+
+def absolute_preserving_symlinks(path: Path) -> Path:
+    """Make a path absolute without dereferencing a virtualenv interpreter."""
+    return Path(os.path.abspath(path))
 
 
 def service_command(python: Path, output: Path, job: Path, unit: str) -> list[str]:
@@ -66,8 +72,9 @@ def main() -> None:
     receipt = json.loads(SORT_RECEIPT.read_text())
     if receipt.get("status") != "complete" or receipt.get("exit_status") != 0:
         raise RuntimeError("full-session sort did not complete successfully")
-    if not args.python.is_file():
-        raise FileNotFoundError(args.python)
+    python = absolute_preserving_symlinks(args.python)
+    if not python.is_file():
+        raise FileNotFoundError(python)
     job.mkdir(parents=True)
     unit = "em2g-" + hashlib.sha256(str(output).encode()).hexdigest()[:16]
     state = subprocess.run(
@@ -78,7 +85,7 @@ def main() -> None:
     if state.stdout.strip() in ("active", "activating", "deactivating"):
         raise RuntimeError("post-validation service is already live")
     subprocess.run(["systemctl", "--user", "reset-failed", unit], capture_output=True)
-    command = service_command(args.python.resolve(), output, job, unit)
+    command = service_command(python, output, job, unit)
     atomic_json(
         job / "REQUEST.json",
         {

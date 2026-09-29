@@ -41,6 +41,11 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def absolute_preserving_symlinks(path: Path) -> Path:
+    """Make a path absolute without dereferencing a virtualenv interpreter."""
+    return Path(os.path.abspath(path))
+
+
 def atomic_json(path: Path, value: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(f".{path.name}.{os.getpid()}.partial")
@@ -233,8 +238,9 @@ def schedule(args: argparse.Namespace) -> None:
     paths = (args.state_dir, args.validation_output, args.validation_job_dir)
     if any(path.exists() for path in paths):
         raise FileExistsError("handoff state and validation destinations must be new")
-    if not args.python.is_file():
-        raise FileNotFoundError(args.python)
+    python = absolute_preserving_symlinks(args.python)
+    if not python.is_file():
+        raise FileNotFoundError(python)
     if not args.sort_run.is_dir():
         raise FileNotFoundError(args.sort_run)
     args.state_dir.mkdir(parents=True)
@@ -242,7 +248,7 @@ def schedule(args: argparse.Namespace) -> None:
         str(args.validation_output).encode()
     ).hexdigest()[:16]
     command = waiter_command(
-        args.python.resolve(),
+        python,
         args.state_dir.resolve(),
         args.validation_output.resolve(),
         args.validation_job_dir.resolve(),

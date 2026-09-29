@@ -1,6 +1,10 @@
 from pathlib import Path
 
-from testing.em2g_launch_postvalidation import ROOT, service_command
+from testing.em2g_launch_postvalidation import (
+    ROOT,
+    absolute_preserving_symlinks,
+    service_command,
+)
 
 
 def test_postvalidation_service_is_persistent_and_resource_bounded():
@@ -20,3 +24,13 @@ def test_postvalidation_service_is_persistent_and_resource_bounded():
     assert "--property=StandardOutput=append:/job/stdout.log" in command
     assert str(ROOT / "testing/em2g_full_postvalidation.py") in command
     assert command[-2:] == ["--output", "/science"]
+
+
+def test_interpreter_path_keeps_virtualenv_symlink(tmp_path):
+    base = tmp_path / "base-python"
+    base.write_text("")
+    venv_python = tmp_path / "venv-python"
+    venv_python.symlink_to(base)
+    observed = absolute_preserving_symlinks(venv_python)
+    assert observed == venv_python
+    assert observed.is_symlink()

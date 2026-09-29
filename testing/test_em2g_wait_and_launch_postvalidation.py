@@ -3,6 +3,7 @@ from pathlib import Path
 
 from testing.em2g_wait_and_launch_postvalidation import (
     BOUND_RELATIVE_INPUTS,
+    absolute_preserving_symlinks,
     bound_inputs,
     terminal_decision,
     waiter_command,
@@ -40,6 +41,16 @@ def test_handoff_binds_every_executed_source_and_contract():
     assert all(len(digest) == 64 for digest in observed.values())
     assert "testing/em2g_full_postvalidation.py" in observed
     assert "configs/em2g_full_slice_validation.v1.json" in observed
+
+
+def test_interpreter_path_keeps_virtualenv_symlink(tmp_path):
+    base = tmp_path / "base-python"
+    base.write_text("")
+    venv_python = tmp_path / "venv-python"
+    venv_python.symlink_to(base)
+    observed = absolute_preserving_symlinks(venv_python)
+    assert observed == venv_python
+    assert observed.is_symlink()
 
 
 def test_terminal_decision_requires_successful_receipt(tmp_path):
