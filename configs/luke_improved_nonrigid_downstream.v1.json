@@ -15,7 +15,7 @@
   },
   "manager": {
     "kind": "systemd_user_service",
-    "unit": "luke-improved-nonrigid-downstream-20260928-v2.service",
+    "unit": "luke-improved-nonrigid-downstream-20260928-v3.service",
     "working_directory": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools",
     "interpreter": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
     "argv": [
@@ -28,7 +28,7 @@
     "stderr": "/media/huklaban5/Data/luke_improved_motion_20260909_v1/downstream/stderr.log",
     "restart": "no",
     "managed_oom_preference": "avoid",
-    "prior_attempt": "The v1 service was killed by systemd-oomd at 2026-09-28 18:45:47 PDT while applying curated arrays; the journal measured user-manager pressure at 72.07% above its 50% threshold for more than 20 seconds. Evidence is retained under downstream/failed_attempts/v1_oomd_20260928. No sorter or QC stage had started.",
+    "prior_attempt": "The v1 service was killed by systemd-oomd at 2026-09-28 18:45:47 PDT while applying curated arrays; its evidence is retained under downstream/failed_attempts/v1_oomd_20260928. The v2 service then refused before curation because manager metadata had changed the old request digest; its evidence is retained under downstream/failed_attempts/v2_request_identity_20260928. The controller now excludes manager metadata from scientific identity and v3 uses ManagedOOMPreference=avoid. No sorter or QC stage ran in either failed attempt.",
     "survival_proof": "Reuses the systemd user manager whose launcher-disconnection success and failure proofs are recorded in testing/outputs/group2_preparation and docs/luke_group2_huklaban1_run.md."
   },
   "stages": [
