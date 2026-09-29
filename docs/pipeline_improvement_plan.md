@@ -14,6 +14,13 @@ excess (+0.01101), and edge-unit fraction (+0.01161). It also has 526 curated /
 operational pipeline and do not rerun this unchanged field/application. See the
 [full comparison](luke_improved_nonrigid_full_session_comparison_20260928.md)
 and [decision 0018](decisions/0018-reject-full-session-external-nonrigid-candidate.md).
+A cached 60 s field-regime screen also rejects selective use: among all 65
+supported interior primary pairs, baseline-event retention is flat to slightly
+worse in the highest field-RMS quartile (-0.00231 high minus quiet), and the
+paired candidate/reference event-count ratio falls to 0.932 of its quiet value.
+The refractory check passes, but both efficacy gates fail. Do not pursue a
+high-field-only version of the unchanged candidate. See the
+[regime screen](luke_improved_nonrigid_regime_screen_20260928.md).
 
 **Evidence update, 2026-09-28:** the cached cluster-452 follow-up is complete.
 Independent legacy-event anchoring found no transfer into a compatible rescue

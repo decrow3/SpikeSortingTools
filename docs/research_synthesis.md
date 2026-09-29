@@ -46,7 +46,9 @@ anatomy, probe geometry, acquisition, neural activity, and behavior also differ.
 5. **Better estimated motion has not yet produced a universally better sorting
    configuration in the documented comparisons.** The completed full-session
    external-nonrigid MEDiCINe candidate has now been rejected: paired
-   completeness was infeasible and three prospective guardrails failed.
+   completeness was infeasible and three prospective guardrails failed. A
+   cached field-regime screen also found no selective high-correction rescue of
+   reference events.
    Correction, sorter choice, interpolation, and identity tracking have
    regime-specific tradeoffs.
 6. **The evaluator itself needs validation.** Event matching, synthetic motion,

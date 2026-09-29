@@ -103,3 +103,14 @@ The cheaper conclusion is already decisive: this candidate has no supported
 efficacy endpoint and fails multiple guardrails. Do not spend on another sort
 using this unchanged field and application. A future motion candidate needs a
 qualified field and a feasible identity/coverage plan before sorting.
+
+## Field-regime follow-up
+
+A subsequent cached screen tested whether the candidate at least preserves more
+reference events during the field's highest applied-correction periods. It does
+not. Across all 65 supported interior primary pairs, median high-minus-quiet
+baseline-event retention is -0.00231 and the paired high/quiet candidate-to-
+baseline event-count ratio is 0.932. The refractory check passes, but both
+prespecified efficacy checks fail. High-field-only use of this unchanged field
+and operator is therefore also closed. See the
+[regime result](luke_improved_nonrigid_regime_screen_20260928.md).
