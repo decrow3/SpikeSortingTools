@@ -1,0 +1,2 @@
+role,first_arm,second_arm,delta_rho,ci95_low,ci95_high,valid_draws,directional_yield_pass,equivalence_yield_pass,directional_isi_pass,equivalence_isi_pass,decision
+primary,rounded_exact_dd,unrounded_kriging,0.04521627976967757,0.014336127219545405,0.07781311811271988,2000,True,True,True,True,mixed_or_inconclusive
