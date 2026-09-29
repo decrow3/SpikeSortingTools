@@ -1,0 +1,1168 @@
+{
+  "rounded_idw": {
+    "combined_effective_kernel_sha256": "7c0dc45a2d8b052d47e97ccad464607a1d522746e707ec13259406f3036ac6da",
+    "spec": {
+      "dtype": "float32",
+      "field": "lattice_rounded",
+      "force_extrapolate": false,
+      "method": "idw",
+      "num_closest": 4
+    },
+    "states": [
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -240.0,
+        "effective_kernel_sha256": "a7fd84503b492312b441adb6223572683018940f3000001fd3dbc9d4c66273d4",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -200.0,
+        "effective_kernel_sha256": "68a165bcd9a1128e37f5c381779d221d7186387b3b2a814deab481e34cef2925",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -160.0,
+        "effective_kernel_sha256": "a659aa1025152808ff300cc18f2c9cdd32bdf5cc072c48321639cb0b83ac5f2a",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -120.0,
+        "effective_kernel_sha256": "12dbd82021f50019cbd4d4c849c3ca366bf8c84167df875dbe1bf15dbeabf1bc",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -80.0,
+        "effective_kernel_sha256": "7e191b26d41f66d944ee4b305e1de0034df48f2a334e9295e557f6ce6fc8d1ee",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -40.0,
+        "effective_kernel_sha256": "dc615660f48be727ef8666a7e3b3d384b372b3c03af67d09ad8ddb0a44dda3b1",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": 0.0,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.0,
+        "displacement_um": 40.0,
+        "effective_kernel_sha256": "d8d2de60bf0f5098dd6a22184feea9b2b3ed465812280a05fb5f78f5ca015ecb",
+        "structural_zero_targets": 4
+      }
+    ]
+  },
+  "rounded_kriging": {
+    "combined_effective_kernel_sha256": "d6d4a862d044a1c22d7acf7e7139b26987cb517661d44603f1f6cb155244a955",
+    "spec": {
+      "dtype": "float32",
+      "field": "lattice_rounded",
+      "force_extrapolate": false,
+      "method": "kriging",
+      "p": 1.0,
+      "sigma_um": 20.0,
+      "sparse_thresh": null
+    },
+    "states": [
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -240.0,
+        "effective_kernel_sha256": "c02eb33a2cb6be6ae862f982919e3bd0897cf483a14b2441038993078300fda0",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -200.0,
+        "effective_kernel_sha256": "75a6ba89de14dcd3720340f8ce55cbff51aa960a6810a2aaabccc7e78a909b34",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -160.0,
+        "effective_kernel_sha256": "ac371d6199bab7b9dc4b6c76dae3f8db4c8c7affab14ab5e2664e572994f5584",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -120.0,
+        "effective_kernel_sha256": "28c6053adfcd86d39b3b1eb2d90f2b7c459c2793a0556c8290b4e20443f91103",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -80.0,
+        "effective_kernel_sha256": "444c009de96df90b7f019319f2b45cf2c45be1378263c62173def48013156f2b",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -40.0,
+        "effective_kernel_sha256": "95866ba849302da0980c9ac739a59782e51d7b8f9fd6f3b3bc9d3667d954a814",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": 0.0,
+        "effective_kernel_sha256": "e6573abfe7afb6bb23831d7b94b13acdc8cd6d960c5371da0c091c085d6f8525",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.0,
+        "displacement_um": 40.0,
+        "effective_kernel_sha256": "4b47788d45ba73a1598ccb71ee14752601b53819998e5abe35ba37df8c80008c",
+        "structural_zero_targets": 4
+      }
+    ]
+  },
+  "rounded_nearest": {
+    "combined_effective_kernel_sha256": "7c0dc45a2d8b052d47e97ccad464607a1d522746e707ec13259406f3036ac6da",
+    "spec": {
+      "dtype": "float32",
+      "field": "lattice_rounded",
+      "force_extrapolate": false,
+      "method": "nearest"
+    },
+    "states": [
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -240.0,
+        "effective_kernel_sha256": "a7fd84503b492312b441adb6223572683018940f3000001fd3dbc9d4c66273d4",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -200.0,
+        "effective_kernel_sha256": "68a165bcd9a1128e37f5c381779d221d7186387b3b2a814deab481e34cef2925",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -160.0,
+        "effective_kernel_sha256": "a659aa1025152808ff300cc18f2c9cdd32bdf5cc072c48321639cb0b83ac5f2a",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -120.0,
+        "effective_kernel_sha256": "12dbd82021f50019cbd4d4c849c3ca366bf8c84167df875dbe1bf15dbeabf1bc",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -80.0,
+        "effective_kernel_sha256": "7e191b26d41f66d944ee4b305e1de0034df48f2a334e9295e557f6ce6fc8d1ee",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -40.0,
+        "effective_kernel_sha256": "dc615660f48be727ef8666a7e3b3d384b372b3c03af67d09ad8ddb0a44dda3b1",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": 0.0,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.0,
+        "displacement_um": 40.0,
+        "effective_kernel_sha256": "d8d2de60bf0f5098dd6a22184feea9b2b3ed465812280a05fb5f78f5ca015ecb",
+        "structural_zero_targets": 4
+      }
+    ]
+  },
+  "unrounded_idw": {
+    "combined_effective_kernel_sha256": "7ea2eea459368287566fdb999d246cf857b5ce7b813547c0c0e17455674a8652",
+    "spec": {
+      "dtype": "float32",
+      "field": "unrounded_two_layer_rigid",
+      "force_extrapolate": false,
+      "method": "idw",
+      "num_closest": 4
+    },
+    "states": [
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999998211860657,
+        "displacement_um": -238.75701680287983,
+        "effective_kernel_sha256": "fde47f7af519dc293eba88bcb11b6dd2c48b680b886faff7b409c0f5e6a99750",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -230.91455116470541,
+        "effective_kernel_sha256": "f675d1934ac3a6534e7c41472e69c4505b52480a043ade0f6f97a490a64612a5",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -229.85789527695465,
+        "effective_kernel_sha256": "92b0781f6527fbc9db8c21c01c91f5c6f385d61416c2519fae4f738086b2aa51",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -221.4153617330656,
+        "effective_kernel_sha256": "bc6fbd3b9e65445a1572cc789a27b9d65f62ac30871b16c1f3766c51400de2b3",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -217.7090603729594,
+        "effective_kernel_sha256": "e735327f32a83bfc2d165918ed15bcd0ecfe2572e15d089d056cb75b1ce8cb10",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -216.72678163287296,
+        "effective_kernel_sha256": "0530018a8e7e043f2f2da88ff6b40258e4ea8452fa02eb3333b6f564845d45bc",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -207.5350220262869,
+        "effective_kernel_sha256": "9ece33fb54c22cd810b16a99da18849bda4fb8a36f6d7d6da20a9f87cbb80113",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -203.25173352069396,
+        "effective_kernel_sha256": "108fd8b90ee862804ad47ba561c867d4ed37a365b394f96881be2f796b3774a7",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999998211860657,
+        "displacement_um": -197.8630736963186,
+        "effective_kernel_sha256": "578c1608276196ceddbe93943d3c5646adc5568110ae0379d5a1dd761f2462c9",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -187.98730850289536,
+        "effective_kernel_sha256": "788669beff906e12e390ff982ee83be36de1d7478207206c36e4760b46d2fe51",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -185.879299483003,
+        "effective_kernel_sha256": "1837447f843e238458d8a0bf1ada5925fa19341f3cbfdfad1f2b677d754da18c",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -181.33665467920713,
+        "effective_kernel_sha256": "7c86dece825154fa013646b685fcff23c524a452e60441d3f8a59f30790d632b",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -173.82462325624059,
+        "effective_kernel_sha256": "dc972ff949208dec341fb228e78773fe451f978f9dea2fb32c17507d2c2c8981",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -149.8080527370745,
+        "effective_kernel_sha256": "bb3414bfe721aa74e96912823e1a53cc1930fe480b7aa6d3b66bd4d4b2465f6e",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -143.50764572327697,
+        "effective_kernel_sha256": "21cec3ff3cfb0a6e7761908855b864f1f21c9fddb8d55d9fafe08fb92ed6ffc5",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -140.98979166535034,
+        "effective_kernel_sha256": "0d0ac4ca2c7b7adce6db1c60a86f1a4029ab1d33854cbe746f2b43996e039ba4",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -135.49920075397674,
+        "effective_kernel_sha256": "f83cd0221801c0f0f11e32c3d6ba8ba02f0dfb9d5737ec62e613181765dfe825",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -132.58600677408975,
+        "effective_kernel_sha256": "3e17f105eee3b48fef0d9ddb4486c073a3305b1f919126a94cfef3a261fdaf1f",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -115.21120316151857,
+        "effective_kernel_sha256": "aad1c61611ac5fce11189bf56c7fcce9d37489d47c96b2cc57e5933480163bb4",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -51.64140161600725,
+        "effective_kernel_sha256": "fab19122ed80d002dccf9bcec4f2a1fb6be800c89cbbaf86f9402b763d2b8230",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -39.53375939398697,
+        "effective_kernel_sha256": "b7a989e3ce6cad81b0dad937077e9f69e6256d21eacc1aa60a03b99773256c60",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -27.248362081425,
+        "effective_kernel_sha256": "e3dd4f6a8e6f739a5e19b4409dbe0f7760663274e3ac8890fc6cdb2be3af9878",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -18.604196485309913,
+        "effective_kernel_sha256": "e7612bf74af88d1e9639d4df07bd88c8eef06c3a438fe1897771b0f23d4497aa",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -14.55060454269565,
+        "effective_kernel_sha256": "2862f2c6cb6c711b29dff65e52d281146419403a6b9b2f6c0342a9ef2fcfc866",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -5.000127141396925,
+        "effective_kernel_sha256": "59a451248b328e20afd375bc0e62a83f72c33a5e188ea65d23532daa5ddc7601",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -4.979527564300649,
+        "effective_kernel_sha256": "14bd762ff4d50ea25cbeeae59edc3bdb6f9419ec537cc1633bc891dc3e54cf1c",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.95360709335987,
+        "effective_kernel_sha256": "b05f9a31d0794533c00053c9d79e4f5afa6d3b7c266dcd59d8ebc61c5eab22d7",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -4.922097637497224,
+        "effective_kernel_sha256": "9f746698e0970075156fc7d5c44ae51c9afaec565031b6bd20ab70b35e4798e1",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -4.884926352516083,
+        "effective_kernel_sha256": "eb78f2511952069955f794066dbba5a7a73d591966aba096f148257dea62d8f6",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -4.842126419411218,
+        "effective_kernel_sha256": "ea26d02954736b6dc476428e32893d8f822869c95359119a3d886fe43cba001d",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -4.793937301851902,
+        "effective_kernel_sha256": "4c09267331e93a225aaa7ac0dd1cbbaeef763fca2420eaa15ba4897c66d3d296",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.740735445729109,
+        "effective_kernel_sha256": "db1e6f4f1287aa56b21e8aec955aa54b485fde1b4a835f635df17bf927bb63c7",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.68309554636634,
+        "effective_kernel_sha256": "3d3c4d4037ba596f3c2074500c3ec945119e4b595e6b1d3c0c815c0e528c9166",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -4.621755919211013,
+        "effective_kernel_sha256": "0ffd08247cd86ee3145d403eb59673571fc79f0f6317c69b221003e93c2cbf1b",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.55756417689328,
+        "effective_kernel_sha256": "cdd7d2d1bef8bef9572d8b5d7c2e26e7bc140226aee57fb8b33073edb6fea87a",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.491290080565911,
+        "effective_kernel_sha256": "151d9b86d03c2d4dd74796e3714621daec495b90ab5e1e42a9ed18644cfeb3f6",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -4.423859356031273,
+        "effective_kernel_sha256": "4032c05646e6ecf22079e723dba637003443fccadfce5c6d43663863a89849fe",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -4.35624371196641,
+        "effective_kernel_sha256": "fa5a4493e710df89eb47142fdebffa2698c5460ea8bc6f242e004e8dbb338d90",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -2.537491126450549,
+        "effective_kernel_sha256": "961fb532ff368f4e2e1ddec7857601a52514de692e481c2234cbae57df6fa199",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -2.4800454707139163,
+        "effective_kernel_sha256": "009362ecd2481b0e22fe179adff2e813259d78c1a38c0bafd5f98b3e6d30d44e",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -2.4271284585248534,
+        "effective_kernel_sha256": "f7ce68c226314485b31341bfffe27707ae2af5c24104ee955341481e4ccc6862",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 1.0,
+        "displacement_um": -2.378805199651474,
+        "effective_kernel_sha256": "0b0f49290c8cc4ba6d2029b8e18425c79c0d47351dc2c9d9539dc78d6cc13b8c",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -0.8058196646684324,
+        "effective_kernel_sha256": "90ffa3d4bd024c89dfbb999af60921b766a8c0faa3ac886d3674079588dd8f6f",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.0,
+        "displacement_um": 17.424491054210122,
+        "effective_kernel_sha256": "7736218132f9c8d4325ebf115ce999fe15153980537a72479bcd9d22094e960a",
+        "structural_zero_targets": 2
+      }
+    ]
+  },
+  "unrounded_kriging": {
+    "combined_effective_kernel_sha256": "fb250b53c854648393c6a8ed5c2f7428f28f0d97c026954db446d0b4b9f41c8c",
+    "spec": {
+      "dtype": "float32",
+      "field": "unrounded_two_layer_rigid",
+      "force_extrapolate": false,
+      "method": "kriging",
+      "p": 1.0,
+      "sigma_um": 20.0,
+      "sparse_thresh": null
+    },
+    "states": [
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -238.75701680287983,
+        "effective_kernel_sha256": "68380af6dd95bc6ae25beb7aa07275530b6ea611623c23bda00bb82ed091d98f",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999998211860657,
+        "displacement_um": -230.91455116470541,
+        "effective_kernel_sha256": "f53eb8545f071843ecd81197a28892f356f77cf79b5bd54678b35a56ab031c4f",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999998211860657,
+        "displacement_um": -229.85789527695465,
+        "effective_kernel_sha256": "35f47e7d8439bd8369e45a3cd9cc4d02a29dc7f77efbc81dbe32a19c5d49ddaa",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999997019767761,
+        "displacement_um": -221.4153617330656,
+        "effective_kernel_sha256": "a8bdcdf3ef3b14c3309ddfc22aa0f39fb99a6f908da64cbd8edaa0deddf2b086",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999997615814209,
+        "displacement_um": -217.7090603729594,
+        "effective_kernel_sha256": "c5f9522a7544d99f16b2dd5abdc25c362e213773977562b711a7ae0e4ebe680b",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999997019767761,
+        "displacement_um": -216.72678163287296,
+        "effective_kernel_sha256": "56b4246c6408363d317a7c3cf95f5bebe345d77dd53ba94a9247dc8d51212a14",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000003576278687,
+        "column_sum_min": 0.9999996423721313,
+        "displacement_um": -207.5350220262869,
+        "effective_kernel_sha256": "78e6693d1dfb781b69a099f944183a21a909b64894b43e8ddf54300bdc5a8379",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999998211860657,
+        "displacement_um": -203.25173352069396,
+        "effective_kernel_sha256": "89d9d994c7769e8eeadcd3ac00a2b03e17c5520e4cdd98cb721703d796ec7d69",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999997615814209,
+        "displacement_um": -197.8630736963186,
+        "effective_kernel_sha256": "10274e361ff4be3d19b76d39b3f1204dd77155b006e80ec5acbe010fcda047a9",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999997615814209,
+        "displacement_um": -187.98730850289536,
+        "effective_kernel_sha256": "25efb201e2b1de2db6985b75058e83d2a2163067130474efc487036eba4db6a1",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000003576278687,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -185.879299483003,
+        "effective_kernel_sha256": "4c519c6deb4f76614737eea03d2970b4389687f5f4c1daa511f1bef378c8ee31",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000003576278687,
+        "column_sum_min": 0.9999997019767761,
+        "displacement_um": -181.33665467920713,
+        "effective_kernel_sha256": "42bf208f136dbc3372abbcefaeb23c4c3fca9681f0eecf5f3ae222faf08c4f56",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -173.82462325624059,
+        "effective_kernel_sha256": "b656675b918d5febc3ebeb98b00771b0bd61ccb8346ca86e72e0792fe0453631",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.9999998211860657,
+        "displacement_um": -149.8080527370745,
+        "effective_kernel_sha256": "661ff84ae891f23b7d873030579a6e2782f578808838a0f0b19834f7e5ff1fd9",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999997019767761,
+        "displacement_um": -143.50764572327697,
+        "effective_kernel_sha256": "020a37e058921fcf5d951bb07bc9e1a7bef08bc3c56ac816ca7cb511d6987772",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -140.98979166535034,
+        "effective_kernel_sha256": "d4e9055d03516e038f0fa4a8008a315455fb64efb5e8651dbf736e1c6fc8e8ca",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -135.49920075397674,
+        "effective_kernel_sha256": "6b92b8764f9e9230507401fd84fc136dee6de92418364acafd130f60b581eac8",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999997615814209,
+        "displacement_um": -132.58600677408975,
+        "effective_kernel_sha256": "71477e931e1e907c94e02936072cdd2f01c6ff9974364c9f65cdce52e4a3e067",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999997615814209,
+        "displacement_um": -115.21120316151857,
+        "effective_kernel_sha256": "53f1a5ff006121c6c08ca0139e5a4f680561f077139b0e6b0db74a695beb7b8c",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999997615814209,
+        "displacement_um": -51.64140161600725,
+        "effective_kernel_sha256": "f9433f33fc121df4e070e6d5df1cd4da948d087034e32f66c9ce7e2193e17415",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -39.53375939398697,
+        "effective_kernel_sha256": "085061e01b022d6468ed701b95b26f283af0ed5ab18f43da989ed5fa2411b107",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -27.248362081425,
+        "effective_kernel_sha256": "8335280995d53e9a6f4a8f183982ed6c4415a3fe470c2216fbdc1956579324d9",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999997019767761,
+        "displacement_um": -18.604196485309913,
+        "effective_kernel_sha256": "5c96060734c742845565bee275d3a911d17f4527efe382ed6c458e8ed94e5d0f",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999998211860657,
+        "displacement_um": -14.55060454269565,
+        "effective_kernel_sha256": "5037ead5b91df5ed3aae75d5230b00830c921dfba9da68ea00d584f9e0d0bf43",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999997615814209,
+        "displacement_um": -5.000127141396925,
+        "effective_kernel_sha256": "0117e2149817f67875b6d9a43e643c373c90541a16635fefe854cb6b08ff7aee",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999998211860657,
+        "displacement_um": -4.979527564300649,
+        "effective_kernel_sha256": "3626663a28c4e1a32f5a10f80fecf652ce09203f459f586d2ef861785195f39b",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999997615814209,
+        "displacement_um": -4.95360709335987,
+        "effective_kernel_sha256": "ae058d8a20f8824b4271be9ab562ee3b9466b43105e3d384a9b10c1eebd760e4",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999997019767761,
+        "displacement_um": -4.922097637497224,
+        "effective_kernel_sha256": "670398f84b88d918c85a4134ab2b6d04892b979e2e9c82b64c1b5f9170d59411",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999997615814209,
+        "displacement_um": -4.884926352516083,
+        "effective_kernel_sha256": "f880cf773b3878089f17c9aa93bfdeb2e74667e8a1a30a4c3d735d16615fe419",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999998211860657,
+        "displacement_um": -4.842126419411218,
+        "effective_kernel_sha256": "4cf594cc6f58b54bca38a22736bb52323972fe7de951ce5e26ff66936cd958ed",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -4.793937301851902,
+        "effective_kernel_sha256": "a4c48e5edd275ee5d4b2af4b4b21902eb4c1c92536540d43fa163246073720f1",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999997615814209,
+        "displacement_um": -4.740735445729109,
+        "effective_kernel_sha256": "753c79599ab7919bdc54e4ea5ba74e93a1c3883a785ee4cf6bae7917c81cca45",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999998211860657,
+        "displacement_um": -4.68309554636634,
+        "effective_kernel_sha256": "ec9322b5769c8fff5542191d31bcf299bfe2899a0517b5b77703546729588dd6",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999996423721313,
+        "displacement_um": -4.621755919211013,
+        "effective_kernel_sha256": "9423480381f074c1c7add866af0bdb99407bedfcd84e373b3619a1c7126c48d6",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999997615814209,
+        "displacement_um": -4.55756417689328,
+        "effective_kernel_sha256": "604b925512491fa90a288b681e5f0402be81c516094f76f57a70cd6e8ef42a58",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999998211860657,
+        "displacement_um": -4.491290080565911,
+        "effective_kernel_sha256": "5a2a52777a9063de0324f4cd1c81777e155b6d91b461e6569963732899cf3666",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999997019767761,
+        "displacement_um": -4.423859356031273,
+        "effective_kernel_sha256": "e156abcc39c2ce3320322b9bc320bf5c60a7289e778002e3c52deaf4047da06a",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -4.35624371196641,
+        "effective_kernel_sha256": "8e5905cf16214054692565c889d6a41507a157398fa0a9e1a6254be94dfb1cf6",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999997615814209,
+        "displacement_um": -2.537491126450549,
+        "effective_kernel_sha256": "02211ab573908092001a2de8d810689c3c8244044ae784759ea6e6458280c656",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999996423721313,
+        "displacement_um": -2.4800454707139163,
+        "effective_kernel_sha256": "e54f04eb79b28b7edbaba90992cb0f9b70dd4223e26cbc0bfc39ffbd139f6568",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.9999998807907104,
+        "displacement_um": -2.4271284585248534,
+        "effective_kernel_sha256": "e04fc63993b937e109f7749ff8b3395e27c01032f426e048117330a2bbd004bc",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000003576278687,
+        "column_sum_min": 0.9999999403953552,
+        "displacement_um": -2.378805199651474,
+        "effective_kernel_sha256": "ad55adbc2d002ef3d96db4bb84e02bed60d42e6ee54bfecaefac913fba700f89",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.000000238418579,
+        "column_sum_min": 0.9999998211860657,
+        "displacement_um": -0.8058196646684324,
+        "effective_kernel_sha256": "b5a9fba2ace3b6fb5b14434e6adfcb0823bfa4b9a954b333cf47f31465d2859d",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0000001192092896,
+        "column_sum_min": 0.0,
+        "displacement_um": 17.424491054210122,
+        "effective_kernel_sha256": "a86981b51139f11ab1afbca85bc0fc544b8da0299ff68c9765f6299d537fdabf",
+        "structural_zero_targets": 2
+      }
+    ]
+  },
+  "unrounded_nearest": {
+    "combined_effective_kernel_sha256": "c904fe04997272ff0569b690622988c9be916f604181a0d6fe9eef4bbcdfe754",
+    "spec": {
+      "dtype": "float32",
+      "field": "unrounded_two_layer_rigid",
+      "force_extrapolate": false,
+      "method": "nearest"
+    },
+    "states": [
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -238.75701680287983,
+        "effective_kernel_sha256": "a7fd84503b492312b441adb6223572683018940f3000001fd3dbc9d4c66273d4",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -230.91455116470541,
+        "effective_kernel_sha256": "a7fd84503b492312b441adb6223572683018940f3000001fd3dbc9d4c66273d4",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -229.85789527695465,
+        "effective_kernel_sha256": "a7fd84503b492312b441adb6223572683018940f3000001fd3dbc9d4c66273d4",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -221.4153617330656,
+        "effective_kernel_sha256": "8c3878b6b388c2ec7cdb869fa11245b9e7dd279aef8b8c803f29ac7934e51b94",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -217.7090603729594,
+        "effective_kernel_sha256": "8c3878b6b388c2ec7cdb869fa11245b9e7dd279aef8b8c803f29ac7934e51b94",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -216.72678163287296,
+        "effective_kernel_sha256": "8c3878b6b388c2ec7cdb869fa11245b9e7dd279aef8b8c803f29ac7934e51b94",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -207.5350220262869,
+        "effective_kernel_sha256": "68a165bcd9a1128e37f5c381779d221d7186387b3b2a814deab481e34cef2925",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -203.25173352069396,
+        "effective_kernel_sha256": "68a165bcd9a1128e37f5c381779d221d7186387b3b2a814deab481e34cef2925",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -197.8630736963186,
+        "effective_kernel_sha256": "68a165bcd9a1128e37f5c381779d221d7186387b3b2a814deab481e34cef2925",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -187.98730850289536,
+        "effective_kernel_sha256": "68a165bcd9a1128e37f5c381779d221d7186387b3b2a814deab481e34cef2925",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -185.879299483003,
+        "effective_kernel_sha256": "68a165bcd9a1128e37f5c381779d221d7186387b3b2a814deab481e34cef2925",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -181.33665467920713,
+        "effective_kernel_sha256": "11f0c168a43f41d7420755709cf13aa6db8457d13d7c94e983812715e4c638c8",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -173.82462325624059,
+        "effective_kernel_sha256": "a659aa1025152808ff300cc18f2c9cdd32bdf5cc072c48321639cb0b83ac5f2a",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -149.8080527370745,
+        "effective_kernel_sha256": "a659aa1025152808ff300cc18f2c9cdd32bdf5cc072c48321639cb0b83ac5f2a",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -143.50764572327697,
+        "effective_kernel_sha256": "70462d3ca520105f10bd490c226da4be79a3baf0acbbcfdb336fd6a271630cfd",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -140.98979166535034,
+        "effective_kernel_sha256": "70462d3ca520105f10bd490c226da4be79a3baf0acbbcfdb336fd6a271630cfd",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -135.49920075397674,
+        "effective_kernel_sha256": "12dbd82021f50019cbd4d4c849c3ca366bf8c84167df875dbe1bf15dbeabf1bc",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -132.58600677408975,
+        "effective_kernel_sha256": "12dbd82021f50019cbd4d4c849c3ca366bf8c84167df875dbe1bf15dbeabf1bc",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -115.21120316151857,
+        "effective_kernel_sha256": "12dbd82021f50019cbd4d4c849c3ca366bf8c84167df875dbe1bf15dbeabf1bc",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -51.64140161600725,
+        "effective_kernel_sha256": "dc615660f48be727ef8666a7e3b3d384b372b3c03af67d09ad8ddb0a44dda3b1",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -39.53375939398697,
+        "effective_kernel_sha256": "dc615660f48be727ef8666a7e3b3d384b372b3c03af67d09ad8ddb0a44dda3b1",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -27.248362081425,
+        "effective_kernel_sha256": "dc615660f48be727ef8666a7e3b3d384b372b3c03af67d09ad8ddb0a44dda3b1",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -18.604196485309913,
+        "effective_kernel_sha256": "65eda2c88fc7a9219725eb81fa49c08a3bf70a4a3ded23c1e8c08c973783150b",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -14.55060454269565,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -5.000127141396925,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.979527564300649,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.95360709335987,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.922097637497224,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.884926352516083,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.842126419411218,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.793937301851902,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.740735445729109,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.68309554636634,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.621755919211013,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.55756417689328,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.491290080565911,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.423859356031273,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -4.35624371196641,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -2.537491126450549,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -2.4800454707139163,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -2.4271284585248534,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -2.378805199651474,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 1.0,
+        "displacement_um": -0.8058196646684324,
+        "effective_kernel_sha256": "14804f787013f45d1c11f2430f33218a7df5f692cee80fe6164c34f968273312",
+        "structural_zero_targets": 0
+      },
+      {
+        "column_sum_max": 1.0,
+        "column_sum_min": 0.0,
+        "displacement_um": 17.424491054210122,
+        "effective_kernel_sha256": "dc6b89103be54be875ec17dc2f76c0a922d3d9198d6cfb4dee1ed54f7df8c03e",
+        "structural_zero_targets": 2
+      }
+    ]
+  }
+}

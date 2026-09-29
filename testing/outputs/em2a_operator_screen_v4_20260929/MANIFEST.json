@@ -1,0 +1,44 @@
+{
+  "files": [
+    {
+      "bytes": 9129,
+      "path": "EVENTS.csv",
+      "sha256": "9d26ef33383e25022aee78358ec1bfc82fc0136ca02ea45027c89d2d27190004"
+    },
+    {
+      "bytes": 45397,
+      "path": "KERNELS.json",
+      "sha256": "df9c3062846f87984b17f11d6e6cc556f4fe0fdd5eaad878ba984d56de38eaed"
+    },
+    {
+      "bytes": 15801,
+      "path": "RESULT.json",
+      "sha256": "6c4f16a7e63b49174c046eeb24f09d7ea1830a8b487d1b5e743323ecf6eeadb6"
+    },
+    {
+      "bytes": 10841,
+      "path": "TRACE_METRICS.csv",
+      "sha256": "f11355293d51c2ebd5fd2499f030239f1c60ba3dc866a6a7983dd98e5023e975"
+    },
+    {
+      "bytes": 291131,
+      "path": "WAVEFORM_METRICS.csv",
+      "sha256": "103ddfcb195dc9dcfafc886df776eec5ba2c9b9a42ba2ed70b9e5ad4804ebb6f"
+    },
+    {
+      "bytes": 61605,
+      "path": "WAVEFORM_OVERLAYS.pdf",
+      "sha256": "b31a033e597aaa776e9e20e7db9424fcfa4bfc06c717b98c70c3862907bca6d4"
+    },
+    {
+      "bytes": 862135,
+      "path": "WAVEFORM_OVERLAYS.png",
+      "sha256": "dedf12c0d5340b53e028784bfd66c82225e475fbab5e1d2a1c1d9d0329331269"
+    },
+    {
+      "bytes": 260584,
+      "path": "ZERO_FILL_BY_CHANNEL.csv",
+      "sha256": "8a9c9676d22f9c11190c05c52de667566dbb41a04774a70d46ba7d5f62dcc7ed"
+    }
+  ]
+}

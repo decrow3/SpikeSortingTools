@@ -1,10 +1,16 @@
 # EM.1 huklaban5 voltage-equivalence handoff
 
-**Outcome:** completed with a strict qualification failure. See
-[the result report](EM-huklaban5-voltage-equivalence-result-20260928.md). The
-preserved v4 flat control is byte-exact, but the nonzero-motion snippets retain
-1–2-ULP upstream preprocessing-version differences. Do not start EM.2a or a
-sort from this handoff.
+**Outcome:** this historical execution handoff is superseded. The completed
+[EM.1 result](EM-huklaban5-voltage-equivalence-result-20260928.md) passes the
+task's explicit `1e-6` rule: the exact adapter's maximum residual is
+`2.98e-8` uV and its maps and zero masks are identical. The old byte-strict
+qualification failed because the nonzero-motion snippets retain 1–2-ULP
+upstream preprocessing-version differences.
+
+EM.2a has since completed; see the
+[operator-screen result](EM2a-operator-screen-result-20260929.md). This file
+remains the provenance for the original EM.1 command and return packet. It does
+not authorize an EM.2b sort.
 
 The compact huklaban5 return packet is published under
 `/mnt/NPX/Luke/DARTsort_motion_experiments/em_spikeinterface_lattice_20260928/huklaban5_result_v1`

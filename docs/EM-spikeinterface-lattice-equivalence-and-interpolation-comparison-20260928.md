@@ -1,16 +1,22 @@
 # EM — reproduce the exact lattice remap with SpikeInterface, then compare correction operators
 
-**Status:** EM.1 CLOSED — STOCK FAIL AND EXACT-ADAPTER QUALIFICATION FAIL;
-EM.2A/EM.2B STOPPED.
+**Status:** EM.1 PASS; EM.2A COMPLETE; EM.2B AWAITS ITS SEPARATE SORT
+AUTHORIZATION.
 
-The bounded huklaban5 voltage audit is complete. The flat `q=0` control is
-byte-exact after reproducing DD's parent-read chunks, and all tested zero masks
-match. The two nonzero-motion snippets retain 1–2-float32-ULP differences because
-the required SpikeInterface 0.104.7 execution reconstructs some upstream parent
-values differently from DD's 0.104.8 materialization. See the
-[huklaban5 result](EM-huklaban5-voltage-equivalence-result-20260928.md). This is
-an EM.1 qualification failure, so the conditional operator screen and sorts do
-not proceed.
+The bounded huklaban5 voltage audit passes the task's explicit `1e-6`
+acceptance rule. The exact adapter has identical source maps and zero masks and
+a maximum voltage error of `2.98e-8` uV. Stock nearest fails only at the four
+AP191 interior-hole mappings, while interpolating AP191 before stock nearest is
+usable as the imec1 production pattern. See the
+[huklaban5 result](EM-huklaban5-voltage-equivalence-result-20260928.md).
+
+The CPU-only EM.2a operator screen is also complete. Rounded nearest and IDW
+are exactly redundant on the frozen snippets; unrounded nearest, IDW, and
+kriging are materially distinct. The selected nonredundant EM.2b set is the
+existing S0 and exact-DD controls plus unrounded kriging, IDW, and nearest, with
+rounded kriging as the bridge. See the
+[EM.2a result](EM2a-operator-screen-result-20260929.md). No EM.2b sort has been
+authorized or launched.
 
 - **Published handoff:**
   `/mnt/NPX/Luke/DARTsort_motion_experiments/em_spikeinterface_lattice_20260928/huklaban1_v1`
@@ -30,10 +36,12 @@ not proceed.
   local 0.102.1 and the required 0.104.7, so stock equivalence failed with four
   mismatches. See
   [EM local mapping result](EM-lattice-mapping-audit-result-20260928.md).
-  The bounded 9-second huklaban5 comparison is complete and failed strict byte
-  equivalence for the exact adapter under the required 0.104.7 path. The
-  mapping and zero-fill decisions matched, but upstream preprocessing-version
-  differences remained in the nonzero-motion source channels.
+  The bounded 9-second huklaban5 comparison passes the requested `1e-6`
+  tolerance for the exact adapter under the required 0.104.7 path. The mapping
+  and zero-fill decisions match exactly. The remaining nonzero-motion voltage
+  residuals are only `1–2` float32 ULP from the upstream preprocessing-version
+  difference; they explain the historical byte-strict failure but do not fail
+  the stated EM.1 rule.
 
 - **Canonical home:** `/home/huklab/Documents/RyanSorting/SpikeSortingTools` (this repository). Put the reusable helper and tests here; do not modify the DARTsort repository.
 - **Execution locality:** raw voltage remains on huklaban5. If an actual-voltage check or sort must run there, execute this repository's reviewed commit (or an exact source snapshot with recorded SHA-256 hashes) in the installed SpikeInterface 0.104.7 environment. No voltage is copied off huklaban5.
