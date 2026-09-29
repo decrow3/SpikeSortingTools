@@ -34,7 +34,7 @@
   },
   "manager": {
     "kind": "systemd_user_service",
-    "unit": "luke-improved-rigid-comparison-20260928-v1.service",
+    "unit": "luke-improved-rigid-comparison-20260928-v2.service",
     "working_directory": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools",
     "interpreter": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
     "argv": [
@@ -45,7 +45,9 @@
       "--wait-for-handoff"
     ],
     "restart": "no",
-    "managed_oom_preference": "avoid"
+    "managed_oom_preference": "avoid",
+    "terminal_receipt": "testing/outputs/luke_improved_rigid_comparison_job_v2/service_result.json",
+    "prior_attempt": "The v1 watcher was stopped before handoff publication or comparison because its transient unit omitted the required ExecStopPost terminal service receipt. It loaded no candidate data and wrote no comparison output."
   },
   "interpretation": "Paired descriptive comparison of the completed full-session external-rigid 12/9 development sort against the 12/9 motion-off operational reference. Correspondence is not proof of biological identity and no automatic production promotion is permitted."
 }

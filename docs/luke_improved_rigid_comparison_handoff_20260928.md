@@ -66,6 +66,9 @@ then independently verifies every artifact before loading any candidate data.
 Its scientific settings and spatial domain are identical to the completed
 nonrigid-vs-reference comparison. `ManagedOOMPreference=avoid` retains the
 resource protection required after the earlier user-manager oomd termination.
+The initial v1 watcher was deliberately stopped while still waiting because its
+transient unit lacked an `ExecStopPost` terminal receipt. V2 adds that receipt;
+v1 loaded no candidate data and produced no comparison output.
 
 Do not infer a rigid-arm decision from the 480 raw units, 108 raw KS-good units,
 or 28,176,859 raw spikes. The arm remains `comparison_pending` until the paired
