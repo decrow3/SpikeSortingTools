@@ -1,0 +1,47 @@
+{
+  "config_sha256": "3d9a55d597721d1f4edde9fb3c2599b8457fe7077f623d95071b44b8df0240eb",
+  "dispatch": {
+    "command": [
+      "systemd-run",
+      "--user",
+      "--unit=dartsort-dataset-0b7fd28a5662",
+      "--property=RuntimeMaxSec=27180",
+      "--property=TimeoutStopSec=15",
+      "--property=WorkingDirectory=/home/huklaban5/Documents/DARTsort",
+      "--setenv=PYTHONPATH=/home/huklaban5/Documents/DARTsort",
+      "--setenv=OMP_NUM_THREADS=1",
+      "--setenv=OPENBLAS_NUM_THREADS=1",
+      "/home/huklaban5/Documents/DARTsort/.venv/bin/python",
+      "-u",
+      "/tmp/em2b-rounded-exact-dd-dummy-20260929/source/pipeline.py",
+      "run",
+      "--config",
+      "/tmp/em2b-rounded-exact-dd-dummy-20260929/config.json",
+      "--output",
+      "/tmp/em2b-rounded-exact-dd-dummy-20260929",
+      "--dummy"
+    ],
+    "service": "dartsort-dataset-0b7fd28a5662",
+    "started_epoch": 1790667765.342696
+  },
+  "dummy_complete": {
+    "pid": 1717230,
+    "status": "complete"
+  },
+  "environment": {
+    "cuda": "12.4",
+    "gpu": "NVIDIA RTX A5000",
+    "python": "/home/huklaban5/Documents/DARTsort/.venv/bin/python",
+    "torch": "2.6.0+cu124"
+  },
+  "exec_main_status": 0,
+  "final_active_state": "inactive",
+  "final_sub_state": "dead",
+  "pipeline_sha256": "857614c3f711eb4e2270bd198be718c7ecd94c02a91e5dd8b5f25ec649167a4e",
+  "recording_descriptor_sha256": "b6fd2e162e93b5492b93885d0ee9e8e438cf44f33ed462abbdd3e3a1b3b9577e",
+  "schema": "em2b-stage0-dummy-v1",
+  "service": "dartsort-dataset-0b7fd28a5662.service",
+  "spike_sort_launched": false,
+  "status": "complete",
+  "verified_utc": "2026-09-29T07:43:13.791387+00:00"
+}

@@ -15,7 +15,7 @@
   },
   "arms": {
     "none_s0": {"role": "existing no-correction control", "new_sort": false},
-    "rounded_exact_dd": {"role": "existing lattice control", "new_sort": false},
+    "rounded_exact_dd": {"role": "lattice control and first-arm resource measurement", "new_sort": true, "stage": 0},
     "unrounded_kriging": {"role": "primary standard comparator", "new_sort": true, "stage": 1},
     "rounded_kriging_bridge": {"role": "field-rounding bridge", "new_sort": true, "stage": 1},
     "unrounded_idw": {"role": "secondary comparator", "new_sort": true, "stage": 2},
@@ -84,18 +84,23 @@
     "undefined": "if either arm has fewer than 3 eligible units, a constant rank vector, a non-finite point rho, or fewer than 1900 valid bootstrap draws, report unresolved and do not substitute zero"
   },
   "staging": {
+    "stage_0": ["rounded_exact_dd"],
+    "stage_0_purpose": "measure one selected end-to-end arm before setting later-arm caps",
     "stage_1": ["unrounded_kriging", "rounded_kriging_bridge"],
     "stage_2": ["unrounded_idw", "unrounded_nearest"],
     "stage_2_trigger": "launch only if the frozen stage-1 reading does not resolve whether the result is driven by field rounding versus operator choice"
   },
   "resources": {
-    "measured_reference_sort_wall_seconds": 1514.1411101818085,
-    "measured_reference_run_gib": 1.3,
-    "per_new_arm_wall_seconds_max": 2700,
-    "per_new_arm_scratch_gib_max": 5,
+    "contextual_prior_d2l_sort_wall_seconds": 1514.1411101818085,
+    "contextual_prior_d2l_run_gib": 1.3,
+    "contextual_prior_is_not_selected_arm_measurement": true,
+    "stage_0_wall_seconds_ceiling": 10800,
+    "stage_0_scratch_gib_ceiling": 15,
+    "per_later_arm_wall_seconds_max": null,
+    "per_later_arm_scratch_gib_max": null,
     "gpu_count": 1,
     "cpu_jobs": 4,
-    "stage_1_wall_seconds_max": 5400,
+    "later_arm_caps_policy": "freeze after the completed rounded_exact_dd measurement and before another sort authorization",
     "silent_budget_expansion": false
   }
 }
