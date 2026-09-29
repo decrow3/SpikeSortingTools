@@ -1,10 +1,9 @@
 import numpy as np
-import pytest
 import hashlib
 import json
 from pathlib import Path
 
-from testing.em2g_slice_full_sort import slice_arrays
+from testing.em2g_slice_full_sort import slice_arrays, stable_time_order
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,15 +21,31 @@ def test_slice_arrays_uses_half_open_window_and_local_clock():
     assert selected_channels.tolist() == [5, 6, 7]
 
 
-def test_slice_arrays_rejects_unsorted_events():
-    with pytest.raises(ValueError, match="not sorted"):
-        slice_arrays(
-            np.asarray([2, 1]),
-            np.asarray([0, 0]),
-            np.asarray([0, 0]),
-            0,
-            3,
-        )
+def test_slice_arrays_stably_normalizes_locally_shifted_events():
+    local, labels, channels = slice_arrays(
+        np.asarray([2, 1, 2]),
+        np.asarray([20, 10, 21]),
+        np.asarray([2, 1, 3]),
+        0,
+        3,
+    )
+    assert local.tolist() == [1, 2, 2]
+    assert labels.tolist() == [10, 20, 21]
+    assert channels.tolist() == [1, 2, 3]
+
+
+def test_time_order_diagnostic_records_bounded_normalization():
+    times, (labels,), diagnostic = stable_time_order(
+        np.asarray([3, 2, 2]), np.asarray([30, 20, 21])
+    )
+    assert times.tolist() == [2, 2, 3]
+    assert labels.tolist() == [20, 21, 30]
+    assert diagnostic == {
+        "input_sorted": False,
+        "adjacent_inversions": 1,
+        "maximum_backward_samples": 1,
+        "normalization": "stable_argsort_times_samples",
+    }
 
 
 def test_validation_contract_is_frozen_to_launched_run_and_references():

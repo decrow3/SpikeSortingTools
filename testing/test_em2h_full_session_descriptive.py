@@ -95,11 +95,12 @@ def test_whole_session_audit_end_to_end_on_synthetic_outputs(tmp_path, monkeypat
     config_sha = hashlib.sha256(config_path.read_bytes()).hexdigest()
     times = np.asarray([5, 10, 25, 30, 45, 55, 65, 75, 85, 95], dtype=np.int64)
     labels = np.asarray([0, 0, 0, 1, 1, 1, 0, 0, 1, -1], dtype=np.int32)
+    candidate_order = np.asarray([0, 2, 1, 3, 4, 5, 6, 7, 8, 9])
     candidate_sort = run / "sort/dartsort_sorting.npz"
     np.savez(
         candidate_sort,
-        times_samples=times,
-        labels=labels,
+        times_samples=times[candidate_order],
+        labels=labels[candidate_order],
         channels=np.zeros(len(times), dtype=np.int16),
         sampling_frequency=np.asarray(fs),
         geom=np.asarray([[0.0, 0.0]]),
@@ -166,6 +167,7 @@ def test_whole_session_audit_end_to_end_on_synthetic_outputs(tmp_path, monkeypat
     complete = json.loads((output / "COMPLETE.json").read_text())
     assert result["status"] == "complete"
     assert result["resource_limits_pass"] is True
+    assert result["candidate_time_ordering"]["normalization"] == "stable_argsort_times_samples"
     assert len(result["summaries"]) == 3
     assert complete["status"] == "complete"
     assert (output / "UNIT_DOMAIN_METRICS.csv").is_file()

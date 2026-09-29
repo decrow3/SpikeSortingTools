@@ -24,6 +24,28 @@ def atomic_json(path: Path, value: object) -> None:
     temporary.replace(path)
 
 
+def stable_time_order(
+    times: np.ndarray, *aligned: np.ndarray
+) -> tuple[np.ndarray, tuple[np.ndarray, ...], dict[str, object]]:
+    """Normalize DARTsort's locally shifted event rows into stable time order."""
+    times = np.asarray(times, dtype=np.int64)
+    arrays = tuple(np.asarray(value) for value in aligned)
+    if any(value.shape != times.shape for value in arrays):
+        raise ValueError("event arrays differ in shape")
+    differences = np.diff(times)
+    inversions = int(np.count_nonzero(differences < 0))
+    diagnostic = {
+        "input_sorted": inversions == 0,
+        "adjacent_inversions": inversions,
+        "maximum_backward_samples": int(-differences.min()) if inversions else 0,
+        "normalization": "none" if not inversions else "stable_argsort_times_samples",
+    }
+    if not inversions:
+        return times, arrays, diagnostic
+    order = np.argsort(times, kind="stable")
+    return times[order], tuple(value[order] for value in arrays), diagnostic
+
+
 def slice_arrays(
     times: np.ndarray,
     labels: np.ndarray,
@@ -31,13 +53,7 @@ def slice_arrays(
     start: int,
     end: int,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    times = np.asarray(times, dtype=np.int64)
-    labels = np.asarray(labels)
-    channels = np.asarray(channels)
-    if not (times.shape == labels.shape == channels.shape):
-        raise ValueError("event arrays differ in shape")
-    if np.any(np.diff(times) < 0):
-        raise ValueError("full-session event times are not sorted")
+    times, (labels, channels), _ = stable_time_order(times, labels, channels)
     left = int(np.searchsorted(times, start, side="left"))
     right = int(np.searchsorted(times, end, side="left"))
     local = times[left:right] - start
@@ -75,6 +91,9 @@ def main() -> None:
         channels = np.asarray(saved["channels"])
         sampling_frequency = float(saved["sampling_frequency"])
         geom = np.asarray(saved["geom"], dtype=np.float64)
+    times, (labels, channels), time_ordering = stable_time_order(
+        times, labels, channels
+    )
     expected_fs = float(contract["scope"]["sampling_frequency_hz"])
     if not np.isclose(sampling_frequency, expected_fs, rtol=0, atol=1e-9):
         raise RuntimeError("full-session sorting sampling frequency differs")
@@ -125,6 +144,7 @@ def main() -> None:
             "assigned_events": int(np.count_nonzero(labels >= 0)),
             "negative_events": int(np.count_nonzero(labels < 0)),
             "assigned_units": int(np.unique(labels[labels >= 0]).size),
+            "time_ordering": time_ordering,
         },
         "windows": windows,
     }

@@ -15,6 +15,7 @@ import pandas as pd
 from scipy.stats import spearmanr
 
 from testing.de_common_outcome_scorecard import DOMAINS, intervals
+from testing.em2g_slice_full_sort import stable_time_order
 
 
 def sha256(path: Path) -> str:
@@ -213,6 +214,9 @@ def main() -> None:
         candidate_times = np.asarray(saved["times_samples"], dtype=np.int64)
         candidate_labels = np.asarray(saved["labels"], dtype=np.int64)
         candidate_fs = float(saved["sampling_frequency"])
+    candidate_times, (candidate_labels,), candidate_time_ordering = stable_time_order(
+        candidate_times, candidate_labels
+    )
     if not np.isclose(candidate_fs, fs, rtol=0, atol=1e-9):
         raise RuntimeError("candidate sampling frequency differs")
 
@@ -240,8 +244,8 @@ def main() -> None:
         raise RuntimeError("candidate event outside support")
     if reference_times.size and (reference_times.min() < 0 or reference_times.max() >= end_frame):
         raise RuntimeError("reference event outside support")
-    if np.any(np.diff(candidate_times) < 0) or np.any(np.diff(reference_times) < 0):
-        raise RuntimeError("event times are not sorted")
+    if np.any(np.diff(reference_times) < 0):
+        raise RuntimeError("reference event times are not sorted")
 
     with np.load(contract["domain_inputs"]["field"]["path"], allow_pickle=False) as saved:
         field_times = np.asarray(saved["time_s"], dtype=np.float64)
@@ -311,6 +315,7 @@ def main() -> None:
         "status": "complete",
         "contract_sha256": sha256(args.contract),
         "candidate_sorting_sha256": candidate_sha,
+        "candidate_time_ordering": candidate_time_ordering,
         "domain_exposure_seconds": {
             name: float(exposure[index]) for index, name in enumerate(DOMAINS)
         },
