@@ -91,12 +91,12 @@ channels 294--309, 61 samples, and at most 200 evenly spaced events in each
 partition. It requested 650,016 scalar samples and did not scan or copy a
 continuous voltage interval.
 
-| partition | available / sampled | median waveform PTP | cosine to reference |
-|---|---:|---:|---:|
-| reference, matched by `full_st` | 2,149 / 200 | 112.5 µV | 1.000 |
-| reference, missed by `full_st` | 66 / 66 | 96.1 µV | 0.895 |
-| failing, matched by `full_st` | 2,674 / 200 | 91.4 µV | 0.927 |
-| failing, missed by `full_st` | 1,793 / 200 | 77.3 µV | **0.865** |
+| partition | available / sampled | median waveform PTP | baseline noise | SNR | cosine to reference |
+|---|---:|---:|---:|---:|---:|
+| reference, matched by `full_st` | 2,149 / 200 | 112.5 µV | 24.3 µV | 4.63 | 1.000 |
+| reference, missed by `full_st` | 66 / 66 | 96.1 µV | 20.8 µV | 4.61 | 0.895 |
+| failing, matched by `full_st` | 2,674 / 200 | 91.4 µV | 24.3 µV | 3.76 | 0.927 |
+| failing, missed by `full_st` | 1,793 / 200 | 77.3 µV | 24.3 µV | 3.18 | **0.865** |
 
 The failing unmatched waveform retains the frozen minimum cosine of 0.80 and
 has 68.75% of reference PTP, below the frozen 90% attenuation boundary. The
@@ -105,6 +105,12 @@ weaker at times when the current universal detector misses the independent
 anchor. Median similarity does not establish every unmatched event as the same
 neuron, and the legacy anchor is not ground truth, but the population result is
 strong enough to motivate one bounded detection/preprocessing candidate.
+
+The frozen v2 extension finds no material local-baseline-noise increase: the
+failing-unmatched/reference noise ratio is exactly 1.00 against a 1.25 boundary.
+The SNR decline is driven by waveform attenuation in this sparse comparison,
+not by higher local baseline noise. This narrows the candidate class toward
+detection sensitivity to a weakening waveform.
 
 ## Reproducibility and next action
 
@@ -117,19 +123,21 @@ strong enough to motivate one bounded detection/preprocessing candidate.
 - Cluster 553 corrected detection config:
   [`v2`](../configs/luke_cluster553_detection_lineage.v2.json), SHA-256
   `e9f23467f18f8c383f0ebb3e38d7f264c693795ab6d8fd0ae6be9f9d40b14534`.
-- Missing-waveform config:
-  [`luke_cluster553_missing_anchor_waveforms.v1.json`](../configs/luke_cluster553_missing_anchor_waveforms.v1.json),
-  SHA-256 `180912933c3202d28344ed9b49bc327c7130bed99dceca14292b9f5ed0972e15`.
+- Missing-waveform configs:
+  [`v1`](../configs/luke_cluster553_missing_anchor_waveforms.v1.json), SHA-256
+  `180912933c3202d28344ed9b49bc327c7130bed99dceca14292b9f5ed0972e15`,
+  and the noise-discriminator [`v2`](../configs/luke_cluster553_missing_anchor_waveforms.v2.json),
+  SHA-256 `e95d3d6eb7bf348fe4b9f85d78fa6e02a6a6459f3c8878b8b10423a6ab8fdb7f`.
 - Implementations:
   [`luke_dropout_anchor_screen.py`](../testing/luke_dropout_anchor_screen.py),
   [`luke_cluster21_detection_lineage.py`](../testing/luke_cluster21_detection_lineage.py), and
   [`luke_cluster553_missing_anchor_waveforms.py`](../testing/luke_cluster553_missing_anchor_waveforms.py).
 
-The simplest next check is to reuse the extracted partitions to compare local
-baseline noise and artifact proximity for matched and missed events. That can
-distinguish pure attenuation from a noise/artifact-driven SNR loss; it still
-cannot select a production detector. Only after that direct check should one
-specific preprocessing or detection operation receive a frozen bounded
-candidate contract on cluster 553 plus healthy controls.
+Local baseline noise is now excluded as the material driver in the sparse
+partitions. The remaining cheap check is proximity to the existing artifact
+sidecar at matched and missed anchor times. If artifact proximity is also
+unremarkable, one specific detection operation may receive a frozen bounded
+candidate contract on cluster 553 plus healthy controls. The operation must be
+separately justified and cannot be a relabeling of the closed threshold sweep.
 
 No sort was launched and no production output, threshold, or label changed.

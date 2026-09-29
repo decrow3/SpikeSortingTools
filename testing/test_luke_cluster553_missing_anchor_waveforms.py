@@ -13,4 +13,5 @@ def test_waveform_metrics_recovers_reference_shape():
     metrics, median = waveform_metrics(np.stack([wave, wave]), wave, 2)
     assert metrics["sampled_events"] == 2
     assert np.isclose(metrics["reference_cosine"], 1)
+    assert metrics["baseline_noise_uv"] == 0
     assert median.shape == wave.shape

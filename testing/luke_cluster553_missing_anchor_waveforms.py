@@ -25,14 +25,18 @@ def evenly_bounded(values: np.ndarray, maximum: int) -> np.ndarray:
     return values[np.linspace(0, len(values) - 1, maximum, dtype=int)]
 
 
-def waveform_metrics(waves: np.ndarray, reference: np.ndarray | None, max_lag: int) -> tuple[dict, np.ndarray | None]:
+def waveform_metrics(waves: np.ndarray, reference: np.ndarray | None, max_lag: int,
+                     baseline_samples: int = 15) -> tuple[dict, np.ndarray | None]:
     if not len(waves):
         return {"sampled_events": 0, "median_waveform_ptp_uv": None,
+                "baseline_noise_uv": None, "median_waveform_snr": None,
                 "reference_cosine": None, "reference_best_lag_samples": None}, None
     median = np.median(waves.astype(np.float64), axis=0)
     ptp = float(np.max(np.ptp(median, axis=0)))
+    noise = float(np.median(np.abs(waves[:, :baseline_samples])) / 0.6744897501960817)
     cosine, lag = template_cosine(reference, median, max_lag) if reference is not None else (1.0, 0)
     return {"sampled_events": int(len(waves)), "median_waveform_ptp_uv": ptp,
+            "baseline_noise_uv": noise, "median_waveform_snr": ptp / noise if noise else None,
             "reference_cosine": cosine, "reference_best_lag_samples": lag}, median
 
 
@@ -100,24 +104,37 @@ def run(config_path: Path, output: Path) -> dict:
                      int(wf["baseline_samples"]), float(wf["gain_uv_per_count"]))
         for key, values in partitions.items()
     }
-    _, reference = waveform_metrics(waves["reference_matched"], None, int(wf["maximum_alignment_lag_samples"]))
+    _, reference = waveform_metrics(
+        waves["reference_matched"], None, int(wf["maximum_alignment_lag_samples"]),
+        int(wf["baseline_samples"])
+    )
     metrics = {}
     for key, stack in waves.items():
-        metrics[key], _ = waveform_metrics(stack, reference, int(wf["maximum_alignment_lag_samples"]))
+        metrics[key], _ = waveform_metrics(
+            stack, reference, int(wf["maximum_alignment_lag_samples"]),
+            int(wf["baseline_samples"])
+        )
         metrics[key]["available_events"] = counts[key]
     failure = metrics["failing_unmatched"]
     reference_ptp = metrics["reference_matched"]["median_waveform_ptp_uv"]
     ratio = float(failure["median_waveform_ptp_uv"] / reference_ptp) if reference_ptp else None
+    noise_ratio = float(
+        failure["baseline_noise_uv"] / metrics["reference_matched"]["baseline_noise_uv"]
+    ) if metrics["reference_matched"]["baseline_noise_uv"] else None
     cosine_pass = failure["reference_cosine"] is not None and failure["reference_cosine"] >= float(wf["minimum_reference_cosine"])
     attenuation_pass = ratio is not None and ratio <= float(wf["maximum_unmatched_to_reference_ptp_ratio_for_attenuation"])
-    verdict = "subthreshold_like_waveform_supported" if cosine_pass and attenuation_pass else (
+    noise_limit = float(wf.get("maximum_noise_ratio_without_material_increase", np.inf))
+    verdict = "attenuated_like_waveform_without_material_noise_increase" if (
+        cosine_pass and attenuation_pass and noise_ratio is not None and noise_ratio <= noise_limit
+    ) else ("attenuated_like_waveform_with_noise_increase" if cosine_pass and attenuation_pass else (
         "missed_similar_waveform_not_attenuated" if cosine_pass else "unmatched_anchor_waveform_not_supported"
-    )
+    ))
     result = {
         "schema": config["schema"], "status": "complete", "verdict": verdict,
         "config_sha256": sha256(config_path), "target_cluster": target,
         "legacy_anchor_cluster": anchor_id, "target_depth_um": target_depth,
         "partition_metrics": metrics, "failing_unmatched_to_reference_ptp_ratio": ratio,
+        "failing_unmatched_to_reference_noise_ratio": noise_ratio,
         "raw_samples_requested": int(sum(len(v) for v in partitions.values()) * (int(wf["pre_samples"]) + int(wf["post_samples"])) * len(channels)),
         "sort_launched": False, "production_changed": False,
     }

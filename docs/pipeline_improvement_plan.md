@@ -22,7 +22,8 @@ material independent loss for clusters 21 and 553. Exact saved-array lineage
 places both deficits at or before `full_st`, with no downstream curation
 explanation. Cluster 553 is the current target: it is an interior unit and its
 missed anchor times retain a similar but attenuated waveform (cosine 0.865;
-68.75% of reference PTP). The next candidate must name one specific detection
+68.75% of reference PTP), with unchanged local baseline noise (ratio 1.00).
+The next candidate must name one specific detection
 or preprocessing operation; this evidence does not reopen the closed threshold
 arms. See the [anchor and stage-lineage result](luke_dropout_anchor_and_detection_lineage_20260928.md).
 
