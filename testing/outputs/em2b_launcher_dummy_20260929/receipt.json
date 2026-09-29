@@ -1,0 +1,12 @@
+{
+  "completion_marker": "complete",
+  "exec_main_status": 0,
+  "launch_command": "systemd-run --user --unit=em2b-launcher-dummy-20260929 --collect /bin/bash -lc 'sleep 10; printf complete > /tmp/em2b-launcher-dummy-20260929.complete'",
+  "launcher_returned_while_service_state": "active/running",
+  "purpose": "Verify a systemd user service survives launcher-shell exit before any EM.2b sort.",
+  "schema": "persistent-launcher-dummy-v1",
+  "separate_followup_state": "inactive/dead",
+  "spike_sort_launched": false,
+  "unit": "em2b-launcher-dummy-20260929.service",
+  "verified_utc": "2026-09-29T07:37:39.940145+00:00"
+}

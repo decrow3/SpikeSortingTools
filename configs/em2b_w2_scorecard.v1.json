@@ -1,0 +1,101 @@
+{
+  "schema": "em2b-w2-scorecard-v1",
+  "frozen_utc": "2026-09-29T07:36:58Z",
+  "scope": {
+    "dataset": "Luke0804 imec1 W2",
+    "sampling_frequency_hz": 29999.759166666667,
+    "frames_half_open": [26999783, 37199701],
+    "outer_holdout_access": false,
+    "rf_analysis": false
+  },
+  "inputs": {
+    "field_sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+    "mask_sha256": "86425e8a6627a10ac8932ba01b799cb7be7141f731ebb4ecc01e303326b9da55",
+    "catalogue_sha256": "46463cda1348c0e0b0c39ad22ae9c71bc46f7c7347797c1c10588944cfc52df1"
+  },
+  "arms": {
+    "none_s0": {"role": "existing no-correction control", "new_sort": false},
+    "rounded_exact_dd": {"role": "existing lattice control", "new_sort": false},
+    "unrounded_kriging": {"role": "primary standard comparator", "new_sort": true, "stage": 1},
+    "rounded_kriging_bridge": {"role": "field-rounding bridge", "new_sort": true, "stage": 1},
+    "unrounded_idw": {"role": "secondary comparator", "new_sort": true, "stage": 2},
+    "unrounded_nearest": {"role": "snapping diagnostic", "new_sort": true, "stage": 2}
+  },
+  "domains": {
+    "field_depth_column": 0,
+    "baseline": "centered rolling median over 480 field knots",
+    "negative_excursion": "deviation_um < -120",
+    "outside_mask_flat": "outside frozen mask and abs(deviation_um) < 20",
+    "remainder": "exhaustive complement; never interpreted as true rest",
+    "intervals": "piecewise-linear threshold crossings with half-open boundaries"
+  },
+  "eligibility": {
+    "unit_scope": "arm-local assigned units; no cross-arm unit matching",
+    "rule": "at least 100 outside-mask-flat events in the full W2 point dataset",
+    "bootstrap_policy": "freeze each arm's full-W2 eligible unit set for every draw",
+    "pseudocount": 0.5
+  },
+  "primary_statistic": {
+    "name": "rho_negative_vs_flat",
+    "definition": "Spearman correlation across eligible arm-local units between log((negative_count+0.5)/negative_exposure) and log((flat_count+0.5)/flat_exposure)",
+    "interpretation": "continuity proxy only; not identity or purity"
+  },
+  "bootstrap": {
+    "draws": 2000,
+    "seed": 20260929,
+    "block_seconds": 5.0,
+    "anchor": "W2 start frame",
+    "last_partial_block": "retain",
+    "resampling": "sample whole block IDs with replacement; use identical draw multiplicities for every arm",
+    "exposure": "sum exact domain-by-block exposure with sampled multiplicity",
+    "confidence_interval": "2.5 and 97.5 percentiles of valid paired delta draws",
+    "minimum_valid_draws": 1900
+  },
+  "comparisons": {
+    "primary": ["rounded_exact_dd", "unrounded_kriging"],
+    "secondary": [
+      ["rounded_exact_dd", "unrounded_idw"],
+      ["rounded_exact_dd", "unrounded_nearest"]
+    ],
+    "bridge": [
+      ["rounded_exact_dd", "rounded_kriging_bridge"],
+      ["rounded_kriging_bridge", "unrounded_kriging"]
+    ],
+    "delta_orientation": "first arm rho minus second arm rho"
+  },
+  "guardrails": {
+    "yield": {
+      "definition": "number of arm-local assigned units in W2",
+      "directional_max_first_arm_relative_loss": 0.05,
+      "equivalence_max_absolute_relative_difference": 0.05
+    },
+    "segment_safe_short_isi": {
+      "definition": "fraction of within-unit, within-domain adjacent ISIs from 9 through 29 samples inclusive",
+      "report_boundary_counts_samples": [8, 30],
+      "directional_max_first_arm_increase": 0.01,
+      "equivalence_max_absolute_difference": 0.01,
+      "apply_in_each_domain": true
+    }
+  },
+  "decisions": {
+    "meaningful_first_arm_advantage": "delta_rho >= 0.05, 95% CI lower bound > 0, and directional yield/ISI guardrails pass",
+    "practical_equivalence": "entire 95% delta-rho CI lies within [-0.05, 0.05] and symmetric yield/ISI guardrails pass",
+    "otherwise": "mixed or inconclusive",
+    "undefined": "if either arm has fewer than 3 eligible units, a constant rank vector, a non-finite point rho, or fewer than 1900 valid bootstrap draws, report unresolved and do not substitute zero"
+  },
+  "staging": {
+    "stage_1": ["unrounded_kriging", "rounded_kriging_bridge"],
+    "stage_2": ["unrounded_idw", "unrounded_nearest"],
+    "stage_2_trigger": "launch only if the frozen stage-1 reading does not resolve whether the result is driven by field rounding versus operator choice"
+  },
+  "resources": {
+    "measured_reference_sort_wall_seconds": 1514.1411101818085,
+    "measured_reference_run_gib": 1.3,
+    "per_new_arm_wall_seconds_max": 2700,
+    "per_new_arm_scratch_gib_max": 5,
+    "gpu_count": 1,
+    "cpu_jobs": 4,
+    "stage_1_wall_seconds_max": 5400,
+    "silent_budget_expansion": false
+  }
+}
