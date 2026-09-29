@@ -2,6 +2,16 @@
 
 ## Current direction — 2026-09-05
 
+**Evidence update, 2026-09-28:** the cached cluster-452 follow-up is complete.
+Independent legacy-event anchoring found no transfer into a compatible rescue
+label, and exact pre/post-curation lineage found no differential final-curation
+exclusion. Together with the prior cluster-553 review, the two nominated cached
+dropout cases do not justify a retained-output repair. The next candidate must
+target a demonstrated detection or waveform-integrity operation and bring a
+measurable endpoint; do not reopen the closed identity, threshold, or external-
+registration branches from these negative results. See the
+[cluster-452 result](luke_cluster452_identity_and_curation_replay_result_20260928.md).
+
 The practical goal is reliable recovery of individual neurons' spike trains
 throughout the recording. Progress means fixing a recognizable failure,
 preserving healthy periods, and confirming the improvement on independently

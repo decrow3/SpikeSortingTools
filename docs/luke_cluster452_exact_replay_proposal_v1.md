@@ -1,6 +1,11 @@
 # Cluster 452 exact replay — fallback intervention proposal
 
-Date: 2026-09-06. Status: **bounded proposal; not executed.**
+Date: 2026-09-06. Status: **superseded by the completed cached replay.**
+
+Result: [cluster 452 identity and curation replay](luke_cluster452_identity_and_curation_replay_result_20260928.md).
+The replay found a strong independent legacy anchor but no transfer into a
+waveform-compatible rescue partner, and exact lineage found no differential
+final-curation exclusion. No retained-output intervention was nominated.
 
 ## Exact replay
 

@@ -1,0 +1,53 @@
+{
+  "schema": "luke-cluster452-identity-replay-v1",
+  "target": {
+    "sort": "rescue_luke0804_v2v1_g0_imec0",
+    "cluster_id": 452,
+    "source_evidence": "docs/outputs/luke_baseline_recovery_census_v1/cluster452_exact_replay_waveform_evidence.json"
+  },
+  "inputs": {
+    "rescue_curated": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output",
+    "legacy_curated": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output"
+  },
+  "windows": [
+    {"name": "reference_1", "role": "reference", "start_s": 3869.575789173073, "stop_s": 3926.032631168639},
+    {"name": "reference_2", "role": "reference", "start_s": 3926.06306466836, "stop_s": 3992.419594121072},
+    {"name": "failing_1", "role": "failing", "start_s": 3992.434360868472, "stop_s": 4085.385469053053},
+    {"name": "failing_2", "role": "failing", "start_s": 4086.1267397724127, "stop_s": 4198.764755589737}
+  ],
+  "candidate_rule": {
+    "depth_source": "template peak channel",
+    "maximum_depth_difference_um": 100.0,
+    "include_all_curated_labels": true,
+    "selection_uses_window_event_counts": false
+  },
+  "anchor_rule": {
+    "selection_windows": "reference only",
+    "selection": "legacy spatial candidate with the largest exclusive match fraction to the frozen rescue candidate union",
+    "target_must_be_dominant_rescue_label": true,
+    "minimum_observed_fraction": 0.25,
+    "minimum_excess_over_shift_null": 0.10
+  },
+  "matching": {
+    "sampling_frequency_hz": 29999.835983263598,
+    "duration_s": 10473.55,
+    "tolerance_ms": 0.5,
+    "event_pairing": "maximum-cardinality one-to-one on time-ordered events",
+    "circular_shift_null_s": [137.0, 431.0, 997.0]
+  },
+  "redistribution_support": {
+    "minimum_partner_fraction_in_each_failing_window": 0.10,
+    "minimum_partner_fraction_increase_from_reference": 0.10,
+    "minimum_target_fraction_decrease_from_reference": 0.10,
+    "minimum_template_cosine": 0.80,
+    "maximum_union_refractory_increase": 0.01,
+    "refractory_period_ms": 1.5,
+    "ambiguous_or_unmatched_policy": "preserve and reject intervention nomination"
+  },
+  "scope": {
+    "raw_voltage_read": false,
+    "sort_launched": false,
+    "production_change": false,
+    "decision": "nominate one retained-output identity intervention only if every frozen support rule passes; otherwise close cluster 452 as unresolved"
+  }
+}

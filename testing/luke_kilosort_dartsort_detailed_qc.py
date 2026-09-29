@@ -16,7 +16,6 @@ import os
 from pathlib import Path
 from typing import Any
 
-import h5py
 import matplotlib
 
 matplotlib.use("Agg")
@@ -99,6 +98,13 @@ def load_ks_detailed(arm: str, root: Path, fields) -> dict[str, Any]:
 
 
 def load_dartsort_detailed(npz_path: Path, h5_path: Path, receipt_path: Path) -> dict[str, Any]:
+    try:
+        import h5py
+    except ModuleNotFoundError as exc:
+        raise RuntimeError(
+            "load_dartsort_detailed requires the optional h5py dependency to read "
+            f"{h5_path}"
+        ) from exc
     receipt = json.loads(receipt_path.read_text())
     if receipt.get("status") != "complete" or receipt.get("returncode") != 0:
         raise RuntimeError("DARTsort receipt is not complete")

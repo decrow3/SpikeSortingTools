@@ -8,7 +8,6 @@ import hashlib
 import json
 from pathlib import Path
 
-import h5py
 import matplotlib
 
 matplotlib.use("Agg")
@@ -94,6 +93,13 @@ def load_ks(arm: str, root: Path, fields: np.lib.npyio.NpzFile) -> dict:
 
 
 def load_dartsort(npz_path: Path, h5_path: Path, receipt_path: Path) -> dict:
+    try:
+        import h5py
+    except ModuleNotFoundError as exc:
+        raise RuntimeError(
+            "load_dartsort requires the optional h5py dependency to read "
+            f"{h5_path}"
+        ) from exc
     receipt = json.loads(receipt_path.read_text())
     if receipt.get("status") != "complete" or receipt.get("returncode") != 0:
         raise RuntimeError("DARTsort source receipt is not complete")

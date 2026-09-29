@@ -1,0 +1,16 @@
+{
+  "schema": "luke-cluster452-curation-lineage-v1",
+  "target_final_cluster": 452,
+  "sorter_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output",
+  "curated_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output",
+  "curation_decisions": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_todo_cosine.npy",
+  "sampling_frequency_hz": 29999.835983263598,
+  "windows": [
+    {"name": "reference_1", "role": "reference", "start_s": 3869.575789173073, "stop_s": 3926.032631168639},
+    {"name": "reference_2", "role": "reference", "start_s": 3926.06306466836, "stop_s": 3992.419594121072},
+    {"name": "failing_1", "role": "failing", "start_s": 3992.434360868472, "stop_s": 4085.385469053053},
+    {"name": "failing_2", "role": "failing", "start_s": 4086.1267397724127, "stop_s": 4198.764755589737}
+  ],
+  "minimum_failing_removal_fraction_increase": 0.10,
+  "decision": "Support curation exclusion only if the minimum failing-window removed fraction exceeds the maximum reference-window removed fraction by at least 0.10."
+}
