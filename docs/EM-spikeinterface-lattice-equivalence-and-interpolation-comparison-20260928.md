@@ -1,7 +1,8 @@
 # EM — reproduce the exact lattice remap with SpikeInterface, then compare correction operators
 
-**Status:** EM.1 PASS; EM.2A COMPLETE; EM.2B AWAITS ITS SEPARATE SORT
-AUTHORIZATION.
+**Status:** EM.1 PASS; EM.2A COMPLETE; EM.2B COMPLETE. Rounded-field
+SpikeInterface kriging is selected for the imec1 production-order remap,
+pending transfer validation beyond W2.
 
 The bounded huklaban5 voltage audit passes the task's explicit `1e-6`
 acceptance rule. The exact adapter has identical source maps and zero masks and
@@ -14,9 +15,12 @@ The CPU-only EM.2a operator screen is also complete. Rounded nearest and IDW
 are exactly redundant on the frozen snippets; unrounded nearest, IDW, and
 kriging are materially distinct. The selected nonredundant EM.2b set is the
 existing S0 and exact-DD controls plus unrounded kriging, IDW, and nearest, with
-rounded kriging as the bridge. See the
-[EM.2a result](EM2a-operator-screen-result-20260929.md). No EM.2b sort has been
-authorized or launched.
+rounded kriging as the bridge. Staged execution stopped after exact-DD,
+unrounded kriging, and rounded kriging: rounded exact-DD and rounded kriging
+were practically equivalent, while rounded kriging meaningfully outperformed
+unrounded kriging. The frozen trigger for IDW and nearest was therefore not
+met. See the [EM.2a result](EM2a-operator-screen-result-20260929.md) and the
+[EM.2b result](EM2b-stage1-result-20260929.md).
 
 - **Published handoff:**
   `/mnt/NPX/Luke/DARTsort_motion_experiments/em_spikeinterface_lattice_20260928/huklaban1_v1`

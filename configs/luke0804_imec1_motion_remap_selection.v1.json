@@ -1,0 +1,79 @@
+{
+  "schema": "luke-imec1-motion-remap-selection-v1",
+  "status": "selected_on_w2_pending_transfer_validation",
+  "scope": {
+    "dataset": "Luke0804_V2V1_g0",
+    "stream": "imec1.ap",
+    "development_window": "W2",
+    "frames_half_open": [26999783, 37199701],
+    "sampling_frequency_hz": 29999.759166666667,
+    "outer_holdout_accessed": false,
+    "rf_evaluated": false
+  },
+  "selection": {
+    "name": "rounded_kriging",
+    "reason": "Rounded kriging was practically equivalent to rounded exact-DD and meaningfully better than unrounded kriging on the frozen W2 scorecard.",
+    "production_order": [
+      "preprocess accepted 383-channel source",
+      "interpolate imec1.ap#AP191",
+      "round rigid displacement to the accepted 40-um lattice",
+      "apply SpikeInterface kriging remap",
+      "crop to the 182 target sites"
+    ],
+    "bad_channel_id": "imec1.ap#AP191",
+    "field": {
+      "reference_offset_um": -4.69558824159,
+      "rounding_period_um": 40.0,
+      "rounding": "half away from zero",
+      "cell_width_s": 0.25,
+      "sign": "corrected = observed - displacement"
+    },
+    "kriging": {
+      "method": "kriging",
+      "sigma_um": 20.0,
+      "p": 1.0,
+      "num_closest": 4,
+      "bad_channel_sigma_um": 20.0,
+      "bad_channel_p": 1.3
+    }
+  },
+  "implementation": {
+    "extractor": "npx_preprocessing.motion.interpolated_motion_si.InterpolatedMotionRecording",
+    "extractor_source": "npx_preprocessing/motion/interpolated_motion_si.py",
+    "extractor_source_sha256": "b7b3ed0c3d092fb351c224e9b8d0064c34779bdd21f63995a598039216e6c0a2",
+    "tested_recording_descriptor": "testing/inputs/em2b_w2/rounded_kriging_bridge_recording.json",
+    "tested_recording_descriptor_sha256": "66c9c3a6479c23b0e0a44b8b5cdd714cf7ddc162ddfd522291e2f62fee979c9b",
+    "tested_sort_config": "configs/em2b_w2_rounded_kriging_bridge.v1.json",
+    "tested_sort_config_sha256": "0464e246e015c3ec36ff9dd0bfd1f89774e47ef8c2798aea332f1ce33d4b514a"
+  },
+  "evidence": {
+    "scorecard_contract": "configs/em2b_w2_scorecard.v1.json",
+    "scorecard_contract_sha256": "714fd29c41f9c4aa6142d534232f030438af0819133613177ca404f4331642c6",
+    "arms_manifest": "testing/inputs/em2b_w2/arms_manifest_stage1_20260929.json",
+    "arms_manifest_sha256": "86e73a5766c13aad443f32bdd0522e5cba4d36cfa0ef1d24eab9b73965617c27",
+    "scorecard_result": "testing/outputs/em2b_w2_scorecard_stage1_20260929/RESULT.json",
+    "scorecard_result_sha256": "78cdceae28cb0f9ceee08691de48e44ea12b761c972cd8d30169b78968e032eb",
+    "measurement_audit": "testing/outputs/em2b_w2_stage1_measurement_20260929/AUDIT.json",
+    "measurement_audit_sha256": "8bafd68dc60eb8850171ec8235e4e38cb4acc289fd4e676161ec23bdac8cb69c",
+    "result_document": "docs/EM2b-stage1-result-20260929.md",
+    "comparisons": {
+      "rounded_exact_dd_minus_rounded_kriging": {
+        "delta_rho": -0.006346627588639464,
+        "ci95": [-0.020941574889439867, 0.0012577831733050953],
+        "decision": "practical_equivalence"
+      },
+      "rounded_kriging_minus_unrounded_kriging": {
+        "delta_rho": 0.051562907358317034,
+        "ci95": [0.03026717110074042, 0.08154949570845502],
+        "decision": "meaningful_first_arm_advantage"
+      }
+    }
+  },
+  "routing": {
+    "em2_stage_2_trigger_met": false,
+    "idw_or_nearest_sort": "do_not_run",
+    "w3": "requires a separately frozen transfer design before access",
+    "full_session": "not promoted from W2 alone",
+    "interpretation": "W2 selects the remap implementation. The score is an arm-local continuity proxy and does not prove cross-arm identity or purity."
+  }
+}

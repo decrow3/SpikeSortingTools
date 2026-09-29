@@ -79,3 +79,9 @@ This removes the custom exact-DD remapper from the production path without a
 detectable loss on the frozen W2 scorecard. The unrounded-field variant should
 not replace it: its continuity proxy is lower by 0.0516 relative to rounded
 kriging, with the entire paired 95% interval above zero in favor of rounding.
+
+The content-bound imec1 selection is recorded in
+`configs/luke0804_imec1_motion_remap_selection.v1.json`. Its status is
+`selected_on_w2_pending_transfer_validation`: this selects the tested remap
+implementation without treating one development window as full-session or
+cross-window validation.
