@@ -43,7 +43,8 @@
       "-m",
       "testing.luke_improved_nonrigid_comparison",
       "--config",
-      "configs/luke_improved_nonrigid_comparison.v1.json"
+      "configs/luke_improved_nonrigid_comparison.v1.json",
+      "--wait-for-downstream"
     ],
     "stdout": "/media/huklaban5/Data/luke_improved_motion_20260909_v1/downstream/comparison_stdout.log",
     "stderr": "/media/huklaban5/Data/luke_improved_motion_20260909_v1/downstream/comparison_stderr.log",

@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
+import time
 from typing import Any
 
 from pipeline.config import fingerprint
@@ -52,6 +53,21 @@ def _validated_config(path: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     if candidate_summary.get("sort_identity_digest") != candidate_request.get("identity_digest"):
         raise RuntimeError("candidate downstream summary and pinned sort identity differ")
     return config, candidate_summary
+
+
+def wait_for_downstream(config_path: Path, poll_seconds: float = 30.0) -> None:
+    config = json.loads(config_path.read_text())
+    if config.get("schema_version") != SCHEMA:
+        raise ValueError("unsupported comparison config schema")
+    summary = Path(config["candidate"]["downstream_summary"])
+    status = summary.with_name("status.json")
+    while not summary.is_file():
+        if status.is_file():
+            state = json.loads(status.read_text()).get("state")
+            if state == "failed":
+                raise RuntimeError("candidate downstream processing failed; comparison not started")
+        print("waiting for candidate downstream completion receipt", flush=True)
+        time.sleep(poll_seconds)
 
 
 def run(config_path: Path) -> dict[str, Any]:
@@ -127,8 +143,12 @@ def run(config_path: Path) -> dict[str, Any]:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", required=True, type=Path)
+    parser.add_argument("--wait-for-downstream", action="store_true")
+    parser.add_argument("--poll-seconds", type=float, default=30.0)
     args = parser.parse_args()
     try:
+        if args.wait_for_downstream:
+            wait_for_downstream(args.config, args.poll_seconds)
         result = run(args.config)
         print(json.dumps(result, indent=2), flush=True)
     except BaseException as error:
