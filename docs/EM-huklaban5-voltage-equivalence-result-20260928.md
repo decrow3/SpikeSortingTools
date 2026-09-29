@@ -1,93 +1,104 @@
 # EM.1 huklaban5 voltage-equivalence result — 2026-09-28
 
-**Verdict: EM.1 exact-adapter qualification failed; stop before EM.2a.** The
-stock SpikeInterface 0.104.7 nearest operator remains disqualified by its four
-AP191 interior-hole substitutions. After repairing two handoff-runner defects,
-the exact adapter reproduced the flat `q=0` control byte for byte and reproduced
-all zero positions in the two nonzero-motion snippets, but it did not reproduce
-all float32 bytes under the required SpikeInterface 0.104.7 execution path.
-No sort was launched, no voltage was exported, and no outer holdout was read.
+**Verdict: EM.1 passes.** Arm A, the exact adapter, satisfies the requested
+`1e-6` voltage tolerance, identical-zero-mask, and identical-source-map rules.
+Arm B, stock SpikeInterface 0.104.7 `nearest` with `force_zeros`, differs at
+exactly four mapping pairs, all caused by the AP191 interior hole. Arm C,
+interpolate AP191 and then apply stock `nearest`, matches DD at every other
+value and is usable as the production remap implementation for imec1. No sort
+or RF analysis ran, no outer holdout was accessed, and no voltage was exported.
 
-The verified compact return packet is published at
-`/mnt/NPX/Luke/DARTsort_motion_experiments/em_spikeinterface_lattice_20260928/huklaban5_result_v1`.
-Its 17-file `MANIFEST.json` SHA-256 is
-`84281482db49255f3a5361570fc1930a53d39a44df736bb9071d6d7f4bf74071`;
-`COMPLETE.json` records the same hash, the failed scientific verdict, and that
-neither voltage nor a sort is included.
+The compact result is
+`testing/outputs/em_voltage_equivalence_three_arm_v1_20260928/RESULT.json`
+(SHA-256 `049e9a6a3a41998b581f63373ef5c5f250d6858ba64356ac8c9a7d2897c5f599`).
+The run used Python 3.12.4 from
+`/home/huklaban5/Documents/SpikeSortingTools/NPX_preprocessing/.venv/bin/python`
+and SpikeInterface 0.104.7.
 
-## Frozen actual-voltage result
+## Results
 
-The final preserved attempt is
-`/home/huklaban5/DARTsort_experiment_scratch/em_spikeinterface_lattice_20260928/voltage_equivalence_v4`.
-It used the three preselected 3-second windows and the original DD 30,000-frame
-parent-read chunks.
+The frozen metadata-only selection was made before voltage was read. It contains
+three 89,999-frame windows: rest at 1118.625 s, episode core at 1031.625 s,
+and a transition at 938.375 s. The episode core exercises all four AP191-hole
+shifts; the transition independently exercises three of them.
 
-| Window | Nominal start (s) | Byte equal | Zero mask equal | Maximum absolute error |
-|---|---:|---:|---:|---:|
-| low-deviation flat (`q=0`) | 1118.625 | yes | yes | 0 |
-| episode core | 1031.625 | no | yes | 1.4901161e-8 |
-| transition | 938.375 | no | yes | 2.9802322e-8 |
+| Arm | Verdict | Result |
+|---|---|---|
+| A: exact adapter | pass | Maximum error 0 at rest, `1.49e-8` in the core, and `2.98e-8` at the transition; all zero masks and all frame/source assignments equal DD |
+| B: stock nearest, 383 sources | expected mismatch | 4 of 1,456 mapping pairs differ, and every voltage difference above `1e-6` is at one of those pairs |
+| C: interpolate AP191, then stock nearest | pass | All 1,456 mapping decisions match DD semantics (1,452 source mappings and 4 outer zeros); differences from DD occur only where DD zero-fills AP191 |
 
-The first episode-core difference was at relative frame 23,468, target AP330,
-with `q=-200` um. DD selected AP310. SpikeInterface 0.104.7 reconstructed the
-source value as float32 bytes `9133f33d`; the DD materialization contains
-`8f33f33d`. The first transition difference was at relative frame 18,350,
-target AP360, with `q=-120` um. DD selected AP348; 0.104.7 produced
-`09f59dbe` and DD contains `08f59dbe`.
+Arm A's small residuals are the already diagnosed one-to-two-float32-ULP
+SpikeInterface 0.104.7 versus DD-producer 0.104.8 preprocessing differences.
+They are well below the explicit `1e-6` criterion. The earlier report treated
+byte equality as mandatory and therefore called this a failure; the present
+verdict applies the acceptance rule in the task without tuning or changing any
+sample, map, or interval.
 
-The same DD-aligned source samples reconstructed under the original
-SpikeInterface 0.104.8 producer environment exactly match the stored DD bytes.
-Thus the residual is upstream preprocessing-version sensitivity, not a different
-lattice source index or zero-fill decision. This diagnosis does not turn the
-required 0.104.7 result into a pass.
+Arm B selected AP188 in each four-way 25.612497-um tie:
 
-The metadata-only `FRAME_ASSIGNMENTS.json` closes the independent assignment
-audit required by the plan. All 269,997 frame-level `q` values across the three
-windows equal DD's floor/index formula, including every seam sample. For all
-eight realized shifts, all 182 target mapping IDs equal an independent
-transcription of DD's exact tuple lookup. The file includes the complete
-per-frame vectors, the 13 intersecting source-knot rows for each window, and the
-mapping IDs and zero counts for every shift.
+| q (um) | Target | Frames checked | Values > `1e-6` | Mean abs delta (uV) | Max abs delta (uV) |
+|---:|---|---:|---:|---:|---:|
+| -120 | AP203 | 30,000 | 29,908 | 0.7502 | 4.4210 |
+| -160 | AP207 | 22,499 | 22,435 | 0.7775 | 5.1024 |
+| -200 | AP211 | 59,999 | 59,811 | 0.7699 | 9.8159 |
+| -240 | AP215 | 15,000 | 14,941 | 0.7636 | 4.2581 |
 
-## Preserved execution history
+Arm C is applicable because the imec1 baseline independently labels AP191 dead
+(`NPX_preprocessing/manifests/baselines/luke-bad-channels.json:1572-1575`).
+It used the SpikeInterface bad-channel interpolation convention: inferred
+20-um spacing, Gaussian/kriging channel weights, and `p=1.3`
+(`spikeinterface/preprocessing/interpolate_bad_channels.py:32-40,48-66`). Its
+AP191 values differ from DD's deliberate zeros by mean 0.3740–0.4062 uV and
+maximum 3.3410–7.5930 uV. No non-AP191 value differs by more than `1e-6`.
+The imec0 operational profile records bad-channel interpolation as preprocessing
+step 3 (`configs/luke_operational_pipeline.v1.json:17-23`); imec1 needs its own
+profile/receipt carrying the same order before this is deployed.
 
-1. `voltage_equivalence_v1` stopped before reading voltage because the frozen
-   runner loaded a portable recording without its required `base_folder`.
-2. `voltage_equivalence_v2` stopped before reading voltage because the runner
-   used the parent's retained acquisition clock instead of DD's source-frame
-   clock (`START / FS`).
-3. `voltage_equivalence_v3` reached all three snippets but requested arbitrary
-   parent ranges. The lazy preprocessing chain is chunk-boundary sensitive, so
-   even `q=0` differed by up to 0.0406 uV.
-4. `voltage_equivalence_v4` reproduced DD's original 30,000-frame parent reads.
-   Its flat control passed exactly; the two nonzero-motion snippets retained the
-   1–2-ULP 0.104.7 versus 0.104.8 differences reported above.
+## Conventions checked
 
-Every failed attempt has a `FAILURE.json`; v3 and v4 also have `SELECTIONS.json`
-and `RESULT.json`. `COMPLETE.json` is absent because equivalence did not pass.
-The repaired runner now persists failures, resolves portable recording paths,
-uses the DD receipt's source-frame clock, reproduces the materializer's
-parent-read chunks, and writes the complete independent assignment evidence.
-Twenty-two focused adapter/runner tests pass.
+- **Sign.** The one-output-channel constant `+40 um` fixture selected the source
+  at `target_y + 40`, as required. SpikeInterface moves target locations by
+  `location + displacement` before building the kernel
+  (`spikeinterface/sortingcomponents/motion/motion_interpolation.py:191-207`).
+  DD records `corrected = observed - displacement` and maps
+  `target(x,y) <- source(x,y+q)`
+  (`dd_lattice_inputs.py:60-64,90-97,121-131`).
+- **Reference and lattice rounding.** DD takes the reference median over the W2
+  out-of-mask interval and applies 40-um half-away-from-zero rounding to
+  `displacement - r` (`dd_lattice_inputs.py:52-54,69-76`). The frozen receipt
+  gives `r = -4.695588241594664 um`, consistent with the requested rounded
+  `-4.69558824159 um`.
+- **Time bins.** DD assigns frames with
+  `floor((time + 0.25/2) / 0.25)` (`dd_lattice_inputs.py:181-183`). The adapter
+  uses half-open cells and right-sided search, so an exact boundary enters the
+  later cell (`npx_preprocessing/motion/lattice_remap_si.py:319-360`). All
+  269,997 frozen frame assignments equal DD.
+- **Rigid motion.** SpikeInterface defines a one-column displacement and one
+  spatial bin as rigid (`spikeinterface/core/motion.py:15-28`). The check builds
+  exactly that object and asserts one spatial bin
+  (`testing/em_huklaban5_voltage_equivalence_arms.py:328-339`).
+- **Operation order.** The accepted 383-channel parent is loaded first, the
+  remap is built from it, and the result is cropped to AP202:383
+  (`dd_lattice_inputs.py:84-115,174-183`). Arm C inserts the AP191 interpolation
+  before stock remapping; target rendering/cropping follows
+  (`testing/em_huklaban5_voltage_equivalence_arms.py:378-418`).
 
-The 1 GB EM.1 voltage-read target was exceeded during diagnosis. The first
-scientific comparison and its chunk-corrected repeat together read roughly
-1.36 GB of logical parent-plus-reference trace data, before small direct sample
-checks. This was caused by the two runner defects and the required chunk-boundary
-diagnosis; it is disclosed rather than silently resetting the budget.
+## Identity and resource checks
 
-## Decision
+Before any `get_traces` call, the runner verified all 15 h1 packet members and
+the local adapter, the 383-source and 182-target geometry hashes
+(`c01d2678...`, `cb5a508f...`), the knot hash (`7176135d...`), the accepted
+parent provenance, the DD input receipt, and the frozen selections/assignments.
+It confirmed the parent has 383 channels with AP191 absent. DD's complete
+materialization receipts supplied the full 7.43-GB binary hashes; the runner
+rechecked status and file sizes, confirmed the recorded q0 byte identity, and
+then validated the sampled S_L bytes directly. Rehashing both full recordings
+would itself exceed the 1-GB read cap.
 
-Do not start EM.2a, EM.2b, RF work, or W3 from this result. EM.2a is explicitly
-conditional on an EM.1 pass for the selected implementation, and that gate is
-not met. A future plan could freeze source values produced by the original
-0.104.8 preprocessing environment and test only the adapter boundary under
-0.104.7, or standardize the full pipeline on one preprocessing version. That
-would be a new experiment and must not be described as the completed EM.1 run.
+The completed comparison consumed 26.60 CPU seconds, 28.65 wall seconds, and
+748,077,816 logical voltage bytes (0.748 GB). Twenty focused adapter and runner
+tests pass. The compact output contains only hashes, counts, and aggregate
+errors.
 
-Key compact evidence hashes from v4:
-
-- `RESULT.json`: `ed8c621e1a9fafa9659e28309b74f5ed15549de5db1b85b8dd16e42885eb60d7`
-- `SELECTIONS.json`: `06ec30141cb7651f029d0d7623ac7a661417e1725e3d44fe8222a90a4f898a1a`
-- `FAILURE.json`: `a592c2290bff127e058e626a0c5ff9e15e3941f2ed46debe75ddfec1bf9b8be5`
-- `FRAME_ASSIGNMENTS.json`: `ed72930070c55f19d98d8adc433c421e2348984ce558b4ae41bc20a99437215b`
+EM.2 remains out of scope and requires the user's separate go-ahead.
