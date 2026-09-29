@@ -1,0 +1,8 @@
+{
+  "status": "failed_preparation",
+  "stage": "receipt_path_formatting",
+  "reason": "A relative output argument was compared directly with the absolute repository root.",
+  "voltage_read": false,
+  "sort_launched": false,
+  "retry": "preserved as em2e_w3_failed_v1; path normalization fixed before rerun"
+}

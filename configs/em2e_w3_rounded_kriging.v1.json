@@ -1,0 +1,38 @@
+{
+  "budgets_seconds": {
+    "preprocess": 1200,
+    "detect": 720,
+    "motion": 60,
+    "sort": 1080,
+    "qc_phy": 240
+  },
+  "device": "cuda:0",
+  "free_space_reserve_gib": 10,
+  "matching_chunk_length_samples": 30000,
+  "motion": {"method": "static"},
+  "n_jobs": 4,
+  "phy": {"copy_binary": false, "max_spikes_per_unit": 200, "pc_features": true},
+  "preprocessing": "none",
+  "preprocessing_dtype": "float32",
+  "qc": {"chunk_duration": "1s", "mode": "sorting", "n_jobs": 1},
+  "recording": {
+    "kind": "spikeinterface",
+    "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/inputs/em2e_w3/rounded_kriging_recording.json",
+    "absolute_time_offset_seconds": 7999.9999888888,
+    "backing_files": [
+      "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/inputs/em2e_w3/rounded_kriging_recording.json",
+      "/home/huklaban5/DARTsort_experiment_scratch/ef_w3_lattice_20260928/lattice_W3_pair.csv",
+      "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/interpolated_motion_si.py",
+      "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/lattice_remap_si.py",
+      "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/em2e_w3_transfer_contract.v1.json"
+    ]
+  },
+  "repo": "/home/huklaban5/Documents/DARTsort",
+  "schema": "dataset-dartsort-v1",
+  "seed": 0,
+  "sorter": {"save_intermediates": false},
+  "window_seconds": [0.0, null],
+  "channel_ids": null,
+  "network_sort_final_markers": true,
+  "avoid_output_symlinks": true
+}

@@ -1,0 +1,41 @@
+{
+  "schema": "em2e-w3-rounded-kriging-transfer-v1",
+  "frozen_before_sort": true,
+  "purpose": "Test transfer of the W2-selected rounded-kriging implementation against the existing W3 rounded exact-lattice sort.",
+  "scope": {
+    "dataset": "Luke0804 imec1 W3",
+    "frames_half_open": [239998073, 250197991],
+    "outer_holdout_accessed": false,
+    "rf_evaluated": false
+  },
+  "reference": {
+    "name": "rounded_exact_lattice",
+    "path": "/home/huklaban5/DARTsort_experiment_scratch/ef_w3_lattice_20260928/ej_v1/runs/SL/dartsort_sorting.npz",
+    "sha256": "901de0ec769c62939b06b6472c36500afadd6c515a4ad8e38ad81b91e9b42190"
+  },
+  "candidate": {
+    "name": "rounded_kriging",
+    "production_order": [
+      "preprocess accepted 383-channel source",
+      "interpolate imec1.ap#AP191",
+      "round rigid displacement to the accepted 40-um lattice",
+      "apply SpikeInterface kriging remap",
+      "crop to the 182 target sites"
+    ]
+  },
+  "evaluation": {
+    "event_overlap": {
+      "primary_tolerance_samples": 2,
+      "exact_sample_sensitivity": true,
+      "minimum_candidate_matches": 5,
+      "report": ["reciprocal pairs", "event F1", "ambiguity", "unmatched units"]
+    },
+    "continuity": "reuse the frozen W3 exact-lattice score domains and compare the candidate descriptively; do not redefine the existing ADVANCE endpoint",
+    "guardrails": ["assigned-unit yield", "segment-safe short-ISI", "sorting-only QC distributions"]
+  },
+  "interpretation": "Transfer support only. Event coincidence does not establish biological identity or purity; W3 is already exposed and is not an untouched holdout.",
+  "routing": {
+    "full_session_sort": "do not launch from W2 alone; review W3 direct transfer first",
+    "idw_or_nearest": "do not run"
+  }
+}

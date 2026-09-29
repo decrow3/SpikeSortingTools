@@ -1,0 +1,43 @@
+{
+  "inputs": {
+    "exact_lattice_sort_sha256": "901de0ec769c62939b06b6472c36500afadd6c515a4ad8e38ad81b91e9b42190",
+    "knots_sha256": "0a2ea9368ee47452177edc6e6ad91f8d0861c4d2ecb4c70c35ace8a6a5fa311b",
+    "provenance_sha256": "83c6aebb2c9c602c706d484a03bca666bd61ea18ef9302bda16cee668f471fe4",
+    "q0_byte_equal_to_accepted_cache": true,
+    "source_geometry_sha256": "c01d267823426cf3cd96609984105f9a5833890dec9801bbb15f5d14b54d8f71",
+    "target_geometry_sha256": "cb5a508f62f02ac6cd0774472e19cea99b56a3696ac6fc76c9610337437a8607"
+  },
+  "producer": {
+    "python": "/home/huklaban5/Documents/SpikeSortingTools/NPX_preprocessing/.venv/bin/python",
+    "spikeinterface": "0.104.7"
+  },
+  "recording": {
+    "bytes": 3188876,
+    "channels": 182,
+    "dtype": "float32",
+    "frames": 10199918,
+    "path": "testing/inputs/em2e_w3/rounded_kriging_recording.json",
+    "sha256": "577f9b42eb752f63cc2405d21eb978129a8489b2c29541ee67799672120d85e2"
+  },
+  "rounded_states_um": [
+    -280,
+    -240,
+    -200,
+    -160,
+    -120,
+    -80,
+    -40,
+    0
+  ],
+  "schema": "em2e-w3-rounded-kriging-recording-v1",
+  "sort_launched": false,
+  "status": "complete",
+  "voltage_read": false,
+  "window": {
+    "end_frame_exclusive": 250197991,
+    "end_s": 8339.99998499988,
+    "fs": 29999.759166666667,
+    "start_frame": 239998073,
+    "start_s": 7999.9999888888
+  }
+}
