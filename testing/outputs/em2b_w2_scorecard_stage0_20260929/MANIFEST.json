@@ -1,0 +1,34 @@
+{
+  "products": [
+    {
+      "bytes": 2040,
+      "path": "BLOCK_DOMAIN_EXPOSURE.csv",
+      "sha256": "2bfb89e01a7fcd7cac11c834679fc7b3d128d0038151011f3ba34d07628bd413"
+    },
+    {
+      "bytes": 1,
+      "path": "BOOTSTRAP_DELTAS.csv",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "bytes": 1,
+      "path": "COMPARISONS.csv",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "bytes": 126,
+      "path": "POINT_ESTIMATES.csv",
+      "sha256": "f12016e47b2a985e15dccd7599c2952bc0b1641e04f59e28d8f0947e3c50228f"
+    },
+    {
+      "bytes": 793,
+      "path": "RESULT.json",
+      "sha256": "1430b345ea4d40363857db2065be2676327991561a01f0898372a53e4d633b03"
+    },
+    {
+      "bytes": 486,
+      "path": "SEGMENT_SAFE_ISI.csv",
+      "sha256": "d02015f54c95051075497b4cd751ddc98dc813f231e71c0dc1c575fa124dbae3"
+    }
+  ]
+}

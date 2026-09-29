@@ -1,0 +1,34 @@
+{
+  "arms": {
+    "none_s0": {
+      "bytes": 98830055,
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/av_aw_handoff_20260926_v1/static_w2/dartsort_sorting.npz",
+      "sha256": "be6106ed0cb0f99759fd23629dd3bcb5f50657dbffa238ad3721c15d1b21fba7"
+    },
+    "rounded_exact_dd": {
+      "bytes": 100006261,
+      "measurement_audit_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/em2b_w2_rounded_exact_dd_measurement_20260929/AUDIT.json",
+      "measurement_audit_sha256": "cd024ded40efee1b8e89608d213bd9923e5c801275cf3f3176219428e09f4272",
+      "path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/sort/dartsort_sorting.npz",
+      "sha256": "85f1537a4ffbac430d36e84b1f71e7ed5c0760287338115724ee9d80d052e61a"
+    }
+  },
+  "catalogue": {
+    "bytes": 105013,
+    "path": "/media/huklaban5/writable/DARTsort_motion_experiments/incoming/luke0804_imec1_q_field_v1/episode_catalogue.csv",
+    "sha256": "46463cda1348c0e0b0c39ad22ae9c71bc46f7c7347797c1c10588944cfc52df1"
+  },
+  "contract_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/em2b_w2_scorecard.v1.json",
+  "contract_sha256": "714fd29c41f9c4aa6142d534232f030438af0819133613177ca404f4331642c6",
+  "field": {
+    "bytes": 372378,
+    "path": "/media/huklaban5/writable/DARTsort_motion_experiments/incoming/luke0804_imec1_two_layer_v1/luke0804_imec1_two_layer_motion.npz",
+    "sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9"
+  },
+  "mask": {
+    "bytes": 8750,
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/ck_input_intervals_20260927/censor_mask_v1.csv",
+    "sha256": "86425e8a6627a10ac8932ba01b799cb7be7141f731ebb4ecc01e303326b9da55"
+  },
+  "schema": "em2b-w2-arms-manifest-v1"
+}

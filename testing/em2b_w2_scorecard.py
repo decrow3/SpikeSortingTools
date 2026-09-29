@@ -7,10 +7,14 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import sys
 
 import numpy as np
 import pandas as pd
 from scipy.stats import spearmanr
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from testing.de_common_outcome_scorecard import assign_domain, intervals, segment_id
 

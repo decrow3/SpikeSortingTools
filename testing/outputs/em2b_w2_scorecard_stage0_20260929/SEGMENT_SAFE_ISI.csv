@@ -1,0 +1,7 @@
+arm,domain,denominator,lag8,lag9_29,lag30,fraction9_29
+none_s0,negative_excursion,31870,11,323,19,0.01013492312519611
+none_s0,outside_mask_flat,513322,165,4578,231,0.008918378717452203
+none_s0,catalogue_outside_remainder,29156,9,226,7,0.007751406228563589
+rounded_exact_dd,negative_excursion,30625,19,419,11,0.013681632653061224
+rounded_exact_dd,outside_mask_flat,521544,168,4662,237,0.008938843127329621
+rounded_exact_dd,catalogue_outside_remainder,29807,20,289,8,0.009695709061629818

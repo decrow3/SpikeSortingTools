@@ -1,0 +1,23 @@
+{
+  "arms_manifest_sha256": "616ffebd282cbdd900d387bda3ff6d67ede5b6dab4e893c26561d0f188ec78f1",
+  "common_bootstrap_multiplicities_sha256": "440bae6266bbcc8a33232fb030f8e108d3c741ac5bc89b295f7a00b548658512",
+  "comparisons": [],
+  "contract_sha256": "714fd29c41f9c4aa6142d534232f030438af0819133613177ca404f4331642c6",
+  "interpretation": "Arm-local rate-rank continuity proxy; no cross-arm identity or purity claim.",
+  "point_estimates": [
+    {
+      "arm": "none_s0",
+      "eligible_units": 447,
+      "rho_negative_vs_flat": 0.20937657987989367,
+      "yield": 538
+    },
+    {
+      "arm": "rounded_exact_dd",
+      "eligible_units": 419,
+      "rho_negative_vs_flat": 0.6963094605924377,
+      "yield": 477
+    }
+  ],
+  "schema": "em2b-w2-scorecard-result-v1",
+  "status": "complete"
+}
