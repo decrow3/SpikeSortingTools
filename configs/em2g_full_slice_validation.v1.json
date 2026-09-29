@@ -1,0 +1,54 @@
+{
+  "schema": "em2g-full-slice-validation-v1",
+  "status": "frozen_before_full_session_outcome",
+  "scope": {
+    "dataset": "Luke0804_V2V1_g0",
+    "stream": "imec1.ap",
+    "sampling_frequency_hz": 29999.759166666667,
+    "rf": false,
+    "outer_holdout": false,
+    "voltage_read": false
+  },
+  "source_run": {
+    "output": "/home/huklaban5/DARTsort_experiment_scratch/em2f_full_20260929/rounded_kriging_v1",
+    "sorting": "/home/huklaban5/DARTsort_experiment_scratch/em2f_full_20260929/rounded_kriging_v1/sort/dartsort_sorting.npz",
+    "resolved_config_sha256": "21d98e2a335b2ebdd9d1cb4619c9e0af60a4eb68f4ff8e4624adcb21ef06acea",
+    "preparation_commit": "28d6b4a",
+    "expected_frames": 314204094
+  },
+  "windows": {
+    "W2": {
+      "frames_half_open": [26999783, 37199701],
+      "exact_reference": {
+        "path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/sort/dartsort_sorting.npz",
+        "sha256": "85f1537a4ffbac430d36e84b1f71e7ed5c0760287338115724ee9d80d052e61a"
+      }
+    },
+    "W3": {
+      "frames_half_open": [239998073, 250197991],
+      "exact_reference": {
+        "path": "/home/huklaban5/DARTsort_experiment_scratch/ef_w3_lattice_20260928/ej_v1/runs/SL/dartsort_sorting.npz",
+        "sha256": "901de0ec769c62939b06b6472c36500afadd6c515a4ad8e38ad81b91e9b42190"
+      }
+    }
+  },
+  "analyses": {
+    "scorecard": {
+      "eligibility_minimum_flat_events": 100,
+      "bootstrap_draws": 2000,
+      "bootstrap_seed": 20260929,
+      "block_seconds": 5.0,
+      "equivalence_delta_rho_margin": 0.05,
+      "equivalence_yield_relative_margin": 0.05,
+      "equivalence_isi_absolute_margin": 0.01
+    },
+    "event_overlap": {
+      "primary_tolerance_samples": 2,
+      "exact_sample_sensitivity": true,
+      "minimum_candidate_matches": 5,
+      "pairing": "reciprocal best F1; ties use more matches then lower unit ID",
+      "ambiguity_margin_f1": 0.05
+    }
+  },
+  "interpretation": "The full-session candidate is sliced after sorting and compared with independently trained exact-lattice window references. Differences include training-context effects as well as remap effects. Scorecards and cached-event overlap do not prove biological identity or purity."
+}
