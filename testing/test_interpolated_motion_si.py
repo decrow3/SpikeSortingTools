@@ -8,6 +8,15 @@ from npx_preprocessing.motion.interpolated_motion_si import (
 )
 
 
+def test_selected_operator_is_in_declared_motion_public_api():
+    import npx_preprocessing.motion as motion
+
+    assert "InterpolatedMotionRecording" in motion.__all__
+    assert "bad_channel_insertion" in motion.__all__
+    assert motion.InterpolatedMotionRecording is InterpolatedMotionRecording
+    assert motion.bad_channel_insertion is bad_channel_insertion
+
+
 def fixture():
     full_ids = ["AP190", "AP191", "AP192"]
     parent_ids = ["AP190", "AP192"]
