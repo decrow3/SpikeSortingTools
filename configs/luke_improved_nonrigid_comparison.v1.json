@@ -48,7 +48,8 @@
     ],
     "stdout": "/media/huklaban5/Data/luke_improved_motion_20260909_v1/downstream/comparison_stdout.log",
     "stderr": "/media/huklaban5/Data/luke_improved_motion_20260909_v1/downstream/comparison_stderr.log",
-    "restart": "no"
+    "restart": "no",
+    "managed_oom_preference": "avoid"
   },
   "interpretation": "Paired descriptive comparison of the completed full-session external-nonrigid 12/9 development sort against the 12/9 motion-off operational reference. Correspondence is not proof of biological identity and no automatic production promotion is permitted."
 }
