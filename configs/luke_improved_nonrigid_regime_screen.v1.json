@@ -1,0 +1,26 @@
+{
+  "schema_version": "luke-improved-nonrigid-regime-screen-v1",
+  "development_only": true,
+  "baseline_curated": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output",
+  "candidate_curated": "/media/huklaban5/Data/luke_improved_motion_20260909_v1/downstream/cur/cur_output",
+  "primary_matches": "/media/huklaban5/Data/luke_improved_motion_20260909_v1/downstream/comparison_vs_rescue/primary_matches.csv",
+  "comparison_summary": "/media/huklaban5/Data/luke_improved_motion_20260909_v1/downstream/comparison_vs_rescue/comparison_summary.json",
+  "field_file": "/mnt/NPX/Luke/20250804/shared_analysis/luke_improved_motion_two_machine_20260909_v1/estimation_huklaban1_v1/candidate_fields.npz",
+  "field_sha256": "547ff39d1c91d819b758246c701603d868bfd4d50bd6b791e3d5b7140c01c71d",
+  "output_dir": "testing/outputs/luke_improved_nonrigid_regime_screen_v1",
+  "sampling_frequency_hz": 29999.835983263598,
+  "duration_s": 10473.5537279367,
+  "bin_s": 60.0,
+  "correspondence_tolerance_ms": 0.5,
+  "refractory_period_ms": 1.5,
+  "quiet_quantile": 0.25,
+  "high_quantile": 0.75,
+  "minimum_events_per_arm_per_regime": 100,
+  "minimum_supported_pairs": 20,
+  "selective_followup_gate": {
+    "minimum_high_minus_quiet_baseline_retention": 0.05,
+    "maximum_high_candidate_minus_baseline_refractory": 0.01,
+    "minimum_high_to_quiet_candidate_baseline_count_ratio": 0.95
+  },
+  "interpretation": "Field-conditioned descriptive screen on already-completed sorts. The field defines exposure but is not motion ground truth. Primary spike-train correspondences are not verified biological identities. No correction, curation, or production setting changes."
+}
