@@ -16,6 +16,20 @@
     "preparation_commit": "28d6b4a",
     "expected_frames": 314204094
   },
+  "domain_inputs": {
+    "field": {
+      "path": "/media/huklaban5/writable/DARTsort_motion_experiments/incoming/luke0804_imec1_two_layer_v1/luke0804_imec1_two_layer_motion.npz",
+      "sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9"
+    },
+    "mask": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/ck_input_intervals_20260927/censor_mask_v1.csv",
+      "sha256": "86425e8a6627a10ac8932ba01b799cb7be7141f731ebb4ecc01e303326b9da55"
+    },
+    "catalogue": {
+      "path": "/media/huklaban5/writable/DARTsort_motion_experiments/incoming/luke0804_imec1_q_field_v1/episode_catalogue.csv",
+      "sha256": "46463cda1348c0e0b0c39ad22ae9c71bc46f7c7347797c1c10588944cfc52df1"
+    }
+  },
   "windows": {
     "W2": {
       "frames_half_open": [26999783, 37199701],
