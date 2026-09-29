@@ -1,0 +1,84 @@
+{
+  "cached_packet": {
+    "complete_sha256": "57b98360317d2d05ee207332be58b8acfa81cfe9ba17315798b737367cf13821",
+    "decision_sha256": "c8f08b39343886a3afa5bab51877fa16ab8765390284b2c9ddeb32d711ded29a",
+    "manifest_sha256": "984c33cbfe230d3dc5767d52d74db3d160229eaf214f200e23295872a547484e",
+    "path": "/home/huklaban5/DARTsort_experiment_scratch/ef_w3_lattice_20260928/ej_v1/analysis",
+    "score_binding_sha256": "5ac260c313bd2650ba043de238b74ee7c5b8be064380a728a38e3034136a0baf",
+    "source_receipt_sha256": "35c5a6590339baef8bf34a9278121aa8a323570afbb72a20c6e5c29644f9bf7c"
+  },
+  "decision": {
+    "confidence_intervals_95": {
+      "rho_diff_SL_minus_S0": {
+        "lower": 0.48850804741664716,
+        "undefined": 0,
+        "undefined_fraction": 0.0,
+        "upper": 0.5480619332698504
+      },
+      "short_diff_negative_excursion_SL_minus_S0": {
+        "lower": -0.0014783295043385464,
+        "undefined": 0,
+        "undefined_fraction": 0.0,
+        "upper": 0.0006585248568233976
+      },
+      "short_diff_outside_mask_flat_SL_minus_S0": {
+        "lower": 0.0003075279962963275,
+        "undefined": 0,
+        "undefined_fraction": 0.0,
+        "upper": 0.0011405559255151369
+      },
+      "yield_ratio_SL_over_S0": {
+        "lower": 0.9882946046555099,
+        "undefined": 0,
+        "undefined_fraction": 0.0,
+        "upper": 0.9922446428279976
+      }
+    },
+    "criteria": {
+      "flat_short_ci_upper": true,
+      "negative_short_ci_upper": true,
+      "primary_ci_lower": true,
+      "primary_point": true,
+      "yield_ci_lower": true
+    },
+    "interpretation": "population rate-rank continuity proxy; not biological identity or purity proof",
+    "original_endpoint_and_exposure_support_available": true,
+    "point": {
+      "rho_diff_SL_minus_S0": 0.5292318639580385,
+      "short_diff_negative_excursion_SL_minus_S0": -0.0003847669578996406,
+      "short_diff_outside_mask_flat_SL_minus_S0": 0.000727355633127565,
+      "yield_ratio_SL_over_S0": 0.9902112579771412
+    },
+    "rf_used": false,
+    "undefined_max_fraction": 0.0,
+    "verdict": "ADVANCE",
+    "window_status": "exposed prospective new-arm transfer, not untouched validation"
+  },
+  "interpretation": "Cached W3 exact-lattice transfer supports the rounded-field choice. W2 practical equivalence and the no-voltage W3 state audit support, but do not directly demonstrate, rounded-kriging sorting equivalence on W3.",
+  "new_state_kernel_audit": {
+    "inside_w2_metric_envelope": true,
+    "new_w3_states_um": [
+      -280.0
+    ],
+    "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/em2c_w3_new_state_kernel_audit_20260929/RESULT.json",
+    "sha256": "4f7f2c0149fe13ea555b29806cdb5e3b4a5eb0b732f2c59f65f5625e121f0038"
+  },
+  "schema": "em2c-cached-w3-lattice-transfer-audit-v1",
+  "scope": {
+    "new_sort_launched": false,
+    "new_voltage_read": false,
+    "rf_used": false,
+    "window_status": "exposed prospective new-arm transfer, not untouched validation"
+  },
+  "sorting_bindings": {
+    "S0": {
+      "path": "/home/huklaban5/DARTsort_experiment_scratch/ef_w3_lattice_20260928/ej_v1/runs/S0/dartsort_sorting.npz",
+      "sha256": "63e6e54309557d75cb13868d836893dfe35668bc6dd39e9c55f6fb2795fce3b2"
+    },
+    "SL": {
+      "path": "/home/huklaban5/DARTsort_experiment_scratch/ef_w3_lattice_20260928/ej_v1/runs/SL/dartsort_sorting.npz",
+      "sha256": "901de0ec769c62939b06b6472c36500afadd6c515a4ad8e38ad81b91e9b42190"
+    }
+  },
+  "status": "complete"
+}

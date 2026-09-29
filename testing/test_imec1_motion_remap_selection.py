@@ -13,7 +13,7 @@ def sha256(path: Path) -> str:
 
 def test_selected_imec1_remap_is_bound_to_tested_artifacts_and_result():
     selected = json.loads(SELECTION.read_text())
-    assert selected["status"] == "selected_on_w2_pending_transfer_validation"
+    assert selected["status"] == "selected_on_w2_with_cached_w3_lattice_transfer_support"
     assert selected["scope"]["outer_holdout_accessed"] is False
     assert selected["scope"]["rf_evaluated"] is False
 
@@ -26,6 +26,8 @@ def test_selected_imec1_remap_is_bound_to_tested_artifacts_and_result():
         "scorecard_result",
         "measurement_audit",
         "cached_qc_result",
+        "w3_new_state_kernel_audit",
+        "w3_cached_lattice_transfer_audit",
     ):
         path = ROOT / selected["evidence"][key]
         assert sha256(path) == selected["evidence"][f"{key}_sha256"]

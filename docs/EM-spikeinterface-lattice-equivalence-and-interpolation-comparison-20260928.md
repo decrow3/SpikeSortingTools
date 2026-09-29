@@ -1,8 +1,9 @@
 # EM — reproduce the exact lattice remap with SpikeInterface, then compare correction operators
 
 **Status:** EM.1 PASS; EM.2A COMPLETE; EM.2B COMPLETE. Rounded-field
-SpikeInterface kriging is selected for the imec1 production-order remap,
-pending transfer validation beyond W2.
+SpikeInterface kriging is selected for the imec1 production-order remap, with
+cached W3 exact-lattice transfer support and the W3-only rounded state inside
+the W2 kriging-kernel envelope.
 
 The bounded huklaban5 voltage audit passes the task's explicit `1e-6`
 acceptance rule. The exact adapter has identical source maps and zero masks and
