@@ -1,0 +1,29 @@
+{
+  "arms": {
+    "rounded_kriging_bridge": {
+      "all_audited_state_kernels_byte_identical": true,
+      "elapsed_seconds_0_104_7": 0.3066961281001568,
+      "elapsed_seconds_0_104_8": 0.2846618704497814,
+      "si_0_104_7_combined_sha256": "61f08249507bd69045ecddd4fcd3fc5af292eb8ddc8f3d1eb0ea96dbd8afd166",
+      "si_0_104_8_combined_sha256": "61f08249507bd69045ecddd4fcd3fc5af292eb8ddc8f3d1eb0ea96dbd8afd166",
+      "states": 8
+    },
+    "unrounded_kriging": {
+      "all_audited_state_kernels_byte_identical": true,
+      "elapsed_seconds_0_104_7": 1.9133030623197556,
+      "elapsed_seconds_0_104_8": 1.8207974834367633,
+      "si_0_104_7_combined_sha256": "968f89558b37aa485280798946526888fff4fccd6cc986c17a3ed6e88e796d93",
+      "si_0_104_8_combined_sha256": "968f89558b37aa485280798946526888fff4fccd6cc986c17a3ed6e88e796d93",
+      "states": 44
+    }
+  },
+  "preprocessing_tools_source_sha256": "a3e7e03c7580915d0b64317a623fe33f1d3fe3ec68968ccfbfa9af7491121fee",
+  "schema": "em2b-si-kernel-version-audit-v1",
+  "scope": "all 8 rounded W2 states; 42 frozen-screen unrounded states plus 2 W2 extrema",
+  "status": "pass",
+  "versions": [
+    "0.104.7",
+    "0.104.8"
+  ],
+  "voltage_read": false
+}

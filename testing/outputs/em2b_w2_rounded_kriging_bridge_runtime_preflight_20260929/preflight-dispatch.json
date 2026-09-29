@@ -1,0 +1,23 @@
+{
+  "schema": "em2b-explicit-extractor-launch-v1",
+  "service": "em2b-b1fccd613110417a",
+  "action": "preflight",
+  "command": [
+    "systemd-run",
+    "--user",
+    "--unit=em2b-b1fccd613110417a",
+    "--property=RuntimeMaxSec=120",
+    "--property=TimeoutStopSec=15",
+    "--property=WorkingDirectory=/home/huklaban5/Documents/DARTsort",
+    "--setenv=PYTHONPATH=/home/huklaban5/Documents/DARTsort:/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools",
+    "--setenv=OMP_NUM_THREADS=1",
+    "--setenv=OPENBLAS_NUM_THREADS=1",
+    "/home/huklaban5/Documents/DARTsort/.venv/bin/python",
+    "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/em2b_runtime_preflight.py",
+    "--config",
+    "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_kriging_bridge_runtime_preflight_v1/config.json",
+    "--output",
+    "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_kriging_bridge_runtime_preflight_v1"
+  ],
+  "started_epoch": 1790670732.1192882
+}

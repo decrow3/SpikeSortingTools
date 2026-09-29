@@ -1,0 +1,6 @@
+{
+  "python": "/home/huklaban5/Documents/DARTsort/.venv/bin/python",
+  "torch": "2.6.0+cu124",
+  "cuda": "12.4",
+  "gpu": "NVIDIA RTX A5000"
+}

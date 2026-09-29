@@ -1,0 +1,22 @@
+{
+  "cuda": "12.4",
+  "finished_epoch": 1790670734.4804695,
+  "gpu": "NVIDIA RTX A5000",
+  "pid": 1730419,
+  "python": "/home/huklaban5/Documents/DARTsort/.venv/bin/python",
+  "recording_class": "npx_preprocessing.motion.interpolated_motion_si.InterpolatedMotionRecording",
+  "recording_module_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/interpolated_motion_si.py",
+  "recording_module_sha256": "b7b3ed0c3d092fb351c224e9b8d0064c34779bdd21f63995a598039216e6c0a2",
+  "recording_signature": {
+    "channels": 182,
+    "dtype": "float32",
+    "frames": 10199918,
+    "sampling_frequency_hz": 29999.759166666667
+  },
+  "schema": "em2b-runtime-preflight-v1",
+  "sort_launched": false,
+  "spikeinterface": "0.104.8",
+  "status": "complete",
+  "torch": "2.6.0+cu124",
+  "voltage_read": false
+}

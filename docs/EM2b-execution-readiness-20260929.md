@@ -1,18 +1,19 @@
 # EM.2b W2 execution readiness — 2026-09-29
 
-**Status: scorecard frozen and first measurement arm selected; no sort
-launched.**
-EM.2a selected a nonredundant comparison set. The exact scorecard is frozen in
+**Status: stage-0 measurement complete; stage-1 packets ready but not
+launched.** The measured result and bounded publication failure are reported in
+`docs/EM2b-stage0-measurement-and-stage1-readiness-20260929.md`. The revised
+scorecard, including the measured resource limits, is frozen in
 `configs/em2b_w2_scorecard.v1.json` (SHA-256
-`ceecdba64f09d0781fd7b78208ecf99220ac07153ee269263dfa09df47e0b6d1`). A harmless systemd user-service dummy
+`714fd29c41f9c4aa6142d534232f030438af0819133613177ca404f4331642c6`). A harmless systemd user-service dummy
 continued after its launching shell exited and completed with status 0, so the
 required persistent launch mechanism is available. Its receipt is
 `testing/outputs/em2b_launcher_dummy_20260929/receipt.json` (SHA-256
 `9a86ff4a75174761c1880c01656ac65763b993e7a7690097c38224c146b5027b`).
 
-The exact-DD voltage materialization exists, but its EM.2b sort does not. It is
-the first selected arm and will measure the end-to-end resource cost. After
-that measurement, the cheaper primary stage is two more sorts: unrounded
+The exact-DD sort and sorting-only QC are complete: 477 assigned units and
+603,125 accepted events. Its service used 1,066.229 wall seconds, 2,556.378 CPU
+seconds, and 10.377 GiB peak scratch. The primary stage is two more sorts: unrounded
 kriging and rounded kriging. They are compared with the existing S0 sort and
 the new exact-DD sort. Unrounded IDW and nearest remain frozen optional arms
 and run only if the primary stage cannot distinguish a field-rounding effect
@@ -21,10 +22,10 @@ from an operator effect.
 The prior D2L W2 sort provides context only: its `sort-complete.json` reports
 exit status 0 and 1,514.141 seconds, and its run directory occupies 1.3 GB. It
 reused a shared recording and detection and therefore is not the required
-measurement of a selected EM.2b arm. The first exact-DD arm has a conservative
+measurement of a selected EM.2b arm. The first exact-DD arm had a conservative
 10,800-second and 15-GiB ceiling, with one GPU and four CPU jobs. Its completed
-measurement will freeze the tighter limits for later arms before another sort
-authorization. Timeout or cap breach is a preserved failure and does not
+measurement freezes 3,600 seconds wall and 13 GiB scratch for each later arm.
+Timeout or cap breach is a preserved failure and does not
 authorize a silent retry or larger budget. The network mount currently has
 about 231 GB free, while local scratch has about 1.2 TB free; working
 directories stay on local scratch.
@@ -67,7 +68,7 @@ Its built-in dummy mode passed the same systemd/GPU preflight; the compact
 receipt SHA-256 is
 `fc738af1fa9ea7814a5881e01df6fd7037f7bae9a165f7744bb1892910aa402a`.
 
-The authorized real command would be:
+The completed stage-0 command was:
 
 ```bash
 env NUMBA_CACHE_DIR=/tmp/numba-em2b \
@@ -78,7 +79,11 @@ env NUMBA_CACHE_DIR=/tmp/numba-em2b \
   --output /home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1
 ```
 
-This exact-DD sort requires explicit post-report run authorization under the EM
-plan. Its completed receipt will set the later-arm caps before the kriging
-packets are launched. No RF work, outer-holdout access, production change, or
+The runner completed every scientific stage but withheld its final receipt
+after detecting that linked HDF5 reuse changed the detection artifact's mtime.
+The preserved failure and independently hashed outputs are covered in the
+stage-0 report. The two kriging packets now pass config validation,
+cross-version kernel checks, and persistent systemd runtime preflights that
+load the custom extractor under the exact future service environment. Their
+sorts require separate authorization. No RF work, outer-holdout access, or
 automatic W3 run is authorized.

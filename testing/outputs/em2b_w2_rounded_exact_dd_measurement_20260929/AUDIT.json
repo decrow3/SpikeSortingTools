@@ -1,0 +1,81 @@
+{
+  "artifact_differences": [
+    {
+      "current": {
+        "bytes": 1103987288,
+        "exists": true,
+        "mtime_ns": 1790669091524267498
+      },
+      "differences": [
+        "mtime_ns"
+      ],
+      "path": "detection/subtraction.h5",
+      "recorded": {
+        "bytes": 1103987288,
+        "mtime_ns": 1790668793340513595
+      },
+      "stage": "detect"
+    }
+  ],
+  "current_detection_hdf5": {
+    "bytes": 1103987288,
+    "sha256": "19558088485e6788b5ecdbaff821cbe958fc8ef888722a5f7ae989342d1dc4b6"
+  },
+  "failure_receipt_sha256": "e2fe2efa29d38415264000926365dec88f15c35e685bc97337356e9b78b4c93b",
+  "final_launcher_receipt_published": false,
+  "publication_failure_bounded": true,
+  "publication_failure_class": "detection_hdf5_mtime_changed_during_symlink_reuse",
+  "publication_failure_limit": "The detection-stage receipt did not hash the 1.10-GB HDF5, so this audit proves unchanged size and an mtime-only inventory difference, not byte identity to its pre-sort state. The sorting and sorting-only QC outputs are independently hashed.",
+  "qc": {
+    "capabilities": [
+      "sorting_qc"
+    ],
+    "receipt_sha256": "3bf0063c11b83a7b0a2517fd793555d8bf262709818f9535ea8adce8fff32ad7",
+    "rf_evaluated": false
+  },
+  "resources": {
+    "final_scratch_gib": 9.281308664008975,
+    "kernel_io_accounting_available": false,
+    "observed_peak_scratch_gib": 10.37701486889273,
+    "recording_binary_bytes": 7425540304,
+    "service_cpu_seconds": 2556.378077,
+    "service_wall_seconds": 1066.229199
+  },
+  "schema": "em2b-measurement-audit-v1",
+  "scientific_stages_complete": true,
+  "sorting": {
+    "accepted_events": 603125,
+    "bytes": 100006261,
+    "excluded_negative_labels": 2902,
+    "path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/sort/dartsort_sorting.npz",
+    "sha256": "85f1537a4ffbac430d36e84b1f71e7ed5c0760287338115724ee9d80d052e61a",
+    "units": 477
+  },
+  "stage_receipts": {
+    "detect": {
+      "artifact_count": 4,
+      "elapsed_seconds": 502.09381127357483,
+      "receipt_sha256": "220adf99faa7b686e30b9920dc8bb8b8db58b882acdd2ec64254dcac8b8c3e20"
+    },
+    "motion": {
+      "artifact_count": 0,
+      "elapsed_seconds": null,
+      "receipt_sha256": "2805d29ae9dba5c84f3d442bd62b08bd34083e8be164686892d0cec2c40c95ed"
+    },
+    "preprocess": {
+      "artifact_count": 13,
+      "elapsed_seconds": 18.203552722930908,
+      "receipt_sha256": "673fe6bd4a20825b3fc70a40bb9ad530b4753d33319f3833befaa69519dec59a"
+    },
+    "qc_phy": {
+      "artifact_count": 4,
+      "elapsed_seconds": 8.764395475387573,
+      "receipt_sha256": "c73ceb2ef2932a759b3022f7a7599123080cc09eef8bbfe136c74ef9b9502096"
+    },
+    "sort": {
+      "artifact_count": 8,
+      "elapsed_seconds": 527.4372894763947,
+      "receipt_sha256": "c8949dba053afe139604cb592b244698c1580a3f86410682d6757c5f27622fe7"
+    }
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "schema": "validated-stage-v2",
+  "status": "complete",
+  "inputs": {
+    "config": {
+      "avoid_output_symlinks": false,
+      "budgets_seconds": {
+        "detect": 7200,
+        "motion": 1800,
+        "preprocess": 3600,
+        "qc_phy": 3600,
+        "sort": 10800
+      },
+      "channel_ids": null,
+      "device": "cuda:0",
+      "free_space_reserve_gib": 10,
+      "matching_chunk_length_samples": 30000,
+      "motion": {
+        "method": "static"
+      },
+      "n_jobs": 4,
+      "network_sort_final_markers": false,
+      "phy": {
+        "copy_binary": false,
+        "max_spikes_per_unit": 200,
+        "pc_features": true
+      },
+      "preprocessing": "none",
+      "preprocessing_dtype": "float32",
+      "qc": {
+        "chunk_duration": "1s",
+        "mode": "sorting",
+        "n_jobs": 1
+      },
+      "recording": {
+        "absolute_time_offset_seconds": 899.9999916665997,
+        "backing_files": [
+          "/home/huklaban5/DARTsort_experiment_scratch/dd_lattice_w2_20260928/huklaban5_v2/inputs/S_L/traces.raw",
+          "/home/huklaban5/DARTsort_experiment_scratch/dd_lattice_w2_20260928/huklaban5_v2/inputs/S_L/COMPLETE.json"
+        ],
+        "kind": "spikeinterface",
+        "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/inputs/em2b_w2/rounded_exact_dd_recording.json"
+      },
+      "repo": "/home/huklaban5/Documents/DARTsort",
+      "schema": "dataset-dartsort-v1",
+      "seed": 0,
+      "sorter": {
+        "save_intermediates": false
+      },
+      "window_seconds": [
+        0.0,
+        null
+      ]
+    },
+    "input_fingerprint": [
+      {
+        "bytes": 241,
+        "mtime_ns": 1790577805569287261,
+        "path": "/home/huklaban5/DARTsort_experiment_scratch/dd_lattice_w2_20260928/huklaban5_v2/inputs/S_L/COMPLETE.json",
+        "sha256": "606150be52ff35e2d6b26adf980cd1e9dc59cac69561a626cc1e39e628c9d596"
+      },
+      {
+        "bytes": 7425540304,
+        "mtime_ns": 1790577773246093510,
+        "path": "/home/huklaban5/DARTsort_experiment_scratch/dd_lattice_w2_20260928/huklaban5_v2/inputs/S_L/traces.raw"
+      },
+      {
+        "bytes": 28823,
+        "mtime_ns": 1790667734924190754,
+        "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/inputs/em2b_w2/rounded_exact_dd_recording.json",
+        "sha256": "b6fd2e162e93b5492b93885d0ee9e8e438cf44f33ed462abbdd3e3a1b3b9577e"
+      }
+    ],
+    "upstream": {
+      "detect": "220adf99faa7b686e30b9920dc8bb8b8db58b882acdd2ec64254dcac8b8c3e20",
+      "motion": "2805d29ae9dba5c84f3d442bd62b08bd34083e8be164686892d0cec2c40c95ed",
+      "preprocess": "673fe6bd4a20825b3fc70a40bb9ad530b4753d33319f3833befaa69519dec59a",
+      "sort": "c8949dba053afe139604cb592b244698c1580a3f86410682d6757c5f27622fe7"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "qc-phy/receipt.json",
+      "resolved_path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/qc-phy/receipt.json",
+      "bytes": 2782,
+      "mtime_ns": 1790669337386988462,
+      "sha256": "3bf0063c11b83a7b0a2517fd793555d8bf262709818f9535ea8adce8fff32ad7"
+    },
+    {
+      "path": "qc-phy/recording_description.json",
+      "resolved_path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/qc-phy/recording_description.json",
+      "bytes": 36230,
+      "mtime_ns": 1790669337071985969,
+      "sha256": "59294eb8248f43ff5daf38191cbcf779b2ed6028923b5f8d7f64c8a0dc50a99e"
+    },
+    {
+      "path": "qc-phy/sorting_qc.csv",
+      "resolved_path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/qc-phy/sorting_qc.csv",
+      "bytes": 39406,
+      "mtime_ns": 1790669337381988423,
+      "sha256": "55bb54c00140312bf8fcbb7a91b8c46b07c626cbf2ccfbeac4f2dcd10a51b4d8"
+    },
+    {
+      "path": "qc-phy/sorting_qc.json",
+      "resolved_path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/qc-phy/sorting_qc.json",
+      "bytes": 215151,
+      "mtime_ns": 1790669337386988462,
+      "sha256": "f9224c8e4164dacd94e6cf122f6569f0aa0f4abf277a1f917ca865d917f9f568"
+    }
+  ],
+  "exit_status": 0,
+  "elapsed_seconds": 8.764395475387573,
+  "command": [
+    "/home/huklaban5/Documents/DARTsort/.venv/bin/python",
+    "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/source/qc_phy.py",
+    "--sorting",
+    "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/sort/dartsort_sorting.npz",
+    "--recording",
+    "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/recording",
+    "--output",
+    "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/qc-phy",
+    "--deadline",
+    "1790672929.6577437",
+    "--n-jobs",
+    "1",
+    "--mode",
+    "sorting",
+    "--chunk-duration",
+    "1s",
+    "--recording-manifest",
+    "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/input-manifest.json",
+    "--max-spikes-per-unit",
+    "200"
+  ]
+}

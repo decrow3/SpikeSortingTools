@@ -1,0 +1,54 @@
+{
+  "arms": {
+    "rounded_kriging_bridge": {
+      "bad_channel": "imec1.ap#AP191",
+      "bad_channel_p": 1.3,
+      "bad_channel_sigma_um": 20.0,
+      "channels": 182,
+      "dtype": "float32",
+      "field": "rounded",
+      "frames": 10199918,
+      "method": "kriging",
+      "p": 1.0,
+      "sampling_frequency_hz": 29999.759166666667,
+      "sigma_um": 20.0,
+      "time_origin_s": 899.9999916665997
+    },
+    "unrounded_kriging": {
+      "bad_channel": "imec1.ap#AP191",
+      "bad_channel_p": 1.3,
+      "bad_channel_sigma_um": 20.0,
+      "channels": 182,
+      "dtype": "float32",
+      "field": "unrounded",
+      "frames": 10199918,
+      "method": "kriging",
+      "p": 1.0,
+      "sampling_frequency_hz": 29999.759166666667,
+      "sigma_um": 20.0,
+      "time_origin_s": 899.9999916665997
+    }
+  },
+  "files": {
+    "rounded_kriging_bridge_recording.json": {
+      "bytes": 3187872,
+      "sha256": "66c9c3a6479c23b0e0a44b8b5cdd714cf7ddc162ddfd522291e2f62fee979c9b"
+    },
+    "unrounded_kriging_recording.json": {
+      "bytes": 5655857,
+      "sha256": "df46afa998ee15f9901c6e84a8bf3451d88a9923fc05a939a0f9547401fab7ac"
+    }
+  },
+  "producer": {
+    "python": "/home/huklaban5/Documents/SpikeSortingTools/NPX_preprocessing/.venv/bin/python",
+    "spikeinterface": "0.104.7"
+  },
+  "rounded_knots_sha256": "7176135d8c6a300d5465a24722a39f27c7707b67c5b3bb8fa3a6d07473d4a1d1",
+  "schema": "em2b-stage1-recordings-v1",
+  "sort_launched": false,
+  "source_field_sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+  "source_geometry_sha256": "c01d267823426cf3cd96609984105f9a5833890dec9801bbb15f5d14b54d8f71",
+  "status": "complete",
+  "target_geometry_sha256": "cb5a508f62f02ac6cd0774472e19cea99b56a3696ac6fc76c9610337437a8607",
+  "voltage_read": false
+}

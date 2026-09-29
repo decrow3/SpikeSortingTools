@@ -1,0 +1,19 @@
+[
+  {
+    "path": "/home/huklaban5/DARTsort_experiment_scratch/dd_lattice_w2_20260928/huklaban5_v2/inputs/S_L/COMPLETE.json",
+    "bytes": 241,
+    "mtime_ns": 1790577805569287261,
+    "sha256": "606150be52ff35e2d6b26adf980cd1e9dc59cac69561a626cc1e39e628c9d596"
+  },
+  {
+    "path": "/home/huklaban5/DARTsort_experiment_scratch/dd_lattice_w2_20260928/huklaban5_v2/inputs/S_L/traces.raw",
+    "bytes": 7425540304,
+    "mtime_ns": 1790577773246093510
+  },
+  {
+    "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/inputs/em2b_w2/rounded_exact_dd_recording.json",
+    "bytes": 28823,
+    "mtime_ns": 1790667734924190754,
+    "sha256": "b6fd2e162e93b5492b93885d0ee9e8e438cf44f33ed462abbdd3e3a1b3b9577e"
+  }
+]

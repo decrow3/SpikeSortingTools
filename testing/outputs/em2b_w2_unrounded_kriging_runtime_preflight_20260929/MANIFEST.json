@@ -1,0 +1,26 @@
+{
+  "files": {
+    "VERIFICATION.json": {
+      "bytes": 284,
+      "sha256": "38c3d273c6921eefc30ddf803f3d7d89a27b1e9eafda03c189102fe9a9cfb4d3"
+    },
+    "config.json": {
+      "bytes": 1816,
+      "sha256": "212983e94271af9ed70ef4e4f8748db17ef225c2c1e262018e387b8ceac21582"
+    },
+    "preflight-dispatch.json": {
+      "bytes": 1000,
+      "sha256": "466db17ff6bb90aa2d9a93cddb4f6e71c09d07db53723815ddc4cd3a1d4242ec"
+    },
+    "provenance.json": {
+      "bytes": 39453,
+      "sha256": "d8da2835412f20ecba28b788993a056494739bcfade15c94469c9bec1b71f703"
+    },
+    "runtime-preflight.json": {
+      "bytes": 836,
+      "sha256": "bc662491a9ee0643517e80be265cb40f5c50bd9d09ae44f91a866178c9731a8b"
+    }
+  },
+  "schema": "em2b-runtime-preflight-packet-v1",
+  "status": "complete"
+}

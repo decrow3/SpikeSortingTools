@@ -1,0 +1,29 @@
+{
+  "schema": "em2b-runtime-input-fingerprints-v1",
+  "status": "complete",
+  "environment": {
+    "python": "/home/huklaban5/Documents/DARTsort/.venv/bin/python",
+    "spikeinterface": "0.104.8",
+    "pythonpath": [
+      "/home/huklaban5/Documents/DARTsort",
+      "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools"
+    ]
+  },
+  "voltage_read": false,
+  "arms": {
+    "unrounded_kriging": {
+      "file_count": 18,
+      "fingerprint_object_sha256": "37822221266e696e40c28b739be65ab8bf0c8507ba3ce6f641337478721d90f9",
+      "frames": 10199918,
+      "channels": 182,
+      "dtype": "float32"
+    },
+    "rounded_kriging_bridge": {
+      "file_count": 18,
+      "fingerprint_object_sha256": "d8daa8fd9bf4ac1bd3661667633d61574558857f30fb961edc18af36642edb1c",
+      "frames": 10199918,
+      "channels": 182,
+      "dtype": "float32"
+    }
+  }
+}

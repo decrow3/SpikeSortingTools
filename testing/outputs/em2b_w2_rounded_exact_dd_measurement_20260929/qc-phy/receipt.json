@@ -1,0 +1,77 @@
+{
+  "status": "complete",
+  "started_epoch": 1790669335.9931443,
+  "rf_evaluated": false,
+  "stages": {
+    "input_validation": {
+      "started_epoch": 1790669337.0707786,
+      "elapsed_seconds": 0.0020766258239746094,
+      "max_rss_kib": 1161184
+    },
+    "sorting_qc": {
+      "started_epoch": 1790669337.0730672,
+      "elapsed_seconds": 0.3150055408477783,
+      "max_rss_kib": 1161184
+    }
+  },
+  "versions": {
+    "dartsort": "0.5.23.post4+g6c0566b2",
+    "spikeinterface": "0.104.8"
+  },
+  "input_sorting_sha256": "85f1537a4ffbac430d36e84b1f71e7ed5c0760287338115724ee9d80d052e61a",
+  "recording_path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/recording",
+  "recording_manifest_sha256": "e3940e8aa8b4b67880d414b02d1f3879dbfb4c1eea1091aca4fdf3771983806a",
+  "parameters": {
+    "sorting": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/sort/dartsort_sorting.npz",
+    "recording": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/recording",
+    "recording_manifest": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/input-manifest.json",
+    "output": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/qc-phy",
+    "deadline": 1790672929.6577437,
+    "n_jobs": 1,
+    "chunk_duration": "1s",
+    "max_spikes_per_unit": 200,
+    "radius_um": 100,
+    "ms_before": 1,
+    "ms_after": 2.5,
+    "refractory_ms": 1,
+    "presence_bin_s": 60,
+    "seed": 0,
+    "pc_features": false,
+    "copy_binary": false,
+    "mode": "sorting",
+    "analysis_config": null,
+    "reuse_from": null,
+    "resume_partial": false,
+    "execute": true
+  },
+  "deadline_epoch": 1790672929.6577437,
+  "worker_sha256": "df673dc4558379c5c8bb8cf01ec1c3d0726aa518cef2f7eba4f5dbd967c7ad08",
+  "recording_identity": {
+    "description_sha256": "1f16c140c2db2daf2f413daf31c57dc7ac7ce93a6a9b0aa3c8f51a27d9b40dab",
+    "files": [
+      {
+        "path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/recording/traces_cached_seg0.raw",
+        "bytes": 7425540304,
+        "mtime_ns": 1790668291658545923
+      }
+    ]
+  },
+  "worker_pid": 1726321,
+  "supervisor_job": null,
+  "active_stage": null,
+  "frames": 10199918,
+  "duration_s": 339.9999961110799,
+  "sampling_frequency": 29999.759166666667,
+  "channels": 182,
+  "units": 477,
+  "accepted_events": 603125,
+  "excluded_negative_labels": 2902,
+  "recording_binary_bytes": 7425540304,
+  "sample_clock": "recording-local samples",
+  "voltage_scope": "Exact provided recording; no filtering, referencing or motion warp",
+  "finished_epoch": 1790669337.3883042,
+  "elapsed_seconds": 1.39516019821167,
+  "capabilities": [
+    "sorting_qc"
+  ]
+}

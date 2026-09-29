@@ -4,7 +4,10 @@
   "scope": {
     "dataset": "Luke0804 imec1 W2",
     "sampling_frequency_hz": 29999.759166666667,
-    "frames_half_open": [26999783, 37199701],
+    "frames_half_open": [
+      26999783,
+      37199701
+    ],
     "outer_holdout_access": false,
     "rf_analysis": false
   },
@@ -14,12 +17,35 @@
     "catalogue_sha256": "46463cda1348c0e0b0c39ad22ae9c71bc46f7c7347797c1c10588944cfc52df1"
   },
   "arms": {
-    "none_s0": {"role": "existing no-correction control", "new_sort": false},
-    "rounded_exact_dd": {"role": "lattice control and first-arm resource measurement", "new_sort": true, "stage": 0},
-    "unrounded_kriging": {"role": "primary standard comparator", "new_sort": true, "stage": 1},
-    "rounded_kriging_bridge": {"role": "field-rounding bridge", "new_sort": true, "stage": 1},
-    "unrounded_idw": {"role": "secondary comparator", "new_sort": true, "stage": 2},
-    "unrounded_nearest": {"role": "snapping diagnostic", "new_sort": true, "stage": 2}
+    "none_s0": {
+      "role": "existing no-correction control",
+      "new_sort": false
+    },
+    "rounded_exact_dd": {
+      "role": "lattice control and first-arm resource measurement",
+      "new_sort": true,
+      "stage": 0
+    },
+    "unrounded_kriging": {
+      "role": "primary standard comparator",
+      "new_sort": true,
+      "stage": 1
+    },
+    "rounded_kriging_bridge": {
+      "role": "field-rounding bridge",
+      "new_sort": true,
+      "stage": 1
+    },
+    "unrounded_idw": {
+      "role": "secondary comparator",
+      "new_sort": true,
+      "stage": 2
+    },
+    "unrounded_nearest": {
+      "role": "snapping diagnostic",
+      "new_sort": true,
+      "stage": 2
+    }
   },
   "domains": {
     "field_depth_column": 0,
@@ -53,14 +79,29 @@
     "minimum_valid_draws": 1900
   },
   "comparisons": {
-    "primary": ["rounded_exact_dd", "unrounded_kriging"],
+    "primary": [
+      "rounded_exact_dd",
+      "unrounded_kriging"
+    ],
     "secondary": [
-      ["rounded_exact_dd", "unrounded_idw"],
-      ["rounded_exact_dd", "unrounded_nearest"]
+      [
+        "rounded_exact_dd",
+        "unrounded_idw"
+      ],
+      [
+        "rounded_exact_dd",
+        "unrounded_nearest"
+      ]
     ],
     "bridge": [
-      ["rounded_exact_dd", "rounded_kriging_bridge"],
-      ["rounded_kriging_bridge", "unrounded_kriging"]
+      [
+        "rounded_exact_dd",
+        "rounded_kriging_bridge"
+      ],
+      [
+        "rounded_kriging_bridge",
+        "unrounded_kriging"
+      ]
     ],
     "delta_orientation": "first arm rho minus second arm rho"
   },
@@ -73,7 +114,10 @@
     },
     "segment_safe_short_isi": {
       "definition": "fraction of within-unit, within-domain adjacent ISIs from 9 through 29 samples inclusive",
-      "report_boundary_counts_samples": [8, 30],
+      "report_boundary_counts_samples": [
+        8,
+        30
+      ],
       "directional_max_first_arm_increase": 0.01,
       "equivalence_max_absolute_difference": 0.01,
       "apply_in_each_domain": true
@@ -86,10 +130,18 @@
     "undefined": "if either arm has fewer than 3 eligible units, a constant rank vector, a non-finite point rho, or fewer than 1900 valid bootstrap draws, report unresolved and do not substitute zero"
   },
   "staging": {
-    "stage_0": ["rounded_exact_dd"],
+    "stage_0": [
+      "rounded_exact_dd"
+    ],
     "stage_0_purpose": "measure one selected end-to-end arm before setting later-arm caps",
-    "stage_1": ["unrounded_kriging", "rounded_kriging_bridge"],
-    "stage_2": ["unrounded_idw", "unrounded_nearest"],
+    "stage_1": [
+      "unrounded_kriging",
+      "rounded_kriging_bridge"
+    ],
+    "stage_2": [
+      "unrounded_idw",
+      "unrounded_nearest"
+    ],
     "stage_2_trigger": "launch only if the frozen stage-1 reading does not resolve whether the result is driven by field rounding versus operator choice"
   },
   "resources": {
@@ -98,11 +150,27 @@
     "contextual_prior_is_not_selected_arm_measurement": true,
     "stage_0_wall_seconds_ceiling": 10800,
     "stage_0_scratch_gib_ceiling": 15,
-    "per_later_arm_wall_seconds_max": null,
-    "per_later_arm_scratch_gib_max": null,
+    "per_later_arm_wall_seconds_max": 3600,
+    "per_later_arm_scratch_gib_max": 13,
     "gpu_count": 1,
     "cpu_jobs": 4,
     "later_arm_caps_policy": "freeze after the completed rounded_exact_dd measurement and before another sort authorization",
-    "silent_budget_expansion": false
+    "silent_budget_expansion": false,
+    "stage_0_measured_service_wall_seconds": 1066.229199,
+    "stage_0_measured_service_cpu_seconds": 2556.378077,
+    "stage_0_measured_peak_scratch_gib": 10.37701486889273,
+    "stage_0_scientific_stages_complete": true,
+    "stage_0_final_publication_receipt": false,
+    "stage_0_publication_failure": "detection HDF5 mtime changed during symlink reuse; bounded in measurement audit",
+    "later_arm_stage_budgets_seconds": {
+      "preprocess": 1200,
+      "detect": 720,
+      "motion": 60,
+      "sort": 1080,
+      "qc_phy": 240
+    },
+    "later_arm_detection_reuse_policy": "copy detection inputs into final-path sort; no symlink back to detection artifact",
+    "later_arm_caps_frozen_utc": "2026-09-29T08:20:00Z",
+    "stage_0_measurement_audit": "testing/outputs/em2b_w2_rounded_exact_dd_measurement_20260929/AUDIT.json"
   }
 }

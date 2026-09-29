@@ -102,3 +102,22 @@ def test_nearest_outer_border_is_zero_filled():
 
     # The last target at +40 requests y=80 after the boundary, beyond support.
     assert corrected.get_traces(start_frame=1, end_frame=4)[:, -1].tolist() == [0.0, 0.0, 0.0]
+
+
+def test_supported_target_crop_preserves_attached_probe_metadata():
+    recording, full_ids, locations = fixture()
+    corrected = InterpolatedMotionRecording(
+        recording,
+        [0.0, 0.5, 1.0],
+        [0.0, 0.0, 0.0],
+        full_channel_ids=full_ids,
+        full_channel_locations=locations,
+        target_channel_ids=["AP192"],
+        bad_channel_id="AP191",
+        cell_width_s=0.5,
+        time_origins_s=[0.0],
+    )
+
+    np.testing.assert_array_equal(corrected.get_channel_ids(), ["AP192"])
+    np.testing.assert_array_equal(corrected.get_channel_locations(), locations[[2]])
+    assert corrected.get_property("contact_vector") is not None

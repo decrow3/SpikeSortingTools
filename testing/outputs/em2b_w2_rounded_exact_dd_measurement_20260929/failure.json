@@ -1,0 +1,6 @@
+{
+  "status": "failed",
+  "exit_status": 1,
+  "time_epoch": 1790669338.6462843,
+  "traceback": "Traceback (most recent call last):\n  File \"/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/source/pipeline.py\", line 1054, in main\n    else: run(read(a.config),out,a.dummy,a.stop_after)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/source/pipeline.py\", line 999, in run\n    raise RuntimeError(f'{stage}: artifacts or inputs changed before publication')\nRuntimeError: detect: artifacts or inputs changed before publication\n"
+}

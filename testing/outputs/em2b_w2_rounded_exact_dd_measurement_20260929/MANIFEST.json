@@ -1,0 +1,66 @@
+{
+  "files": {
+    "AUDIT.json": {
+      "bytes": 2885,
+      "sha256": "cd024ded40efee1b8e89608d213bd9923e5c801275cf3f3176219428e09f4272"
+    },
+    "config.json": {
+      "bytes": 1309,
+      "sha256": "3d9a55d597721d1f4edde9fb3c2599b8457fe7077f623d95071b44b8df0240eb"
+    },
+    "detect-complete.json": {
+      "bytes": 4466,
+      "sha256": "220adf99faa7b686e30b9920dc8bb8b8db58b882acdd2ec64254dcac8b8c3e20"
+    },
+    "environment.json": {
+      "bytes": 143,
+      "sha256": "50410c214c9504215c449828ed19364017e763651624dc052cce16ddad3d860f"
+    },
+    "failure.json": {
+      "bytes": 664,
+      "sha256": "e2fe2efa29d38415264000926365dec88f15c35e685bc97337356e9b78b4c93b"
+    },
+    "input-fingerprint.json": {
+      "bytes": 734,
+      "sha256": "811876efd1a83a2c9873fda47cb8689abcf4e30baa5a04876d9145867d77d4b7"
+    },
+    "input-manifest.json": {
+      "bytes": 14445,
+      "sha256": "e3940e8aa8b4b67880d414b02d1f3879dbfb4c1eea1091aca4fdf3771983806a"
+    },
+    "motion-complete.json": {
+      "bytes": 2678,
+      "sha256": "2805d29ae9dba5c84f3d442bd62b08bd34083e8be164686892d0cec2c40c95ed"
+    },
+    "preprocess-complete.json": {
+      "bytes": 7486,
+      "sha256": "673fe6bd4a20825b3fc70a40bb9ad530b4753d33319f3833befaa69519dec59a"
+    },
+    "provenance.json": {
+      "bytes": 39174,
+      "sha256": "1e81dc620d93c89074471057bbd64c6603ff448216d333a8583117b6d172ce7e"
+    },
+    "qc-phy/receipt.json": {
+      "bytes": 2782,
+      "sha256": "3bf0063c11b83a7b0a2517fd793555d8bf262709818f9535ea8adce8fff32ad7"
+    },
+    "qc-phy/sorting_qc.csv": {
+      "bytes": 39406,
+      "sha256": "55bb54c00140312bf8fcbb7a91b8c46b07c626cbf2ccfbeac4f2dcd10a51b4d8"
+    },
+    "qc-phy/sorting_qc.json": {
+      "bytes": 215151,
+      "sha256": "f9224c8e4164dacd94e6cf122f6569f0aa0f4abf277a1f917ca865d917f9f568"
+    },
+    "qc_phy-complete.json": {
+      "bytes": 5046,
+      "sha256": "c73ceb2ef2932a759b3022f7a7599123080cc09eef8bbfe136c74ef9b9502096"
+    },
+    "sort-complete.json": {
+      "bytes": 5889,
+      "sha256": "c8949dba053afe139604cb592b244698c1580a3f86410682d6757c5f27622fe7"
+    }
+  },
+  "schema": "em2b-measurement-packet-v1",
+  "status": "complete_with_bounded_publication_failure"
+}

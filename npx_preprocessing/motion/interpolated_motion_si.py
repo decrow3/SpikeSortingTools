@@ -211,6 +211,10 @@ if BaseRecording is not None:
                 channel_ids=target_ids,
                 dtype=np.dtype("float32"),
             )
+            # Establish locations before copying ``contact_vector``. Once that
+            # property is present SpikeInterface treats a Probe as attached and
+            # rejects ``set_channel_locations`` even when the coordinates agree.
+            self.set_channel_locations(target_locations)
             # Production targets are supported parent channels. Keep the class
             # usable for fixtures that also expose the reconstructed bad site:
             # copy a property only when every target has a parent value.
@@ -219,7 +223,6 @@ if BaseRecording is not None:
                 for key in recording.get_property_keys():
                     if key != "location":
                         self.set_property(key, recording.get_property(key)[indices])
-            self.set_channel_locations(target_locations)
             for index, parent_segment in enumerate(recording._recording_segments):
                 centers = np.asarray(centers_by_segment[index], dtype=np.float64)
                 values = np.asarray(displacement_by_segment[index], dtype=np.float64)

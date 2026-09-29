@@ -1,0 +1,11 @@
+{
+  "active_state": "inactive",
+  "exec_main_status": 0,
+  "result": "success",
+  "schema": "em2b-runtime-preflight-verification-v1",
+  "sort_launched": false,
+  "status": "complete",
+  "sub_state": "dead",
+  "systemd_unit": "em2b-b1fccd613110417a.service",
+  "voltage_read": false
+}

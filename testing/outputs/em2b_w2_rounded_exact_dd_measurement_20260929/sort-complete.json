@@ -1,0 +1,152 @@
+{
+  "schema": "validated-stage-v2",
+  "status": "complete",
+  "inputs": {
+    "config": {
+      "avoid_output_symlinks": false,
+      "budgets_seconds": {
+        "detect": 7200,
+        "motion": 1800,
+        "preprocess": 3600,
+        "qc_phy": 3600,
+        "sort": 10800
+      },
+      "channel_ids": null,
+      "device": "cuda:0",
+      "free_space_reserve_gib": 10,
+      "matching_chunk_length_samples": 30000,
+      "motion": {
+        "method": "static"
+      },
+      "n_jobs": 4,
+      "network_sort_final_markers": false,
+      "phy": {
+        "copy_binary": false,
+        "max_spikes_per_unit": 200,
+        "pc_features": true
+      },
+      "preprocessing": "none",
+      "preprocessing_dtype": "float32",
+      "qc": {
+        "chunk_duration": "1s",
+        "mode": "sorting",
+        "n_jobs": 1
+      },
+      "recording": {
+        "absolute_time_offset_seconds": 899.9999916665997,
+        "backing_files": [
+          "/home/huklaban5/DARTsort_experiment_scratch/dd_lattice_w2_20260928/huklaban5_v2/inputs/S_L/traces.raw",
+          "/home/huklaban5/DARTsort_experiment_scratch/dd_lattice_w2_20260928/huklaban5_v2/inputs/S_L/COMPLETE.json"
+        ],
+        "kind": "spikeinterface",
+        "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/inputs/em2b_w2/rounded_exact_dd_recording.json"
+      },
+      "repo": "/home/huklaban5/Documents/DARTsort",
+      "schema": "dataset-dartsort-v1",
+      "seed": 0,
+      "sorter": {
+        "save_intermediates": false
+      },
+      "window_seconds": [
+        0.0,
+        null
+      ]
+    },
+    "input_fingerprint": [
+      {
+        "bytes": 241,
+        "mtime_ns": 1790577805569287261,
+        "path": "/home/huklaban5/DARTsort_experiment_scratch/dd_lattice_w2_20260928/huklaban5_v2/inputs/S_L/COMPLETE.json",
+        "sha256": "606150be52ff35e2d6b26adf980cd1e9dc59cac69561a626cc1e39e628c9d596"
+      },
+      {
+        "bytes": 7425540304,
+        "mtime_ns": 1790577773246093510,
+        "path": "/home/huklaban5/DARTsort_experiment_scratch/dd_lattice_w2_20260928/huklaban5_v2/inputs/S_L/traces.raw"
+      },
+      {
+        "bytes": 28823,
+        "mtime_ns": 1790667734924190754,
+        "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/inputs/em2b_w2/rounded_exact_dd_recording.json",
+        "sha256": "b6fd2e162e93b5492b93885d0ee9e8e438cf44f33ed462abbdd3e3a1b3b9577e"
+      }
+    ],
+    "upstream": {
+      "detect": "220adf99faa7b686e30b9920dc8bb8b8db58b882acdd2ec64254dcac8b8c3e20",
+      "motion": "2805d29ae9dba5c84f3d442bd62b08bd34083e8be164686892d0cec2c40c95ed",
+      "preprocess": "673fe6bd4a20825b3fc70a40bb9ad530b4753d33319f3833befaa69519dec59a"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "sort/_dartsort_internal_config.json",
+      "resolved_path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/sort/_dartsort_internal_config.json",
+      "bytes": 42833,
+      "mtime_ns": 1790668801113559380,
+      "sha256": "0245a049560992fc095978a0fbac718036acaec3658db937529fcd905155ac2b"
+    },
+    {
+      "path": "sort/dartsort_sorting.npz",
+      "resolved_path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/sort/dartsort_sorting.npz",
+      "bytes": 100006261,
+      "mtime_ns": 1790669320951857883,
+      "sha256": "85f1537a4ffbac430d36e84b1f71e7ed5c0760287338115724ee9d80d052e61a"
+    },
+    {
+      "path": "sort/effective-config.json",
+      "resolved_path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/sort/effective-config.json",
+      "bytes": 58019,
+      "mtime_ns": 1790668801111559368,
+      "sha256": "a6054d796ba1d3ad35b765d9d1dac066a2ec586cabcadd7f239197ea16e04cce"
+    },
+    {
+      "path": "sort/matching1.h5",
+      "resolved_path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/sort/matching1.h5",
+      "bytes": 1108562184,
+      "sha256": "2cb46bacb12aec352b84b874750881b2e3129e0dd36991b62b151f54c17ab518"
+    },
+    {
+      "path": "sort/matching1_models/featurization_pipeline.pt",
+      "resolved_path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/sort/matching1_models/featurization_pipeline.pt",
+      "bytes": 377878,
+      "mtime_ns": 1790669107126359154,
+      "sha256": "17c5367a4e475c051a04279b85fa6500c284255f850680016c85407339f54e34"
+    },
+    {
+      "path": "sort/matching1_models/template_data.npz",
+      "resolved_path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/sort/matching1_models/template_data.npz",
+      "bytes": 53040913,
+      "mtime_ns": 1790669096721298030
+    },
+    {
+      "path": "sort/motion.pkl",
+      "resolved_path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/sort/motion.pkl",
+      "bytes": 3120,
+      "mtime_ns": 1790668808685603978,
+      "sha256": "28aeeadb7e22229448c3ce65f80ac8a34ba9b9ec2cc3bd39576e25311331d061"
+    },
+    {
+      "path": "sort/timing.json",
+      "resolved_path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/sort/timing.json",
+      "bytes": 621,
+      "mtime_ns": 1790669320712855978,
+      "sha256": "96906d0d337e60f4a12ea8e8e772ddb5000e5ec0553fa74089a7c5d2790e0279"
+    }
+  ],
+  "exit_status": 0,
+  "elapsed_seconds": 527.4372894763947,
+  "command": [
+    "/usr/bin/timeout",
+    "--kill-after=10",
+    "10800",
+    "/home/huklaban5/Documents/DARTsort/.venv/bin/python",
+    "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/source/pipeline.py",
+    "worker",
+    "--stage",
+    "sort",
+    "--config",
+    "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1/config.json",
+    "--output",
+    "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_exact_dd_v1"
+  ]
+}
