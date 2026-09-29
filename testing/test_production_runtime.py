@@ -46,3 +46,6 @@ def test_plan_reports_production_environment():
     assert environment["lock_required"] is True
     assert environment["packages"] == PRODUCTION_PACKAGES
     assert environment["canonical_setup"] == list(PRODUCTION_UV_SETUP)
+    assert plan["stages"]["standard_qc"] is plan["stages"]["qc"]
+    assert plan["stages"]["completeness_timeline"] is plan["stages"]["qc"]
+    assert plan["stages"]["operational_pipeline_validation"] is plan["stages"]["qc"]

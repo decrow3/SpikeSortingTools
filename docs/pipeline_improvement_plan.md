@@ -30,6 +30,9 @@ metrics, and screening-only completeness timeline. The compact QC package is
 hash-manifested on shared storage. This is the operational reference while the
 completed external-rigid challenger awaits its paired comparison; see the
 [profile result](luke_operational_pipeline_profile_20260928.md).
+Future run completion is also explicit: the production run sheet writes one
+terminal operational receipt only after all four required downstream stages
+pass under the same sort identity and policy checks.
 
 **Evidence update, 2026-09-28:** the cached cluster-452 follow-up is complete.
 Independent legacy-event anchoring found no transfer into a compatible rescue

@@ -78,6 +78,7 @@
     ],
     "standard_qc_automatic_curation_changes": 0,
     "completeness_timeline_screening_only": true,
+    "future_runs_require_operational_pipeline_receipt": true,
     "manual_review_required_for_warnings": true,
     "unit_yield_is_not_a_promotion_endpoint": true
   },

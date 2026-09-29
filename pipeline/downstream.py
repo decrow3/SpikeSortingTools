@@ -577,6 +577,99 @@ def run_completeness_timeline_stage(
     )
 
 
+def run_operational_pipeline_validation_stage(
+    output_root: Path,
+    sort_identity: dict[str, Any],
+) -> dict[str, Any]:
+    """Seal the required downstream stages into one identity-bound receipt.
+
+    This is deliberately a validation-only stage. It does not alter curation,
+    quality labels, or completeness outputs; it proves that all required
+    operational stages completed for the same pinned sort and that the two
+    additive QC stages retain their non-curating/screening-only policies.
+    """
+    output_root = Path(output_root)
+    receipt_paths = {
+        "curation": output_root / "cur/curation_receipt.json",
+        "legacy_qc": output_root / "qc/qc_receipt.json",
+        "standard_qc": output_root / "qc/standard/standard_qc_receipt.json",
+        "completeness_timeline": (
+            output_root / "qc/completeness_timeline/completeness_timeline_receipt.json"
+        ),
+    }
+    expected_stages = {
+        "curation": "legacy_compatible_curation",
+        "legacy_qc": "legacy_compatible_qc",
+        "standard_qc": "standard_unit_quality",
+        "completeness_timeline": "amplitude_completeness_timeline",
+    }
+    identity = sort_identity["identity_digest"]
+    receipts: dict[str, dict[str, Any]] = {}
+    hashes: dict[str, str] = {}
+    for name, path in receipt_paths.items():
+        if not path.is_file():
+            raise FileNotFoundError(f"required operational receipt is absent: {path}")
+        value = json.loads(path.read_text())
+        if value.get("schema_version") != STAGE_RECEIPT_SCHEMA:
+            raise RuntimeError(f"{name} uses an unsupported receipt schema")
+        if value.get("stage") != expected_stages[name] or value.get("complete") is not True:
+            raise RuntimeError(f"{name} is not a complete {expected_stages[name]} stage")
+        if value.get("sort_identity_digest") != identity:
+            raise RuntimeError(f"{name} belongs to another sort identity")
+        missing = [path for path in value.get("required_files", []) if not Path(path).is_file()]
+        if missing:
+            raise RuntimeError(f"{name} receipt has missing outputs: {missing}")
+        receipts[name], hashes[name] = value, _sha256(path)
+
+    curation = receipts["curation"]["summary"]
+    legacy = receipts["legacy_qc"]["summary"]
+    standard = receipts["standard_qc"]["summary"]
+    completeness = receipts["completeness_timeline"]["summary"]
+    counts = [curation.get("unit_count"), legacy.get("unit_count"),
+              standard.get("unit_count"), completeness.get("unit_count")]
+    if len(set(counts)) != 1 or any(value is None for value in counts):
+        raise RuntimeError(f"downstream unit inventories differ: {counts}")
+    if curation.get("spike_count") != standard.get("spike_count"):
+        raise RuntimeError("curation and standard QC spike inventories differ")
+    if standard.get("automatic_curation_changes") != 0:
+        raise RuntimeError("standard QC made automatic curation changes")
+    if completeness.get("screening_only") is not True:
+        raise RuntimeError("completeness timeline is not screening-only")
+
+    output = output_root / "qc/operational"
+    request = ensure_stage_request(
+        output / "operational_pipeline_request.json",
+        stage="operational_pipeline_validation",
+        sort_identity=sort_identity,
+        settings={
+            "required_stages": expected_stages,
+            "receipt_sha256": hashes,
+            "standard_qc_automatic_curation_changes": 0,
+            "completeness_timeline_screening_only": True,
+        },
+    )
+    summary_path = output / "operational_pipeline_summary.json"
+    receipt_path = output / "operational_pipeline_receipt.json"
+    if receipt := completed_stage_receipt(
+        receipt_path, request=request, required_files=(summary_path,)
+    ):
+        return receipt
+    summary = {
+        "schema_version": "operational-pipeline-validation-v1",
+        "status": "pass",
+        "sort_identity_digest": identity,
+        "unit_count": int(counts[0]),
+        "spike_count": int(curation["spike_count"]),
+        "receipt_sha256": hashes,
+        "automatic_curation_changes": 0,
+        "completeness_timeline_screening_only": True,
+    }
+    _atomic_json(summary_path, summary)
+    return write_stage_receipt(
+        receipt_path, request=request, required_files=(summary_path,), summary=summary
+    )
+
+
 def run_matlab_export_stage(
     curated_output: Path,
     qc_dir: Path,

@@ -48,6 +48,15 @@ Its 13-file manifest SHA-256 is
 The profile verifies every payload hash and can use packaged outputs if the
 original local analysis paths are absent.
 
+Future production runs now finish the QC block with an
+`operational_pipeline_validation` stage. Its receipt is written only after
+curation, legacy QC, standard QC, and the completeness timeline all have
+complete receipts for the same pinned sort identity, consistent unit/spike
+inventories, zero automatic QC curation changes, and a screening-only
+completeness policy. The visible run plan lists these stages individually.
+The profile validation above supplies the equivalent backfilled proof for the
+historical reference without modifying its completed output directory.
+
 ## Candidate boundary
 
 The profile records why no silent parameter change is allowed:

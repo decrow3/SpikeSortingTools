@@ -113,6 +113,7 @@ from pipeline import (
     run_postcuration_comparison_stage,
     run_qc_stage,
     run_completeness_timeline_stage,
+    run_operational_pipeline_validation_stage,
     run_standard_qc_stage,
     run_motion_sidecar_for_accepted_recording,
     stage_spikeglx_stream,
@@ -218,6 +219,9 @@ def build_run_plan() -> dict:
             "similar_pair_audit": RUN_SIMILAR_PAIR_AUDIT,
             "curation": RUN_CURATION,
             "qc": RUN_QC,
+            "standard_qc": RUN_QC,
+            "completeness_timeline": RUN_QC,
+            "operational_pipeline_validation": RUN_QC,
             "matlab_export": RUN_MATLAB_EXPORT,
             "postcuration_comparison": RUN_POSTCURATION_COMPARISON,
             "motion_coordinates": QUALIFIED_MOTION_FIELD is not None,
@@ -524,6 +528,10 @@ def main() -> None:
             sampling_frequency=float(recording_manifest["sampling_frequency_hz"]),
         )
         print(json.dumps(completeness_result, indent=2), flush=True)
+        operational_result = run_operational_pipeline_validation_stage(
+            OUTPUT_DIR, sort_identity
+        )
+        print(json.dumps(operational_result, indent=2), flush=True)
 
     if RUN_MATLAB_EXPORT:
         _stage(11, "EXPORT LEGACY-COMPATIBLE MATLAB ARTIFACTS")
