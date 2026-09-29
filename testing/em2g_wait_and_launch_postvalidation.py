@@ -67,6 +67,11 @@ def validate_bound_inputs(request: dict[str, object]) -> None:
         raise RuntimeError("post-validation source or contract changed after scheduling")
 
 
+def waiter_unit_name(state_dir: Path, validation_output: Path) -> str:
+    identity = f"{state_dir.resolve()}\0{validation_output.resolve()}"
+    return "em2g-wait-" + hashlib.sha256(identity.encode()).hexdigest()[:16]
+
+
 def service_state(unit: str) -> dict[str, str]:
     result = subprocess.run(
         [
@@ -244,9 +249,7 @@ def schedule(args: argparse.Namespace) -> None:
     if not args.sort_run.is_dir():
         raise FileNotFoundError(args.sort_run)
     args.state_dir.mkdir(parents=True)
-    unit = "em2g-wait-" + hashlib.sha256(
-        str(args.validation_output).encode()
-    ).hexdigest()[:16]
+    unit = waiter_unit_name(args.state_dir, args.validation_output)
     command = waiter_command(
         python,
         args.state_dir.resolve(),

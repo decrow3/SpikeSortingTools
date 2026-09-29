@@ -7,6 +7,7 @@ from testing.em2g_wait_and_launch_postvalidation import (
     bound_inputs,
     terminal_decision,
     waiter_command,
+    waiter_unit_name,
 )
 
 
@@ -51,6 +52,15 @@ def test_interpreter_path_keeps_virtualenv_symlink(tmp_path):
     observed = absolute_preserving_symlinks(venv_python)
     assert observed == venv_python
     assert observed.is_symlink()
+
+
+def test_replacement_handoff_uses_a_fresh_service_identity(tmp_path):
+    output = tmp_path / "validation"
+    first = waiter_unit_name(tmp_path / "handoff-v1", output)
+    second = waiter_unit_name(tmp_path / "handoff-v2", output)
+    assert first.startswith("em2g-wait-")
+    assert second.startswith("em2g-wait-")
+    assert first != second
 
 
 def test_terminal_decision_requires_successful_receipt(tmp_path):
