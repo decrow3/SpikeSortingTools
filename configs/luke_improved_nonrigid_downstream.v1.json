@@ -13,6 +13,22 @@
     "cosine_threshold": 0.9,
     "ccg_threshold": 0.5
   },
+  "manager": {
+    "kind": "systemd_user_service",
+    "unit": "luke-improved-nonrigid-downstream-20260928-v1.service",
+    "working_directory": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools",
+    "interpreter": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+    "argv": [
+      "-m",
+      "testing.luke_improved_nonrigid_downstream",
+      "--config",
+      "configs/luke_improved_nonrigid_downstream.v1.json"
+    ],
+    "stdout": "/media/huklaban5/Data/luke_improved_motion_20260909_v1/downstream/stdout.log",
+    "stderr": "/media/huklaban5/Data/luke_improved_motion_20260909_v1/downstream/stderr.log",
+    "restart": "no",
+    "survival_proof": "Reuses the systemd user manager whose launcher-disconnection success and failure proofs are recorded in testing/outputs/group2_preparation and docs/luke_group2_huklaban1_run.md."
+  },
   "stages": [
     "pin_sort_identity",
     "curation",
