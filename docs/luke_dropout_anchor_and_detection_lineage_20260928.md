@@ -17,6 +17,14 @@ weaker waveform. This supports developing one bounded detection/preprocessing
 candidate. It does not reopen the closed 8/8 or 9/9 Kilosort threshold arms and
 does not authorize a new sort by itself.
 
+Artifact proximity and depth-radius controls further narrow that candidate.
+Failing unmatched events are less often near the existing >500 uV artifact
+sidecar than failing matched events, and widening the `full_st` depth radius
+does not recover target-specific excess over circular-shift nulls. The next
+candidate is therefore a target-local, waveform-specific detector diagnostic,
+not broader artifact blanking, a wider identity gate, or a global threshold
+change.
+
 ## Seven-case independent-anchor screen
 
 The screen included every rescue `KSLabel=good` row in the hash-frozen baseline
@@ -112,6 +120,24 @@ The SNR decline is driven by waveform attenuation in this sparse comparison,
 not by higher local baseline noise. This narrows the candidate class toward
 detection sensitivity to a weakening waveform.
 
+## Artifact and whole-probe controls
+
+The completed >500 uV sidecar provides no artifact explanation. Within 2 ms of
+an active artifact sample, the failing matched fraction is 9.42%, while the
+failing unmatched fraction is 6.53%. The unmatched fraction is lower at every
+tested radius from 0.5 to 5 ms and fails the frozen artifact-support rule.
+
+A first time-only whole-probe check found a detection near 93.70% of the 1,793
+spatially unmatched failing anchors. That result is explicitly confounded:
+whole-probe event density is high, and paired depths have a median offset of
+-500 um. The corrected v2 comparison therefore tested 100, 200, 400, and 800 um
+radii against three fixed circular-shift nulls. At 200 um, observed failing
+coverage gains 13.75 points over the 100 um baseline, but the largest matched
+null gain is 22.12 points. At 400 and 800 um, the observed gains are 27.07 and
+33.78 points while the null gains are 49.25 and 62.30 points. No radius passes
+the frozen 10-point target-specific margin. Wider spatial matching is not a
+supported repair.
+
 ## Reproducibility and next action
 
 - Screen config:
@@ -128,16 +154,26 @@ detection sensitivity to a weakening waveform.
   `180912933c3202d28344ed9b49bc327c7130bed99dceca14292b9f5ed0972e15`,
   and the noise-discriminator [`v2`](../configs/luke_cluster553_missing_anchor_waveforms.v2.json),
   SHA-256 `e95d3d6eb7bf348fe4b9f85d78fa6e02a6a6459f3c8878b8b10423a6ab8fdb7f`.
+- Artifact-proximity config:
+  [`v1`](../configs/luke_cluster553_artifact_proximity.v1.json), SHA-256
+  `ab25df45a71ca6cfb90aae6be375c207962e5162f7bb2bdd59297cb809c52d0c`.
+- Whole-probe controls: the descriptive time-only
+  [`v1`](../configs/luke_cluster553_whole_probe_detection.v1.json), SHA-256
+  `0b431da14807f1b53d070bbd2cc11fc686ecc8d093edd220ea75c93b9f48217d`,
+  and the null-controlled radial
+  [`v2`](../configs/luke_cluster553_radial_detection_null.v2.json), SHA-256
+  `2d77709b9ca0aed4ad91e8e01299173196eb49d9567d664ed75afdb4be2e9824`.
 - Implementations:
   [`luke_dropout_anchor_screen.py`](../testing/luke_dropout_anchor_screen.py),
   [`luke_cluster21_detection_lineage.py`](../testing/luke_cluster21_detection_lineage.py), and
   [`luke_cluster553_missing_anchor_waveforms.py`](../testing/luke_cluster553_missing_anchor_waveforms.py).
 
-Local baseline noise is now excluded as the material driver in the sparse
-partitions. The remaining cheap check is proximity to the existing artifact
-sidecar at matched and missed anchor times. If artifact proximity is also
-unremarkable, one specific detection operation may receive a frozen bounded
-candidate contract on cluster 553 plus healthy controls. The operation must be
-separately justified and cannot be a relabeling of the closed threshold sweep.
+Local baseline noise, existing artifact intervals, downstream curation, and
+wider depth matching are excluded as material explanations under these bounded
+checks. Freeze one target-local matched-filter rescue diagnostic using cluster
+553's healthy retained spikes as its template, a permissive local proposal
+stage, shifted-time background controls, and the independent anchor only for
+evaluation. The operation must preserve healthy events and control added
+detections before it can motivate a broader candidate or any sort.
 
 No sort was launched and no production output, threshold, or label changed.

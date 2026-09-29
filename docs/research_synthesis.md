@@ -1,7 +1,7 @@
 # SpikeSortingTools: experiments, rationale, and conclusions
 
-**Compiled:** 23 September 2026. **Evidence reviewed:** repository decision and
-experiment records through 14 September 2026, including the completed
+**Compiled:** 28 September 2026. **Evidence reviewed:** repository decision and
+experiment records through 28 September 2026, including the completed
 Bacon–Luke–Allen pilot. This is a synthesis of documented results, not a fresh
 audit of every stored array or a live job-status report. It covers the major
 research threads; linked reports retain individual ablations, figures, settings,
@@ -49,6 +49,12 @@ anatomy, probe geometry, acquisition, neural activity, and behavior also differ.
 6. **The evaluator itself needs validation.** Event matching, synthetic motion,
    amplitude completeness, and lighthouse identity tracking have each exposed
    defects or limits that changed earlier conclusions.
+7. **A real retained-output dropout has now been localized upstream.** For
+   cluster 553, independent-anchor coverage falls about 37 points already in
+   target-local `full_st`; curation loss, local noise rise, existing artifact
+   intervals, and wider depth matching do not explain it. Missed times retain a
+   weaker recognizable waveform, motivating a target-local waveform-specific
+   detector diagnostic rather than another global threshold sweep.
 
 The documented production reference remains the frozen rescue graph with
 Kilosort thresholds **12/9**, without applied motion correction. Later external
@@ -158,14 +164,21 @@ as biological identities. Healthy-cluster preservation passed, but completeness
 coverage there was too low for a strong safety conclusion. A later baseline
 census found other measurable deterioration cases, including 553 and 452.
 
-**Conclusion:** close this candidate on cluster 37. A failed intervention on one
-case does not show that no useful cases exist. The census nominates follow-up
-cases; it is not a completed recovery intervention on those cases.
+**Conclusion:** close this candidate on cluster 37. Follow-up independent-anchor
+work found a different, upstream failure in interior cluster 553: target-local
+`full_st` coverage falls from 97.02% to 59.86%, while the missed-event median
+waveform remains similar (cosine 0.865) but attenuated (68.75% of reference
+PTP). Local baseline noise is unchanged, missed events are not enriched near
+the existing artifact sidecar, and wider depth radii add less coverage than
+circular-shift event-density controls. This supports one bounded local
+template-detector diagnostic; it does not establish recovered spikes or reopen
+the closed global-threshold arms.
 
 Sources: [dropout audit](luke_amplitude_dropout_audit_result.md),
 [candidate v1](luke_first_pipeline_candidate_v1_result.md),
 [candidate v2](luke_first_pipeline_candidate_v2_result.md),
-[recovery census](luke_baseline_recovery_census_v1.md).
+[recovery census](luke_baseline_recovery_census_v1.md), and
+[cluster-553 stage attribution](luke_dropout_anchor_and_detection_lineage_20260928.md).
 
 ## 5. Why did some motion estimates look nearly stationary?
 

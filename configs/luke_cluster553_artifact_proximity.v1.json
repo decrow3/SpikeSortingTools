@@ -1,0 +1,23 @@
+{
+  "schema": "luke-cluster553-artifact-proximity-v1",
+  "target_cluster": 553,
+  "legacy_anchor_cluster": 425,
+  "sorter_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output",
+  "curated_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output",
+  "legacy_curated": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output",
+  "artifact_sidecar": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/artifacts/raw_over_500uv.h5",
+  "sampling_frequency_hz": 29999.835983263598,
+  "maximum_depth_difference_um": 100.0,
+  "tolerance_ms": 0.5,
+  "windows": [
+    {"name": "reference", "role": "reference", "start_s": 5802.133888235484, "stop_s": 5954.244219856822},
+    {"name": "failing", "role": "failing", "start_s": 5954.280520055284, "stop_s": 6360.328406676924}
+  ],
+  "artifact_support_rule": {
+    "primary_radius_ms": 2.0,
+    "minimum_absolute_fraction": 0.50,
+    "minimum_increase_over_failing_matched": 0.02,
+    "minimum_ratio_over_failing_matched": 2.0
+  },
+  "decision": "Support artifact association if failing-unmatched 2 ms proximity is at least 0.50, or is both 0.02 and twofold above failing-matched proximity."
+}

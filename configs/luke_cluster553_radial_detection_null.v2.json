@@ -1,0 +1,22 @@
+{
+  "schema": "luke-cluster553-radial-detection-null-v2",
+  "supersedes": "v1 whole-probe time-only matches, which are confounded by whole-probe event density",
+  "target_cluster": 553,
+  "legacy_anchor_cluster": 425,
+  "sorter_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output",
+  "curated_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output",
+  "legacy_curated": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output",
+  "sampling_frequency_hz": 29999.835983263598,
+  "tolerance_ms": 0.5,
+  "depth_radii_um": [100.0, 200.0, 400.0, 800.0],
+  "circular_shift_null_s": [137.0, 431.0, 997.0],
+  "windows": [
+    {"name": "reference", "role": "reference", "start_s": 5802.133888235484, "stop_s": 5954.244219856822},
+    {"name": "failing", "role": "failing", "start_s": 5954.280520055284, "stop_s": 6360.328406676924}
+  ],
+  "spatial_escape_support_rule": {
+    "minimum_failing_observed_gain_over_100um": 0.10,
+    "minimum_failing_gain_above_max_null_gain": 0.10
+  },
+  "decision": "Support spatial escape only if a prespecified wider radius gains at least 10 percentage points of failing-window anchor coverage over 100 um and that gain exceeds the largest circular-shift-null gain by at least 10 points."
+}

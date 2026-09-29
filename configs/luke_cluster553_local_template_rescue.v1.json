@@ -1,0 +1,66 @@
+{
+  "schema": "luke-cluster553-local-template-rescue-v1",
+  "status": "frozen_before_candidate_execution",
+  "purpose": "Test one target-local waveform-specific recovery operation for the independently anchored cluster 553 detection dropout without changing global Kilosort thresholds or launching a sort.",
+  "inputs": {
+    "target_cluster": 553,
+    "legacy_anchor_cluster_for_evaluation_only": 425,
+    "sorter_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output",
+    "curated_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output",
+    "legacy_curated": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output",
+    "raw_recording": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+    "binary_manifest": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/binary.json",
+    "sampling_frequency_hz": 29999.835983263598
+  },
+  "intervals": {
+    "template_and_calibration": {"start_s": 5802.133888235484, "stop_s": 5954.244219856822},
+    "failing_evaluation": {"start_s": 5954.280520055284, "stop_s": 6360.328406676924}
+  },
+  "operation": {
+    "name": "target_local_permissive_peak_proposal_then_template_gate",
+    "template_source": "curated cluster 553 retained spikes in template_and_calibration only; legacy cluster 425 is forbidden from template construction and threshold calibration",
+    "channels": [294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309],
+    "gain_uv_per_count": 2.34375,
+    "pre_samples": 30,
+    "post_samples": 31,
+    "baseline_samples": 15,
+    "maximum_alignment_lag_samples": 2,
+    "proposal": {
+      "negative_peak_threshold_sigma": 3.0,
+      "noise_estimator": "per-channel median absolute deviation divided by 0.6744897501960817 in the template interval",
+      "local_peak_radius_samples": 15,
+      "proposal_refractory_samples": 15
+    },
+    "gate": {
+      "minimum_waveform_cosine": 0.80,
+      "matched_filter_score_threshold": "maximum of the 99.9th percentile of circular-shift background scores and the 10th percentile of retained target-spike scores",
+      "circular_shift_background_s": [137.0, 431.0, 997.0]
+    }
+  },
+  "evaluation": {
+    "event_tolerance_ms": 0.5,
+    "minimum_reference_target_sensitivity": 0.80,
+    "maximum_calibration_background_acceptance_fraction": 0.001,
+    "minimum_failing_unmatched_anchor_recovery_fraction": 0.20,
+    "maximum_added_refractory_violation_fraction": 0.01,
+    "minimum_added_event_template_cosine": 0.80,
+    "required_controls": [
+      "report reference and failing proposal counts before and after the gate",
+      "report overlap with existing target-local full_st and curated cluster 553",
+      "report independent-anchor recovery separately for previously matched and unmatched events",
+      "report circular-shift background acceptance and refractory effect",
+      "preserve every existing spike and label; candidate additions remain unvalidated"
+    ]
+  },
+  "resource_cap": {
+    "continuous_voltage_intervals": "only the two declared intervals",
+    "maximum_channels": 16,
+    "sort_launched": false,
+    "production_changed": false
+  },
+  "decision": {
+    "advance": "Only if every numerical evaluation gate passes. Advancement authorizes a broader held-out diagnostic contract, not production use or a sort.",
+    "stop": "Reject this operation if calibration cannot simultaneously control shifted background and preserve reference target sensitivity, or if failing unmatched recovery, waveform similarity, or refractory preservation fails.",
+    "ambiguous": "Stop without tuning thresholds or adding another arm."
+  }
+}

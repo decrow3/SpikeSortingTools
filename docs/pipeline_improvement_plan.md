@@ -27,6 +27,16 @@ The next candidate must name one specific detection
 or preprocessing operation; this evidence does not reopen the closed threshold
 arms. See the [anchor and stage-lineage result](luke_dropout_anchor_and_detection_lineage_20260928.md).
 
+**Candidate-operation update, 2026-09-28:** existing >500 uV artifact intervals
+do not preferentially explain cluster 553's missed anchors (6.53% unmatched
+versus 9.42% matched within 2 ms). A wider `full_st` depth radius also fails
+null control: at 200 um the observed coverage gain is 13.75 points while the
+largest circular-shift-null gain is 22.12 points. The next bounded operation is
+a target-local permissive peak proposal followed by a reference-calibrated
+cluster-553 waveform-template gate. It uses retained healthy spikes to build
+the template and the independent legacy anchor only for evaluation. This is a
+diagnostic candidate, not a production change or authorization for a sort.
+
 The practical goal is reliable recovery of individual neurons' spike trains
 throughout the recording. Progress means fixing a recognizable failure,
 preserving healthy periods, and confirming the improvement on independently
