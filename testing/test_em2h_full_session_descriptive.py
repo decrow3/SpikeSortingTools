@@ -2,12 +2,14 @@ import json
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 
 from testing.em2h_full_session_descriptive import (
     domain_codes,
     mask_membership,
     temporal_blocks,
     unit_domain_metrics,
+    segment_safe_isi,
 )
 
 
@@ -57,3 +59,24 @@ def test_contract_keeps_cross_sorter_conclusion_descriptive():
     assert contract["scope"]["rf"] is False
     assert contract["resources"]["voltage_bytes_read"] == 0
     assert "do not establish" in contract["interpretation"]
+
+
+def test_segment_safe_isi_never_crosses_domain_boundaries():
+    intervals = pd.DataFrame(
+        {
+            "start_s": [0.0, 5.0],
+            "end_s": [5.0, 10.0],
+            "domain": ["outside_mask_flat", "negative_excursion"],
+        }
+    )
+    rows = segment_safe_isi(
+        np.asarray([1, 2, 5, 6], dtype=np.int64),
+        np.asarray([7, 7, 7, 7], dtype=np.int64),
+        np.ones(4, dtype=bool),
+        intervals,
+        1.0,
+    )
+    by_domain = {row["domain"]: row for row in rows}
+    assert by_domain["outside_mask_flat"]["denominator"] == 1
+    assert by_domain["negative_excursion"]["denominator"] == 1
+    assert by_domain["catalogue_outside_remainder"]["denominator"] == 0
