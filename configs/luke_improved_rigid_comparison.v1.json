@@ -1,0 +1,50 @@
+{
+  "schema_version": "luke-improved-rigid-comparison-v1",
+  "development_only": true,
+  "baseline": {
+    "curated_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output",
+    "qc_dir": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/qc",
+    "curation_receipt": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/curation_receipt.json",
+    "expected_sort_identity_digest": "22ded4d503b6de8edf4851a08797ae4e594fe41118b913451365727ffbd616ac"
+  },
+  "candidate": {
+    "handoff_dir": "/mnt/NPX/Luke/20250804/shared_analysis/luke_improved_motion_two_machine_20260909_v1/huklaban1_rigid_comparison_handoff_v1",
+    "expected_sort_identity_digest": "06ea4b23a45335ef8a8428047cc54e64356905b6cdae6715e36f061f3cfdf555"
+  },
+  "output_dir": "/media/huklaban5/Data/luke_improved_rigid_comparison_20260928_v1",
+  "evaluation": {
+    "sampling_frequency_hz": 29999.835983263598,
+    "duration_s": 10473.5537279367,
+    "correspondence_tolerance_ms": 0.5,
+    "minimum_correspondence_overlap": 0.1,
+    "primary_retention": 0.5,
+    "longitudinal_bin_s": 300.0,
+    "coincidence_tolerance_ms": 0.5,
+    "coincidence_depth_um": 75.0,
+    "coincidence_seed": 20250804,
+    "minimum_valid_amplitude_windows": 2,
+    "minimum_common_time_fraction": 0.5,
+    "minimum_measurable_unit_fraction": 0.5
+  },
+  "common_spatial_domain": {
+    "processing_depth_um": [200.0, 3640.0],
+    "scoring_depth_um": [300.0, 3540.0],
+    "minimum_edge_exclusion_um": 100.0,
+    "note": "The frozen rigid and nonrigid application contract uses AP20-AP365 (200-3640 um). Apply the same 100 um boundary exclusion symmetrically to both arms."
+  },
+  "manager": {
+    "kind": "systemd_user_service",
+    "unit": "luke-improved-rigid-comparison-20260928-v1.service",
+    "working_directory": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools",
+    "interpreter": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+    "argv": [
+      "-m",
+      "testing.luke_improved_rigid_comparison",
+      "--config",
+      "configs/luke_improved_rigid_comparison.v1.json"
+    ],
+    "restart": "no",
+    "managed_oom_preference": "avoid"
+  },
+  "interpretation": "Paired descriptive comparison of the completed full-session external-rigid 12/9 development sort against the 12/9 motion-off operational reference. Correspondence is not proof of biological identity and no automatic production promotion is permitted."
+}

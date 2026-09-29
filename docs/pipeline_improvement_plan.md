@@ -1938,6 +1938,15 @@ adoption need not wait for the dense-donor motion mechanism to be complete.
 
 ### Build and test now
 
+**Current full-session closure step (2026-09-28).** The unchanged external-
+nonrigid candidate and its selective high-field use are closed by paired
+full-session evidence. The completed external-rigid arm cannot yet be judged
+from its shared raw-count summary. Publish the bounded, content-hashed
+[rigid comparison handoff](luke_improved_rigid_comparison_handoff_20260928.md)
+and run `configs/luke_improved_rigid_comparison.v1.json`; this reuses the sort
+and transfers about 1.114 GiB rather than voltage or sorter scratch. Do not
+start another sort while this cached comparison remains available.
+
 Execute the delivery sequence at the top of this document. The options below
 are an inventory, not simultaneous prerequisites for the first candidate.
 
