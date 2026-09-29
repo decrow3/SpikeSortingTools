@@ -1,0 +1,4 @@
+role,first_arm,second_arm,delta_rho,ci95_low,ci95_high,valid_draws,directional_yield_pass,equivalence_yield_pass,directional_isi_pass,equivalence_isi_pass,decision
+primary,rounded_exact_dd,unrounded_kriging,0.04521627976967757,0.014336127219545405,0.07781311811271988,2000,True,True,True,True,mixed_or_inconclusive
+bridge,rounded_exact_dd,rounded_kriging_bridge,-0.006346627588639464,-0.020941574889439867,0.0012577831733050953,2000,True,True,True,True,practical_equivalence
+bridge,rounded_kriging_bridge,unrounded_kriging,0.051562907358317034,0.03026717110074042,0.08154949570845502,2000,True,True,True,True,meaningful_first_arm_advantage

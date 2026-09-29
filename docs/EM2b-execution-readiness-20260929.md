@@ -1,9 +1,13 @@
 # EM.2b W2 execution readiness — 2026-09-29
 
-**Status: stage-0 measurement complete; stage-1 packets ready but not
-launched.** The measured result and bounded publication failure are reported in
-`docs/EM2b-stage0-measurement-and-stage1-readiness-20260929.md`. The revised
-scorecard, including the measured resource limits, is frozen in
+**Completion update: stage 0 and both stage-1 kriging arms are complete.** The
+rounded kriging bridge is practically equivalent to rounded exact-DD, while
+rounded kriging meaningfully outperforms unrounded kriging. Stage 2 was not
+triggered. The final W2 result and production implication are reported in
+`docs/EM2b-stage1-result-20260929.md`; the earlier stage-0 measurement and
+bounded publication failure are reported in
+`docs/EM2b-stage0-measurement-and-stage1-readiness-20260929.md`. The scorecard,
+including the measured resource limits, is frozen in
 `configs/em2b_w2_scorecard.v1.json` (SHA-256
 `714fd29c41f9c4aa6142d534232f030438af0819133613177ca404f4331642c6`). A harmless systemd user-service dummy
 continued after its launching shell exited and completed with status 0, so the
@@ -13,11 +17,11 @@ required persistent launch mechanism is available. Its receipt is
 
 The exact-DD sort and sorting-only QC are complete: 477 assigned units and
 603,125 accepted events. Its service used 1,066.229 wall seconds, 2,556.378 CPU
-seconds, and 10.377 GiB peak scratch. The primary stage is two more sorts: unrounded
-kriging and rounded kriging. They are compared with the existing S0 sort and
-the new exact-DD sort. Unrounded IDW and nearest remain frozen optional arms
-and run only if the primary stage cannot distinguish a field-rounding effect
-from an operator effect.
+seconds, and 10.377 GiB peak scratch. The completed primary stage added
+unrounded kriging and rounded kriging, compared with the existing S0 sort and
+the exact-DD sort. The bridge comparisons resolved the result as a
+field-rounding effect, so the frozen optional IDW and nearest arms were not
+run.
 
 The prior D2L W2 sort provides context only: its `sort-complete.json` reports
 exit status 0 and 1,514.141 seconds, and its run directory occupies 1.3 GB. It
@@ -82,8 +86,7 @@ env NUMBA_CACHE_DIR=/tmp/numba-em2b \
 The runner completed every scientific stage but withheld its final receipt
 after detecting that linked HDF5 reuse changed the detection artifact's mtime.
 The preserved failure and independently hashed outputs are covered in the
-stage-0 report. The two kriging packets now pass config validation,
-cross-version kernel checks, and persistent systemd runtime preflights that
-load the custom extractor under the exact future service environment. Their
-sorts require separate authorization. No RF work, outer-holdout access, or
-automatic W3 run is authorized.
+stage-0 report. The two kriging packets passed config validation,
+cross-version kernel checks, and persistent systemd runtime preflights, then
+completed under that exact service environment. Neither run evaluated RF or
+accessed the outer holdout; no automatic W3 run was performed.

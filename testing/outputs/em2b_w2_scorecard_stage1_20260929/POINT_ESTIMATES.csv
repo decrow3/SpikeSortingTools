@@ -1,0 +1,5 @@
+arm,yield,eligible_units,rho_negative_vs_flat
+none_s0,538,447,0.20937657987989367
+rounded_exact_dd,477,419,0.6963094605924377
+rounded_kriging_bridge,474,416,0.7026560881810772
+unrounded_kriging,486,410,0.6510931808227601

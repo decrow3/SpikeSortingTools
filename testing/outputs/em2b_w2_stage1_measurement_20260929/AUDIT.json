@@ -1,0 +1,170 @@
+{
+  "arms": {
+    "rounded_kriging_bridge": {
+      "exit_status": 0,
+      "qc": {
+        "accepted_events": 592472,
+        "excluded_negative_labels": 2858,
+        "receipt_sha256": "fda4f0474d7dfe469aa0167c01a77e137b69e0878e5f0a94a3280ec265474cb7",
+        "rf_evaluated": false,
+        "units": 474
+      },
+      "resources": {
+        "cpu_seconds": 3170.057,
+        "final_scratch_bytes": 9958810858,
+        "largest_periodic_du_observation": "11G",
+        "peak_measurement_note": "Periodic du -sh observation; exact kernel peak accounting unavailable.",
+        "unit": "em2b-9c5bc6a4b04feba1.service",
+        "wall_seconds": 1280.8637201786041
+      },
+      "run_receipt_path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_kriging_bridge_v1/receipt.json",
+      "run_receipt_sha256": "a4cf8ed683a0fadb59a39abea4700c1f06915e3e6d5a483acb7aa71636281d91",
+      "sorting": {
+        "bytes": 98241252,
+        "path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/rounded_kriging_bridge_v1/sort/dartsort_sorting.npz",
+        "sha256": "c19db164e69ebca6b21f8eb4f99245838543d805f6bab0aa30e7bef95fdef45e"
+      },
+      "stages": {
+        "detect": {
+          "elapsed_seconds": 512.1624841690063,
+          "exit_status": 0
+        },
+        "motion": {
+          "elapsed_seconds": null,
+          "exit_status": null
+        },
+        "preprocess": {
+          "elapsed_seconds": 213.07736778259277,
+          "exit_status": 0
+        },
+        "qc_phy": {
+          "elapsed_seconds": 8.989715576171875,
+          "exit_status": 0
+        },
+        "sort": {
+          "elapsed_seconds": 531.898894071579,
+          "exit_status": 0
+        }
+      },
+      "status": "complete"
+    },
+    "unrounded_kriging": {
+      "exit_status": 0,
+      "qc": {
+        "accepted_events": 535788,
+        "excluded_negative_labels": 4461,
+        "receipt_sha256": "d8f91799eed2b473700df964b571d9ab67b31814893d7a1cba811354673367be",
+        "rf_evaluated": false,
+        "units": 486
+      },
+      "resources": {
+        "cpu_seconds": 3041.389,
+        "final_scratch_bytes": 9797186828,
+        "largest_periodic_du_observation": "11G",
+        "peak_measurement_note": "Periodic du -sh observation; exact kernel peak accounting unavailable.",
+        "unit": "em2b-951efbf7821ffb19.service",
+        "wall_seconds": 1165.1826419830322
+      },
+      "run_receipt_path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/unrounded_kriging_v1/receipt.json",
+      "run_receipt_sha256": "c47be1e68087dac3aa032fd7503130eae08e1174a781a8b65d1db02811c02e28",
+      "sorting": {
+        "bytes": 89153127,
+        "path": "/home/huklaban5/DARTsort_experiment_scratch/em2b_w2_20260929/unrounded_kriging_v1/sort/dartsort_sorting.npz",
+        "sha256": "e6c521cb9efc40bb1fb19cf62681193ce47234cda9aa3e7159c814fc8d87605b"
+      },
+      "stages": {
+        "detect": {
+          "elapsed_seconds": 407.3588185310364,
+          "exit_status": 0
+        },
+        "motion": {
+          "elapsed_seconds": null,
+          "exit_status": null
+        },
+        "preprocess": {
+          "elapsed_seconds": 227.46493911743164,
+          "exit_status": 0
+        },
+        "qc_phy": {
+          "elapsed_seconds": 9.087215423583984,
+          "exit_status": 0
+        },
+        "sort": {
+          "elapsed_seconds": 506.9513461589813,
+          "exit_status": 0
+        }
+      },
+      "status": "complete"
+    }
+  },
+  "arms_manifest_sha256": "86e73a5766c13aad443f32bdd0522e5cba4d36cfa0ef1d24eab9b73965617c27",
+  "completed_utc": "2026-09-29T09:22:42Z",
+  "limitations": "W2 arm-local rate-rank continuity proxy; no cross-arm identity or purity claim.",
+  "schema": "em2b-stage1-measurement-audit-v1",
+  "scope": {
+    "dataset": "Luke0804 imec1 W2",
+    "outer_holdout_accessed": false,
+    "rf_evaluated": false,
+    "sorts_launched": [
+      "unrounded_kriging",
+      "rounded_kriging_bridge"
+    ]
+  },
+  "scorecard": {
+    "comparisons": [
+      {
+        "ci95_high": 0.07781311811271988,
+        "ci95_low": 0.014336127219545405,
+        "decision": "mixed_or_inconclusive",
+        "delta_rho": 0.04521627976967757,
+        "directional_isi_pass": true,
+        "directional_yield_pass": true,
+        "equivalence_isi_pass": true,
+        "equivalence_yield_pass": true,
+        "first_arm": "rounded_exact_dd",
+        "role": "primary",
+        "second_arm": "unrounded_kriging",
+        "valid_draws": 2000
+      },
+      {
+        "ci95_high": 0.0012577831733050953,
+        "ci95_low": -0.020941574889439867,
+        "decision": "practical_equivalence",
+        "delta_rho": -0.006346627588639464,
+        "directional_isi_pass": true,
+        "directional_yield_pass": true,
+        "equivalence_isi_pass": true,
+        "equivalence_yield_pass": true,
+        "first_arm": "rounded_exact_dd",
+        "role": "bridge",
+        "second_arm": "rounded_kriging_bridge",
+        "valid_draws": 2000
+      },
+      {
+        "ci95_high": 0.08154949570845502,
+        "ci95_low": 0.03026717110074042,
+        "decision": "meaningful_first_arm_advantage",
+        "delta_rho": 0.051562907358317034,
+        "directional_isi_pass": true,
+        "directional_yield_pass": true,
+        "equivalence_isi_pass": true,
+        "equivalence_yield_pass": true,
+        "first_arm": "rounded_kriging_bridge",
+        "role": "bridge",
+        "second_arm": "unrounded_kriging",
+        "valid_draws": 2000
+      }
+    ],
+    "packet_manifest_sha256": "eba5947aabcd9f67fc6e04106170e2c4070fb2015d3a74e2daa07daf9e0d60db",
+    "result_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/em2b_w2_scorecard_stage1_20260929/RESULT.json",
+    "result_sha256": "78cdceae28cb0f9ceee08691de48e44ea12b761c972cd8d30169b78968e032eb"
+  },
+  "status": "complete",
+  "verdict": {
+    "production_choice": "rounded_kriging_bridge",
+    "rounded_exact_dd_vs_rounded_kriging_bridge": "practical_equivalence",
+    "rounded_kriging_bridge_vs_unrounded_kriging": "meaningful_rounded_field_advantage",
+    "stage_2_launched": false,
+    "stage_2_trigger_met": false
+  }
+}
