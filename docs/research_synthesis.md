@@ -44,8 +44,11 @@ anatomy, probe geometry, acquisition, neural activity, and behavior also differ.
    between datasets. Allen's sparse-depth estimates prevent a trustworthy
    three-way all-depth motion ranking.
 5. **Better estimated motion has not yet produced a universally better sorting
-   configuration in the documented comparisons.** Correction, sorter choice,
-   interpolation, and identity tracking have regime-specific tradeoffs.
+   configuration in the documented comparisons.** The completed full-session
+   external-nonrigid MEDiCINe candidate has now been rejected: paired
+   completeness was infeasible and three prospective guardrails failed.
+   Correction, sorter choice, interpolation, and identity tracking have
+   regime-specific tradeoffs.
 6. **The evaluator itself needs validation.** Event matching, synthetic motion,
    amplitude completeness, and lighthouse identity tracking have each exposed
    defects or limits that changed earlier conclusions.
@@ -465,7 +468,7 @@ Sources: [interruption investigation](luke_full_session_interruption_20260906.md
 | Are Allen's unstable depths real motion? | Inspect cached depth bands, waveform rivals, and local support around those model depths. | A support-appropriate estimate and independent trajectory validation for an all-depth ranking. |
 | Does MED capture Bacon's occasional larger events? | Fit only windows covering the two largest saved KS steps, reusing the existing runner. | Broader coverage to quantify prevalence and fast events not found by KS. |
 | Which lighthouse identities are trustworthy? | Audit cached rivals, lattice/phase controls, and repeated shared movement before smoothing or consensus. | More independent identities and enough event density for fast validation. |
-| Which correction improves neuronal recovery? | Reconcile existing matched outcomes by movement/quiet regime and inspect the waveform disagreements. | A frozen longer-duration comparison with completeness coverage and independent-case confirmation. |
+| Which correction improves neuronal recovery? | The completed full-session external-nonrigid MEDiCINe 12/9 candidate is now closed: paired completeness covers only 20/586 eligible interior reference units, and refractory, chance-aware coincidence, and edge-unit guardrails each regress beyond 0.01. Keep 12/9 motion-off as the operational reference; do not rerun the unchanged candidate. | A different candidate needs a qualified field and feasible identity/coverage plan before sorting, followed by independent-session confirmation if it passes. |
 | Can a real dropout case be improved? | A seven-case cached anchor screen found material independent loss for clusters 21 and 553. Both deficits are present at or before `full_st`, with no identity or curation explanation. Interior cluster 553 loses 37.2 points of anchor coverage; missed failing events retain cosine 0.865 to the reference waveform at 68.75% of reference PTP, while local baseline noise is unchanged at ratio 1.00. Cluster 452 remains a negative control showing that fit change alone is insufficient. | Check the existing artifact sidecar at the bounded 553 anchor times, then freeze one specific detection operation with identity, contamination, and healthy-period checks. Closed threshold arms remain closed. |
 | What happened to a launch-only full-session experiment? | Read its final receipts, artifacts, and actual manager state before describing an outcome. | No new run unless the existing evidence and run-specific authorization justify it. |
 

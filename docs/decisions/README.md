@@ -27,6 +27,7 @@ this research repository and is not duplicated here.
 | [0015](0015-corrected-cross-sort-audits-do-not-establish-equivalence.md) | Corrected cross-sort audits show no confirmed detection difference, not equivalence |
 | [0016](0016-hindsight-first-longitudinal-development.md) | Longitudinal, evaluator-first development with Pareto advancement |
 | [0017](0017-completeness-is-a-screening-sidecar.md) | Time-resolved completeness is a screening sidecar, never an automatic mask |
+| [0018](0018-reject-full-session-external-nonrigid-candidate.md) | Reject the tested full-session external-nonrigid candidate |
 
 The active work plan derived from these records is
 [`../pipeline_improvement_plan.md`](../pipeline_improvement_plan.md).

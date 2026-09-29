@@ -2,6 +2,19 @@
 
 ## Current direction — 2026-09-05
 
+**Full-session external-nonrigid result, 2026-09-28:** the previously completed
+MEDiCINe nonrigid 12/9 sort has now passed through the common curation, legacy
+QC, standard-QC and completeness-timeline stages and a full-session paired
+comparison against rescue 12/9 motion-off. Do not promote it. Only 20/586
+baseline-eligible interior units meet the paired completeness support rule
+(3.41% versus the frozen 50% floor), and the candidate exceeds the 0.01
+regression limit for refractory burden (+0.01375), chance-aware coincidence
+excess (+0.01101), and edge-unit fraction (+0.01161). It also has 526 curated /
+129 KS-good units versus 710 / 301 in the reference. Keep 12/9 motion-off as the
+operational pipeline and do not rerun this unchanged field/application. See the
+[full comparison](luke_improved_nonrigid_full_session_comparison_20260928.md)
+and [decision 0018](decisions/0018-reject-full-session-external-nonrigid-candidate.md).
+
 **Evidence update, 2026-09-28:** the cached cluster-452 follow-up is complete.
 Independent legacy-event anchoring found no transfer into a compatible rescue
 label, and exact pre/post-curation lineage found no differential final-curation
