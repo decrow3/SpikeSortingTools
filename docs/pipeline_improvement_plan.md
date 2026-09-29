@@ -80,6 +80,11 @@ check. The known cluster-21 and cluster-553 failing windows are nominated, but
 cluster 452 is also nominated despite little independent event loss. Keep the
 sidecar as triage and analysis provenance, never an automatic mask. See the
 [sidecar result](luke_completeness_timeline_sidecar_result_20260928.md).
+Production `RUN_QC` now also runs the existing identity-bound standard-unit-QC
+stage before the timeline, so conventional metrics and temporal fit support
+share the same pinned sort identity. Decision
+[0017](decisions/0017-completeness-is-a-screening-sidecar.md) makes the
+screening-only restriction durable.
 
 The practical goal is reliable recovery of individual neurons' spike trains
 throughout the recording. Progress means fixing a recognizable failure,

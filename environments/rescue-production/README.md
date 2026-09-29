@@ -90,6 +90,8 @@ important downstream outputs are:
 - `diagnostics/artifact_pair_audit/`: all current similar good-good pairs;
 - `cur/cur_output/`: legacy-compatible curated Kilosort/Phy output;
 - `qc/`: waveform, presence, truncation, refractory, and MATLAB artifacts;
+- `qc/standard/`: identity-bound per-unit standard metrics, definitions, flags,
+  policy, summary, and completion receipt;
 - `qc/completeness_timeline/`: identity-bound time-resolved amplitude-fit status,
   screening nominations, explicit no-support units, policy, and receipt;
 - `diagnostics/postcuration_comparison/`: matched new, legacy, and claim-mask

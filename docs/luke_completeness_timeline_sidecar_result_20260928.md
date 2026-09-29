@@ -74,6 +74,13 @@ support under identity `3b242c94...`. These runs validate artifact portability
 and identity separation. They do not rehabilitate either motion arm or compare
 their scientific quality.
 
+The paired standard-unit-QC stage also completes in the locked production
+runtime on the full imec0 rescue sort, under the same sort identity. It reports
+710 units, 29,227,829 curated spikes, 301 Kilosort-good units, and zero automatic
+curation changes. Its 689 units with at least one lab warning illustrate the
+same policy boundary: warnings are inspectable annotations, not automatic
+label edits.
+
 No sort was launched and no production output was overwritten. The executed
 validation artifacts remain under
 `testing/outputs/luke_rescue_completeness_timeline_v2/`.

@@ -113,6 +113,7 @@ from pipeline import (
     run_postcuration_comparison_stage,
     run_qc_stage,
     run_completeness_timeline_stage,
+    run_standard_qc_stage,
     run_motion_sidecar_for_accepted_recording,
     stage_spikeglx_stream,
     validate_production_environment,
@@ -507,6 +508,14 @@ def main() -> None:
         recording_manifest = json.loads(
             (recording_dir / "rescue_recording_manifest.json").read_text()
         )
+        standard_qc_result = run_standard_qc_stage(
+            recording_dir,
+            OUTPUT_DIR / "cur/cur_output",
+            OUTPUT_DIR / "qc",
+            OUTPUT_DIR / "qc/standard",
+            sort_identity,
+        )
+        print(json.dumps(standard_qc_result, indent=2), flush=True)
         completeness_result = run_completeness_timeline_stage(
             OUTPUT_DIR / "cur/cur_output",
             OUTPUT_DIR / "qc",
