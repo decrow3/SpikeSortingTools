@@ -1,0 +1,52 @@
+{
+  "schema": "luke-cluster21-identity-replay-v1",
+  "target": {
+    "sort": "rescue_luke0804_v2v1_g0_imec0",
+    "cluster_id": 21,
+    "source_evidence": "docs/outputs/luke_baseline_recovery_census_v1/candidate_cases.csv"
+  },
+  "inputs": {
+    "rescue_curated": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output",
+    "legacy_curated": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output"
+  },
+  "windows": [
+    {"name": "reference", "role": "reference", "start_s": 6656.5524262001545, "stop_s": 6795.794054132068},
+    {"name": "failing", "role": "failing", "start_s": 6795.79975416323, "stop_s": 6949.296826699527}
+  ],
+  "candidate_rule": {
+    "depth_source": "template peak channel",
+    "maximum_depth_difference_um": 100.0,
+    "include_all_curated_labels": true,
+    "selection_uses_window_event_counts": false
+  },
+  "anchor_rule": {
+    "selection_windows": "reference only",
+    "selection": "among reference-eligible anchors, choose the legacy spatial candidate with the largest exclusive match fraction to the frozen rescue candidate union",
+    "minimum_reference_events": 20,
+    "target_must_be_dominant_rescue_label": true,
+    "minimum_observed_fraction": 0.25,
+    "minimum_excess_over_shift_null": 0.10
+  },
+  "matching": {
+    "sampling_frequency_hz": 29999.835983263598,
+    "duration_s": 10473.55,
+    "tolerance_ms": 0.5,
+    "event_pairing": "maximum-cardinality one-to-one on time-ordered events",
+    "circular_shift_null_s": [137.0, 431.0, 997.0]
+  },
+  "redistribution_support": {
+    "minimum_partner_fraction_in_each_failing_window": 0.10,
+    "minimum_partner_fraction_increase_from_reference": 0.10,
+    "minimum_target_fraction_decrease_from_reference": 0.10,
+    "minimum_template_cosine": 0.80,
+    "maximum_union_refractory_increase": 0.01,
+    "refractory_period_ms": 1.5,
+    "ambiguous_or_unmatched_policy": "preserve and reject intervention nomination"
+  },
+  "scope": {
+    "raw_voltage_read": false,
+    "sort_launched": false,
+    "production_change": false,
+    "decision": "nominate retained-output identity handling only if every frozen support rule passes; otherwise localize the independently corroborated loss upstream of final identity and curation"
+  }
+}

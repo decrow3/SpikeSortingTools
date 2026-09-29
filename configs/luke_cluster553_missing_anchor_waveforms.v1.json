@@ -1,0 +1,29 @@
+{
+  "schema": "luke-cluster553-missing-anchor-waveforms-v1",
+  "target_cluster": 553,
+  "legacy_anchor_cluster": 425,
+  "anchor_source": "luke-dropout-anchor-screen-v1 reference-only frozen selection",
+  "sorter_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output",
+  "legacy_curated": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output",
+  "raw_recording": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+  "binary_manifest": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/binary.json",
+  "sampling_frequency_hz": 29999.835983263598,
+  "maximum_depth_difference_um": 100.0,
+  "tolerance_ms": 0.5,
+  "windows": [
+    {"name": "reference", "role": "reference", "start_s": 5802.133888235484, "stop_s": 5954.244219856822},
+    {"name": "failing", "role": "failing", "start_s": 5954.280520055284, "stop_s": 6360.328406676924}
+  ],
+  "waveform": {
+    "channels": [294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309],
+    "pre_samples": 30,
+    "post_samples": 31,
+    "baseline_samples": 15,
+    "maximum_events_per_partition": 200,
+    "gain_uv_per_count": 2.34375,
+    "maximum_alignment_lag_samples": 2,
+    "minimum_reference_cosine": 0.80,
+    "maximum_unmatched_to_reference_ptp_ratio_for_attenuation": 0.90
+  },
+  "decision": "Support a detection-sensitivity candidate only if failing unmatched anchor times retain cosine at least 0.80 to the reference matched waveform and have median-waveform PTP no more than 0.90 of reference."
+}

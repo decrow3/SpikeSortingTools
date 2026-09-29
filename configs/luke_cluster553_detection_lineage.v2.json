@@ -1,0 +1,21 @@
+{
+  "schema": "luke-cluster553-detection-lineage-v2",
+  "supersedes": "v1 looked up final curated label 553 in the raw sorter template namespace and used 2840 um instead of the curated unit's approximately 3020 um template depth; its stage verdict is invalid",
+  "target_cluster": 553,
+  "legacy_anchor_cluster": 425,
+  "anchor_source": "luke-dropout-anchor-screen-v1 reference-only frozen selection",
+  "sorter_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output",
+  "curated_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output",
+  "legacy_curated": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output",
+  "sampling_frequency_hz": 29999.835983263598,
+  "maximum_depth_difference_um": 100.0,
+  "target_depth_source": "curated templates.npy row target_cluster peak channel",
+  "detection_template_depth_source": "raw sorter ops.yc[ops.iU[detection_template_id]]",
+  "tolerance_ms": 0.5,
+  "windows": [
+    {"name": "reference", "role": "reference", "start_s": 5802.133888235484, "stop_s": 5954.244219856822},
+    {"name": "failing", "role": "failing", "start_s": 5954.280520055284, "stop_s": 6360.328406676924}
+  ],
+  "material_loss_fraction": 0.10,
+  "decision": "If full_st loses at least 0.10, localize the deficit at or before universal detection. If full_st is preserved but sorter_output loses at least 0.10, localize it between universal detection and retained sorter output. Otherwise retain unresolved stage attribution."
+}

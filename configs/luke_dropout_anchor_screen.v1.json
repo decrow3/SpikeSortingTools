@@ -1,0 +1,28 @@
+{
+  "schema": "luke-dropout-anchor-screen-v1",
+  "cases_csv": "docs/outputs/luke_baseline_recovery_census_v1/candidate_cases.csv",
+  "cases_csv_sha256": "01a8249a4e35aeea9c2ddc089458d72bded8b0d13a61621a9734c86c5a95effd",
+  "case_rule": {
+    "sort_id": "rescue_luke0804_v2v1_g0_imec0",
+    "KSLabel": "good",
+    "include_every_matching_row": true
+  },
+  "inputs": {
+    "rescue_curated": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output",
+    "legacy_curated": "/mnt/NPX/Luke/20250804/pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_sorter_output"
+  },
+  "sampling_frequency_hz": 29999.835983263598,
+  "duration_s": 10473.55,
+  "maximum_depth_difference_um": 100.0,
+  "tolerance_ms": 0.5,
+  "circular_shift_null_s": [137.0, 431.0, 997.0],
+  "anchor_rule": {
+    "selection_phase": "reference only",
+    "minimum_reference_events": 20,
+    "minimum_observed_fraction": 0.25,
+    "minimum_excess_over_shift_null": 0.10,
+    "target_must_be_dominant_rescue_label": true
+  },
+  "material_independent_loss_fraction": 0.10,
+  "decision": "A case advances to intervention localization only when its reference anchor passes and the spatially eligible rescue match fraction falls by at least 0.10 in the failing phase."
+}

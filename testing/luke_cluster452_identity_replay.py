@@ -244,7 +244,10 @@ def run(config_path: Path, output: Path) -> dict[str, Any]:
         "selected_legacy_anchor": selected, "anchor_gates_pass": bool(anchor_pass),
         "supported_partner_ids": [row["partner_cluster"] for row in supported],
         "raw_voltage_read": False, "sort_launched": False, "production_changed": False,
-        "interpretation": "A negative result rejects this frozen retained-output identity explanation for cluster 452; it does not prove that detection or waveform integrity is normal."
+        "interpretation": (
+            f"A negative result rejects this frozen retained-output identity explanation for "
+            f"cluster {target_id}; it does not prove that detection or waveform integrity is normal."
+        )
     }
     (output / "summary.json").write_text(json.dumps(result, indent=2) + "\n")
     return result

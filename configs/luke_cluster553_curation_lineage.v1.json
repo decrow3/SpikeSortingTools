@@ -1,0 +1,14 @@
+{
+  "schema": "luke-cluster553-curation-lineage-v1",
+  "target_final_cluster": 553,
+  "sorter_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output",
+  "curated_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output",
+  "curation_decisions": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_todo_cosine.npy",
+  "sampling_frequency_hz": 29999.835983263598,
+  "windows": [
+    {"name": "reference", "role": "reference", "start_s": 5802.133888235484, "stop_s": 5954.244219856822},
+    {"name": "failing", "role": "failing", "start_s": 5954.280520055284, "stop_s": 6360.328406676924}
+  ],
+  "minimum_failing_removal_fraction_increase": 0.10,
+  "decision": "Support curation exclusion only if the failing-phase removed fraction exceeds the reference-phase removed fraction by at least 0.10."
+}
