@@ -4,7 +4,7 @@
 launched.**
 EM.2a selected a nonredundant comparison set. The exact scorecard is frozen in
 `configs/em2b_w2_scorecard.v1.json` (SHA-256
-`c944e48abf5bd9868dc398d47741a8224bf21c96f536f8219f6719312025458c`). A harmless systemd user-service dummy
+`ceecdba64f09d0781fd7b78208ecf99220ac07153ee269263dfa09df47e0b6d1`). A harmless systemd user-service dummy
 continued after its launching shell exited and completed with status 0, so the
 required persistent launch mechanism is available. Its receipt is
 `testing/outputs/em2b_launcher_dummy_20260929/receipt.json` (SHA-256
@@ -44,6 +44,14 @@ requires the entire CI inside `[-0.05, 0.05]`, yield within 5% in either
 direction, and every ISI fraction within 0.01. Fewer than three eligible units,
 a constant rank vector, a non-finite point estimate, or fewer than 1,900 valid
 bootstrap draws is unresolved rather than zero-filled.
+
+The outcome implementation is `testing/em2b_w2_scorecard.py`. It requires a
+post-sort manifest containing exact hashes for every saved sorting, the field,
+mask, catalogue, and this contract. It writes point estimates, segment-safe ISI
+counts, exact block/domain exposure, all valid paired bootstrap deltas,
+comparison decisions, and a hashed completion manifest. Its common-resample,
+domain-exposure, and undefined-statistic tests pass before any EM.2b outcome is
+available.
 
 The first-arm run packet is now concrete. It uses the accepted DD S_L
 materialization through

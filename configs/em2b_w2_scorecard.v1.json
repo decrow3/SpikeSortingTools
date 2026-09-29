@@ -32,6 +32,7 @@
   "eligibility": {
     "unit_scope": "arm-local assigned units; no cross-arm unit matching",
     "rule": "at least 100 outside-mask-flat events in the full W2 point dataset",
+    "minimum_flat_events": 100,
     "bootstrap_policy": "freeze each arm's full-W2 eligible unit set for every draw",
     "pseudocount": 0.5
   },
@@ -66,6 +67,7 @@
   "guardrails": {
     "yield": {
       "definition": "number of arm-local assigned units in W2",
+      "relative_difference_denominator": "max(1, second-arm yield)",
       "directional_max_first_arm_relative_loss": 0.05,
       "equivalence_max_absolute_relative_difference": 0.05
     },
