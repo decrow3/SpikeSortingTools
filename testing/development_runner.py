@@ -16,6 +16,7 @@ from pipeline.downstream import (
     completed_stage_receipt,
     pin_sort_identity,
     run_curation_stage,
+    run_completeness_timeline_stage,
     run_matlab_export_stage,
     run_qc_stage,
     run_standard_qc_stage,
@@ -218,6 +219,13 @@ def run_development_arms(
                 qc_dir / "standard",
                 identity,
             )
+            completeness_timeline_receipt = run_completeness_timeline_stage(
+                curated,
+                qc_dir,
+                qc_dir / "completeness_timeline",
+                identity,
+                sampling_frequency=float(accepted["sampling_frequency_hz"]),
+            )
             arm_manifest = {
                 "schema_version": "longitudinal-development-arm-v1",
                 "contract_digest": contract.digest,
@@ -232,6 +240,7 @@ def run_development_arms(
                 "curation_request_digest": curation_receipt["request_digest"],
                 "qc_request_digest": qc_receipt["request_digest"],
                 "standard_qc_request_digest": standard_qc_receipt["request_digest"],
+                "completeness_timeline_request_digest": completeness_timeline_receipt["request_digest"],
                 "pre_curation_summary": sort_manifest.get("summary"),
                 "post_curation_summary": curation_receipt.get("summary"),
                 "environment": environment,
@@ -245,9 +254,17 @@ def run_development_arms(
                     # One-way additive migration for arms completed before the
                     # standard-QC stage existed. No other manifest drift is
                     # accepted.
-                    pre_standard_manifest = dict(arm_manifest)
-                    pre_standard_manifest.pop("standard_qc_request_digest")
-                    if saved_manifest != pre_standard_manifest:
+                    allowed_prior_manifests = []
+                    without_timeline = dict(arm_manifest)
+                    without_timeline.pop("completeness_timeline_request_digest")
+                    allowed_prior_manifests.append(without_timeline)
+                    without_standard = dict(arm_manifest)
+                    without_standard.pop("standard_qc_request_digest")
+                    allowed_prior_manifests.append(without_standard)
+                    without_both = dict(without_timeline)
+                    without_both.pop("standard_qc_request_digest")
+                    allowed_prior_manifests.append(without_both)
+                    if saved_manifest not in allowed_prior_manifests:
                         raise RuntimeError(f"arm manifest changed for {candidate['name']}")
             _atomic_json(manifest_path, arm_manifest)
             summary["arms"][candidate["name"]] = arm_manifest

@@ -57,6 +57,16 @@ trustworthiness as an analysis sidecar; it must label amplitude-fit dropout as
 a screening flag because only two of seven fitted deterioration cases had
 independently confirmed event loss.
 
+**Sidecar delivery, 2026-09-28:** that deliverable is implemented as the
+identity-bound `amplitude-completeness-timeline-v2` downstream stage. On the
+completed Luke rescue output it lists all 710 curated units, including 396 with
+no supported window. Only 9,204/26,227 fitted windows are trustworthy measured
+values; 14,394 are boundary-censored and 2,629 fail the two-estimator agreement
+check. The known cluster-21 and cluster-553 failing windows are nominated, but
+cluster 452 is also nominated despite little independent event loss. Keep the
+sidecar as triage and analysis provenance, never an automatic mask. See the
+[sidecar result](luke_completeness_timeline_sidecar_result_20260928.md).
+
 The practical goal is reliable recovery of individual neurons' spike trains
 throughout the recording. Progress means fixing a recognizable failure,
 preserving healthy periods, and confirming the improvement on independently

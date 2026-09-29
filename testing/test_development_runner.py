@@ -18,13 +18,14 @@ def fake_contract():
 
 
 def install_mocks(monkeypatch, *, accepted_digest="strip-request"):
-    calls = {"sort": [], "curation": [], "qc": [], "standard_qc": [], "export": []}
+    calls = {"sort": [], "curation": [], "qc": [], "standard_qc": [], "timeline": [], "export": []}
     monkeypatch.setattr("testing.development_runner.validate_development_selection", lambda *args: None)
     monkeypatch.setattr(
         "testing.development_runner.validate_accepted_recording",
         lambda path: {
             "request_digest": accepted_digest,
             "source_recording_request_digest": "source-request",
+            "sampling_frequency_hz": 30000.0,
         },
     )
     monkeypatch.setattr("testing.development_runner.validate_production_environment", lambda **kwargs: {"ok": True})
@@ -52,6 +53,10 @@ def install_mocks(monkeypatch, *, accepted_digest="strip-request"):
         calls["standard_qc"].append((legacy_qc, output, identity["identity_digest"]))
         return {"request_digest": "standard-qc", "summary": {"unit_count": 2}}
     monkeypatch.setattr("testing.development_runner.run_standard_qc_stage", standard_qc)
+    def timeline(curated, legacy_qc, output, identity, **kwargs):
+        calls["timeline"].append((legacy_qc, output, identity["identity_digest"], kwargs))
+        return {"request_digest": "timeline", "summary": {"window_count": 3}}
+    monkeypatch.setattr("testing.development_runner.run_completeness_timeline_stage", timeline)
     monkeypatch.setattr(
         "testing.development_runner.run_matlab_export_stage",
         lambda curated, qc, identity: calls["export"].append((curated, qc)),
@@ -66,12 +71,13 @@ def test_all_arms_use_shared_identity_bound_downstream(monkeypatch, tmp_path):
         output_root=tmp_path / "outputs", require_cuda=False,
     )
     assert calls["sort"] == ["rescue", "rescue_rigid"]
-    assert len(calls["curation"]) == len(calls["qc"]) == len(calls["standard_qc"]) == len(calls["export"]) == 2
+    assert len(calls["curation"]) == len(calls["qc"]) == len(calls["standard_qc"]) == len(calls["timeline"]) == len(calls["export"]) == 2
     assert all(call[2]["waveform_seed"] == 0 for call in calls["qc"])
     assert set(report["arms"]) == {"baseline", "rigid"}
     assert report["arms"]["rigid"]["pre_curation_summary"] == {"unit_count": 2}
     assert report["arms"]["rigid"]["post_curation_summary"] == {"unit_count": 2}
     assert report["arms"]["rigid"]["standard_qc_request_digest"] == "standard-qc"
+    assert report["arms"]["rigid"]["completeness_timeline_request_digest"] == "timeline"
     assert (tmp_path / "outputs/arms_summary.json").is_file()
     assert (tmp_path / "outputs/group_receipts/all-arms.json").is_file()
 

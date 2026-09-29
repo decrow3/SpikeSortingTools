@@ -513,6 +513,70 @@ def run_standard_qc_stage(
     )
 
 
+def run_completeness_timeline_stage(
+    curated_output: Path,
+    legacy_qc_dir: Path,
+    output_dir: Path,
+    sort_identity: dict[str, Any],
+    *,
+    sampling_frequency: float,
+) -> dict[str, Any]:
+    """Write an identity-bound, screening-only time-resolved completeness sidecar."""
+    from .completeness_timeline import (
+        COMPLETENESS_TIMELINE_SCHEMA,
+        DEFAULT_TIMELINE_PARAMETERS,
+        build_completeness_timeline,
+        write_completeness_timeline,
+    )
+
+    curated_output, legacy_qc_dir, output_dir = map(
+        Path, (curated_output, legacy_qc_dir, output_dir)
+    )
+    input_paths = {
+        "spike_times.npy": curated_output / "spike_times.npy",
+        "spike_clusters.npy": curated_output / "spike_clusters.npy",
+        "truncation_qc.npz": legacy_qc_dir / "amp_truncation/truncation_qc.npz",
+        "present_qc.npz": legacy_qc_dir / "amp_truncation/present_qc.npz",
+    }
+    missing = [str(path) for path in input_paths.values() if not path.is_file()]
+    if missing:
+        raise FileNotFoundError(f"completeness timeline input missing: {missing}")
+    inputs = {
+        name: {"size_bytes": path.stat().st_size, "sha256": _sha256(path)}
+        for name, path in input_paths.items()
+    }
+    request = ensure_stage_request(
+        output_dir / "completeness_timeline_request.json",
+        stage="amplitude_completeness_timeline",
+        sort_identity=sort_identity,
+        settings={
+            "schema_version": COMPLETENESS_TIMELINE_SCHEMA,
+            "curated_output": str(curated_output.resolve()),
+            "legacy_qc_dir": str(legacy_qc_dir.resolve()),
+            "sampling_frequency": float(sampling_frequency),
+            "parameters": DEFAULT_TIMELINE_PARAMETERS,
+            "inputs": inputs,
+        },
+    )
+    required = (
+        output_dir / "amplitude_completeness_timeline.csv",
+        output_dir / "amplitude_completeness_units.csv",
+        output_dir / "amplitude_completeness_policy.json",
+        output_dir / "amplitude_completeness_summary.json",
+    )
+    receipt_path = output_dir / "completeness_timeline_receipt.json"
+    if receipt := completed_stage_receipt(receipt_path, request=request, required_files=required):
+        return receipt
+    timeline, units, policy, summary = build_completeness_timeline(
+        curated_output, legacy_qc_dir, sampling_frequency=sampling_frequency
+    )
+    summary = {**summary, "sort_identity_digest": sort_identity["identity_digest"]}
+    write_completeness_timeline(output_dir, timeline, units, policy, summary)
+    return write_stage_receipt(
+        receipt_path, request=request, required_files=required, summary=summary
+    )
+
+
 def run_matlab_export_stage(
     curated_output: Path,
     qc_dir: Path,

@@ -191,12 +191,22 @@ individually recoverable. A near-term pipeline improvement is therefore an
 explicit time-resolved completeness/fit-trust sidecar for downstream analyses,
 with screening status kept separate from independently validated event loss.
 
+That sidecar is now implemented and run on the completed rescue sort. It makes
+the evaluator's support limits operational: 396/710 units have no fitted
+window, only 9,204/26,227 fitted windows are trustworthy measurements, 14,394
+are boundary-censored, and 2,629 have poor estimator agreement. Its screening
+nominations recover the validated cluster-21 and cluster-553 windows but also
+nominate cluster 452, whose independent loss was small. The artifact therefore
+supports triage and honest downstream provenance, not automatic masking.
+
 Sources: [dropout audit](luke_amplitude_dropout_audit_result.md),
 [candidate v1](luke_first_pipeline_candidate_v1_result.md),
 [candidate v2](luke_first_pipeline_candidate_v2_result.md),
 [recovery census](luke_baseline_recovery_census_v1.md), and
 [cluster-553 stage attribution](luke_dropout_anchor_and_detection_lineage_20260928.md),
 and [local-template result](luke_cluster553_local_template_rescue_result_20260928.md).
+The downstream implementation and full-session counts are in the
+[completeness sidecar result](luke_completeness_timeline_sidecar_result_20260928.md).
 
 ## 5. Why did some motion estimates look nearly stationary?
 

@@ -112,6 +112,7 @@ from pipeline import (
     run_pair_audit_stage,
     run_postcuration_comparison_stage,
     run_qc_stage,
+    run_completeness_timeline_stage,
     run_motion_sidecar_for_accepted_recording,
     stage_spikeglx_stream,
     validate_production_environment,
@@ -503,6 +504,17 @@ def main() -> None:
             sort_identity,
         )
         print(json.dumps(qc_result, indent=2), flush=True)
+        recording_manifest = json.loads(
+            (recording_dir / "rescue_recording_manifest.json").read_text()
+        )
+        completeness_result = run_completeness_timeline_stage(
+            OUTPUT_DIR / "cur/cur_output",
+            OUTPUT_DIR / "qc",
+            OUTPUT_DIR / "qc/completeness_timeline",
+            sort_identity,
+            sampling_frequency=float(recording_manifest["sampling_frequency_hz"]),
+        )
+        print(json.dumps(completeness_result, indent=2), flush=True)
 
     if RUN_MATLAB_EXPORT:
         _stage(11, "EXPORT LEGACY-COMPATIBLE MATLAB ARTIFACTS")
