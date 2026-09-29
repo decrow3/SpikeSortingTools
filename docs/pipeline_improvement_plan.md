@@ -11,6 +11,11 @@ target a demonstrated detection or waveform-integrity operation and bring a
 measurable endpoint; do not reopen the closed identity, threshold, or external-
 registration branches from these negative results. See the
 [cluster-452 result](luke_cluster452_identity_and_curation_replay_result_20260928.md).
+For case nomination, a truncation-fit rise is now a screening signal rather
+than a recovery-loss measurement: require independent detection evidence or
+exact stage lineage showing a material loss before spending a candidate slot.
+In cluster 452 the fitted deterioration was about 19 points while the
+independent anchor's unmatched fraction rose only about 2 points.
 
 The practical goal is reliable recovery of individual neurons' spike trains
 throughout the recording. Progress means fixing a recognizable failure,

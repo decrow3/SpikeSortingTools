@@ -11,8 +11,10 @@ not replay the final curation as a candidate intervention for this case.
 
 This closes the bounded follow-up proposed in
 [`luke_cluster452_exact_replay_proposal_v1.md`](luke_cluster452_exact_replay_proposal_v1.md).
-It does not establish normal detection or voltage integrity. The remaining
-supported classification is an unresolved detection/waveform-amplitude change.
+It does not establish normal voltage integrity. The remaining supported
+classification is a waveform-amplitude distribution change with only a small
+independent-anchor detection decrement, not a demonstrated 19-point recovery
+loss.
 
 ## Independent event-anchor result
 
@@ -43,6 +45,15 @@ mean. The largest alternate, cluster 459, rises by 0.81 points, remains below
 the frozen 10% per-window and 10-point increase gates, and has template cosine
 0.071 to cluster 452. No candidate passes the waveform, redistribution, and
 union-refractory rules together.
+
+The independent anchor also bounds the apparent recovery loss. Its unmatched
+fraction is 2.60% and 3.06% in the reference windows and 5.16% and 4.89% in the
+failing windows. That roughly 2-point change is much smaller than the fitted
+missingness change from 1.75--2.56% to 19.49--22.89%. The truncation fit is
+therefore detecting a real amplitude-distribution change, but this case does
+not support reading the full fitted change as lost spikes. Future case
+selection must require independent detection or exact stage-lineage evidence
+before treating a missingness rise as an actionable recovery deficit.
 
 The first v1 execution is preserved as a setup failure. Its selection rule
 chose a three-event, 100%-matched anchor before applying the already declared

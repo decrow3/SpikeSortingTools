@@ -262,6 +262,10 @@ runtime, numerical improvement and regression margins, and the exact decision
 rule. These margins require the selected case's baseline evidence and cannot be
 honestly specified here. Execution must refuse an incomplete experiment contract.
 Do not choose margins or replacement units after viewing candidate results.
+A truncation-fit rise screens a case for this evidence panel; it does not by
+itself establish lost spikes or nominate an intervention. Require either
+independent detection evidence or exact retained-row/stage lineage showing a
+material loss before spending a candidate slot.
 
 Compare both sorts in identical physical-time intervals. Their separate
 1,000-spike windows will generally differ; show each window's support, number of
