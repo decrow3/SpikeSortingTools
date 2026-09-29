@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import time
 from typing import Any
 
 from pipeline.config import fingerprint
@@ -27,6 +28,17 @@ def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
     partial = path.with_suffix(path.suffix + ".partial")
     partial.write_text(json.dumps(payload, indent=2) + "\n")
     os.replace(partial, path)
+
+
+def wait_for_handoff(config_path: Path, poll_seconds: float = 30.0) -> None:
+    """Wait only for the atomically published manifest, never a partial tree."""
+    config = json.loads(config_path.read_text())
+    if config.get("schema_version") != SCHEMA:
+        raise ValueError("unsupported comparison config schema")
+    manifest = Path(config["candidate"]["handoff_dir"]) / "MANIFEST.json"
+    while not manifest.is_file():
+        print("waiting for verified rigid comparison handoff", flush=True)
+        time.sleep(poll_seconds)
 
 
 def run(config_path: Path) -> dict[str, Any]:
@@ -120,8 +132,12 @@ def run(config_path: Path) -> dict[str, Any]:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", required=True, type=Path)
+    parser.add_argument("--wait-for-handoff", action="store_true")
+    parser.add_argument("--poll-seconds", type=float, default=30.0)
     args = parser.parse_args()
     try:
+        if args.wait_for_handoff:
+            wait_for_handoff(args.config, args.poll_seconds)
         print(json.dumps(run(args.config), indent=2), flush=True)
     except BaseException as error:
         try:

@@ -41,7 +41,8 @@
       "-m",
       "testing.luke_improved_rigid_comparison",
       "--config",
-      "configs/luke_improved_rigid_comparison.v1.json"
+      "configs/luke_improved_rigid_comparison.v1.json",
+      "--wait-for-handoff"
     ],
     "restart": "no",
     "managed_oom_preference": "avoid"

@@ -59,9 +59,11 @@ python -m testing.rigid_comparison_handoff verify \
   --expected-sort-identity 06ea4b23a45335ef8a8428047cc54e64356905b6cdae6715e36f061f3cfdf555
 ```
 
-Only after this succeeds, run the prepared comparison through the persistent
-service declared in `configs/luke_improved_rigid_comparison.v1.json`. Its
-scientific settings and spatial domain are identical to the completed
+The persistent service declared in
+`configs/luke_improved_rigid_comparison.v1.json` may be started before the
+handoff arrives. It waits only for the atomically published `MANIFEST.json`,
+then independently verifies every artifact before loading any candidate data.
+Its scientific settings and spatial domain are identical to the completed
 nonrigid-vs-reference comparison. `ManagedOOMPreference=avoid` retains the
 resource protection required after the earlier user-manager oomd termination.
 
