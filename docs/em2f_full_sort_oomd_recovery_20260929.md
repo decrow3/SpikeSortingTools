@@ -30,3 +30,11 @@ recovery service adds the previously missing resource controls:
 An interruption during the remaining clustering/refinement work can reuse the
 complete matching checkpoint, but clustering itself has no finer checkpoint
 and must restart.
+
+The first guarded dispatch exited before DARTsort because the frozen pipeline's
+direct-publication worker refuses to copy link inputs over files that it had
+already copied during the original attempt. This protected the files as
+designed. The recovery worker now validates the original copy receipt and the
+source/destination sizes, reuses those inputs, and then invokes the unchanged
+frozen DARTsort stage. Its failure receipt and logs are retained in the v1
+recovery job directory.

@@ -91,12 +91,13 @@ def service_command(config: dict[str, object], output: Path, job: Path, unit: st
         "--setenv=OPENBLAS_NUM_THREADS=1",
         str(repo / ".venv/bin/python"),
         "-u",
-        str(output / "source/pipeline.py"),
-        "run",
+        str(PROJECT_ROOT / "testing/em2f_resume_worker.py"),
         "--config",
         str(output / "config.json"),
         "--output",
         str(output),
+        "--job",
+        str(job),
     ]
 
 
@@ -136,7 +137,8 @@ def main() -> None:
         "diagnosed_termination": "systemd-oomd SIGKILL during clustering/refinement",
         "scientific_config_unchanged": True,
         "recovery_behavior": (
-            "DARTsort fast-forwards completed matching1 peeling, then reruns "
+            "validate and reuse the already-materialized detection inputs; DARTsort "
+            "fast-forwards completed matching1 peeling, then reruns "
             "clustering/refinement and finalization"
         ),
         "matching_checkpoint": matching,

@@ -23,10 +23,11 @@ def test_recovery_service_is_persistent_bounded_and_oom_protected():
         "--property=StandardError=append:/tmp/job/stderr.log",
     ):
         assert expected in command
-    assert command[-5:] == [
-        "run",
+    assert command[-6:] == [
         "--config",
         "/tmp/output/config.json",
         "--output",
         "/tmp/output",
+        "--job",
+        "/tmp/job",
     ]
