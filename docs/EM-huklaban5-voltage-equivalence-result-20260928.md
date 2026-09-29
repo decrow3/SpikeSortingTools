@@ -34,6 +34,14 @@ Thus the residual is upstream preprocessing-version sensitivity, not a different
 lattice source index or zero-fill decision. This diagnosis does not turn the
 required 0.104.7 result into a pass.
 
+The metadata-only `FRAME_ASSIGNMENTS.json` closes the independent assignment
+audit required by the plan. All 269,997 frame-level `q` values across the three
+windows equal DD's floor/index formula, including every seam sample. For all
+eight realized shifts, all 182 target mapping IDs equal an independent
+transcription of DD's exact tuple lookup. The file includes the complete
+per-frame vectors, the 13 intersecting source-knot rows for each window, and the
+mapping IDs and zero counts for every shift.
+
 ## Preserved execution history
 
 1. `voltage_equivalence_v1` stopped before reading voltage because the frozen
@@ -51,8 +59,9 @@ required 0.104.7 result into a pass.
 Every failed attempt has a `FAILURE.json`; v3 and v4 also have `SELECTIONS.json`
 and `RESULT.json`. `COMPLETE.json` is absent because equivalence did not pass.
 The repaired runner now persists failures, resolves portable recording paths,
-uses the DD receipt's source-frame clock, and reproduces the materializer's
-parent-read chunks. Twenty-one focused adapter/runner tests pass.
+uses the DD receipt's source-frame clock, reproduces the materializer's
+parent-read chunks, and writes the complete independent assignment evidence.
+Twenty-two focused adapter/runner tests pass.
 
 The 1 GB EM.1 voltage-read target was exceeded during diagnosis. The first
 scientific comparison and its chunk-corrected repeat together read roughly
@@ -74,4 +83,4 @@ Key compact evidence hashes from v4:
 - `RESULT.json`: `ed8c621e1a9fafa9659e28309b74f5ed15549de5db1b85b8dd16e42885eb60d7`
 - `SELECTIONS.json`: `06ec30141cb7651f029d0d7623ac7a661417e1725e3d44fe8222a90a4f898a1a`
 - `FAILURE.json`: `a592c2290bff127e058e626a0c5ff9e15e3941f2ed46debe75ddfec1bf9b8be5`
-
+- `FRAME_ASSIGNMENTS.json`: `ed72930070c55f19d98d8adc433c421e2348984ce558b4ae41bc20a99437215b`

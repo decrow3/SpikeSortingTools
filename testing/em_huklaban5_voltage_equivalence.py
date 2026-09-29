@@ -112,6 +112,109 @@ def get_traces_with_aligned_parent_chunks(
     return covered[offset : offset + end - start]
 
 
+def dd_exact_coordinate_mapping(
+    source_geometry: np.ndarray,
+    target_geometry: np.ndarray,
+    shift_um: float,
+) -> np.ndarray:
+    """Independent transcription of DD's exact tuple-lookup mapping."""
+
+    source = np.asarray(source_geometry, dtype=np.float64)[:, :2]
+    target = np.asarray(target_geometry, dtype=np.float64)[:, :2]
+    lookup = {(float(x), float(y)): index for index, (x, y) in enumerate(source)}
+    if len(lookup) != len(source):
+        raise ValueError("DD source geometry is not unique")
+    mapping = np.asarray(
+        [lookup.get((float(x), float(y + shift_um)), -1) for x, y in target],
+        dtype=np.int64,
+    )
+    valid = mapping >= 0
+    if np.unique(mapping[valid]).size != int(valid.sum()):
+        raise ValueError("DD mapping is not injective")
+    return mapping
+
+
+def build_frame_assignment_evidence(
+    selections: list[dict[str, object]],
+    knots: pd.DataFrame,
+    *,
+    source_time_origin: float,
+    sampling_frequency: float,
+    source_geometry: np.ndarray,
+    target_indices: np.ndarray,
+) -> dict[str, object]:
+    """Compare and preserve complete adapter/DD time and spatial assignments."""
+
+    if "knot_index" not in knots.columns:
+        raise ValueError("knot table lacks knot_index")
+    knot_indices = knots.knot_index.to_numpy(np.int64)
+    if not np.array_equal(knot_indices, np.arange(knot_indices[0], knot_indices[-1] + 1)):
+        raise ValueError("knot_index is not contiguous")
+    centers = knots.time_s.to_numpy(np.float64)
+    shifts = knots.q_um.to_numpy(np.float64)
+    geometry = np.asarray(source_geometry, dtype=np.float64)
+    targets = np.asarray(target_indices, dtype=np.int64)
+    target_geometry = geometry[targets]
+
+    mapping_evidence = {}
+    mappings_equal = True
+    for shift in np.unique(shifts):
+        adapter = exact_coordinate_mapping(geometry, float(shift))[targets]
+        dd = dd_exact_coordinate_mapping(geometry, target_geometry, float(shift))
+        equal = bool(np.array_equal(adapter, dd))
+        mappings_equal &= equal
+        mapping_evidence[str(int(shift))] = {
+            "adapter_mapping_sha256": hashlib.sha256(adapter.tobytes()).hexdigest(),
+            "dd_mapping_sha256": hashlib.sha256(dd.tobytes()).hexdigest(),
+            "equal": equal,
+            "mapping_ids": adapter.tolist(),
+            "zero_filled_targets": int(np.sum(adapter < 0)),
+        }
+
+    window_evidence = []
+    q_equal = True
+    for selection in selections:
+        start = int(selection["start_frame"])
+        end = int(selection["end_frame_exclusive"])
+        sample_times = source_time_origin + np.arange(start, end) / sampling_frequency
+        adapter_q = sample_stepwise_shifts(
+            centers, shifts, sample_times, cell_width_s=DT
+        )
+        dd_indices = np.floor((sample_times + DT / 2) / DT).astype(np.int64)
+        positions = dd_indices - knot_indices[0]
+        if np.any(positions < 0) or np.any(positions >= len(knots)):
+            raise ValueError("DD frame assignment leaves supplied knot table")
+        if not np.array_equal(knot_indices[positions], dd_indices):
+            raise ValueError("DD frame assignment does not resolve to knot_index")
+        dd_q = shifts[positions]
+        equal = bool(np.array_equal(adapter_q, dd_q))
+        q_equal &= equal
+        intersects = (centers + DT / 2 > sample_times[0]) & (
+            centers - DT / 2 < sample_times[-1] + 1 / sampling_frequency
+        )
+        window_evidence.append(
+            {
+                "label": selection["label"],
+                "start_frame": start,
+                "end_frame_exclusive": end,
+                "adapter_q_sha256": hashlib.sha256(adapter_q.tobytes()).hexdigest(),
+                "dd_q_sha256": hashlib.sha256(dd_q.tobytes()).hexdigest(),
+                "equal": equal,
+                "q_by_frame_um": adapter_q.astype(np.int16).tolist(),
+                "source_knots": json.loads(
+                    knots.loc[intersects].to_json(orient="records")
+                ),
+            }
+        )
+    return {
+        "schema": "em-frame-assignment-evidence-v1",
+        "all_frame_q_equal_dd": q_equal,
+        "all_mapping_ids_equal_dd": mappings_equal,
+        "windows": window_evidence,
+        "mappings_by_q_um": mapping_evidence,
+    }
+
+
 def preserve_failure(error: BaseException) -> None:
     """Persist an execution failure when an output directory was allocated."""
 
@@ -288,6 +391,17 @@ def main() -> None:
     atomic_json(args.output_dir / "SELECTIONS.json", selections)
 
     geometry = np.asarray(parent.get_channel_locations(), float)
+    parent_ids = list(map(str, parent.channel_ids))
+    target_indices = np.asarray([parent_ids.index(value) for value in TARGET_IDS])
+    frame_evidence = build_frame_assignment_evidence(
+        selections,
+        knots,
+        source_time_origin=origin,
+        sampling_frequency=fs,
+        source_geometry=geometry,
+        target_indices=target_indices,
+    )
+    atomic_json(args.output_dir / "FRAME_ASSIGNMENTS.json", frame_evidence)
     mapping_hashes = {}
     for shift in np.unique(shifts):
         mapping = exact_coordinate_mapping(geometry, float(shift))
@@ -351,6 +465,7 @@ def main() -> None:
         "status": "pass" if all_pass else "fail",
         "spikeinterface_version": si.__version__,
         "parent_read_chunk_frames": dd_chunk_frames,
+        "frame_assignments_sha256": sha256(args.output_dir / "FRAME_ASSIGNMENTS.json"),
         "voltage_exported": False,
         "sort_launched": False,
         "total_voltage_duration_s": len(selections) * SNIPPET_S,

@@ -2,9 +2,11 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
+import pandas as pd
 import pytest
 
 from testing.em_huklaban5_voltage_equivalence import (
+    build_frame_assignment_evidence,
     dd_source_time_origin,
     get_traces_with_aligned_parent_chunks,
     load_relative_recording,
@@ -86,3 +88,40 @@ def test_aligned_trace_read_uses_complete_materialization_chunks_then_slices():
 
     np.testing.assert_array_equal(actual, values[7:19])
     assert calls == [(5, 10), (10, 15), (15, 20)]
+
+
+def test_frame_assignment_evidence_matches_independent_dd_formulas():
+    knots = pd.DataFrame(
+        {
+            "knot_index": [0, 1, 2, 3],
+            "time_s": [0.0, 0.25, 0.5, 0.75],
+            "field_um": [0.0, 40.0, -40.0, 0.0],
+            "reference_median_um": [0.0] * 4,
+            "inside_canonical_mask": [False, True, True, False],
+            "q_um": [0, 40, -40, 0],
+        }
+    )
+    geometry = np.asarray(
+        [[0.0, 0.0], [20.0, 0.0], [0.0, 40.0], [20.0, 40.0]],
+        dtype=float,
+    )
+    selections = [
+        {
+            "label": "seam",
+            "start_frame": 0,
+            "end_frame_exclusive": 7,
+        }
+    ]
+
+    evidence = build_frame_assignment_evidence(
+        selections,
+        knots,
+        source_time_origin=0.0,
+        sampling_frequency=8.0,
+        source_geometry=geometry,
+        target_indices=np.asarray([0, 1, 2, 3]),
+    )
+
+    assert evidence["all_frame_q_equal_dd"] is True
+    assert evidence["all_mapping_ids_equal_dd"] is True
+    assert evidence["windows"][0]["q_by_frame_um"] == [0, 40, 40, -40, -40, 0, 0]

@@ -18,7 +18,12 @@ ATTEMPT_NAMES = (
     "voltage_equivalence_v3",
     "voltage_equivalence_v4",
 )
-EVIDENCE_NAMES = ("SELECTIONS.json", "RESULT.json", "FAILURE.json")
+EVIDENCE_NAMES = (
+    "SELECTIONS.json",
+    "FRAME_ASSIGNMENTS.json",
+    "RESULT.json",
+    "FAILURE.json",
+)
 REPOSITORY_FILES = (
     "docs/EM-huklaban5-voltage-equivalence-result-20260928.md",
     "docs/EM-huklaban5-voltage-handoff-20260928.md",
