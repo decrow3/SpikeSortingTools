@@ -1950,12 +1950,14 @@ start another sort while this cached comparison remains available.
 Execute the delivery sequence at the top of this document. The options below
 are an inventory, not simultaneous prerequisites for the first candidate.
 
-- **Immediate decision checkpoint: real amplitude-completeness failures.** Follow
-  the [bounded prescription](amplitude_completeness_next_step_prescription.md).
-  Use existing QC to nominate one intervention, or close with insufficient
-  evidence at the effort cap. A positive local result must preserve healthy
-  intervals and be confirmed on an independently chosen case before broader
-  escalation. This checkpoint does not replace the shared ladder.
+- **Completed decision checkpoint: real amplitude-completeness failures.** The
+  [bounded prescription](amplitude_completeness_next_step_prescription.md)
+  nominated independently anchored losses in clusters 21 and 553. Artifact,
+  wider-depth, direct-motion, local-template, and lag-extension checks do not
+  support an intervention. The identity-bound completeness timeline is now the
+  operational triage improvement. Do not spend another candidate slot on these
+  cases without a new calibration-only representation that first separates
+  healthy target events from prespecified background.
 - **Option A external voltage registration** — build/operator smoke tests may
   run now; its specific Luke-scale causal interpretation waits for the dense
   donor, but real-data pipeline performance does not. Start with one minimal
