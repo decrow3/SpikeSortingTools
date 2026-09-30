@@ -68,3 +68,14 @@ The service survived launcher disconnection, retained its launch command and
 logs, atomically accepted the sort, wrote its completion receipt, and exited
 cleanly. Kilosort had no within-sort checkpoint; an interruption would have
 required preserving the partial evidence and restarting the sort.
+
+## Published handoff
+
+The compact verified result packet is published at
+`/mnt/NPX/Luke/DARTsort_motion_experiments/en_arm_b_full_sort_result_20260930_v1`.
+Its manifest SHA-256 is
+`9faeba59801dd5c7bf44b7ed85c65ed6d99f9a8ecb80b73de6c15ea501afee54`.
+The packet contains receipts, settings, this result, and hashes for the Tier-1
+inputs. It contains no voltage or sorter arrays. `COMPLETE.json` was written
+last, and its manifest binding and every product hash were independently
+verified after publication.
