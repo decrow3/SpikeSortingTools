@@ -1,0 +1,128 @@
+{
+  "schema_version": "en-tier1-panel-v1",
+  "status": "frozen_before_new_full_sort_results",
+  "scope": {
+    "session": "Luke0804_V2V1_g0_imec0",
+    "sampling_frequency_hz": 29999.835983263598,
+    "num_samples": 314204894,
+    "duration_s": 10473.5537279367,
+    "population": "all raw Kilosort clusters; KS-good counts are descriptive secondary yield",
+    "reference_sort_identity": "22ded4d503b6de8edf4851a08797ae4e594fe41118b913451365727ffbd616ac"
+  },
+  "arms": {
+    "REF": {
+      "sorter_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output",
+      "sort_identity": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/rescue_sort_identity.json",
+      "expected_sort_identity": "22ded4d503b6de8edf4851a08797ae4e594fe41118b913451365727ffbd616ac"
+    },
+    "XR": {
+      "sorter_output": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_xr_tier1_raw_handoff_20260929_v1/kilosort4/sorter_output",
+      "sort_identity": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_xr_tier1_raw_handoff_20260929_v1/sort_identity.json",
+      "expected_sort_identity": "06ea4b23a45335ef8a8428047cc54e64356905b6cdae6715e36f061f3cfdf555"
+    },
+    "A": {
+      "sorter_output": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/sort/sorter_output",
+      "complete_receipt": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/COMPLETE.json",
+      "expected_sort_identity": null
+    },
+    "B": {
+      "sorter_output": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/sort/sorter_output",
+      "complete_receipt": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/COMPLETE.json",
+      "expected_sort_identity": null
+    }
+  },
+  "fields": {
+    "A": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_am3_imec0_field_request_20260929_v1/payload/luke0804_imec0_two_layer_motion.npz",
+      "sha256": "4c769125020aad3263bf6eaa1889cdaa7eccbf19dcf0aa3a068b185221fadb9f",
+      "time_key": "time_s",
+      "displacement_key": "displacement_um",
+      "rigid_projection": "median across depth",
+      "comparison_arms": ["REF", "A"]
+    },
+    "B": {
+      "path": "/mnt/NPX/Luke/20250804/shared_analysis/luke_improved_motion_two_machine_20260909_v1/estimation_huklaban1_v1/candidate_fields.npz",
+      "sha256": "547ff39d1c91d819b758246c701603d868bfd4d50bd6b791e3d5b7140c01c71d",
+      "time_key": "time_s",
+      "displacement_key": "rigid_displacement_um",
+      "comparison_arms": ["REF", "XR", "B"]
+    }
+  },
+  "state_assignment": {
+    "period_um": 40.0,
+    "reference": "full-session median frozen independently for each field",
+    "rounding": "half away from zero",
+    "temporal_cells": "half-open cells bounded by adjacent field-time midpoints, clipped to the recording",
+    "state_rate_reference_um": 0.0,
+    "minimum_reference_state_events_per_unit": 100,
+    "continuity_interpretation": "arm-local state/rate rank continuity proxy only; not biological identity or purity"
+  },
+  "metrics": {
+    "yield": {
+      "report": ["raw_unit_count", "ks_good_unit_count", "assigned_spike_count", "assigned_spike_rate_hz"],
+      "uncertainty": "300-second common time-block bootstrap for rates and active-unit yield; deterministic full-session counts retained"
+    },
+    "short_interval": {
+      "segment_safe": true,
+      "positive_lag_samples_half_open": [1, 30],
+      "report_separately": ["lag0_exact_duplicates", "lag8", "lag30"],
+      "denominator": "positive adjacent within-unit intervals wholly inside one contiguous rounded-state segment"
+    },
+    "exact_duplicates": {
+      "definition": "adjacent spikes in the same cluster at the same sample",
+      "report": ["duplicate_events", "units_with_duplicates", "duplicate_fraction"]
+    },
+    "chance_aware_coincidence": {
+      "tolerance_ms": 0.5,
+      "depth_tolerance_um": 75.0,
+      "null": "one deterministic circular time shift per cluster on the full recording",
+      "report": ["observed_marked_spike_fraction", "shift_null_fraction", "excess"]
+    },
+    "presence": {
+      "bin_seconds": 300.0,
+      "definition": "fraction of full-session half-open bins containing at least one spike",
+      "summary": ["median", "p10", "p90"]
+    },
+    "edge": {
+      "processing_depth_um": [200.0, 3640.0],
+      "scoring_depth_um": [300.0, 3540.0],
+      "unit_depth": "median saved spike_positions y",
+      "definition": "fraction of processing-domain units outside the scoring domain"
+    },
+    "state_rate_rank": {
+      "statistic": "Spearman rho across eligible units between log rate at q=0 and log rate at each rounded state",
+      "pseudocount_events": 0.5,
+      "report": "each state separately with exposure and eligible-unit count"
+    },
+    "correspondence": {
+      "reference": "REF",
+      "time_only": true,
+      "tolerance_ms": 0.5,
+      "minimum_overlap": 0.1,
+      "reciprocal_primary_minimum_retention": 0.5,
+      "exclusive_event_matching": "greedy chronological one-to-one within each candidate unit pair",
+      "report": ["per-primary F1", "lost_reference_fraction", "new_candidate_fraction", "ambiguous_unit_fraction", "full_edge_table"]
+    }
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "bootstrap_draws": 2000,
+    "seed": 20260929,
+    "time_block_seconds": 300.0,
+    "common_block_multiplicities_across_arms": true,
+    "unit_resampling": "common unit resampling for paired summaries; arm-local unit resampling otherwise",
+    "undefined": "report unavailable with denominator and cause; never replace with zero"
+  },
+  "decision": {
+    "style": "profile-based Pareto reading; no composite score and no tuning",
+    "tier2": "run only for arms favourable overall on Tier 1",
+    "no_rf": true,
+    "outer_holdout_sealed": true,
+    "interpretations": {
+      "production_candidate": "A is at least as good as REF on contamination, completeness, and yield, improves continuity/correspondence, and is better than B",
+      "rounding_not_field": "A and B are similar and both beat XR",
+      "correction_harmful": "A and B are worse than REF on contamination, completeness, or yield",
+      "otherwise": "mixed"
+    }
+  }
+}
