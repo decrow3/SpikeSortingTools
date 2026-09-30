@@ -1,0 +1,59 @@
+{
+  "schema_version": "en-rounded-field-ks129-v1",
+  "status": "frozen_preflight",
+  "scope": "Luke0804_V2V1_g0_imec0 full session",
+  "reference": {
+    "recording_dir": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording",
+    "recording_manifest_sha256": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67",
+    "recording_content_sha256": "2d6fac755db3182841bf121d822754f963ebada3bcb8cd9e96e0b63e6f9b7372",
+    "binary_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+    "sort_identity_digest": "22ded4d503b6de8edf4851a08797ae4e594fe41118b913451365727ffbd616ac",
+    "num_samples": 314204894,
+    "num_channels": 384,
+    "sampling_frequency_hz": 29999.835983263598
+  },
+  "arm_a": {
+    "field_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_am3_imec0_field_request_20260929_v1/payload/luke0804_imec0_two_layer_motion.npz",
+    "field_sha256": "4c769125020aad3263bf6eaa1889cdaa7eccbf19dcf0aa3a068b185221fadb9f",
+    "time_key": "time_s",
+    "displacement_key": "displacement_um",
+    "rigid_projection": "median across depth after validating time-by-depth shape"
+  },
+  "arm_b": {
+    "field_path": "/mnt/NPX/Luke/20250804/shared_analysis/luke_improved_motion_two_machine_20260909_v1/estimation_huklaban1_v1/candidate_fields.npz",
+    "field_sha256": "547ff39d1c91d819b758246c701603d868bfd4d50bd6b791e3d5b7140c01c71d",
+    "time_key": "time_s",
+    "displacement_key": "rigid_displacement_um"
+  },
+  "adapter": {
+    "period_um": 40.0,
+    "reference": "full-session median frozen before rounding",
+    "rounding": "half away from zero",
+    "sign": "corrected = observed - displacement; SI samples location + displacement",
+    "motion": "rigid one spatial bin",
+    "spatial_interpolation_method": "nearest",
+    "border_mode": "force_zeros",
+    "channels": 384,
+    "temporal_assignment": "SI half-open cells with explicit extrapolated edges; SI 0.102.1 rebuilds the exact supplied uniform-grid centers from those edges",
+    "dtype_chain": ["int16 accepted parent", "float32 SI remap", "checked nearest int16"]
+  },
+  "sorter": {
+    "environment": "environments/rescue-production/.venv",
+    "name": "kilosort4",
+    "version": "4.0.27",
+    "Th_universal": 12,
+    "Th_learned": 9,
+    "do_correction": false,
+    "effective_nblocks": 0,
+    "do_CAR": true
+  },
+  "execution": {
+    "local_output_root": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1",
+    "persistent_manager": "systemd user service",
+    "q0_full_binary_hash_required_before_sort": true,
+    "smoke_before_full_sort": true,
+    "no_rf": true,
+    "outer_holdout_sealed": true,
+    "no_voltage_export": true
+  }
+}
