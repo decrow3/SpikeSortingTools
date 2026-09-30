@@ -83,9 +83,22 @@ def run_sort(recording_dir: Path, sort_dir: Path, status_path: Path, label: str)
     while gpu_busy():
         save(status_path, {"stage": f"waiting_gpu_{label}", "updated_at": datetime.now(timezone.utc).isoformat()})
         time.sleep(60)
-    save(status_path, {"stage": f"sorting_{label}", "updated_at": datetime.now(timezone.utc).isoformat()})
+    save(
+        status_path,
+        {
+            "stage": f"validating_sort_input_{label}",
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+        },
+    )
     started = time.perf_counter()
-    manifest = run_kilosort4(recording_dir, sort_dir)
+    manifest = run_kilosort4(
+        recording_dir,
+        sort_dir,
+        before_sort=lambda: save(
+            status_path,
+            {"stage": f"sorting_{label}", "updated_at": datetime.now(timezone.utc).isoformat()},
+        ),
+    )
     return manifest, time.perf_counter() - started
 
 

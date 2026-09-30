@@ -1,7 +1,10 @@
+import json
+
 import numpy as np
 import pytest
 
 from testing.en_rounded_ks129_arm_a_queue import materialization_request, rigid_projection, wait_for_field
+from testing import en_rounded_ks129_queue
 from testing import luke_external_warp_pipeline
 
 
@@ -63,3 +66,25 @@ def test_materialization_reports_verification_after_write(monkeypatch, tmp_path)
         ("verifying",),
         ("accept", "recording.partial", {"source": "accepted"}, {"schema": "test"}),
     ]
+
+
+def test_run_sort_distinguishes_input_validation_from_sorting(monkeypatch, tmp_path) -> None:
+    status = tmp_path / "STATUS.json"
+    stages = []
+
+    monkeypatch.setattr(en_rounded_ks129_queue, "gpu_busy", lambda: False)
+
+    def fake_sort(recording_dir, sort_dir, *, before_sort):
+        stages.append(json.loads(status.read_text())["stage"])
+        before_sort()
+        stages.append(json.loads(status.read_text())["stage"])
+        return {"complete": True}
+
+    monkeypatch.setattr(en_rounded_ks129_queue, "run_kilosort4", fake_sort)
+    manifest, elapsed = en_rounded_ks129_queue.run_sort(
+        tmp_path / "recording", tmp_path / "sort", status, "full"
+    )
+
+    assert manifest == {"complete": True}
+    assert elapsed >= 0.0
+    assert stages == ["validating_sort_input_full", "sorting_full"]

@@ -8,7 +8,7 @@ import json
 import math
 import os
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping
 
 import numpy as np
 
@@ -187,7 +187,12 @@ def _archive_declared_failed_partial(partial: Path) -> Path:
     return archived
 
 
-def run_kilosort4(recording_dir: Path, output_dir: Path) -> dict[str, Any]:
+def run_kilosort4(
+    recording_dir: Path,
+    output_dir: Path,
+    *,
+    before_sort: Callable[[], None] | None = None,
+) -> dict[str, Any]:
     """Run Kilosort into a partial directory and atomically accept completion."""
     os.environ.setdefault("NUMBA_CACHE_DIR", "/tmp/spikeglx-rescue-numba-cache")
     recording_dir = Path(recording_dir)
@@ -198,6 +203,8 @@ def run_kilosort4(recording_dir: Path, output_dir: Path) -> dict[str, Any]:
         raise FileNotFoundError(f"Missing accepted recording manifest: {recording_manifest_path}")
     recording_manifest = json.loads(recording_manifest_path.read_text())
     validate_accepted_recording(recording_dir, recording_manifest)
+    if before_sort is not None:
+        before_sort()
     compatibility_patch = ensure_kilosort_compatibility()
     patch_identity = {
         key: value
