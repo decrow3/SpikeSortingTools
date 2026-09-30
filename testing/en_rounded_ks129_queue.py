@@ -153,7 +153,17 @@ def main() -> None:
     )
     save(status_path, {"stage": "materializing_smoke", "updated_at": datetime.now(timezone.utc).isoformat()})
     smoke_t0 = time.perf_counter()
-    smoke_manifest = _materialize_arm(smoke, args.output / "smoke/recording", source_manifest=source_manifest, request=smoke_request, n_jobs=8)
+    smoke_manifest = _materialize_arm(
+        smoke,
+        args.output / "smoke/recording",
+        source_manifest=source_manifest,
+        request=smoke_request,
+        n_jobs=8,
+        before_accept=lambda: save(
+            status_path,
+            {"stage": "verifying_smoke_recording", "updated_at": datetime.now(timezone.utc).isoformat()},
+        ),
+    )
     smoke_materialize_s = time.perf_counter() - smoke_t0
     smoke_sort, smoke_sort_s = run_sort(args.output / "smoke/recording", args.output / "smoke/sort", status_path, "smoke")
     save(args.output / "SMOKE.json", {
@@ -173,7 +183,17 @@ def main() -> None:
         "full_session",
         [0, int(source.get_num_samples())],
     )
-    full_manifest = _materialize_arm(corrected, args.output / "full/recording", source_manifest=source_manifest, request=full_request, n_jobs=8)
+    full_manifest = _materialize_arm(
+        corrected,
+        args.output / "full/recording",
+        source_manifest=source_manifest,
+        request=full_request,
+        n_jobs=8,
+        before_accept=lambda: save(
+            status_path,
+            {"stage": "verifying_full_recording", "updated_at": datetime.now(timezone.utc).isoformat()},
+        ),
+    )
     full_materialize_s = time.perf_counter() - full_t0
     full_sort, full_sort_s = run_sort(args.output / "full/recording", args.output / "full/sort", status_path, "full")
     save(args.output / "COMPLETE.json", {

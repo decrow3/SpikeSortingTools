@@ -11,7 +11,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import numpy as np
 
@@ -293,6 +293,7 @@ def _materialize_arm(
     source_manifest: dict[str, Any],
     request: dict[str, Any],
     n_jobs: int,
+    before_accept: Callable[[], None] | None = None,
 ) -> dict[str, Any]:
     output_dir = Path(output_dir)
     if output_dir.exists():
@@ -309,6 +310,8 @@ def _materialize_arm(
         raise RuntimeError(f"ambiguous interrupted arm recording: {partial}")
     output_dir.parent.mkdir(parents=True, exist_ok=True)
     recording.save(folder=partial, dtype="int16", n_jobs=n_jobs, progress_bar=True)
+    if before_accept is not None:
+        before_accept()
     manifest = _accepted_manifest(partial, source_manifest, request=request)
     os.replace(partial, output_dir)
     return manifest

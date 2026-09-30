@@ -154,6 +154,10 @@ def main() -> None:
     smoke_manifest = _materialize_arm(
         smoke, args.output / "smoke/recording", source_manifest=source_manifest,
         request=smoke_request, n_jobs=8,
+        before_accept=lambda: save(
+            status_path,
+            {"stage": "verifying_smoke_recording", "updated_at": datetime.now(timezone.utc).isoformat()},
+        ),
     )
     smoke_materialize_s = time.perf_counter() - smoke_t0
     smoke_sort, smoke_sort_s = run_sort(
@@ -180,6 +184,10 @@ def main() -> None:
     full_manifest = _materialize_arm(
         corrected, args.output / "full/recording", source_manifest=source_manifest,
         request=full_request, n_jobs=8,
+        before_accept=lambda: save(
+            status_path,
+            {"stage": "verifying_full_recording", "updated_at": datetime.now(timezone.utc).isoformat()},
+        ),
     )
     full_materialize_s = time.perf_counter() - full_t0
     full_sort, full_sort_s = run_sort(

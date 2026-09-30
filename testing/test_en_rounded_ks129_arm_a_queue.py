@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from testing.en_rounded_ks129_arm_a_queue import materialization_request, rigid_projection, wait_for_field
+from testing import luke_external_warp_pipeline
 
 
 def test_rigid_projection_accepts_rigid_or_time_by_depth() -> None:
@@ -30,3 +31,35 @@ def test_wait_for_field_returns_when_payload_exists(tmp_path) -> None:
     field.write_bytes(b"ready")
     wait_for_field(field, tmp_path / "status.json", poll_seconds=0.001)
     assert not (tmp_path / "status.json").exists()
+
+
+def test_materialization_reports_verification_after_write(monkeypatch, tmp_path) -> None:
+    events = []
+
+    class Recording:
+        def save(self, *, folder, dtype, n_jobs, progress_bar):
+            folder.mkdir(parents=True)
+            events.append(("save", dtype, n_jobs, progress_bar))
+
+    def accepted(folder, source_manifest, *, request):
+        events.append(("accept", folder.name, source_manifest, request))
+        return {"complete": True, "request_digest": "test"}
+
+    monkeypatch.setattr(luke_external_warp_pipeline, "_accepted_manifest", accepted)
+    output = tmp_path / "recording"
+    result = luke_external_warp_pipeline._materialize_arm(
+        Recording(),
+        output,
+        source_manifest={"source": "accepted"},
+        request={"schema": "test"},
+        n_jobs=3,
+        before_accept=lambda: events.append(("verifying",)),
+    )
+
+    assert result["complete"] is True
+    assert output.is_dir()
+    assert events == [
+        ("save", "int16", 3, True),
+        ("verifying",),
+        ("accept", "recording.partial", {"source": "accepted"}, {"schema": "test"}),
+    ]
