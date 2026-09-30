@@ -67,12 +67,17 @@ recording without a channel slice (`testing/en_rounded_ks129_queue.py:188-211`):
 182-site crop in EN.
 
 Kilosort receives thresholds 12/9, internal motion correction disabled, and
-CAR enabled (`pipeline/sorting.py:23-45`).  The sorter wrapper independently
-rehashes and validates the accepted recording before loading it and launching
-the sorter (`pipeline/sorting.py:190-268`).  The effective Kilosort setting
-`nblocks=0` is part of the frozen config
-(`configs/en_rounded_field_ks129.v1.json:40-48`) and is checked against the
-saved sorter parameters.
+CAR enabled (`pipeline/sorting.py:23-45`).  SpikeInterface's request file keeps
+its default `nblocks=1` alongside wrapper option `do_correction=false`; Kilosort
+then executes with native `nblocks=0`.  The output validator reads the
+top-level effective `ops.npy` value rather than mistaking the nested request for
+the executed setting (`pipeline/sorting.py:90-139`).  The Arm B smoke runtime
+logged `nblocks = 0, skipping drift correction`; the full run must produce and
+pass the same saved-ops check before atomic acceptance.  The sorter wrapper
+independently rehashes and validates the accepted recording before loading it
+and launching the sorter (`pipeline/sorting.py:190-268`).  The effective
+Kilosort setting `nblocks=0` is part of the frozen config
+(`configs/en_rounded_field_ks129.v1.json:40-48`).
 
 ## Quantitative checks
 
