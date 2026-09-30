@@ -99,3 +99,10 @@ RF access, or outer-holdout access. Independent validation confirmed:
 Authoritative result directory:
 `/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/tier1_v1`.
 
+Compact published packet:
+`/mnt/NPX/Luke/DARTsort_motion_experiments/en_tier1_rounded_field_result_20260930_v1`,
+manifest SHA-256
+`cb885a0243891ba52f408218ec7551c4e4487554bfb7a3d39618895e1b4ffa9c`.
+The packet contains the result, state tables, figures, manifests, and execution
+receipts; it contains no voltage or sorter arrays. All 17 products and the
+last-written completion receipt were verified after publication.
