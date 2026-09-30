@@ -61,6 +61,24 @@ def wait_for_q0(path: Path, status_path: Path) -> dict:
     return receipt
 
 
+def materialization_request(
+    contract: dict, field_sha256: str, scope: str, source_frames: list[int]
+) -> dict:
+    """Keep experiment metadata from overwriting the accepted-manifest schema."""
+    if scope not in {"smoke", "full_session"}:
+        raise ValueError("unsupported EN materialization scope")
+    return {
+        "schema": "en-rounded-field-ks129-materialization-v1",
+        "contract_digest": contract["digest"],
+        "arm": "B",
+        "field_sha256": field_sha256,
+        "q0_receipt_sha256": contract["q0_receipt_sha256"],
+        "adapter": contract["adapter"],
+        "scope": scope,
+        "source_frames": source_frames,
+    }
+
+
 def run_sort(recording_dir: Path, sort_dir: Path, status_path: Path, label: str) -> tuple[dict, float]:
     while gpu_busy():
         save(status_path, {"stage": f"waiting_gpu_{label}", "updated_at": datetime.now(timezone.utc).isoformat()})
@@ -130,7 +148,9 @@ def main() -> None:
     smoke_start = int(round(smoke_start_s * fs))
     smoke_stop = min(source.get_num_samples(), smoke_start + int(round(args.smoke_seconds * fs)))
     smoke = corrected.frame_slice(start_frame=smoke_start, end_frame=smoke_stop)
-    smoke_request = {**contract, "scope": "smoke", "source_frames": [smoke_start, smoke_stop]}
+    smoke_request = materialization_request(
+        contract, spec["field_sha256"], "smoke", [smoke_start, smoke_stop]
+    )
     save(status_path, {"stage": "materializing_smoke", "updated_at": datetime.now(timezone.utc).isoformat()})
     smoke_t0 = time.perf_counter()
     smoke_manifest = _materialize_arm(smoke, args.output / "smoke/recording", source_manifest=source_manifest, request=smoke_request, n_jobs=8)
@@ -147,7 +167,12 @@ def main() -> None:
         raise RuntimeError("insufficient local space for full arm-B materialization and sort reserve")
     save(status_path, {"stage": "materializing_full", "updated_at": datetime.now(timezone.utc).isoformat()})
     full_t0 = time.perf_counter()
-    full_request = {**contract, "scope": "full_session", "source_frames": [0, int(source.get_num_samples())]}
+    full_request = materialization_request(
+        contract,
+        spec["field_sha256"],
+        "full_session",
+        [0, int(source.get_num_samples())],
+    )
     full_manifest = _materialize_arm(corrected, args.output / "full/recording", source_manifest=source_manifest, request=full_request, n_jobs=8)
     full_materialize_s = time.perf_counter() - full_t0
     full_sort, full_sort_s = run_sort(args.output / "full/recording", args.output / "full/sort", status_path, "full")

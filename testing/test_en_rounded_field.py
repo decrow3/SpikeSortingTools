@@ -2,6 +2,7 @@ import numpy as np
 import spikeinterface as si
 
 from testing.en_rounded_field import build_adapter, round_half_away, rounded_rigid_field
+from testing.en_rounded_ks129_queue import materialization_request
 
 
 def _recording():
@@ -36,3 +37,11 @@ def test_q0_is_byte_identical_and_temporal_cells_are_stepwise():
     assert np.array_equal(out[:2], source.get_traces(start_frame=0, end_frame=2))
     expected = np.asarray([50, 60, 70, 80, 0, 0, 0, 0], dtype=np.int16)
     assert np.array_equal(out[2:], np.tile(expected, (6, 1)))
+
+
+def test_materialization_request_cannot_overwrite_accepted_manifest_schema():
+    contract = {"digest": "contract", "q0_receipt_sha256": "q0", "adapter": "exact"}
+    request = materialization_request(contract, "field", "smoke", [10, 20])
+    assert "schema_version" not in request
+    assert request["schema"] == "en-rounded-field-ks129-materialization-v1"
+    assert request["source_frames"] == [10, 20]
