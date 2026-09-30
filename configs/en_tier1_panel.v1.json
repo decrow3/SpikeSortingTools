@@ -18,6 +18,7 @@
     "XR": {
       "sorter_output": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_xr_tier1_raw_handoff_20260929_v1/kilosort4/sorter_output",
       "sort_identity": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_xr_tier1_raw_handoff_20260929_v1/sort_identity.json",
+      "complete_receipt": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_xr_tier1_raw_handoff_20260929_v1/COMPLETE.json",
       "expected_sort_identity": "06ea4b23a45335ef8a8428047cc54e64356905b6cdae6715e36f061f3cfdf555"
     },
     "A": {
@@ -70,11 +71,13 @@
     },
     "exact_duplicates": {
       "definition": "adjacent spikes in the same cluster at the same sample",
+      "fraction_denominator": "all adjacent within-unit pairs wholly inside one contiguous rounded-state segment, including zero and positive lags",
       "report": ["duplicate_events", "units_with_duplicates", "duplicate_fraction"]
     },
     "chance_aware_coincidence": {
       "tolerance_ms": 0.5,
       "depth_tolerance_um": 75.0,
+      "spatial_scope": "events inside the processing domain from units whose median saved y is inside the processing domain",
       "null": "one deterministic circular time shift per cluster on the full recording",
       "report": ["observed_marked_spike_fraction", "shift_null_fraction", "excess"]
     },

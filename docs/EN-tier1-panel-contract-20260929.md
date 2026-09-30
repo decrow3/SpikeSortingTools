@@ -26,8 +26,10 @@ identity or purity claim.
   and lag 30 are retained separately rather than folded into that result.
 - Chance-aware coincidence uses the existing 0.5 ms, 75 µm marked-spike rule
   and a deterministic circular shift for each cluster.
-- Presence uses complete 300 s bins. Edge units have median saved y inside the
-  200–3640 µm processing domain but outside the 300–3540 µm scoring domain.
+- Presence uses full-session 300 s half-open bins, including the clipped final
+  bin. Edge units have median saved y inside the 200–3640 µm processing domain
+  but outside the 300–3540 µm scoring domain. Coincidence uses events inside
+  that processing domain from units whose median saved y is also inside it.
 - Time-only REF correspondence uses exclusive one-to-one event matches within
   ±0.5 ms, retains the full edge graph, and calls a primary only when the best
   edge is reciprocal, unique, and retains at least half of both trains.
