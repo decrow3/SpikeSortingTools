@@ -58,6 +58,20 @@ def materialization_request(
     }
 
 
+def wait_for_field(path: Path, status_path: Path, poll_seconds: float = 60.0) -> None:
+    """Wait for the requested payload; the exact hash gate follows arrival."""
+    while not path.is_file():
+        save(
+            status_path,
+            {
+                "stage": "waiting_exact_arm_a_field",
+                "field_path": str(path),
+                "updated_at": datetime.now(timezone.utc).isoformat(),
+            },
+        )
+        time.sleep(poll_seconds)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=Path, default=Path("configs/en_rounded_field_ks129.v1.json"))
@@ -76,6 +90,7 @@ def main() -> None:
     if q0.get("actual_sha256") != ref["binary_sha256"]:
         raise RuntimeError("q0 receipt names a different accepted binary")
     field_path = Path(spec["field_path"])
+    wait_for_field(field_path, status_path)
     if sha256(field_path) != spec["field_sha256"]:
         raise RuntimeError("arm A field hash differs")
 

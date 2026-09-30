@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from testing.en_rounded_ks129_arm_a_queue import materialization_request, rigid_projection
+from testing.en_rounded_ks129_arm_a_queue import materialization_request, rigid_projection, wait_for_field
 
 
 def test_rigid_projection_accepts_rigid_or_time_by_depth() -> None:
@@ -23,3 +23,10 @@ def test_arm_a_materialization_request_preserves_manifest_schema() -> None:
     assert request["schema"] == "en-rounded-field-ks129-materialization-v1"
     assert request["arm"] == "A"
     assert "schema_version" not in request
+
+
+def test_wait_for_field_returns_when_payload_exists(tmp_path) -> None:
+    field = tmp_path / "field.npz"
+    field.write_bytes(b"ready")
+    wait_for_field(field, tmp_path / "status.json", poll_seconds=0.001)
+    assert not (tmp_path / "status.json").exists()
