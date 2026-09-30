@@ -40,3 +40,14 @@ The packet contains `spike_times.npy`, `spike_clusters.npy`,
 `spike_positions.npy`, `cluster_KSLabel.tsv`, `sort_identity.json`, and
 `summary.json`. It excludes voltage, templates, features, waveforms, and sorter
 scratch.
+
+## Why the existing curated handoff cannot substitute
+
+The existing rigid-comparison handoff was checked directly.  Its
+`spike_times.npy`, `spike_clusters.npy`, and `spike_positions.npy` each contain
+26,659,257 events.  Its `full_st.npy` also has 26,659,257 rows, and
+`kept_spikes.npy` is an all-true vector of that same length.  The pinned raw XR
+sort identity records 28,176,859 events.  Thus the curated packet omits
+1,517,602 original events together with their raw labels and positions; those
+values cannot be reconstructed from its retained arrays.  EN Tier 1 must wait
+for the identity-bound raw files requested above.
