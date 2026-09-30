@@ -20,3 +20,10 @@ count, and the largest backward step in each result. Equal-time rows retain
 their original order. This is a mechanical representation repair; it does not
 change event times, labels, channels, validation windows, endpoints, thresholds,
 or decision rules. No RF or voltage data is read.
+
+The corrected v3 run completed both W2/W3 scorecards and event-overlap analyses,
+then stopped before the whole-session descriptive calculation because that
+script's direct-file invocation did not add the project root to Python's import
+path. The completed window results and failure logs remain intact. The import
+bootstrap was repaired without changing any scientific calculation or contract;
+the complete suite is rerun at v4 so it can produce one terminal receipt.
