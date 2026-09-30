@@ -134,6 +134,28 @@ def test_correspondence_is_exclusive_and_primary_is_reciprocal() -> None:
     assert summary["median_primary_f1"] == pytest.approx(1.0)
 
 
+def test_correspondence_reference_bootstrap_uses_explicit_common_seed(monkeypatch) -> None:
+    seeds = []
+
+    def fake_bootstrap(values, *, draws, seed, statistic):
+        seeds.append(seed)
+        return 0.0, 0.0, 0.0
+
+    monkeypatch.setattr("testing.en_tier1_panel._unit_bootstrap", fake_bootstrap)
+    edges = pd.DataFrame({"primary_match": pd.Series(dtype=bool)})
+    for local_seed in (500, 600):
+        correspondence_summary(
+            edges,
+            np.array([1, 2]),
+            np.array([7, 8]),
+            draws=30,
+            seed=local_seed,
+            reference_seed=123,
+        )
+    assert seeds[:5] == [123, 501, 125, 503, 510]
+    assert seeds[5:] == [123, 601, 125, 603, 610]
+
+
 def test_chance_aware_coincidence_marks_nearby_cross_unit_events() -> None:
     sort = {
         "times": np.array([100, 101, 500, 900], dtype=np.int64),

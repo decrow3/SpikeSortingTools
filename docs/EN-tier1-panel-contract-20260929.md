@@ -35,7 +35,10 @@ identity or purity claim.
   that processing domain from units whose median saved y is also inside it.
 - Time-only REF correspondence uses exclusive one-to-one event matches within
   ±0.5 ms, retains the full edge graph, and calls a primary only when the best
-  edge is reciprocal, unique, and retains at least half of both trains.
+  edge is reciprocal, unique, and retains at least half of both trains. Lost
+  and ambiguous REF-unit intervals reuse the same reference-unit bootstrap
+  indices across XR, A, and B; candidate-unit and primary-match resampling stays
+  arm-local.
 - All inferential summaries use 2,000 300 s common-block bootstrap draws with
   seed 20260929. Undefined quantities remain unavailable with their denominator
   and cause; they are never replaced with zero.

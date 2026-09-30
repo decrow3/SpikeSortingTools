@@ -267,6 +267,7 @@ def correspondence_summary(
     *,
     draws: int,
     seed: int,
+    reference_seed: int | None = None,
 ) -> dict[str, Any]:
     primary = edges[edges.primary_match] if len(edges) else edges
     reference_primary = set(primary.reference_cluster.astype(int)) if len(primary) else set()
@@ -291,12 +292,17 @@ def correspondence_summary(
         "ambiguous_reference_units": int(ref_ambiguous.sum()),
         "ambiguous_candidate_units": int(cand_ambiguous.sum()),
     }
-    for offset, (name, values) in enumerate(
-        (("lost_reference_fraction", ref_lost), ("new_candidate_fraction", cand_new),
-         ("ambiguous_reference_fraction", ref_ambiguous),
-         ("ambiguous_candidate_fraction", cand_ambiguous))
-    ):
-        point, low, high = _unit_bootstrap(values, draws=draws, seed=seed + offset, statistic="mean")
+    common_reference_seed = seed if reference_seed is None else reference_seed
+    summaries = (
+        ("lost_reference_fraction", ref_lost, common_reference_seed),
+        ("new_candidate_fraction", cand_new, seed + 1),
+        ("ambiguous_reference_fraction", ref_ambiguous, common_reference_seed + 2),
+        ("ambiguous_candidate_fraction", cand_ambiguous, seed + 3),
+    )
+    for name, values, bootstrap_seed in summaries:
+        point, low, high = _unit_bootstrap(
+            values, draws=draws, seed=bootstrap_seed, statistic="mean"
+        )
         output[name] = point
         output[name + "_ci95"] = [low, high]
     f1 = primary.f1.to_numpy(float) if len(primary) else np.array([], dtype=float)
@@ -961,7 +967,7 @@ def run(config_path: Path, output: Path) -> dict[str, Any]:
         write_table(partial / f"PRIMARY_MATCHES_REF_{arm}.csv", edges[edges.primary_match] if len(edges) else edges)
         correspondence_results[arm] = correspondence_summary(
             edges, reference_units, np.unique(sorts[arm]["clusters"]),
-            draws=draws, seed=seed + 7000 + arm_index,
+            draws=draws, seed=seed + 7100 + arm_index, reference_seed=seed + 7000,
         )
 
     write_figures(
