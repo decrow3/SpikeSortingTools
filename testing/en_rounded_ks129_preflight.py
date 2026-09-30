@@ -14,6 +14,7 @@ from pathlib import Path
 import numpy as np
 
 from npx_preprocessing.motion.lattice_remap_si import audit_spikeinterface_nearest_kernel
+from npx_preprocessing.motion import ExactLatticeRemapRecording
 from testing.en_rounded_field import build_adapter, rounded_rigid_field, zero_fill_channel_seconds
 
 
@@ -131,10 +132,49 @@ def main() -> None:
             path, spec["field_sha256"], spec["time_key"], spec["displacement_key"], label
         )
         rounded, reference_um = rounded_rigid_field(displacement, config["adapter"]["period_um"])
+        dt = float(np.median(np.diff(time_s)))
+        if not np.allclose(np.diff(time_s), dt, rtol=0, atol=1e-6):
+            raise RuntimeError(f"{label} field time grid is not uniform")
         channel_seconds, fraction = zero_fill_channel_seconds(time_s, rounded, duration_s, geometry)
         values, counts = np.unique(rounded, return_counts=True)
         mapping = audit_spikeinterface_nearest_kernel(geometry, values)
         mapping_failures = [row for row in mapping if not row["stock_matches_exact"]]
+        stock_adapter = build_adapter(source, time_s, rounded)
+        fast_adapter = ExactLatticeRemapRecording(
+            source,
+            time_s,
+            rounded,
+            cell_width_s=dt,
+            direction="y",
+            time_origins_s=[0.0],
+        )
+        voltage_checks = []
+        for state in values:
+            knot_index = int(np.flatnonzero(rounded == state)[0])
+            center_frame = int(round(time_s[knot_index] * fs))
+            start = max(0, min(source.get_num_samples() - 256, center_frame - 128))
+            stop = start + 256
+            stock = stock_adapter.get_traces(start_frame=start, end_frame=stop)
+            fast = fast_adapter.get_traces(start_frame=start, end_frame=stop)
+            difference = np.abs(stock.astype(np.int32) - fast.astype(np.int32))
+            equal = bool(np.array_equal(stock, fast))
+            bytes_read += int(stock.nbytes + fast.nbytes)
+            voltage_checks.append(
+                {
+                    "state_um": float(state),
+                    "knot_index": knot_index,
+                    "start_frame": start,
+                    "end_frame_exclusive": stop,
+                    "byte_equal": equal,
+                    "max_abs_delta_counts": int(difference.max(initial=0)),
+                }
+            )
+            if not equal:
+                first = np.argwhere(stock != fast)[0]
+                raise RuntimeError(
+                    f"{label} fast adapter differs from stock SI at frame "
+                    f"{start + int(first[0])}, channel {int(first[1])}"
+                )
         arms[label] = {
             "status": "pass",
             "path": str(path),
@@ -146,6 +186,7 @@ def main() -> None:
             "rounded_state_bin_counts": dict(zip(map(str, values.tolist()), map(int, counts.tolist()))),
             "si_mapping_pairs": len(mapping),
             "si_mapping_failures": len(mapping_failures),
+            "fast_adapter_voltage_equivalence": voltage_checks,
             "zero_filled_channel_seconds": channel_seconds,
             "zero_filled_fraction": fraction,
         }
