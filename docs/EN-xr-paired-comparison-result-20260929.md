@@ -60,3 +60,9 @@ Key artifact SHA-256 values:
   `828ff3d4a608ac722d6e052383a5bc1e9118bf7f43ac22c553903bb579d83042`
 - XR handoff `MANIFEST.json`:
   `6dd940f99fe0805596dabf1fd387852425ec476f47ba143e37c3fa6310611a1a`
+
+The compact result packet is published at
+`/mnt/NPX/Luke/DARTsort_motion_experiments/en_xr_paired_comparison_result_20260929_v1`.
+Its `MANIFEST.json` SHA-256 is
+`d9a52ff18516eaeaecd7b7d20c6985e39d8c9620800d188d95321672da3e5304`;
+`COMPLETE.json` was written last and binds that digest.
