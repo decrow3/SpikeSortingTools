@@ -882,10 +882,12 @@ def run(config_path: Path, output: Path) -> dict[str, Any]:
     scoring = tuple(float(value) for value in config["metrics"]["edge"]["scoring_depth_um"])
     minimum_reference = int(config["state_assignment"]["minimum_reference_state_events_per_unit"])
     arm_summaries: dict[str, dict[str, Any]] = {}
+    field_arm_summaries: dict[str, dict[str, dict[str, Any]]] = {}
     state_results: dict[str, dict[str, Any]] = {}
     state_tables: dict[str, dict[str, pd.DataFrame]] = {}
     unit_tables: dict[str, pd.DataFrame] = {}
     for field_index, (field_name, field_spec) in enumerate(config["fields"].items()):
+        field_arm_summaries[field_name] = {}
         state_results[field_name] = {}
         state_tables[field_name] = {}
         for arm_index, arm in enumerate(field_spec["comparison_arms"]):
@@ -902,12 +904,17 @@ def run(config_path: Path, output: Path) -> dict[str, Any]:
                 seed=seed + 1000 * field_index + arm_index,
             )
             state_results[field_name][arm] = result["state_metrics"].to_dict("records")
+            field_arm_summaries[field_name][arm] = result["summary"]
             state_tables[field_name][arm] = result["state_metrics"]
             write_table(partial / f"STATE_METRICS_{field_name}_{arm}.csv", result["state_metrics"])
             write_table(partial / f"STATE_BOOTSTRAP_{field_name}_{arm}.csv", result["bootstrap"])
             write_table(partial / f"UNIT_METRICS_{field_name}_{arm}.csv", result["units"])
             if arm not in arm_summaries:
-                arm_summaries[arm] = result["summary"]
+                arm_summaries[arm] = {
+                    key: value
+                    for key, value in result["summary"].items()
+                    if key not in {"exact_duplicate_fraction", "exact_duplicate_fraction_ci95"}
+                }
                 unit_tables[arm] = result["units"]
             else:
                 invariant_keys = (
@@ -972,6 +979,7 @@ def run(config_path: Path, output: Path) -> dict[str, Any]:
         "fields": field_receipts,
         "common_block_multiplicities_sha256": sha256(partial / "COMMON_BLOCK_MULTIPLICITIES.npy"),
         "arm_summaries": arm_summaries,
+        "field_arm_summaries": field_arm_summaries,
         "state_profiles": state_results,
         "chance_aware_coincidence": coincidence,
         "correspondence_to_ref": correspondence_results,

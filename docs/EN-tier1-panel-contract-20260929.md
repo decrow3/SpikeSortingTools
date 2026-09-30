@@ -24,6 +24,9 @@ identity or purity claim.
 - Short-interval fractions use positive adjacent within-unit lags below 1 ms
   and never cross a contiguous rounded-state boundary. Exact duplicates, lag 8,
   and lag 30 are retained separately rather than folded into that result.
+  Because the aggregate exact-duplicate fraction uses all segment-safe adjacent
+  pairs as its denominator, it is reported separately for every field/arm
+  pairing; the top-level arm summary contains only field-invariant quantities.
 - Chance-aware coincidence uses the existing 0.5 ms, 75 µm marked-spike rule
   and a deterministic circular shift for each cluster.
 - Presence uses full-session 300 s half-open bins, including the clipped final

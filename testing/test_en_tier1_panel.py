@@ -76,6 +76,41 @@ def test_arm_metrics_are_segment_safe_and_report_exact_duplicates() -> None:
     assert result["summary"]["edge_unit_fraction"] == pytest.approx(0.5)
 
 
+def test_duplicate_fraction_is_specific_to_field_segments() -> None:
+    split = build_field_cells(
+        np.array([1.0, 3.0, 5.0, 7.0]),
+        np.array([0.0, 40.0, 40.0, 0.0]),
+        duration_s=8.0,
+        block_seconds=2.0,
+    )
+    flat = build_field_cells(
+        np.array([1.0, 3.0, 5.0, 7.0]),
+        np.zeros(4),
+        duration_s=8.0,
+        block_seconds=2.0,
+    )
+    sort = {
+        "times": np.array([100, 100, 1999, 2000], dtype=np.int64),
+        "clusters": np.ones(4, dtype=np.int64),
+        "depths": np.full(4, 500.0),
+        "labels": {1: "good"},
+    }
+    multiplicities = common_block_multiplicities(4, draws=40, seed=3)
+    kwargs = dict(
+        sampling_frequency_hz=1000.0,
+        num_samples=8000,
+        multiplicities=multiplicities,
+        minimum_reference_events=1,
+        processing_depth_um=(200.0, 1200.0),
+        scoring_depth_um=(300.0, 1100.0),
+        seed=9,
+    )
+    split_result = arm_state_metrics(sort, split, **kwargs)
+    flat_result = arm_state_metrics(sort, flat, **kwargs)
+    assert split_result["summary"]["exact_duplicate_fraction"] == pytest.approx(1 / 2)
+    assert flat_result["summary"]["exact_duplicate_fraction"] == pytest.approx(1 / 3)
+
+
 def test_common_block_multiplicities_resample_exact_block_count() -> None:
     multiplicities = common_block_multiplicities(7, draws=25, seed=4)
     assert multiplicities.shape == (25, 7)
@@ -198,6 +233,9 @@ def test_end_to_end_synthetic_panel(tmp_path: Path) -> None:
     result = run(config_path, output)
     assert result["status"] == "complete"
     assert result["arm_summaries"]["B"]["raw_unit_count"] == 2
+    assert "exact_duplicate_fraction" not in result["arm_summaries"]["REF"]
+    assert result["field_arm_summaries"]["A"]["REF"]["exact_duplicate_fraction"] >= 0
+    assert result["field_arm_summaries"]["B"]["REF"]["exact_duplicate_fraction"] >= 0
     assert result["correspondence_to_ref"]["B"]["primary_matches"] == 2
     complete = json.loads((output / "COMPLETE.json").read_text())
     assert complete["manifest_sha256"] == hashlib.sha256((output / "MANIFEST.json").read_bytes()).hexdigest()
