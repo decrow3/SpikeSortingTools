@@ -1,0 +1,26 @@
+Test scope: saved arrays and isolated synthetic orchestration only.
+Recording voltage, real covariance, detection, training, sorting, RF, and holdout: NOT ACCESSED.
+
+Isolated focused suite
+  command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. rescue-python -m pytest -q -p no:cacheprovider tests/test_kilosort_support_mask_trained.py
+  working directory: isolated staged packet root
+  result: 14 passed in 37.56s
+
+Saved-array clock boundary fixture
+  receipt: fixture/CLOCK_BOUNDARY_FIXTURE_RECEIPT.json
+  sha256: 1a158b651678c0dccefe521ce76c3b21fd90321111a90fc73436766af976c604
+  result: zero-origin and exact 208498882-origin positives passed; wrong offset,
+          off-by-one, crop-local half-open upper bound, and signed-int64 overflow rejected
+
+Vertical orchestration fixture
+  receipt: fixture/VERTICAL_FIXTURE_RECEIPT.json
+  sha256: ca25da794cbbd9ca7dc07fc8d2bd500f09b536e3e20b941344578c42c1f31196
+  result: success reached COMPLETE; actual native hook exercised; injected downstream
+          failure preserved; alignment, ancestry, uniqueness, strict ordering, and
+          coordinated-permutation negatives rejected; missing key failed before bound paths
+
+Test-environment note
+  One repeat command launched from the workspace root collected the workspace package
+  instead of the isolated staged package and failed import during collection. It executed
+  no test and accessed no data. Re-running from the isolated packet root produced the
+  authoritative 14-pass result above.

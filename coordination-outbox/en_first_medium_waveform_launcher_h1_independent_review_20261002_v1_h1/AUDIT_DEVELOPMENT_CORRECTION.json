@@ -1,0 +1,10 @@
+{
+  "schema": "review-audit-development-correction-v1",
+  "initial_result": "audit script raised while classifying output-cap enforcement",
+  "cause": "the first audit used a broad substring test for Quota and mistakenly counted CPUQuota as a filesystem output quota",
+  "correction": "restrict the static check to LimitFSIZE, StateDirectoryQuota, or RuntimeDirectoryQuota and retain the direct source check for runtime use of persistent_output_bytes_max",
+  "candidate_or_scientific_defect_implicated_by_initial_failure": false,
+  "final_result": "TARGETED_LAUNCHER_REPAIR_REQUIRED with all three load-bearing blocker fixtures true",
+  "recording_or_voltage_accessed": false
+}
+

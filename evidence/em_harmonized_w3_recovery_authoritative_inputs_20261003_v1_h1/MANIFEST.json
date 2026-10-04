@@ -1,0 +1,20 @@
+{
+  "schema": "em-harmonized-w3-recovery-authoritative-inputs-manifest-v1",
+  "members": [
+    {
+      "path": "episode_catalogue.csv",
+      "bytes": 105013,
+      "sha256": "46463cda1348c0e0b0c39ad22ae9c71bc46f7c7347797c1c10588944cfc52df1"
+    },
+    {
+      "path": "PRIOR_PERMISSION_BLOCK.json",
+      "bytes": 696,
+      "sha256": "f0f921ab7f301ead79bbb28318a68b76cdfe68856e14f3527df2357a5f1a2baa"
+    },
+    {
+      "path": "TRANSFER_RECEIPT.json",
+      "bytes": 1523,
+      "sha256": "59176b9a0ad720bffebccaa620fdd0feae9e27ee471d22d2bb3c106e86d4cb9b"
+    }
+  ]
+}

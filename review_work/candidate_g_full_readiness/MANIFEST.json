@@ -1,0 +1,20 @@
+{
+  "attempt_id": "candidate-g-continuation-full-readiness-acceptance-20261004a",
+  "product_count": 2,
+  "products": [
+    {
+      "bytes": 3838,
+      "path": "FINAL_REVIEW.md",
+      "sha256": "be019ccf01988a271308e8bde57da0f02b1b714256abc47f6d3bf5cdb31caf4d"
+    },
+    {
+      "bytes": 6110,
+      "path": "VERDICT.json",
+      "sha256": "e4686cca63a1cb950381e7cc54d61753330e61a723cd2bb2abe66c93f1038925"
+    }
+  ],
+  "result_kind": "candidate_g_continuation_full_readiness_acceptance",
+  "schema": "candidate-g-v2-2-manifest-v1",
+  "seal_nonce": "e5aa09a593f1522b1317b200a871428a",
+  "status": "GO_CONSTRUCT_RELEASE_INSTALL_REVIEWED_UNITS_START_ONCE"
+}

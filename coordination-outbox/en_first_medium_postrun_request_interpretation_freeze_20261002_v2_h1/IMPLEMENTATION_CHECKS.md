@@ -1,0 +1,11 @@
+# Implementation checks
+
+- Done: verified the accepted Phase3 v3 packet/config and source hashes; bound the active qualification consumer, measurement module, evaluator, matcher, and managed launcher exactly.
+- Done: bound the ordered 61-unit REF cohort, cohort digest, artifact hash, matcher settings, 20,000 bootstrap replicates, seed `20261002`, and strict primary rule `lower95 > 0.05` before new outcome access.
+- Done: bound known historical REF/existing-B paths and the v2 producer's planned repaired/repeat paths, inventories, pair receipts, and a fresh absent Phase3 output namespace. Only final producer receipt hashes and managed lifecycle token/HMAC generation remain prospective.
+- Done: inspected the accepted consumer implementation. It currently computes `repeat_pass = R_repeat >= 0.98` and lets that value influence reject/inconclusive status. This conflicts with the current instruction to keep REF repeat diagnostic-only with threshold/pass-fail `NOT_DEFINED`; invocation is therefore explicitly blocked pending a narrow reviewed reporting delta or pre-outcome contract resolution.
+- Done: reconciled Phase2 from authoritative artifacts. The Phase1 postreview says `phase2_started: false`; the accepted Phase2 contract remains disabled/prospective; no managed Phase2 output namespace or required Phase2 report files exist. The earlier evaluator-v3 REF/existing-B result is historical input evidence, not completion of the later managed Phase2 stage.
+- Not done: no new scientific output, arm result, voltage, recording, RF, or sealed holdout data was opened; no evaluator or Phase2 job was run.
+- Not done: future pair-final receipt hashes cannot be bound until the producer completes; the enabled producer contract path/hash also remains future mechanical fill.
+- Can establish: request paths, accepted sources, cohort, primary estimator, missingness language, interpretation scope, and output namespace were frozen before new outcomes; managed Phase2 remains outstanding and need not be rerun automatically.
+- Cannot establish: future producer completion, input-byte identity of not-yet-produced arms, Phase3 metric values, waveform/QC status, scientific benefit, identity, purity, recovery, or generalization.

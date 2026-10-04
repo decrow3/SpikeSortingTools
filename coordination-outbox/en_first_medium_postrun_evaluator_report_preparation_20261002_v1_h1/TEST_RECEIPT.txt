@@ -1,0 +1,17 @@
+Read-only static audit:
+  status: PASS
+  accepted phases: phase1_controls, phase2_existing_b
+  phase3 present: false
+  accepted source hashes: exact match
+
+JSON validation:
+  PREPARATION_REVIEW.json: PASS
+  POST_RUN_INPUT_CONTRACT.execution_disabled.v1.json: PASS
+  POST_RUN_REQUEST.template.json: PASS
+  COMPACT_REPORT_SCHEMA.json: PASS
+
+JSON Schema meta-validation:
+  Draft202012Validator.check_schema: PASS
+
+No B outcome, prospective arm output, recording voltage, waveform, evaluator,
+QC regeneration, RF/holdout, service, or scientific execution was accessed.

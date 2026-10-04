@@ -106,9 +106,11 @@ def _write_curated(root: Path) -> Path:
     # KS4 stores templates in the WHITENED space. Whitening here is a channel
     # rotation by two sites, so the stored peak channel is not the physical one
     # and anything comparing the stored array directly is comparing the wrong
-    # channels. `templates.npy @ whitening_mat_inv.npy` recovers `physical`.
+    # channels. KS applies channel-major whitening as ``W @ X``; therefore the
+    # equivalent time-major forward transform is ``physical @ W.T`` and
+    # ``templates.npy @ whitening_mat_inv.npy.T`` recovers `physical`.
     whitening = np.roll(np.eye(N_CHANNELS), 2, axis=1)
-    np.save(root / "templates.npy", (physical @ whitening).astype(np.float32))
+    np.save(root / "templates.npy", (physical @ whitening.T).astype(np.float32))
     np.save(root / "whitening_mat_inv.npy", np.linalg.inv(whitening).astype(np.float32))
     np.save(root / "_physical_templates_for_the_test.npy", physical)
     np.save(root / "channel_positions.npy",
@@ -630,8 +632,36 @@ def test_templates_are_dewhitened_before_they_are_used_as_waveforms(contract):
     assert not np.array_equal(peaks(stored), peaks(used))
     record = loaded["waveform_representation"]
     assert record["declared"] == "probe_physical_channels"
-    assert record["transform"] == "templates.npy @ whitening_mat_inv.npy"
+    assert record["transform"] == "templates.npy @ whitening_mat_inv.npy.T"
     assert record["n_templates_whose_peak_channel_moved"] == record["n_templates"]
+
+
+def test_time_major_dewhitening_known_answer_requires_transposed_inverse(contract):
+    """Production loader must solve an independent non-symmetric known answer."""
+    from testing.luke_two_motion_pipeline_bakeoff import load_replay_rows
+
+    resolved = _resolve(contract)
+    curated = resolved["curated"]
+    physical = np.load(curated / "_physical_templates_for_the_test.npy")
+
+    whitening = np.eye(N_CHANNELS)
+    whitening[:3, :3] = np.array([
+        [2.0, 1.0, 0.0],
+        [0.0, 3.0, 1.0],
+        [1.0, 0.0, 4.0],
+    ])
+    # Construct the stored time-major templates independently from Kilosort's
+    # channel-major forward convention, not by mirroring the production loader.
+    whitened = np.einsum("ij,ktj->kti", whitening, physical)
+    inverse = np.linalg.inv(whitening)
+    np.save(curated / "templates.npy", whitened.astype(np.float32))
+    np.save(curated / "whitening_mat_inv.npy", inverse.astype(np.float32))
+
+    recovered = load_replay_rows(resolved)["inputs"].template_bank
+    wrong_orientation = whitened @ inverse
+
+    assert np.allclose(recovered, physical, rtol=0, atol=1e-5)
+    assert not np.allclose(wrong_orientation, physical, rtol=0, atol=1e-6)
 
 
 def test_a_missing_whitening_matrix_is_a_refusal(tmp_path, out_root):

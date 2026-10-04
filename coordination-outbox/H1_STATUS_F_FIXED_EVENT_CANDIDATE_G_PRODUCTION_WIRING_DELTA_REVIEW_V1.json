@@ -1,0 +1,13 @@
+{
+  "schema": "h1-candidate-g-production-wiring-delta-review-status-v1",
+  "status": "NO_GO_INTEGRATED_CANDIDATE_G_PRODUCTION_WIRING",
+  "candidate_g_execution_enabled": false,
+  "review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_production_wiring_delta_review_20261004_v1_h1",
+  "review_manifest_sha256": "5f3285eed092e9141aa4c640a2e7c3e11a26105fc968cf751b3f7fcbd417a710",
+  "review_complete_sha256": "6d3432af92f9f0a5d304da1b9931e7826aee88b2b296155a79cb08df5e2dae5a",
+  "review_verdict_sha256": "e05360475b0eb650b6f23ed9e99c88083fe60b551ba1bbffcab0743104bb98bf",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_production_wiring_repair_20261004_v1_h5",
+  "reviewed_manifest_sha256": "a29db22c88a5c7f953b0156fc7eeb8cd5327939cf793913d061de4547ebfc7d4",
+  "reviewed_complete_sha256": "02684f9ef4d85a19a150aaf4d09094b79ca96ab9a3c78be1f7c43936fbadb40d",
+  "next_action": "Preserve v1 unchanged. Add real peak storage enforcement, exact H1/preflight semantic identity bindings, and fail-closed effective worker runtime-origin validation before another review. Do not construct or start the real one-run release."
+}

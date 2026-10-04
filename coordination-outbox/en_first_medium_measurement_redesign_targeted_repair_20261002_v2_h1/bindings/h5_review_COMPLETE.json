@@ -1,0 +1,7 @@
+{
+  "schema": "immutable-independent-review-completion-v1",
+  "status": "complete",
+  "manifest_sha256": "b15e2a3cf689af4b70d12aa0d4f3666fb516f4eaa02548fd1b24ab02b7532ccf",
+  "verdict": "TARGETED_REPAIR_REQUIRED_EXECUTION_REMAINS_DISABLED",
+  "completion_written_last": true
+}

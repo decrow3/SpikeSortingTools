@@ -1,0 +1,20 @@
+{
+  "attempt_id": "candidate-g-continuation-execution-failure-review-20261004a",
+  "product_count": 2,
+  "products": [
+    {
+      "bytes": 5017,
+      "path": "FINAL_REVIEW.md",
+      "sha256": "4b3150d0718c36cbcc0fdaf0a2f3c4e1d0ae225d3094e21ab491171e3a62acb3"
+    },
+    {
+      "bytes": 6243,
+      "path": "VERDICT.json",
+      "sha256": "c3f6c1b93962a10548cc44e8e714a368f60eece6b9b0fe29a952d2c57581d5c1"
+    }
+  ],
+  "result_kind": "candidate_g_continuation_execution_failure_review",
+  "schema": "candidate-g-v2-2-manifest-v1",
+  "seal_nonce": "dd82f0308dc439117fe53ade41f4b267",
+  "status": "NO_GO_RETRY_MONITOR_SNAPSHOT_AND_LEDGER_FINALIZATION_REPAIR_REQUIRED"
+}

@@ -1,0 +1,11 @@
+{
+  "attempt_id": "candidate-g-continuation-prestart-audit-delta-review-20261004a",
+  "completed_unix_ns": 1791128933995309472,
+  "completion_write": "O_CREAT|O_EXCL after fsync(MANIFEST.json) and fsync(parent)",
+  "manifest_sha256": "25a569a66c0ea393ccf7601aef0f835d7d666a33003e42dce898b55741e44d81",
+  "product_count": 2,
+  "result_kind": "candidate_g_continuation_prestart_audit_delta_review",
+  "schema": "candidate-g-v2-2-complete-v1",
+  "seal_nonce": "1758f4fa4a824c43e47e5f33827c6c5d",
+  "status": "GO_CREATE_EXACT_RUN_PARENT_AND_RERUN_READ_ONLY_AUDIT"
+}

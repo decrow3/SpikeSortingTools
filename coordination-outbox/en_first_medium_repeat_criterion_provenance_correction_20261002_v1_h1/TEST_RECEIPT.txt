@@ -1,0 +1,13 @@
+REF-repeat criterion provenance static audit
+Date: 2026-10-02
+
+Result: PASS
+
+- Exact origin artifact SHA256 reproduced: b2ef938c0087fdf5f75102c1178ddb6ac2841c086766dfe78d67e596c66d7ede
+- Origin declares frozen_before_outcomes=true.
+- Origin repeat_exclusive_retention_shortfall_max is exactly 0.02.
+- Algebraic retention boundary is exactly 1 - 0.02 = 0.98.
+- Corrected documentation states inclusive R_repeat >= 0.98, separate primary/repeat verdicts, and automatic_advance=false.
+- All packet JSON parsed.
+- No source or config code changed, so no synthetic around-boundary execution test was run.
+- No outcomes, voltage, RF, or holdout data was accessed.

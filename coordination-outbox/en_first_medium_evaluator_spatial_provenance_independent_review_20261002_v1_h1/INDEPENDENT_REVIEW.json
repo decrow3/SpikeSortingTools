@@ -1,0 +1,102 @@
+{
+  "schema": "implementation-first-independent-review-v1",
+  "reviewer_host": "huklaban1",
+  "reviewed_at_utc": "2026-10-02T10:13:08Z",
+  "subject": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_evaluator_spatial_provenance_candidate_20261002_v1_h5",
+    "manifest_sha256": "710723d0e965c32895f57914a0edad9a9e2761dc5bfc9a47d319df1a669887f2",
+    "complete_sha256": "8beba945d3e276914c9511a03bf88210e7a8d7337597682dbd792ec53da2afb6",
+    "effective_config_sha256": "1c7a62432251e705e5f5cc82f1e299082ede8442d17f7475479a348839b43b5f"
+  },
+  "verdict": "TARGETED_REPAIR",
+  "execution_decision": {
+    "spatial_loader": "CONDITIONAL_GO_AFTER_TARGETED_REPAIRS_R1_R2_AND_NATIVE_H5_REVALIDATION",
+    "waveform_plan": "NO_GO_FOR_VOLTAGE_ACCESS_UNTIL_R3_IS_FROZEN_AND_REVIEWED",
+    "evaluator_or_scientific_claim": "NOT_RUN_AND_NOT_ESTABLISHED"
+  },
+  "findings": [
+    {
+      "id": "R1",
+      "severity": "blocking_for_independent_reproducibility",
+      "finding": "The test helper and packaged CLI proof hard-code /home/huklaban5/.../kilosort. On H1 the unmodified packet produced 9 failed, 7 passed and the packaged CLI exited 1 before the changed logic ran.",
+      "repair": "Resolve the fixture Kilosort source from an explicit content-addressed path supplied to the fixture, or include hash-verified source snapshots in the packet. Rerun the unmodified packet on an independent host. Preserve production path binding separately from fixture portability."
+    },
+    {
+      "id": "R2",
+      "severity": "blocking_for_unambiguous_provenance",
+      "finding": "provenance.spatial_identity is carried into output provenance but is neither required nor checked against the validated spatial_provenance.event_lineage_sha256. A contradictory redundant claim can therefore survive beside the validated receipt.",
+      "repair": "Require spatial_identity for real saved arms and compare it to the validated event-lineage digest, or remove the redundant field. Add a fail-closed contradictory-spatial_identity fixture."
+    },
+    {
+      "id": "R3",
+      "severity": "blocking_for_waveform_voltage_launch",
+      "finding": "The waveform plan is appropriately plan-only but is not an executable frozen contract. It does not bind the event-eligibility ledger and anchor field/formula inputs by hash; justify or align its +/-1-sample pairing with the evaluator's 0.5 ms tolerance; fully parameterize centering/CAR/high-pass, physical adjacency, saturation/clipping, and missing-padding rules; and define rate directions, core-minute exposure, unsupported-gained, Wilson-bound propagation, and low-N/zero-N behavior exactly.",
+      "repair": "Publish a new immutable waveform contract with exact input identities, algorithms, denominators, uncertainty formulas, positive/negative known-answer fixtures, resource counters, stop conditions, and the already stated 4-thread/2-GiB/45-minute/read/output caps. Review it before any voltage access."
+    }
+  ],
+  "verified": {
+    "packet_manifest_members": "all sha256sum -c checks passed",
+    "accepted_packet_binding": {
+      "manifest_sha256": "7e0d4d7e16c5ade2ceb376cd058b3ad3e6f05ffb9cd17b4830450f14277bfd1e",
+      "complete_sha256": "959a1e139c3289851d3905ed815bd543b32fa821884937eb1519cdbbac777ec6"
+    },
+    "unchanged_spatial_region": {
+      "processing_depth_um": [1400.0, 2380.0],
+      "scoring_depth_um": [1600.0, 2180.0],
+      "minimum_edge_exclusion_um": 80.0,
+      "result": "exact JSON value equality with accepted evaluator config"
+    },
+    "kilosort_source": {
+      "io_sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+      "postprocessing_sha256": "d20da9026de10eb83a02466cdb233c85ae4215c15af7d5656c3593c3809a0a55",
+      "independent_copy": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort",
+      "semantics": "compute_spike_positions returns PC-feature-mass weighted xc/yc; io exports [x,y] and applies the same kept_spikes mask before saving positions"
+    },
+    "loader_trace": "same bytes are hashed then parsed; shape, finite values, columns, units, frame, clock, region, ops, nblocks/dshift, chanMap, geometry, source hashes, event lineage, and joint row_id stable-sort alignment are checked fail-closed",
+    "cohort_trace": "event depth is bound column 1; unit depth is median event depth; baseline eligibility is unchanged interior region; matched endpoints require both units interior; guardrails retain the processing-domain edge summaries",
+    "receipt_propagation": "spatial receipt flows through arm provenance, pair candidate manifest, and four-arm report",
+    "adapted_fixture_result": "16 passed; packaged CLI passed after path-only substitution to hash-identical H1 Kilosort source",
+    "waveform_resource_arithmetic": "4608 * 1145 * 384 * 2 = 4052090880 logical bytes = 3.773803711 GiB, matching the plan"
+  },
+  "real_arm_receipts": {
+    "REF384": {
+      "position_sha256": "653434b726da58644876db9c3d83b64fb37d5a0c901ae329413c8463d3094737",
+      "event_lineage_sha256": "3aa7da34c17af944c79a26b71e1988b97770f98ba4d7e902fda6d113d1b08380",
+      "shape": [1856371, 2]
+    },
+    "existing_corrected_B384": {
+      "position_sha256": "946954995e3ee1a04e9b7c53ca93e54213a3a13062ef0c34582c89a75f6de0b9",
+      "event_lineage_sha256": "333cbbc28a637b2100e1c8412e485be067335cbae35e4a4ab3db1a9367af8745",
+      "shape": [1854340, 2]
+    },
+    "scope": "receipt values inspected; H5-local arrays were not mounted on H1, so their bytes and lineage were not independently recomputed"
+  },
+  "prospective_requirements": [
+    "R1 and R2 repaired with preserved failed evidence and new immutable namespace",
+    "unmodified fixtures and packaged CLI pass on an independent host",
+    "native H5 run revalidates exact real REF/B bytes, source paths, ops, geometry, clock, and lineage before evaluation",
+    "repaired_B384 and REF384_repeat remain unavailable until fresh arm-specific spatial receipts exist",
+    "existing trained-entry nonzero-origin validator defect and no-mask REF wrapper gap remain separate launch blockers",
+    "R3 completed and independently reviewed before waveform voltage access"
+  ],
+  "implementation_checks": {
+    "done": [
+      "packet/member hashes",
+      "executed source and config trace",
+      "accepted-config spatial-region comparison",
+      "hash-identical Kilosort source semantic trace",
+      "negative-control fixture inspection",
+      "native and path-adapted fixture/CLI reruns",
+      "receipt propagation",
+      "waveform design and resource arithmetic"
+    ],
+    "not_done": [
+      "independent recomputation of real REF/B position, ops, geometry, and lineage hashes because H5-local arm paths are not mounted on H1",
+      "evaluator execution",
+      "voltage access or waveform capture",
+      "sorting, training, detection, RF, or sealed holdout work"
+    ],
+    "can_establish": "The changed loader design is coherent and passes all supplied known-answer checks under a path-only adaptation to content-identical Kilosort source; the region is unchanged and provenance receipts are propagated.",
+    "cannot_establish": "The unmodified packet is independently reproducible, the real H5 receipts are true from underlying bytes, the waveform plan is launch-ready, or any scientific efficacy/identity/purity conclusion."
+  }
+}

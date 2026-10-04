@@ -1,0 +1,7 @@
+{
+  "schema": "immutable-review-completion-v1",
+  "status": "complete",
+  "manifest_sha256": "c2ee013d27540a7facf39fc12373758330d219c1f30a7127503003b0a753c7aa",
+  "verdict": "IMPLEMENTATION_ACCEPTED_SUCCESSFUL_ONE_SHOT_SAVED_ARTIFACT_QC_REGENERATION",
+  "completion_written_last": true
+}

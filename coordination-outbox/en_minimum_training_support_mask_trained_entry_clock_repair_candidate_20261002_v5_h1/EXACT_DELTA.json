@@ -1,0 +1,71 @@
+{
+  "schema": "trained-entry-clock-repair-exact-delta-v1",
+  "status": "execution_disabled_pending_h5_changed_path_review",
+  "parent": {
+    "packet": "en_minimum_training_support_mask_trained_entry_ordering_repair_candidate_20261002_v4_h5",
+    "manifest_sha256": "91bcf5ed0560bf5617815e4929a3d97f82b386f0040ef31dc6a61991a45fd36c",
+    "complete_sha256": "9ab3e67a41af42b65cbf56509fc64fc407a39c79496a2391852de39aeb1055df",
+    "accepted_review_manifest_sha256": "9ff42c9e56251e2659153de194ade4dce986aadcf24a0e419cbb01dd0d16804a",
+    "accepted_review_complete_sha256": "54af269b287b3cfa06bcf6dc7f28fc5bd9ac3188cbf845baa8a331a37acaf34f"
+  },
+  "premise": {
+    "artifact": "bindings/CLOCK_ORIGIN_KNOWN_ANSWER.json",
+    "sha256": "f9e69cec194295002e3cdbedd5b9fb26f64dba9f8f1ebeb7888296bdbf8876f5",
+    "crop_origin_samples": 208498882,
+    "ref_rows": 1856371,
+    "b_rows": 1854340,
+    "relation": "spike_times == full_st[kept_spikes,0] + crop.imin"
+  },
+  "changed_files": [
+    {
+      "path": "source/kilosort_support_mask_trained.py",
+      "old_sha256": "aafc740beda0ef67fb3e62c37a44d56ba22351b7fa9b1962ed146c0a8b0935ee",
+      "new_sha256": "46bdf606c7d83263fd4ef70e0482b55d2df61dc2b074c07d0fe6c7f657956cd3",
+      "change": "validate a frozen output-clock contract before data access; normalize selected crop-local full_st times by crop.imin; enforce exact global/local half-open bounds and signed-int64 safety; retain row ancestry/order checks"
+    },
+    {
+      "path": "config/en_minimum_training_support_mask.trained.review_pending.v1.json",
+      "old_sha256": "689edcd28f2faa65edc662fca05d6577b8c78e79c9ea21264bb930df3ddb6b35",
+      "new_sha256": "5cea44854f8ed435ac0e73e3743596c56b9d44d77b800e7a7e751de17d52c090",
+      "change": "bind global/crop clock semantics and updated trained source/launcher hashes; keep execution disabled"
+    },
+    {
+      "path": "tests/en_minimum_training_support_mask_trained_fixture.py",
+      "old_sha256": "4e22f4320e6554c5d18c6a72c37727c3069d445a001948bc2654fc40fe2204c2",
+      "new_sha256": "1bab97f35cc1ef78779eb4375af54c84cdc09ae306613a6a802e0d8a5d417e5c",
+      "change": "parameterize crop origin and export fixture spike_times in the bound global clock"
+    },
+    {
+      "path": "tests/en_minimum_training_support_mask_trained_launch.py",
+      "old_sha256": "78ffe3a29abf9f21f74a3e8c443d7f8d4fd60ee6fb0e72c1f07df717b79ff717",
+      "new_sha256": "4ec77154e8d96c60456f799a58e51e480b383fe28c3a030cd952078c64d9b53d",
+      "change": "pass the frozen config into terminal saved-artifact validation"
+    },
+    {
+      "path": "tests/test_kilosort_support_mask_trained.py",
+      "old_sha256": "cf1df442913ddd5292843e2c11d305adfb7ea54345ad7f9634c95966fc73ebff",
+      "new_sha256": "73a0b542369c078c7d4f068e3796eb3fa4f30b3d7c0a90cca195139a8eaf3982",
+      "change": "add zero/nonzero origin positives and wrong-origin, wrong-offset, off-by-one, half-open-bound, and overflow negatives while retaining ordering/ancestry controls"
+    },
+    {
+      "path": "tests/run_clock_boundary_fixtures.py",
+      "old_sha256": null,
+      "new_sha256": "7cec4426d580348d2e33c02f398dde23980ff071d1c3599f6bc3f6da1a3e7e5f",
+      "change": "new saved-array-only clock boundary receipt generator"
+    }
+  ],
+  "accepted_semantics_preserved": [
+    "kept_spikes unique",
+    "kept_spikes strictly increasing in native full-array order",
+    "spike_clusters exact ancestry from full_clu",
+    "amplitudes exact ancestry from full_amp",
+    "crop-local and exported global spike clocks nondecreasing"
+  ],
+  "explicitly_unchanged_scope": [
+    "no recording or voltage access",
+    "no detection, training, sorting, RF, or holdout execution",
+    "no pair launcher implementation",
+    "no scientific threshold or evaluator change"
+  ]
+}
+

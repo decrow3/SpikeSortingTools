@@ -1,0 +1,20 @@
+{
+  "schema": "first-medium-measurement-redesign-packaged-import-proof-v1",
+  "working_directory": "/tmp",
+  "packet_source_first_on_pythonpath": true,
+  "numba_cache_writable_outside_packet": true,
+  "modules": {
+    "testing.first_medium_measurement_redesign": {
+      "under_packet_source": true,
+      "sha256": "167f44ff3ee434a607f00745b8884378811467e5d4ac15d944fcee1e28d9e158"
+    },
+    "testing.sort_comparison": {
+      "under_packet_source": true,
+      "sha256": "b4065ba7e6c326e74f5f283de9a6ee76df0dfd3b70b65fd534b1d4559a80de0c"
+    },
+    "pipeline.config": {
+      "under_packet_source": true,
+      "sha256": "74424d444e05a7ba2d3968d22c1490475ebe8d7c0d213687316ace7cec5cf59c"
+    }
+  }
+}

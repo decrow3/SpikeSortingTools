@@ -1,0 +1,91 @@
+{
+  "schema": "first-medium-phase2-h1-compact-review-v1",
+  "producer": "H1",
+  "review_date": "2026-10-02 America/Los_Angeles",
+  "verdict": "BLOCK_PHASE2_ONE_START",
+  "go_phase2_one_start": false,
+  "service_install_or_start_authorized": false,
+  "subject": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase2_launch_candidate_20261003_v1_h5",
+    "manifest_sha256": "ffa0343f1cc19da88cc06ec7aa068a145f9d35b1b8aad69b829c39a61533cfde",
+    "complete_sha256": "2261ebd6fedceaa03afe82889e0fd64198e2fc37d60c5695689ec658d6c021de",
+    "contract_sha256": "f0417d067d2be299f6e50f7d55ef8772d33de5a20bca6f7903319f317765fd18",
+    "request_sha256": "7a0f96d47013886b89dd2e6bee9ca599187fd16539df34cd2915649879a0190c",
+    "service_sha256": "0a9d972aa512069c88cbe83d7782d3001c92269260d1cbaf393f369479e735f3"
+  },
+  "accepted": {
+    "all_candidate_manifest_members_verified": true,
+    "ordered_arms_exact": ["REF384", "existing_corrected_B384"],
+    "fixed_ref_cohort_units": 61,
+    "fixed_ref_cohort_sha256": "3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0",
+    "phase1_result_manifest_and_complete_bound_at_runtime": true,
+    "phase1_result_members_verified_at_runtime": true,
+    "phase1_ref_identity_qc_and_spatial_binding_checked_before_b_open": true,
+    "method_freeze_exact_file_sha256_bound_at_runtime": true,
+    "implementation_boundary_eight_modules_exact": true,
+    "start_hmac_recomputed_and_exact": "68f5608d57bb374b77a92074cbeae6e4a688ffaeba05cefe641e8bf4eac3f375",
+    "claim_absent": true,
+    "output_absent": true,
+    "managed_resources": {
+      "cpu_threads_max": 4,
+      "gpu_count": 0,
+      "peak_rss_bytes_max": 10737418240,
+      "wall_seconds_max": 1800,
+      "persistent_output_bytes_max": 268435456
+    },
+    "one_start_no_retry_mechanism_present": true,
+    "descriptive_only_phase2_report": true,
+    "DeltaR": "UNAVAILABLE",
+    "advancement_verdict": null,
+    "frozen_tests": "12 passed in 4.40s on H1 with caches redirected to /tmp"
+  },
+  "blocking_findings": [
+    {
+      "id": "P2_R1_PHASE1_REVIEW_CHAIN_NOT_RUNTIME_BOUND",
+      "finding": "The accepted Phase-1 managed-service receipt and independent H1 postreview are mentioned only in STATIC_VALIDATION_RECEIPT.json. They are absent from the enabled contract required_tokens, the Phase-2 request, _verify_phase2_receipts, the start-token identity inputs, and the service conditions. The runtime can therefore pass while those review-chain artifacts are absent or replaced.",
+      "evidence": [
+        "source/testing/first_medium_saved_output_qualification.py:365-413",
+        "source/testing/first_medium_saved_output_qualification.py:465-510",
+        "phase2/STATIC_VALIDATION_RECEIPT.json:8-11",
+        "phase2/en-first-medium-phase2-existing-b-20261003-v1-h5.service:3-8"
+      ],
+      "exact_repair": "Publish a fresh immutable derivative whose contract required_tokens and request bind the exact Phase-1 service MANIFEST/COMPLETE and H1 postreview MANIFEST/COMPLETE identities. Before token claim or arm access, verify both packets, every manifest member, their semantic PASS/one-start/result bindings, and the exact result identities they endorse. Include the new request in a newly derived one-start HMAC/token; do not reuse this candidate or token."
+    },
+    {
+      "id": "P2_R2_REVIEW_SERVICE_GATE_IS_EXISTENCE_ONLY",
+      "finding": "The proposed service enables whenever the expected H1 review COMPLETE.json merely exists; it does not bind its hash or require a GO verdict. Publishing a normal immutable blocker COMPLETE.json at that expected path would satisfy the condition and permit launch.",
+      "evidence": "phase2/en-first-medium-phase2-existing-b-20261003-v1-h5.service:3",
+      "exact_repair": "Use a distinct GO-only authorization artifact/path and bind its exact hash plus semantic GO_PHASE2_ONE_START verdict in the runtime pre-claim gate. A blocker packet must never satisfy the service condition."
+    }
+  ],
+  "safety_state": {
+    "blocker_published_outside_expected_go_condition_path": true,
+    "expected_go_condition_complete_absent_at_review": true,
+    "claim_consumed": false,
+    "output_created": false,
+    "ref_or_b_arrays_opened": false,
+    "service_installed_or_started_by_h1": false,
+    "scientific_execution_started": false
+  },
+  "implementation_checks": {
+    "done": [
+      "verified the candidate MANIFEST and every listed member",
+      "read the exact enabled contract, request, proposed service, managed launcher, qualification entry point, Phase-1 result/service/postreview packets, and method-freeze receipt",
+      "verified all Phase-1 result, service, and postreview manifest members",
+      "traced runtime receipt validation, arm order, pre-claim resource gate, HMAC identity, single-use claim, implementation hashes, output lifecycle, and descriptive-only Phase-2 report",
+      "independently recomputed the exact start-token HMAC and active eight-module boundary",
+      "reran all 12 frozen packet tests without opening REF/B scientific arrays"
+    ],
+    "not_done": [
+      "no H5 service-state query, service installation/start, claim creation, output creation, REF/B array access, scientific computation, RF, or holdout access",
+      "no execution portability claim because the real saved arrays are H5-local"
+    ],
+    "can_establish": "The candidate's core Phase-2 ordering, result-packet validation, fixed cohort, one-start identity, resource envelope, and descriptive-only output design are coherent, but launch authorization is not fail-closed against loss of the accepted Phase-1 review chain or a non-GO H1 COMPLETE artifact.",
+    "cannot_establish": "Phase-2 launch safety until R1-R2 are repaired; real Phase-2 completion or metrics; waveform benefit; biological identity/purity; or scientific advancement."
+  },
+  "next_action": {
+    "owner": "H5",
+    "action": "Publish one fresh immutable prospective derivative repairing only R1-R2, with a fresh start token/HMAC and absent output/claim, then request compact H1 changed-path review.",
+    "preserve": "Keep this candidate and its unused token as blocked evidence; do not install or start its service."
+  }
+}

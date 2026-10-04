@@ -1,0 +1,70 @@
+{
+  "schema": "candidate-g-continuation-execution-failure-review-v1",
+  "status": "NO_GO_RETRY_MONITOR_SNAPSHOT_AND_LEDGER_FINALIZATION_REPAIR_REQUIRED",
+  "execution_enabled": false,
+  "scientific_interpretation_allowed": false,
+  "candidate": "G",
+  "reviewed_packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_continuation_execution_failed_20261004_v1_h5",
+  "reviewed_packet_manifest_sha256": "637dc5ab3a8bb9a5ae41a01e1a69a829a9555730b22df08270fd0368af37997c",
+  "reviewed_packet_complete_sha256": "736c2ffc5095f7ba591bcf02555d7e0f9760dce0a43a44816ce781e15e1f530b",
+  "reviewed_request_sha256": "46817541274b31bb79f6a47314c960f6e063e04a842d529ed8dd7edb67b055bb",
+  "invocation_id": "2e33135c44a3443cba39ce697f8053f7",
+  "accepted_execution_identity": {
+    "release_sha256": "fd09fd6a45a4740fbbb9a33d915d3f99259835c63bd7746b44efc82f4e1d4f10",
+    "production_unit_sha256": "5a92a640e4840b46207d17d00d65df62d06eaf45c1d6e72430fbd2144832207a",
+    "finalizer_unit_sha256": "157797381da3e512b6d0b8468afc904d669806e295986f6ec7fdbc5fc96c3c8a",
+    "start_count": 1,
+    "retry_count": 0,
+    "initial_main_pid": 2491642,
+    "worker_pid": 2491677,
+    "nrestarts": 0,
+    "main_exec_status": 125,
+    "worker_exit_code": -9,
+    "failure_reason": "monitor-failure"
+  },
+  "accepted_findings": [
+    "the exact canonical release hashes to the claimed value and binds the accepted v6 packet, reviewed unit identities, frozen 30-entry closure, attempt, envelope and resources",
+    "installed production and finalizer unit copies are byte-identical to the reviewed v6 templates",
+    "one no-block systemd start returned zero, the same invocation ID appears in live and terminal state, NRestarts remained zero, and no retry receipt or second start exists",
+    "managed_lifecycle_v6 builds owners from one recursive scan and actual from a later scan, compares the sets for equality, but reports only actual-minus-owners",
+    "the observed error unclassified writable files: [] therefore proves owners-minus-actual was nonempty; an independent deterministic deletion-race fixture reproduces the identical exception",
+    "the monitor killed the worker process group, the worker exited -9, the main service ended 125, and the external finalizer completed successfully",
+    "the last completed monitor sample was 6276383 storage bytes and 3446938768 logical bytes with no stop reason",
+    "independent immutable SQLite inspection finds 223 reservations totaling 4895970352 bytes, including 222 completed and one still reserved; this is below the 17179869184-byte cap and below the 14973326368-byte expected successful total",
+    "the terminal packet and four-product compact packet independently verify with COMPLETE-last bindings; the partial result and rollback journal remain preserved",
+    "post-publication sampling separately failed because the read-only SQLite open encountered the preserved journal, although compact publication had already sealed successfully"
+  ],
+  "artifact_disposition": {
+    "safe_continuation_supported": false,
+    "scientific_result_present": false,
+    "scientific_interpretation_supported": false,
+    "diagnostic_use_only": [
+      "execution identity and lifecycle reconstruction",
+      "monitor deletion-race reproduction",
+      "logical-read reservation and cap audit",
+      "terminal/finalizer/publication provenance"
+    ],
+    "reason": "The result has no COMPLETE seal, labels, templates or post-agglomeration outputs; only RUN_FAILED.json and the SQLite ledger/journal exist. The worker requires an exactly empty output directory and the accepted one-shot contract forbids retry, so neither the existing process state nor attempt namespace is resumable."
+  },
+  "fresh_execution_prerequisites": [
+    "replace the two-scan equality classifier with a reviewed race-safe snapshot/classification algorithm that tolerates files disappearing or renaming between observations while still failing on any presently existing unclassified or double-counted file and conservatively accounting sampled bytes",
+    "add deterministic concurrent create/delete/rename fixtures that reproduce the current empty-list failure and demonstrate correct category, aggregate-stop and monitor behavior without hiding real unclassified files",
+    "make terminal/post-publication logical-meter inspection safe with a hot or preserved SQLite rollback journal, either by an explicit writer close/checkpoint protocol or by inspecting a bounded writable snapshot containing the database and journal; add success and hot-journal fixtures",
+    "preserve the entire failed release, installed-unit snapshot, attempt tree, partial result, ledger/journal, terminal packet, compact packet and activation receipts without modification",
+    "use a new attempt ID and fresh run/release/compact namespaces; freeze the repaired executed-source closure, resource contract, stop rules and no-retry behavior, rerun bounded non-scientific lifecycle/race fixtures, and obtain a new independent GO before any start"
+  ],
+  "independent_checks": {
+    "packet_seal": "39 products verified",
+    "release_hash": "matches fd09fd6a45a4740fbbb9a33d915d3f99259835c63bd7746b44efc82f4e1d4f10",
+    "unit_identity": "both installed snapshots match reviewed template hashes",
+    "deletion_race_fixture": "reproduced RuntimeError: unclassified writable files: []",
+    "ledger": "223 rows; sum 4895970352; 222 completed and one reserved; hashes match receipt",
+    "terminal_seal": "one product verified; COMPLETE e3b779449ed9e211bfbca9d7a1f764524692f60e097ecd1f2bcfe74a35c83cab",
+    "compact_seal": "four products verified; COMPLETE ca30cdfcc0b9e52f44c76e7d7e6df8da5f2096b92551662e9167cfea981c728e",
+    "completed_scientific_result": false,
+    "recording_voltage_read_for_review": false,
+    "scientific_evaluation_performed": false,
+    "new_execution_started": false
+  },
+  "authorization": "No continuation, retry, fresh attempt, release/unit change, voltage access, GPU work or scientific evaluation is authorized by this review. Only an execution-disabled implementation repair and bounded non-scientific fixtures may be prepared under existing standing authorization and returned for independent review."
+}

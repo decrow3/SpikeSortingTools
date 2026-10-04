@@ -4,7 +4,13 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from testing.sort_comparison import compare_sorts, correspondence
+from testing.sort_comparison import (
+    chance_aware_coincidence,
+    common_time,
+    compare_sorts,
+    correspondence,
+    exclusive_count,
+)
 
 
 def pop(times, clusters, *, labels=None, depths=None, amplitudes=None):
@@ -179,3 +185,86 @@ def test_wrong_recording_clock_is_rejected():
             {"amplitude_windows": windows(2, [1, 1])},
             config(),
         )
+
+
+def test_common_time_accounts_for_every_window_and_excludes_touching_boundaries():
+    baseline = np.array([[0, 1, 30], [1, 2, 20], [2, 3, 10]], dtype=float)
+    candidate = np.array([[0, 1, 10], [1, 2, 10], [2, 3, 10], [3, 4, 99]], dtype=float)
+    seconds, difference, pieces = common_time(baseline, candidate)
+    assert seconds == 3
+    assert difference == 10
+    assert pieces == [(0, 1, 30, 10), (1, 2, 20, 10), (2, 3, 10, 10)]
+
+
+def test_tolerance_boundary_is_inclusive_but_matching_is_exclusive():
+    # Both candidate events are within the inclusive +/-1 boundary of the first
+    # baseline event, but one-to-one matching can consume only one of them.
+    assert exclusive_count(np.array([10, 12]), np.array([9, 11, 13]), 1) == 2
+    edges = correspondence(pop([10, 12], [1, 1]), pop([9, 11, 13], [2, 2, 2]), 1)
+    assert edges.matched_events.item() == 2
+    assert edges.unmatched_candidate_events.item() == 1
+
+
+def test_correspondence_identity_is_unchanged_when_only_coordinates_change():
+    times = [100, 200, 300]
+    fixed = correspondence(
+        pop(times, [1, 1, 1], depths=[100, 100, 100]),
+        pop(times, [2, 2, 2], depths=[900, 800, 700]),
+        0,
+    )
+    assert fixed.primary_match.item()
+    assert fixed.matched_events.item() == 3
+
+
+def test_candidate_only_gain_is_retained_without_changing_baseline_denominator():
+    baseline = pop([100, 1100], [1, 1])
+    candidate = pop([100, 500, 1100, 1500], [11, 22, 11, 22])
+    report = compare_sorts(
+        baseline,
+        candidate,
+        {"amplitude_windows": windows(1, [10, 10], starts=[0, 2])},
+        {"amplitude_windows": windows(11, [5, 5], starts=[0, 2])},
+        config(),
+    )
+    assert report["summary"]["candidate_units"] == 2
+    assert report["coverage_summary"]["baseline_eligible_units"] == 1
+    assert report["baseline_eligibility"].status.tolist() == ["measurable"]
+    assert 22 not in set(report["edges"].candidate_cluster)
+
+
+def test_unavailable_coincidence_is_distinct_from_unmatched_correspondence():
+    result = chance_aware_coincidence(
+        pop([100, 200], [1, 1]),
+        duration_frames=4000,
+        tolerance_frames=1,
+        depth_tolerance_um=75,
+        seed=4,
+    )
+    assert result["available"] is False
+    assert np.isnan(result["observed"])
+    report = compare_sorts(
+        pop([100, 1100], [1, 1]),
+        pop([500, 1500], [2, 2]),
+        {"amplitude_windows": windows(1, [10, 10], starts=[0, 2])},
+        {"amplitude_windows": windows(2, [5, 5], starts=[0, 2])},
+        config(),
+    )
+    coincidence = report["guardrail_summary"].set_index("metric").loc[
+        "chance_aware_near_coincident_excess"
+    ]
+    assert not coincidence.available
+    assert report["baseline_eligibility"].status.tolist() == ["unmatched"]
+
+
+def test_coincidence_null_is_deterministic_and_uses_the_observed_statistic():
+    sort = pop(
+        [100, 100, 500, 501, 900, 903],
+        [1, 2, 1, 2, 1, 2],
+        depths=[100, 110, 100, 110, 100, 110],
+    )
+    kwargs = dict(duration_frames=4000, tolerance_frames=1, depth_tolerance_um=75, seed=7)
+    first = chance_aware_coincidence(sort, **kwargs)
+    second = chance_aware_coincidence(sort, **kwargs)
+    assert first == second
+    assert first["observed"] == pytest.approx(4 / 6)
+    assert first["excess"] == pytest.approx(first["observed"] - first["shift_null"])

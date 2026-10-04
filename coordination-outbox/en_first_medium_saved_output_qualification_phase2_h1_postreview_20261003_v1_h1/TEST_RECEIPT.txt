@@ -1,0 +1,24 @@
+H1 terminal Phase2 postreview; read-only shared-output analysis.
+
+Enabled activation MANIFEST/COMPLETE: exact; all members OK.
+Result MANIFEST/COMPLETE: exact; all members OK.
+Service receipt MANIFEST/COMPLETE: exact; all members OK.
+Effective contract: 584383127aafc22e9bbad99213d876295bfa7ac41a90cd1669e8a65b713a6396.
+Effective request: 8d7c6d3817256e3c653d6fc8de76b2c05bdaca3d7ee0fd33554de07f10313868.
+HMAC recompute: 3dacf5213ecd49cf5da359f50871e517f0be1909c0f72e38d8e834e17c47f354 (MATCH).
+Claim: 47b9a380c8b0e9a8291ffd44373a5518ed9f65b0c5e75c1773f58f9cd865f9bf; context/token/HMAC match.
+Implementation boundary: 8/8 exact.
+Phase1 + GO receipt chain: PASS.
+One start / retries / restarts: 1 / 0 / 0.
+Terminal receipt: PID 2227504, success, inactive/dead, ExecMainStatus 0.
+
+Independent recompute:
+- cohort: 61 units; digest exact;
+- reciprocal primary partners: 16;
+- equal-unit R: 0.19038843741901643 (exact report match);
+- cell totals: 227895 REF events, 26269 matched;
+- pooled event retention: 0.1152679962263323 (diagnostic, not R);
+- reference/candidate/common support fractions: 0.08256777470563884 / 0.023807445148598592 / 0.015919497393301237;
+- supported units: 0; conditional median effect: null.
+
+No H5-local arrays, voltage, RF, holdout, repaired/repeat arm, DeltaR, tuning, or advancement analysis was accessed or run by H1.

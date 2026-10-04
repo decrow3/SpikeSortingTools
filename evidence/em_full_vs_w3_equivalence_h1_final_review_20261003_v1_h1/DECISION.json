@@ -1,0 +1,52 @@
+{
+  "schema": "em-full-vs-w3-equivalence-h1-final-review-v1",
+  "status": "COMPLETE_MATERIAL_INPUT_MISMATCH",
+  "decision": "ONE_INPUT_HARMONIZED_W3_CONTROL_WARRANTED",
+  "bound_sorts": {
+    "full": "3b324bbc4ec3c2bcfcc8bc694f0cf9b0237ac0d4f87d1c13ef7b12facfade660",
+    "w3": "e82b0402057197a47f16fb5fefd98701fc18c2ebfdfe824f0d89722a62b5ec1b"
+  },
+  "confirmed_material_mismatches": {
+    "rounding_references_um": {"full": -4.695588242, "w3": 4.096230345},
+    "field_mismatch_knots": 92,
+    "field_total_knots": 1361,
+    "field_mismatch_samples": 689995,
+    "field_total_samples": 10199918,
+    "field_mismatch_fraction": 0.06764711245717858,
+    "field_mismatch_segments": 79,
+    "field_state_difference_um": 40,
+    "scale_gain_differing_channels": 383,
+    "scale_gain_channels": 383,
+    "scale_gain_mean_abs_difference": 0.011523621122768592,
+    "scale_gain_max_abs_difference": 0.04873161017894745
+  },
+  "existing_metrics_descriptive_only": {
+    "full_W3": {"active_units": 972, "eligible_units": 649, "rho": 0.676167},
+    "window_W3": {"active_units": 478, "eligible_units": 386, "rho": 0.752584}
+  },
+  "candidate": {
+    "name": "full_cache_sliced_W3_retrain",
+    "input": "exact global [239998073,250197991) byte range of completed full-session materialized preprocessing cache",
+    "fixed": "effective/internal sorter configs, frozen source provenance, seed, channel properties",
+    "preflight": "deterministic beginning/seam/end saved-cache block byte equality plus exact dtype/shape/channel/origin binding",
+    "prediction": "abs(rho_new-0.676167) < 0.076417 and the common-block 95% CI for rho_new-0.676167 is wholly inside [-0.05,0.05], with existing yield and short-interval guardrails passing",
+    "acceptance": "preflight passes; practical-equivalence CI and all existing guardrails pass; only training context differs",
+    "stop": "no launch if preflight/provenance fails; after one run stop without tuning, repetition, or promotion on non-equivalence, guardrail failure, or invalid comparison"
+  },
+  "h5_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/em_full_vs_w3_existing_artifact_equivalence_audit_20261003_v1_h5",
+    "manifest_sha256": "a3e2a5459882929bab412fe06be9b9ff2439364c4f16c21f0c339b9c447c895b",
+    "complete_sha256": "4bb33e0cae9ac34dd344906b008f762b6cd4251ccfd51916cc3d856477d7343d",
+    "audit_sha256": "63b7fbb206cb362d312b7beb21872b61cb5e99d424712cd087576e834e25bb61",
+    "kernel_binding_sha256": "6f3a535fab375f5c7a7c0dbe0730598907ba5376e018949eef652a3a63777074"
+  },
+  "actions": {
+    "voltage_reads": 0,
+    "sorts": 0,
+    "scoring": 0,
+    "bootstrap": 0,
+    "rf_or_holdout": 0,
+    "target_a_access": 0,
+    "large_arrays_copied": 0
+  }
+}

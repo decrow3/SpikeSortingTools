@@ -1,0 +1,9 @@
+{
+  "schema": "em-harmonized-w3-recovery-authoritative-inputs-complete-v1",
+  "status": "COMPLETE_EXACT_SINGLE_FILE_TRANSFER_PACKET",
+  "manifest_sha256": "dfc86408191710b83ccd96aa9ef3892af0462f1777d0f258e82234eada0c736a",
+  "episode_catalogue_sha256": "46463cda1348c0e0b0c39ad22ae9c71bc46f7c7347797c1c10588944cfc52df1",
+  "files_transferred": 1,
+  "score_performed": false,
+  "launch_performed": false
+}

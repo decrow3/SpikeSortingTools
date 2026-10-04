@@ -1,0 +1,13 @@
+{
+  "schema": "compact-evidence-manifest-v1",
+  "files": {
+    "DECISION.json": {
+      "bytes": 2336,
+      "sha256": "6a08230bc0587d35eed53fe3069967ed0794e3825a53f35b0f03491f121fe3dd"
+    },
+    "INTEGRATED_REVIEW.md": {
+      "bytes": 6254,
+      "sha256": "458f6593065805bf233bf6ec13a278d119469d98b3d4ae93be80393b7a42a48c"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "attempt_id": "candidate-g-continuation-managed-closure-review-20261004a",
+  "completed_unix_ns": 1791124201067969246,
+  "completion_write": "O_CREAT|O_EXCL after fsync(MANIFEST.json) and fsync(parent)",
+  "manifest_sha256": "f28ee5010367ae41614190fe0e6ddfc6d55f0b5c68d077d30ea9c250350cb7e6",
+  "product_count": 2,
+  "result_kind": "candidate_g_continuation_managed_closure_review",
+  "schema": "candidate-g-v2-2-complete-v1",
+  "seal_nonce": "c09d0a5a22b6d03b96ab4496d241cef1",
+  "status": "NO_GO_PRODUCTION_BOOTSTRAP_RUNTIME_AND_CANONICAL_BINDING_INCOMPLETE"
+}

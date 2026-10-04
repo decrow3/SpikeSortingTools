@@ -1,0 +1,22 @@
+H1 independent rereview, 2026-10-02 UTC
+
+Subject:
+  /mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_evaluator_spatial_provenance_targeted_repair_20261002_v1_h5
+  MANIFEST sha256 80021b93c3605c95f32f16f600f522e684ae06a1234fe286bce21bbcb2bd61e2
+  COMPLETE sha256 63170aff0cadf212ae3270c8a7a9fbdbdf914d82272d3ab826fcb0ff39e95cd9
+
+Native unchanged packet:
+  PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR=/tmp/en_spatial_h1_rereview_numba MPLCONFIGDIR=/tmp/en_spatial_h1_rereview_mpl PYTHONPATH=source python -m pytest -q -p no:cacheprovider tests
+  22 passed, 1 pre-existing pandas FutureWarning in 4.74s
+  Packaged CLI passed; all five implementation modules resolved beneath packet/source.
+
+Byte-identical stage:
+  /tmp/en-spatial-h1-rereview.P3biYZ/packet
+  sha256sum -c MANIFEST.sha256: all members OK
+  22 passed, 1 pre-existing pandas FutureWarning in 4.46s
+  Packaged CLI passed; all implementation modules resolved beneath staged packet/source.
+
+Portability scan:
+  No /home/huklaban5 or /media/huklaban5 path occurred in the packet.
+
+No evaluator, recording, voltage, waveform, sorter, training, detection, RF, or sealed holdout execution ran.

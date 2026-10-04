@@ -1,0 +1,15 @@
+Direct packet fixture run on H1:
+Ran 13 tests in 2.482s
+FAILED (errors=2)
+Both errors were FileNotFoundError for the intentionally H5-live v2 config and service used only by preservation fixtures; the other 11 tests passed.
+
+Independent portable rerun:
+- staged the immutable v2 config, service and capture source byte-for-byte from en_a_four_unit_physical_signal_capture_launch_gate_v2_20261001_h1 under /tmp;
+- imported the unmodified candidate test module;
+- redirected only its LIVE_ROOT module variable to that temporary tree;
+- did not alter the validator, candidate artifacts, test methods or expected values.
+
+Ran 13 tests in 2.690s
+OK
+
+No production child was invoked and no recording path was opened.

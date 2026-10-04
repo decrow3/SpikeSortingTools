@@ -1,0 +1,20 @@
+{
+  "attempt_id": "candidate-g-continuation-managed-closure-review-20261004a",
+  "product_count": 2,
+  "products": [
+    {
+      "bytes": 4593,
+      "path": "FINAL_REVIEW.md",
+      "sha256": "0fc91af1dce910545c1165d0ad03a6797319dfc39218e3fcb28b5bbf4deb67ce"
+    },
+    {
+      "bytes": 6151,
+      "path": "VERDICT.json",
+      "sha256": "bb1ab147d129041ee48fe77ceb2afa7435158156b15b18bed23cc6753e9dc880"
+    }
+  ],
+  "result_kind": "candidate_g_continuation_managed_closure_review",
+  "schema": "candidate-g-v2-2-manifest-v1",
+  "seal_nonce": "c09d0a5a22b6d03b96ab4496d241cef1",
+  "status": "NO_GO_PRODUCTION_BOOTSTRAP_RUNTIME_AND_CANONICAL_BINDING_INCOMPLETE"
+}

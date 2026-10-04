@@ -1,0 +1,8 @@
+{
+  "schema": "first-medium-postrun-evaluator-report-preparation-complete-v1",
+  "status": "complete",
+  "verdict": "PREPARED_INPUTS_AND_SCHEMA_BLOCKED_ON_REVIEWED_PHASE3_ENTRY",
+  "manifest_sha256": "cce74abd3f9ec594de74d54e2f6fdfd42ed645718fe900ca42ef0f8b397fe678",
+  "completed_at": "2026-10-02T14:28:25-07:00",
+  "completion_written_last": true
+}

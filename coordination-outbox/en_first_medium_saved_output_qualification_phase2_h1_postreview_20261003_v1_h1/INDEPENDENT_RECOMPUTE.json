@@ -1,0 +1,77 @@
+{
+  "schema": "first-medium-phase2-descriptive-independent-recompute-v1",
+  "source_outputs": {
+    "phase2_report_sha256": "fe6ed48f5faec7b66dc917d1335007ce1d0c69b18490abf0c3b978a70725cf7f",
+    "phase2_cells_sha256": "0247960950fe5b9963681778cac25370412fe303c70a899801e19ca8422e0269",
+    "authoritative_primary_matches_sha256": "7b8ccc97bc2f5d9ae6599cac86b3cf5b4cbffdd73ece83e2fca1786f2028a456",
+    "authoritative_amplitude_windows_sha256": "1fe550e408f8ee6a5433f678054a3419cc3d70b2c433f3152ce746f7c5119d78",
+    "prior_input_receipts_sha256": "0d65cfa97141a6282db5a0b85d2d3b65636b366cd24e0497880b270c52490f19",
+    "prior_execution_receipt_sha256": "a1d2b03d11bd5c0bf3afdcb25d58cd81efc45eaa7574dadefaa2a9801756cadd"
+  },
+  "cross_artifact_identity_basis": {
+    "same_exact_saved_paths": true,
+    "same_prior_nonspatial_identities": {
+      "REF384": "739f433cd65e369af83cad4fa3dbfc2763ebc79a087c902ae98bb0405b9d1cc4",
+      "existing_corrected_B384": "55496fca68263842b83a5fdc5ae7f1a758a2dcb325e601d3981e13f83d953e20"
+    },
+    "same_qc_digests": {
+      "REF384": "ae07ecf970f0c6de93f5f1717254fd11a181ce81b8a693232171f03e4ed524af",
+      "existing_corrected_B384": "66088862cc80de3f7d259844acdddf0ff72dba5a36c9cb84dce70f259688dd13"
+    },
+    "same_clock_digests": {
+      "REF384": "a6359af079e2a548cc6e6b789b52e16857c51126a4ed2c19cedadc04ce6955ca",
+      "existing_corrected_B384": "1523083c72eb4c734941a780c0fe5fe09cf13d0900c0a87c937b922c6198697e"
+    },
+    "correspondence_function_ast_sha256_both_sources": "a05145673e6403a46bb008d8be7919117fcfe4c7021d7990ca4637bd07f07937",
+    "note": "Current effective identities add validated position binding to the same prior curated identities; correspondence and amplitude calculations use the same event arrays/QC windows and frozen settings."
+  },
+  "cohort": {
+    "units": 61,
+    "sha256_recomputed": "3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0"
+  },
+  "retention": {
+    "matched_units": 16,
+    "unmatched_zero_units": 45,
+    "equal_unit_mean_R_recomputed": 0.19038843741901643,
+    "reported_R": 0.19038843741901643,
+    "exact_match": true,
+    "pooled_event_retention_separate_statistic": 0.1152679962263323
+  },
+  "cells": {
+    "rows": 10,
+    "contiguous_half_open_edges": true,
+    "first_start_frame": 0,
+    "final_stop_frame": 17999901,
+    "reference_events_sum": 227895,
+    "matched_reference_events_sum": 26269,
+    "maximum_retention_formula_absolute_error": 8.326672684688674e-17,
+    "per_cell_retention": [
+      0.15608465608465608,
+      0.17142246446510634,
+      0.10914342175267919,
+      0.18996100138382185,
+      0.15209782837866329,
+      0.07748370793988563,
+      0.09649075810340209,
+      0.11005931104913783,
+      0.12000434012080002,
+      0.09072368197423433
+    ]
+  },
+  "conditional_support": {
+    "reference_support_union_fraction_full_cohort_time_recomputed": 0.08256777470563884,
+    "candidate_support_union_fraction_full_cohort_time_recomputed": 0.023807445148598592,
+    "common_time_fraction_full_cohort_time_recomputed": 0.015919497393301237,
+    "matched_units_recomputed": 16,
+    "supported_units_recomputed": 0,
+    "supported_unit_fraction_full_cohort_recomputed": 0.0,
+    "conditional_median_missingness_difference_pp": null,
+    "reported_values_match": true
+  },
+  "input_reads": {
+    "sealed_shared_output_tables": true,
+    "h5_local_ref_or_b_arrays": false,
+    "voltage": false,
+    "rf_or_holdout": false
+  }
+}

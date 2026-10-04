@@ -1,0 +1,26 @@
+{
+  "schema": "candidate-g-v2-2-integrated-review-verdict-v1",
+  "status": "NO_GO_INTEGRATED_CANDIDATE_G_V2_2_PREPARATION",
+  "candidate": "G",
+  "execution_enabled": false,
+  "reviewed_preparation_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_preparation_20261004_v2_2_h5",
+  "reviewed_preparation_manifest_sha256": "60f94197ac30c149d2eef59bef6037d7365fabd45e0047a36e26e2225d79ef53",
+  "reviewed_preparation_complete_sha256": "8fa2ca48ccf21a18a18a4fad3f5cb98fc306bcd9628af0e397275a1efd4b44ee",
+  "scientific_contract_sha256": "5c02db316bff951676d5c062f46837fc24bde42b2de7fc536b704868812d58cd",
+  "blocking_findings": [
+    "finalization is idempotent only after TERMINAL exists and cannot reliably resume an interrupted staged/evidence/partial transition",
+    "the real ExecStopPost finalizer has no explicit lifetime sufficient for large staging, hashing, and publication",
+    "legacy inherited-science verification does not reject unlisted files and is therefore not exact inventory verification"
+  ],
+  "review_actions": {
+    "packet_members_verified": 41,
+    "synthetic_tests_rerun": 16,
+    "saved_success_seal_verified": true,
+    "saved_timeout_receipt_inspected": true,
+    "candidate_fit": false,
+    "real_service_installed_or_started": false,
+    "project_payload_read": false,
+    "gpu_work": false,
+    "rf_or_holdout_access": false
+  }
+}

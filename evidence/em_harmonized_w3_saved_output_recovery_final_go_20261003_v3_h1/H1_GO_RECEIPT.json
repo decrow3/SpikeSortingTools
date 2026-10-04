@@ -1,0 +1,15 @@
+{
+  "schema": "em-harmonized-w3-saved-output-recovery-h1-final-go-v1",
+  "role": "H1_INDEPENDENT_RECOVERY_DELTA_REVIEW",
+  "decision": "GO_TO_COORDINATOR_RELEASE_ONE_CPU_SCORE_ONLY",
+  "packet_manifest_sha256": "72f9f1bf719f91713015f2e6ac671f34c14998e6d26715caed6f37f34b636e0e",
+  "packet_complete_sha256": "d4f858bb43cc8cf18a190fe464d6ed1769d065291b12cf596f47967c175a6a30",
+  "reseal_proof_sha256": "60455f64b4ea201bcac925f6f3fc03996a2b6bbe674a0aa3c9d957f9f8d4e4c3",
+  "prior_review_manifest_sha256": "bfdfb5279aafda86d349ba39916af81c82c87e8d5821bb5f8092bc3c6e3d76e0",
+  "scope": "ONE_SAVED_OUTPUT_ONLY_CPU_SCORE_ATTEMPT",
+  "launch_performed": false,
+  "coordinator_release_required": true,
+  "immediate_preflight_required": true,
+  "retries": 0,
+  "no_automatic_promotion": true
+}

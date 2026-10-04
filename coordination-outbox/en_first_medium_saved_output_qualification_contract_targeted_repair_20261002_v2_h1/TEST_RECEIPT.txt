@@ -1,0 +1,24 @@
+H1 targeted orchestration repair test receipt, 2026-10-02
+
+Native command:
+  PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=source OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 NUMBA_CACHE_DIR=/tmp/en_h1_orchestration_repair_numba MPLCONFIGDIR=/tmp/en_h1_orchestration_repair_mpl pytest -q -p no:cacheprovider tests
+Result: 12 passed in 2.84s
+
+Byte-identical staged packet:
+  /tmp/en-h1-orchestration-stage.ELn0FA/packet
+Result: 12 passed in 3.76s
+
+Covered adversarial cases:
+  - public CLI fixture fields and arbitrary real_saved fixture request rejected before output creation
+  - fixture path outside exact packet root rejected
+  - COMPLETE_FIXTURE rejected as Phase-2 prerequisite
+  - successful real-control receipt accepted; mismatched Phase-1 REF rejected
+  - Phase-2 REF mismatch stops before B load
+  - sequential, concurrent, and cross-namespace token replay rejected
+  - over-thread and visible-GPU preconditions rejected before output/input
+  - absent bounded RLIMIT_AS rejected
+  - aggregate output quota rejects write before file creation
+  - managed launcher external wall timeout is terminal
+
+Scope: synthetic/receipt fixtures only. No real phase, B input, cross-arm score,
+recording voltage, sorter, RF, or sealed holdout was opened or executed.

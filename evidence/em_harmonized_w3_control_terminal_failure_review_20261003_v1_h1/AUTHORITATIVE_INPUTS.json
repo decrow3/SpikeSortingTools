@@ -1,0 +1,31 @@
+{
+  "schema": "em-harmonized-w3-h1-authoritative-domain-inputs-v1",
+  "field": {
+    "authoritative_h1_path": "/media/huklab/Data/NPX/Ryansorting/Luke/luke_imec1_medicine_reference_sweep_v2/stage4_ab/luke0804_imec1_two_layer_motion.npz",
+    "shared_existing_copy": "/mnt/NPX/Luke/DARTsort_motion_experiments/av_aw_handoff_20260926_v1/d2l_field/luke0804_imec1_two_layer_motion.npz",
+    "bytes": 372378,
+    "sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+    "frozen_hash_match": true,
+    "shared_copy_byte_identity": true,
+    "arrays": {
+      "time_s": {"shape": [41895], "dtype": "float64", "minimum": 0.0, "maximum": 10473.5},
+      "depth_um": {"shape": [1], "dtype": "float64"},
+      "displacement_um": {"shape": [41895, 1], "dtype": "float64"},
+      "sign_convention": {"shape": [], "dtype": "<U35"}
+    }
+  },
+  "catalogue": {
+    "authoritative_h1_path": "/media/huklab/Data/NPX/Ryansorting/Luke/luke_imec1_medicine_reference_sweep_v2/stage3_q/episode_catalogue.csv",
+    "shared_existing_copy": null,
+    "bytes": 105013,
+    "sha256": "46463cda1348c0e0b0c39ad22ae9c71bc46f7c7347797c1c10588944cfc52df1",
+    "frozen_hash_match": true,
+    "rows": 689,
+    "columns": 19
+  },
+  "actions": {
+    "transfer_performed": false,
+    "score_performed": false,
+    "launch_performed": false
+  }
+}

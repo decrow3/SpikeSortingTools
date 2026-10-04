@@ -1,0 +1,91 @@
+{
+  "schema": "trained-support-mask-vertical-fixture-v1",
+  "orchestration_only": true,
+  "no_recording_voltage_sort_training_detection": true,
+  "success_reached_complete": true,
+  "success_required_artifacts_validated": true,
+  "injected_failure_preserved": true,
+  "corrupt_alignment_rejected": true,
+  "equal_length_semantic_corruption_rejected": true,
+  "semantic_corruption_cases": {
+    "permuted_ancestry": true,
+    "duplicate_kept": true,
+    "out_of_bounds_id": true,
+    "reordered_kept": true,
+    "coordinated_permutation": true
+  },
+  "missing_key_failed_before_bound_paths": true,
+  "actual_native_hook_exercised": true,
+  "actual_native_hook": {
+    "actual_native_prepare_extract_invoked": true,
+    "actual_native_extract_returned": true,
+    "first_batch_saw_snapshot": true,
+    "spikes": 0,
+    "feature_rows": 0,
+    "snapshot_receipt_sha256": "9883acb5eef7a740b3eac9a7856641faa7c53029754886e964194e6cfcf4cc7c"
+  },
+  "cases": {
+    "success": {
+      "returncode": 0,
+      "stdout": "{\n  \"config_sha256\": \"11b774d7ac044ee36a61ae0a03401c5a9f888405dd059a2bd810580f9735734e\",\n  \"contract_digest\": \"645d481b8b0c9bbf02e22234ead9c0961325fabff40d0f9535752cfe89697a1c\",\n  \"execution_enabled\": true,\n  \"orchestration_only_synthetic\": true,\n  \"recording_binary_opened\": false,\n  \"saved_smoke_bank_allowed\": false,\n  \"status\": \"validated\",\n  \"trained_mode\": \"full_native_trained\"\n}\n{\n  \"complete\": {\n    \"completion_written_last\": true,\n    \"config_sha256\": \"11b774d7ac044ee36a61ae0a03401c5a9f888405dd059a2bd810580f9735734e\",\n    \"contract_digest\": \"645d481b8b0c9bbf02e22234ead9c0961325fabff40d0f9535752cfe89697a1c\",\n    \"orchestration_only_synthetic\": true,\n    \"recomputed_adaptive_state\": [\n      \"covariance_C\",\n      \"whitening_W\",\n      \"wPCA\",\n      \"wTEMP\",\n      \"universal_detections_and_features\",\n      \"Wall3\",\n      \"iU\",\n      \"iCC\",\n      \"iCC_mask\",\n      \"learned_detections_and_features\",\n      \"final_clusters\",\n      \"final_templates\"\n    ],\n    \"required_artifacts_validated\": true,\n    \"smoke_bank_injected\": false,\n    \"status\": \"complete\"\n  },\n  \"result\": {\n    \"status\": \"orchestration_only_success\"\n  }\n}\n",
+      "stderr": "",
+      "config_sha256": "11b774d7ac044ee36a61ae0a03401c5a9f888405dd059a2bd810580f9735734e"
+    },
+    "injected_downstream_failure": {
+      "returncode": 1,
+      "stdout": "{\n  \"config_sha256\": \"ccc348d935e1b7e282458ade09dd0a26f2dfb7b57c2852138b190358c5ce0b58\",\n  \"contract_digest\": \"f037d881c7c5e887e5565cd11792f607c9c114b8df044a496905a79ff24162ca\",\n  \"execution_enabled\": true,\n  \"orchestration_only_synthetic\": true,\n  \"recording_binary_opened\": false,\n  \"saved_smoke_bank_allowed\": false,\n  \"status\": \"validated\",\n  \"trained_mode\": \"full_native_trained\"\n}\n",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 185, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 173, in main\n    result, complete = trained.run_native_trained(\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 692, in run_native_trained\n    return execute_trained(\n           ^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 636, in execute_trained\n    result = native_runner(**kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 105, in runner\n    raise RuntimeError(\"injected synthetic downstream failure\")\nRuntimeError: injected synthetic downstream failure\n",
+      "config_sha256": "ccc348d935e1b7e282458ade09dd0a26f2dfb7b57c2852138b190358c5ce0b58"
+    },
+    "corrupt_alignment": {
+      "returncode": 1,
+      "stdout": "{\n  \"config_sha256\": \"36612e19c078074192edd6e0bf443d211ddc6088d25a61b8094576cf28241db4\",\n  \"contract_digest\": \"5dd028394233c217d0cc84271bed9dbe6725c8fa4bf3e1448948b483c71c7370\",\n  \"execution_enabled\": true,\n  \"orchestration_only_synthetic\": true,\n  \"recording_binary_opened\": false,\n  \"saved_smoke_bank_allowed\": false,\n  \"status\": \"validated\",\n  \"trained_mode\": \"full_native_trained\"\n}\n",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 185, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 173, in main\n    result, complete = trained.run_native_trained(\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 692, in run_native_trained\n    return execute_trained(\n           ^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 643, in execute_trained\n    semantic_validation = validate_saved_artifacts(results, snapshot, config)\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 452, in validate_saved_artifacts\n    raise ValueError(f\"{name} is not aligned to spike_times.npy\")\nValueError: spike_clusters.npy is not aligned to spike_times.npy\n",
+      "config_sha256": "36612e19c078074192edd6e0bf443d211ddc6088d25a61b8094576cf28241db4",
+      "failure_receipt_exists": true
+    },
+    "permuted_ancestry": {
+      "returncode": 1,
+      "stdout": "{\n  \"config_sha256\": \"14215d5013727be6796353199163e5113484861287c00f63e3aa7b5f18c33121\",\n  \"contract_digest\": \"c28f7a47c8539c5807ee976d0872c1e91a0f91113e03f6fcd7c3066658f3c0c8\",\n  \"execution_enabled\": true,\n  \"orchestration_only_synthetic\": true,\n  \"recording_binary_opened\": false,\n  \"saved_smoke_bank_allowed\": false,\n  \"status\": \"validated\",\n  \"trained_mode\": \"full_native_trained\"\n}\n",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 185, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 173, in main\n    result, complete = trained.run_native_trained(\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 692, in run_native_trained\n    return execute_trained(\n           ^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 643, in execute_trained\n    semantic_validation = validate_saved_artifacts(results, snapshot, config)\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 490, in validate_saved_artifacts\n    raise ValueError(\"spike_times global ancestry differs from full_st[kept_spikes,0] + crop.imin\")\nValueError: spike_times global ancestry differs from full_st[kept_spikes,0] + crop.imin\n",
+      "config_sha256": "14215d5013727be6796353199163e5113484861287c00f63e3aa7b5f18c33121",
+      "failure_receipt_exists": true
+    },
+    "duplicate_kept": {
+      "returncode": 1,
+      "stdout": "{\n  \"config_sha256\": \"bd4bc6c34216f70e05c79b37ec2d3c5f02b63554d7b172b1dad892a132a0a126\",\n  \"contract_digest\": \"a6f09f3337115a636b05a12e5b64d56caa9bd5e61d1d45bfa6687acabf619be5\",\n  \"execution_enabled\": true,\n  \"orchestration_only_synthetic\": true,\n  \"recording_binary_opened\": false,\n  \"saved_smoke_bank_allowed\": false,\n  \"status\": \"validated\",\n  \"trained_mode\": \"full_native_trained\"\n}\n",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 185, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 173, in main\n    result, complete = trained.run_native_trained(\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 692, in run_native_trained\n    return execute_trained(\n           ^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 643, in execute_trained\n    semantic_validation = validate_saved_artifacts(results, snapshot, config)\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 466, in validate_saved_artifacts\n    raise ValueError(\"integer kept_spikes indices must be unique\")\nValueError: integer kept_spikes indices must be unique\n",
+      "config_sha256": "bd4bc6c34216f70e05c79b37ec2d3c5f02b63554d7b172b1dad892a132a0a126",
+      "failure_receipt_exists": true
+    },
+    "out_of_bounds_id": {
+      "returncode": 1,
+      "stdout": "{\n  \"config_sha256\": \"df93d9b914e451fd147f70dec90526b1fe6f1b52cbc784ddeda045794511b79e\",\n  \"contract_digest\": \"fd1c9a7bb9c3513145886de170c8aff1a95279597f17aa06d8227541d5a8963b\",\n  \"execution_enabled\": true,\n  \"orchestration_only_synthetic\": true,\n  \"recording_binary_opened\": false,\n  \"saved_smoke_bank_allowed\": false,\n  \"status\": \"validated\",\n  \"trained_mode\": \"full_native_trained\"\n}\n",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 185, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 173, in main\n    result, complete = trained.run_native_trained(\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 692, in run_native_trained\n    return execute_trained(\n           ^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 643, in execute_trained\n    semantic_validation = validate_saved_artifacts(results, snapshot, config)\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 515, in validate_saved_artifacts\n    raise ValueError(\"spike_templates is outside templates axis 0\")\nValueError: spike_templates is outside templates axis 0\n",
+      "config_sha256": "df93d9b914e451fd147f70dec90526b1fe6f1b52cbc784ddeda045794511b79e",
+      "failure_receipt_exists": true
+    },
+    "reordered_kept": {
+      "returncode": 1,
+      "stdout": "{\n  \"config_sha256\": \"825cb0cafc0903aa59dd6d2ad06329f17e2052b64ad99a97f0ec6770a9c8b4a1\",\n  \"contract_digest\": \"a1a803f5f72271da916aac39d92433b9b8f45ff55c6f707da7559c51cb7b1386\",\n  \"execution_enabled\": true,\n  \"orchestration_only_synthetic\": true,\n  \"recording_binary_opened\": false,\n  \"saved_smoke_bank_allowed\": false,\n  \"status\": \"validated\",\n  \"trained_mode\": \"full_native_trained\"\n}\n",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 185, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 173, in main\n    result, complete = trained.run_native_trained(\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 692, in run_native_trained\n    return execute_trained(\n           ^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 643, in execute_trained\n    semantic_validation = validate_saved_artifacts(results, snapshot, config)\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 468, in validate_saved_artifacts\n    raise ValueError(\"integer kept_spikes indices must be strictly increasing in native full-array order\")\nValueError: integer kept_spikes indices must be strictly increasing in native full-array order\n",
+      "config_sha256": "825cb0cafc0903aa59dd6d2ad06329f17e2052b64ad99a97f0ec6770a9c8b4a1",
+      "failure_receipt_exists": true
+    },
+    "coordinated_permutation": {
+      "returncode": 1,
+      "stdout": "{\n  \"config_sha256\": \"b64a77d76863186fba5965f15484b4a6e74645b0551b20b74a410299134a2706\",\n  \"contract_digest\": \"e7ea3d45cd0f3fc08b8051cbbd6d78a864d0544de19248b36f006c6ad97cd05b\",\n  \"execution_enabled\": true,\n  \"orchestration_only_synthetic\": true,\n  \"recording_binary_opened\": false,\n  \"saved_smoke_bank_allowed\": false,\n  \"status\": \"validated\",\n  \"trained_mode\": \"full_native_trained\"\n}\n",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 185, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 173, in main\n    result, complete = trained.run_native_trained(\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 692, in run_native_trained\n    return execute_trained(\n           ^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 643, in execute_trained\n    semantic_validation = validate_saved_artifacts(results, snapshot, config)\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 468, in validate_saved_artifacts\n    raise ValueError(\"integer kept_spikes indices must be strictly increasing in native full-array order\")\nValueError: integer kept_spikes indices must be strictly increasing in native full-array order\n",
+      "config_sha256": "b64a77d76863186fba5965f15484b4a6e74645b0551b20b74a410299134a2706",
+      "failure_receipt_exists": true
+    },
+    "missing_required_key": {
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 185, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/testing/en_minimum_training_support_mask_trained_launch.py\", line 152, in main\n    config, contract = trained.validate_trained_contract(\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 220, in validate_trained_contract\n    prevalidate_trained_structure(config)\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 140, in prevalidate_trained_structure\n    _at(config, path)\n  File \"/tmp/trained-clock-v5.jqpRP1/packet/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 132, in _at\n    raise ValueError(\"missing required config key before data access: \" + \".\".join(path))\nValueError: missing required config key before data access: trained.required_snapshot_files\n",
+      "config_sha256": "6ba5c4bc66313430e985be3465a1c95c1f5e2ffc337a1dcfaf48e7eb59cb44ba",
+      "sentinel_source_exists": false,
+      "sentinel_manifest_exists": false
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema": "first-medium-phase2-existing-b-reconciliation-v1",
+  "question": "Is the accepted managed phase2_existing_b descriptive stage complete?",
+  "answer": "OUTSTANDING_NOT_STARTED",
+  "evidence": [
+    {
+      "artifact": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/H1_STATUS_PHASE1_POSTREVIEW_V1.json",
+      "finding": "scope.phase2_started is false"
+    },
+    {
+      "artifact": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_contract_targeted_repair_20261002_v2_h1/configs/en_first_medium_saved_output_qualification.execution_disabled.v1.json",
+      "finding": "phase2_existing_b real_execution_enabled is false and all phase2 tokens remain prospective"
+    },
+    {
+      "artifact_inventory_check": "/mnt/NPX/Luke/DARTsort_motion_experiments",
+      "finding": "No phase2 qualification output namespace, PHASE2_EXISTING_B_REPORT.json, or PHASE2_FIXED_60S_DIAGNOSTICS.csv was found; only contracts/templates mention them"
+    }
+  ],
+  "historical_result": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_evaluator_post_qc_execution_result_20261002_v1_h5",
+    "manifest_sha256": "e417eceb918f44110c4c43eaac58fe4e33ae4c87a4c4e520f9fc655b4640b8c2",
+    "complete_sha256": "e77f50d7f4e00b39c9fa6a99bfad1cf00ecb92b9dca7823d4c06c18d29c0a15c",
+    "classification": "historical evaluator-v3 REF-versus-existing-B result; useful for fixed input paths/receipts but not the later accepted one-shot managed phase2_existing_b stage",
+    "satisfies_phase2_stage": false
+  },
+  "action": "DO_NOT_RERUN_OR_OPEN_NEW_OUTCOMES; preserve as outstanding unless the coordinator separately decides it is needed. The accepted Phase3 contract does not list Phase2 completion as a prerequisite."
+}

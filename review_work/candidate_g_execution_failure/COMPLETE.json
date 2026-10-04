@@ -1,0 +1,11 @@
+{
+  "attempt_id": "candidate-g-continuation-execution-failure-review-20261004a",
+  "completed_unix_ns": 1791130245744749656,
+  "completion_write": "O_CREAT|O_EXCL after fsync(MANIFEST.json) and fsync(parent)",
+  "manifest_sha256": "65e6bb7991b926ef2306d037ef78fa91787379745362a7b423bbd08d47eb3985",
+  "product_count": 2,
+  "result_kind": "candidate_g_continuation_execution_failure_review",
+  "schema": "candidate-g-v2-2-complete-v1",
+  "seal_nonce": "dd82f0308dc439117fe53ade41f4b267",
+  "status": "NO_GO_RETRY_MONITOR_SNAPSHOT_AND_LEDGER_FINALIZATION_REPAIR_REQUIRED"
+}

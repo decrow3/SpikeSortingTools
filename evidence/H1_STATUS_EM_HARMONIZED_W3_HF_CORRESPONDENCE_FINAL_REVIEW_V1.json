@@ -1,0 +1,15 @@
+{
+  "schema": "h1-status-em-harmonized-w3-hf-correspondence-final-review-v1",
+  "status": "SCOPED_GO_WITH_ADDITIVE_NUMERIC_CORRECTION_NO_AUTOMATIC_PROGRESSION",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/em_harmonized_w3_hf_correspondence_final_review_20261004_v1_h1",
+  "manifest_sha256": "cc61ba93a652084c49d16a81596121e565953ba22da1d1bce1bccbc92a22c78d",
+  "complete_sha256": "9e713333557a65964c848a5d650c960cf7d0f443c9e040f338ad33948d3914a7",
+  "verdict_sha256": "8d50325df4c51b10983f7eadc58c06f492b36d1be763ae04590ad421e90a5f6c",
+  "reviewed_h5_manifest_sha256": "02c6ccebfa74057b798e3486fe18654f8f4de7d9ea85c408c5d97e52b64848ef",
+  "method_review": "PASS_FOR_FROZEN_SCOPED_COINCIDENCE_ACCOUNTING",
+  "serialized_closure": "PASS_INDEPENDENT_RECOMPUTATION",
+  "numeric_correction": "exact_sample_F_assigned_coverage_is_0.4557299698718276",
+  "interpretation_scope": "coincidence_defined_partition_dispersion_within_mutual_unique_both_assigned_subset",
+  "automatic_progression": false,
+  "new_execution_performed": false
+}

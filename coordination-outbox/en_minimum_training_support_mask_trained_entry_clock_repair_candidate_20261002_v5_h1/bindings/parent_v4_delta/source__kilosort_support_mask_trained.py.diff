@@ -1,0 +1,20 @@
+--- /mnt/NPX/Luke/DARTsort_motion_experiments/en_minimum_training_support_mask_trained_entry_repair_candidate_20261002_v3_h5/source/kilosort_support_mask_trained.py
++++ /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/kilosort_support_mask_trained.py
+@@ -436,6 +436,8 @@
+             raise ValueError("integer kept_spikes index is outside full_st")
+         if len(np.unique(kept_indices)) != len(kept_indices):
+             raise ValueError("integer kept_spikes indices must be unique")
++        if len(kept_indices) > 1 and np.any(np.diff(kept_indices) <= 0):
++            raise ValueError("integer kept_spikes indices must be strictly increasing in native full-array order")
+     if len(kept_indices) != n_spikes:
+         raise ValueError("kept_spikes selected count differs from exported spike count")
+     selected_st = arrays["full_st.npy"][kept_indices]
+@@ -444,6 +446,8 @@
+         raise ValueError("selected full_st times are not exact integer crop-local samples")
+     if not np.array_equal(arrays["spike_times.npy"], selected_times.astype(arrays["spike_times.npy"].dtype)):
+         raise ValueError("spike_times row ancestry differs from full_st[kept_spikes, 0]")
++    if len(selected_times) > 1 and np.any(np.diff(selected_times) < 0):
++        raise ValueError("exported and selected crop-local spike times must be nondecreasing")
+     if not np.array_equal(arrays["spike_clusters.npy"], arrays["full_clu.npy"][kept_indices]):
+         raise ValueError("spike_clusters row ancestry differs from full_clu[kept_spikes]")
+     if not np.array_equal(arrays["amplitudes.npy"], arrays["full_amp.npy"][kept_indices]):

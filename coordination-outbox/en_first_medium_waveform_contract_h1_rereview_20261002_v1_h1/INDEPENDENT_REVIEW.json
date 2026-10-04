@@ -1,0 +1,59 @@
+{
+  "schema": "en-first-medium-waveform-contract-h1-rereview-v1",
+  "reviewer": "H1",
+  "review_date": "2026-10-02",
+  "source_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_waveform_contract_targeted_repair_20261002_v2_h5",
+  "source_manifest_sha256": "32c4271856d32ba7930168fea79a4c1bc25e70e276781443195814ad7a9163b0",
+  "source_complete_sha256": "5b6d65a71d2ac50eb8ee66ede938375e9feae85fd6354c81e37c8ab40a147228",
+  "verdict": "TARGETED_REPAIR_REQUIRED",
+  "execution_enabled": false,
+  "accepted_for_method_freeze": {
+    "cpu_float32_preprocessing_operation_semantics": true,
+    "common_median_terminology": true,
+    "frozen_30122_sample_impulse": true,
+    "endpoint_record_shape_384_by_1145": true,
+    "competitive_category_definition": true,
+    "atomic_retained_pair_sampling": true,
+    "event_read_count_4608": true,
+    "logical_event_read_bytes_4052090880": true,
+    "sampling_seed_and_rank_keys": true,
+    "denominators_and_interval_formulas": true,
+    "prospective_binding_gates": true
+  },
+  "bounded_reproduction": {
+    "published_packet_tests": "10 passed in 3.15s",
+    "byte_identical_tmp_stage_tests": "10 passed in 3.02s",
+    "dependency_member_count": 9,
+    "dependency_aggregate_recomputed": "ebcad89e8c45de0315557c33414ada30e3c3bee951b250d33f3e2ff0ad156e64",
+    "observed_python": "3.12.4",
+    "observed_platform": "x86_64",
+    "observed_torch": "2.6.0+cu124",
+    "observed_torch_config_sha256": "d79e4b234f46d728f88054ba7278186ab7efa02dfe343a2fd12a9523cc6b6a78",
+    "recording_voltage_read": false
+  },
+  "repairs": [
+    {
+      "id": "R1_EXECUTABLE_RUNTIME_CLOSURE",
+      "severity": "blocking",
+      "finding": "DEPENDENCY_CLOSURE.json binds source/constants and distribution METADATA but not the Python executable or loaded PyTorch/CPU FFT shared-library bytes and backend configuration used by the enabled adapter.",
+      "exact_repair": "Bind and preflight an immutable environment/container digest or an equivalent executable-byte closure covering Python, loaded PyTorch/CPU FFT shared objects, and torch build/backend configuration. Preserve the current closure as historical evidence."
+    },
+    {
+      "id": "R2_PREFLIGHT_IO_ACCOUNTING",
+      "severity": "blocking",
+      "finding": "voltage_identity.preflight permits stat-and-hash of the binary, but read_accounting freezes only endpoint os.pread calls. A fresh full-file hash is therefore outside the claimed exact read/byte accounting.",
+      "exact_repair": "For this bounded contract require validation of a named, reviewed existing full-file hash receipt without rereading the binary, or separately freeze, bound, receipt, and include all preflight binary reads in the resource contract."
+    },
+    {
+      "id": "R3_CORRELATION_REASON_AND_FIXTURES",
+      "severity": "blocking",
+      "finding": "retained_pair_correlation requests one frozen invalid reason but does not define correlation-specific reason codes or their priority, and the tests do not execute numeric correlation/channel/frame/invalid cases.",
+      "exact_repair": "Freeze an ordered correlation reason-code list and add bounded numeric known-answer fixtures for positive and negative correlations, channel intersection/order, absolute-frame overlap, missing endpoint, insufficient channels, insufficient frames, nonfinite values, and zero norm."
+    }
+  ],
+  "scope": {
+    "can_establish": "The accepted method components are internally coherent and reproduce on the observed H1 runtime.",
+    "cannot_establish": "Exact future executable identity, exact total recording I/O, deterministic correlation invalid statuses, any waveform outcome, biological identity, or purity."
+  }
+}
+

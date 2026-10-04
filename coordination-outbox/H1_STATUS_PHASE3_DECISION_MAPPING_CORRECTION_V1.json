@@ -1,0 +1,17 @@
+{
+  "schema": "luke-durable-coordination-h1-phase3-decision-mapping-correction-v1",
+  "host": "huklaban1",
+  "item": "H1-PHASE3-DECISION-MAPPING-CORRECTION",
+  "state": "COMPLETE_EXECUTION_DISABLED_PENDING_INDEPENDENT_REVIEW",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_phase3_decision_mapping_correction_20261002_v1_h1",
+  "manifest_sha256": "0dfa51cfb3cd214fe2b15b5b4052416f715a0bef364c891f61eb9a353abd0102",
+  "correction": "overall status is inconclusive for the thin path because required waveform/QC evidence is unmeasured/not composed; component primary and repeat verdicts and reasons remain preserved",
+  "primary_rule": "DeltaR lower 95% bound > 0.05 (strict)",
+  "repeat_rule": "R_repeat >= 0.98 (inclusive)",
+  "tests": "20 passed in 19.79s, including 3x3 boundary grid",
+  "execution_enabled": false,
+  "independent_review_required": true,
+  "real_project_data_accessed": false,
+  "scientific_execution_started": false,
+  "rf_or_holdout_accessed": false
+}

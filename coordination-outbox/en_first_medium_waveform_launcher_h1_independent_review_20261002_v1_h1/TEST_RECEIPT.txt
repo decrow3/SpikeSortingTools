@@ -1,0 +1,28 @@
+Independent H1 scoped review tests, 2026-10-02 America/Los_Angeles
+
+Four immutable packet manifests
+  waveform: 29 members verified
+  full-voltage hash: 3 members verified
+  clock-v5 review: 3 members verified
+  REF-repeat launcher: 25 members verified
+
+Waveform freeze candidate
+  command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=source rescue-python -m pytest -q -p no:cacheprovider tests/test_actual_h5_freeze.py
+  result: 6 passed in 7.12s
+
+Launcher candidate
+  command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=source rescue-python -m pytest -q -p no:cacheprovider tests/test_pair_launcher.py
+  result: 9 passed in 9.61s
+  published validate-only: PASS; execution_enabled=false; recording_or_voltage_opened=false
+
+Independent pre-root retry fixture
+  first call: injected resource preflight failure before root creation
+  second call: reached the same preflight again
+  result: reproduces missing durable one-start claim and missing pre-root failure evidence
+
+Static resource/identity checks
+  persistent_output_bytes_max appears only in expected contract validation; no runtime directory accounting or filesystem quota
+  proposed service has Restart=no but no persistent token/claim
+  pair source does not invoke lstat or verify current_voltage_packet_manifest_sha256 before REF access
+
+No service was installed or started. No recording, voltage, scientific output, RF, or holdout was accessed by H1.

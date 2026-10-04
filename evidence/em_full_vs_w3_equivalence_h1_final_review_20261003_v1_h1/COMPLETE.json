@@ -1,0 +1,7 @@
+{
+  "schema": "compact-evidence-complete-v1",
+  "status": "COMPLETE_MATERIAL_INPUT_MISMATCH",
+  "decision": "ONE_INPUT_HARMONIZED_W3_CONTROL_WARRANTED",
+  "manifest_sha256": "b991b3b2e6f7b81c75b69937e0856f176b33560ad39b835a3f9fd06ac2bb8a8e",
+  "written_last": true
+}

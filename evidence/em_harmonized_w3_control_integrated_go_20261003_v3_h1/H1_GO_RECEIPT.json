@@ -1,0 +1,13 @@
+{
+  "schema": "em-harmonized-w3-control-h1-integrated-go-v3",
+  "role": "H1_INTEGRATED_REVIEW",
+  "decision": "GO",
+  "packet_manifest_sha256": "b501f06501c16d636f5071ff4d52d253440e4e92c8430f3b433ed231dc2ecc2c",
+  "packet_complete_sha256": "f1e2d1abf61d8df9baec53e281d21d3d2c678d0537208a382ee2aa392c9eb1ff",
+  "scope": "ONE_INPUT_HARMONIZED_W3_CONTROL_ONLY",
+  "launch_performed": false,
+  "coordinator_release_still_required": true,
+  "release_preflight_required": true,
+  "no_retry": true,
+  "no_automatic_promotion": true
+}

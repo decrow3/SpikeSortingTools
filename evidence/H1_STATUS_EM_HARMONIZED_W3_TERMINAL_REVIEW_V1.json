@@ -1,0 +1,17 @@
+{
+  "schema": "h1-status-em-harmonized-w3-terminal-review-v1",
+  "status": "RECOVERY_FEASIBLE_PENDING_DERIVATIVE_AND_REAL_INPUT_PREFLIGHT",
+  "terminal_review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/em_harmonized_w3_control_terminal_failure_review_20261003_v1_h1",
+  "terminal_review_manifest_sha256": "b43eee8466868c4202dec1b83a6ccab3565a3f3610f2a66cba13cac861b2bace",
+  "terminal_review_complete_sha256": "b9a5c881770413ff3aa5df97994ee8e87b430cf0d7065e637b9a4bca2378cf34",
+  "recovery_contract_sha256": "74af5a43323610ddaf1fc837187d0dd53f9e73fa2a913cbfffedbb3f437c8bd1",
+  "authoritative_catalogue": {
+    "path": "/media/huklab/Data/NPX/Ryansorting/Luke/luke_imec1_medicine_reference_sweep_v2/stage3_q/episode_catalogue.csv",
+    "bytes": 105013,
+    "sha256": "46463cda1348c0e0b0c39ad22ae9c71bc46f7c7347797c1c10588944cfc52df1"
+  },
+  "transfer_performed": false,
+  "score_performed": false,
+  "launch_performed": false,
+  "recovery_released": false
+}

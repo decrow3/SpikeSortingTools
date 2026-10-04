@@ -1,0 +1,13 @@
+{
+  "schema": "compact-evidence-manifest-v1",
+  "files": {
+    "README.md": {
+      "bytes": 1899,
+      "sha256": "950ebcc8556b53de7d45dc9e9642b928184b4ee3ecc3d324bda9c89bcf105d62"
+    },
+    "REQUEST.json": {
+      "bytes": 4473,
+      "sha256": "2027f28afb8b6b6a0689928b2f6b32dfe0506d3a7fd18b01b1dbe8bff5fe7bad"
+    }
+  }
+}

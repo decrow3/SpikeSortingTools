@@ -1,0 +1,11 @@
+--- /mnt/NPX/Luke/DARTsort_motion_experiments/en_minimum_training_support_mask_trained_entry_repair_candidate_20261002_v3_h5/tests/en_minimum_training_support_mask_trained_fixture.py
++++ /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_minimum_training_support_mask_trained_fixture.py
+@@ -214,6 +214,8 @@
+         "permuted_ancestry": ("permuted-ancestry", "spike_times row ancestry differs"),
+         "duplicate_kept": ("duplicate-kept", "integer kept_spikes indices must be unique"),
+         "out_of_bounds_id": ("out-of-bounds-id", "spike_templates is outside templates axis 0"),
++        "reordered_kept": ("reordered-kept", "integer kept_spikes indices must be strictly increasing"),
++        "coordinated_permutation": ("coordinated-permutation", "integer kept_spikes indices must be strictly increasing"),
+     }
+     semantic_rejections = {}
+     for case_name, (outcome, expected_message) in semantic_cases.items():

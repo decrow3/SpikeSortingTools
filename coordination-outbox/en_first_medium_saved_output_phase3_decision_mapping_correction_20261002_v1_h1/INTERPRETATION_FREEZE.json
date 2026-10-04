@@ -1,0 +1,24 @@
+{
+  "schema": "en-first-medium-phase3-resolved-decision-precedence-v1",
+  "frozen_before_pair_outcomes": true,
+  "primary": {
+    "rule": "one-sided paired fixed-REF-unit bootstrap lower95 > 0.05",
+    "boundary": "strict",
+    "verdict_preserved": true
+  },
+  "repeat": {
+    "rule": "same-window R(REF384_repeat) >= 0.98",
+    "boundary": "inclusive",
+    "criterion_source_sha256": "b2ef938c0087fdf5f75102c1178ddb6ac2841c086766dfe78d67e596c66d7ede",
+    "verdict_preserved": true
+  },
+  "overall_precedence": [
+    "structural/provenance/clock/input failure remains evaluation failure, never benign UNMEASURED",
+    "explicit measured guardrail failure remains a failure",
+    "repeat failure or legitimate repeat unmeasured makes overall INCONCLUSIVE regardless of primary; preserve primary numeric/pass-fail and explicit repeat reason",
+    "repeat pass with any required endpoint missing/unresolved makes overall INCONCLUSIVE; preserve every measured verdict and reason",
+    "the current thin path always has waveform UNMEASURED and guardrails NOT_COMPOSED, so it cannot emit overall advance or a full candidate verdict"
+  ],
+  "advance": false,
+  "identity_or_generalization_claim": false
+}

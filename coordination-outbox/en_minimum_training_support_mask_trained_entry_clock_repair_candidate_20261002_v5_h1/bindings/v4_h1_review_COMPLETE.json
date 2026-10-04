@@ -1,0 +1,7 @@
+{
+  "schema": "immutable-review-completion-v1",
+  "status": "complete",
+  "manifest_sha256": "9ff42c9e56251e2659153de194ade4dce986aadcf24a0e419cbb01dd0d16804a",
+  "verdict": "DESIGN_READY_ORDERING_FINDING_CLOSED",
+  "completion_written_last": true
+}

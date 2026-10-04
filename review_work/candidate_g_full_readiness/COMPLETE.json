@@ -1,0 +1,11 @@
+{
+  "attempt_id": "candidate-g-continuation-full-readiness-acceptance-20261004a",
+  "completed_unix_ns": 1791129411416983873,
+  "completion_write": "O_CREAT|O_EXCL after fsync(MANIFEST.json) and fsync(parent)",
+  "manifest_sha256": "8fcc996eef648dfc589c86016fc8675d8a95561a560d1a1196817d1ee84fb651",
+  "product_count": 2,
+  "result_kind": "candidate_g_continuation_full_readiness_acceptance",
+  "schema": "candidate-g-v2-2-complete-v1",
+  "seal_nonce": "e5aa09a593f1522b1317b200a871428a",
+  "status": "GO_CONSTRUCT_RELEASE_INSTALL_REVIEWED_UNITS_START_ONCE"
+}

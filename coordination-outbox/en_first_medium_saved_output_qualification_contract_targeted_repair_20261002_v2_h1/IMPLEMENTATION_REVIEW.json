@@ -1,0 +1,48 @@
+{
+  "schema": "first-medium-saved-output-qualification-targeted-orchestration-repair-v2",
+  "producer": "H1",
+  "completed_at_local_date": "2026-10-02",
+  "verdict": "READY_FOR_H5_REREVIEW_REAL_EXECUTION_DISABLED",
+  "parent": {
+    "manifest_sha256": "9537bf43d65db382edb3d18ca1975e796de3cae3516acf0c877aaa6c0727b186",
+    "complete_sha256": "d7f7ec63a527e90c131312971d98d837bd163299b506cce1697ce5f5d040f4bb"
+  },
+  "preserved_h5_review": {
+    "manifest_sha256": "b13dac9f7ad26df5be20e21ca8768d0d9a38504650f4b0bc7684db1e9de12f32",
+    "complete_sha256": "b18a9235d992ebb4cc2aa3aa3f15fc91570eeb27a3a248683a6011aabd657d21"
+  },
+  "finding_closure": {
+    "CR1_fixture_isolation": "separate fixed-input fixture entry point; production request cannot select fixture semantics",
+    "CR2_phase2_prerequisite": "REAL_CONTROL only; exact Phase-1 contract/request/manifest/complete and REF identities; REF compared before B load",
+    "CR3_single_use_tokens": "HMAC exact-run binding plus fixed-registry atomic persistent claim",
+    "CR4_resources": "pre-input envelope, CPU affinity/thread checks, RLIMIT_AS, GPU invisibility, external timeout, per-write aggregate quota",
+    "fixed_ref_cohort": "61 ordered outcome-blind REF IDs, digest 3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0"
+  },
+  "unchanged_load_bearing_hashes": {
+    "measurement_contract": "c0dc9deff29742dd5f841893c530048975e15665ee8ed7a5c0f97c99b6539b86",
+    "measurement_module": "779b3b82e4328f92f6d50cb0a411153e03d755172d9493ccda937a686f42d0d9",
+    "spatial_loader": "da3d5d5af8227f6ef70747dca32b3e2c52206230b5494d7bc9015cba24fcdf35",
+    "active_matcher": "174a4bb6d621489260927dc0bbc06558e408564158a44657ecdd306fa07db5da",
+    "reviewed_matcher": "b4065ba7e6c326e74f5f283de9a6ee76df0dfd3b70b65fd534b1d4559a80de0c"
+  },
+  "tests": {
+    "native": "12 passed",
+    "byte_identical_stage": "12 passed",
+    "real_phase_execution": false,
+    "b_or_score_access": false,
+    "voltage_access": false,
+    "rf_or_holdout_access": false
+  },
+  "implementation_checks": {
+    "done": [
+      "traced and repaired every H5 lifecycle finding",
+      "verified preserved source/review hashes",
+      "ran bounded positive and adversarial fixtures",
+      "froze the exact REF cohort from REF-only depth columns"
+    ],
+    "not_done": ["independent H5 re-review", "any real phase execution or scientific interpretation"],
+    "can_establish": "The disabled orchestration closes the specified fail-closed lifecycle findings under bounded fixtures.",
+    "cannot_establish": "Real launch readiness or any scientific outcome."
+  }
+}
+

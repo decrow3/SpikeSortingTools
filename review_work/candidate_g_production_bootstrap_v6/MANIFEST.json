@@ -1,0 +1,20 @@
+{
+  "attempt_id": "candidate-g-continuation-production-bootstrap-v6-review-20261004a",
+  "product_count": 2,
+  "products": [
+    {
+      "bytes": 3749,
+      "path": "FINAL_REVIEW.md",
+      "sha256": "52516da9fac7ab9a8575b65c89cb6e977187496943163721e5a39a3442c2b6e4"
+    },
+    {
+      "bytes": 4265,
+      "path": "VERDICT.json",
+      "sha256": "0c7d810e23ad57c071120b6a1d97acf96789abb6b5ae6b417ff3250329744104"
+    }
+  ],
+  "result_kind": "candidate_g_continuation_production_bootstrap_review",
+  "schema": "candidate-g-v2-2-manifest-v1",
+  "seal_nonce": "08dee53870992c81fbe671db8983c868",
+  "status": "GO_CONTINUATION_PRODUCTION_BOOTSTRAP"
+}

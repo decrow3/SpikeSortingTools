@@ -1,0 +1,22 @@
+Candidate packet manifest verification:
+10/10 entries OK
+
+Independent isolated candidate suite on H1:
+- candidate source sha256: 705b4af444699a6e40ddd0e8a189232b619c4e1bbff53f8150b448f5ad160391
+- candidate tests sha256: 786c77bd1344381034a78777b43d3e329e22c2e8f2ae59693702c23caec3667d
+- rescue-production Python/Kilosort environment used
+
+Ran 18 candidate tests in 0.461s
+OK
+
+The unchanged 16-test helper suite was not rerun on H1 because it includes H5-only saved-artifact integrations. Verified unchanged bindings:
+- support helper: 9c981047f94d91a930e17bd51e634fbc96faa5e956c85d0882f3a603f7f42e0f
+- helper test: d00186753bfbbc132685371cd1f1a1fe81e493237a9d0666978ee35091c5b0ee
+- candidate tests: 786c77bd1344381034a78777b43d3e329e22c2e8f2ae59693702c23caec3667d
+- launcher: 59e4c776276e5fe751887bfedea2ac9378ff9bd3764778215b55e79a6bd0d60c
+
+Historical H5 frozen-chain receipt:
+Ran 34 tests in 0.251s
+OK
+
+The post-install H5 prelaunch must rerun all 34 tests. No recording binary was opened on H1.

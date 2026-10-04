@@ -1,0 +1,76 @@
+{
+  "schema": "en-minimum-training-support-mask-covariance-smoke-postexecution-review-v1",
+  "implementation_verdict": "VALID_FOR_FROZEN_COVARIANCE_WHITENING_SMOKE",
+  "sorting_efficacy_verdict": "NOT_ESTABLISHED",
+  "execution_manifest_sha256": "07de38b2fa8d0b3be8a625d8864d856b2ed722e032f7244a5e8316c8bb86d34e",
+  "execution_complete_sha256": "d44c704d5621158ed8eb0042b1ff9ffc405d639a2af032d64c2ac916140105f9",
+  "contract_digest": "25102362ea5a890c4662a80beceda5e00170d982d24924db4bc411b89240d9c4",
+  "lifecycle": {
+    "start_requests": 1,
+    "retries": 0,
+    "restarts": 0,
+    "terminal_state": "active_exited_remain_after_exit",
+    "result": "success",
+    "exit_status": 0,
+    "stop": "deliberate_caught_SmokeStopAfterWhitening_before_training_detection"
+  },
+  "schedule": {
+    "batch_indices": [0,25,50,75,100,125,150,175,200,225,250,275],
+    "interior_columns": 720000,
+    "padded_columns": 721464,
+    "sampled_interior_seconds": 24.0001312141065,
+    "logical_read_bytes": 554084352,
+    "logical_not_os_physical_io": true,
+    "transition_boundaries": 14,
+    "all_transition_samples_retained": true
+  },
+  "support": {
+    "rows": 384,
+    "all_rows_supported": true,
+    "valid_samples_per_row_min": 536331,
+    "valid_samples_per_row_max": 720000,
+    "interior_unsupported_values": 1169092,
+    "padded_journal_unsupported_values": 1172020,
+    "padding_difference": 2928
+  },
+  "covariance": {
+    "shape": [384,384],
+    "dtype": "float32",
+    "finite": true,
+    "symmetric": true,
+    "rank": 384,
+    "condition_number": 215.0203399658203,
+    "maximum_condition_number": 100000000.0,
+    "array_sha256": "155944a56cfdad66c4ddadfc6607b7eaa5b79de7f35510585d014088e4b70554"
+  },
+  "whitening": {
+    "construction": "native_kilosort_whitening_local_nrange_32_from_validated_covariance",
+    "shape": [384,384],
+    "dtype": "float32",
+    "finite": true,
+    "array_sha256": "752be427fce43138bb6a8fa043f79087d2f27a715c8544e07ab3d830b619c077",
+    "bound_to_contract_and_batch_schedule": true
+  },
+  "artifacts": {
+    "matrix_numeric_bytes": 1179648,
+    "run_root_apparent_bytes": 1216754,
+    "retained_ceiling_bytes": 33554432,
+    "failure_markers_absent": true
+  },
+  "systemd_condition": {
+    "invalid_key": "ConditionPathNotExists",
+    "ignored_by_systemd": true,
+    "historical_run_freshness_sufficient": true,
+    "basis": "immediate external absence check plus atomic run_root mkdir exist_ok false",
+    "future_launch_allowed_without_repair": false
+  },
+  "advance_to_first_trained_comparison_design": true,
+  "trained_launch_authorized": false,
+  "design_scope": "one frozen representative-window end-to-end baseline/candidate pair differing only in reviewed support-mask policy",
+  "explicitly_not_established": [
+    "unsampled training or detection batch behavior",
+    "template learning detection clustering or sorting completion",
+    "unit quality biological identity or purity",
+    "motion-correction benefit long-window generalization or baseline superiority"
+  ]
+}

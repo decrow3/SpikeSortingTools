@@ -1,0 +1,108 @@
+{
+  "schema": "first-medium-evaluator-post-qc-independent-review-v1",
+  "reviewer": "H1",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_evaluator_post_qc_execution_result_20261002_v1_h5",
+  "reviewed_manifest_sha256": "e417eceb918f44110c4c43eaac58fe4e33ae4c87a4c4e520f9fc655b4640b8c2",
+  "reviewed_complete_sha256": "e77f50d7f4e00b39c9fa6a99bfad1cf00ecb92b9dca7823d4c06c18d29c0a15c",
+  "reviewed_report_sha256": "ac2ce2131763fa9c0d642389049a295f46ec74a13cef66d95533f0c2d743d100",
+  "verdict": "EXECUTION_ACCEPTED_ZERO_REPRODUCED_ENDPOINT_NOT_DECISION_VALID_REPAIR_AND_MEASUREMENT_REDESIGN_REQUIRED",
+  "execution_assessment": {
+    "packet_manifest_valid": true,
+    "completion_binding_valid": true,
+    "execution_count": 1,
+    "retry_count": 0,
+    "service_result": "success",
+    "service_exit_status": 0,
+    "service_restarts": 0,
+    "start_utc": "2026-10-02T09:34:19Z",
+    "completion_utc": "2026-10-02T09:34:31Z",
+    "accepted_module_hashes_equal_staged_before_and_after": true,
+    "config_sha256": "559f50a4c4a166c3a9a9fae3266abf8ad2d07a63626ee3c58f6792a47c2b3205",
+    "saved_array_identity_matches": true,
+    "qc_hash_matches": true,
+    "clock_transform_matches": true,
+    "scope_violations": []
+  },
+  "confirmed_result_scope": {
+    "overall_four_arm_status": "inconclusive",
+    "overall_reason": "prospective repaired and repeat arms are unavailable",
+    "existing_pair_reported_verdict": "fail",
+    "existing_pair_reason": "POPULATION_COVERAGE_BELOW_0_5",
+    "population_fraction_arithmetic": "independently reproduced as 0/61 = 0.0 from emitted tables",
+    "identity_status": "UNRESOLVED",
+    "waveform_status": "UNMEASURED"
+  },
+  "implementation_defect": {
+    "severity": "load-bearing provenance and coordinate-frame defect",
+    "finding": "spike_positions.npy selects the interior denominator and interior primary pairs but is read without an expected hash, is omitted from the saved-array identity and execution-time input receipt, and has no enforced position-frame semantic binding",
+    "source_evidence": [
+      "testing/first_medium_evaluator.py:210-221 hashes the curated core/labels, then loads spike_positions.npy directly without adding its bytes to the identity",
+      "testing/first_medium_evaluator.py:102-130 requires geometry_identity as a string but does not validate it against spike_positions.npy or a coordinate-frame receipt",
+      "testing/sort_comparison.py:289-318 derives per-unit median depth and spatial class from this array",
+      "testing/sort_comparison.py:368-376 and 459-477 use those classes in the numerator and denominator"
+    ],
+    "could_explain_zero": true,
+    "why": "Thirty-one of all 140 primary pairs satisfy the frozen amplitude-support rule, but none of the 14 pairs selected as interior do. Therefore incorrect spatial bytes, row alignment, or coordinate semantics can change the zero numerator and the 61-unit denominator.",
+    "evidence_against_observed_mutation": "Current unit-metric and primary-match artifacts exactly match the prior absent-QC traversal, and the earlier H5 inventory recorded aligned position shapes and hashes. This lowers suspicion of a mutation but does not cure the missing execution-time binding or establish coordinate semantics."
+  },
+  "targeted_correction": {
+    "single_change": "Make each real arm declare an expected spike_positions.npy SHA-256 and explicit position-frame contract; read and hash the bytes once, validate row alignment/finite shape and frame semantics, include the digest/frame in the arm identity, input receipt, pair manifest, and report provenance, and reject mismatch before scoring.",
+    "required_tests": [
+      "one-byte position mutation rejects before scoring",
+      "row permutation rejects",
+      "wrong coordinate-frame declaration rejects",
+      "known interior/edge/outside coordinates classify exactly",
+      "consistent bijective cluster-label permutation leaves matching and coverage unchanged"
+    ],
+    "replay": "After review, perform one fresh saved-output-only replay in a new namespace using the same sorter/QC arrays. This replay can validate provenance and cohort construction; it cannot rescue the scientifically infeasible endpoint."
+  },
+  "measurement_feasibility": {
+    "reference_self_support_maximum": "4/61 = 0.06557377049180328",
+    "frozen_required_population": "31/61 = at least 0.5",
+    "conclusion": "The current population endpoint is infeasible for the reference itself, so zero is not a B-specific efficacy failure and no candidate could pass under the present REF support.",
+    "historical_consistency": "docs/luke_method_selection_20260907.md:83-99 already records 2.0-4.8% prospective common-time coverage and warns that amplitude completeness cannot rank the population.",
+    "required_action": "Freeze an explicit measurement/window redesign and demonstrate a passing real REF self-control before any new sort or prospective arm is launched. Preserve the current zero unchanged as the original frozen result."
+  },
+  "matching_semantics": {
+    "accepted": "Event matching is greedy chronological one-to-one within each cluster pair, followed by reciprocal unique best-Jaccard selection and bilateral retention thresholds; primary baseline and candidate IDs are unique in the saved output.",
+    "ambiguity_limit": "The 11,430 ambiguous rows are nonprimary correspondence-graph edges, not biological events or verified split/merge instances.",
+    "split_merge_endpoint_scope": "The reported 1.0 burden is a pre-outcome graph-ambiguity adapter over a very dense graph: 60/61 eligible baseline units have multiple qualifying edges. It must remain diagnostic and cannot establish biological splits, merges, or contamination."
+  },
+  "unresolved_primary_benefit": {
+    "finding": "The frozen exclusive-identity-continuity endpoint has a +0.05 name/margin but no mathematical statistic or null, so the evaluator correctly leaves it UNRESOLVED. The amplitude benefit is UNMEASURED because coverage is infeasible.",
+    "required_before_prospective_repair": [
+      "define and freeze the primary benefit statistic, null/comparator, population, missingness handling, effect direction, minimum meaningful effect, and uncertainty/pass rule",
+      "freeze a feasible common-time/window construction and require a real saved REF self-control to pass before comparing candidates",
+      "freeze prospective waveform evidence with early/middle/late arrays on an explicit physical-channel axis, content hashes, channel geometry, epoch membership, and complete coverage of every scored primary pair",
+      "apply waveform-only whole-probe identity discovery independent of absolute depth and motion priors, preserve ambiguous/unmatched evidence, and keep continuity proxies distinct from biological identity"
+    ]
+  },
+  "next_decision": {
+    "decision": "NO_GO_NEW_SORTS_OR_PROSPECTIVE_REPAIRED_REPEAT_ARMS_FROM_THIS_RESULT",
+    "sequence": [
+      "Preserve this exact execution and zero result as immutable evidence of endpoint infeasibility.",
+      "Implement and independently review the single spike-position binding/frame correction.",
+      "Redesign and freeze the amplitude support/window endpoint, then require the existing REF saved-output self-control to reach its precommitted feasibility gate.",
+      "Define the primary benefit endpoint and prospective waveform evidence contract.",
+      "Only then replay existing REF versus B outputs once in a fresh namespace. If the corrected, feasible frozen evaluator still shows a genuine B failure, decide separately whether a prospective repaired arm is warranted."
+    ],
+    "cheapest_alternative": "The completed saved-table reason ledger and REF self-support capacity audit already establish infeasibility; no new sorting or recording access is needed for the present decision.",
+    "what_larger_work_would_add": "A corrected saved-output replay can establish bound cohort construction. New waveform capture and prospective sorting would address identity and candidate efficacy only after their contracts are frozen."
+  },
+  "implementation_checks": {
+    "done": [
+      "Verified all result-packet members, manifest, COMPLETE, service lifecycle, source hashes, effective config, saved-array/QC hashes, and exact clock receipts.",
+      "Read the executed evaluator, matcher, QC adapter, and QC generation sources and traced all population-coverage inputs and branches.",
+      "Independently reconstructed common-time support, the 61-unit denominator, all 61 reason rows, all 14 fit-support rows, matching closures, and the 0/61 fraction from saved artifacts without importing evaluator code.",
+      "Performed saved-table REF self-support necessary-capacity and consistent bijective label-permutation controls.",
+      "Checked ambiguity semantics and the undefined primary benefit and waveform paths."
+    ],
+    "not_done": [
+      "No new evaluator execution, raw H5 array read, position-file rehash at execution time, recording/voltage access, sorting/training/detection, repaired/repeat arm, waveform capture, RF, or holdout work.",
+      "No true biological identity or waveform validation exists.",
+      "The HubPlanner Windows-local strategy file was not mounted on H1; its supplied finite decision sequence was followed from the delegation message."
+    ],
+    "can_establish": "The one-shot job executed its accepted code and exactly produced a zero fraction for its emitted spatial cohort; that endpoint is infeasible on the current REF support and its spatial cohort lacks a load-bearing execution-time content/frame binding.",
+    "cannot_establish": "That existing-corrected B is scientifically inferior, that the zero is a B-specific effect, biological identity, waveform stability, prospective repair efficacy, repeatability, or advancement readiness."
+  }
+}

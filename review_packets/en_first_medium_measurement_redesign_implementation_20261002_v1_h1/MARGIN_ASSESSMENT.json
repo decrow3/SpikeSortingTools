@@ -1,0 +1,36 @@
+{
+  "schema": "first-medium-retention-margin-assessment-v1",
+  "estimand": "DeltaR is the paired difference between equal-unit mean REF-event retention for repaired B and existing B on the same fixed REF cohort",
+  "proposed_rule": "DeltaR >= 0.05 and one-sided paired-unit bootstrap lower95 > 0",
+  "assessment": "unsuitable if interpreted as 95% evidence for a minimum meaningful effect of 0.05",
+  "concrete_issue": "The proposed rule can pass when the confidence bound includes effects arbitrarily close to zero and below 0.05. For example, DeltaR=0.051 and lower95=0.001 passes the proposal but does not support a 0.05 minimum effect.",
+  "frozen_replacement": "one-sided paired-REF-unit bootstrap lower95 > 0.05",
+  "why_replacement_matches_claim": "The complete one-sided 95% interval then excludes every effect at or below the declared minimum meaningful effect.",
+  "bootstrap": {
+    "unit": "paired fixed REF unit",
+    "resample": "sample REF-unit delta-retentions with replacement; retain existing/repaired dependence within each unit",
+    "replicates": 20000,
+    "seed": 20261002,
+    "lower_quantile": 0.05,
+    "quantile_method": "linear",
+    "scope": "composition sensitivity for the fixed observed REF cohort",
+    "does_not_cover": [
+      "repeat-recording uncertainty",
+      "session or animal generalization",
+      "matching-rule uncertainty",
+      "shared physiological or artifact dependence across units",
+      "biological identity uncertainty"
+    ]
+  },
+  "dependence_assessment": {
+    "handled": "Existing and repaired retention for one REF unit remain paired in every bootstrap draw.",
+    "not_handled": "Units may share state, noise, drift, and sorting artifacts; an ordinary unit bootstrap treats their observed delta rows as exchangeable composition units.",
+    "interpretation_limit": "Call the bound a fixed-cohort unit-composition robustness bound, not a population or repeated-experiment confidence interval."
+  },
+  "power_and_margin_scope": {
+    "margin_origin": "supplied before redesigned cross-arm outcomes; not calibrated from a repaired-arm result",
+    "numeric_power_claim": "none; no outcome-blind variance estimate for unit deltas was supplied",
+    "worst_case_note": "Because per-unit deltas lie in [-1,1], their standard deviation can be as large as 1. With 61 independent units, a normal worst-case one-sided uncertainty allowance is about 1.645/sqrt(61)=0.211, so a lower bound above 0.05 could require a point effect near 0.261 in that extreme case.",
+    "decision": "retain 0.05 only as the pre-outcome minimum meaningful effect; do not claim it is powered until an outcome-blind variance/power plan is approved"
+  }
+}

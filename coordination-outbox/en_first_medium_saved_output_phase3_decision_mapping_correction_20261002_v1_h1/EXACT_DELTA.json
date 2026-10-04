@@ -1,0 +1,21 @@
+{
+  "schema": "en-first-medium-phase3-decision-mapping-exact-delta-v1",
+  "base_consumer_sha256": "dedef77b9a580969c94bfdc4cfe4084595ad43f0a9673280dd83440c93ca05b8",
+  "corrected_consumer_sha256": "30c89dafcd12d8b9dd08cfdf49914635f774ae92d76164a8200e9e36d6c67d42",
+  "base_config_sha256": "774b166f661b81547f2ca9b682fadfd2623df0181914317b918ae92c828fc095",
+  "corrected_config_sha256": "2d5f042c1f26cdef88a6dc28aaed5323c2c83b07ad655cee1ab0770ef2ee3ae6",
+  "changed_source_files": ["source/testing/first_medium_saved_output_qualification.py"],
+  "changed_behavior": "overall report status only",
+  "preserved": [
+    "inclusive R_repeat >= 0.98 and repeatability.passes",
+    "strict primary lower95 > 0.05 and primary_retention.passes",
+    "all numeric primary and repeat outputs",
+    "all reason codes",
+    "advance=false",
+    "structural/provenance/clock/input exceptions",
+    "all estimator, matcher, cohort, bootstrap, provenance, schema and producer bytes"
+  ],
+  "report_schema_changed": false,
+  "producer_changed": false,
+  "execution_enabled": false
+}

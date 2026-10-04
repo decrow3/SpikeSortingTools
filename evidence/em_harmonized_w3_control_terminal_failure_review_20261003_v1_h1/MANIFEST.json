@@ -1,0 +1,10 @@
+{
+  "schema": "em-harmonized-w3-control-h1-terminal-review-manifest-v1",
+  "release_manifest_sha256": "f89982502850f5f6920b187bfd7ee9576bb4ee5a045864818970aaa6eb9eeec9",
+  "terminal_manifest_sha256": "e31e984a1e60beeab55ae8926409b3a14ea08d8e8a28c2733b0a12da2cfbba39",
+  "members": [
+    {"path": "AUTHORITATIVE_INPUTS.json", "bytes": 1334, "sha256": "d120510c18fef85760591fed11fd850b6223a8138355b7e09858ac868925ced8"},
+    {"path": "SAVED_OUTPUT_RECOVERY_CONTRACT.json", "bytes": 3155, "sha256": "74af5a43323610ddaf1fc837187d0dd53f9e73fa2a913cbfffedbb3f437c8bd1"},
+    {"path": "TERMINAL_REVIEW.md", "bytes": 4734, "sha256": "16f5f4cd991d5b5fef2cf9d39445d36dc9b21c502351e0c105e93240e9ac9258"}
+  ]
+}

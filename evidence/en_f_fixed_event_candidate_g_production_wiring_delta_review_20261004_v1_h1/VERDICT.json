@@ -1,0 +1,21 @@
+{
+  "schema": "candidate-g-production-wiring-review-v1",
+  "status": "NO_GO_INTEGRATED_CANDIDATE_G_PRODUCTION_WIRING",
+  "candidate": "G",
+  "execution_enabled": false,
+  "reviewed_preparation_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_production_wiring_repair_20261004_v1_h5",
+  "reviewed_preparation_manifest_sha256": "a29db22c88a5c7f953b0156fc7eeb8cd5327939cf793913d061de4547ebfc7d4",
+  "reviewed_preparation_complete_sha256": "02684f9ef4d85a19a150aaf4d09094b79ca96ab9a3c78be1f7c43936fbadb40d",
+  "scientific_contract_sha256": "5c02db316bff951676d5c062f46837fc24bde42b2de7fc536b704868812d58cd",
+  "blocking_findings": [
+    "aggregate 30 GiB storage is sampled pre/post rather than enforced as a peak bound, and the release may lower the frozen estimate",
+    "H1 and preflight packets are sealed/hash-bound but their reviewed preparation, science and resource identities are not semantically compared with the release",
+    "runtime origin evidence is non-enforcing and records a different DARTsort origin from the worker's effective frozen-runtime import"
+  ],
+  "review_actions": [
+    "verified all 70 preparation products",
+    "reran nine production-wiring tests and 22 inherited fault tests",
+    "inspected rendered unit, launch chain, managed success/failure/finalizer evidence and final unit absence",
+    "performed no service installation/start, project payload read, GPU work, candidate fit, evaluation or RF/holdout access"
+  ]
+}

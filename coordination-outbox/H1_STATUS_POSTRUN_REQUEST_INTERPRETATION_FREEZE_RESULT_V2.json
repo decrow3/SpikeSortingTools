@@ -1,0 +1,22 @@
+{
+  "schema": "luke-durable-coordination-h1-postrun-request-interpretation-freeze-v2",
+  "host": "huklaban1",
+  "item": "H1-POSTRUN-REQUEST-INTERPRETATION-FREEZE",
+  "state": "COMPLETE_EXECUTION_DISABLED_REPORTING_CONFLICT_VISIBLE",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_postrun_request_interpretation_freeze_20261002_v2_h1",
+  "manifest_sha256": "a6f389af7234da7d4a2a8c4b51e08db30e321ab3d997fa1d23c9fa7b74094e3d",
+  "complete_sha256": "f397bb9f3e209e9782baf33c475bea5e44f77fcaafdb17f1e705ac27e06f01ab",
+  "phase3_consumer_manifest_sha256": "3199ddda56d1b03c6a3d77d87443fbf1c2956d4ab09c08ede52467ca4b09b1cd",
+  "consumer_source_sha256": "dedef77b9a580969c94bfdc4cfe4084595ad43f0a9673280dd83440c93ca05b8",
+  "phase2_existing_b_status": "OUTSTANDING_NOT_STARTED",
+  "phase2_rerun_started": false,
+  "frozen_primary_rule": "one-sided paired-REF-unit composition-bootstrap lower95 > 0.05 strict; 20000 draws; seed 20261002",
+  "frozen_repeat_rule": "diagnostic only; threshold NOT_DEFINED; pass/fail NOT_DEFINED",
+  "blocker": "Accepted consumer currently applies R_repeat >= 0.98 as a decision gate. Resolve before outcome access through a narrow independently reviewed report-layer delta or explicit pre-outcome contract decision.",
+  "next_action": "When H5 seals the enabled derivative, H1 reviews only enablement/config/service delta and consumed flags/path resolution. Separately resolve the repeat-reporting conflict before invoking post-run composition.",
+  "new_outcomes_accessed": false,
+  "launch_or_service_started": false,
+  "recording_or_voltage_read": false,
+  "rf_or_holdout_accessed": false,
+  "scientific_execution_started": false
+}

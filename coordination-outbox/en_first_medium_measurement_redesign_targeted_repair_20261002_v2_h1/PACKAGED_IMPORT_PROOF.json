@@ -1,0 +1,12 @@
+{
+  "schema": "packaged-import-proof-v1",
+  "cwd": "/tmp",
+  "pythonpath": "<packet>/source",
+  "result": "passed",
+  "modules": {
+    "testing.first_medium_measurement_redesign": "<packet>/source/testing/first_medium_measurement_redesign.py",
+    "testing.sort_comparison": "<packet>/source/testing/sort_comparison.py",
+    "pipeline.config": "<packet>/source/pipeline/config.py"
+  },
+  "workspace_module_leak": false
+}

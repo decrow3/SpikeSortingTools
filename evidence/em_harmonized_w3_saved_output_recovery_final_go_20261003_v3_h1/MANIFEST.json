@@ -1,0 +1,8 @@
+{
+  "schema": "em-harmonized-w3-saved-output-recovery-h1-final-go-manifest-v1",
+  "reviewed_packet_manifest_sha256": "72f9f1bf719f91713015f2e6ac671f34c14998e6d26715caed6f37f34b636e0e",
+  "members": [
+    {"path": "FINAL_GO_REVIEW.md", "bytes": 3018, "sha256": "c4421513de9879a0839005f1d64f948239024f3835ffa7e7924d273a2ded13e8"},
+    {"path": "H1_GO_RECEIPT.json", "bytes": 784, "sha256": "9810dfd6f9dcf24911774888a1ffc66cf589b4be4cbf0e7005cf194c32c54b0d"}
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "h1-status-em-harmonized-w3-control-integrated-review-v1",
+  "status": "NO_GO_REPAIR_REQUIRED",
+  "launch_authorized": false,
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/em_harmonized_w3_control_integrated_review_20261003_v1_h1",
+  "manifest_sha256": "ab1021aa4e1f09feac1b13540d5d74a801e1eb97655c65cfbfdfb0e0b00e21c6",
+  "complete_sha256": "12962a65283f007b039d63f3974cdf64259daa1f1257e57a46a05d0f84583807",
+  "reviewed_h5_manifest_sha256": "b4686acef858aab0c8849b1e20162e08a467fd42233120ba4752e130af570f9c",
+  "blocking_repairs": [
+    "freeze and hash-enforce the scorecard dependency closure",
+    "add a durable managed post-sort scorecard/sealing path",
+    "align and receipt the immediate release resource checks"
+  ],
+  "unchanged_passes": "Cache lineage/view, independent byte fixture, clock/geometry, fresh sorter config, and scientific decision contract pass and need no redesign."
+}

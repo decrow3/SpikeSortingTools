@@ -1,0 +1,102 @@
+{
+  "schema": "first-medium-evaluator-post-qc-derived-audit-v1",
+  "reviewer": "H1",
+  "source_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_evaluator_post_qc_execution_result_20261002_v1_h5",
+  "source_report_sha256": "ac2ce2131763fa9c0d642389049a295f46ec74a13cef66d95533f0c2d743d100",
+  "population_coverage_reconstruction": {
+    "baseline_eligible_units": 61,
+    "primary_matches": 140,
+    "interior_primary_matches": 14,
+    "measurable_interior_primary_matches": 0,
+    "reconstructed_population_fraction": 0.0,
+    "saved_report_fraction": 0.0,
+    "exact_match": true,
+    "eligibility_reason_ledger": {
+      "unmatched": 45,
+      "candidate_not_interior": 2,
+      "insufficient_fit_support": 14
+    },
+    "fourteen_pair_failure_decomposition": {
+      "baseline_fewer_than_two_finite_interior_windows": 10,
+      "baseline_adequate_but_candidate_fewer_than_two_finite_interior_windows": 2,
+      "both_have_at_least_two_windows_but_common_time_below_300_seconds": 2,
+      "measurable": 0
+    },
+    "maximum_common_time_seconds_among_14": 233.17960817861103,
+    "maximum_common_time_fraction_among_14": 0.38863269303536735,
+    "frozen_required_common_time_seconds": 299.99999016731025
+  },
+  "window_table_closure": {
+    "baseline": {
+      "rows": 1767,
+      "finite_interior_rows": 767,
+      "boundary_pinned_rows": 802,
+      "no_fit_rows": 198,
+      "finite_interior_clusters": 177,
+      "time_min_seconds": 0.1266340256699869,
+      "time_max_seconds": 599.8777463330065
+    },
+    "candidate": {
+      "rows": 1762,
+      "finite_interior_rows": 752,
+      "boundary_pinned_rows": 785,
+      "no_fit_rows": 225,
+      "finite_interior_clusters": 168,
+      "time_min_seconds": 0.0087000475651136,
+      "time_max_seconds": 599.6354783418063
+    },
+    "invalid_or_nonfinite_rows": 0,
+    "all_finite_interior_intervals_nonoverlapping_within_cluster": true
+  },
+  "reference_self_support_control": {
+    "kind": "saved-table analytical self-control; no evaluator rerun",
+    "logic": "For REF self-comparison, reciprocal matching is identity and common-time support equals each unit's own nonoverlapping finite-interior interval duration.",
+    "interior_units": 61,
+    "units_with_at_least_two_finite_interior_windows": 9,
+    "units_with_at_least_300_seconds_finite_interior_support": 4,
+    "units_satisfying_both_frozen_requirements": 4,
+    "capable_cluster_ids": [207, 210, 219, 220],
+    "maximum_possible_population_fraction_under_current_REF_support": 0.06557377049180328,
+    "required_units_for_frozen_0_5_threshold": 31,
+    "necessary_capacity_passes": false,
+    "interpretation": "The frozen population-coverage endpoint cannot pass on this REF baseline even with a perfect candidate."
+  },
+  "candidate_self_support_context": {
+    "kind": "saved-table analytical support diagnostic",
+    "interior_units": 68,
+    "units_satisfying_both_frozen_requirements": 3,
+    "fraction": 0.04411764705882353
+  },
+  "consistent_bijective_label_permutation_control": {
+    "kind": "saved-table deterministic reverse permutation; no evaluator rerun",
+    "permuted_candidate_labels": 450,
+    "permutation_applied_to_candidate_windows_primary_matches_and_candidate_unit_metrics": true,
+    "interior_pairs_before": 14,
+    "interior_pairs_after": 14,
+    "measurable_pairs_before": 0,
+    "measurable_pairs_after": 0,
+    "rowwise_support_results_exactly_invariant": true,
+    "can_establish": "Numeric cluster-label values do not cause the zero when labels are transformed consistently across saved tables.",
+    "cannot_establish": "The H5-local raw saved-array loader is invariant, because no new evaluator execution was authorized for this review."
+  },
+  "matching_and_ambiguity": {
+    "correspondence_edges": 11570,
+    "primary_edges": 140,
+    "nonprimary_edges": 11430,
+    "pair_rows_unique": true,
+    "primary_baseline_ids_unique": true,
+    "primary_candidate_ids_unique": true,
+    "eligible_cohort_edges": 2096,
+    "eligible_cohort_nonprimary_edges": 2080,
+    "eligible_baseline_units_with_more_than_one_edge": 60,
+    "eligible_baseline_units": 61,
+    "interpretation": "Edges are qualifying spike-train correspondence hypotheses. Nonprimary edges are not biological events, verified identities, or direct counts of true splits/merges."
+  },
+  "spatial_binding_sensitivity": {
+    "all_primary_pairs_measurable_under_frozen_amplitude_rule_without_spatial_filter": 31,
+    "all_primary_pairs": 140,
+    "measurable_selected_interior_pairs": 0,
+    "selected_interior_pairs": 14,
+    "finding": "Spatial membership is load-bearing for the zero numerator; a wrong, mutated, or semantically mismatched position array can change the result."
+  }
+}

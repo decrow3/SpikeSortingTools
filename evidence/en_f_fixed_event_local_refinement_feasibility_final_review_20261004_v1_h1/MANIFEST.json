@@ -1,0 +1,16 @@
+{
+  "schema": "en-f-fixed-event-local-refinement-h1-final-review-manifest-v1",
+  "members": [
+    {
+      "path": "FINAL_REVIEW.md",
+      "bytes": 8844,
+      "sha256": "2faece21261ba67972a9869f43dcc952169cf950fe42d9f122fa00688c3381d9"
+    },
+    {
+      "path": "VERDICT.json",
+      "bytes": 1631,
+      "sha256": "999e7335246bf4fc4a13ac8c913dbbd187ba08cd0617f5dad11ad234c4453e88"
+    }
+  ],
+  "member_count": 2
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "trained-entry-clock-repair-candidate-complete-v1",
+  "status": "complete_ready_for_h5_changed_path_review",
+  "created_at": "2026-10-02T10:59:24-07:00",
+  "producer": "H1",
+  "manifest_sha256": "58c8a3be3f449c65b3bdd0da40f83f6856acc0906659a2cabce9ef62d3bdb6fa",
+  "execution_enabled": false,
+  "saved_arrays_only": true,
+  "real_recording_or_sort_execution": false,
+  "focused_tests": "14 passed",
+  "clock_boundary_fixture_passed": true,
+  "vertical_fixture_passed": true,
+  "independent_review_pending": "H5",
+  "separate_open_blocker": "missing reviewed heterogeneous/no-mask REF384_repeat pair launcher"
+}

@@ -1,0 +1,46 @@
+{
+  "schema": "first-medium-postrun-interpretation-freeze-v2",
+  "frozen_before_new_outcomes": true,
+  "primary": {
+    "quantity": "DeltaR = R(repaired_B384) - R(existing_corrected_B384)",
+    "uncertainty": "one-sided paired fixed-REF-unit composition bootstrap",
+    "replicates": 20000,
+    "seed": 20261002,
+    "pass_only_if": "lower95 > 0.05",
+    "boundary_is_strict": true
+  },
+  "repeat": {
+    "quantity": "R(REF384_repeat)",
+    "role": "same-window engineering continuity diagnostic only",
+    "threshold": "NOT_DEFINED",
+    "passes": "NOT_DEFINED",
+    "may_gate_primary": false,
+    "may_support_generalization": false
+  },
+  "missingness": {
+    "waveform": "UNMEASURED",
+    "truncation_qc": "UNMEASURED",
+    "rule": "Missing evidence remains explicitly UNMEASURED; it is not silently imputed as pass, fail, zero, or unchanged."
+  },
+  "scope": {
+    "R_and_DeltaR": "continuity proxies only",
+    "short_interval_counts": "contamination proxy only",
+    "identity_claim": "PROHIBITED",
+    "purity_claim": "PROHIBITED",
+    "recovery_claim": "PROHIBITED",
+    "generalization_claim": "PROHIBITED",
+    "repeat_scope": "not longitudinal replication",
+    "bootstrap_scope": "cohort-composition sensitivity, not repeated-recording or biological-population uncertainty"
+  },
+  "advancement": {
+    "automatic": false,
+    "execution_success_is_scientific_success": false,
+    "missing_waveform_or_qc_can_be_overstated": false
+  },
+  "implementation_conflict": {
+    "accepted_source_sha256": "dedef77b9a580969c94bfdc4cfe4084595ad43f0a9673280dd83440c93ca05b8",
+    "current_behavior": "R_repeat >= 0.98 contributes to reject/inconclusive status",
+    "required_behavior": "emit R_repeat as diagnostic with threshold/pass-fail NOT_DEFINED and do not gate the primary interpretation",
+    "resolution": "narrow reviewed report-layer delta or explicit coordinator contract resolution before invocation; do not reinterpret after seeing outcomes"
+  }
+}

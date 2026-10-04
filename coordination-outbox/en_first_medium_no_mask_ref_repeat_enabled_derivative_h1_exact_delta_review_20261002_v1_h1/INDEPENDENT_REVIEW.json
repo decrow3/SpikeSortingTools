@@ -1,0 +1,73 @@
+{
+  "schema": "luke-h1-enabled-derivative-exact-delta-review-v1",
+  "review_host": "huklaban1",
+  "review_date": "2026-10-02",
+  "verdict": "BLOCK_REPAIRED_ARM_APPROVAL_NOT_CONSUMABLY_BOUND",
+  "subject": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_enabled_derivative_candidate_20261002_v1_h5",
+    "manifest_sha256": "bc5f2ffdc2f3e32b7025b21dd7b437d6d9522e105ec02f178c1eb7222504367b",
+    "complete_sha256": "8c0b975d5639c7c747cca4243212aee09fa3e5dbffbeeb3766441418c17ed251",
+    "contract_sha256": "21452474b4f112d82936759d3898e4b8267a967e4de3bf1b40c2cd5afa68b011",
+    "coordination_status_sha256": "0a5e62b19058a54faa324fed92e138117bea154a4d8b92930f320ef13c5d1c1e"
+  },
+  "accepted_disabled_base": {
+    "manifest_sha256": "5b3b780e6ebc7a7d74f20bbea9505719bb8cccc4498249693672b6e654dd25c4",
+    "complete_sha256": "6fbc0064302b6794b531f720c8cee1816d9eff4989a14364ad8cd5f64266ae08",
+    "contract_sha256": "712ec10c342325187e6049dee4c022ce77daa9e512f7d2061d0e7714c9e9cf43"
+  },
+  "preserved_checks": {
+    "manifest_and_completion_valid": true,
+    "launcher_review_and_activation_review_separate": true,
+    "phase3_machine_status_token": "GO_PROVENANCE_REPAIR_DELTA",
+    "scientific_sources_byte_identical": true,
+    "active_launcher_byte_identical": true,
+    "arm_order": ["REF384_repeat", "repaired_B384"],
+    "run_namespace_unchanged": true,
+    "one_start_and_finalizer_unchanged": true,
+    "resource_bounds_unchanged": true,
+    "restart": "no",
+    "all_planned_namespaces_fresh": true,
+    "outer_preflight_with_only_unavailable_h5_runtime_check_stubbed": "INSPECTED_ELIGIBLE_NOT_LAUNCHED"
+  },
+  "blocking_findings": [
+    {
+      "id": "B1_REPAIRED_CONFIG_APPROVAL_NULL",
+      "severity": "BLOCKING",
+      "config_path": "config/repaired_B384.enabled_candidate.clock_v5.json",
+      "config_sha256": "6cf1d0947a9a632f0b58e3c80e93a653a58017af240ff9bb5810005121407253",
+      "observed": {
+        "execution_enabled": true,
+        "approval.h1_review_manifest_sha256": null
+      },
+      "consumer": "source/npx_preprocessing/motion/kilosort_support_mask_trained.py:174-177",
+      "reproduction": "validate_trained_contract raises PermissionError: enabled trained execution requires an H1 review manifest",
+      "effect": "The outer activation preflight reports eligible, REF may run first, and repaired_B384 then fails before native trained execution. This violates the claimed consumable enablement and can consume the one-start namespace for a deterministic configuration error.",
+      "required_repair": "Publish a fresh immutable derivative whose repaired config binds the exact appropriate accepted H1 trained-entry review manifest, update its config/contract/service/environment hashes, and add a test that invokes the actual trained config validator before the outer gate can report eligible. Do not insert an arbitrary 64-character value."
+    },
+    {
+      "id": "B2_ENVIRONMENT_IDENTITY_NOT_RUNTIME_VERIFIED",
+      "severity": "BLOCKING_PROVENANCE_GAP",
+      "environment_path": "service/ENABLED_BINDING.env",
+      "environment_sha256": "256eb3d839ed0da0d8af3a29dfb0891b999b924cbed267ce7d837399662c99d5",
+      "observed": "The environment file is covered by the packet MANIFEST, but its SHA256 is absent from the contract/provenance bindings and neither activation_preflight.py nor the pair launcher verifies its bytes. REQUIRED_PHASE3_*, REQUIRED_H1_*, and REQUIRED_HUBPLANNER_* variables are not consumed by either entry point.",
+      "effect": "The contract stop condition claims an environment-hash mismatch is fatal, but the installed runtime path has no corresponding check.",
+      "required_repair": "Add a non-circular, runtime-consumed immutable binding for the exact environment bytes or remove the unused provenance variables and bind all load-bearing values through an already verified artifact. Add a negative mutation test."
+    }
+  ],
+  "tests": {
+    "h5_authoritative_packet_receipt": "23 passed in 1.06s; outer preflight eligible",
+    "h1_portable_subset": "21 passed, 2 H5-runtime-only deselected in 0.56s",
+    "h1_full_suite": "21 passed, 2 failed only because the fixed H5 interpreter path is absent on H1",
+    "h1_actual_repaired_config_validator": "expected PermissionError reproduced"
+  },
+  "service_installation": {
+    "producer_status": "not installed or started",
+    "independent_h5_systemd_query_from_h1": "not available",
+    "h1_fragment_at_h5_home_path_absent": true
+  },
+  "activation_or_launch_authorized_by_this_review": false,
+  "recording_or_voltage_read": false,
+  "scientific_execution_started": false,
+  "outcomes_read": false,
+  "rf_or_holdout_accessed": false
+}

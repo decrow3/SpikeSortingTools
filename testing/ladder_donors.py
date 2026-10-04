@@ -121,7 +121,12 @@ def _dewhitened_shape(sort: dict, cid: int, config: DonorConfig) -> tuple[np.nda
     keeps residual imec0 common-mode). The µV scale comes from a bandpass STA
     (`_bandpass_peak_uv`); `cluster_Amplitude` is NOT µV (it runs ~4-7× small).
     """
-    dw = np.asarray(sort["templates"][cid], dtype=np.float64) @ sort["winv"]
+    # Kilosort whitens channel-by-time arrays as ``Wrot @ X``.  Exported
+    # templates are time-by-channel, so physical-space recovery is the
+    # equivalent right multiplication by the transposed saved inverse.
+    dw = np.asarray(sort["templates"][cid], dtype=np.float64) @ np.asarray(
+        sort["winv"], dtype=np.float64
+    ).T
     peak_t = int(np.unravel_index(np.argmax(np.abs(dw)), dw.shape)[0])
     half = config.n_samples // 2
     t0 = min(max(0, peak_t - half), dw.shape[0] - config.n_samples)

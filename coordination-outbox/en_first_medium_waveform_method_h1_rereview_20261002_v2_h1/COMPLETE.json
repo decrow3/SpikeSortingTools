@@ -1,0 +1,11 @@
+{
+  "schema": "immutable-evidence-packet-complete-v1",
+  "packet": "en_first_medium_waveform_method_h1_rereview_20261002_v2_h1",
+  "producer": "H1",
+  "completed_at_local_date": "2026-10-02",
+  "manifest": "MANIFEST.sha256",
+  "manifest_sha256": "360b6e517dedfe0e2adcbc943a8e3a891c059aeaebd5398c0c9890415869c47d",
+  "verdict": "TARGETED_REPAIR_REQUIRED",
+  "method_freeze_go": false,
+  "execution_enabled": false
+}

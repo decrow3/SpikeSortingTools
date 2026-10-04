@@ -417,11 +417,15 @@ def load_replay_rows(resolved: dict[str, Any]) -> dict[str, Any]:
     # per-channel amplitudes are not the waveform on the probe: the whitening
     # matrix mixes neighbouring channels, which can move a peak channel and
     # change a similarity score. The contract declares a *physical* channel
-    # representation, so undo it, with the same convention the repo's donor
-    # implementation uses (`testing/ladder_donors.py::_dewhitened_shape`).
+    # representation, so undo it. Kilosort applies whitening to channel-by-time
+    # arrays as ``Wrot @ X``.
+    # Exported templates are time-by-channel, so undoing that transform requires
+    # right multiplication by the *transpose* of the saved inverse:
+    # ``(Wrot^-1 @ template.T).T == template @ Wrot^-T``.  Local whitening is
+    # assembled row by row and is not generally symmetric.
     dewhitened = np.asarray(extra["templates.npy"], dtype=np.float64) @ np.asarray(
         extra["whitening_mat_inv.npy"], dtype=np.float64
-    )
+    ).T
 
     fs = resolved["fs_hz"]
     start_s, stop_s = resolved["processing_interval_s"]
@@ -450,7 +454,7 @@ def load_replay_rows(resolved: dict[str, Any]) -> dict[str, Any]:
         "inputs": inputs,
         "waveform_representation": {
             "declared": "probe_physical_channels",
-            "transform": "templates.npy @ whitening_mat_inv.npy",
+            "transform": "templates.npy @ whitening_mat_inv.npy.T",
             "why": (
                 "KS4 exports templates in the whitened space; whitening mixes neighbouring "
                 "channels, so untransformed templates are not a physical-channel waveform."

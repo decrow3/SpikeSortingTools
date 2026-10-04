@@ -1,0 +1,25 @@
+{
+  "schema": "trained-entry-clock-repair-review-request-v1",
+  "requested_reviewer": "H5",
+  "review_type": "independent_changed_path_implementation_review",
+  "decision": "accept_or_reject_clock_repair_only",
+  "execution_authorized_by_packet": false,
+  "required_checks": [
+    "verify parent candidate and H1 review bindings",
+    "trace Kilosort io.py global spike_times and crop-local full_st semantics",
+    "verify output_clock equals crop-bound exact semantics and is checked before bound data access",
+    "verify exact ancestry is exported == selected local full_st + crop.imin",
+    "verify half-open bounds and signed-int64 checks have correct edge behavior",
+    "verify accepted uniqueness, strict row order, cluster/amplitude ancestry, and nondecreasing checks remain",
+    "reproduce the 14-test isolated suite and saved-array boundary receipt",
+    "confirm the production config remains execution disabled",
+    "confirm the heterogeneous/no-mask REF-repeat pair launcher remains separately open"
+  ],
+  "must_not_infer": [
+    "no real trained launch GO",
+    "no GPU readiness",
+    "no pair-launcher readiness",
+    "no scientific benefit or biological identity/purity",
+    "no evaluator advancement"
+  ]
+}

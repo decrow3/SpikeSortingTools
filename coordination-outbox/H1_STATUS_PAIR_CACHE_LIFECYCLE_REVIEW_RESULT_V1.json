@@ -1,0 +1,25 @@
+{
+  "schema": "coordination-status-v1",
+  "created_utc": "2026-10-03T07:04:54Z",
+  "owner": "H1",
+  "task": "independent delta review of H5 pair cache-lifecycle repair v5",
+  "status": "COMPLETE_GO_SCOPED_EXECUTION_DISABLED",
+  "verdict": "GO_CACHE_LIFECYCLE_REPAIR_ONLY_EXECUTION_REMAINS_DISABLED",
+  "subject": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_cache_lifecycle_repair_20261003_v5_h5",
+    "manifest_sha256": "9be64ffa8c37d2992d1fe324fe37e2ee6134365f831be4094602243accc7c73b",
+    "complete_sha256": "4018ba0bcc0ce509af816d7ed46c153bc69b2f358b0e1feddf5645207c9ec854",
+    "contract_sha256": "de07d401cd9315029efaf79cb449ee97adb430160a820b818e2f69a78ed93027"
+  },
+  "review_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_cache_lifecycle_repair_h1_review_20261003_v1_h1",
+    "manifest_sha256": "c64434abe670a9ec3478ec4ad9bcaf451c532abb4f9b6ff5b175f6adc5cf97db",
+    "complete_sha256": "2c3027014fba2239b789df8a9aac9bdee5fb9cbec8b1ae7f842ebbc8d531a5b9"
+  },
+  "finding": "Distinct preflight and scientific-run cache ownership repairs the reproduced v4 self-contamination. Freshness/claim ordering, environment replacement, no-adoption preservation, dual-cache accounting, import linkage, safe boundary, resources and unchanged science passed the scoped review.",
+  "authorized_next": "H5 may create exactly one fresh immutable enabled derivative with wholly new output/attempt/log/preflight-cache/run-cache/service namespaces and unchanged reviewed source bytes, then perform at most the one HubPlanner-authorized managed start after exact host preflight.",
+  "prohibition": "Do not install or start v5; its review preflight cache exists and must be preserved. Do not delete/adopt existing namespaces or retry a consumed attempt.",
+  "execution_started_by_h1": false,
+  "recording_voltage_bytes_read_by_h1": 0,
+  "gpu_work_started_by_h1": false
+}

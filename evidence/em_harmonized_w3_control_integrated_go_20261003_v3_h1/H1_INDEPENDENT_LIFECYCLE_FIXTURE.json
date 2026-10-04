@@ -1,0 +1,29 @@
+{
+  "schema": "em-harmonized-w3-h1-independent-managed-lifecycle-fixture-v1",
+  "status": "pass",
+  "source_packet_manifest_sha256": "b501f06501c16d636f5071ff4d52d253440e4e92c8430f3b433ed231dc2ecc2c",
+  "fixture_root": "/tmp/em_harmonized_w3_control_v3_h1_independent_fixture_20261003_v3",
+  "evidence": {
+    "score_absent_while_sort_active": true,
+    "controller_managed_while_sort_active": true,
+    "sort_managed_while_active": true,
+    "success_controller_terminal": {"ActiveState": "inactive", "Result": "success", "ExecMainStatus": "0"},
+    "success_terminal_before_score": true,
+    "success_score_invocations": 1,
+    "success_score_complete": true,
+    "failed_sort_controller_terminal": {"ActiveState": "failed", "Result": "exit-code", "ExecMainStatus": "1"},
+    "failed_sort_never_scored": true,
+    "failed_sort_preserved": true,
+    "evaluator_failure_controller_terminal": {"ActiveState": "failed", "Result": "exit-code", "ExecMainStatus": "1"},
+    "evaluator_failure_preserved": true,
+    "evaluator_invocations": 1,
+    "rerun_controller_terminal": {"ActiveState": "failed", "Result": "exit-code", "ExecMainStatus": "1"},
+    "rerun_no_overwrite_blocked": true
+  },
+  "attempt_history": [
+    {"attempt": 1, "status": "failed_preserved", "cause": "sandboxed systemd user bus unavailable", "scientific_work": false},
+    {"attempt": 2, "status": "failed_preserved", "cause": "relative controller path was not resolvable from the transient service working directory", "scientific_work": false},
+    {"attempt": 3, "status": "pass", "change": "absolute packet controller path only", "scientific_work": false}
+  ],
+  "actions": {"scientific_sort": false, "scientific_scoring": false, "gpu_work": false, "recording_access": false}
+}

@@ -1,0 +1,43 @@
+{
+  "schema": "trained-entry-design-readiness-review-v1",
+  "reviewer": "H1",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_minimum_training_support_mask_trained_entry_repair_candidate_20261002_v3_h5",
+  "reviewed_manifest_sha256": "b8b3a33c29022792077cd45c319f648c2a7adb4b355c0b248d9b4db31d206cc3",
+  "reviewed_complete_sha256": "9814afe201bb8b8e152e0b3afd13409c85ffe683a4fc6f160a02f6ecc2d5d226",
+  "reviewed_source_sha256": "0acff501f0deac26bc005191f9efb083cbd1984c442316864779c2e87ef25189",
+  "reviewed_config_sha256": "db58489e8973eab2f60ca2a8276d09488d2bf8195217b531e8549d8e54ea8bf4",
+  "verdict": "DESIGN_READINESS_NO_GO_TARGETED_ORDERING_REPAIR_REQUIRED",
+  "execution_authorization": "NONE",
+  "closed_findings": [
+    "Integer kept indices are explicitly resolved, bounded, and unique.",
+    "Exported times, clusters, and amplitudes are compared row-for-row with full_st/full_clu/full_amp at the selected indices.",
+    "spike_templates and spike_detection_templates are bounded against their respective saved banks.",
+    "All four cluster tables require unique IDs exactly equal to exported cluster IDs.",
+    "Permutation-of-export-only, duplicate-kept, and out-of-bounds-template fixtures fail with preserved failure receipts.",
+    "The prior native extraction-hook proof, 30-native/9-snapshot inventory, source hashes, missing-key gate, injected failure, and COMPLETE-last protections remain present."
+  ],
+  "blocking_finding": {
+    "id": "H1-20261002-KEPT-ORDER",
+    "finding": "The validator's contract says integer kept_spikes is resolved to a unique, ordered index vector, but the code checks bounds and uniqueness only. A coordinated permutation of integer kept_spikes and every exported per-spike array passes all current ancestry checks, and exported spike_times are not independently required nondecreasing.",
+    "impact": "The validator can certify a semantically reordered export despite claiming preserved native row order; downstream comparison code requires globally sorted spike times.",
+    "repair": "Require strictly increasing integer kept indices (or explicitly redefine and justify permutation semantics), require nondecreasing exported/local times, and add a coordinated-permutation negative fixture."
+  },
+  "delta_review": {
+    "source_delta": "Only the targeted semantic validator additions shown in trained_source_targeted_repair.diff were accepted for review.",
+    "config_delta_from_v2": "The frozen config changes the trained source and launcher SHA-256 bindings; other observed contract structure is retained.",
+    "scientific_parameter_change_detected": false
+  },
+  "implementation_checks": {
+    "done": [
+      "Verified every manifest member and COMPLETE binding.",
+      "Read candidate source, exact diff, config delta, tests, launcher, success/failure receipts, artifact inventory, and native-hook receipt.",
+      "Traced every requested ancestry, bank-bound, and cluster-table condition to the consuming validator code."
+    ],
+    "not_done": [
+      "Did not launch data, voltage processing, sorting, training, detection, RF, or holdout work.",
+      "Did not independently rerun the H5 59-test environment; reviewed its immutable receipt and packaged evidence."
+    ],
+    "can_establish": "The requested v2 semantic gaps are materially repaired except for the claimed-but-unenforced order invariant.",
+    "cannot_establish": "Design readiness for a consequential trained run until coordinated reordering is rejected or explicitly made part of the contract."
+  }
+}

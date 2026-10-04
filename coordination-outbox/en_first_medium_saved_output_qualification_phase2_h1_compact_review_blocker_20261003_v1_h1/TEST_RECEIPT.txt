@@ -1,0 +1,16 @@
+H1 static review only; no REF/B scientific arrays opened.
+
+Candidate manifest: all 9 members OK.
+Phase-1 result manifest: all 5 members OK.
+Phase-1 service manifest: all 3 members OK.
+Phase-1 H1 postreview manifest: all 5 members OK.
+Active implementation boundary: exact 8-module match.
+Start-token HMAC recompute: 68f5608d57bb374b77a92074cbeae6e4a688ffaeba05cefe641e8bf4eac3f375 (MATCH).
+Exact runtime Phase-2 receipt gate: PASS using result packet + method-freeze file.
+Phase-1 service/postreview keys in runtime request/tokens: absent.
+Frozen tests: 12 passed in 4.40s.
+Claim absent: yes.
+Output absent: yes.
+Expected GO review condition COMPLETE absent: yes.
+
+An initial H1 replay used the host pytest entry point from the project working directory and failed before tests because the published source could not own the numba cache. A second replay redirected caches but the working-directory `testing` package shadowed the frozen package in the subprocess, yielding 11 pass / 1 import failure. The authoritative replay used the frozen PYTHONPATH from /tmp with caches under /tmp and passed 12/12. These setup failures did not execute scientific inputs.

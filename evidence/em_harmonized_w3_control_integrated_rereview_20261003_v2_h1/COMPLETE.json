@@ -1,0 +1,7 @@
+{
+  "schema": "compact-evidence-complete-v1",
+  "status": "NO_GO_LIFECYCLE_REPAIR_REQUIRED",
+  "launch_authorized": false,
+  "manifest_sha256": "6a28f5abbeb64f7ca7f36ce3f86045ed4e03dd161a0951cdb5bb33acbd3f91f9",
+  "written_last": true
+}

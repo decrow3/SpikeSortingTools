@@ -1,0 +1,14 @@
+{
+  "schema": "first-medium-measurement-redesign-targeted-repair-request-v1",
+  "requested_reviewer": "H5",
+  "execution_authorization": "NONE_REVIEW_PACKET_ONLY",
+  "requested_review": [
+    "verify H5-B1 duration and whole-table amplitude-interval validation",
+    "verify every reported coverage fraction is constrained to [0,1]",
+    "verify H5-B2 validates both complete sorts before correspondence",
+    "rerun exact-stop/lower-boundary and primary-competition adversarial fixtures",
+    "confirm matcher, R, DeltaR, bootstrap, gate, config, and conditional fit diagnostics are unchanged",
+    "rerun packaged-source tests from the immutable packet"
+  ],
+  "status": "EXECUTION_DISABLED_PENDING_H5_REVIEW"
+}

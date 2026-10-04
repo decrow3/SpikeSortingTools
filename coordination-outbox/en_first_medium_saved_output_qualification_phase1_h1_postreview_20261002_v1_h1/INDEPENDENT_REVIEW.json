@@ -1,0 +1,71 @@
+{
+  "schema": "phase1-ref-only-h1-postexecution-review-v1",
+  "producer": "H1",
+  "verdict": "PASS_PHASE1_POSTREVIEW",
+  "scientific_advancement_authorized": false,
+  "subject": {
+    "result_manifest_sha256": "8b73c931155741f84300f3cd3a5d260ae8bf0bcf2e05460a6f717c114712bb04",
+    "result_complete_sha256": "797ae2d395e25e35f59e15447df7435dfda73a0839ed092fbb25786cdd97077d",
+    "service_manifest_sha256": "1f48c3c119adbd87bb9fddc275f51b7b5047ba6dd9bda5124aa9479bb0435ac5",
+    "service_complete_sha256": "a742d3589c0e014792942017fe4de94704bbe2d9806f17478ca9af7df027b457"
+  },
+  "acceptance": {
+    "one_start_no_retry": true,
+    "exact_ref_cohort_units": 61,
+    "ref_self_R_exact": 1.0,
+    "bijective_label_permutation_R_exact": 1.0,
+    "exclusive_duplicate_control_R_exact": 1.0,
+    "independently_summed_ref_events": 227895,
+    "credited_candidate_events_once": 227895,
+    "half_open_boundaries_correct": true,
+    "final_stop_rejected": true,
+    "conditional_ref_self_support_unions_equal": true,
+    "conditional_ref_self_missingness_difference_pp": 0.0,
+    "provenance_matches_exact_request": true,
+    "cross_arm_scalar_emitted": false,
+    "b_arm_or_voltage_opened_by_h1": false
+  },
+  "review_dimensions": {
+    "correctness": {
+      "status": "PASS_SCOPED",
+      "basis": "exact manifests; executed-source trace; independent frozen-cohort, cohort-digest, event-total, and boundary recomputation; structural verification of the three identity controls and REF-self support invariance"
+    },
+    "reliability": {
+      "status": "PASS_ONE_SHOT_SCOPE",
+      "basis": "one start, Restart=no, zero restarts, successful managed-service receipt, persistent exact token claim, and completed output make both freshness conditions false"
+    },
+    "portability": {
+      "status": "NOT_ESTABLISHED",
+      "basis": "real REF arrays and QC inputs remain H5-local; H1 verified durable receipts and a content-bound REF-only baseline table but did not reproduce the full computation on another host"
+    }
+  },
+  "limitations": [
+    "H1 did not reopen H5-local event arrays or QC-window rows; exact R controls are independently checked from the executed identity/bijection/duplication construction, the exclusive-credit implementation, the independently summed REF denominator, and the authoritative real result",
+    "the numeric support-union fraction was not regenerated from H5-local QC rows; its required REF-self equality, 4/61 arithmetic, zero difference, request provenance, and construction were checked",
+    "R is a continuity proxy and does not prove biological identity; amplitude support is conditional and does not establish waveform preservation efficacy"
+  ],
+  "next_action": {
+    "state": "DEPENDENCY_WAITING",
+    "item": "H1-WAVEFORM-REVIEW",
+    "dependency": "H5 publishes the actual-host waveform-method freeze candidate from v3/review 360b6e...",
+    "ready_slot_filled": false,
+    "phase2_started": false
+  },
+  "implementation_checks": {
+    "done": [
+      "verified all result and service manifest members and delegated identities",
+      "traced the exact request, contract, managed service, executed source, measurement source, token claim, and completion order",
+      "independently selected the inclusive-depth REF cohort from the exact REF-only baseline table, recomputed its digest, and summed 227895 cohort events",
+      "independently recomputed cell edges and sentinel assignments",
+      "verified actual REF binding and report provenance against the exact request",
+      "verified no Phase-2 report, cross-arm scalar, ranked output, or scientific score exists"
+    ],
+    "not_done": [
+      "no B-arm file, voltage, real sorting/training, RF, holdout, Phase 2, or scientific effect evaluation",
+      "no cross-host full replay because H5-local REF event/QC arrays are not mounted on H1"
+    ],
+    "can_establish": "The exact one-shot REF-only Phase-1 diagnostic controls satisfy the frozen postreview acceptance conditions and can serve as the reviewed dependency for later explicitly promoted work.",
+    "cannot_establish": "Waveform preservation, repaired-arm improvement, repeatability, biological identity/purity, portability, or advancement."
+  }
+}
+

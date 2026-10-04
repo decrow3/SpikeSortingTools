@@ -1,0 +1,14 @@
+{
+  "schema": "h1-status-em-harmonized-w3-control-integrated-go-v3",
+  "status": "GO_TO_COORDINATOR_RELEASE",
+  "launch_performed": false,
+  "coordinator_release_required": true,
+  "immediate_release_preflight_required": true,
+  "no_retry": true,
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/em_harmonized_w3_control_integrated_go_20261003_v3_h1",
+  "manifest_sha256": "fb0f5a5da71d085616dd2736706f2499a79e161e5067750ccf2978890f01830c",
+  "complete_sha256": "511b3add1f0dfe3815bc602f13b7809c502765c20a8eb5d51316adc1a31adb49",
+  "h1_go_receipt_sha256": "642bb68fe502b44cb0aff20e1b27448999affc138e43d7703373cab7e6897e74",
+  "reviewed_h5_manifest_sha256": "b501f06501c16d636f5071ff4d52d253440e4e92c8430f3b433ed231dc2ecc2c",
+  "scope": "ONE_INPUT_HARMONIZED_W3_CONTROL_ONLY"
+}

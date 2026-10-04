@@ -1,0 +1,94 @@
+{
+  "schema": "first-medium-postrun-phase3-request-freeze-v2",
+  "status": "FROZEN_EXECUTION_DISABLED_BEFORE_NEW_OUTCOME_ACCESS",
+  "execution_enabled": false,
+  "phase": "phase3_repaired_repeat",
+  "consumer": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_phase3_provenance_repair_candidate_20261002_v3_h1",
+    "manifest_sha256": "3199ddda56d1b03c6a3d77d87443fbf1c2956d4ab09c08ede52467ca4b09b1cd",
+    "complete_sha256": "40508353a60978d311e8cdbaa5a533b4b8a67a91f5b045628e78c68f673a7918",
+    "contract_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_phase3_provenance_repair_candidate_20261002_v3_h1/configs/en_first_medium_saved_output_phase3.execution_disabled.v1.json",
+    "contract_sha256": "774b166f661b81547f2ca9b682fadfd2623df0181914317b918ae92c828fc095",
+    "independent_review_manifest_sha256": "c0d3f09341dd8653551eaae205c80c35ba942467d3703ef74a7d643cf403ec33"
+  },
+  "source_sha256": {
+    "testing.first_medium_saved_output_qualification": "dedef77b9a580969c94bfdc4cfe4084595ad43f0a9673280dd83440c93ca05b8",
+    "testing.first_medium_measurement_redesign": "779b3b82e4328f92f6d50cb0a411153e03d755172d9493ccda937a686f42d0d9",
+    "testing.first_medium_evaluator": "da3d5d5af8227f6ef70747dca32b3e2c52206230b5494d7bc9015cba24fcdf35",
+    "testing.sort_comparison": "174a4bb6d621489260927dc0bbc06558e408564158a44657ecdd306fa07db5da",
+    "testing.qualification_managed_launcher": "804832fc2796f0e454954c3db4c80cf50959574d95506222f26fc32c4956bd52"
+  },
+  "fixed_reference_cohort": {
+    "units": 61,
+    "ordered_cluster_ids": [163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 219, 220, 221, 222, 223, 224],
+    "cohort_digest_sha256": "3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0",
+    "artifact_file_sha256": "684bd0cc0cb27c4b4751640f9d2a5ab480c2d83c314e53a90c632efbe8c313a8"
+  },
+  "measurement": {
+    "correspondence_tolerance_frames": 15,
+    "minimum_correspondence_overlap": 0.1,
+    "bilateral_primary_retention": 0.5,
+    "bootstrap_replicates": 20000,
+    "bootstrap_seed": 20261002,
+    "minimum_effect": 0.05,
+    "primary_rule": "one-sided paired-REF-unit composition-bootstrap lower95 > 0.05",
+    "primary_boundary": "strict",
+    "repeat_role": "same-window engineering continuity diagnostic only",
+    "repeat_threshold": "NOT_DEFINED",
+    "repeat_pass_fail": "NOT_DEFINED"
+  },
+  "phase1_receipt": {
+    "directory": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase1_controls_20261002_v1_h5",
+    "manifest_sha256": "8b73c931155741f84300f3cd3a5d260ae8bf0bcf2e05460a6f717c114712bb04",
+    "complete_sha256": "797ae2d395e25e35f59e15447df7435dfda73a0839ed092fbb25786cdd97077d",
+    "binding_receipt_sha256": "9e1153feb7def1574fe2c8ac6872448123a8ee4477e0d42980cb632e40be07b7"
+  },
+  "arms": [
+    {
+      "arm_id": "REF384",
+      "curated_output": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/sorter_output",
+      "qc_dir": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/qc_regeneration_v6/REF384",
+      "binding_source": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase1_controls_20261002_v1_h5/ACTUAL_BINDING_RECEIPT.json"
+    },
+    {
+      "arm_id": "existing_corrected_B384",
+      "curated_output": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output",
+      "qc_dir": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/qc_regeneration_v6/existing_corrected_B384",
+      "binding_source": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_evaluator_post_qc_execution_result_20261002_v1_h5/evidence/INPUT_RECEIPTS.json",
+      "binding_source_sha256": "0d65cfa97141a6282db5a0b85d2d3b65636b366cd24e0497880b270c52490f19"
+    },
+    {
+      "arm_id": "repaired_B384",
+      "curated_output": "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v2/repaired_B384/native_results",
+      "qc_dir": "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v2/repaired_B384/qc",
+      "producer_inventory": "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v2/repaired_B384/launch_evidence/artifact_inventory.json"
+    },
+    {
+      "arm_id": "REF384_repeat",
+      "curated_output": "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v2/REF384_repeat/sorter_output",
+      "qc_dir": "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v2/REF384_repeat/qc",
+      "producer_inventory": "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v2/REF384_repeat/launch_evidence/artifact_inventory.json"
+    }
+  ],
+  "producer_receipt_paths": {
+    "pair_complete": "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v2/COMPLETE.json",
+    "attempt_terminal": "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v2_attempt/ATTEMPT_TERMINAL.pending.json",
+    "producer_contract": "/mnt/NPX/Luke/DARTsort_motion_experiments/ENABLED_DERIVATIVE_PATH_TO_BE_BOUND/contract/en_first_medium_pair.enabled.v1.json"
+  },
+  "output": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase3_postrun_20261002_v1_h5",
+  "future_final_receipt_hash_fill": {
+    "pair_complete_sha256": "FILL_EXACT_FINAL_RECEIPT_SHA256",
+    "pair_attempt_terminal_sha256": "FILL_EXACT_FINAL_RECEIPT_SHA256",
+    "pair_contract_sha256": "FILL_EXACT_ENABLED_CONTRACT_SHA256",
+    "repaired_B384_artifact_inventory_sha256": "FILL_EXACT_FINAL_RECEIPT_SHA256",
+    "REF384_repeat_artifact_inventory_sha256": "FILL_EXACT_FINAL_RECEIPT_SHA256"
+  },
+  "managed_launcher_generated_not_outcome_selected": [
+    "single-use phase3_start_token",
+    "start_token_binding_sha256 over the frozen identity context"
+  ],
+  "reporting_compatibility_gate": {
+    "status": "BLOCKED_PENDING_NARROW_REVIEWED_REPORTING_DELTA_OR_EXPLICIT_CONTRACT_RESOLUTION",
+    "reason": "The accepted consumer currently applies R_repeat >= 0.98 as a decision gate, while this freeze requires diagnostic-only REF repeat with threshold and pass/fail NOT_DEFINED."
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "schema": "candidate-g-continuation-managed-closure-review-v1",
+  "status": "NO_GO_PRODUCTION_BOOTSTRAP_RUNTIME_AND_CANONICAL_BINDING_INCOMPLETE",
+  "execution_enabled": false,
+  "candidate": "G",
+  "reviewed_packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_continuation_managed_closure_20261004_v1_h5",
+  "reviewed_packet_manifest_sha256": "da75f1d195fbb6146a62558494c877c7502e53eb9429c68fb652c691e17faebb",
+  "reviewed_packet_complete_sha256": "7b9a63ef2fe01915a74d77a46dd98a1af66a936cce007c140c0ee2454bbf760f",
+  "reviewed_request_sha256": "fe3543a8122e9778684f6a993643de00b467de9c927a5bb0a1f18a07a0c08371",
+  "coordination_sha256": "7d5fc9fa7ab46be64d6a3f7ff52c58e36bb71898abb977698476990d558e1d95",
+  "accepted_repairs": [
+    "the v3 closure opens and hashes 20 actual source, template, contract and ancestor files and requires an exact release closure set",
+    "the release schema rejects missing, extra, duplicate and aliased fields and binds the scientific attempt, envelope and resource values",
+    "six actual user-systemd rehearsals on huklaban5 exercised asynchronous success, failure, timeout, storage-stop, monitor-failure and publication-failure paths with zero restarts, sealed terminal evidence and bounded compact publication",
+    "Bubblewrap rejected the reported 36 protected-root write probes, and the earlier failed ReadOnlyPaths-only containment rehearsal is preserved",
+    "the compact publisher writes a bounded terminal-only packet with COMPLETE last and preserves a publication failure for external finalizer recovery",
+    "accepted direct-agglomeration science, the exact 14-array state, [239969921,250200079) envelope, 17179869184-byte ceiling, 14973326368-byte expectation and 3416-second worker timeout remain unchanged"
+  ],
+  "blocking_findings": [
+    {
+      "id": "FRESH_PRODUCTION_WRITABLE_PATHS_CANNOT_BE_PROVISIONED_INSIDE_UNIT",
+      "severity": "blocking",
+      "finding": "The production unit requires RUN_ROOT and COMPACT as ReadWritePaths before ExecStartPre, while launch_preflight_v3 requires both paths to be absent and creates them only in ExecStartPre. The service manager establishes the mount namespace before executing pre-start commands; an absent non-optional ReadWritePaths target therefore prevents the preflight that would create it. The real rehearsal used a pre-existing broad rehearsal base rather than this production fresh-path topology.",
+      "evidence": [
+        "service/candidate-g-continuation-v1.service.template:20-21,28-31",
+        "source/launch_preflight_v3.py:12-14",
+        "service/candidate-g-continuation-rehearsal@.service and evidence/REAL_SYSTEMD_REHEARSALS.json"
+      ],
+      "repair": "Provision and receipt exact empty writable roots before service namespace setup, then have the preflight validate their identity and emptiness; or use an explicitly reviewed systemd-safe parent/bootstrap design. Rehearse the exact production-shaped absent-to-ready transition through a disposable managed unit."
+    },
+    {
+      "id": "READ_ONLY_ROOT_OMITS_REQUIRED_RUNTIME_TEMP_AND_CACHE_WRITES",
+      "severity": "blocking",
+      "finding": "Bubblewrap makes the entire host root read-only and binds only RUN_ROOT and COMPACT writable. The production unit does not direct TMPDIR, Numba, Torch/XDG or similar runtime caches into those writable roots. The actual DARTsort template path can create temporary directories, so the dummy-worker systemd rehearsals do not establish that the real continuation can initialize under this filesystem.",
+      "evidence": [
+        "service/candidate-g-continuation-v1.service.template:8-10,30-31",
+        "evidence/REAL_SYSTEMD_REHEARSALS.json",
+        "source/dummy_worker.py versus source/run_worker_v3.py"
+      ],
+      "repair": "Create bounded temp/cache directories under RUN_ROOT, export TMPDIR and required cache variables to them, restore reviewed thread controls, and run a production-shaped import/temp/cache/CUDA-discovery rehearsal under the exact Bubblewrap command before authorizing science."
+    },
+    {
+      "id": "RELEASE_GATE_DOES_NOT_PIN_CANONICAL_AUTHORIZATION_OR_UNIT_PATHS",
+      "severity": "blocking",
+      "finding": "release_gate_v3 pins scalar run fields but accepts the preparation path, H1 review path, release path and rendered-unit paths from the candidate release. Any sealed packet and any sealed GO-shaped review satisfying field checks can occupy those roles, and PACKET is not required to equal the declared preparation path. render_units_v3 subsequently derives executed source paths from the declared preparation path. Hash verification therefore proves the supplied objects are internally consistent, not that they are the exact reviewed authorization and executable identities.",
+      "evidence": [
+        "source/release_gate_v3.py:6-10,40-63",
+        "source/render_units_v3.py"
+      ],
+      "repair": "Pin the exact managed-closure packet, exact H1 review destination, exact release location/hash contract, exact installed production/finalizer unit paths and unit names; require the preparation path to equal PACKET and closure entries to describe that executable packet. Add negative tests for alternate sealed preparation, GO review, release and unit paths."
+    }
+  ],
+  "independent_reruns": {
+    "packet_seal": "82 products verified",
+    "closure_focused_tests": "10 passed in 0.02s on huklaban1",
+    "actual_source_closure": "20 entries inspected and packet seal verified",
+    "reported_h5_systemd_rehearsals": "six modes with live PID/cgroup/InvocationID, NRestarts=0, terminal seal and compact completion; reviewed from immutable evidence",
+    "production_unit_exact_rehearsal": false,
+    "real_dartsort_runtime_mount_rehearsal": false,
+    "systemd_user_bus_on_huklaban1": "not used; no service staged or started",
+    "recording_voltage_bytes_read": 0,
+    "gpu_work_started": false
+  },
+  "authorization": "No release, unit installation, continuation start, voltage read or GPU work is authorized by this verdict. Preserve this packet and prepare a new execution-disabled repair packet for focused review."
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "em-harmonized-w3-recovery-authoritative-inputs-prior-block-v1",
+  "status": "HISTORICAL_BLOCK_RESOLVED_BY_DIRECT_CURRENT_THREAD_APPROVAL",
+  "historical_reason": "The platform classified the episode catalogue as plausibly sensitive and did not accept the cited cross-thread approval as trusted direct authorization in this thread.",
+  "state_when_blocked": {
+    "source_preserved": true,
+    "destination_absent": true,
+    "files_transferred": 0
+  },
+  "resolution": "The user explicitly replied 'Yes approved' in the current thread after being shown the exact source, destination, size, hash, and sensitivity warning.",
+  "score_performed": false,
+  "launch_performed": false
+}

@@ -1,0 +1,20 @@
+{
+  "schema": "candidate-g-v2-2-manifest-v1",
+  "status": "NO_GO_INTEGRATED_CANDIDATE_G_PRODUCTION_WIRING",
+  "result_kind": "h1_review",
+  "attempt_id": "candidate-g-production-wiring-h1-review-v1",
+  "seal_nonce": "261893b528fd87249d4e5ed2328db056",
+  "product_count": 2,
+  "products": [
+    {
+      "path": "FINAL_REVIEW.md",
+      "bytes": 9018,
+      "sha256": "7df6b8c96fd23bd9d168a5acb25ee586ee3f8bc9cf022f3da81f8a89536eff0e"
+    },
+    {
+      "path": "VERDICT.json",
+      "bytes": 1483,
+      "sha256": "e05360475b0eb650b6f23ed9e99c88083fe60b551ba1bbffcab0743104bb98bf"
+    }
+  ]
+}

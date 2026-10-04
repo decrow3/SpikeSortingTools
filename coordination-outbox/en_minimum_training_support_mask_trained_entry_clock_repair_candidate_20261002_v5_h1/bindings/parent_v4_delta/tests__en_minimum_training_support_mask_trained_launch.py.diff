@@ -1,0 +1,28 @@
+--- /mnt/NPX/Luke/DARTsort_motion_experiments/en_minimum_training_support_mask_trained_entry_repair_candidate_20261002_v3_h5/tests/en_minimum_training_support_mask_trained_launch.py
++++ /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_minimum_training_support_mask_trained_launch.py
+@@ -115,6 +115,17 @@
+             np.save(results / "kept_spikes.npy", np.array([0, 0, 3], dtype=np.int64), allow_pickle=False)
+         elif outcome == "out-of-bounds-id":
+             np.save(results / "spike_templates.npy", np.array([0, 2, 0], dtype=np.int32), allow_pickle=False)
++        elif outcome == "reordered-kept":
++            np.save(results / "kept_spikes.npy", np.array([1, 0, 3], dtype=np.int64), allow_pickle=False)
++        elif outcome == "coordinated-permutation":
++            np.save(results / "kept_spikes.npy", np.array([1, 0, 3], dtype=np.int64), allow_pickle=False)
++            for name in (
++                "spike_times.npy", "spike_clusters.npy", "spike_templates.npy",
++                "spike_detection_templates.npy", "spike_positions.npy",
++                "amplitudes.npy", "pc_features.npy", "tF.npy",
++            ):
++                values = np.load(results / name, allow_pickle=False)
++                np.save(results / name, values[[1, 0, 2]], allow_pickle=False)
+         return {"status": "orchestration_only_success"}
+     return runner
+ 
+@@ -131,6 +142,7 @@
+         "--synthetic-outcome", choices=(
+             "success", "fail-after-whitening", "corrupt-alignment",
+             "permuted-ancestry", "duplicate-kept", "out-of-bounds-id",
++            "reordered-kept", "coordinated-permutation",
+         ),
+         default="success",
+     )

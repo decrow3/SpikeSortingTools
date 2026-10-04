@@ -1,0 +1,29 @@
+Independent H1 rerun, 2026-10-02 UTC
+
+Subject packet:
+  /mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_evaluator_spatial_provenance_candidate_20261002_v1_h5
+
+Native packet test invocation:
+  PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR=/tmp/h5_spatial_review_numba PYTHONPATH=<packet>/source pytest -q -p no:cacheprovider <packet>/tests/test_first_medium_evaluator.py
+Result:
+  9 failed, 7 passed in 3.23s
+  All nine failures were FileNotFoundError while constructing spatial_spec at the hard-coded H5 Kilosort io.py path.
+
+Native packet packaged CLI invocation:
+  PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR=/tmp/h5_spatial_cli_numba PYTHONPATH=<packet>/source python <packet>/tests/run_packaged_cli_proof.py
+Result:
+  exit 1 at the same hard-coded H5 Kilosort io.py path.
+
+Independent Kilosort source comparison:
+  H1 rescue-production io.py sha256 = 767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd
+  H1 rescue-production postprocessing.py sha256 = d20da9026de10eb83a02466cdb233c85ae4215c15af7d5656c3593c3809a0a55
+  Both exactly equal the source hashes declared for H5.
+
+Path-only adapted rerun:
+  Copied packet to /tmp and replaced only the H5 environment prefix in the two fixture drivers with the H1 rescue-production environment prefix. Candidate source/config were unchanged.
+Result:
+  16 passed in 5.02s
+  packaged CLI status=passed
+  all five imported module paths were inside the temporary packet source
+
+No evaluator, voltage, waveform, sorting, training, detection, RF, or holdout job ran.

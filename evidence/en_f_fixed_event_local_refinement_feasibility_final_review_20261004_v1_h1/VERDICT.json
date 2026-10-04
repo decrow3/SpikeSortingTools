@@ -1,0 +1,35 @@
+{
+  "schema": "en-f-fixed-event-local-refinement-h1-final-review-v1",
+  "status": "NOT_FEASIBLE_FROM_SAVED_ARTIFACTS",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_local_refinement_feasibility_20261004_v2_h5",
+  "reviewed_manifest_sha256": "883b35835e30fbce346b337ba74526f95b8c45ef152f002b01f2f578a4e83fc2",
+  "reviewed_complete_sha256": "4bfc48821284815b3b8ab0277baf333ef3fc42787fb323adc402f09a526d19e4",
+  "w3_parent_rows_half_open": [18112500, 18603444],
+  "w3_event_count": 490944,
+  "missing_load_bearing_state": [
+    "post-PCMerge parent-row-keyed membership",
+    "post-TMM parent-row-keyed membership",
+    "fitted TMM means and bases",
+    "EmbeddedNoise and neighborhood covariance state",
+    "TMM train and validation membership",
+    "post-TMM templates",
+    "agglomeration mapping"
+  ],
+  "unavoidable_regeneration": [
+    "PCMerge rerun",
+    "TMM and noise refit from residual snippets",
+    "post-TMM template estimation from recording voltage",
+    "agglomeration rerun"
+  ],
+  "minimum_payload_bytes": {
+    "W3_collisioncleaned_tpca_features": 282783744,
+    "residual_snippets": 721616896,
+    "combined_lower_bound": 1004400640
+  },
+  "fixture_correction": "Published controls fail closed for add/drop/whole-row reorder and feature-only reorder, but not label-only or neighborhood-only mutation.",
+  "packet_seal_correction": "All hashes verify, but COMPLETE.json is not strictly newest on shared storage.",
+  "final_label_substitution_allowed": false,
+  "silent_regeneration_allowed": false,
+  "scientific_execution_performed": false,
+  "automatic_progression": false
+}

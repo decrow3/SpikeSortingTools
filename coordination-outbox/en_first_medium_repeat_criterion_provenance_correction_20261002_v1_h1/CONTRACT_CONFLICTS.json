@@ -1,0 +1,27 @@
+{
+  "schema": "en-first-medium-repeat-contract-conflicts-v1",
+  "status": "EXACT_SOURCES_PUBLISHED_NO_CODE_CHANGE",
+  "accepted_criterion": "R_repeat >= 0.98",
+  "conflict": {
+    "pre_outcome_interpretation_source": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_trained_pair_preparation_readiness_20261002_v1_h5/PREDICTIONS_ACCEPTANCE_INTERPRETATION.json",
+      "sha256": "b2ef938c0087fdf5f75102c1178ddb6ac2841c086766dfe78d67e596c66d7ede",
+      "lines": "16,25",
+      "meaning": "0.98 is a gate; repeat failure/unmeasured is inconclusive and forbids repaired-arm attribution"
+    },
+    "accepted_phase3_config": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_phase3_provenance_repair_candidate_20261002_v3_h1/configs/en_first_medium_saved_output_phase3.execution_disabled.v1.json",
+      "sha256": "774b166f661b81547f2ca9b682fadfd2623df0181914317b918ae92c828fc095",
+      "lines": "66-76,194-199",
+      "meaning": "binds R_repeat >= 0.98 and missing evidence as inconclusive/no-advance"
+    },
+    "accepted_phase3_source": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_phase3_provenance_repair_candidate_20261002_v3_h1/source/testing/first_medium_saved_output_qualification.py",
+      "sha256": "dedef77b9a580969c94bfdc4cfe4084595ad43f0a9673280dd83440c93ca05b8",
+      "lines": "411-412,430-438,447-461",
+      "meaning": "correctly calculates separate primary/repeat passes, but maps either failure to overall status reject"
+    }
+  },
+  "unresolved_question": "The origin artifact explicitly assigns repeat failure/unmeasured to inconclusive, whereas the source labels a numeric repeat failure reject. This task does not choose a post-outcome reinterpretation or edit code.",
+  "required_before_evaluator_invocation": "Resolve the overall decision-status mapping in a narrow pre-outcome reviewed contract/source correction while preserving the accepted 0.98 gate and separate primary/repeat fields."
+}

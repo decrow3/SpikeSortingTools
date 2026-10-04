@@ -1,0 +1,10 @@
+{
+  "schema": "en-a-four-unit-independent-metadata-verifier-packet-v1-complete",
+  "status": "complete_authoring_only_not_final_review",
+  "manifest": "MANIFEST.sha256",
+  "manifest_sha256": "331a1fdab65a4b9cfe74f1f9f0dbdd17171fdcb7b492ad0434969e423cd52e66",
+  "verifier_source_sha256": "ea292d8f6ecbaa9f4306bb9e59754ecab3447c0a2b04f539cc343110111a8a2e",
+  "recording_binary_opened": false,
+  "voltage_read": false,
+  "final_v3_review_performed": false
+}

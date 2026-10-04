@@ -1,0 +1,27 @@
+{
+  "schema": "en-first-medium-phase3-provenance-repair-test-results-v3",
+  "command": "PYTHONPATH=coordination-outbox/en_first_medium_saved_output_phase3_provenance_repair_candidate_20261002_v3_h1/source:coordination-outbox/en_first_medium_saved_output_phase3_provenance_repair_candidate_20261002_v3_h1/producer PYTHONDONTWRITEBYTECODE=1 pytest -q coordination-outbox/en_first_medium_saved_output_phase3_provenance_repair_candidate_20261002_v3_h1/tests/test_phase3_composition.py",
+  "result": "11 passed",
+  "elapsed_seconds_reported_by_pytest": 10.76,
+  "real_project_data_accessed": false,
+  "managed_entry_invoked": true,
+  "covered": [
+    "strict DeltaR lower95 below/equal/above 0.05",
+    "DeltaR repaired-minus-existing role and sign",
+    "same-window R_repeat and >=0.98 boundary",
+    "fixed-cohort unmatched unit contributes zero",
+    "reciprocal-primary label mapping is bijective",
+    "REF binding failure precedes candidate loading",
+    "unfinished pair receipt rejected before STARTED/output",
+    "accepted producer finalizer binds lightweight arm inventory states into pair COMPLETE",
+    "absent or swapped execution states rejected before scoring",
+    "unrelated same-basename inventory path rejected before scoring",
+    "wrong arm completion hash rejected before scoring",
+    "output mutation rejected against authenticated inventory before scoring",
+    "missing QC and waveform are UNMEASURED and never pass",
+    "successful reports validate against the accepted byte-frozen compact-report schema including waveform.pair_coverage",
+    "amplitudes.npy absent while full_st[kept_spikes][:,2] path succeeds",
+    "fixed-cell aggregate diagnostics emitted",
+    "scientific advancement always false"
+  ]
+}

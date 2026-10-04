@@ -1,0 +1,14 @@
+{
+  "schema": "en-first-medium-phase3-decision-mapping-correction-v1",
+  "status": "EXECUTION_DISABLED_PENDING_INDEPENDENT_REVIEW",
+  "supersedes_consumer_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_phase3_provenance_repair_candidate_20261002_v3_h1",
+  "superseded_manifest_sha256": "3199ddda56d1b03c6a3d77d87443fbf1c2956d4ab09c08ede52467ca4b09b1cd",
+  "superseded_complete_sha256": "40508353a60978d311e8cdbaa5a533b4b8a67a91f5b045628e78c68f673a7918",
+  "planner_resolution_source_thread_id": "01a0f6aa-07be-7af1-bb86-a67ed23eca72",
+  "defect": "The thin composer mapped any numeric repeat failure to overall reject even though the pre-outcome contract assigns repeat failure/unmeasured and missing required endpoints to overall inconclusive, with advance=false and preserved component verdicts.",
+  "source_delta": "Replace only the overall decision-status composition at the former line 438 with unconditional inconclusive for this thin path, which always has waveform UNMEASURED and guardrails NOT_COMPOSED.",
+  "config_delta": "Record the resolved status precedence and new active consumer source hash; preserve all estimators, thresholds, cohort, inputs, provenance, resources, and lifecycle rules.",
+  "scientific_effect": "none on R, DeltaR, bootstrap, repeat R, component pass/fail, reasons, matcher, cohort, or input handling; report composition only",
+  "execution_enabled": false,
+  "original_preserved": true
+}

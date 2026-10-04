@@ -1,0 +1,19 @@
+{
+  "schema": "immutable-evidence-packet-complete-v1",
+  "packet": "en_first_medium_waveform_launcher_h1_independent_review_20261002_v1_h1",
+  "producer": "H1",
+  "completed_at": "2026-10-02T13:45:36-07:00",
+  "status": "TARGETED_LAUNCHER_REPAIR_REQUIRED",
+  "manifest_sha256": "9842cca05ee6762aa5af26138b04e2edd792bf2f1504b19485870747837e1381",
+  "waveform_method_verdict": "GO_METHOD_FREEZE_ONLY",
+  "launcher_go": false,
+  "scientific_execution_go": false,
+  "service_installed": false,
+  "scientific_execution_started": false,
+  "recording_or_voltage_accessed_by_h1": false,
+  "blocking_findings": [
+    "R1_DURABLE_ONE_START_AND_PRE_ROOT_FAILURE",
+    "R2_PERSISTENT_OUTPUT_CAP_UNENFORCED",
+    "R3_CURRENT_VOLTAGE_CONTINUITY_NOT_CHECKED_AT_PAIR_LAUNCH"
+  ]
+}

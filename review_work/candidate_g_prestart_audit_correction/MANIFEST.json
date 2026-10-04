@@ -1,0 +1,20 @@
+{
+  "attempt_id": "candidate-g-continuation-prestart-audit-delta-review-20261004a",
+  "product_count": 2,
+  "products": [
+    {
+      "bytes": 4016,
+      "path": "FINAL_REVIEW.md",
+      "sha256": "71f99f53df503a8a5e8925dcae57423aec460b6dcb3b382cd21330e53e9acbc7"
+    },
+    {
+      "bytes": 4904,
+      "path": "VERDICT.json",
+      "sha256": "c68ea6c72c15de8618973962c117e1e624e8b36ae8809d002208209911de69ef"
+    }
+  ],
+  "result_kind": "candidate_g_continuation_prestart_audit_delta_review",
+  "schema": "candidate-g-v2-2-manifest-v1",
+  "seal_nonce": "1758f4fa4a824c43e47e5f33827c6c5d",
+  "status": "GO_CREATE_EXACT_RUN_PARENT_AND_RERUN_READ_ONLY_AUDIT"
+}

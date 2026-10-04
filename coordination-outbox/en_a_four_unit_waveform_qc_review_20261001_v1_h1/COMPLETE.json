@@ -1,0 +1,12 @@
+{
+  "complete": true,
+  "packet": "en_a_four_unit_waveform_qc_review_20261001_v1_h1",
+  "status": "go_for_one_managed_h5_local_saved_array_qc_execution",
+  "manifest_sha256": "1adde718c916412d1422ecd7e52e2df626311ff436da08e13f4eae1a3aaff2d5",
+  "candidate_manifest_sha256": "5d0663f4a89ac6b1da6060ffcfff24167b92d018620a244525bad78774b21447",
+  "execution_limit": 1,
+  "parameter_tuning": false,
+  "retry": false,
+  "real_archive_opened_by_reviewer": false,
+  "recording_opened_by_reviewer": false
+}

@@ -1,0 +1,20 @@
+{
+  "attempt_id": "candidate-g-continuation-production-bootstrap-review-20261004a",
+  "product_count": 2,
+  "products": [
+    {
+      "bytes": 4544,
+      "path": "FINAL_REVIEW.md",
+      "sha256": "5fd7d2d88bab4e4563864872f29d5279b42ce3232c49f8a86f49245b97166207"
+    },
+    {
+      "bytes": 7446,
+      "path": "VERDICT.json",
+      "sha256": "c4831076a40d86acbd3ec7bf9a71d4f1e378243f0ba52bcd12cdf0fe0adebb8d"
+    }
+  ],
+  "result_kind": "candidate_g_continuation_production_bootstrap_review",
+  "schema": "candidate-g-v2-2-manifest-v1",
+  "seal_nonce": "c0d8384064ec7304f77a1d15ffd5fe5e",
+  "status": "NO_GO_UNIT_IDENTITY_STORAGE_ACCOUNTING_AND_SMOKE_PROVENANCE_INCOMPLETE"
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "en-first-medium-pair-inventory-binding-delta-v1",
+  "base_launcher_sha256": "238c9c997bad67415a13671deaa5569ee121f3a27aa07188fef51c424f2029f8",
+  "candidate_launcher_sha256": "9e7290c182211ad5a71c952e9f178af764b6fe66ffe4d328cf3b2cbc694f84bc",
+  "changed_functions": [
+    "_execution_complete",
+    "execute_pair call sites"
+  ],
+  "added_execution_state_fields": [
+    "artifact_inventory_path",
+    "artifact_inventory_sha256"
+  ],
+  "binding_chain": "authoritative pair COMPLETE -> exact execution_states map -> deterministic arm inventory path/SHA256 -> native inventory members -> consumer same-buffer identity validation",
+  "ref_inventory": "<planned_paths.root>/REF384_repeat/launch_evidence/artifact_inventory.json",
+  "repaired_inventory": "<reviewed repaired config trained.run_root>/launch_evidence/artifact_inventory.json",
+  "scientific_code_changed": false,
+  "resource_or_finalization_rule_changed": false,
+  "execution_enabled": false
+}

@@ -1,0 +1,20 @@
+{
+  "schema": "candidate-g-v2-2-manifest-v1",
+  "status": "GO_INTEGRATED_CANDIDATE_G_V2_2_PREPARATION_EXECUTION_REMAINS_DISABLED",
+  "result_kind": "h1_review",
+  "attempt_id": "candidate-g-v2-2-1-h1-review",
+  "seal_nonce": "873b2bceec99a19e7669a94568ef6165",
+  "product_count": 2,
+  "products": [
+    {
+      "path": "FINAL_REVIEW.md",
+      "bytes": 7261,
+      "sha256": "69e99f28551441df4a5e4169061f99ce7fe02a42d101ea5573803e55f7d41a2a"
+    },
+    {
+      "path": "VERDICT.json",
+      "bytes": 1050,
+      "sha256": "aa14b49db1514de78dbce850fa1396bf2e43828d91d78f66a0316a9365078d86"
+    }
+  ]
+}

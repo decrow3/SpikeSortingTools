@@ -1,0 +1,11 @@
+{
+  "correct_nonzero_origin": true,
+  "half_open_bound_rejected": true,
+  "int64_overflow_contract_rejected": true,
+  "off_by_one_rejected": true,
+  "saved_arrays_only": true,
+  "schema": "trained-terminal-clock-boundary-fixtures-v1",
+  "voltage_sort_training_detection_accessed": false,
+  "wrong_offset_rejected": true,
+  "zero_origin": true
+}

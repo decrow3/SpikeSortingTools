@@ -1,0 +1,17 @@
+{
+  "schema": "candidate-g-v2-1-integrated-review-manifest-v1",
+  "status": "NO_GO_INTEGRATED_CANDIDATE_G_V2_1_PREPARATION",
+  "products": [
+    {
+      "path": "FINAL_REVIEW.md",
+      "bytes": 9695,
+      "sha256": "eab168895b0b9d9187fed02afb60c7ab36f58fd4ce0beb616369be689ef035e8"
+    },
+    {
+      "path": "VERDICT.json",
+      "bytes": 2246,
+      "sha256": "7d43abf19919e1ed8fc0d584bb2ee4cba9e9aa02128a87759b9d16f29781ffbd"
+    }
+  ],
+  "product_count": 2
+}

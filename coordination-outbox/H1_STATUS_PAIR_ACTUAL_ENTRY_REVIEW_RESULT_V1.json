@@ -1,0 +1,21 @@
+{
+  "schema": "coordination-status-v1",
+  "created_utc": "2026-10-03T05:35:42Z",
+  "owner": "H1",
+  "task": "independent actual-entry review of H5 pair-enablement B1/B2 targeted repair",
+  "status": "COMPLETE_BLOCKED",
+  "verdict": "BLOCK_ACTUAL_ENTRY_SOURCE_CLOSURE_NOT_CONSUMED",
+  "subject": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_enabled_derivative_targeted_repair_20261003_v2_h5",
+    "manifest_sha256": "a135227fa7d22246715d58643fcae55e0ac902f33176006a0bdb5670ed37b167",
+    "complete_sha256": "cec5bb844b3d33a0742df037990809d97d637d96387eab03c73fd53139bd55ea"
+  },
+  "review_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_enabled_derivative_targeted_repair_actual_entry_h1_review_20261003_v1_h1",
+    "manifest_sha256": "e2f3c256288885eea8bb0258117f96d8cd3cc8539e3c92db26970eeed69d0089",
+    "complete_sha256": "1e7772f00eadd2a4cbf1df08c5f01e96d6c375b45ce10cc79d2f43d06ba8b744"
+  },
+  "blocker": "The actual repaired-B validator is imported from the older predecessor staged_source_root, while preflight verifies the fresh packet's source bindings and a 23-member source/pipeline closure. A hash-different module at the selected root passes validate_contract and is imported.",
+  "execution_started": false,
+  "next_decision": "H5 must create a fresh execution-disabled derivative that binds and hashes the actual imported validator closure, add the changed-root rejection, and request independent rereview before enablement."
+}

@@ -1,0 +1,10 @@
+{
+  "schema": "em-harmonized-w3-control-h1-integrated-go-complete-v1",
+  "status": "GO_TO_COORDINATOR_RELEASE",
+  "manifest_sha256": "fb0f5a5da71d085616dd2736706f2499a79e161e5067750ccf2978890f01830c",
+  "source_packet_manifest_sha256": "b501f06501c16d636f5071ff4d52d253440e4e92c8430f3b433ed231dc2ecc2c",
+  "h1_go": true,
+  "launch_performed": false,
+  "coordinator_release_required": true,
+  "immediate_release_preflight_required": true
+}

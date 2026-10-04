@@ -1,0 +1,42 @@
+{
+  "schema": "em-harmonized-w3-control-h1-final-recomputation-v1",
+  "point_estimates": {
+    "F": {"yield": 972, "eligible": 649, "rho": 0.6761670705417997},
+    "L": {"yield": 478, "eligible": 386, "rho": 0.7525836443406859},
+    "H": {"yield": 461, "eligible": 370, "rho": 0.7421635214982477}
+  },
+  "bootstrap": {
+    "draws_per_contrast": 2000,
+    "draw_indices_per_contrast": [0, 1999],
+    "all_draws_finite": true,
+    "minimum_required_valid_draws": 1900,
+    "primary_percentiles_recomputed": [0.04629654796589333, 0.09627704145895771],
+    "secondary_percentiles_recomputed": [-0.02427131726387325, 0.0022281239525901763],
+    "multiplicity_matrix_shape": [2000, 68],
+    "multiplicity_row_sum": 68,
+    "multiplicity_sha256_recomputed": "440bae6266bbcc8a33232fb030f8e108d3c741ac5bc89b295f7a00b548658512",
+    "one_common_matrix_for_F_L_H_verified_in_frozen_source": true
+  },
+  "shared_domain_exposure_seconds": {
+    "negative_excursion": 68.35180705826133,
+    "outside_mask_flat": 221.70902639064025,
+    "catalogue_outside_remainder": 49.939162662179115,
+    "total": 339.9999961110807
+  },
+  "yield_guardrails": {
+    "F": {"relative_H_minus_comparator": -0.5257201646090535, "directional_pass": false, "equivalence_pass": false},
+    "L": {"relative_H_minus_comparator": -0.03556485355648536, "directional_pass": true, "equivalence_pass": true},
+    "directional_max_loss": 0.05,
+    "equivalence_max_absolute_difference": 0.05
+  },
+  "short_interval_guardrails": {
+    "threshold_directional_max_H_increase": 0.01,
+    "threshold_equivalence_max_absolute_difference": 0.01,
+    "all_domain_checks_against_F_pass": true,
+    "all_domain_checks_against_L_pass": true,
+    "fractions_recomputed_from_lag9_29_over_denominator": true
+  },
+  "classification_precedence_verified": true,
+  "undefined_rules_triggered": false,
+  "serialized_outputs_match_result": true
+}

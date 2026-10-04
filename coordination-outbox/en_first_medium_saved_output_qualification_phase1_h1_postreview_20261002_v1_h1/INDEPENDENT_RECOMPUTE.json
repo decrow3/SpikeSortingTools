@@ -1,0 +1,61 @@
+{
+  "actual_ref_binding_matches_request": true,
+  "boundaries": {
+    "edges": [0, 1799991, 3599981, 5399971, 7199961, 8999951, 10799941, 12599932, 14399922, 16199912, 17999901],
+    "final_stop_rejected": true,
+    "sentinel_cells": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9]
+  },
+  "candidate_ranked_output_emitted": false,
+  "cohort": {
+    "cluster_ids": [163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 219, 220, 221, 222, 223, 224],
+    "sha256": "3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0",
+    "units": 61
+  },
+  "conditional_ref_self": {
+    "candidate_support_union_fraction_full_cohort_time": 0.08256777470563884,
+    "common_time_fraction_full_cohort_time": 0.08256777470563884,
+    "conditional_median_missingness_difference_pp": 0.0,
+    "matched_units": 61,
+    "reference_cohort_units": 61,
+    "reference_support_union_fraction_full_cohort_time": 0.08256777470563884,
+    "supported_unit_fraction_full_cohort": 0.06557377049180328,
+    "supported_units": 4
+  },
+  "cross_arm_scalar_emitted": false,
+  "event_credit": {
+    "independent_ref_events": 227895,
+    "reported_credited_once": 227895
+  },
+  "identity_verification": {
+    "manifest_members": {"result": 5, "service": 3},
+    "observed": {
+      "result_complete": "797ae2d395e25e35f59e15447df7435dfda73a0839ed092fbb25786cdd97077d",
+      "result_manifest": "8b73c931155741f84300f3cd3a5d260ae8bf0bcf2e05460a6f717c114712bb04",
+      "service_complete": "a742d3589c0e014792942017fe4de94704bbe2d9806f17478ca9af7df027b457",
+      "service_manifest": "1f48c3c119adbd87bb9fddc275f51b7b5047ba6dd9bda5124aa9479bb0435ac5"
+    }
+  },
+  "input_reads": {
+    "b_arm_files": false,
+    "exact_contract_request_and_source": true,
+    "ref_only_baseline_table": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_evaluator_post_qc_execution_result_20261002_v1_h5/results/pairs/REF384__existing_corrected_B384/unit_metrics_baseline.csv",
+      "sha256": "890fe7c1301001a11b62308b7d2954fc204d49bb56e33c281b288f3bd8be1842"
+    },
+    "result_and_service_receipts": true,
+    "voltage": false
+  },
+  "one_start_no_retry": true,
+  "provenance_source_hashes_verified": true,
+  "reported_ref_provenance_matches_request": true,
+  "retention_controls": {
+    "bijective_label_permutation": 1.0,
+    "exclusive_duplicate": 1.0,
+    "ref_self": 1.0,
+    "structural_basis": "exact timestamp identity/bijection/duplication plus exclusive one-to-one set credit in bound source"
+  },
+  "schema": "phase1-ref-only-independent-recompute-v1",
+  "scientific_score": null,
+  "verdict": "PASS"
+}
+

@@ -1,0 +1,17 @@
+Independent command:
+python -m pytest -q /mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_waveform_qc_review_candidate_20261001_v1_h5/tests/test_en_a_four_unit_waveform_qc.py
+
+Result:
+6 passed in 0.21s
+
+The two warnings concerned pytest's inability to create a cache inside the immutable read-only packet and do not affect tests.
+
+Reviewed fixture scope:
+- q0 identity and explicit force-zero boundary indices;
+- translated singleton lands at explicit corrected channel with no extra nonzeros;
+- wrong-sign and no-shift produce explicit equality fractions below 0.99;
+- single and max-lag pair window endpoints/lengths;
+- centered/CAR robust metric numeric known answer;
+- correlation identity and zero-norm degeneracy.
+
+No retained archive or recording binary was opened.

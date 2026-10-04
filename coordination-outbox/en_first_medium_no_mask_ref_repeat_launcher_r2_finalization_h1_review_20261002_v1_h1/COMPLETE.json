@@ -1,0 +1,9 @@
+{
+  "schema": "h1-independent-r2-finalization-delta-review-complete-v1",
+  "status": "complete",
+  "verdict": "GO_R2_FINALIZATION_REPAIR_ONLY_EXECUTION_REMAINS_DISABLED",
+  "manifest_sha256": "7fde2fc6d93a85d3453471176ad66f6e3e8cb14349a449f38ea7e7e44d0fa6c5",
+  "subject_manifest_sha256": "682b3c3cc6cbe9bf3ae9a2bd2a19313888ddacfae99e199e9bd884ff9ffda284",
+  "completed_at": "2026-10-02T14:42:38-07:00",
+  "completion_written_last": true
+}

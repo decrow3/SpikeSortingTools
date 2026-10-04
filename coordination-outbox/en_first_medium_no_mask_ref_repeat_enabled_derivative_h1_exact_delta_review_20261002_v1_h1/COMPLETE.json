@@ -1,0 +1,14 @@
+{
+  "schema": "luke-h1-enabled-derivative-exact-delta-review-complete-v1",
+  "status": "COMPLETE_BLOCKING_REVIEW",
+  "verdict": "BLOCK_REPAIRED_ARM_APPROVAL_NOT_CONSUMABLY_BOUND",
+  "manifest_sha256": "8db87c33506a89a6d19f2fb0659fe00973748c91f576b45637ea54e41cb53e9c",
+  "subject_manifest_sha256": "bc5f2ffdc2f3e32b7025b21dd7b437d6d9522e105ec02f178c1eb7222504367b",
+  "subject_complete_sha256": "8c0b975d5639c7c747cca4243212aee09fa3e5dbffbeeb3766441418c17ed251",
+  "install_or_start_approved": false,
+  "service_installed_or_started": false,
+  "recording_or_voltage_read": false,
+  "scientific_execution_started": false,
+  "outcomes_read": false,
+  "rf_or_holdout_accessed": false
+}

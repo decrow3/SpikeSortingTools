@@ -1,0 +1,51 @@
+{
+  "schema": "em-harmonized-w3-control-h1-integrated-review-v1",
+  "status": "NO_GO_REPAIR_REQUIRED",
+  "launch_authorized": false,
+  "reviewed_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/em_harmonized_w3_control_implementation_20261003_v1_h5",
+    "manifest_sha256": "b4686acef858aab0c8849b1e20162e08a467fd42233120ba4752e130af570f9c",
+    "complete_sha256": "a5e2a0793ad204399c5d946aea947ba45cb67771efa57d736e1b981b2d9454af",
+    "contract_sha256": "42b587cb9831fb0d07987cf649bdcf9b0a79ad5c7342e13f653779951fddd517",
+    "run_config_sha256": "71ca3fa770ddbd255ca4b3199e0953a8423b70c8592bf29d0dce6b4e32aa5700",
+    "scorecard_sha256": "8cf717b2a261cc4e0e5f88a011cadc737a642fb44f6dddad130f5803ea976df7",
+    "preflight_sha256": "edec9870ae09a93f8176a18ddbbbef61490323214e02cdd21f81ff583f0d531a"
+  },
+  "passed": {
+    "cache_lineage_and_view": true,
+    "independent_byte_fixture": true,
+    "clock_geometry_dtype_channel_order": true,
+    "fresh_training_and_sorter_config": true,
+    "scientific_decision_contract": true,
+    "execution_disabled": true
+  },
+  "blocking_repairs": [
+    {
+      "id": "freeze_scorecard_dependency_closure",
+      "reason": "harmonized_scorecard imports live unhashed testing helpers",
+      "completion": "vendor or hash-enforce exact dependencies and rerun focused tests against them"
+    },
+    {
+      "id": "managed_post_sort_evaluation",
+      "reason": "launch template manages only sorting while the completion contract requires immutable scoring and sealing",
+      "completion": "execution-disabled durable post-sort scorecard/seal service with no retry and preserved failure"
+    },
+    {
+      "id": "release_resource_preflight_alignment",
+      "reason": "contract requires 25 GiB free but config reserves 20 GiB; RAM/GPU/wall checks lack a frozen release receipt",
+      "completion": "align disk threshold and freeze immediate prelaunch checks for hashes/output/cache/disk/RAM/GPU/wall"
+    }
+  ],
+  "next_review": "Review one corrected immutable packet only; do not redesign scientific thresholds or rerun cache science.",
+  "actions": {
+    "sorts_started": 0,
+    "services_installed": 0,
+    "services_started": 0,
+    "gpu_work": false,
+    "scoring_runs": 0,
+    "raw_recording_bytes": 0,
+    "rf_or_holdout": 0,
+    "target_a": 0,
+    "long_or_full": 0
+  }
+}

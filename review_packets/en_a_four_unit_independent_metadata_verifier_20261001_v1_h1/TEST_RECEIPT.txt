@@ -1,0 +1,10 @@
+Command:
+environments/rescue-production/.venv/bin/python -m pytest -q testing/test_en_a_four_unit_metadata_verifier.py
+
+Result:
+1 passed in 0.35 s
+
+Scope:
+- synthetic saved event/model metadata only
+- complete 20-slot CLI reconstruction and compact output path
+- no recording binary, voltage, sorter, matcher, RF, or holdout access

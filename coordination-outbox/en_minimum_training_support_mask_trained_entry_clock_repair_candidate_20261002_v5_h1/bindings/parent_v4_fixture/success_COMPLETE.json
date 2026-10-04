@@ -1,0 +1,23 @@
+{
+  "completion_written_last": true,
+  "config_sha256": "4cb7cbe9cf143098898d857e1ed58ff450411ca4397a7c1308ec34962dc2e429",
+  "contract_digest": "cb6aaecade16746867fa2261276ceadc5e7a2d86b19c4315c69333781b626989",
+  "orchestration_only_synthetic": true,
+  "recomputed_adaptive_state": [
+    "covariance_C",
+    "whitening_W",
+    "wPCA",
+    "wTEMP",
+    "universal_detections_and_features",
+    "Wall3",
+    "iU",
+    "iCC",
+    "iCC_mask",
+    "learned_detections_and_features",
+    "final_clusters",
+    "final_templates"
+  ],
+  "required_artifacts_validated": true,
+  "smoke_bank_injected": false,
+  "status": "complete"
+}

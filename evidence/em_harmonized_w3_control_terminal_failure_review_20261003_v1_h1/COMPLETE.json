@@ -1,0 +1,9 @@
+{
+  "schema": "em-harmonized-w3-control-h1-terminal-review-complete-v1",
+  "status": "COMPLETE_RECOVERY_FEASIBLE_PENDING_DERIVATIVE_REVIEW",
+  "manifest_sha256": "b43eee8466868c4202dec1b83a6ccab3565a3f3610f2a66cba13cac861b2bace",
+  "launch_performed": false,
+  "transfer_performed": false,
+  "score_performed": false,
+  "recovery_released": false
+}

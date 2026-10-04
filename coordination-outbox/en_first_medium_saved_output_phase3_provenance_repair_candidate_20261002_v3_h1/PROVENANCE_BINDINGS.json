@@ -1,0 +1,29 @@
+{
+  "schema": "en-first-medium-phase3-v3-provenance-bindings-v1",
+  "assignment_relay_v4_sha256": "0e3740964699fc78c4e47414d711b9b9feda792cba699a86e1f00a72737ee2eb",
+  "h1_ack_v4_sha256": "631f0fdc33116b4c41afa81349b94cf2c6a55b8d1d0813dc6773e78a200c7754",
+  "coordinator_table_sha256": "31d6a376eff6e06eef22a1d891b0daf6e2cefcb070edda74a0aa96f1156642f9",
+  "producer_base": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_r2_finalization_repair_20261002_v3_h5",
+    "manifest_sha256": "682b3c3cc6cbe9bf3ae9a2bd2a19313888ddacfae99e199e9bd884ff9ffda284",
+    "complete_sha256": "42e5b6b89a06cf987508aa062316e3b25b7b34704521dd750227a4c94e19d7aa",
+    "contract_sha256": "55c0dbabc5623bbd1db9e3b49e32c493c9802880e3f28c7c1709ecb25b77ecfa",
+    "launcher_sha256": "238c9c997bad67415a13671deaa5569ee121f3a27aa07188fef51c424f2029f8"
+  },
+  "producer_interface_finding": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_pair_producer_consumer_interface_trace_20261002_v1_h5",
+    "manifest_sha256": "9923b6016d1154c231e7db7f0a16aa3bfa8d8d4666473e1c8fd5b28d86e08e75",
+    "complete_sha256": "3772f99c5ad25a5b62e08c683b19fde6ff4c7cd20a33143a42bca614495d7997",
+    "finding_sha256": "0e9cfa67c81de086076346526f9c0eadb3d96419ec7e47357f97311f6885109e"
+  },
+  "preserved_phase3_v2": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_phase3_composition_candidate_20261002_v2_h1",
+    "manifest_sha256": "48b32b79f161b94d9c3a09d1bb8be1c5b2366e2e63cdf398333b4c27a7f090a7",
+    "complete_sha256": "d9a326029d6a719a2c1df83be916bbec50d62323422cae229a622dbf6bfd6e83"
+  },
+  "activation_enabled": false,
+  "scientific_execution_started": false,
+  "real_data_or_outcomes_read": false,
+  "voltage_read": false,
+  "rf_or_holdout_accessed": false
+}

@@ -1,0 +1,33 @@
+{
+  "schema": "en-a-four-unit-physical-signal-capture-h1-relaunch-review-go-v1",
+  "verdict": "GO_FOR_BYTE_IDENTICAL_INSTALL_PREFLIGHT_AND_EXACTLY_ONE_START",
+  "candidate_packet_manifest_sha256": "f897ff3b18d89d7cd55ea7500be1dfc4019f3f7b117e0cd2abd1edc3ffb5b6f3",
+  "prior_consumed_result_manifest_sha256": "551bec4a850cfc9e2fd31ed480f102a653cb878a8f7ac26b0d9007a53b376122",
+  "authorization_basis": "direct_user_standing_authorization_in_coordinator_transcript",
+  "allowed_actions": [
+    "install candidate config service capture source and validator byte-for-byte at the bound H5 paths",
+    "run content-gate validate-only and capture --phase preflight with zero child and zero recording access",
+    "after every prerequisite passes create and copy the exact external H1_GO.v3.json bound by V3_GATE_BINDINGS.json",
+    "daemon-reload and request exactly one start of the reviewed static service",
+    "monitor and preserve terminal unit state logs counters completion or failure evidence"
+  ],
+  "prelaunch_requirements": [
+    "all installed artifact hashes equal V3_GATE_BINDINGS.json",
+    "candidate packet and governing contract manifests retain their bound hashes",
+    "content-gate validate-only passes with child_invocations=0 and recording_bytes_read=0",
+    "capture preflight passes with recording_open_attempts=0 recording_reads=0 recording_bytes_read=0",
+    "fresh production output log launch receipt and failure/completion paths are absent before receipt release",
+    "unit is inactive with no production process and no prior v3 start",
+    "external H1_GO.v3.json exactly matches the validator schema bindings and child argv in V3_GATE_BINDINGS.json"
+  ],
+  "start_limit": 1,
+  "automatic_retry": false,
+  "manual_retry": false,
+  "failure_policy": "preserve evidence; any refusal or failure consumes this decision and requires a new namespace and review chain",
+  "reviewer_actions": {
+    "installed": false,
+    "gate_receipt_released": false,
+    "service_started": false,
+    "recording_opened": false
+  }
+}

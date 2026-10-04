@@ -1,0 +1,27 @@
+{
+  "schema": "first-medium-phase2-source-trace-v1",
+  "executed_worker": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase2_enabled_activation_20261003_v3_h5/source/testing/first_medium_saved_output_qualification.py",
+    "sha256": "0b6c4f5ee0dceff1a5b847bac0f6de740ee690a12fb587d345659073d52299b0"
+  },
+  "measurement": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase2_enabled_activation_20261003_v3_h5/source/testing/first_medium_measurement_redesign.py",
+    "sha256": "779b3b82e4328f92f6d50cb0a411153e03d755172d9493ccda937a686f42d0d9"
+  },
+  "matcher": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase2_enabled_activation_20261003_v3_h5/source/testing/sort_comparison.py",
+    "sha256": "174a4bb6d621489260927dc0bbc06558e408564158a44657ecdd306fa07db5da",
+    "correspondence_ast_matches_prior_authoritative_output_source": true
+  },
+  "trace": [
+    "worker lines 272-286 enforce ordered REF384 then existing_corrected_B384, fully load/bind REF to Phase1, and only then open B",
+    "worker lines 287-307 call the fixed retention and conditional-support measurements with frozen cells/settings",
+    "worker lines 308-319 emit only descriptive R, cells, support, unavailable DeltaR, and null advancement",
+    "measurement lines 111-213 define complete-sort reciprocal-primary correspondence, exclusive one-to-one event credit, unmatched-zero cohort units, equal-unit R, and half-open cells",
+    "measurement lines 349-440 define finite-interior conditional support, full-cohort-time denominators, and null effect when no units meet support",
+    "loader lines 358-450 require exact global/local integer clock offset, half-open domains, aligned physical positions, and depth column 1",
+    "worker lines 365-503 validate full Phase1 result/service/postreview and exact GO chains",
+    "worker lines 695-744 enforce resource preflight, receipt chain, freshness, atomic claim, source boundary, result creation, and completion ordering"
+  ],
+  "scope": "saved-output descriptive continuity only; not biological identity/purity, repaired-arm effect, DeltaR, efficacy, or advancement"
+}

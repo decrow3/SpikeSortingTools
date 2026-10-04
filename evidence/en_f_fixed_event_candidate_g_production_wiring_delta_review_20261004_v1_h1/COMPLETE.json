@@ -1,0 +1,11 @@
+{
+  "schema": "candidate-g-v2-2-complete-v1",
+  "status": "NO_GO_INTEGRATED_CANDIDATE_G_PRODUCTION_WIRING",
+  "result_kind": "h1_review",
+  "attempt_id": "candidate-g-production-wiring-h1-review-v1",
+  "seal_nonce": "261893b528fd87249d4e5ed2328db056",
+  "manifest_sha256": "5f3285eed092e9141aa4c640a2e7c3e11a26105fc968cf751b3f7fcbd417a710",
+  "product_count": 2,
+  "completion_write": "O_CREAT|O_EXCL after fsync(MANIFEST.json) and fsync(parent)",
+  "completed_unix_ns": 1791108979604917175
+}

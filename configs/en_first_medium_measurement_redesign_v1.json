@@ -1,0 +1,61 @@
+{
+  "schema": "first-medium-measurement-redesign-contract-v1",
+  "execution_enabled": false,
+  "outcome_blind": true,
+  "reference_cohort": "fixed before candidate outcomes; exact cluster IDs and source digest required by any execution request",
+  "event_retention": {
+    "estimand": "R(X) is the equal-unit mean over the fixed REF cohort of exclusive REF events retained by that REF unit's single reciprocal primary partner divided by the REF unit's event count; unmatched REF units contribute zero",
+    "delta": "DeltaR = R(repaired_B384) - R(existing_corrected_B384)",
+    "correspondence_tolerance_ms": 0.5,
+    "minimum_correspondence_overlap": 0.1,
+    "bilateral_primary_retention": 0.5,
+    "exclusive_event_matching": true,
+    "candidate_event_double_credit": false,
+    "scope": "continuity proxy only; not biological identity or novel-event recovery"
+  },
+  "uncertainty": {
+    "bootstrap_unit": "paired fixed REF unit",
+    "bootstrap_replicates": 20000,
+    "bootstrap_seed": 20261002,
+    "quantile_method": "linear",
+    "one_sided_lower_probability": 0.05,
+    "scope": "fixed-cohort composition sensitivity, not repeated-recording or biological-population inference"
+  },
+  "margin_review": {
+    "proposed_rule": "DeltaR >= 0.05 and one-sided lower95 > 0",
+    "proposed_rule_status": "rejected_as_evidence_for_a_0.05_minimum_effect",
+    "concrete_issue": "the lower bound may include effects below 0.05 even when the point estimate exceeds 0.05",
+    "frozen_replacement_rule": "one-sided paired-REF-unit bootstrap lower95 > 0.05",
+    "minimum_effect": 0.05
+  },
+  "cells": {
+    "duration_s": 60.0,
+    "bounds": "half-open integer sample cells using frozen ceiling-converted edges and the exact recording stop",
+    "local_edges_frames": [0, 1799991, 3599981, 5399971, 7199961, 8999951, 10799941, 12599932, 14399922, 16199912, 17999901],
+    "use": "state and longitudinal diagnostics only; never primary ranking or identity"
+  },
+  "conditional_amplitude": {
+    "status_included": "finite_interior",
+    "minimum_valid_windows_each_arm": 2,
+    "minimum_common_time_fraction": 0.5,
+    "fit_quality_rules_changed": false,
+    "refit_allowed": false,
+    "threshold_relaxation_allowed": false,
+    "scope": "conditional supported-window diagnostic only",
+    "required_disclosure": [
+      "full fixed-cohort denominator",
+      "matched and supported unit counts",
+      "per-unit REF, candidate, and common support",
+      "full-cohort time support fractions",
+      "conditional effect only among supported pairs"
+    ]
+  },
+  "forbidden": [
+    "cross-arm outcome computation before separate reviewed execution request",
+    "recording or voltage access",
+    "sorting, training, or detection",
+    "RF or sealed holdout access",
+    "biological identity claims",
+    "novel-event recovery claims"
+  ]
+}

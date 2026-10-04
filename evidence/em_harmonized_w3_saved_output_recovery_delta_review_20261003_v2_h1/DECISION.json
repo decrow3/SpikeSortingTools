@@ -1,0 +1,16 @@
+{
+  "schema": "em-harmonized-w3-saved-output-recovery-h1-delta-review-v2",
+  "decision": "NO_GO_RESEAL_COMPLETE_LAST_ONLY",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/em_harmonized_w3_control_saved_output_recovery_implementation_20261003_v2_h5",
+  "reviewed_manifest_sha256": "72f9f1bf719f91713015f2e6ac671f34c14998e6d26715caed6f37f34b636e0e",
+  "reviewed_complete_sha256": "d4f858bb43cc8cf18a190fe464d6ed1769d065291b12cf596f47967c175a6a30",
+  "successful_preflight_sha256": "a3fdeb83ce258c2fd6e8f9bcb1be4fd152dbdc34ab5247f27a46f595fa404481",
+  "preserved_matrix_failure_sha256": "d1990fd5373d88b398eca0f487796ea77dc94005916292528e43444798aae7f9",
+  "implementation_delta_pass": true,
+  "scientific_contract_unchanged": true,
+  "real_input_preflight_pass": true,
+  "blocking_defect": "Published COMPLETE.json mtime is earlier than eight manifest members, so the mandatory COMPLETE-last publication invariant is not established.",
+  "minimum_repair": "Rewrite or recopy the identical COMPLETE.json after all packet members, then verify its mtime_ns is strictly greater than every manifest member. Do not change any member bytes.",
+  "scoring_released": false,
+  "score_performed": false
+}

@@ -1,0 +1,9 @@
+{
+  "schema": "em-harmonized-w3-control-h1-final-result-review-complete-v1",
+  "status": "VALIDATED_INCONCLUSIVE_NO_PROGRESSION",
+  "manifest_sha256": "a96bfe0cf2586e2265e867b2c6d32dea244aa7df928a9ea89b4a15e72964fb61",
+  "reviewed_terminal_manifest_sha256": "422dce920078e50c2994383268d3a0a282dc8da6d4ac366640068e24d539f8b9",
+  "reviewed_result_sha256": "1e0295fca4b92459b18f92004962304f441e4807b0af576030215884ad660d60",
+  "progression_supported": false,
+  "new_execution_performed": false
+}

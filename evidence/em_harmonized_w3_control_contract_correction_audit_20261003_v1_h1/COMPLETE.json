@@ -1,0 +1,9 @@
+{
+  "schema": "em-harmonized-w3-control-contract-correction-complete-v1",
+  "status": "ADDITIVE_CORRECTION_PRIMARY_INCONCLUSIVE_HL_GUARDRAILS_PASS_NO_PROGRESSION",
+  "manifest_sha256": "f6ee04227665db30654630cca79a9124c6503d25eec32c0ca96fa36b32a5354a",
+  "preserved_result_sha256": "1e0295fca4b92459b18f92004962304f441e4807b0af576030215884ad660d60",
+  "rescore_performed": false,
+  "threshold_changed": false,
+  "progression_supported": false
+}

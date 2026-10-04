@@ -1,0 +1,8 @@
+{
+  "schema": "em-harmonized-w3-saved-output-recovery-h1-final-go-complete-v1",
+  "status": "GO_TO_COORDINATOR_RELEASE_ONE_CPU_SCORE_ONLY",
+  "manifest_sha256": "8696fe4c14112ef6ef6825abf1b37a258d0a1175eff410f211c37d8abab07b7b",
+  "reviewed_packet_manifest_sha256": "72f9f1bf719f91713015f2e6ac671f34c14998e6d26715caed6f37f34b636e0e",
+  "launch_performed": false,
+  "coordinator_release_required": true
+}

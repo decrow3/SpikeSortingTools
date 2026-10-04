@@ -1,0 +1,16 @@
+Candidate manifest verification:
+  sha256sum -c MANIFEST.sha256
+  Result: all 28 listed members OK
+
+Clean isolated candidate suite:
+  PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=source rescue-production/.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_pair_launcher.py
+  Result: 10 passed in 0.41s
+
+Validate-only:
+  Result: status=validated; execution_enabled=false; arm_order=[REF384_repeat,repaired_B384]; recording_or_voltage_opened=false
+
+Independent terminal-receipt cap fixture:
+  Probe: measured_before_final_receipts=1779; actual_after_return=2842; unaccounted_final_bytes=1063
+  Replay: configured_cap=1843; returned_measured=1777; actual_after_return=2838; returned_success_over_cap=true
+
+No service install/enable/start, recording read, voltage read, or scientific execution was performed.

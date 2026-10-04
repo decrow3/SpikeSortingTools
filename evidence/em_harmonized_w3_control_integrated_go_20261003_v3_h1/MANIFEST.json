@@ -1,0 +1,22 @@
+{
+  "schema": "em-harmonized-w3-control-h1-integrated-go-manifest-v1",
+  "source_packet_manifest_sha256": "b501f06501c16d636f5071ff4d52d253440e4e92c8430f3b433ed231dc2ecc2c",
+  "decision": "GO_TO_COORDINATOR_RELEASE",
+  "members": [
+    {
+      "path": "H1_GO_RECEIPT.json",
+      "bytes": 527,
+      "sha256": "642bb68fe502b44cb0aff20e1b27448999affc138e43d7703373cab7e6897e74"
+    },
+    {
+      "path": "H1_INDEPENDENT_LIFECYCLE_FIXTURE.json",
+      "bytes": 1750,
+      "sha256": "814df73bc0ffb4970d78ac16b182bbf1811f11c1c048fc392bbed51022cfc3d6"
+    },
+    {
+      "path": "INTEGRATED_GO_REVIEW.md",
+      "bytes": 4323,
+      "sha256": "1af305c8a46bc85b2af97158627e04e5326e7165d72ea3cade24c354c98d915d"
+    }
+  ]
+}

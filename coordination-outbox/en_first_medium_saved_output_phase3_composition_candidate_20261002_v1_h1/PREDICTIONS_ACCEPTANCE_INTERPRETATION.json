@@ -1,0 +1,26 @@
+{
+  "schema": "en-first-medium-phase3-composition-freeze-v1",
+  "status": "FROZEN_BEFORE_REAL_OUTCOMES_EXECUTION_DISABLED",
+  "predictions": {
+    "primary": "If the repaired arm improves fixed-cohort continuity by a meaningful amount, the paired-unit composition-bootstrap one-sided lower 95% bound for DeltaR will be strictly greater than 0.05.",
+    "repeatability": "The same-window engineering repeat will retain at least 0.98 of fixed-cohort REF events under the accepted reciprocal-primary exclusive matcher."
+  },
+  "acceptance": {
+    "fixed_ref_cohort_sha256": "3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0",
+    "bootstrap_replicates": 20000,
+    "bootstrap_seed": 20261002,
+    "primary_rule": "lower95 > 0.05",
+    "strict_boundary": true,
+    "repeat_rule": "R_repeat >= 0.98",
+    "repeat_criterion_source_sha256": "b2ef938c0087fdf5f75102c1178ddb6ac2841c086766dfe78d67e596c66d7ede",
+    "missing_qc_or_waveform": "UNMEASURED_INCONCLUSIVE_NEVER_PASS",
+    "automatic_advancement": false
+  },
+  "interpretation": {
+    "R_and_DeltaR": "Engineering continuity proxies only; they do not establish biological identity, purity, recovery, or contamination.",
+    "bootstrap": "Sensitivity to composition of the frozen REF-unit cohort, not repeated-recording or biological-population uncertainty.",
+    "repeat": "Same-window engineering diagnostic, not longitudinal replication.",
+    "execution_success": "Does not authorize scientific advancement."
+  }
+}
+

@@ -1,0 +1,14 @@
+{
+  "schema": "immutable-independent-composition-review-completion-v1",
+  "status": "complete_targeted_repair_required_no_phase1_token",
+  "manifest_sha256": "b13dac9f7ad26df5be20e21ca8768d0d9a38504650f4b0bc7684db1e9de12f32",
+  "verdict": "TARGETED_REPAIR_REQUIRED_NO_PHASE1_TOKEN",
+  "phase1_start_token_issued": false,
+  "real_ref_binding_recomputed": true,
+  "real_phase1_executed": false,
+  "real_cross_arm_score_computed": false,
+  "voltage_accessed": false,
+  "jobs_started": false,
+  "rf_or_holdout_accessed": false,
+  "completion_written_last": true
+}

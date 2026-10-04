@@ -1,0 +1,14 @@
+{
+  "schema": "luke-h1-phase3-activation-binding-review-complete-v1",
+  "status": "COMPLETE",
+  "verdict": "GO_ACTIVATION_BINDING_ONLY_EXECUTION_REMAINS_DISABLED",
+  "manifest_sha256": "d815d0eae6f36aebb3c7ad8e41a635127bce43e535bbd3612e54183475ff5709",
+  "subject_manifest_sha256": "5b3b780e6ebc7a7d74f20bbea9505719bb8cccc4498249693672b6e654dd25c4",
+  "subject_complete_sha256": "6fbc0064302b6794b531f720c8cee1816d9eff4989a14364ad8cd5f64266ae08",
+  "execution_enabled": false,
+  "activation_eligible": false,
+  "service_installed_or_started": false,
+  "recording_or_voltage_read": false,
+  "scientific_execution_started": false,
+  "rf_or_holdout_accessed": false
+}

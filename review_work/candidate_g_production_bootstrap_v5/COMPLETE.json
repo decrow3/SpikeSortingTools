@@ -1,0 +1,11 @@
+{
+  "attempt_id": "candidate-g-continuation-production-bootstrap-v5-review-20261004a",
+  "completed_unix_ns": 1791126952487516497,
+  "completion_write": "O_CREAT|O_EXCL after fsync(MANIFEST.json) and fsync(parent)",
+  "manifest_sha256": "4e17baeca63d14377be83cd2c4c2a20af2ba193799b4b15c10f45b49799a5b35",
+  "product_count": 2,
+  "result_kind": "candidate_g_continuation_production_bootstrap_review",
+  "schema": "candidate-g-v2-2-complete-v1",
+  "seal_nonce": "b78ec283a76b713080095476c4074e30",
+  "status": "NO_GO_EXTERNAL_COMPACT_ACCOUNTING_INCOMPLETE"
+}

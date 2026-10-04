@@ -1,0 +1,13 @@
+{
+  "schema": "en-first-medium-repeat-criterion-provenance-correction-complete-v1",
+  "status": "COMPLETE_EXECUTION_DISABLED",
+  "verdict": "ACCEPT_R_REPEAT_GTE_0_98_CORRECT_NOT_DEFINED_FREEZE",
+  "manifest_sha256": "fc59c368922d07f23b8e25936f343dfdf6f0b3f4e828eb2d0bb733eea02635bc",
+  "criterion_source_sha256": "b2ef938c0087fdf5f75102c1178ddb6ac2841c086766dfe78d67e596c66d7ede",
+  "superseded_freeze_manifest_sha256": "a6f389af7234da7d4a2a8c4b51e08db30e321ab3d997fa1d23c9fa7b74094e3d",
+  "code_changed": false,
+  "contract_conflict_published": true,
+  "outcomes_accessed": false,
+  "recording_or_voltage_read": false,
+  "rf_or_holdout_accessed": false
+}

@@ -1,0 +1,27 @@
+{
+  "schema": "en-a-four-unit-physical-signal-capture-final-h1-launch-go-v1",
+  "verdict": "GO_COPY_EXACT_RECEIPT_AND_REQUEST_EXACTLY_ONE_START",
+  "candidate_manifest_sha256": "f897ff3b18d89d7cd55ea7500be1dfc4019f3f7b117e0cd2abd1edc3ffb5b6f3",
+  "conditional_review_manifest_sha256": "6bd9a9e1caa003a36959bd482d7bd8a3e18066273e55e3a828a6aa84fe43a609",
+  "installed_preflight_manifest_sha256": "a88e610a937d1b0c99007513d06b93df37f428514c257f0b18776fd6332a95a8",
+  "installed_preflight_complete_sha256": "891bc751cb1b0b7a6715227e4aa8c1fc0391e15c143aa14dfd8fa59c2a76c520",
+  "receipt_packet_member": "H1_GO.v3.json",
+  "receipt_sha256": "5268a41d4cae91cc030e8be782566d0d491d7a5e8443495820dba5b371b8d2f4",
+  "receipt_live_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_a_four_unit_physical_signal_capture_20261001_approved_v2_launch/H1_GO.v3.json",
+  "service": "en_a_four_unit_physical_signal_capture_approved_v3.service",
+  "allowed_sequence": [
+    "immediately confirm unit remains inactive with PID 0 and all frozen production paths remain absent",
+    "copy H1_GO.v3.json byte-for-byte to the exact live receipt path and verify sha256",
+    "request exactly one normal-tool start of the installed reviewed static service",
+    "monitor actual unit process log counters completion or failure and preserve terminal evidence"
+  ],
+  "start_limit": 1,
+  "automatic_retry": false,
+  "manual_retry": false,
+  "consumed_by": "any start request tool denial gate refusal runtime failure or completion",
+  "reviewer_actions": {
+    "live_receipt_copied": false,
+    "service_started": false,
+    "recording_opened": false
+  }
+}

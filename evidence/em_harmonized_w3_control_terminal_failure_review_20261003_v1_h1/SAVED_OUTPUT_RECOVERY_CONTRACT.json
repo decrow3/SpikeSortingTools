@@ -1,0 +1,50 @@
+{
+  "schema": "em-harmonized-w3-saved-output-only-recovery-contract-v1",
+  "status": "FROZEN_FOR_DERIVATIVE_REVIEW_NOT_RELEASED",
+  "milestone": "Recover the prospectively frozen H/F/L evaluation from the already completed H sorting without another sort.",
+  "decision_it_can_change": "Restore the previously frozen scorecard result only; it cannot authorize retraining, another arm, or progression.",
+  "cheapest_adequate_test": "One CPU-only invocation of the unchanged frozen scorer against the hash-validated completed H sorting and exact frozen domain inputs.",
+  "completion_condition": "Fresh immutable score packet with direct H provenance/clock/array validation, RESULT.json, manifest, and COMPLETE.json written last, or one preserved failure; no retry.",
+  "required_bindings": {
+    "release_manifest_sha256": "f89982502850f5f6920b187bfd7ee9576bb4ee5a045864818970aaa6eb9eeec9",
+    "terminal_manifest_sha256": "e31e984a1e60beeab55ae8926409b3a14ea08d8e8a28c2733b0a12da2cfbba39",
+    "terminal_complete_sha256": "9c47b4273d7d201f2456ef3e96ddcbc26fe4601d4a36a3ecd3e191b944803814",
+    "H_sorting_sha256": "03966a706beeddf188951510444b703614f7eae25f1ece46be521b4c1c024361",
+    "field_sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+    "catalogue_sha256": "46463cda1348c0e0b0c39ad22ae9c71bc46f7c7347797c1c10588944cfc52df1",
+    "mask_sha256": "86425e8a6627a10ac8932ba01b799cb7be7141f731ebb4ecc01e303326b9da55",
+    "scorer_sha256": "58811e834cd9bed78924161543f4a3043322709a50a4d0d557791d19459f4c53",
+    "score_contract_sha256_before_path_derivative": "71ae4948118f566fb57432406b8ae2fa09b66e70c6cde3c1aeb0520d09cdf068"
+  },
+  "required_preflight": [
+    "Directly hash H receipt, effective config, sort COMPLETE, and sorting NPZ on huklaban5.",
+    "Require receipt status complete and exit_status 0; COMPLETE status complete and exact sorting hash.",
+    "Inspect H NPZ keys, equal times/labels shape, sampling_frequency 29999.759166666667, and every local event in [0,10199918).",
+    "Bind clock global=[239998073,250197991), local=[0,10199918), global=239998073+local.",
+    "Require the prior failed score namespace preserved and prove it has no results/RESULT.json or COMPLETE.json.",
+    "Require exact field, mask, and catalogue hashes at the derivative paths and a fresh recovery output/state namespace.",
+    "Require the derivative diff to alter only domain-input paths/provenance and fresh output/service bindings; scorer, helper hashes, arm hashes, endpoints, thresholds, seed, draws, domains, and guardrails remain unchanged."
+  ],
+  "execution": {
+    "managed_job": true,
+    "saved_output_only": true,
+    "cpu_only": true,
+    "attempts": 1,
+    "retries": 0,
+    "fresh_output_required": true,
+    "preserve_first_failure": true,
+    "release_required_after_independent_derivative_review": true
+  },
+  "forbidden": [
+    "sort launch",
+    "retraining",
+    "recording or voltage access",
+    "cache materialization",
+    "GPU work",
+    "H mutation",
+    "failed-score overwrite or cleanup",
+    "scorer or scientific-rule change",
+    "RF or outer-holdout access",
+    "automatic promotion"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "actual_native_prepare_extract_invoked": true,
+  "actual_native_extract_returned": true,
+  "first_batch_saw_snapshot": true,
+  "spikes": 0,
+  "feature_rows": 0,
+  "snapshot_receipt_sha256": "9883acb5eef7a740b3eac9a7856641faa7c53029754886e964194e6cfcf4cc7c"
+}

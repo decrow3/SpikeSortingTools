@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-rereview-completion-v1",
+  "status": "COMPLETE_SPATIAL_GO_WAVEFORM_TARGETED_REPAIR",
+  "completed_at_utc": "2026-10-02T10:29:32Z",
+  "manifest_sha256": "2c2cbe711fb361a90b42fc71ed73b9134b22886b6b9a6d25846dfdd6f1e88031",
+  "verdict_file": "INDEPENDENT_REVIEW.json",
+  "execution_performed": false,
+  "voltage_accessed": false,
+  "rf_or_holdout_accessed": false
+}

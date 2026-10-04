@@ -75,6 +75,34 @@ def test_dewhitened_shape_centres_a_long_template_on_peak_time():
     assert np.unravel_index(np.argmax(np.abs(shape)), shape.shape)[0] == 40
 
 
+def test_dewhitened_shape_uses_transposed_inverse_for_time_major_templates():
+    """Exercise the donor consumer with an independent non-symmetric answer."""
+    physical = np.zeros((61, 5), dtype=float)
+    physical[27:32, 2] = [-0.2, -0.6, -1.0, -0.6, -0.2]
+    physical[28:31, 1] = [-0.1, -0.3, -0.1]
+    whitening = np.array([
+        [2.0, 1.0, 0.0, 0.0, 0.0],
+        [0.0, 3.0, 1.0, 0.0, 0.0],
+        [1.0, 0.0, 4.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 2.0, 1.0],
+        [0.0, 0.0, 0.0, 0.0, 3.0],
+    ])
+    # Build the stored time-major array from the channel-major forward rule.
+    stored = np.einsum("ij,tj->ti", whitening, physical)
+    inverse = np.linalg.inv(whitening)
+    sort = {"templates": stored[None], "winv": inverse}
+
+    recovered, peak_c, polarity = _dewhitened_shape(
+        sort, 0, DonorConfig(n_samples=61, radius_ch=2)
+    )
+    wrong = stored @ inverse
+
+    assert peak_c == 2
+    assert polarity == "neg"
+    assert np.allclose(recovered, physical / np.abs(physical).max(), atol=1e-7)
+    assert not np.allclose(wrong / np.abs(wrong).max(), recovered, atol=1e-6)
+
+
 def test_select_spreads_across_amplitude_bands_and_polarity():
     rows = []
     for i in range(12):

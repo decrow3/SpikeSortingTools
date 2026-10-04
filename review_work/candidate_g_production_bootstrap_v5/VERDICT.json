@@ -1,0 +1,50 @@
+{
+  "schema": "candidate-g-continuation-production-bootstrap-review-v2",
+  "status": "NO_GO_EXTERNAL_COMPACT_ACCOUNTING_INCOMPLETE",
+  "execution_enabled": false,
+  "candidate": "G",
+  "reviewed_packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_continuation_production_bootstrap_identity_accounting_provenance_20261004_v1_h5",
+  "reviewed_packet_manifest_sha256": "6e2f75cf07a783bdc4a8fad829f291b1ab1cf9b2ec0f22659e39b901a22c5d64",
+  "reviewed_packet_complete_sha256": "78725f621cf9f4204cc36ad319bfa0a97c408f7d321a3ac41e0bad51340ef58e",
+  "reviewed_request_sha256": "8338f2b3472eb8e867b8d2303b078f5400da5399e48075caa385a0231c0ec58f",
+  "coordination_sha256": "8fcd7c64a4c2a94b63365e8b029d607a1f40c7cc7ccb2e390e99c0cb1d139ae1",
+  "accepted_repairs": [
+    "installed production and finalizer unit bytes are now required to equal their sealed reviewed templates and hard-coded SHA-256 values, and parsed sections/directives must exactly match",
+    "independent reruns confirm the exact reviewed production/finalizer templates accept and altered ExecStart, extra command, comment-only marker and template-mismatch cases reject",
+    "the runtime cache category now counts cache/numba, cache/torch, cache/xdg and cache/matplotlib once through their common cache root, while unclassified attempt-local files reject",
+    "the authoritative H5 receipt records actual bootstrap_production_entry_v5 and release_gate_v5 smoke execution, and its 17-entry pre-execution closure matches the sealed packet byte-for-byte",
+    "the executed-source receipt, release fixture, production/finalizer template hashes, result/terminal/compact seals, systemd success/status/zero-restart state and cleanup are preserved",
+    "accepted science, 14-array state, cache envelope, logical-read bounds, runtime/resources, fresh bootstrap, terminal preservation and compact publisher remain unchanged"
+  ],
+  "blocking_findings": [
+    {
+      "id": "EXTERNAL_COMPACT_WRITABLE_ROOT_NOT_ACCOUNTED",
+      "severity": "blocking",
+      "finding": "managed_lifecycle_v5 assigns compact_publication to <attempt>/compact, but bootstrap_v5 creates and Bubblewrap-binds the actual compact output as a separate child of COMPACT_PARENT, outside the attempt directory. sample() receives only the attempt path and therefore cannot see the real compact tree. The producer known-answer fixture creates an artificial <attempt>/compact directory, so its 47-byte compact result does not reproduce the production topology. An independent topology-matched fixture wrote 47 bytes to the external compact sibling while categories(attempt) reported compact_publication=0 and total_bytes=0. The claim that every writable attempt tree is classified once, and the 16 MiB compact category cap, are therefore not enforced.",
+      "evidence": [
+        "source/bootstrap_v5.py:15-24",
+        "source/bootstrap_production_entry_v5.py:19-25,27-31",
+        "source/managed_lifecycle_v5.py:23-47,56-70,91-104",
+        "tests/test_storage_accounting_v5.py:6-14",
+        "contract/storage_policy.v3.json writable_tree_assignment.compact",
+        "independent topology fixture: external compact actual=47, compact_publication=0, categorized total=0"
+      ],
+      "repair": "Pass the exact compact path into categories/sample/supervise and count that external tree exactly once, while preserving disjoint attempt-root classification; or remove it from sampled categories and enforce/receipt an equivalent hard bound inside the compact publisher. Add a known-answer fixture with run and compact as sibling roots matching bootstrap_v5, plus a compact-cap stop test."
+    }
+  ],
+  "independent_reruns": {
+    "packet_seal": "64 products verified",
+    "focused_tests": "22 passed in 0.15s on huklaban1",
+    "production_closure": "28 of 30 entries independently opened and hash-verified; two H5-local state files are unavailable on huklaban1",
+    "smoke_preexecution_closure": "all 17 entries match the sealed packet counterparts",
+    "unit_identity_negatives": "PASS; four mutation classes rejected",
+    "attempt_local_accounting_known_answer": "PASS for the fixture's artificial <attempt>/compact layout",
+    "production_topology_compact_negative": "FAIL_OPEN; 47 external compact bytes categorized as zero",
+    "executed_source_receipt_sha256": "d40e9315456539fbead63b9553e6b4a1962f71f5f6a8350d6c92882c95036277",
+    "canonical_release_attempt_compact_and_units": "absent from paths visible on huklaban1",
+    "recording_voltage_bytes_read": 0,
+    "agglomeration_called": false,
+    "gpu_work_started": false
+  },
+  "authorization": "No production release, unit installation, continuation start, recording access, agglomeration or GPU work is authorized. Preserve this NO_GO packet and return a narrowly scoped execution-disabled external-compact accounting repair."
+}

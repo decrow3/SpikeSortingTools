@@ -1,0 +1,239 @@
+{
+  "schema": "first-medium-saved-output-qualification-contract-v1",
+  "status": "PHASE3_COMPOSITION_CANDIDATE_EXECUTION_DISABLED_PENDING_H5_INDEPENDENT_REVIEW",
+  "execution_enabled": false,
+  "purpose": "Execution-disabled three-phase qualification of already-saved sorter outputs using accepted spatial binding and measurement modules; Phase 3 only composes fixed-cohort R, paired-unit DeltaR, repeatability, and explicit unmeasured diagnostics. No sorting, voltage, RF, holdout, tuning, or automatic advancement path.",
+  "implementation_boundary": {
+    "active_module_sha256": {
+      "testing.first_medium_saved_output_qualification": "1dbecacca9220ab2634114e8ae08d0455a30d83efa1cf09a91c84178f914c746",
+      "testing.first_medium_measurement_redesign": "779b3b82e4328f92f6d50cb0a411153e03d755172d9493ccda937a686f42d0d9",
+      "testing.first_medium_evaluator": "da3d5d5af8227f6ef70747dca32b3e2c52206230b5494d7bc9015cba24fcdf35",
+      "testing.sort_comparison": "174a4bb6d621489260927dc0bbc06558e408564158a44657ecdd306fa07db5da",
+      "testing.luke_amplitude_dropout_audit": "12e105dc797693957701e0b0a81130c2debced70d2588a8ea3c28a03e2a26431",
+      "pipeline.config": "74424d444e05a7ba2d3968d22c1490475ebe8d7c0d213687316ace7cec5cf59c",
+      "pipeline.truncation": "eec2476397c1856891a4b9f1856c1af4a5e2f81a13e934d1ade2f96a02a6e3e6",
+      "testing.qualification_managed_launcher": "804832fc2796f0e454954c3db4c80cf50959574d95506222f26fc32c4956bd52"
+    },
+    "accepted_snapshots": {
+      "measurement_packet_manifest_sha256": "61758790c555c18066dc2bdea6af1f03d755ef1d5f704f18dfa8c2c868d2bdf0",
+      "measurement_h5_go_manifest_sha256": "9f0bdeb22aa889bc13eed41a98fc783bd16504c829577ab3a3508c3daa09c68e",
+      "spatial_packet_manifest_sha256": "80021b93c3605c95f32f16f600f522e684ae06a1234fe286bce21bbcb2bd61e2",
+      "spatial_h1_go_manifest_sha256": "2c2cbe711fb361a90b42fc71ed73b9134b22886b6b9a6d25846dfdd6f1e88031",
+      "measurement_reviewed_matcher_sha256": "b4065ba7e6c326e74f5f283de9a6ee76df0dfd3b70b65fd534b1d4559a80de0c",
+      "active_spatial_superset_matcher_sha256": "174a4bb6d621489260927dc0bbc06558e408564158a44657ecdd306fa07db5da",
+      "matcher_equivalence": "The two matcher snapshots are byte-identical through correspondence and all of its helpers; the active spatial superset adds only spatial provenance to the later pair candidate manifest."
+    },
+    "kilosort_source_dependency": {
+      "schema": "content-addressed-python-source-root-v1",
+      "aggregate_sha256": "d1e5a4465d387c66a7655db442ecbf8740d2cae0032c300b0456432b0080c614",
+      "files": {
+        "io.py": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+        "postprocessing.py": "d20da9026de10eb83a02466cdb233c85ae4215c15af7d5656c3593c3809a0a55"
+      }
+    }
+  },
+  "recording_domain": {
+    "sampling_frequency_hz": 29999.835983263598,
+    "duration_s": 599.9999803346205,
+    "crop_origin_global_frame": 208498882,
+    "global_frames_half_open": [208498882, 226498783],
+    "local_frames_half_open": [0, 17999901],
+    "cell_edges_local_frames": [0, 1799991, 3599981, 5399971, 7199961, 8999951, 10799941, 12599932, 14399922, 16199912, 17999901],
+    "cell_rule": "Half-open 60-second diagnostic cells using ceil(k*60*fs), clipped only at the exact local stop; all complete-sort events must be in [0,17999901).",
+    "spatial_region": {
+      "processing_depth_um": [1400.0, 2380.0],
+      "scoring_depth_um": [1600.0, 2180.0],
+      "minimum_edge_exclusion_um": 80.0,
+      "source": "testing/configs/luke0804_hindsight_ladder_v1.json sha256 c0b564e0476f1af63a01c6c4efd3d0064471193329bf026e503f1bb25adc05d3"
+    }
+  },
+  "measurement_settings": {
+    "correspondence_tolerance_frames": 15,
+    "correspondence_tolerance_ms_source": 0.5,
+    "minimum_correspondence_overlap": 0.1,
+    "bilateral_primary_retention": 0.5,
+    "minimum_valid_windows": 2,
+    "minimum_common_time_fraction": 0.5,
+    "conditional_status": "finite_interior",
+    "refit": false,
+    "threshold_relaxation": false
+  },
+  "phase3_measurement": {
+    "bootstrap_replicates": 20000,
+    "bootstrap_seed": 20261002,
+    "minimum_effect": 0.05,
+    "replacement_rule": "one-sided paired-REF-unit composition-bootstrap lower95 > 0.05 (strict)",
+    "repeat_minimum_R": 0.98,
+    "repeat_rule": "same-window R(REF384_repeat) >= 0.98",
+    "repeat_criterion_source_sha256": "b2ef938c0087fdf5f75102c1178ddb6ac2841c086766dfe78d67e596c66d7ede",
+    "waveform_method_manifest_sha256": "50fa6f46a01a026d2158c7b9e4a1d2377b03bdf145cb76472bc71a20eff939c7",
+    "amplitude_source_rule": "accepted loader derives amplitudes from full_st[kept_spikes][:,2]; amplitudes.npy is neither required nor read",
+    "missing_evidence_rule": "Absent truncation QC or accepted pair-bound waveform evidence is UNMEASURED/INCONCLUSIVE and can never pass."
+  },
+  "fixed_ref_cohort": {
+    "artifact": "cohorts/REF384_COHORT.v1.json",
+    "selection_rule": "All REF384 units whose median bound physical event depth is inside inclusive scoring_depth_um; ascending numeric cluster ID; no label, QC, B-arm, matching, score, or outcome filter.",
+    "ordered_cluster_ids": [163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 219, 220, 221, 222, 223, 224],
+    "cohort_sha256": "3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0",
+    "independent_ref_binding_receipt_sha256": "6d1a9eb0c5e2e8bea8a47c28d4633ffb24dd85c1f0454888a1e0075401ad241d"
+  },
+  "phases": {
+    "phase1_controls": {
+      "real_execution_enabled": false,
+      "fixture_execution_enabled": true,
+      "required_real_arms": ["REF384"],
+      "forbidden_real_arms": ["existing_corrected_B384", "repaired_B384", "REF384_repeat"],
+      "required_tokens": {
+        "composition_review_token": "PROSPECTIVE_H5_COMPOSITION_REVIEW_TOKEN_REQUIRED",
+        "phase1_start_token": "PROSPECTIVE_SINGLE_START_TOKEN_REQUIRED",
+        "fixed_ref_cohort_sha256": "PROSPECTIVE_FIXED_REF_COHORT_BINDING_REQUIRED"
+      },
+      "allowed_computations": [
+        "host-local REF binding recomputation through the accepted spatial loader",
+        "REF self R control, required exact value 1",
+        "deterministic bijective candidate-label permutation control, required exact R 1",
+        "duplicate-candidate exclusivity/no-double-credit control",
+        "complete-stream half-open cell-domain and boundary controls",
+        "conditional REF-self amplitude support union, coverage, and provenance"
+      ],
+      "forbidden_outputs": [
+        "any actual REF versus existing/repaired/repeat scalar",
+        "candidate-ranked gain or loss list",
+        "hidden precomputation or cached cross-arm result",
+        "parameter tuning, efficacy, repeatability, or advancement claim"
+      ],
+      "label": "DIAGNOSTIC_CONTROLS_ONLY_NOT_EFFICACY",
+      "output_namespace_pattern": "en_first_medium_saved_output_qualification_phase1_<unique_run_id>",
+      "resources": {
+        "wall_seconds_max": 1200,
+        "peak_rss_bytes_max": 8589934592,
+        "cpu_threads_max": 4,
+        "gpu_count": 0,
+        "persistent_output_bytes_max": 134217728
+      }
+    },
+    "phase2_existing_b": {
+      "real_execution_enabled": false,
+      "fixture_execution_enabled": false,
+      "required_real_arms": ["REF384", "existing_corrected_B384"],
+      "forbidden_real_arms": ["repaired_B384", "REF384_repeat"],
+      "required_tokens": {
+        "composition_review_token": "PROSPECTIVE_H5_COMPOSITION_REVIEW_TOKEN_REQUIRED",
+        "method_freeze_token": "PROSPECTIVE_METHOD_FREEZE_TOKEN_REQUIRED",
+        "phase1_manifest_sha256": "PROSPECTIVE_SUCCESSFUL_PHASE1_MANIFEST_REQUIRED",
+        "phase1_complete_sha256": "PROSPECTIVE_SUCCESSFUL_PHASE1_COMPLETE_REQUIRED",
+        "phase1_contract_sha256": "PROSPECTIVE_SUCCESSFUL_PHASE1_CONTRACT_REQUIRED",
+        "phase1_request_sha256": "PROSPECTIVE_SUCCESSFUL_PHASE1_REQUEST_REQUIRED",
+        "phase2_start_token": "PROSPECTIVE_SINGLE_START_TOKEN_REQUIRED",
+        "fixed_ref_cohort_sha256": "PROSPECTIVE_FIXED_REF_COHORT_BINDING_REQUIRED"
+      },
+      "allowed_computations": [
+        "host-local REF and existing-B binding recomputation",
+        "one R(existing_corrected_B384) scalar on the fixed REF cohort",
+        "aggregate fixed 60-second cell diagnostics",
+        "aggregate conditional amplitude support descriptors"
+      ],
+      "required_unavailable": {
+        "DeltaR": "UNAVAILABLE_NO_REPAIRED_ARM_BOUND",
+        "advancement_verdict": null
+      },
+      "forbidden_outputs": [
+        "repaired or repeat arm binding",
+        "DeltaR, repaired-arm effect, candidate ranking, gain/loss list",
+        "tuning, threshold change, efficacy, repeatability, or advancement verdict"
+      ],
+      "label": "ONE_SHOT_DESCRIPTIVE_EXISTING_B_NO_ADVANCEMENT",
+      "output_namespace_pattern": "en_first_medium_saved_output_qualification_phase2_<unique_run_id>",
+      "resources": {
+        "wall_seconds_max": 1800,
+        "peak_rss_bytes_max": 10737418240,
+        "cpu_threads_max": 4,
+        "gpu_count": 0,
+        "persistent_output_bytes_max": 268435456
+      }
+    },
+    "phase3_repaired_repeat": {
+      "real_execution_enabled": false,
+      "fixture_execution_enabled": false,
+      "required_real_arms": [
+        "REF384",
+        "existing_corrected_B384",
+        "repaired_B384",
+        "REF384_repeat"
+      ],
+      "forbidden_real_arms": [],
+      "required_tokens": {
+        "composition_review_token": "PROSPECTIVE_H5_PHASE3_COMPOSITION_REVIEW_TOKEN_REQUIRED",
+        "method_freeze_token": "PROSPECTIVE_METHOD_FREEZE_TOKEN_REQUIRED",
+        "phase1_manifest_sha256": "PROSPECTIVE_SUCCESSFUL_PHASE1_MANIFEST_REQUIRED",
+        "phase1_complete_sha256": "PROSPECTIVE_SUCCESSFUL_PHASE1_COMPLETE_REQUIRED",
+        "phase1_contract_sha256": "PROSPECTIVE_SUCCESSFUL_PHASE1_CONTRACT_REQUIRED",
+        "phase1_request_sha256": "PROSPECTIVE_SUCCESSFUL_PHASE1_REQUEST_REQUIRED",
+        "pair_complete_sha256": "PROSPECTIVE_AUTHORITATIVE_V3_PAIR_COMPLETE_REQUIRED",
+        "pair_attempt_terminal_sha256": "PROSPECTIVE_BOUND_V3_ATTEMPT_TERMINAL_REQUIRED",
+        "phase3_start_token": "PROSPECTIVE_SINGLE_START_TOKEN_REQUIRED",
+        "fixed_ref_cohort_sha256": "PROSPECTIVE_FIXED_REF_COHORT_BINDING_REQUIRED"
+      },
+      "allowed_computations": [
+        "load and validate REF before opening any candidate arm",
+        "host-local four-arm binding recomputation through the accepted spatial loader",
+        "R(existing_corrected_B384), R(repaired_B384), DeltaR and paired fixed-REF-unit composition bootstrap",
+        "same-window R(REF384_repeat) engineering diagnostic",
+        "aggregate conditional amplitude support only when accepted QC is present",
+        "explicit UNMEASURED waveform and missing-QC states"
+      ],
+      "decision_rule": {
+        "metric": "one-sided paired-unit bootstrap lower95 > 0.05",
+        "repeatability": "R(REF384_repeat) >= 0.98",
+        "missing_qc_or_waveform": "INCONCLUSIVE_NO_ADVANCE",
+        "automatic_advancement": false
+      },
+      "forbidden_outputs": [
+        "per-unit gain/loss ranking",
+        "parameter tuning, refit, estimator rewrite, or threshold change",
+        "biological identity, purity, recovery, or contamination claim",
+        "automatic scientific advancement"
+      ],
+      "label": "THIN_ACCEPTED_ESTIMATOR_COMPOSITION_NO_AUTOMATIC_ADVANCEMENT",
+      "output_namespace_pattern": "en_first_medium_saved_output_qualification_phase3_<unique_run_id>",
+      "resources": {
+        "wall_seconds_max": 1800,
+        "peak_rss_bytes_max": 10737418240,
+        "cpu_threads_max": 4,
+        "gpu_count": 0,
+        "persistent_output_bytes_max": 268435456
+      }
+    }
+  },
+  "lifecycle": {
+    "fresh_absent_output_required": true,
+    "one_start_per_phase": true,
+    "automatic_retry": false,
+    "failed_namespace_reuse": false,
+    "first_result_preserved": true,
+    "started_receipt_written_before_input_loading": true,
+    "failure_receipt_preserved_without_COMPLETE": true,
+    "complete_written_last": true,
+    "phase2_requires_successful_phase1_receipts": true,
+    "phase3_requires_successful_phase1_and_authoritative_pair_receipts": true,
+    "token_registry_root": "/mnt/NPX/Luke/DARTsort_motion_experiments/.qualification_token_registry/en_first_medium_saved_output_v1",
+    "token_claim_rule": "Before any arm load, atomically create SHA256(token).claim.json with O_CREAT|O_EXCL. The HMAC-SHA256 token binding covers exact contract, request identity, output namespace, source hashes, phase, and arm input identities. Claims persist on success and failure; replay and concurrent reuse fail.",
+    "managed_launcher": "testing.qualification_managed_launcher",
+    "resource_preflight_rule": "Before token claim or input load, require an HMAC-authenticated launcher envelope, bounded CPU affinity and thread environment, CUDA/NVIDIA invisibility for gpu_count=0, and RLIMIT_AS. The launcher owns the wall timeout; every runtime write is checked against aggregate output quota."
+  },
+  "required_outputs": {
+    "both": ["STARTED.json", "IMPLEMENTATION_PROVENANCE.json", "ACTUAL_BINDING_RECEIPT.json", "RESOURCE_RECEIPT.json", "MANIFEST.sha256", "COMPLETE.json"],
+    "phase1": ["PHASE1_CONTROL_REPORT.json"],
+    "phase2": ["PHASE2_EXISTING_B_REPORT.json", "PHASE2_FIXED_60S_DIAGNOSTICS.csv"],
+    "phase3": ["PHASE3_COMPACT_REPORT.json"],
+    "on_failure": ["STARTED.json", "FAILURE.json"],
+    "hash_policy": "MANIFEST covers every successful output except COMPLETE; COMPLETE binds MANIFEST and is written last."
+  },
+  "hard_exclusions": [
+    "recording or voltage access",
+    "sorting, training, detection, clustering, template refit, or threshold search",
+    "RF fitting, rescoring, comparison, or sealed holdout access",
+    "prospective repaired_B384 or REF384_repeat hashes",
+    "biological identity, purity, novel-event recovery, efficacy, or advancement claim"
+  ]
+}

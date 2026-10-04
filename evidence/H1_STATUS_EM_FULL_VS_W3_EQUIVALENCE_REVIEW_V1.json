@@ -1,0 +1,9 @@
+{
+  "schema": "h1-status-em-full-vs-w3-equivalence-review-v1",
+  "status": "COMPLETE_MATERIAL_INPUT_MISMATCH",
+  "decision": "ONE_INPUT_HARMONIZED_W3_CONTROL_WARRANTED",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/em_full_vs_w3_equivalence_h1_final_review_20261003_v1_h1",
+  "manifest_sha256": "b991b3b2e6f7b81c75b69937e0856f176b33560ad39b835a3f9fd06ac2bb8a8e",
+  "complete_sha256": "f043e0637070bee5e85b2d07b2f88fe2f022ed0426e853133f4849a8c8fb5d87",
+  "summary": "The exact full and W3 sorts differ in rounded state on 689995/10199918 W3 samples and in ScaleRecording gains on 383/383 accepted channels. Existing rho/population differences are confounded. Freeze only one full-cache-sliced W3 retrain after saved-cache byte-equivalence preflight; no run was launched."
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "h1-status-em-harmonized-w3-recovery-final-go-v3",
+  "status": "GO_TO_COORDINATOR_RELEASE_ONE_CPU_SCORE_ONLY",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/em_harmonized_w3_saved_output_recovery_final_go_20261003_v3_h1",
+  "manifest_sha256": "8696fe4c14112ef6ef6825abf1b37a258d0a1175eff410f211c37d8abab07b7b",
+  "complete_sha256": "f153ae0507878db68c4590a575f6a5efdc3e1a5c50848be88b5233cd7deb9dc1",
+  "h1_go_receipt_sha256": "9810dfd6f9dcf24911774888a1ffc66cf589b4be4cbf0e7005cf194c32c54b0d",
+  "reviewed_h5_manifest_sha256": "72f9f1bf719f91713015f2e6ac671f34c14998e6d26715caed6f37f34b636e0e",
+  "coordinator_release_required": true,
+  "immediate_preflight_required": true,
+  "launch_performed": false,
+  "score_performed": false
+}

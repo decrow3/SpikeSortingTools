@@ -29,7 +29,9 @@ def dewhiten_selected(root: Path, cluster_ids: np.ndarray) -> tuple[dict[int, np
     inverse = np.load(root / "whitening_mat_inv.npy")
     positions = np.load(root / "channel_positions.npy")
     selected = np.asarray(templates[np.asarray(cluster_ids, dtype=int)], dtype=np.float64)
-    physical = selected @ np.asarray(inverse, dtype=np.float64)
+    # Kilosort applies Wrot to channel-by-time data.  ``templates.npy`` is
+    # time-by-channel, hence undoing whitening requires the transposed inverse.
+    physical = selected @ np.asarray(inverse, dtype=np.float64).T
     return {int(cid): wave for cid, wave in zip(cluster_ids, physical)}, positions.astype(float)
 
 
@@ -217,7 +219,7 @@ def run(output: Path) -> dict:
     summary = {
         "schema_version": "luke-medicine-matched-waveforms-v1",
         "pairs": int(len(metrics)),
-        "waveform_representation": "templates.npy @ whitening_mat_inv.npy on physical channels",
+        "waveform_representation": "templates.npy @ whitening_mat_inv.npy.T on physical channels",
         "common_depth_range_um": list(DEPTH_RANGE_UM),
         "alignment_search": {"depth_shifts_um": [min(DEPTH_SHIFTS_UM), max(DEPTH_SHIFTS_UM), 20],
                              "time_lags_samples": [min(TIME_LAGS), max(TIME_LAGS)]},

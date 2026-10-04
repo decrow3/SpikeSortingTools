@@ -1,0 +1,89 @@
+{
+  "schema": "first-medium-saved-output-qualification-composition-review-v1",
+  "producer": "H1",
+  "completed_at_utc": "2026-10-02T10:46:31Z",
+  "verdict": "READY_FOR_H5_COMPOSITION_REVIEW_REAL_EXECUTION_DISABLED",
+  "milestone": "freeze a two-phase saved-output qualification boundary without opening scientific outcomes",
+  "decision_changed": "whether accepted measurement and spatial modules have one inspectable, fail-closed orchestration contract before any real controls or existing-B scalar",
+  "cheapest_adequate_test": "saved-format synthetic REF fixture through the real composed CLI plus static boundary and disabled-gate checks",
+  "completion_condition": "self-contained immutable packet, accepted source snapshots preserved, Phase 1 fixture passes, Phase 2 remains disabled, and no real array is opened",
+  "accepted_dependencies": {
+    "measurement_packet_manifest": "61758790c555c18066dc2bdea6af1f03d755ef1d5f704f18dfa8c2c868d2bdf0",
+    "measurement_h5_go_manifest": "9f0bdeb22aa889bc13eed41a98fc783bd16504c829577ab3a3508c3daa09c68e",
+    "spatial_packet_manifest": "80021b93c3605c95f32f16f600f522e684ae06a1234fe286bce21bbcb2bd61e2",
+    "spatial_h1_go_manifest": "2c2cbe711fb361a90b42fc71ed73b9134b22886b6b9a6d25846dfdd6f1e88031",
+    "measurement_module": "779b3b82e4328f92f6d50cb0a411153e03d755172d9493ccda937a686f42d0d9",
+    "spatial_loader": "da3d5d5af8227f6ef70747dca32b3e2c52206230b5494d7bc9015cba24fcdf35",
+    "active_spatial_superset_matcher": "174a4bb6d621489260927dc0bbc06558e408564158a44657ecdd306fa07db5da",
+    "reviewed_measurement_matcher_snapshot": "b4065ba7e6c326e74f5f283de9a6ee76df0dfd3b70b65fd534b1d4559a80de0c",
+    "correspondence_ast_sha256_both": "1b965c34316041bdffae89a81818bbc3b27db40e2cd36c49d34548d3b132a4f5",
+    "measurement_contract_snapshot": "c0dc9deff29742dd5f841893c530048975e15665ee8ed7a5c0f97c99b6539b86",
+    "kilosort_source_aggregate": "d1e5a4465d387c66a7655db442ecbf8740d2cae0032c300b0456432b0080c614"
+  },
+  "composition": {
+    "cli_sha256": "75c0300e3b2d120fc31bd8312583ddf2bc95ef3b3e31feaf19f56cf5fbcd01f0",
+    "contract_sha256": "47ea2d3d026eaabe754f21bf6d6a4ee070a202c15f06f95dd608d6daf4b6c122",
+    "active_boundary": "The spatial superset sort_comparison snapshot is active. It differs from the accepted measurement snapshot only by later pair-manifest spatial fields; correspondence and its two helpers have identical AST bytes after canonicalization.",
+    "module_review_scope": "No accepted module result is reinterpreted or duplicated. This review covers imports, configuration, gating, outputs, and lifecycle composition only."
+  },
+  "phase1": {
+    "status": "REAL_EXECUTION_DISABLED_FIXTURE_PATH_ONLY",
+    "arms": ["REF384"],
+    "controls": [
+      "actual saved-array, clock, spatial, QC, dependency, and composite identity recomputation",
+      "REF self R exactly 1",
+      "deterministic bijective label-permutation R exactly 1",
+      "duplicated-candidate exclusivity with credited events equal cohort REF events",
+      "complete-stream half-open boundaries including exact-stop rejection",
+      "conditional REF-self support union, coverage, QC digest, amplitude-window hash, and spatial identity"
+    ],
+    "emission_limits": "Diagnostic controls only. The CLI accepts exactly one REF arm and emits no actual cross-arm scalar, ranking, gain/loss list, tuning, efficacy, repeatability, or advancement claim."
+  },
+  "phase2": {
+    "status": "DISABLED",
+    "future_one_shot": "Requires concrete composition review, method-freeze, successful Phase-1 MANIFEST/COMPLETE, fixed cohort, and single-start tokens. The CLI rehashes all Phase-1 manifest members and the method-freeze receipt before start.",
+    "arms": ["REF384", "existing_corrected_B384"],
+    "allowed": "Only R(existing B), aggregate fixed 60-second diagnostics, and aggregate conditional support descriptors.",
+    "unavailable": "DeltaR remains explicit UNAVAILABLE; no repaired/repeat arm or advancement verdict is accepted or emitted."
+  },
+  "lifecycle_and_resources": {
+    "namespace": "fresh absent namespace per phase",
+    "attempts": "one start and no automatic retry or failed-namespace reuse",
+    "receipts": "STARTED before input loading; implementation and actual binding receipts; resource receipt; MANIFEST; COMPLETE last; FAILURE without COMPLETE",
+    "phase1_bounds": "1200 s, 8 GiB peak RSS, 4 CPU threads, 128 MiB persistent output, no GPU",
+    "phase2_bounds": "1800 s, 10 GiB peak RSS, 4 CPU threads, 256 MiB persistent output, no GPU",
+    "enforcement": "CLI requires explicit positive thread environment values and fails before COMPLETE if thread, elapsed wall, peak RSS, or output bounds are exceeded."
+  },
+  "tests": {
+    "result": "6 passed",
+    "saved_format_cli": "Phase-1 synthetic saved outputs passed through the exact spatial loader and composed CLI",
+    "first_result": "second use of the same output namespace failed without changing COMPLETE",
+    "phase2": "fixture and real execution remain disabled",
+    "boundary": "active source/dependency hashes and correspondence AST equivalence passed"
+  },
+  "scope": {
+    "real_data_opened": false,
+    "real_scores_computed": false,
+    "jobs_started": false,
+    "recording_or_voltage_access": false,
+    "sorting_training_detection": false,
+    "rf_or_holdout_access": false,
+    "repaired_or_repeat_hash_bound": false
+  },
+  "implementation_checks": {
+    "done": [
+      "verified and copied exact independently accepted module snapshots",
+      "resolved the two accepted matcher-file hashes through function-level equivalence and one active spatial superset dependency",
+      "froze combined source, config, Kilosort dependency, clock, spatial region, cells, matcher, conditional support, tokens, outputs, lifecycle, and resource bounds",
+      "traced Phase-1 output fields to exclude actual cross-arm results",
+      "traced Phase-2 token and receipt verification before any input loading",
+      "ran the real CLI on bounded saved-format synthetic arrays from packet source"
+    ],
+    "not_done": [
+      "H5 has not independently reviewed the composition",
+      "no real REF or existing-B arrays, outcomes, jobs, recording, voltage, sorter, waveform, RF, or holdout were accessed"
+    ],
+    "can_establish": "The accepted modules are composed under one exact disabled boundary, and the diagnostic Phase-1 path works on saved-format fixtures without leaking a cross-arm result.",
+    "cannot_establish": "Real Phase-1 readiness, any existing-B result, DeltaR, efficacy, repeatability, biological identity, recovery, or advancement."
+  }
+}

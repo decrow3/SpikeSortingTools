@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "packet": "en_minimum_training_support_mask_covariance_smoke_postexecution_review_20261001_v1_h1",
+  "status": "implementation_valid_for_frozen_smoke_design_progression_only",
+  "manifest_sha256": "1d724b195d1d4402ec5b50fcc80a04e51772da014906f2dc140e28dbb39b84e3",
+  "execution_manifest_sha256": "07de38b2fa8d0b3be8a625d8864d856b2ed722e032f7244a5e8316c8bb86d34e",
+  "advance_to_trained_comparison_design": true,
+  "trained_launch_authorized": false,
+  "recording_opened_by_reviewer": false
+}

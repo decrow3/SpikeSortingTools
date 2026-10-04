@@ -1,0 +1,38 @@
+H1 bounded independent review receipt
+Date: 2026-10-02
+Source: /mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_waveform_contract_targeted_repair_20261002_v2_h5
+
+Integrity:
+- sha256sum -c MANIFEST.sha256: all entries OK
+- MANIFEST.sha256 sha256: 32c4271856d32ba7930168fea79a4c1bc25e70e276781443195814ad7a9163b0
+- COMPLETE.json sha256: 5b6d65a71d2ac50eb8ee66ede938375e9feae85fd6354c81e37c8ab40a147228
+
+Runtime:
+- /home/huklab/Documents/RyanSorting/SpikeSortingTools/environments/rescue-production/.venv/bin/python
+- Python 3.12.4, x86_64
+- torch 2.6.0+cu124
+- torch.__config__.show() sha256: d79e4b234f46d728f88054ba7278186ab7efa02dfe343a2fd12a9523cc6b6a78
+- OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4
+- PYTHONDONTWRITEBYTECODE=1
+
+Published packet test command:
+PYTHONPATH=source:<rescue-site-packages> <rescue-python> -m pytest -q -p no:cacheprovider tests/test_waveform_contract.py
+Result: 10 passed in 3.15s
+
+Byte-identical /tmp staging test:
+- Staged manifest check: all entries OK
+- Same pytest invocation against staged source/tests
+- Result: 10 passed in 3.02s
+
+Independent closure recomputation:
+- 9 member hashes checked
+- canonical compact sorted-key JSON aggregate:
+  ebcad89e8c45de0315557c33414ada30e3c3bee951b250d33f3e2ff0ad156e64
+
+Read-arithmetic recomputation:
+- Per endpoint: 1145 samples * 384 channels * 2 bytes = 879,360 bytes
+- Per comparison/epoch: 3 * 128 nonretained endpoints + 64 * 2 retained endpoints = 512 endpoint reads
+- Total: 3 comparisons * 3 epochs * 512 = 4,608 endpoint reads
+- Total logical event-read bytes: 4,608 * 879,360 = 4,052,090,880 bytes
+
+No recording voltage was read. No sorter, RF, or holdout work was launched.

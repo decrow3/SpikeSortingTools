@@ -1,0 +1,48 @@
+{
+  "schema": "first-medium-postrun-evaluator-report-preparation-v1",
+  "producer": "H1",
+  "date": "2026-10-02 America/Los_Angeles",
+  "verdict": "PREPARED_INPUTS_AND_SCHEMA_BLOCKED_ON_REVIEWED_PHASE3_ENTRY",
+  "milestone": "October 4 compact frozen-evaluator report immediately after a reviewed pair and post-run binding/QC",
+  "decision_changed": "whether the completed pair can be evaluated without inventing a new outcome-dependent interface",
+  "cheapest_adequate_test": "static accepted-source/hash audit plus request/schema validation only",
+  "completion_condition": "exact future-arm inputs, report language, output schema, and one missing reviewed composition entry are explicit before outcomes",
+  "accepted_dependencies": {
+    "phase1_result_manifest_sha256": "8b73c931155741f84300f3cd3a5d260ae8bf0bcf2e05460a6f717c114712bb04",
+    "phase1_result_complete_sha256": "797ae2d395e25e35f59e15447df7435dfda73a0839ed092fbb25786cdd97077d",
+    "phase1_h1_postreview_manifest_sha256": "2ff3768ce1c8a9c15bc5eacb99291156f94ab792dc724b8665d64588a0a88689",
+    "phase1_h1_postreview_complete_sha256": "7fe21bbb31fe7be70a113d70e84715a4eab8d9d75b94071ba1059f419c27241f",
+    "qualification_contract_sha256": "5ce7d82ef3467f892c21c4f936da87e6c31241917d8b81e63511c8fa6a4104d8",
+    "qualification_entry_sha256": "35ab0e5886ed1ba39dbde475c37794e9b053c10175f97d0d88e25c35f954bd6e",
+    "measurement_module_sha256": "779b3b82e4328f92f6d50cb0a411153e03d755172d9493ccda937a686f42d0d9",
+    "spatial_four_arm_adapter_sha256": "da3d5d5af8227f6ef70747dca32b3e2c52206230b5494d7bc9015cba24fcdf35",
+    "matcher_sha256": "174a4bb6d621489260927dc0bbc06558e408564158a44657ecdd306fa07db5da",
+    "clock_v5_review_manifest_sha256": "39fd736b838b81db39b96265a4fd51de0ebf6e102e6fa1876fd56f4132c74af4",
+    "clock_v5_review_complete_sha256": "74f63fe6880e50c5247f21df2ef16d3ea37f2e3206f60dce89495a69d493cd3d",
+    "waveform_method_manifest_sha256": "50fa0589d6eb459b12a4ac8c5c997fa7b822a58d2b2c1f0cbd2de53f9c47f8a7",
+    "waveform_method_complete_sha256": "74bd795cee9a3e5c651210c2ed37e977e2476e75491a7e2a5e44ff87f0deb952",
+    "waveform_method_h1_verdict": "GO_METHOD_FREEZE_ONLY"
+  },
+  "exact_blocker": {
+    "id": "NO_REVIEWED_PHASE3_REPAIRED_REPEAT_COMPOSITION_ENTRY",
+    "evidence": "accepted first_medium_saved_output_qualification.py declares PHASES={phase1_controls, phase2_existing_b}; Phase-2 requires ordered REF384/existing_corrected_B384 and explicitly emits DeltaR unavailable",
+    "impact": "the accepted managed CLI cannot accept repaired_B384 or REF384_repeat and cannot produce the frozen repaired-minus-existing DeltaR/repeat report",
+    "minimum_repair": "add one execution-disabled Phase-3 composition entry only; reuse accepted loader, matcher, measurement module, fixed cohort, Phase-1 receipt, clocks and report schema byte-for-byte; bind all four arms but open no candidate until REF/Phase-1 identities pass",
+    "required_review": "independent changed-path review plus synthetic below/equal/above margin, repeat-pass/fail/unmeasured, input-mutation, clock/row-lineage, single-start and no-false-success fixtures"
+  },
+  "status_science_separation": {
+    "execution_status": "job lifecycle and artifact completeness only",
+    "binding_status": "hash/clock/row-ancestry/QC/spatial/waveform receipt validity only",
+    "scientific_status": "only frozen R, DeltaR, bootstrap, repeat and diagnostic values after a successful reviewed execution",
+    "identity_language": "continuity proxy only; never biological identity or purity",
+    "waveform_language": "UNMEASURED until separately captured under the accepted method and bound to scored pairs",
+    "advancement_language": "no advancement verdict from execution success; any unmeasured required field yields inconclusive"
+  },
+  "scope": {
+    "b_outcome_read": false,
+    "voltage_read": false,
+    "rf_or_holdout_access": false,
+    "service_enabled_or_started": false,
+    "evaluator_or_science_executed": false
+  }
+}

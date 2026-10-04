@@ -1,0 +1,18 @@
+{
+  "schema": "first-medium-postrun-phase3-request-v1",
+  "execution_enabled": false,
+  "request_status": "TEMPLATE_REJECT_UNTIL_ALL_PROSPECTIVE_FIELDS_REPLACED_AND_REVIEWED",
+  "phase1_receipt_dir": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase1_controls_20261002_v1_h5",
+  "phase1_manifest_sha256": "8b73c931155741f84300f3cd3a5d260ae8bf0bcf2e05460a6f717c114712bb04",
+  "phase1_complete_sha256": "797ae2d395e25e35f59e15447df7435dfda73a0839ed092fbb25786cdd97077d",
+  "reference_cohort_sha256": "3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0",
+  "arms": [
+    {"arm_id": "REF384", "binding_receipt": "PROSPECTIVE_CURRENT_HOST_BINDING_REQUIRED"},
+    {"arm_id": "existing_corrected_B384", "binding_receipt": "PROSPECTIVE_CURRENT_HOST_BINDING_REQUIRED_NO_OUTCOME_INSPECTION"},
+    {"arm_id": "repaired_B384", "curated_output": "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1/repaired_B384/native_results", "qc_dir": "PROSPECTIVE_FRESH_QC_DIR_REQUIRED", "binding_receipt": "PROSPECTIVE_POST_RUN_BINDING_REQUIRED"},
+    {"arm_id": "REF384_repeat", "curated_output": "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1/REF384_repeat/sorter_output", "qc_dir": "PROSPECTIVE_FRESH_QC_DIR_REQUIRED", "binding_receipt": "PROSPECTIVE_POST_RUN_BINDING_REQUIRED"}
+  ],
+  "output": "PROSPECTIVE_FRESH_PHASE3_OUTPUT_NAMESPACE_REQUIRED",
+  "start_token": "PROSPECTIVE_SINGLE_USE_BOUND_TOKEN_REQUIRED",
+  "waveform_receipts": "OPTIONAL_ONLY_IF_SEPARATELY_REVIEWED_AND_COMPLETE"
+}

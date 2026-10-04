@@ -1,0 +1,77 @@
+{
+  "schema": "truncation-qc-v6-postexecution-independent-review-v1",
+  "reviewer": "H1",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_truncation_qc_regeneration_v6_real_result_20261002_v1_h5",
+  "reviewed_manifest_sha256": "695d0fdb58fbb82c4d1213f665eb3a4a065b4708d3b41c418fce7d193a37db08",
+  "reviewed_complete_sha256": "4cd7a0a3bfd4e3c18c92f3a6316e7ef559ed0def63a8bcc345f6266cc18283de",
+  "verdict": "IMPLEMENTATION_ACCEPTED_SUCCESSFUL_ONE_SHOT_SAVED_ARTIFACT_QC_REGENERATION",
+  "execution": {
+    "execution_count": 1,
+    "retry_count": 0,
+    "anomalies": [],
+    "service": "en_truncation_qc_regeneration_v6_real.service",
+    "service_result": "success",
+    "exec_main_status": 0,
+    "restart_policy": "no",
+    "restart_count": 0,
+    "elapsed_seconds": 568.527745962143,
+    "cpu_usage_ns": 838689242000,
+    "highest_observed_memory_bytes": 641585152,
+    "memory_limit_bytes": 17179869184,
+    "cpu_quota_percent": 400,
+    "runtime_limit_seconds": 7200,
+    "output_bytes": 110693869,
+    "output_limit_bytes": 1073741824
+  },
+  "authorization_and_lifecycle": {
+    "token_identity": "6c99957b6f3a38152141db1887cda22a03571e6886b97cf9ff4d7a975f98f7f7",
+    "consumed_lock_sha256": "7495caa4f126fb20aa58dab49dbdffa2f540ec1f906c967c60b9fdd377dc89cb",
+    "generated_complete_sha256": "54fba4eb0d9084eb5e81e1fe62fcc17c4781d59af595bdb25ef449a38f839174",
+    "completion_written_last": true
+  },
+  "bindings": {
+    "request_config_sha256": "0954d689c3f1ae5d82e0f4f84e059e6481110cf430a5954e22c494cda86a396f",
+    "effective_config_sha256": "a23233d4454190a1cb46654e583a8eba82a544131e4beede489ecf6e0f44d623",
+    "wrapper_source_sha256": "39cc76a96ad0cac1047dcff973202fe5108deba56d3e50ef55402c8a600a26eb",
+    "qc_source_sha256": "cbbab201cfa1276b0770983204fd4965fb89b71266de99c0364d817cf74e27b9",
+    "truncation_source_sha256": "eec2476397c1856891a4b9f1856c1af4a5e2f81a13e934d1ade2f96a02a6e3e6",
+    "refractory_source_sha256": "2dc727abc757399f6829c1eb21f9cf8db19a6dac595c3f96d8fc819bd4862e33"
+  },
+  "outputs": {
+    "REF384": {
+      "truncation_qc_sha256": "ae07ecf970f0c6de93f5f1717254fd11a181ce81b8a693232171f03e4ed524af",
+      "truncation_rows": 1569,
+      "unique_cluster_ids": 243,
+      "present_qc_sha256": "76c2701b371f1a25fb7a3833169521baded766558638454f289ef21365273402",
+      "present_rows": 269
+    },
+    "existing_corrected_B384": {
+      "truncation_qc_sha256": "66088862cc80de3f7d259844acdddf0ff72dba5a36c9cb84dce70f259688dd13",
+      "truncation_rows": 1537,
+      "unique_cluster_ids": 225,
+      "present_qc_sha256": "2cb6cbabd3d06ccd85b3b91d7f15aa3b08204b488872f96ea629a3c7373c55f4",
+      "present_rows": 263
+    }
+  },
+  "scope": {
+    "recording_or_voltage_reads": 0,
+    "sorting_training_detection": 0,
+    "rf_or_holdout_access": 0,
+    "identity_status": "UNRESOLVED",
+    "waveform_status": "UNMEASURED",
+    "scientific_interpretation": "none"
+  },
+  "implementation_checks": {
+    "done": [
+      "Verified every reviewed-packet manifest member and the COMPLETE binding.",
+      "Read the prelaunch, launch, input, runtime, status, output-inventory, completion, service-unit, stdout, stderr, and run-receipt evidence.",
+      "Checked the effective source/config bindings, exact input rows and clock offset, per-arm output hashes/counts/schemas, one-shot lifecycle, resource conditions, and forbidden-access counters."
+    ],
+    "not_done": [
+      "The H5-local NPZ payloads were not independently opened on H1 because they were not included in the compact packet and H1 has no authenticated H5 path.",
+      "No scientific interpretation, identity analysis, waveform measurement, RF, holdout access, or evaluator retraversal is included in this review."
+    ],
+    "can_establish": "The bound managed job executed once successfully and produced the declared hash-bound saved-artifact QC outputs within its frozen operational contract.",
+    "cannot_establish": "The scientific correctness of individual QC values, biological identity, waveform quality, or arm advancement readiness."
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "schema": "first-medium-measurement-redesign-implementation-review-v1",
+  "reviewer": "H1",
+  "verdict": "READY_FOR_H5_IMPLEMENTATION_REVIEW_EXECUTION_DISABLED_NO_OUTCOMES_COMPUTED",
+  "milestone": "visible outcome-blind measurement redesign",
+  "decision_changed": "define a feasible primary retention estimand and demote sparse fitted amplitude completeness to a conditional diagnostic before any prospective repair run",
+  "cheapest_adequate_test": "synthetic known-answer fixtures plus packaged-source import and compatibility tests",
+  "completion_condition": "exact source/contract/test packet published with all fixtures passing and no real-arm execution path",
+  "source_bindings": {
+    "source/testing/first_medium_measurement_redesign.py": "167f44ff3ee434a607f00745b8884378811467e5d4ac15d944fcee1e28d9e158",
+    "source/testing/sort_comparison.py": "b4065ba7e6c326e74f5f283de9a6ee76df0dfd3b70b65fd534b1d4559a80de0c",
+    "source/pipeline/config.py": "74424d444e05a7ba2d3968d22c1490475ebe8d7c0d213687316ace7cec5cf59c",
+    "configs/en_first_medium_measurement_redesign_v1.json": "c0dc9deff29742dd5f841893c530048975e15665ee8ed7a5c0f97c99b6539b86",
+    "tests/test_first_medium_measurement_redesign.py": "3636903d7a23ef069d53da3936429d6e836beb8eab88794ede00d871837178cb"
+  },
+  "implementation": {
+    "conditional_amplitude": "uses only cached finite_interior rows; rejects invalid/overlapping intervals; does not refit, impute, relax thresholds, or promote the conditional statistic to a gate; reports unit and full-cohort time support",
+    "retention_estimand": "equal-unit R(X) on an explicit fixed REF cohort; complete sorts compete for exclusive reciprocal primary partners; unmatched cohort units are exact zeros",
+    "difference": "paired DeltaR=R(repaired B)-R(existing B)",
+    "matching": "accepted sort_comparison correspondence hash; greedy chronological exclusive event matches; reciprocal unique best Jaccard; minimum overlap 0.1; bilateral retention 0.5; intended tolerance 0.5 ms converted by a future execution request",
+    "cells": "explicit integer half-open 60-second edges; global matching occurs first and matched REF events are assigned to cells; cell outputs are state/longitudinal diagnostics only",
+    "uncertainty": "paired REF-unit composition bootstrap, 20,000 replicates, seed 20261002, one-sided 5th percentile",
+    "margin": "proposal preserved visibly but rejected as minimum-effect evidence; replacement requires lower95 > 0.05"
+  },
+  "fixture_results": {
+    "new_module": "9 passed",
+    "combined_new_matcher_and_evaluator": "35 passed",
+    "packaged_source_only": "9 passed",
+    "REF_self": "R=1 and self DeltaR=0",
+    "consistent_bijective_relabel": "invariant",
+    "duplicated_events": "exclusive no-double-credit, R=1",
+    "deleted_events": "two of four retained, R=0.5",
+    "tied_split": "no reciprocal unique primary, unmatched zero",
+    "tied_merge": "no reciprocal unique primary, unmatched zeros",
+    "absent_partner": "exact zero in equal-unit mean",
+    "half_open_cells": "boundary event assigned to following cell; stop excluded",
+    "conditional_support_union": "exact REF/candidate/common support and weighted conditional difference reproduced",
+    "margin_counterexample": "DeltaR=0.051, lower95=0.001 passes proposal and fails replacement"
+  },
+  "scope": {
+    "real_cross_arm_outcomes_computed": false,
+    "recording_or_voltage_access": false,
+    "sorting_training_detection": false,
+    "rf_or_holdout_access": false,
+    "identity_claim": false,
+    "novel_event_recovery_claim": false
+  },
+  "implementation_checks": {
+    "done": [
+      "Read the accepted exclusive correspondence implementation and retained its exact b4065ba7... hash.",
+      "Traced denominators, unmatched behavior, reciprocal uniqueness, candidate-event exclusivity, cell assignment, support unions, bootstrap pairing, and margin logic.",
+      "Ran positive and negative known-answer fixtures from the workspace and from the self-contained packet source namespace.",
+      "Confirmed the new module contains no file loader, recording, voltage, sort, training, detection, RF, holdout, or execution entry point."
+    ],
+    "not_done": [
+      "No actual REF/existing/repaired arrays or prior redesigned outcomes were opened.",
+      "No repaired arm exists, no numerical power model was supplied, and no biological identity or waveform evidence was evaluated.",
+      "H5 has not yet independently reviewed source or rerun packet fixtures."
+    ],
+    "can_establish": "The redesign is explicit, outcome-blind, executable on supplied in-memory saved arrays, and passes its synthetic semantics and packaging controls.",
+    "cannot_establish": "Any cross-arm DeltaR, practical power, repaired-arm efficacy, biological identity, novel-event recovery, waveform stability, or advancement readiness."
+  }
+}

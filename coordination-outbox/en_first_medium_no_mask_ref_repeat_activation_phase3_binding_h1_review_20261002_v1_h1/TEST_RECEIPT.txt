@@ -1,0 +1,29 @@
+H1 independent activation-binding review test receipt
+Date: 2026-10-02
+Subject: /mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_activation_phase3_binding_candidate_20261002_v2_h5
+
+Subject integrity:
+  sha256sum -c MANIFEST.sha256
+  Result: every member OK
+  COMPLETE.json sha256: 6fbc0064302b6794b531f720c8cee1816d9eff4989a14364ad8cd5f64266ae08
+
+H1 portable tests:
+  pytest test_activation_candidate.py test_pair_launcher.py excluding the two fixed-H5-runtime subprocess tests
+  Result: 20 passed, 2 deselected in 0.62s
+
+H1 full tests:
+  Result: 20 passed, 2 failed
+  Classification: both failures occur before candidate logic because the tests deliberately spawn the bound H5 interpreter path, which is absent on H1. They are host-runtime checks, not functional failures.
+
+H5 bound-runtime receipt:
+  Result recorded in the immutable subject packet: 22 passed in 1.29s
+
+Additional fail-closed check:
+  Exact packet preflight executed in-process with only verify_runtime stubbed because the H5 interpreter is unavailable on H1.
+  Phase3 bindings: exact
+  Namespaces: fresh
+  execution_enabled: false
+  activation_eligible: false
+  --require-activation: expected PermissionError
+
+No service was installed or started. No recording, voltage, scientific outcomes, RF, or sealed holdout data were accessed.

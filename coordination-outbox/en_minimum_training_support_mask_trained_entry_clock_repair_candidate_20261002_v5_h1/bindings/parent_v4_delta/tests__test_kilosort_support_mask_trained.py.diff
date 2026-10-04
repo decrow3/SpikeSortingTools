@@ -1,0 +1,11 @@
+--- /mnt/NPX/Luke/DARTsort_motion_experiments/en_minimum_training_support_mask_trained_entry_repair_candidate_20261002_v3_h5/tests/test_kilosort_support_mask_trained.py
++++ /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/test_kilosort_support_mask_trained.py
+@@ -102,6 +102,8 @@
+     ("permuted-ancestry", "spike_times row ancestry differs"),
+     ("duplicate-kept", "integer kept_spikes indices must be unique"),
+     ("out-of-bounds-id", "spike_templates is outside templates axis 0"),
++    ("reordered-kept", "integer kept_spikes indices must be strictly increasing"),
++    ("coordinated-permutation", "integer kept_spikes indices must be strictly increasing"),
+ ])
+ def test_actual_cli_rejects_equal_length_semantic_corruption(outcome, message):
+     with tempfile.TemporaryDirectory() as td:

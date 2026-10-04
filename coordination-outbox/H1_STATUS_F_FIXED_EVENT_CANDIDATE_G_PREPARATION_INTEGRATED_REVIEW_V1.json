@@ -1,0 +1,13 @@
+{
+  "schema": "h1-candidate-g-integrated-review-status-v1",
+  "status": "NO_GO_INTEGRATED_CANDIDATE_G_PREPARATION",
+  "candidate_g_execution_enabled": false,
+  "review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_preparation_integrated_review_20261004_v1_h1",
+  "review_manifest_sha256": "d9f83f3b40d88d7e8f3302a23bb519ba7009bbe491d7a750f04ff1c89468c6e2",
+  "review_complete_sha256": "84cc7db2e89bf41d6bbfb573c87087c65d50958636ece6d33d457a29ad3e6065",
+  "review_verdict_sha256": "91c9e0281b5ff1b1da382ec0c11b9731147a40270b272d1dac1cd802277af316",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_preparation_20261004_v1_h5",
+  "reviewed_manifest_sha256": "54f45746366c4c149f170364e3e38ad5a533e12dd363e5310f0df7a8d72e014b",
+  "reviewed_complete_sha256": "794c47e0d3903a0f63b846be8a037f8bc6544df8563528486c5ee417befd2543",
+  "next_action": "Preserve v1 unchanged; produce a new sealed repair namespace and request a new integrated review. Do not issue a candidate-G release derivative from this verdict."
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "h1-candidate-g-v2-1-integrated-review-status-v1",
+  "status": "NO_GO_INTEGRATED_CANDIDATE_G_V2_1_PREPARATION",
+  "candidate_g_execution_enabled": false,
+  "review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_v2_1_preparation_integrated_review_20261004_v1_h1",
+  "review_manifest_sha256": "3532d3510097da31d448b739a600a7052f4baed85b9bdfc51723bfabb7682677",
+  "review_complete_sha256": "2cbf39cec05eceeed01b5e3094031318ac6569087f4d272efad4950238d46088",
+  "review_verdict_sha256": "7d43abf19919e1ed8fc0d584bb2ee4cba9e9aa02128a87759b9d16f29781ffbd",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_preparation_20261004_v2_1_h5",
+  "reviewed_manifest_sha256": "2ce97d278b3d40c0583e8d06ae2e74b3de651b2b99b156b583abe86b19a302e7",
+  "reviewed_complete_sha256": "4823ab489675d4387e565ea58f7bf8c3fc1808239a31eda3c64dba9a795b3708",
+  "next_action": "Preserve v2.1 unchanged. Reconcile all contract/gate/review/release schema-status values and add independently durable timeout/post-seal/publication-failure evidence before a new integrated review. Do not release candidate G."
+}

@@ -1,0 +1,100 @@
+{
+  "arms": [
+    {
+      "arm_id": "REF384",
+      "clock_normalization": {
+        "crop_origin_global_frame": 208498882,
+        "global_frames_half_open": [
+          208498882,
+          226498783
+        ],
+        "local_frames_half_open": [
+          0,
+          17999901
+        ],
+        "saved_frame": "global_acquisition_samples"
+      },
+      "curated_output": "fixtures/packaged_ref_v1/REF384/sorter_output",
+      "evidence_kind": "packaged_fixture",
+      "expected_identity_digest": "bb437585a89ab6bf3962d4ea4229cd979f16203b66ad0e489c74950cf3e26776",
+      "expected_qc_request_digest": "937365b1798ee6e09be2aaa906aff54b3bfb5d88550ac1b8da28c661d1b82d2f",
+      "provenance": {
+        "arm_contract_id": "REF384",
+        "clock_identity": "fixture",
+        "config_identity": "fixture",
+        "geometry_identity": "fixture",
+        "input_identity": "fixture",
+        "runtime_identity": "fixture"
+      },
+      "qc_dir": "fixtures/packaged_ref_v1/REF384/qc",
+      "spatial_provenance": {
+        "clock_binding": {
+          "crop_origin_global_frame": 208498882,
+          "global_frames_half_open": [
+            208498882,
+            226498783
+          ],
+          "local_frames_half_open": [
+            0,
+            17999901
+          ],
+          "saved_frame": "global_acquisition_samples"
+        },
+        "columns": [
+          {
+            "index": 0,
+            "semantic": "x",
+            "units": "micrometers"
+          },
+          {
+            "index": 1,
+            "semantic": "physical_probe_depth_y",
+            "units": "micrometers"
+          }
+        ],
+        "event_lineage_sha256": "cec68d6e52ea4727cd9443ec631d15e35c31411eee466dfa874871e20bef0d5a",
+        "geometry_float64_sha256": "5b55bfd2d04612b163393d44ffc8622e6db593dc81a4c18296dfc9ff61a3aa5b",
+        "ops_path": "fixtures/packaged_ref_v1/REF384/sorter_output/ops.npy",
+        "ops_sha256": "8b92f8e400943000a50624099195071cbe7d40821596981e74b8d02ed3b5fd59",
+        "path": "fixtures/packaged_ref_v1/REF384/sorter_output/spike_positions.npy",
+        "reference_frame": "kilosort_probe_xy_feature_mass_unshifted_nblocks0",
+        "row_count": 8,
+        "row_semantics": "exported_event_order_after_native_kept_spikes",
+        "schema": "evaluator-spatial-provenance-v1",
+        "sha256": "75726d412d421d1db237bb22d539503a3c5e6006f5791073fbe5d949a64304db",
+        "source_generation": {
+          "dependency": {
+            "digest_sha256": "d1e5a4465d387c66a7655db442ecbf8740d2cae0032c300b0456432b0080c614",
+            "files": {
+              "io.py": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+              "postprocessing.py": "d20da9026de10eb83a02466cdb233c85ae4215c15af7d5656c3593c3809a0a55"
+            },
+            "root": "dependencies/kilosort/d1e5a4465d387c66a7655db442ecbf8740d2cae0032c300b0456432b0080c614",
+            "schema": "content-addressed-python-source-root-v1"
+          },
+          "function": "kilosort.postprocessing.compute_spike_positions"
+        },
+        "spatial_region": {
+          "minimum_edge_exclusion_um": 80.0,
+          "processing_depth_um": [
+            1400.0,
+            2380.0
+          ],
+          "scoring_depth_um": [
+            1600.0,
+            2180.0
+          ],
+          "source": "testing/configs/luke0804_hindsight_ladder_v1.json sha256 c0b564e0476f1af63a01c6c4efd3d0064471193329bf026e503f1bb25adc05d3"
+        },
+        "units": "micrometers"
+      }
+    }
+  ],
+  "phase": "phase1_controls",
+  "reference_cohort": [
+    1,
+    2
+  ],
+  "reference_cohort_sha256": "d328efe3c52c6214b9758fa56866627eff196a7851dcc47fcc25f48495ff59f8",
+  "schema": "first-medium-saved-output-qualification-request-v1"
+}

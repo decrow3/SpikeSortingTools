@@ -1,0 +1,24 @@
+{
+  "schema": "en-first-medium-phase3-decision-mapping-provenance-v1",
+  "accepted_phase3_v3": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_phase3_provenance_repair_candidate_20261002_v3_h1",
+    "manifest_sha256": "3199ddda56d1b03c6a3d77d87443fbf1c2956d4ab09c08ede52467ca4b09b1cd",
+    "complete_sha256": "40508353a60978d311e8cdbaa5a533b4b8a67a91f5b045628e78c68f673a7918",
+    "independent_go_manifest_sha256": "c0d3f09341dd8653551eaae205c80c35ba942467d3703ef74a7d643cf403ec33",
+    "independent_go_complete_sha256": "94ed2ba6d7d3597dc73a463248412ec8eabf5ed41398a577121e808d1480db53"
+  },
+  "criterion_correction": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_repeat_criterion_provenance_correction_20261002_v1_h1",
+    "manifest_sha256": "fc59c368922d07f23b8e25936f343dfdf6f0b3f4e828eb2d0bb733eea02635bc",
+    "complete_sha256": "d39360094af66e50c584dc158f637194ad5eab059117c1bdc9c0f1e046bd1157",
+    "status_sha256": "3af06eca071be781398b164a651ae8ce0ad334616b3ccaab9fecd9f9e0c26295"
+  },
+  "criterion_source_sha256": "b2ef938c0087fdf5f75102c1178ddb6ac2841c086766dfe78d67e596c66d7ede",
+  "enabled_derivative_blocker_handoff": {
+    "review_manifest_sha256": "8db87c33506a89a6d19f2fb0659fe00973748c91f576b45637ea54e41cb53e9c",
+    "review_complete_sha256": "e2895af39e0aa2260cc529af1a621a2af4b0329d56032107be09c1c0aad7f34e",
+    "status_sha256": "46657b62e760ef25d82e1028e39e1ccad4b37a88442cf3c84f490277b346c50d"
+  },
+  "execution_enabled": false,
+  "outcomes_accessed": false
+}

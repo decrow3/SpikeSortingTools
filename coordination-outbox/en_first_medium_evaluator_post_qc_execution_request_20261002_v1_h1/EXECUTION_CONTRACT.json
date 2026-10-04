@@ -1,0 +1,46 @@
+{
+  "schema": "first-medium-evaluator-post-qc-execution-contract-v1",
+  "owner": "H5",
+  "requester": "H1",
+  "milestone": "fresh evaluator-v3 retraversal bound to generated truncation QC",
+  "decision_changed": "replace absent-QC UNMEASURED amplitude endpoints with measured post-QC endpoints for the existing REF384 versus existing-corrected-B384 diagnostic comparison only",
+  "cheapest_adequate_test": "one saved-output-only evaluator-v3 traversal of the two existing real arms",
+  "accepted_source_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_four_arm_evaluator_repair_candidate_20261002_v3_h1",
+  "accepted_source_manifest_sha256": "7e0d4d7e16c5ade2ceb376cd058b3ad3e6f05ffb9cd17b4830450f14277bfd1e",
+  "accepted_source_complete_sha256": "959a1e139c3289851d3905ed815bd543b32fa821884937eb1519cdbbac777ec6",
+  "accepted_traversal_review_manifest_sha256": "ea994640050807fd03d1ef6beda83acce664552fcea692c2944efb2b711e8c30",
+  "qc_result_manifest_sha256": "695d0fdb58fbb82c4d1213f665eb3a4a065b4708d3b41c418fce7d193a37db08",
+  "qc_result_complete_sha256": "4cd7a0a3bfd4e3c18c92f3a6316e7ef559ed0def63a8bcc345f6266cc18283de",
+  "h1_qc_postexecution_review": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_truncation_qc_regeneration_v6_postexecution_review_20261002_v1_h1",
+  "h1_qc_postexecution_review_manifest_sha256": "c2ee013d27540a7facf39fc12373758330d219c1f30a7127503003b0a753c7aa",
+  "fresh_output_dir": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/evaluator_post_qc_v1",
+  "fresh_staging_dir": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/evaluator_post_qc_v1_staging",
+  "fresh_numba_cache_dir": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/evaluator_post_qc_v1_numba_cache",
+  "requirements": [
+    "Verify the request, accepted-source, accepted-traversal-review, QC-result, and H1 post-execution-review manifests before launch.",
+    "Refuse launch if output, staging, or Numba-cache path already exists; never overwrite a prior traversal.",
+    "Copy accepted source byte-for-byte into the fresh writable staging directory and attest all five imported module origins and hashes before and after execution.",
+    "Use the exact config in this packet; preserve REF384 and B384 expected_identity_digest values and exact regenerated-QC byte hashes.",
+    "Run under an independently surviving systemd user service with Restart=no, CPU quota at most 400%, MemoryMax at most 16 GiB, RuntimeMaxSec at most 3600, and one start only.",
+    "Set NUMBA_CACHE_DIR to the fresh writable cache directory and PYTHONPATH to the staged source directory.",
+    "Read saved outputs only. Do not read recording voltage or launch sorting, training, detection, RF, holdout, waveform capture, or regeneration.",
+    "Preserve stdout, stderr, service status, effective command/environment, runtime/resource observations, input/QC hashes, output inventory, and final exit status.",
+    "Publish a compact immutable H5 result/review packet to shared storage; write its COMPLETE.json last and do not include large caches.",
+    "Report identity as UNRESOLVED and waveform as UNMEASURED regardless of numeric evaluator endpoints."
+  ],
+  "stop_conditions": [
+    "any manifest, source-module, saved-array identity, QC digest, clock, or path binding mismatch",
+    "preexisting output, staging, or cache namespace",
+    "unexpected recording/voltage, RF/holdout, sorting/training/detection, or waveform access",
+    "service exit, timeout, memory failure, or output-generation failure"
+  ],
+  "completion_condition": "one successful managed traversal plus a separately published immutable H5 result/review packet with exact provenance and no retry",
+  "scientific_scope": {
+    "identity_status": "UNRESOLVED",
+    "waveform_status": "UNMEASURED",
+    "repaired_B384_status": "UNAVAILABLE_not_run",
+    "REF384_repeat_status": "UNAVAILABLE_not_run",
+    "can_establish": "measured evaluator-v3 endpoints for the existing REF384 versus existing-corrected-B384 saved-output comparison under regenerated truncation QC",
+    "cannot_establish": "biological identity, waveform quality, prospective repaired-arm efficacy, repeatability, or advancement readiness"
+  }
+}

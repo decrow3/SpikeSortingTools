@@ -1,0 +1,10 @@
+{
+  "schema": "en-first-medium-phase3-composition-correction-v1",
+  "supersedes_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_phase3_composition_candidate_20261002_v1_h1",
+  "superseded_manifest_sha256": "bea1718259d26a70ccc14d5aaab066d592409ef651a67823fb0f8379641bcb64",
+  "superseded_complete_sha256": "7b75d201f95cddb58930d6c0cee035b672e03938a9bbe38fb7a58612ff93f577",
+  "defect": "The v1 report correctly marked waveform evidence UNMEASURED but omitted the frozen compact-report schema's required waveform.pair_coverage field.",
+  "repair": "Add an explicit all-UNMEASURED per-pair coverage map, bind the accepted compact-report schema bytes, and validate every successful managed known-answer report against that schema.",
+  "scientific_effect": "none; no estimator, threshold, cohort, input, result, or interpretation changed",
+  "v1_preserved": true
+}

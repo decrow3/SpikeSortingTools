@@ -1,0 +1,17 @@
+{
+  "schema": "h1-status-em-harmonized-w3-contract-correction-v1",
+  "status": "CORRECTED_PRIMARY_INCONCLUSIVE_HL_GUARDRAILS_PASS_NO_PROGRESSION",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/em_harmonized_w3_control_contract_correction_audit_20261003_v1_h1",
+  "manifest_sha256": "f6ee04227665db30654630cca79a9124c6503d25eec32c0ca96fa36b32a5354a",
+  "complete_sha256": "615b0e22f32d25be18bac6f8d6edf274a1473dcdbb2cfaac177b303da4a2c94d",
+  "corrected_decision_sha256": "0cc831ac61d2a09dcc8de7daddabfbf68d81e425f333cb3bb916e7286e96ce78",
+  "preserved_original_result_sha256": "1e0295fca4b92459b18f92004962304f441e4807b0af576030215884ad660d60",
+  "preserved_original_final_review_manifest_sha256": "a96bfe0cf2586e2265e867b2c6d32dea244aa7df928a9ea89b4a15e72964fb61",
+  "primary_classification": "INCONCLUSIVE",
+  "intended_HL_quality_guardrails": "PASS",
+  "as_executed_F_whole_population_yield_gate": "UNINTENDED",
+  "progression_supported": false,
+  "rescore_performed": false,
+  "threshold_changed": false,
+  "new_test_performed": false
+}

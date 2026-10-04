@@ -1,0 +1,159 @@
+{
+  "schema": "luke-v13-support-boundary-synthetic-falsifier-contract-v2",
+  "status": "FROZEN_PRE_OUTPUT_V2_DTYPE_REPAIR_ONLY",
+  "frozen_local_date": "2026-10-03",
+  "milestone": "synthetic premise check before any real waveform contract review",
+  "decision_it_changes": "whether the current post-filter support boundary has a demonstrated synthetic cross-row exposure worth carrying into a separately reviewed real-waveform contract",
+  "cheapest_adequate_test": "one deterministic CPU fixture through the exact reviewed production wrapper and native Kilosort centering/CAR/high-pass path",
+  "completion_condition": "all frozen controls and the transition comparison execute once from bound source and emit an immutable result packet and H5 review request",
+  "execution_enabled": true,
+  "synthetic_only": true,
+  "production_source_root": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_terminal_validator_final_enabled_derivative_20261003_v13_h5/source",
+  "output": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/outputs/luke_v13_support_boundary_synthetic_falsifier_20261003_v2_h1",
+  "development_correction": {
+    "preserved_invalid_output": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/outputs/luke_v13_support_boundary_synthetic_falsifier_20261003_v1_h1",
+    "v1_contract_sha256": "cd273f00e85e8248a7df78d98a2d9c163dedc362adcb3dce28f1d1e0b9499a13",
+    "v1_source_sha256": "3cdc617b88709a337a54374d54fef3c0a5dc1b69bffea818c138749aac2e69dd",
+    "only_change": "BinaryFiltered dtype argument changed from numpy.int16 to the production spelling string int16",
+    "signals_cases_thresholds_predictions_and_decisions_unchanged": true
+  },
+  "bindings": {
+    "fixture_source": {
+      "label": "frozen fixture source",
+      "path": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/luke_v13_support_boundary_synthetic_falsifier.py",
+      "sha256": "163c2e981858965b4b3635b5596bdd3beaa63fd8b9553dafbeb99cca7e113a40"
+    },
+    "production_candidate": {
+      "label": "executed production support-mask wrapper",
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_terminal_validator_final_enabled_derivative_20261003_v13_h5/source/npx_preprocessing/motion/kilosort_support_mask_candidate.py",
+      "sha256": "705b4af444699a6e40ddd0e8a189232b619c4e1bbff53f8150b448f5ad160391"
+    },
+    "native_io": {
+      "label": "native Kilosort BinaryFiltered implementation",
+      "path": "/home/huklab/anaconda3/envs/spikeinterface/lib/python3.12/site-packages/kilosort/io.py",
+      "sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd"
+    },
+    "native_preprocessing": {
+      "label": "native Kilosort high-pass construction",
+      "path": "/home/huklab/anaconda3/envs/spikeinterface/lib/python3.12/site-packages/kilosort/preprocessing.py",
+      "sha256": "2329b288ae068361a937632a53461e6cceeb27e30191337e9b9a0fa7404d763d"
+    },
+    "geometry_receipt": {
+      "label": "completed production B384 physical geometry receipt",
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_arm_b_full_sort_result_20260930_v1/ARM_B_COMPLETE.json",
+      "sha256": "c2b33e0cc13dd821b9a630aff26ca52a8634a6d5a0a0e7d631cec1e97a7e6d45"
+    },
+    "production_field": {
+      "label": "production displacement field establishing observed 40-um lattice states",
+      "path": "/mnt/NPX/Luke/20250804/shared_analysis/luke_improved_motion_two_machine_20260909_v1/estimation_huklaban1_v1/candidate_fields.npz",
+      "sha256": "547ff39d1c91d819b758246c701603d868bfd4d50bd6b791e3d5b7140c01c71d"
+    }
+  },
+  "fixture": {
+    "seed": 0,
+    "n_channels": 384,
+    "fs_hz": 29999.835983263598,
+    "batch_size": 2048,
+    "padding_samples": 61,
+    "file_samples": 2109,
+    "highpass_cutoff_hz": 300.0,
+    "whitening": "384-by-384 float32 identity to isolate the pre-whitening boundary",
+    "channel_map": "identity 0 through 383",
+    "artifact_threshold": "positive infinity",
+    "invert_sign": false,
+    "transition_frame": 1024,
+    "states_um": [0.0, 40.0],
+    "state_clock": "synthetic global sample clock; half-open transition at frame 1024",
+    "geometry": {
+      "shape": [384, 2],
+      "direction": "y",
+      "x_min_um": 0.0,
+      "x_max_um": 48.0,
+      "y_min_um": 0.0,
+      "y_max_um": 3820.0,
+      "y_pitch_um": 20.0,
+      "expected_unsupported_rows_after_plus_40_um": [380, 381, 382, 383]
+    },
+    "base_signal": "int16 channel-index gradient multiplied by fixed 900-Hz plus 1800-Hz integer carrier; this gives the four soon-unsupported rows leverage on the native median CAR",
+    "unsupported_perturbation": {
+      "rows": [380, 381, 382, 383],
+      "start_frame": 1024,
+      "stop_frame_exclusive": 1536,
+      "amplitude_counts": 12000,
+      "purpose": "active step on physically unsupported rows after the transition; chosen before outputs to cross the median rank under the deterministic gradient and exercise centering, CAR, and high-pass"
+    },
+    "supported_waveform": {
+      "channel": 200,
+      "start_frame": 760,
+      "shape_counts": [0, 100, 300, 700, 300, 0, -300, -700, -300, 0],
+      "measurement_start_frame": 720,
+      "measurement_stop_frame_exclusive": 810,
+      "expectation": "independently injected valid activity must remain visibly nonzero after the actual operator; the production support helper is not used as its oracle"
+    },
+    "measurement": {
+      "transition_radius_samples": 128,
+      "supported_rows": [0, 379],
+      "note": "the transition is 1024 samples from the raw-file start and 61 padded samples are retained; the measurement covers the fixed local transition neighborhood"
+    }
+  },
+  "cases": [
+    {"id": "T0", "support": "0_to_plus40", "perturbation": false, "waveform": true, "do_CAR": true, "role": "zero-perturbation transition control"},
+    {"id": "T0R", "support": "0_to_plus40", "perturbation": false, "waveform": true, "do_CAR": true, "role": "independent deterministic repeat"},
+    {"id": "T1", "support": "0_to_plus40", "perturbation": true, "waveform": true, "do_CAR": true, "role": "load-bearing current-boundary premise test"},
+    {"id": "A0", "support": "all_supported_zero_shift", "perturbation": false, "waveform": true, "do_CAR": true, "role": "all-supported baseline"},
+    {"id": "A1", "support": "all_supported_zero_shift", "perturbation": true, "waveform": true, "do_CAR": true, "role": "stimulus-sensitivity positive control"},
+    {"id": "A2", "support": "all_supported_zero_shift", "perturbation": false, "waveform": false, "do_CAR": true, "role": "independent supported-waveform comparator"},
+    {"id": "N0", "support": "0_to_plus40", "perturbation": false, "waveform": true, "do_CAR": false, "role": "cross-row negative-control baseline"},
+    {"id": "N1", "support": "0_to_plus40", "perturbation": true, "waveform": true, "do_CAR": false, "role": "cross-row negative control; native high-pass remains active but per-channel"}
+  ],
+  "synthetic_membership": {
+    "real_event_ids": [],
+    "real_graph_edges": [],
+    "real_voltage": false,
+    "fixed_supported_row_set": [0, 379],
+    "fixed_unsupported_row_set_after_transition": [380, 381, 382, 383]
+  },
+  "competing_predictions": {
+    "safe_current_boundary": "T1 minus T0 is numerically zero on supported rows after post-filter masking; the source-map premise is falsified",
+    "cross_row_exposure": "T1 minus T0 is nonzero on supported rows while T0/T0R agree, A1 proves stimulus activity, N1/N0 remain zero without CAR, and the independent supported waveform survives",
+    "indeterminate": "controls fail or the transition effect falls between frozen thresholds; no advance"
+  },
+  "acceptance": {
+    "controls": {
+      "repeat_max_abs": 0.0,
+      "all_supported_min_max_abs": 100.0,
+      "car_off_max_abs": 0.0,
+      "supported_waveform_min_peak_to_peak": 100.0,
+      "actual_transition_count": 1,
+      "expected_unsupported_values": 4340
+    },
+    "premise": {
+      "survives_min_max_abs": 0.001,
+      "survives_min_rms": 0.00001,
+      "falsified_max_abs": 0.000001
+    },
+    "decision_semantics": {
+      "PREMISE_SURVIVES_CURRENT_BOUNDARY_CROSS_ROW_EFFECT": "permit review, but not execution, of an H5 real-waveform contract only if H5 independently establishes real support-boundary exposure",
+      "PREMISE_FALSIFIED_NO_SUPPORTED_OUTPUT_EFFECT": "stop this intervention direction",
+      "INVALID_FIXTURE_CONTROL_FAILURE": "repair the fixture under a new version without interpreting the premise",
+      "INDETERMINATE_NO_ADVANCE": "stop pending a separately justified frozen discriminator"
+    }
+  },
+  "resources": {
+    "device": "cpu",
+    "cpu_threads_max": 1,
+    "ram_bytes_max": 2147483648,
+    "wall_seconds_max": 60,
+    "persistent_output_bytes_max": 5242880,
+    "gpu_visible": false
+  },
+  "prohibitions": [
+    "real recording or voltage read",
+    "training, sorting, clustering, or template fitting",
+    "parameter search or post-output threshold change",
+    "production source or configuration edit",
+    "test-only earlier masking or proposed repair in this version",
+    "RF or sealed holdout access",
+    "automatic follow-on execution"
+  ]
+}

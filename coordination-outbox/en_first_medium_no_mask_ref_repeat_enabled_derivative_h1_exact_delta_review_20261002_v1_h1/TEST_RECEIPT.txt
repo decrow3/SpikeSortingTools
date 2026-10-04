@@ -1,0 +1,32 @@
+H1 enabled-derivative exact-delta review
+Date: 2026-10-02
+
+Subject integrity:
+  MANIFEST: bc5f2ffdc2f3e32b7025b21dd7b437d6d9522e105ec02f178c1eb7222504367b
+  COMPLETE: 8c0b975d5639c7c747cca4243212aee09fa3e5dbffbeeb3766441418c17ed251
+  Result: every manifest member OK
+
+Portable tests:
+  Result: 21 passed, 2 H5-runtime-only tests deselected in 0.56s
+
+Full H1 tests:
+  Result: 21 passed, 2 failed
+  Classification: both tests deliberately spawn the fixed H5 interpreter path, which is absent on H1.
+
+Bound H5 receipt:
+  Result: 23 passed in 1.06s; outer preflight INSPECTED_ELIGIBLE_NOT_LAUNCHED
+
+H1 outer-preflight inspection:
+  Only the unavailable H5 runtime-byte verifier was stubbed.
+  Result: INSPECTED_ELIGIBLE_NOT_LAUNCHED; activation_eligible=true; all namespaces fresh; no voltage/outcomes opened.
+
+Actual repaired-config validator:
+  Input config SHA256: 6cf1d0947a9a632f0b58e3c80e93a653a58017af240ff9bb5810005121407253
+  Result: PermissionError: enabled trained execution requires an H1 review manifest
+  Cause: execution_enabled=true while approval.h1_review_manifest_sha256=null
+
+Environment identity:
+  ENABLED_BINDING.env SHA256: 256eb3d839ed0da0d8af3a29dfb0891b999b924cbed267ce7d837399662c99d5
+  Static consumption trace: no runtime verifier consumes this file hash; REQUIRED_* provenance variables are unused.
+
+No install, start, start claim, voltage, outcomes, sorting/training, RF, or holdout operation occurred.

@@ -1,0 +1,9 @@
+{
+  "schema": "em-harmonized-w3-saved-output-recovery-h1-review-manifest-v1",
+  "reviewed_packet_manifest_sha256": "72f9f1bf719f91713015f2e6ac671f34c14998e6d26715caed6f37f34b636e0e",
+  "members": [
+    {"path": "DECISION.json", "bytes": 1209, "sha256": "28f371a2b9b4b30342009c49980101c6faf22a912e52cda70ccf9f19c490187f"},
+    {"path": "INDEPENDENT_RECOMPUTATION.json", "bytes": 1136, "sha256": "691871f6f205edb3b943ade901314db3e1bbcafed5f9e1c0574c5bcd89aff7f3"},
+    {"path": "REVIEW.md", "bytes": 4313, "sha256": "0ecaed6167785a09b0f50b84e29d04c0a503cc23967af92e5c130a80cd10aeb7"}
+  ]
+}

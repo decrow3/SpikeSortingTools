@@ -1,0 +1,13 @@
+{
+  "schema": "h1-candidate-g-v2-2-launcher-delta-review-status-v1",
+  "status": "NO_GO_INTEGRATED_CANDIDATE_G_V2_2_PREPARATION",
+  "candidate_g_execution_enabled": false,
+  "review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_v2_2_launcher_delta_review_20261004_v1_h1",
+  "review_manifest_sha256": "fb1f085b6e5ceda8480651ee773f710dc205d00348e1f05f9b64285269ecddd3",
+  "review_complete_sha256": "584b08f0db2ebf50ce99d1aefafc7d50a7c8456dfd4f6dabf7a2e0bdc66612d2",
+  "review_verdict_sha256": "fd143039a5c79c458fc9ec5baf646c4d24e8ffaf37cde8e7871d2b731a1976d3",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_preparation_20261004_v2_2_h5",
+  "reviewed_manifest_sha256": "60f94197ac30c149d2eef59bef6037d7365fabd45e0047a36e26e2225d79ef53",
+  "reviewed_complete_sha256": "8fa2ca48ccf21a18a18a4fad3f5cb98fc306bcd9628af0e397275a1efd4b44ee",
+  "next_action": "Preserve v2.2 unchanged. Implement interruption-resumable finalization, an independently bounded finalizer lifetime, and exact unlisted-file rejection for inherited science before a new review. Do not install or release candidate G."
+}

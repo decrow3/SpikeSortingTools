@@ -1,0 +1,82 @@
+{
+  "schema": "implementation-first-independent-rereview-v1",
+  "reviewer_host": "huklaban1",
+  "reviewed_at_utc": "2026-10-02T10:29:32Z",
+  "subject": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_evaluator_spatial_provenance_targeted_repair_20261002_v1_h5",
+    "manifest_sha256": "80021b93c3605c95f32f16f600f522e684ae06a1234fe286bce21bbcb2bd61e2",
+    "complete_sha256": "63170aff0cadf212ae3270c8a7a9fbdbdf914d82272d3ab826fcb0ff39e95cd9"
+  },
+  "verdict": "SPATIAL_GO_WAVEFORM_CONTRACT_TARGETED_REPAIR",
+  "decisions": {
+    "spatial_provenance_changed_path": "GO_FOR_LATER_PROSPECTIVE_REAL_BINDING_AND_SEPARATELY_AUTHORIZED_EVALUATION",
+    "historical_real_REF_B_receipts": "UNVERIFIED_PRODUCER_CLAIMS_ONLY",
+    "waveform_voltage_enablement": "NO_GO_PENDING_WF1_WF2_WF3",
+    "execution_in_this_review": "NONE"
+  },
+  "spatial_findings": {
+    "dependency_root": "GO: bundled digest-named root has the exact two declared files; per-file hashes and canonical aggregate digest independently match. No H5-private path occurs in the packet.",
+    "future_explicit_root": "GO: an arbitrary future absolute directory is accepted only if the declared schema, aggregate digest, exact file map, observed per-file bytes, and recomputed aggregate all equal the frozen constants.",
+    "spatial_identity": "GO: v2 identity is derived from validated position/ops bytes, shape, event lineage, frame, units, columns, row semantics, clock, geometry, region, and source dependency digest. The resolved host path is intentionally excluded.",
+    "contradiction": "GO: an optional redundant provenance.spatial_identity must equal the derived identity; absent claims are replaced by the derived value.",
+    "receipts": "GO: derived identity and full source dependency receipt propagate through arm provenance, pair candidate manifests, four-arm spatial receipts, and the report request digest.",
+    "real_scope": "GO: PROSPECTIVE_REAL_BINDINGS.json explicitly does not promote historical REF/B values to current execution truth and requires fresh host-local recomputation."
+  },
+  "remaining_repairs": [
+    {
+      "id": "WF1",
+      "severity": "blocking_voltage_enablement",
+      "title": "Waveform preprocessing is not dependency-closed and the reference label contradicts the bound code",
+      "evidence": "The contract binds kilosort.io.BinaryFiltered.filter and io.py sha256 767b76a0..., but io.py imports fft_highpass from kilosort.preprocessing. preprocessing.py is neither bundled nor hashed. It constructs the Butterworth/filtfilt impulse and crops it for the 1,145-sample FFT, so io.py plus cutoff/fs is not a complete executable identity. Also io.py:960-969 subtracts each channel mean and then the across-channel median, whereas ordered_stages says common-average-reference.",
+      "repair": "Bundle and hash preprocessing.py or freeze/hash the exact float32 high-pass impulse/coefficient array. Freeze CPU device, input tensor layout (channels x samples), float conversion/dtype, get_highpass_filter construction and library/runtime identities. Rename the stage to common-median reference or select and bind a genuinely average-reference implementation. Add a synthetic known-answer preprocessing fixture."
+    },
+    {
+      "id": "WF2",
+      "severity": "blocking_voltage_enablement",
+      "title": "The retained/lost/gained/ambiguous definitions do not form the promised partition",
+      "evidence": "With REF frames [0,10], one candidate at 0, tolerance 15, and compatible anchors, maximum-cardinality/minimum-lag matching uniquely selects REF0-candidate0. REF10 has an admissible edge but is unselected. It is not lost because lost requires no admissible candidate edge, and it is not ambiguous because no equal-cardinality/equal-lag alternative exists. Thus the endpoint has no category despite the contract's exhaustive-partition claim.",
+      "repair": "Define every unmatched, nonambiguous REF endpoint as lost and every unmatched, nonambiguous candidate endpoint as gained regardless of unused admissible edges, or explicitly classify competitive-unmatched endpoints as ambiguous. Add this asymmetric competition known answer and assert exclusive/exhaustive ledger membership. Clarify anchor-conflict ambiguity so merely having any >80-um cross-arm endpoint does not classify an otherwise matchable event."
+    },
+    {
+      "id": "WF3",
+      "severity": "blocking_exact_receipts_and_resource_bounds",
+      "title": "Endpoint-wise retained sampling does not specify how paired correlation is obtained or counted",
+      "evidence": "Sampling ranks retained endpoint rows independently by source_arm/frame/row_id. One endpoint of a retained pair can be selected while its partner is not. The contract nevertheless requires retained_pair_correlation per metric row, without saying whether the partner is read outside SAMPLE_LEDGER, whether correlation is null, or how extra reads affect the 4,608-event and 4,052,090,880-byte caps.",
+      "repair": "Either sample retained pair_id atomically and count both endpoint reads in ledgers and resource maxima, or state that correlation is computed only when both endpoints are independently selected and is null otherwise. Freeze correlation denominators/status and add cap-boundary and one-sided-selection fixtures. State exact supported/unsupported-gained interval equations used by benefit rows."
+    }
+  ],
+  "reruns": {
+    "native_shared_packet": "22 passed, 1 pre-existing pandas FutureWarning; packaged CLI passed",
+    "byte_identical_stage": "manifest all OK; 22 passed, 1 pre-existing pandas FutureWarning; packaged CLI passed",
+    "h5_private_path_scan": "no /home/huklaban5 or /media/huklaban5 strings found",
+    "real_work": "no evaluator, voltage, waveform, sorter, RF, or holdout execution"
+  },
+  "verified_hashes": {
+    "repaired_evaluator": "da3d5d5af8227f6ef70747dca32b3e2c52206230b5494d7bc9015cba24fcdf35",
+    "dependency_aggregate": "d1e5a4465d387c66a7655db442ecbf8740d2cae0032c300b0456432b0080c614",
+    "dependency_io": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+    "dependency_postprocessing": "d20da9026de10eb83a02466cdb233c85ae4215c15af7d5656c3593c3809a0a55",
+    "waveform_contract": "0bcc0794b4d0616cf24d57ca7df399ca6b47fb4655996e940fa6e5dc9934b418",
+    "unchanged_sort_comparison": "174a4bb6d621489260927dc0bbc06558e408564158a44657ecdd306fa07db5da",
+    "unchanged_amplitude_audit": "12e105dc797693957701e0b0a81130c2debced70d2588a8ea3c28a03e2a26431"
+  },
+  "implementation_checks": {
+    "done": [
+      "verified packet and member hashes",
+      "diffed exact evaluator changes against the original candidate",
+      "recomputed dependency per-file and aggregate identities through native and staged tests",
+      "traced optional explicit-root fail-closed behavior",
+      "traced composite identity derivation, contradiction rejection, and receipts",
+      "checked prospective real-binding labels",
+      "reviewed waveform input, crop, epoch, matching, sampling, extraction, quality, denominator, resource, receipt, preservation, and exclusion clauses",
+      "reran unchanged packet and packaged CLI natively and from a byte-identical stage"
+    ],
+    "not_done": [
+      "real REF/B byte or lineage recomputation",
+      "prospective repaired/repeat/anchor bindings",
+      "evaluator, voltage, waveform, sorter, RF, or sealed holdout execution"
+    ],
+    "can_establish": "The spatial-provenance repair is portable, fail-closed, independently reproducible on H1, and ready for later prospective host-local binding.",
+    "cannot_establish": "That historical real-arm claims equal current bytes, that the waveform contract is executable without ambiguity, or any waveform support, efficacy, identity, purity, or advancement conclusion."
+  }
+}

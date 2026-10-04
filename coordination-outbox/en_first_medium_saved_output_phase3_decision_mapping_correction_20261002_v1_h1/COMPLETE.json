@@ -1,0 +1,16 @@
+{
+  "schema": "immutable-evidence-packet-complete-v1",
+  "packet": "en_first_medium_saved_output_phase3_decision_mapping_correction_20261002_v1_h1",
+  "producer": "H1",
+  "completed_at": "2026-10-02 America/Los_Angeles",
+  "status": "COMPLETE_EXECUTION_DISABLED_PENDING_INDEPENDENT_REVIEW",
+  "manifest_sha256": "0dfa51cfb3cd214fe2b15b5b4052416f715a0bef364c891f61eb9a353abd0102",
+  "supersedes_consumer_manifest_sha256": "3199ddda56d1b03c6a3d77d87443fbf1c2956d4ab09c08ede52467ca4b09b1cd",
+  "active_consumer_sha256": "30c89dafcd12d8b9dd08cfdf49914635f774ae92d76164a8200e9e36d6c67d42",
+  "active_config_sha256": "2d5f042c1f26cdef88a6dc28aaed5323c2c83b07ad655cee1ab0770ef2ee3ae6",
+  "tests": "20 passed in 19.79s",
+  "execution_enabled": false,
+  "scientific_execution_started": false,
+  "real_project_data_accessed": false,
+  "rf_or_holdout_accessed": false
+}

@@ -1,0 +1,72 @@
+{
+  "schema": "candidate-g-continuation-production-bootstrap-review-v1",
+  "status": "NO_GO_UNIT_IDENTITY_STORAGE_ACCOUNTING_AND_SMOKE_PROVENANCE_INCOMPLETE",
+  "execution_enabled": false,
+  "candidate": "G",
+  "reviewed_packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_continuation_production_bootstrap_20261004_v1_h5",
+  "reviewed_packet_manifest_sha256": "2445abab18163a131f05aba59ed3d00ad8605ca7ffa6f2c33dac173eba155253",
+  "reviewed_packet_complete_sha256": "e1aff906b334c158f625c35a89b7d83d9e4d91eff7df763e448db4f7c12011c1",
+  "reviewed_request_sha256": "b0b917ed966d114bbb07ef2f9a0fc87e4c0dcdfb55598b76b135ad723a24890c",
+  "coordination_sha256": "e688e13b5e9de4b137ee586e528c84969ce18e6053c467bb2002e5fd2afde14d",
+  "accepted_repairs": [
+    "canonical_paths_v4 freezes the exact preparation, H1, release, installed-unit, run, output, compact, service and attempt identities, and release_gate_v4 rejects alternate preparation, H1, release and installed-unit paths",
+    "the H1 authorization is acyclic: this execution-disabled packet is reviewed first, a sealed GO review would then be hashed into a later release, and that release remains absent",
+    "bootstrap_v4 validates existing parent roots, requires absent children, creates exact 0700 run and compact children plus an exclusive fsynced receipt, and passes only those children writable into a read-only-root Bubblewrap namespace",
+    "bootstrap_production_entry_v4 directs TMPDIR, Numba, Torch, XDG and Matplotlib state beneath the attempt and restores four-thread environment controls",
+    "the immutable H5 receipt reports a real user-systemd smoke with absent children, live PID/cgroup/invocation, zero restarts, COW state/QDA, direct pre-cluster plan, runtime writes, rejected ancestor probes and sealed local/compact terminal evidence",
+    "the exact 14-array state, accepted direct-agglomeration science, [239969921,250200079) envelope, 17179869184-byte ceiling, 14973326368-byte expectation, 3416-second worker timeout and accepted lifecycle remain unchanged"
+  ],
+  "blocking_findings": [
+    {
+      "id": "INSTALLED_UNIT_BYTES_NOT_BOUND_TO_REVIEWED_TEMPLATES",
+      "severity": "blocking",
+      "finding": "release_gate_v4 requires canonical installed-unit paths and verifies each file against the hash supplied by the later release, but it never requires that hash or bytes equal the reviewed production/finalizer templates in this sealed packet. validate_unit_text returns early whenever either bootstrap script name appears anywhere in the text. An independent negative control containing an arbitrary ExecStart and the production bootstrap name only in a comment was accepted. A release can therefore self-authorize altered canonical unit bytes while the reviewed templates and constructor remain unused.",
+      "evidence": [
+        "source/release_gate_v4.py:29-32,66-72",
+        "source/unit_constructor_v4.py:6-14",
+        "service/candidate-g-continuation-v1.service.template",
+        "service/candidate-g-continuation-finalize@.service.template",
+        "independent negative: arbitrary bootstrap-marked unit accepted"
+      ],
+      "repair": "Require byte equality, or a hard-coded reviewed SHA-256 equality, between each canonical installed unit and its corresponding sealed template. Parse or exact-match the required service fields rather than accepting a bootstrap filename substring. Add altered-ExecStart, extra-command, comment-only marker and template-mismatch negatives."
+    },
+    {
+      "id": "NEW_WRITABLE_CACHE_TREES_ARE_EXCLUDED_FROM_STORAGE_SAMPLING",
+      "severity": "blocking",
+      "finding": "The bootstrap creates writable cache/torch, cache/xdg and cache/matplotlib trees and directs runtime state into them, but managed_lifecycle_v3 categories() counts only cache/numba. The aggregate sampled total and category ceilings therefore omit three writable trees. An independent fixture wrote 300 bytes across those trees while categories() reported zero total bytes. The contract's claim that runtime paths are monitored under the attempt is false for those trees, so the preserved bounded-resource condition is not enforced.",
+      "evidence": [
+        "source/bootstrap_v4.py:20-22",
+        "source/bootstrap_production_entry_v4.py:9",
+        "source/managed_lifecycle_v3.py:16-30",
+        "contract/production_bootstrap.execution_disabled.v1.json runtime_paths.monitored_under_attempt",
+        "independent cache-accounting fixture: 300 actual bytes, 0 categorized bytes"
+      ],
+      "repair": "Count every writable attempt-local tree exactly once in categories and the aggregate, with explicit reviewed caps or a single complete cache category. Add a fixture that writes to every writable tree and asserts exact aggregate/category accounting and stop behavior."
+    },
+    {
+      "id": "REAL_SYSTEMD_SMOKE_EXECUTED_SOURCE_AND_PRODUCTION_ENTRY_NOT_BOUND",
+      "severity": "blocking",
+      "finding": "The real-systemd smoke unit executed scripts from a temporary /tmp packet path. The preserved unit hashes bind only the unit files, and the smoke/terminal receipts do not record hashes for the temporary bootstrap, lifecycle, state, runtime-smoke or publisher sources that actually ran. The smoke also uses bootstrap_smoke_entry_v4 directly and does not exercise bootstrap_production_entry_v4 or release_gate_v4. The final packet seals copied evidence but cannot retrospectively prove which temporary source bytes produced it. Consequently the receipt supports the observed topology but is not an implementation-bound reproduction of the reviewed production entry/gate.",
+      "evidence": [
+        "service/candidate-g-production-bootstrap-smoke.service:15-16",
+        "source/bootstrap_smoke_entry_v4.py:5-10",
+        "source/run_smoke_systemd_v4.py:4-17",
+        "evidence/RENDERED_SMOKE_UNIT_HASHES.json",
+        "evidence/smoke/TERMINAL.json and evidence/smoke/SOURCE_BINDING.json"
+      ],
+      "repair": "Run a disposable production-shaped service from the sealed packet path, or write and seal a pre-execution closure receipt hashing every temporary source and unit before start. Exercise the actual production entry and v4 gate with a smoke-specific canonical map/release fixture whose only scientific action is the reviewed runtime initialization. Preserve the release/gate/unit/source hashes in terminal evidence."
+    }
+  ],
+  "independent_reruns": {
+    "packet_seal": "48 products verified",
+    "focused_tests": "13 passed in 0.09s on huklaban1",
+    "source_closure": "19 of 21 entries independently opened and hash-verified; the two H5-local state files are unavailable on huklaban1",
+    "unit_text_negative_control": "FAIL_OPEN_ACCEPTED arbitrary ExecStart with bootstrap filename only in a comment",
+    "cache_accounting_negative_control": "FAIL_OPEN 300 bytes in Torch/XDG/Matplotlib cache trees produced zero categorized bytes",
+    "reported_h5_systemd_smoke": "immutable receipt inspected; source execution identity is not recorded",
+    "canonical_release_attempt_compact_and_units": "absent from paths visible on huklaban1",
+    "recording_voltage_bytes_read": 0,
+    "gpu_work_started": false
+  },
+  "authorization": "No release, production-unit installation, continuation start, recording access or GPU work is authorized. Preserve this NO_GO packet and return a new execution-disabled derivative addressing the three exact blockers."
+}

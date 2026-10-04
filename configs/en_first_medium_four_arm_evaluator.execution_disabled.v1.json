@@ -1,0 +1,82 @@
+{
+  "schema": "en-first-medium-four-arm-evaluator-request-v1",
+  "execution_enabled": false,
+  "purpose": "saved-output-only evaluation; never launches sorting, training, detection, recording reads, RF, or holdout work",
+  "evaluation_config": {
+    "sampling_frequency_hz": 29999.835983263598,
+    "duration_s": 599.9999803346205,
+    "correspondence_tolerance_ms": 0.5,
+    "minimum_correspondence_overlap": 0.1,
+    "primary_retention": 0.5,
+    "minimum_valid_amplitude_windows": 2,
+    "minimum_common_time_fraction": 0.5,
+    "minimum_measurable_unit_fraction": 0.5,
+    "coincidence_tolerance_ms": 0.5,
+    "coincidence_depth_um": 75.0,
+    "coincidence_seed": 20250804,
+    "longitudinal_bin_s": 300.0
+  },
+  "spatial_region": {
+    "processing_depth_um": [1400.0, 2380.0],
+    "scoring_depth_um": [1600.0, 2180.0],
+    "minimum_edge_exclusion_um": 80.0,
+    "source": "testing/configs/luke0804_hindsight_ladder_v1.json sha256 c0b564e0476f1af63a01c6c4efd3d0064471193329bf026e503f1bb25adc05d3"
+  },
+  "common_clock": {
+    "frame": "crop-local integer acquisition samples",
+    "local_frames_half_open": [0, 17999901],
+    "global_frames_half_open": [208498882, 226498783],
+    "global_equals_local_plus": 208498882
+  },
+  "common_geometry": {
+    "physical_channel_rows": [0, 383],
+    "channel_count": 384,
+    "geometry_float64_sha256": "d126fb241989698cd445c89638b02f0a2f8153389cfcad5acf49c1a0c4093bc8"
+  },
+  "arms": [
+    {
+      "arm_id": "REF384",
+      "evidence_kind": "real_saved",
+      "curated_output": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/sorter_output",
+      "qc_dir": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/qc",
+      "provenance": {
+        "lifecycle": "reused",
+        "role": "baseline_original_reference",
+        "result_receipt_sha256_reported_by_h5": "e3798289f79e51545a2da5fefaee99684c7a667cf863d9ec7cc687f6d1164ac9",
+        "ops_sha256_reported_by_h5": "5b3b365a83babe1dc5842fb92ff5e56f35a93aefe2557a1cd31ca42b46d72f58",
+        "data_local_identity_status": "UNRESOLVED_until_H5_rehash"
+      }
+    },
+    {
+      "arm_id": "existing_corrected_B384",
+      "evidence_kind": "real_saved",
+      "curated_output": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output",
+      "qc_dir": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/qc",
+      "provenance": {
+        "lifecycle": "reused",
+        "role": "existing_rounded_remap_corrected_comparator",
+        "result_receipt_sha256_reported_by_h5": "8a89ea4330871dce820329ca753890e12877b2695158ce9beddc77e9f190de3b",
+        "ops_sha256_reported_by_h5": "7a8f5d219de1b98776134abb00f637777f85ba94113758ae47a1e4b26b2a44f0",
+        "data_local_identity_status": "UNRESOLVED_until_H5_rehash"
+      }
+    },
+    {
+      "arm_id": "repaired_B384",
+      "evidence_kind": "unavailable",
+      "provenance": {
+        "lifecycle": "fresh_prospective",
+        "role": "fresh_end_to_end_trained_support_aware_candidate",
+        "status": "UNAVAILABLE_not_run"
+      }
+    },
+    {
+      "arm_id": "REF384_repeat",
+      "evidence_kind": "unavailable",
+      "provenance": {
+        "lifecycle": "fresh_prospective",
+        "role": "diagnostic_repeat_not_efficacy_arm",
+        "status": "UNAVAILABLE_not_run"
+      }
+    }
+  ]
+}

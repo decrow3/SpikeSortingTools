@@ -1,0 +1,34 @@
+{
+  "schema": "phase1-ref-only-source-trace-v1",
+  "executed_entry": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_contract_targeted_repair_20261002_v2_h1/source/testing/first_medium_saved_output_qualification.py",
+    "sha256": "35ab0e5886ed1ba39dbde475c37794e9b053c10175f97d0d88e25c35f954bd6e",
+    "implementation_provenance_verified": true
+  },
+  "measurement": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_contract_targeted_repair_20261002_v2_h1/source/testing/first_medium_measurement_redesign.py",
+    "sha256": "779b3b82e4328f92f6d50cb0a411153e03d755172d9493ccda937a686f42d0d9"
+  },
+  "trace": [
+    "entry lines 177-190 load exactly one REF384 arm, bind the frozen cohort, and run REF self",
+    "entry lines 194-202 preserve every timestamp while applying a bijective cluster-label mapping and require R exactly 1",
+    "entry lines 204-213 duplicate candidate events, call the exclusive matcher, and require both R exactly 1 and credited events equal the cohort denominator",
+    "measurement lines 151-174 maintain a set of (partner, candidate-index) credits and reject any double credit",
+    "entry lines 215-227 test every half-open cell boundary and reject the exact final stop",
+    "entry lines 229-242 pass the identical REF amplitude-window table on both sides with an identity cohort mapping and require equal support unions and zero missingness difference",
+    "entry lines 244-265 emit no scientific score, no cross-arm scalar, and bind cohort, QC-window, and spatial provenance",
+    "entry lines 486-510 atomically persist the exact token claim using O_EXCL",
+    "entry lines 558-615 require a fresh namespace, write STARTED before implementation/input work, preserve failure, and write manifest then COMPLETE",
+    "managed launcher lines 22-80 applies the frozen envelope and one external wall timeout; systemd unit has Restart=no"
+  ],
+  "frames_and_counts": {
+    "saved_input_clock": "global acquisition samples",
+    "normalized_measurement_clock": "crop-local samples",
+    "crop_origin": 208498882,
+    "local_half_open": [0, 17999901],
+    "cohort_estimand": "equal-unit mean exclusive REF-event retention to one reciprocal primary partner",
+    "continuity_not_identity": true
+  },
+  "cross_arm_data_opened_by_h1": false,
+  "voltage_opened_by_h1": false
+}

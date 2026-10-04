@@ -1,0 +1,20 @@
+{
+  "schema": "luke-durable-coordination-h1-phase2-runtime-gate-rereview-v2",
+  "host": "huklaban1",
+  "item": "H1-PHASE2-RUNTIME-GATE-REREVIEW",
+  "state": "COMPLETE_GO_ONE_FRESH_ACTIVATION",
+  "verdict": "GO_PHASE2_ONE_START_ONLY",
+  "subject_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase2_runtime_gate_repair_20261003_v2_h5",
+  "subject_manifest_sha256": "5525e72a7b670e2ce5fb5a8529c4cf6c59cde1e56427b7a138d60711304ece02",
+  "subject_complete_sha256": "b95953d1b2849160dfd93c36b536f83eb1688ae45a0e7939c6ee764b9041e354",
+  "review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase2_h1_compact_rereview_20261003_v2_h1",
+  "review_manifest_sha256": "372fa7b178cf42268451d34c6a0cc8ab1edb337a7e21cab2efc1aabb20f32089",
+  "accepted": "exact Phase1 result/service/postreview and GO-subject chain is fully runtime-bound before claim/input; service ExecCondition and worker use the same gate; scientific core/resources/lifecycle unchanged",
+  "activation_scope": "H5 may compose the exact fresh enabled derivative with this GO binding, a fresh token/HMAC and absent claim/output, then execute once under the prior authorization without another planner round",
+  "tests": "18 passed in 5.22s on H1",
+  "scientific_advancement_authorized": false,
+  "service_started_by_h1": false,
+  "claim_consumed_by_h1": false,
+  "ref_or_b_arrays_opened_by_h1": false,
+  "scientific_execution_started_by_h1": false
+}

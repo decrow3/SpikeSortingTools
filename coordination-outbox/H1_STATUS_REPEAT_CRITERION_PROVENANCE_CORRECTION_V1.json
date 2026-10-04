@@ -1,0 +1,23 @@
+{
+  "schema": "luke-durable-coordination-h1-repeat-criterion-provenance-correction-v1",
+  "host": "huklaban1",
+  "item": "H1-REPEAT-CRITERION-PROVENANCE-TRACE",
+  "state": "COMPLETE_EXECUTION_DISABLED_CONTRACT_CONFLICT_VISIBLE",
+  "verdict": "ACCEPT_R_REPEAT_GTE_0_98_CORRECT_NOT_DEFINED_FREEZE",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_repeat_criterion_provenance_correction_20261002_v1_h1",
+  "manifest_sha256": "fc59c368922d07f23b8e25936f343dfdf6f0b3f4e828eb2d0bb733eea02635bc",
+  "complete_sha256": "d39360094af66e50c584dc158f637194ad5eab059117c1bdc9c0f1e046bd1157",
+  "criterion_source_sha256": "b2ef938c0087fdf5f75102c1178ddb6ac2841c086766dfe78d67e596c66d7ede",
+  "accepted_repeat_gate": "same-window R_repeat >= 0.98 inclusive",
+  "primary_rule": "paired fixed-REF-unit bootstrap lower95 > 0.05 strict",
+  "superseded_freeze_manifest_sha256": "a6f389af7234da7d4a2a8c4b51e08db30e321ab3d997fa1d23c9fa7b74094e3d",
+  "contract_conflict": "origin artifact says repeat failure/unmeasured is inconclusive; accepted source maps numeric repeat failure to overall reject",
+  "next_action": "Resolve only the overall decision-status mapping in a narrow pre-outcome reviewed correction; preserve the 0.98 gate and separate primary/repeat verdicts.",
+  "enabled_derivative_blocker_review_manifest_sha256": "8db87c33506a89a6d19f2fb0659fe00973748c91f576b45637ea54e41cb53e9c",
+  "enabled_derivative_blocker_review_complete_sha256": "e2895af39e0aa2260cc529af1a621a2af4b0329d56032107be09c1c0aad7f34e",
+  "enabled_derivative_blocker_status_sha256": "46657b62e760ef25d82e1028e39e1ccad4b37a88442cf3c84f490277b346c50d",
+  "code_changed": false,
+  "outcomes_accessed": false,
+  "recording_or_voltage_read": false,
+  "rf_or_holdout_accessed": false
+}

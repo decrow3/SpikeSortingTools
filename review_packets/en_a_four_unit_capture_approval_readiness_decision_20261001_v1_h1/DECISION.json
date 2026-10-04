@@ -1,0 +1,72 @@
+{
+  "schema": "en-a-four-unit-capture-approval-readiness-decision-v1",
+  "verdict": "ready_to_request_explicitly_bounded_A_capture_approval",
+  "capture_authorized": false,
+  "voltage_read_authorized": false,
+  "next_gate": "explicit_human_approval_of_the_bound_capture_only",
+  "no_redesign": true,
+  "frozen_plan": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_physical_signal_assessment_20261001_v1_h1",
+    "manifest_sha256": "6769e81ff56f3f2eeda768273c88faebe9492df9a374f8d56dd51f45807aa1be",
+    "selection_slots_sha256": "d34c62c502b6ef5d37c69037c4d0bc3c2d390ed1ce9c726f330d5d0ca69af30c",
+    "capture_contract_sha256": "b484cee2280b80e3b8522d5a5717044d88d1f63a62255b92adaf2c12fbaa4a57"
+  },
+  "approval_metadata_v3": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_approval_metadata_20261001_v3_h5",
+    "manifest_sha256": "885a0617841b39014623d4b5df7111239afde0635c56b9feb3a3f5838c4b50b2",
+    "complete_sha256": "57bc20f412f542e5df8a56ae00e215e70bac7886039786511bf41aeb44029ab6",
+    "selection_receipt_sha256": "a83a8b358cfc4bfad85d2ed2a6cd0137826f7e93ec5046f902674dce3a226d95",
+    "four_unit_event_metadata_sha256": "9c4dafd6dfc8f2c32a383b6062d876bf64b0941873218b4daf607e880ea3a90e",
+    "capture_contract_v3_sha256": "88d3e56beffaed387b3a4711b3cce8970245f9743b7b173275505a2a787b2733"
+  },
+  "independent_verification_v3": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_independent_metadata_verification_20261001_v3_h5",
+    "manifest_sha256": "9424b1a0507d1d1c3efdf8eccf98e810e297f075018ec6978b8a451fa1c4acf4",
+    "complete_sha256": "60b041b11e9ba7e47b1e4320a66cfd5c8faaf399ab1aa233f54a62a8119684f4",
+    "evidence_sha256": "7060204fb14c7004b93b145647462fbfbdd23e053de50bb0ada039d7d710563d",
+    "selection_evidence_sha256": "00e95951398eb1a3398bd90064ae43fc4e412905d0856ff6e94103bd1f445127",
+    "verifier_source_sha256": "ea292d8f6ecbaa9f4306bb9e59754ecab3447c0a2b04f539cc343110111a8a2e"
+  },
+  "reconciliation": {
+    "frozen_slots": 20,
+    "common_selection_fields_exact": true,
+    "earliest_predicates_regenerated_from_complete_four_unit_metadata": true,
+    "unit_template_distributions_exact": true,
+    "comparable_scalar_footprints_exact": true,
+    "original_adjacency_preserved": true,
+    "recording_binary_opened": false,
+    "voltage_read": false
+  },
+  "bounded_capture": {
+    "units": [278, 271, 588, 445],
+    "pair_windows": 8,
+    "single_event_windows": 12,
+    "representations": ["original_unwarped_int16", "arm_A_corrected_materialized_int16"],
+    "channels": 384,
+    "sampling_frequency_hz": 29999.835983263598,
+    "pair_read_rule": "[t1-512,t2+513)",
+    "pair_retain_rule": "[t1-60,t2+61)",
+    "single_read_rule": "[t-512,t+513)",
+    "single_retain_rule": "[t-60,t+61)",
+    "raw_read_calls_max": 41,
+    "logical_input_bytes_calculated_max": 32653824,
+    "logical_input_bytes_cap": 34603008,
+    "retained_int16_bytes_calculated_max": 4073472,
+    "retained_numeric_bytes_cap": 6291456,
+    "ram_bytes_max": 2147483648,
+    "cpu_threads_max": 4,
+    "wall_seconds_max": 300,
+    "numeric_waveforms_remain_H5_local": true,
+    "shared_numeric_waveform_transfer": false
+  },
+  "prohibited": [
+    "capture before explicit human approval",
+    "sort",
+    "matcher replay",
+    "RF",
+    "holdout",
+    "threshold search",
+    "parameter sweep",
+    "numeric waveform transfer"
+  ]
+}

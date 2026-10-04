@@ -1,0 +1,28 @@
+{
+  "schema": "candidate-g-integrated-implementation-review-verdict-v1",
+  "status": "NO_GO_INTEGRATED_CANDIDATE_G_PREPARATION",
+  "candidate_g_execution_enabled": false,
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_preparation_20261004_v1_h5",
+  "reviewed_manifest_sha256": "54f45746366c4c149f170364e3e38ad5a533e12dd363e5310f0df7a8d72e014b",
+  "reviewed_complete_sha256": "794c47e0d3903a0f63b846be8a037f8bc6544df8563528486c5ee417befd2543",
+  "reviewed_contract_sha256": "5c02db316bff951676d5c062f46837fc24bde42b2de7fc536b704868812d58cd",
+  "review_request_sha256": "4cda5e407f042cbcda8f5976c5359a875ac8bd5e6b721a05e9610f039401509e",
+  "manifest_members_verified": 159,
+  "blocking_findings": [
+    "release gate does not validate approval semantics or actual systemd/cgroup execution",
+    "preparation seal validation is incomplete and COMPLETE.json was not physically written last",
+    "frozen input identities and W3 boundary/schema conditions are not validated before payload use",
+    "managed resource conditions, stage timing, required output completeness, and terminal sealing are not established",
+    "read counter and call log are not transactionally reconciled"
+  ],
+  "review_actions": {
+    "candidate_fit": false,
+    "recording_voltage_read": false,
+    "feature_payload_read": false,
+    "residual_payload_read": false,
+    "gpu_work": false,
+    "service_installed_or_started": false,
+    "rf_or_holdout_access": false
+  },
+  "scientific_scope": "Preparation-only implementation review. No candidate-G scientific outcome or identity, purity, waveform, continuity, refractory, superiority, or inferiority claim is supported."
+}

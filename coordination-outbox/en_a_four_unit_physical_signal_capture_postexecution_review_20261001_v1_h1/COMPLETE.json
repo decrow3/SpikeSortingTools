@@ -1,0 +1,8 @@
+{
+  "complete": true,
+  "packet": "en_a_four_unit_physical_signal_capture_postexecution_review_20261001_v1_h1",
+  "status": "technical_execution_valid_scientific_interpretation_pending",
+  "manifest_sha256": "fbf9aa3a79b0580477b7d75c497df45715436868351e5f4eb2da814f2a9abe00",
+  "execution_manifest_sha256": "9714697d213368f932c0b4f8cafbc152307fffb3dd195ff6aa1bea1960c514ca",
+  "recording_or_archive_opened_by_reviewer": false
+}

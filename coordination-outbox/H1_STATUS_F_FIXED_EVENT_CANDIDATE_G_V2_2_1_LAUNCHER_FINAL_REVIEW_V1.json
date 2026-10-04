@@ -1,0 +1,13 @@
+{
+  "schema": "h1-candidate-g-v2-2-1-launcher-final-review-status-v1",
+  "status": "GO_INTEGRATED_CANDIDATE_G_V2_2_PREPARATION_EXECUTION_REMAINS_DISABLED",
+  "candidate_g_execution_enabled": false,
+  "review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_v2_2_1_launcher_final_review_20261004_v1_h1",
+  "review_manifest_sha256": "2bf50b87a11801a4f7c06feab50ed7e54bb026e3cf03caf463f640e9b60259a5",
+  "review_complete_sha256": "91239f18bfa7341a3fd00bf7ad084a34e086cf3987354de5c9ce04c102093ee1",
+  "review_verdict_sha256": "aa14b49db1514de78dbce850fa1396bf2e43828d91d78f66a0316a9365078d86",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_preparation_20261004_v2_2_1_h5",
+  "reviewed_manifest_sha256": "3b124fbe3c079d5f4a121fb196e6a0e510fc66449ba8c07705319bdd36621a69",
+  "reviewed_complete_sha256": "d3ef7220a7f36f5db8c007132c7fb57c72ab4750e0ce1f7be0048205acf6d1fb",
+  "next_action": "Coordinator may prepare a new immutable release only after actual input/resource/unit/output preflight. GO does not install, enable, or start candidate G."
+}

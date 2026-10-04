@@ -1,0 +1,10 @@
+{
+  "schema": "em-harmonized-w3-hf-correspondence-h1-final-review-complete-v1",
+  "status": "SCOPED_GO_WITH_ADDITIVE_NUMERIC_CORRECTION_NO_AUTOMATIC_PROGRESSION",
+  "manifest_sha256": "cc61ba93a652084c49d16a81596121e565953ba22da1d1bce1bccbc92a22c78d",
+  "verdict_sha256": "8d50325df4c51b10983f7eadc58c06f492b36d1be763ae04590ad421e90a5f6c",
+  "reviewed_h5_manifest_sha256": "02c6ccebfa74057b798e3486fe18654f8f4de7d9ea85c408c5d97e52b64848ef",
+  "reviewed_h5_complete_sha256": "b4867ca3b887eae64e2b2eb3ff312370750f8b8fd80eb6edc6bcd6ee7fc0378d",
+  "new_execution_performed": false,
+  "automatic_progression": false
+}

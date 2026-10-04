@@ -1,0 +1,7 @@
+{
+  "schema": "immutable-implementation-review-completion-v1",
+  "status": "complete",
+  "manifest_sha256": "c47a413501cb57d604b6e29c0d3a6055ceb0e6bae7223261656569aab1d054aa",
+  "verdict": "READY_FOR_H5_IMPLEMENTATION_REVIEW_EXECUTION_DISABLED_NO_OUTCOMES_COMPUTED",
+  "completion_written_last": true
+}

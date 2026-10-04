@@ -1,0 +1,15 @@
+{
+  "schema": "first-medium-measurement-redesign-h5-review-request-v1",
+  "execution_enabled": false,
+  "requested_review": [
+    "Verify packet hashes and run tests from a writable byte-identical stage with packet source first on PYTHONPATH.",
+    "Verify R(X) is an equal-unit fixed-REF-cohort mean and unmatched units contribute zero.",
+    "Verify exclusive matches, reciprocal-primary uniqueness, and no candidate-event double credit.",
+    "Verify fixed half-open cells are diagnostic only and do not change global matching.",
+    "Verify amplitude fits are neither refit nor threshold-relaxed and all cohort/time support is disclosed.",
+    "Review the margin counterexample, paired-unit bootstrap scope, lower95 > 0.05 replacement, and absence of a numerical power claim.",
+    "Verify no real-arm outcome, recording/voltage, sorting/training/detection, RF, or holdout path is present."
+  ],
+  "outcome_execution_requested": false,
+  "scientific_verdict_requested": false
+}

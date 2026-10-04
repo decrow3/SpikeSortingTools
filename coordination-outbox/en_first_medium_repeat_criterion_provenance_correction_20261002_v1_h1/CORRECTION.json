@@ -1,0 +1,10 @@
+{
+  "schema": "en-first-medium-postrun-freeze-correction-v1",
+  "supersedes_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_postrun_request_interpretation_freeze_20261002_v2_h1",
+  "superseded_manifest_sha256": "a6f389af7234da7d4a2a8c4b51e08db30e321ab3d997fa1d23c9fa7b74094e3d",
+  "superseded_complete_sha256": "f397bb9f3e209e9782baf33c475bea5e44f77fcaafdb17f1e705ac27e06f01ab",
+  "error": "The v2 freeze set REF-repeat threshold and pass/fail to NOT_DEFINED without first tracing the exact pre-outcome criterion artifact and its accepted supersession chain.",
+  "correction": "Restore R_repeat >= 0.98 as the accepted applicable same-window engineering gate. Report primary DeltaR and repeatability as separate verdicts. Preserve advance=false and the no-identity/no-generalization scope.",
+  "preservation": "All paths, source hashes, 61-unit cohort, matcher, bootstrap count/seed, strict primary lower95 > 0.05 rule, missing waveform/QC UNMEASURED language, and no-outcome status remain unchanged.",
+  "old_packet_preserved": true
+}

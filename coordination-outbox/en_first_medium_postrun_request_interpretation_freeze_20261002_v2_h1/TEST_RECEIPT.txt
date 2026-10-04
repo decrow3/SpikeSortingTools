@@ -1,0 +1,17 @@
+Post-run request/interpretation freeze static validation
+Date: 2026-10-02
+
+Result: PASS
+
+- All JSON files parsed.
+- execution_enabled is false.
+- Ordered cohort contains exactly 61 units and matches the frozen cohort digest/artifact binding.
+- Bootstrap count is 20,000; seed is 20261002; primary boundary is strict lower95 > 0.05.
+- REF repeat threshold/pass-fail are NOT_DEFINED and may_gate_primary is false in the frozen interpretation.
+- Missing waveform and truncation QC are UNMEASURED.
+- Accepted contract and consumer source bytes match their frozen SHA-256 values.
+- Frozen output namespace was absent at validation.
+- Phase2 reconciliation is OUTSTANDING_NOT_STARTED.
+- Source inspection independently reproduced the reporting conflict: lines 412/438/458 of the accepted consumer use R_repeat >= 0.98 and let repeat_pass affect decision status.
+
+No evaluator, Phase2 job, service, recording, voltage, sorting, RF, or sealed holdout operation ran.

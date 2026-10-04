@@ -1,0 +1,27 @@
+{
+  "schema": "en-first-medium-phase3-decision-mapping-test-results-v1",
+  "command": "PYTHONPATH=source:producer PYTHONDONTWRITEBYTECODE=1 pytest -q tests/test_phase3_composition.py",
+  "result": "20 passed",
+  "elapsed_seconds_reported_by_pytest": 19.79,
+  "new_grid": {
+    "primary_lower95": [0.04, 0.05, 0.06],
+    "primary_passes": [false, false, true],
+    "repeat_R": [0.97, 0.98, 0.99],
+    "repeat_passes": [false, true, true],
+    "cross_product_cases": 9,
+    "required_waveform_qc": "legitimately UNMEASURED in every thin-path fixture",
+    "overall_status": "inconclusive in every case",
+    "advance": false
+  },
+  "asserted_invariants": [
+    "DeltaR and lower95 unchanged",
+    "strict primary pass Boolean unchanged",
+    "inclusive repeat pass Boolean unchanged",
+    "primary and repeat reason presence matches component verdicts",
+    "QC_UNMEASURED and WAVEFORM_UNMEASURED preserved",
+    "structural/provenance mutation tests still fail before scoring/output"
+  ],
+  "real_project_data_accessed": false,
+  "producer_executed": false,
+  "rf_or_holdout_accessed": false
+}

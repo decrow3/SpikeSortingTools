@@ -1,0 +1,23 @@
+H1 compact changed-path rereview; no scientific arm arrays opened.
+
+Subject packet manifest: all members OK.
+Subject MANIFEST sha256: 5525e72a7b670e2ce5fb5a8529c4cf6c59cde1e56427b7a138d60711304ece02
+Subject COMPLETE sha256: b95953d1b2849160dfd93c36b536f83eb1688ae45a0e7939c6ee764b9041e354
+Disabled contract sha256: 73f455bd1e6ce16e5fc6926e3977803f88f42c80ba2022efa09be74c9f888459
+Disabled request template sha256: fe30fe21a56b6dda4b4a3f6bdec7441f35833fea3d2bf3241595141a46250761
+Proposed service sha256: 53b90adca2b82934c3447dfd2908d6eade91031503fdc29f7a29d7513597546d
+
+Command:
+NUMBA_CACHE_DIR=/tmp/en_h1_phase2_v2_review_numba MPLCONFIGDIR=/tmp/en_h1_phase2_v2_review_mpl PYTHONPATH=<subject>/source /home/huklab/anaconda3/bin/python -m pytest -q -o cache_dir=/tmp/en_h1_phase2_v2_review_pytest_cache <three frozen test files>
+
+Result: 18 passed in 5.22s.
+Positive exact preclaim: PASS_NO_CLAIM_NO_ARM_LOAD.
+Mutated Phase1 service member: rejected.
+BLOCK Phase2 review: rejected.
+Wrong Phase2 review subject: rejected.
+Missing Phase1 postreview: rejected.
+Independent scientific-function AST comparison: exact match.
+ExecCondition/ExecStart contract, request, and output arguments: exact match.
+Fresh enabled temporary fixture using this exact GO packet: PASS_NO_CLAIM_NO_ARM_LOAD; claim and output remained absent.
+Future output absent at review: yes.
+Service install/start, claim, REF/B arrays, scientific execution: none by H1.

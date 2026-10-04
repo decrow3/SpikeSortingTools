@@ -1,0 +1,41 @@
+{
+  "schema": "first-medium-postrun-interpretation-freeze-v3-correction",
+  "frozen_before_new_pair_outcomes": true,
+  "primary_delta_r": {
+    "quantity": "DeltaR = R(repaired_B384) - R(existing_corrected_B384)",
+    "bootstrap_replicates": 20000,
+    "bootstrap_seed": 20261002,
+    "pass_only_if": "lower95 > 0.05",
+    "boundary_is_strict": true,
+    "verdict_field": "primary_retention.passes"
+  },
+  "repeat_engineering_gate": {
+    "quantity": "R(REF384_repeat)",
+    "pass_only_if": "R_repeat >= 0.98",
+    "boundary_is_inclusive": true,
+    "verdict_field": "repeatability.passes",
+    "role": "same-window engineering continuity/repeatability gate; not an efficacy arm or longitudinal replication",
+    "criterion_source_sha256": "b2ef938c0087fdf5f75102c1178ddb6ac2841c086766dfe78d67e596c66d7ede"
+  },
+  "separation": {
+    "primary_and_repeat_are_distinct": true,
+    "repeat_pass_does_not_make_primary_pass": true,
+    "primary_pass_does_not_make_repeat_pass": true,
+    "repeat_failure_or_unmeasured": "INCONCLUSIVE_DO_NOT_ATTRIBUTE_REPAIRED_ARM_EFFECT",
+    "primary_failure": "PRIMARY_DELTA_R_RULE_NOT_MET",
+    "automatic_advance": false
+  },
+  "missingness": {
+    "waveform": "UNMEASURED",
+    "truncation_qc": "UNMEASURED",
+    "effect": "INCONCLUSIVE_NO_ADVANCE; never silently impute pass, fail, zero, or unchanged"
+  },
+  "scope": {
+    "R_and_DeltaR": "continuity proxies only",
+    "identity_claim": "PROHIBITED",
+    "purity_claim": "PROHIBITED",
+    "recovery_claim": "PROHIBITED",
+    "generalization_claim": "PROHIBITED",
+    "bootstrap_scope": "fixed-cohort composition sensitivity only"
+  }
+}

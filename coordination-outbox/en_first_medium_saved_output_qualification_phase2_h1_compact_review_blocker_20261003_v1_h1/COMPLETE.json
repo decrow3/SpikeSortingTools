@@ -1,0 +1,18 @@
+{
+  "schema": "immutable-evidence-packet-complete-v1",
+  "packet": "en_first_medium_saved_output_qualification_phase2_h1_compact_review_blocker_20261003_v1_h1",
+  "producer": "H1",
+  "completed_at": "2026-10-02 America/Los_Angeles",
+  "status": "COMPLETE_BLOCK_PHASE2_ONE_START",
+  "verdict": "BLOCK_PHASE2_ONE_START",
+  "manifest_sha256": "ab7efb9382b06d084f84ea40c50112523c314d5bc0304993238397d141da6ffa",
+  "subject_manifest_sha256": "ffa0343f1cc19da88cc06ec7aa068a145f9d35b1b8aad69b829c39a61533cfde",
+  "subject_complete_sha256": "2261ebd6fedceaa03afe82889e0fd64198e2fc37d60c5695689ec658d6c021de",
+  "go_phase2_one_start": false,
+  "service_install_or_start_authorized": false,
+  "claim_consumed": false,
+  "output_created": false,
+  "ref_or_b_arrays_opened": false,
+  "scientific_execution_started": false,
+  "published_outside_expected_go_condition_path": true
+}

@@ -1,0 +1,16 @@
+{
+  "schema": "first-medium-saved-output-qualification-composition-review-request-v1",
+  "requested_reviewer": "H5",
+  "execution_authorization": "NONE_REVIEW_PACKET_ONLY",
+  "requested_review": [
+    "verify exact accepted measurement/spatial snapshot and review bindings without reopening module-level conclusions",
+    "verify active spatial-superset matcher preserves accepted correspondence and helper ASTs",
+    "verify Phase 1 accepts only REF and emits diagnostic controls with no actual cross-arm scalar or ranking",
+    "verify exact REF self, permutation, exclusivity, half-open cell, conditional support, and provenance semantics",
+    "verify Phase 2 is disabled and requires concrete method-freeze, Phase-1 receipt, fixed-cohort, review, and single-start tokens",
+    "verify Phase 2 can emit only R(existing B), aggregate 60-second diagnostics, aggregate conditional support, unavailable DeltaR, and no advancement",
+    "verify namespaces, first-result preservation, one-start/no-retry, resource caps, receipts, and failure behavior",
+    "rerun all packet tests and the saved-format composed CLI fixture"
+  ],
+  "status": "PENDING_H5_COMPOSITION_REVIEW_REAL_EXECUTION_DISABLED"
+}

@@ -1,0 +1,9 @@
+{
+  "schema": "em-harmonized-w3-control-h1-final-result-review-manifest-v1",
+  "reviewed_terminal_manifest_sha256": "422dce920078e50c2994383268d3a0a282dc8da6d4ac366640068e24d539f8b9",
+  "members": [
+    {"path": "FINAL_REVIEW.md", "bytes": 5648, "sha256": "d37dc72621a6c9904c8f0aaf1c8505b6f058e019c52f664f3f9056cb17495a2d"},
+    {"path": "FINAL_VERDICT.json", "bytes": 1163, "sha256": "156353001a5ea2575996c6d938b458e7befad583c206e0f2eda1ebe0186587ea"},
+    {"path": "INDEPENDENT_RECOMPUTATION.json", "bytes": 1883, "sha256": "ccb2afb05534b5fdda6922d3502eb71835925d350c8834d194e0486307203f36"}
+  ]
+}

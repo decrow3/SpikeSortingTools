@@ -1,0 +1,9 @@
+{
+  "schema": "waveform-voltage-preflight-same-size-adversarial-v1",
+  "fixture_bytes": 16,
+  "first_preflight_status": "PASS",
+  "mutation": "all bytes changed while absolute path and byte size were preserved",
+  "second_preflight_status": "PASS",
+  "established": "The implementation does not open/hash voltage bytes during preflight.",
+  "gap": "An immutable historic receipt plus current path/size does not establish that the current object still contains the historically hashed bytes."
+}

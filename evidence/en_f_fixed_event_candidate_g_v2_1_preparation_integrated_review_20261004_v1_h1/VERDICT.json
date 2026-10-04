@@ -1,0 +1,37 @@
+{
+  "schema": "candidate-g-v2-1-integrated-implementation-review-verdict-v1",
+  "status": "NO_GO_INTEGRATED_CANDIDATE_G_V2_1_PREPARATION",
+  "candidate_g_execution_enabled": false,
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_preparation_20261004_v2_1_h5",
+  "reviewed_manifest_sha256": "2ce97d278b3d40c0583e8d06ae2e74b3de651b2b99b156b583abe86b19a302e7",
+  "reviewed_complete_sha256": "4823ab489675d4387e565ea58f7bf8c3fc1808239a31eda3c64dba9a795b3708",
+  "embedded_h1_request_sha256": "cbf9edac8449361ff8c56342e01bcf86ec9fa8a80b9e75b4f1f3b70b68b420a0",
+  "coordination_h1_request_sha256": "de82469c59cee7abd09263ca202e39cf06a4c546f5d29708c50bfec594ffcdfc",
+  "manifest_members_verified": 190,
+  "independent_synthetic_tests": "46 passed in 1.93 seconds",
+  "blocking_findings": [
+    "frozen repair-contract release/coordinator/H1 semantics disagree with the executable gate and the coordination-authorized v2.1 GO status",
+    "systemd termination and post-seal/publication-stage failures can bypass durable sealed failure-evidence publication"
+  ],
+  "prior_blocker_results": {
+    "semantic_sealed_approvals": "PARTIAL_BLOCKED_BY_CONTRACT_GATE_MISMATCH",
+    "live_managed_context": "IMPLEMENTED_SYNTHETICALLY_REAL_RUN_UNTESTED",
+    "input_identity_and_boundaries": "PASS_FOR_FROZEN_METADATA_POLICY",
+    "success_terminal_inventory_and_seal": "PASS_BUT_FAILURE_LIFECYCLE_BLOCKED",
+    "transactional_meter": "PASS",
+    "preparation_complete_last": "PASS"
+  },
+  "review_actions": {
+    "candidate_fit": false,
+    "service_installed_or_started": false,
+    "real_input_preflight": false,
+    "feature_payload_read": false,
+    "residual_payload_read": false,
+    "recording_voltage_read": false,
+    "gpu_work": false,
+    "rf_or_holdout_access": false
+  },
+  "preparation_provenance_disclosure": "Bounded matching-H5 metadata and four W3 boundary timestamps were inspected during preparation; zero feature, residual, or voltage payload bytes were read.",
+  "scientific_contract_changed": false,
+  "scientific_scope": "Implementation preparation only; no candidate-G scientific outcome or continuity, refractory, waveform, identity, purity, superiority, or inferiority claim is supported."
+}

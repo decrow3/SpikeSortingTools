@@ -1,0 +1,62 @@
+{
+  "schema": "candidate-g-continuation-prestart-audit-delta-review-v1",
+  "status": "GO_CREATE_EXACT_RUN_PARENT_AND_RERUN_READ_ONLY_AUDIT",
+  "execution_enabled": false,
+  "production_start_enabled": false,
+  "candidate": "G",
+  "reviewed_packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_continuation_prestart_audit_correction_20261004_v1_h5",
+  "reviewed_packet_manifest_sha256": "cfa886f65c089992dced01d35890b8a03326748c55f8669dbfc2833b67912a03",
+  "reviewed_packet_complete_sha256": "0221219e7b1bcf5b46b95baa985a896fc45a2dbdd0002394b595367d70ff2bfb",
+  "reviewed_request_sha256": "1eaeea1dd255f302fe1c200712960ad5468c03fcead1fcc51c4adfca6b053790",
+  "corrected_source_sha256": "16330d5551a9a55c8c2b8a68d3ff24cd57ec5701bae5990c5f9905c91fcbbac2",
+  "terminal_receipt_sha256": "48304294c5ddb4deeb43bd9d27be94b6050c405c83541bd4e9726a9cfd05eb61",
+  "accepted_findings": [
+    "the corrected audit separates unit-definition discovery from concrete runtime-state queries and uses the supported unfiltered list-unit-files inventory",
+    "seven independent cases cover absent definitions/instances, present files, masked or symlinked files, inventory presence, live instances, inventory query failure and concrete query failure",
+    "the corrected source and both corrected failure receipts match their immutable manifest entries",
+    "the original template-query failure packet remains preserved with its exact seal and post-failure absence receipt",
+    "source inspection confirms the corrected audit performs canonical and unit absence checks before safe_parent and makes no canonical write; its only write is an exclusive receipt beneath /tmp",
+    "the terminal corrected audit stopped at the explicit v6 safe_parent precondition before state, input, resource and GPU readiness checks"
+  ],
+  "boundary_determination": "Creating only the frozen canonical run parent is a routine bounded prerequisite of the already accepted v6 bootstrap, not a change to its reviewed run root, science, resources, containment or publication boundary. The accepted bootstrap explicitly requires this parent to pre-exist, be owned by the executing user and not be world-writable before it creates the separately frozen attempt child.",
+  "permitted_next_action": {
+    "host": "huklaban5",
+    "existing_parent": "/home/huklaban5/DARTsort_experiment_scratch",
+    "create_path": "/home/huklaban5/DARTsort_experiment_scratch/candidate_g_continuations",
+    "creation_count": 1,
+    "recursive_parent_creation": false,
+    "required_preconditions": [
+      "the existing_parent is a real directory whose resolved path equals the literal path, is owned by the executing huklaban5 UID, and is not world-writable",
+      "the create_path is absent and is not a symlink",
+      "the canonical release, reviewed production/finalizer unit files, canonical attempt child and canonical compact output remain absent",
+      "the previous temporary audit output namespace is absent, or a fresh nonconflicting temporary receipt namespace is used without overwriting prior evidence"
+    ],
+    "required_postconditions": [
+      "create_path is a real empty directory whose resolved path equals the literal path",
+      "create_path is owned by the executing huklaban5 UID and has mode 0700",
+      "record before/after lstat identity, numeric UID/GID, mode, emptiness and resolved paths in a new immutable receipt",
+      "rerun exactly the corrected read-only audit source with SHA-256 16330d5551a9a55c8c2b8a68d3ff24cd57ec5701bae5990c5f9905c91fcbbac2 once",
+      "seal the new audit result without overwriting either failed receipt and stop after the audit regardless of PASS or FAIL"
+    ],
+    "forbidden": [
+      "creating the canonical attempt child or compact output",
+      "creating a release",
+      "installing or reloading units",
+      "starting a service",
+      "opening recording voltage payload",
+      "starting GPU computation",
+      "retrying a failed audit without a new receipt namespace"
+    ]
+  },
+  "independent_checks": {
+    "packet_seal": "10 products verified",
+    "focused_tests": "7 passed in 0.03s on huklaban1",
+    "original_failure_packet": "8 products verified with claimed MANIFEST and COMPLETE",
+    "corrected_source_and_receipts": "all match packet MANIFEST hashes",
+    "shared_canonical_release_and_compact": "absent on huklaban1",
+    "h5_home_and_systemd_current_state": "not independently visible from huklaban1; must be rechecked as an action precondition",
+    "recording_voltage_bytes_read": 0,
+    "gpu_work_started": false
+  },
+  "authorization": "Authorize only the exact one-directory prerequisite creation under the stated checks and one rerun of the exact corrected read-only audit. This verdict does not authorize production release construction, unit installation/reload, service start, attempt creation, voltage access or GPU work."
+}

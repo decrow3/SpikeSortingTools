@@ -1,0 +1,15 @@
+{
+  "schema": "luke-v13-support-boundary-synthetic-falsifier-freeze-receipt-v2",
+  "status": "FROZEN_BEFORE_V2_OUTPUT_DTYPE_REPAIR_ONLY",
+  "contract_path": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/contracts/luke_v13_support_boundary_synthetic_falsifier_20261003_v2_h1.json",
+  "contract_sha256": "cc9087cd029e4be5cdede1f2cad0fbc4f0604fd09ab037d6c4edcedc73258fa5",
+  "fixture_source_path": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/luke_v13_support_boundary_synthetic_falsifier.py",
+  "fixture_source_sha256": "163c2e981858965b4b3635b5596bdd3beaa63fd8b9553dafbeb99cca7e113a40",
+  "v1_preserved_invalid": true,
+  "v1_invalid_reason": "unsupported numpy.int16 dtype spelling emitted native warnings",
+  "v2_only_source_change": "dtype argument uses production spelling string int16",
+  "signals_cases_thresholds_predictions_and_decisions_unchanged": true,
+  "output_absent_when_frozen": true,
+  "real_voltage_accessed": false,
+  "automatic_advancement": false
+}

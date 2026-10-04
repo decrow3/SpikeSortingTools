@@ -1,0 +1,30 @@
+{
+  "schema": "first-medium-fixed-ref-cohort-v1",
+  "arm_id": "REF384",
+  "selection_rule": "Select every REF384 cluster whose median of event physical_probe_depth_y from the independently bound spike_positions rows is inside the inclusive scoring interval [1600.0, 2180.0] micrometers; order by ascending numeric cluster ID; apply no label, QC, candidate-arm, matching, score, or outcome filter.",
+  "ordered_cluster_ids": [
+    163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174,
+    175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186,
+    187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198,
+    199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210,
+    211, 212, 213, 214, 215, 216, 217, 219, 220, 221, 222, 223, 224
+  ],
+  "cohort_size": 61,
+  "cohort_sha256": "3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0",
+  "ref_binding": {
+    "curated_identity_digest": "8f4fb3bfbfff22d7fcd982bbc7d2d272dbc65e72d6b6a2db093102f17d938e53",
+    "event_lineage_sha256": "3aa7da34c17af944c79a26b71e1988b97770f98ba4d7e902fda6d113d1b08380",
+    "spatial_identity_sha256_v2": "bdc51f5595ff9c9654677d542c798f097d65a2022e5710729c1e7796a2c24414",
+    "event_rows": 1856371,
+    "cluster_count": 441
+  },
+  "independent_ref_binding_receipt": "bindings/h5_real_ref_binding_receipt.json",
+  "id_recomputation_evidence": {
+    "artifact": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_evaluator_post_qc_execution_result_20261002_v1_h5/results/pairs/REF384__existing_corrected_B384/unit_metrics_baseline.csv",
+    "artifact_sha256": "890fe7c1301001a11b62308b7d2954fc204d49bb56e33c281b288f3bd8be1842",
+    "columns_read": ["cluster_id", "median_depth_um"],
+    "candidate_columns_read": false,
+    "scores_read": false,
+    "note": "The source table is a previously saved REF-only unit-metrics table. IDs were independently recomputed from the frozen inclusive depth rule; no B artifact or comparison score was opened."
+  }
+}

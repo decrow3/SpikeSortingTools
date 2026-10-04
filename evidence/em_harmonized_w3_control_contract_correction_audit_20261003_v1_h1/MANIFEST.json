@@ -1,0 +1,10 @@
+{
+  "schema": "em-harmonized-w3-control-contract-correction-manifest-v1",
+  "preserved_result_sha256": "1e0295fca4b92459b18f92004962304f441e4807b0af576030215884ad660d60",
+  "preserved_prior_review_manifest_sha256": "a96bfe0cf2586e2265e867b2c6d32dea244aa7df928a9ea89b4a15e72964fb61",
+  "members": [
+    {"path": "AUDIT.md", "bytes": 4831, "sha256": "e9920e6aafe68d230ab35f3c0571af4bc16daf1505c022993336411060b9086d"},
+    {"path": "CORRECTED_DECISION.json", "bytes": 1822, "sha256": "0cc831ac61d2a09dcc8de7daddabfbf68d81e425f333cb3bb916e7286e96ce78"},
+    {"path": "CORRECTION_TABLE.md", "bytes": 2650, "sha256": "e7d08193a37c86f14498748d34819d2ca2d0486890d2462903a170a61bedfe32"}
+  ]
+}

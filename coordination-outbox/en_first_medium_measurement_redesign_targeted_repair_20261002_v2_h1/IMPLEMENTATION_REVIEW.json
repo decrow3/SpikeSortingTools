@@ -1,0 +1,82 @@
+{
+  "schema": "first-medium-measurement-redesign-targeted-repair-review-v1",
+  "producer": "H1",
+  "completed_at_utc": "2026-10-02T10:19:55Z",
+  "verdict": "READY_FOR_H5_REVIEW_EXECUTION_DISABLED",
+  "milestone": "workstream-B temporal-domain fail-closed repair",
+  "decision_changed": "remove H5-B1/H5-B2 as blockers to accepting the in-memory measurement module while preserving the frozen estimand and gate",
+  "cheapest_adequate_test": "bounded synthetic adversarial fixtures plus packaged-source import and compatibility tests",
+  "completion_condition": "all requested malformed-duration, interval-domain, full-sort-domain, boundary, primary-competition, and coverage tests pass from a self-contained immutable packet",
+  "bindings": {
+    "original_packet_manifest_sha256": "c47a413501cb57d604b6e29c0d3a6055ceb0e6bae7223261656569aab1d054aa",
+    "original_packet_complete_sha256": "4b6a3c9541d6cb247b3fbe38b24e78fc570a7df408bcd4156e8ef86caeec5349",
+    "h5_review_manifest_sha256": "b15e2a3cf689af4b70d12aa0d4f3666fb516f4eaa02548fd1b24ab02b7532ccf",
+    "h5_review_complete_sha256": "723a0b7690712251043b95778fe956795a331c936c5b9d4af7bb71587e0fa1e0",
+    "repaired_module_sha256": "779b3b82e4328f92f6d50cb0a411153e03d755172d9493ccda937a686f42d0d9",
+    "tests_sha256": "0e5f091a0d0b8c71c61e7998009cdc20d201da79eea49ffe624a2af5489b59ca",
+    "unchanged_matcher_sha256": "b4065ba7e6c326e74f5f283de9a6ee76df0dfd3b70b65fd534b1d4559a80de0c",
+    "unchanged_config_sha256": "c0dc9deff29742dd5f841893c530048975e15665ee8ed7a5c0f97c99b6539b86",
+    "unchanged_pipeline_config_sha256": "74424d444e05a7ba2d3968d22c1490475ebe8d7c0d213687316ace7cec5cf59c"
+  },
+  "repairs": {
+    "H5-B1": [
+      "duration_s is converted to float and must be finite and strictly positive",
+      "every supplied finite_interior REF and candidate row is validated before cohort selection",
+      "included intervals must have finite numeric start/end/missingness, start >= 0, end <= duration_s, end > start, and no within-unit overlap",
+      "all reported support fractions are constructed by a bounded helper that rejects invalid numerator/denominator state and returns a value in [0,1]"
+    ],
+    "H5-B2": [
+      "when cell edges are supplied, the complete REF and candidate event-time arrays are validated against [edges[0], edges[-1])",
+      "validation occurs before the unchanged correspondence matcher is called",
+      "the lower boundary is inclusive and the exact upper stop is rejected",
+      "out-of-domain candidate and non-cohort REF events can no longer influence reciprocal-primary competition"
+    ]
+  },
+  "preserved": {
+    "R": "unchanged equal-REF-unit retention estimand",
+    "DeltaR": "unchanged paired repaired-minus-existing definition",
+    "matcher": "byte-identical accepted correspondence implementation",
+    "bootstrap": "unchanged paired REF-unit composition bootstrap",
+    "gate": "unchanged strict one-sided lower95 > 0.05 replacement gate",
+    "diagnostics": "conditional amplitude remains diagnostic only; no refit, imputation, or threshold relaxation",
+    "contract": "byte-identical execution-disabled outcome-blind configuration"
+  },
+  "tests": {
+    "repaired_module": "30 passed",
+    "combined_module_matcher_evaluator": "56 passed",
+    "packaged_source": "30 passed",
+    "adversarial_cases": [
+      "prior 200-percent coverage construction rejected",
+      "NaN, positive infinity, negative infinity, zero, and negative duration rejected",
+      "negative-start, duration-overrun, zero-length, and reversed intervals rejected on both arms",
+      "exact amplitude [0,duration_s] interval accepted with fractions exactly 1",
+      "negative and exact-stop events rejected for both complete sorts",
+      "out-of-domain candidate primary-competition attack rejected",
+      "out-of-domain non-cohort REF primary-competition attack rejected",
+      "valid lower and interior cell boundaries preserve existing half-open behavior"
+    ]
+  },
+  "scope": {
+    "real_scoring": false,
+    "real_inputs_opened": false,
+    "jobs_started": false,
+    "recording_or_voltage_access": false,
+    "sorter_training_detection": false,
+    "rf_or_holdout_access": false
+  },
+  "implementation_checks": {
+    "done": [
+      "read exact original source, H5 review, contract, tests, and accepted matcher",
+      "traced validation order to prove full-sort domain checks precede correspondence",
+      "traced all included amplitude rows and coverage denominators",
+      "verified unchanged dependency and contract hashes",
+      "ran original and adversarial fixtures in workspace and packet source namespace"
+    ],
+    "not_done": [
+      "no real arm, score, outcome, recording, voltage, sorter, waveform, RF, or sealed holdout was accessed or run",
+      "H5 has not yet independently reviewed this repair"
+    ],
+    "can_establish": "The requested temporal-domain failures are repaired for bounded in-memory inputs without changing R, DeltaR, correspondence, bootstrap, gate, or conditional-diagnostic semantics.",
+    "cannot_establish": "Any real cross-arm effect, power, biological identity, novel-event recovery, or prospective execution readiness beyond this measurement-module changed path."
+  }
+}

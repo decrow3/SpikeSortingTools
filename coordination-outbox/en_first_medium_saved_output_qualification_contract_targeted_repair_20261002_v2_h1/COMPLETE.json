@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-evidence-packet-complete-v1",
+  "packet": "en_first_medium_saved_output_qualification_contract_targeted_repair_20261002_v2_h1",
+  "producer": "H1",
+  "completed_at_local_date": "2026-10-02",
+  "manifest": "MANIFEST.sha256",
+  "manifest_sha256": "7208ca62283409872ec786f90da91941ad4e2e900afed7a08a71265ef004af32",
+  "status": "READY_FOR_H5_REREVIEW_REAL_EXECUTION_DISABLED",
+  "real_execution_enabled": false
+}

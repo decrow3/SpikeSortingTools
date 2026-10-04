@@ -1,0 +1,32 @@
+H1 changed-path waveform-method review, 2026-10-02
+
+Subject integrity:
+  MANIFEST dd5baf0036d8700028e5656ba7d3efa6bfb81d5b53be6144ee661316776345a7
+  COMPLETE 91da1db44ff0cedd8a07f28b8a027bb8d4e3183b9346d5d39190e9af7fe58d0a
+  All manifest members: OK
+
+H1 native bounded suite:
+  31 passed, 1 failed in 16.47s
+  Sole failure: exact H5 runtime closure does not equal H1 runtime closure.
+
+Byte-identical /tmp stage:
+  /tmp/en-waveform-v3-h1-review.sGiDoZ/packet
+  staged MANIFEST: all members OK
+  31 passed, 1 failed in 10.75s
+  Sole failure: same exact-runtime mismatch.
+
+Independent H1 runtime capture:
+  expected H5: aggregate 6658089a5e123b1962d2a61b7b89c230e484fdde0f52a0479e52c102f10cfe48; 89 members; 3333088832 bytes
+  observed H1: aggregate 7828f352cf5dc2269e8811584ce895d115995ba4458692b797a6535356bb6b36; 51 members; 3310777048 bytes
+  backend fields equal: true
+  waveform probe output equal: true
+  exact identity verifier: fail closed as designed
+
+Synthetic same-size voltage mutation:
+  first preflight: PASS
+  replaced all 16 synthetic bytes while preserving path and size
+  second preflight: PASS
+  stat mtime changed, but current implementation records rather than compares it to a historic hash-time stat tuple
+
+No real voltage, event data, sorter, RF, or holdout was opened or executed.
+

@@ -1,0 +1,46 @@
+{
+  "schema": "en-a-four-unit-physical-signal-capture-postexecution-review-v1",
+  "technical_execution_verdict": "VALID_WITHIN_FROZEN_BOUNDED_CAPTURE_CONTRACT",
+  "scientific_interpretation_verdict": "NOT_YET_ESTABLISHED",
+  "execution_packet_manifest_sha256": "9714697d213368f932c0b4f8cafbc152307fffb3dd195ff6aa1bea1960c514ca",
+  "execution_packet_complete_sha256": "af4f860729c8bb901bede19d93af0a610bd4d02ab4842302c67fcad40a1b5320",
+  "executed_receipt_sha256": "5268a41d4cae91cc030e8be782566d0d491d7a5e8443495820dba5b371b8d2f4",
+  "lifecycle": {
+    "start_requests": 1,
+    "accepted_start_requests": 1,
+    "retry_requests": 0,
+    "restarts": 0,
+    "terminal_result": "success",
+    "exit_status": 0
+  },
+  "closure": {
+    "selection_slots": 20,
+    "diagnostic_rows": 40,
+    "read_calls": 41,
+    "logical_bytes": 32492544,
+    "retained_numeric_bytes": 3912192,
+    "arrays_per_archive": 20,
+    "numeric_bytes_per_archive": 1956096,
+    "total_retained_time_samples_per_archive": 2547,
+    "array_axis_order": "channel_time",
+    "channels": 384,
+    "dtype": "int16"
+  },
+  "archive_bindings": {
+    "original_retained_int16.npz": "0552053555cb8fb0008bb1c796617d636243c0015d0ecaebe730350d132f3838",
+    "corrected_A_retained_int16.npz": "91b8fc7afed9ce4413edd86d53349eb7b9e9906a24f661b18bc308fbedbfb513"
+  },
+  "controls": {
+    "duplicate_original_first_pair": "passed_by_successful_bound_source_completion",
+    "q0_aggregate_rows_exact_equal": 4,
+    "scope": "access repeatability and aggregate zero-shift identity only"
+  },
+  "compact_packet_sufficiency": "sufficient_for_execution_review_without_voltage_transfer_not_for_waveform_interpretation",
+  "next_decision": "frozen H5-local channel-level waveform QC using existing retained arrays only",
+  "next_analysis_prerequisites": [
+    "verify both local archive hashes",
+    "verify exact 20 slot keys and expected channel-time member shapes",
+    "freeze channel selection waveform metrics plots and q0/displaced interpretation rules before inspecting outcomes",
+    "preserve unmatched ambiguous or unusable waveform evidence"
+  ]
+}

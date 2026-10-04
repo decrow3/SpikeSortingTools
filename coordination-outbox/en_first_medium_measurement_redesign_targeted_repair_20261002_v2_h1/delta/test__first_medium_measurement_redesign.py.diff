@@ -1,0 +1,120 @@
+--- /mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_measurement_redesign_implementation_20261002_v1_h1/tests/test_first_medium_measurement_redesign.py	2026-10-02 03:05:46.585572700 -0700
++++ testing/test_first_medium_measurement_redesign.py	2026-10-02 03:18:02.699392043 -0700
+@@ -101,6 +101,39 @@
+     assert set(cells.scope) == {"state_or_longitudinal_diagnostic_only"}
+ 
+ 
++@pytest.mark.parametrize("bad_time", [-1, 120])
++@pytest.mark.parametrize("side", ["reference", "candidate"])
++def test_complete_sort_domain_is_checked_before_correspondence(bad_time, side):
++    reference = sort([0, 60, 119], [1, 1, 1])
++    candidate = sort([0, 60, 119], [11, 11, 11])
++    if side == "reference":
++        reference = sort([0, 60, 119, bad_time], [1, 1, 1, 2])
++    else:
++        candidate = sort([0, 60, 119, bad_time], [11, 11, 11, 12])
++    with pytest.raises(ValueError, match="outside the half-open cell domain"):
++        reference_event_retention(
++            reference, candidate, [1], RULE, cell_edges_frames=[0, 60, 120]
++        )
++
++
++def test_out_of_domain_candidate_cannot_change_primary_matching():
++    reference = sort([10, 20], [1, 1])
++    candidate = sort([10, 20, 60, 70, 80], [8, 8, 8, 8, 8])
++    with pytest.raises(ValueError, match="outside the half-open cell domain"):
++        reference_event_retention(
++            reference, candidate, [1], RULE, cell_edges_frames=[0, 50]
++        )
++
++
++def test_out_of_domain_noncohort_reference_is_rejected_before_matching():
++    reference = sort([10, 20, 60, 70, 80], [1, 1, 2, 2, 2])
++    candidate = sort([10, 20], [8, 8])
++    with pytest.raises(ValueError, match="outside the half-open cell domain"):
++        reference_event_retention(
++            reference, candidate, [1], RULE, cell_edges_frames=[0, 50]
++        )
++
++
+ def test_conditional_amplitude_exact_support_union_and_unchanged_fit_gate():
+     ref = pd.DataFrame({
+         "cluster_id": [1, 1, 1, 2],
+@@ -132,6 +165,77 @@
+     assert result["reference_support_union_fraction_full_cohort_time"] == pytest.approx(1 / 3)
+     assert result["common_time_fraction_full_cohort_time"] == 0.25
+     assert "no refit" in result["fit_quality_rule"]
++    for key, value in result.items():
++        if key.endswith("fraction_full_cohort") or key.endswith("fraction_full_cohort_time"):
++            assert 0.0 <= value <= 1.0
++
++
++@pytest.mark.parametrize("duration_s", [np.nan, np.inf, -np.inf, 0.0, -1.0])
++def test_conditional_amplitude_rejects_nonfinite_or_nonpositive_duration(duration_s):
++    windows = pd.DataFrame({
++        "cluster_id": [1], "status": ["finite_interior"],
++        "start_s": [0.0], "end_s": [1.0], "missing_pct": [10.0],
++    })
++    primary = pd.DataFrame({"baseline_cluster": [1], "candidate_cluster": [1]})
++    with pytest.raises(ValueError, match="invalid amplitude diagnostic configuration"):
++        conditional_amplitude_diagnostic(
++            windows, windows, primary, [1], duration_s=duration_s,
++            minimum_valid_windows=1, minimum_common_time_fraction=0.0,
++        )
++
++
++@pytest.mark.parametrize(
++    ("start_s", "end_s"),
++    [(-1.0, 1.0), (0.0, 61.0), (10.0, 10.0), (11.0, 10.0)],
++)
++@pytest.mark.parametrize("side", ["reference", "candidate"])
++def test_conditional_amplitude_rejects_malformed_or_out_of_domain_intervals(
++    start_s, end_s, side,
++):
++    valid = pd.DataFrame({
++        "cluster_id": [1], "status": ["finite_interior"],
++        "start_s": [0.0], "end_s": [60.0], "missing_pct": [10.0],
++    })
++    bad = valid.copy()
++    bad.loc[0, ["start_s", "end_s"]] = [start_s, end_s]
++    reference, candidate = (bad, valid) if side == "reference" else (valid, bad)
++    primary = pd.DataFrame({"baseline_cluster": [1], "candidate_cluster": [1]})
++    with pytest.raises(ValueError, match="wholly inside"):
++        conditional_amplitude_diagnostic(
++            reference, candidate, primary, [1], duration_s=60.0,
++            minimum_valid_windows=1, minimum_common_time_fraction=0.0,
++        )
++
++
++def test_conditional_amplitude_rejects_prior_two_hundred_percent_coverage_case():
++    windows = pd.DataFrame({
++        "cluster_id": [1, 1],
++        "status": ["finite_interior", "finite_interior"],
++        "start_s": [0.0, 60.0], "end_s": [60.0, 120.0],
++        "missing_pct": [10.0, 10.0],
++    })
++    primary = pd.DataFrame({"baseline_cluster": [1], "candidate_cluster": [1]})
++    with pytest.raises(ValueError, match="wholly inside"):
++        conditional_amplitude_diagnostic(
++            windows, windows, primary, [1], duration_s=60.0,
++            minimum_valid_windows=2, minimum_common_time_fraction=0.5,
++        )
++
++
++def test_exact_amplitude_domain_boundaries_produce_bounded_full_coverage():
++    windows = pd.DataFrame({
++        "cluster_id": [1], "status": ["finite_interior"],
++        "start_s": [0.0], "end_s": [60.0], "missing_pct": [10.0],
++    })
++    primary = pd.DataFrame({"baseline_cluster": [1], "candidate_cluster": [1]})
++    result = conditional_amplitude_diagnostic(
++        windows, windows, primary, [1], duration_s=60.0,
++        minimum_valid_windows=1, minimum_common_time_fraction=1.0,
++    )
++    assert result["reference_support_union_fraction_full_cohort_time"] == 1.0
++    assert result["candidate_support_union_fraction_full_cohort_time"] == 1.0
++    assert result["common_time_fraction_full_cohort_time"] == 1.0
++    assert result["unit_support"].common_time_fraction.item() == 1.0
+ 
+ 
+ def test_margin_assessment_is_visible_and_replacement_targets_the_margin():

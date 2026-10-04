@@ -1,0 +1,11 @@
+{
+  "schema": "candidate-g-v2-2-complete-v1",
+  "status": "GO_INTEGRATED_CANDIDATE_G_V2_2_PREPARATION_EXECUTION_REMAINS_DISABLED",
+  "result_kind": "h1_review",
+  "attempt_id": "candidate-g-v2-2-1-h1-review",
+  "seal_nonce": "873b2bceec99a19e7669a94568ef6165",
+  "manifest_sha256": "2bf50b87a11801a4f7c06feab50ed7e54bb026e3cf03caf463f640e9b60259a5",
+  "product_count": 2,
+  "completion_write": "O_CREAT|O_EXCL after fsync(MANIFEST.json) and fsync(parent)",
+  "completed_unix_ns": 1791106954372976033
+}

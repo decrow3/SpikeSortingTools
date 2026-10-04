@@ -1,0 +1,66 @@
+{
+  "schema": "candidate-g-continuation-full-readiness-acceptance-v1",
+  "status": "GO_CONSTRUCT_RELEASE_INSTALL_REVIEWED_UNITS_START_ONCE",
+  "execution_enabled": true,
+  "candidate": "G",
+  "reviewed_packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_continuation_run_parent_creation_and_full_readiness_20261004_v1_h5",
+  "reviewed_packet_manifest_sha256": "7b10d4a6c1821fac89796f5bf52bd4cacb655b3997d28a6d6f74280b33012d2a",
+  "reviewed_packet_complete_sha256": "14054a3aa584caab99d89fa0ca79421a26192028222d05600c4ab299f0d44aa9",
+  "reviewed_request_sha256": "a51d8e777a3dab5d129a93423223027029519308d4c60c1fd988e1fec8a1afa8",
+  "readiness_receipt_sha256": "a06d125f65888c92cb1111b38b89904029c9b9c8ccd62ed0543cf355a8b6eb9f",
+  "coordination_sha256": "9153d2ead45f57499a72b05e433dd9ae24d45468be5096a55965ec059656f297",
+  "accepted_v6": {
+    "packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_continuation_production_bootstrap_external_compact_accounting_20261004_v1_h5",
+    "manifest_sha256": "5ca523fce693219d5b0b89beefb7ab96f3a6df5f639b4085086c976894d72e0a",
+    "complete_sha256": "5ae24c92dc4cf50c172debbd722a2220d6f8d8dac601d81f4fdf27005d21a402",
+    "h1_go_verdict_sha256": "0c7d810e23ad57c071120b6a1d97acf96789abb6b5ae6b417ff3250329744104"
+  },
+  "accepted_findings": [
+    "the exact authorized run parent was absent before creation and is recorded after creation as a real non-symlink empty directory owned by UID/GID 1000 with mode 0700",
+    "the exact corrected audit source is byte-identical to the reviewed source and has SHA-256 16330d5551a9a55c8c2b8a68d3ff24cd57ec5701bae5990c5f9905c91fcbbac2",
+    "the single fresh audit receipt is sealed at SHA-256 a06d125f65888c92cb1111b38b89904029c9b9c8ccd62ed0543cf355a8b6eb9f and reports PASS_FULL_READINESS_NO_START",
+    "all 30 production closure entries, including the H5-local NPZ and matching H5, were opened and hash-verified by the reviewed audit on huklaban5",
+    "the state receipt reports 14 arrays, 490944 rows, exact row order, parent_h5_path removed in memory and native QDA success",
+    "frozen input descriptors and metadata passed without opening recording voltage payload",
+    "the readiness snapshot reports 20 CPUs, 191968174080 available memory bytes, 904844582912 run-filesystem free bytes, 165928431616 compact-filesystem free bytes and one available CUDA device with no GPU computation",
+    "systemd definitions and concrete main/finalizer instance were absent, and canonical release, attempt child and compact output remained absent",
+    "the original prestart failure, filtered-inventory failure and parent-absence failure are byte-identical to their preserved predecessors"
+  ],
+  "independent_checks": {
+    "packet_seal": "14 products verified",
+    "readiness_receipt_hash": "matches a06d125f65888c92cb1111b38b89904029c9b9c8ccd62ed0543cf355a8b6eb9f",
+    "audit_source": "byte-identical to reviewed source; exact hash matches",
+    "production_closure": "28 of 30 entries independently opened on huklaban1; the reviewed H5 audit opened and verified the two H5-local entries",
+    "failure_preservation": "all three copied failures byte-identical to predecessors",
+    "shared_canonical_release_and_compact": "absent on huklaban1",
+    "h5_parent_systemd_and_resources": "accepted from the sealed H5 readiness receipt; require just-in-time recheck before mutation/start",
+    "recording_voltage_bytes_read": 0,
+    "agglomeration_called": false,
+    "gpu_work_started": false
+  },
+  "activation_scope": {
+    "attempt_id": "candidate-g-v14-agglomerate-continuation-20261004a",
+    "service_name": "candidate-g-continuation-v1.service",
+    "run_parent": "/home/huklaban5/DARTsort_experiment_scratch/candidate_g_continuations",
+    "run_root": "/home/huklaban5/DARTsort_experiment_scratch/candidate_g_continuations/candidate-g-fixed-event-w3-v14-agglomerate-continuation-v1",
+    "release_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate_g_continuation_release_20261004_v1_actual_h5/RELEASE.json",
+    "compact_output_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_continuation_run_20261004_v1_actual_h5",
+    "cache_envelope_half_open": [239969921, 250200079],
+    "logical_cache_read_limit_bytes": 17179869184,
+    "runtime_max_seconds": 3416,
+    "cpu_quota_percent": 400,
+    "memory_max_bytes": 68719476736,
+    "gpu_count": 1,
+    "start_count": 1,
+    "retry_count": 0
+  },
+  "mandatory_activation_conditions": [
+    "immediately before mutation, reconfirm the run parent is the exact real empty non-symlink directory, UID/GID 1000, mode 0700",
+    "reconfirm canonical release directory/file, production and finalizer unit files, attempt root and compact output are absent including symlinks, and relevant concrete units remain not-found/inactive with PID 0 and zero restarts",
+    "reconfirm at least 4 CPUs, 68719476736 available memory bytes, 64424509440 run-filesystem free bytes, 1073741824 compact-filesystem free bytes and one available CUDA device without starting compute",
+    "construct only the exact v6 release bound to the accepted v6 packet, v6 H1 GO and exact 30-entry closure; install only byte-identical reviewed unit templates and verify release_gate_v6 before start",
+    "start candidate-g-continuation-v1.service once through the user systemd manager; do not retry on any preflight, start, worker, storage, timeout, publication or finalizer failure",
+    "persist release/unit hashes, systemd job and invocation identity, live process/cgroup state, logs, terminal status and compact evidence; preserve any failure without overwrite"
+  ],
+  "authorization": "GO for the coordinator to construct the exact canonical v6 release, install/reload only the two byte-identical reviewed user units, and start the exact managed continuation once under the frozen activation scope after every mandatory condition passes. No substitutions, retries, additional starts, parameter changes, voltage outside the frozen worker path, or other experiment are authorized by this acceptance."
+}

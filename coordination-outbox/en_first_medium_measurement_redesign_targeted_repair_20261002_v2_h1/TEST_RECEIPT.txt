@@ -1,0 +1,23 @@
+H1 bounded synthetic repair tests, 2026-10-02 UTC
+
+Workspace repaired module:
+  pytest -q testing/test_first_medium_measurement_redesign.py
+  30 passed in 0.91s
+
+Compatibility set:
+  pytest -q testing/test_first_medium_measurement_redesign.py testing/test_sort_comparison.py testing/test_first_medium_evaluator.py
+  56 passed in 4.34s
+
+Self-contained packet source:
+  PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR=/tmp/en_measurement_repair_numba PYTHONPATH=<packet>/source pytest -q -p no:cacheprovider tests/test_first_medium_measurement_redesign.py
+  30 passed in 1.09s
+
+Package import proof from /tmp:
+  testing.first_medium_measurement_redesign, testing.sort_comparison, and pipeline.config all resolved inside <packet>/source.
+
+Adversarial coverage includes prior 200-percent support, nonfinite/nonpositive duration,
+negative/overrun/zero/reversed intervals, exact amplitude boundaries, lower/upper event
+boundaries, and outside-domain candidate/non-cohort-REF primary-competition attacks.
+
+No real scoring, input access, voltage, recording, job, sorter, training, detection,
+waveform, RF, or holdout operation ran.

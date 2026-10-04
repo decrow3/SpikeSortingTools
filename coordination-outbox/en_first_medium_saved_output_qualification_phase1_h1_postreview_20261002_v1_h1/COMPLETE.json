@@ -1,0 +1,13 @@
+{
+  "schema": "immutable-evidence-packet-complete-v1",
+  "packet": "en_first_medium_saved_output_qualification_phase1_h1_postreview_20261002_v1_h1",
+  "producer": "H1",
+  "completed_at": "2026-10-02T11:33:29-07:00",
+  "status": "PASS_PHASE1_POSTREVIEW",
+  "manifest_sha256": "2ff3768ce1c8a9c15bc5eacb99291156f94ab792dc724b8665d64588a0a88689",
+  "result_manifest_sha256": "8b73c931155741f84300f3cd3a5d260ae8bf0bcf2e05460a6f717c114712bb04",
+  "result_complete_sha256": "797ae2d395e25e35f59e15447df7435dfda73a0839ed092fbb25786cdd97077d",
+  "b_or_voltage_access": false,
+  "scientific_advancement_authorized": false,
+  "next_state": "H1_WAVEFORM_REVIEW_DEPENDENCY_WAITING"
+}

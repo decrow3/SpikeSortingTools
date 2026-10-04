@@ -1,0 +1,35 @@
+{
+  "schema": "em-harmonized-w3-hf-correspondence-h1-final-review-v1",
+  "status": "SCOPED_GO_WITH_ADDITIVE_NUMERIC_CORRECTION_NO_AUTOMATIC_PROGRESSION",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/em_harmonized_w3_hf_correspondence_accounting_20261003_v1_h5",
+  "reviewed_manifest_sha256": "02c6ccebfa74057b798e3486fe18654f8f4de7d9ea85c408c5d97e52b64848ef",
+  "reviewed_complete_sha256": "b4867ca3b887eae64e2b2eb3ff312370750f8b8fd80eb6edc6bcd6ee7fc0378d",
+  "reviewed_spec_sha256": "ce3407dc5e4180c21eb583e368e78eb4d389d3190b5460a395d2cd844c682007",
+  "method_verdict": "PASS_FOR_FROZEN_SCOPED_COINCIDENCE_ACCOUNTING",
+  "serialized_closure": "PASS_INDEPENDENT_RECOMPUTATION",
+  "radius2_mutual_unique_pairs": 237092,
+  "radius0_mutual_unique_pairs": 223402,
+  "radius2_both_assigned_pairs": 236800,
+  "full_sparse_nonzero_cells": 14115,
+  "F_to_H_outside_largest_fraction": 0.410777027027027,
+  "H_to_F_outside_largest_fraction": 0.5261486486486486,
+  "numeric_correction": {
+    "field": "exact_sample_sensitivity_global.F_coverage_assigned",
+    "summary_value": 0.4557299698532772,
+    "authoritative_value": 0.4557299698718276,
+    "numerator": 223114,
+    "denominator": 489575,
+    "decision_impact": "none"
+  },
+  "scoped_interpretation": "Material coincidence-defined label-partition dispersion exists within the mutual-unique both-assigned covered subset; coverage and ambiguity prevent generalization to all events.",
+  "forbidden_inferences": [
+    "biological identity",
+    "purity",
+    "merge correctness",
+    "split correctness",
+    "causality",
+    "cross-window replication"
+  ],
+  "automatic_progression": false,
+  "new_execution_performed": false
+}

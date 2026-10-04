@@ -1,0 +1,20 @@
+{
+  "schema": "waveform-runtime-cross-host-review-v1",
+  "backend_equal": true,
+  "probe_output_equal": true,
+  "differences": ["aggregate_sha256", "member_bytes", "member_count", "member_identity_multiset"],
+  "expected_h5": {
+    "aggregate_sha256": "6658089a5e123b1962d2a61b7b89c230e484fdde0f52a0479e52c102f10cfe48",
+    "member_count": 89,
+    "member_bytes": 3333088832,
+    "python_executable": {"basename": "python3.12", "bytes": 30652904, "sha256": "4adb344720ca7a0ccee7cdc77506bae30da64b55a977cd45e15880ddf8bddcc1"}
+  },
+  "observed_h1": {
+    "aggregate_sha256": "7828f352cf5dc2269e8811584ce895d115995ba4458692b797a6535356bb6b36",
+    "member_count": 51,
+    "member_bytes": 3310777048,
+    "python_executable": {"basename": "python3.12", "bytes": 2123240, "sha256": "c7c1a234ed39ceef4bde5ee8d29db37f55b0f7de6339b82eff5812944ccb74da"}
+  },
+  "interpretation": "The verifier correctly rejects a nonidentical executable environment. Equal backend/probe results do not prove arbitrary-input bit equivalence. The H5 byte inventory still requires independent access to the declared executable bytes."
+}
+

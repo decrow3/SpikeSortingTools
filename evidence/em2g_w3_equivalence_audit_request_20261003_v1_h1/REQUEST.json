@@ -1,0 +1,49 @@
+{
+  "schema": "em2g-w3-existing-artifact-equivalence-request-v1",
+  "status": "metadata_support_requested",
+  "milestone": "identify_at_most_one_executable_improvement_candidate_for_medium_validation",
+  "decision": "whether_the_exact_full_session_vs_W3_window_rounded_kriging_contrast_contains_an_implementation_or_input_difference_warranting_one_cheap_controlled_test_or_remains_a_training_population_comparison",
+  "bound_sorts": {
+    "full_session_sha256": "3b324bbc4ec3c2bcfcc8bc694f0cf9b0237ac0d4f87d1c13ef7b12facfade660",
+    "w3_window_sha256": "e82b0402057197a47f16fb5fefd98701fc18c2ebfdfe824f0d89722a62b5ec1b"
+  },
+  "reuse_check": {
+    "searched_shared_root": "/mnt/NPX/Luke/DARTsort_motion_experiments",
+    "exact_window_hash_found": false,
+    "closest_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/em2g_full_validation_20260929",
+    "why_not_equivalent": "It compares the bound full sort to independently trained exact-lattice window sort SHA 901de0..., not the requested rounded-kriging window sort SHA e82b040...."
+  },
+  "requested_h5_support": {
+    "search_first": "Reuse any completed audit that binds both exact sort hashes; do not repeat scoring, plots, overlap, or bootstrap.",
+    "allowed": "Read only execution metadata, frozen source/config snapshots, receipts, and tiny saved arrays or derived hashes needed for equivalence.",
+    "return": [
+      "Authoritative paths and SHA-256 bindings for both sort outputs and their run contracts/receipts.",
+      "Common W3 sampling rate, half-open global frame interval, recording/crop origin, and each run's local-to-global frame transform.",
+      "Motion-field path/hash; field value/frame semantics; interpolation, sign, border/support, and rounding rules; plus a hash comparison of q/displacement and mapping/support IDs at identical W3 global frames (boundaries, seams, and interior).",
+      "Physical channel IDs/order/count, geometry hash, excluded sites, crop/support, and materialized dtype for each run.",
+      "Executed preprocessing sequence and exact boundary of motion correction, including filtering, phase shift, reference, centering, whitening/covariance, with frozen source hashes and versions.",
+      "Executed DARTsort/SpikeInterface versions and effective sorter parameters, seed, training sampling/context, template/detection/matching/clustering settings, and any caps/defaults.",
+      "Checkpoint/cache lineage: confirm whether the full matching checkpoint and window intermediates were generated from their claimed contracts and whether stale or cross-arm state could enter.",
+      "A concise confirmed-differences versus missing-provenance table. Classify intended training/population differences separately from unintended implementation/input mismatches."
+    ],
+    "do_not": [
+      "read voltage",
+      "run a spike sort",
+      "rescore, plot, bootstrap, or perform RF/holdout work",
+      "access target-A arrays",
+      "reopen masked-zero or covariance experiments",
+      "copy large arrays"
+    ]
+  },
+  "frozen_candidate_fixture": {
+    "candidate": "global-frame motion/preprocessing equivalence across the common W3 interval",
+    "prediction": "If both runs implement the same rounded-kriging input pipeline, identical global W3 frames must have identical field lookup values, interpolation/mapping support, physical geometry/order, and preprocessing boundary; only training duration/sampling and resulting learned population may differ.",
+    "cheapest_test": "Compare saved effective metadata and hashes, then independently materialize only q/displacement and mapping/support identifiers at boundary, seam-adjacent, and deterministic interior frames from saved field/config artifacts; no voltage.",
+    "accept_candidate": "Any reproducible mismatch in time-origin transform, field hash/rounding/sign/interpolation, geometry/order/support, preprocessing order/boundary, effective sorter parameters, or checkpoint lineage that is not an explicitly intended training-context difference.",
+    "stop_no_candidate": "Exact agreement on these invariants, with only full-session versus W3 training/population context remaining; classify the rho contrast as unresolved and do not promote a medium experiment from it."
+  },
+  "known_metrics_not_for_causal_attribution": {
+    "full_session_W3": {"active_units": 972, "eligible_units": 649, "rho": 0.676167},
+    "window_trained_W3": {"active_units": 478, "eligible_units": 386, "rho": 0.752584}
+  }
+}

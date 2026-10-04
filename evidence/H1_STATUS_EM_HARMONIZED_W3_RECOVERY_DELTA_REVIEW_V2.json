@@ -1,0 +1,14 @@
+{
+  "schema": "h1-status-em-harmonized-w3-recovery-delta-review-v2",
+  "status": "NO_GO_RESEAL_COMPLETE_LAST_ONLY",
+  "review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/em_harmonized_w3_saved_output_recovery_delta_review_20261003_v2_h1",
+  "review_manifest_sha256": "bfdfb5279aafda86d349ba39916af81c82c87e8d5821bb5f8092bc3c6e3d76e0",
+  "review_complete_sha256": "cd0d73d7bd2f70b2a56246ebf46f301a6e38edccbaef95f9cd65373cdbb1c18f",
+  "decision_sha256": "28f371a2b9b4b30342009c49980101c6faf22a912e52cda70ccf9f19c490187f",
+  "reviewed_h5_manifest_sha256": "72f9f1bf719f91713015f2e6ac671f34c14998e6d26715caed6f37f34b636e0e",
+  "implementation_delta_pass": true,
+  "scientific_contract_unchanged": true,
+  "blocking_repair": "Recopy byte-identical H5 COMPLETE.json after all packet members and verify strict newest mtime; no other bytes may change.",
+  "scoring_released": false,
+  "score_performed": false
+}

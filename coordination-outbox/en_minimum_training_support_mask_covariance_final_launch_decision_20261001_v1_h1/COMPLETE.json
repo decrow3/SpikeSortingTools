@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "packet": "en_minimum_training_support_mask_covariance_final_launch_decision_20261001_v1_h1",
+  "status": "no_go_missing_required_mutable_host_evidence",
+  "manifest_sha256": "8f078cc4a9af77dd3dde0e692d1c48658cafcfcda6037ae7f5aa748c439cd705",
+  "start_allowed": false,
+  "receipt_copy_allowed": false,
+  "reviewer_started_service": false,
+  "reviewer_opened_recording": false
+}

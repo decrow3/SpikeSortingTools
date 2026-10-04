@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "first-medium-compact-postrun-report-v1",
+  "type": "object",
+  "required": ["schema", "execution", "bindings", "primary_retention", "repeatability", "diagnostics", "waveform", "decision", "provenance"],
+  "properties": {
+    "schema": {"const": "first-medium-compact-postrun-report-v1"},
+    "execution": {"type": "object", "required": ["status", "one_start", "both_arms_complete", "terminal_output_cap_within_limit"]},
+    "bindings": {"type": "object", "required": ["status", "clock_valid", "row_ancestry_valid", "spatial_valid", "qc_status_by_arm"]},
+    "primary_retention": {"type": "object", "required": ["status", "R_existing", "R_repaired", "DeltaR", "lower95", "minimum_effect", "passes"], "properties": {"minimum_effect": {"const": 0.05}}},
+    "repeatability": {"type": "object", "required": ["status", "R_repeat", "scope"]},
+    "diagnostics": {"type": "object", "required": ["fixed_60s_cells", "conditional_amplitude", "guardrails"]},
+    "waveform": {"type": "object", "required": ["status", "method_manifest_sha256", "pair_coverage"]},
+    "decision": {"type": "object", "required": ["status", "advance", "reason_codes", "language_scope"]},
+    "provenance": {"type": "object", "required": ["request_sha256", "source_sha256", "input_receipts", "manifest_sha256"]}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,11 @@
+{
+  "schema": "en-first-medium-phase3-composition-candidate-complete-v1",
+  "status": "COMPLETE_EXECUTION_DISABLED_PENDING_H5_INDEPENDENT_REVIEW",
+  "manifest_sha256": "bea1718259d26a70ccc14d5aaab066d592409ef651a67823fb0f8379641bcb64",
+  "tests": "7 passed",
+  "production_execution_enabled": false,
+  "real_data_accessed": false,
+  "real_outcomes_inspected": false,
+  "scientific_advancement_authorized": false,
+  "next_owner": "H5 independent source/artifact reviewer"
+}

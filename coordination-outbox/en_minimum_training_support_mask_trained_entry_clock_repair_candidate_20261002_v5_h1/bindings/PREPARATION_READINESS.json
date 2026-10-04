@@ -1,0 +1,71 @@
+{
+  "authorization": "standing user authorization applies; no renewed human approval is required solely for arm/window/resource changes",
+  "blockers": [
+    {
+      "evidence": "Kilosort io.py:381 exports spike_times=st[:,0]+imin while io.py:472-478 saves crop-local full_st=st. Accepted trained source lines 443-450 incorrectly require direct equality. Saved REF384 and B384 each have spike_times-full_st[kept,0]==208498882 for every retained row.",
+      "id": "TRAINED_VALIDATOR_NONZERO_ORIGIN_BUG",
+      "resolution": "targeted fresh source/config/fixture packet: validate global spike_times against selected crop-local full_st plus config crop.imin; retain strict kept ordering and crop-local nondecreasing checks; add positive nonzero-origin and negative wrong/double-offset fixtures through the real completion boundary; independently review before any launch.",
+      "status": "OPEN_LAUNCH_STOPPER"
+    },
+    {
+      "evidence": "2026-10-02 preparation nvidia-smi could not communicate with the NVIDIA driver.",
+      "id": "GPU_DRIVER_UNAVAILABLE",
+      "resolution": "restore GPU driver/device visibility and record a fresh nvidia-smi/resource receipt before review/launch.",
+      "status": "OPEN"
+    },
+    {
+      "evidence": "the reviewed trained entry always installs the support policy and therefore cannot be used for exact no-mask REF384_repeat; no serial heterogeneous wrapper exists.",
+      "id": "PAIR_LAUNCHER_NOT_IMPLEMENTED_OR_REVIEWED",
+      "resolution": "implement a narrow execution-disabled wrapper using the frozen historical REF run path for REF384_repeat and the accepted v4 trained entry for repaired_B384, add known-answer/no-launch tests, then independently review exact source/config hashes.",
+      "status": "OPEN"
+    },
+    {
+      "evidence": "C:/Users/Declan/Documents/2026/spikesorting/POST_QC_EVALUATOR_STRATEGY_20261002.md is not mounted at /mnt/c or /mnt/C on H5.",
+      "id": "COORDINATOR_STRATEGY_NOT_MOUNTED_ON_H5",
+      "resolution": "publish or copy an immutable strategy packet/hash to shared project storage and reconcile this draft against it before launch review.",
+      "status": "OPEN"
+    },
+    {
+      "evidence": "delegation named 54af...06bc6d..., while the immutable review COMPLETE.json hashes to 54af269b287b3cfa06bcf6dc7f28fc5bd9ac3188cbf845baa8a331a37acaf34f and binds the requested manifest.",
+      "id": "DELEGATED_COMPLETE_HASH_TYPO",
+      "resolution": "this packet binds the actual verified hash; later review must acknowledge the correction.",
+      "status": "RESOLVED_WITH_VISIBLE_CORRECTION"
+    },
+    {
+      "evidence": "QC and evaluator identities are path/content bound and cannot exist before the fresh arm outputs.",
+      "id": "FUTURE_ARM_QC_IDENTITIES_UNKNOWN",
+      "resolution": "generate QC after successful arms, then freeze exact evaluator identities/hashes before the one evaluator traversal.",
+      "status": "EXPECTED_DOWNSTREAM_NOT_SORT_LAUNCH_BLOCKER"
+    },
+    {
+      "evidence": "post-QC report has population measurable fraction 0.0, missingness UNMEASURED, identity UNRESOLVED, waveform UNMEASURED and split/merge burden 1.0 versus 0.02. Evaluator-v3 requires measured waveform/repeat guardrails and retains the unresolved identity axis.",
+      "id": "CURRENT_EVALUATOR_CANNOT_ADVANCE_WITHOUT_NEW_EVIDENCE_DECISION",
+      "resolution": "before outcome access, independently accept the current split/merge definition and freeze a measurable waveform evidence plan, or explicitly freeze that the trained run is evidence-generation only and cannot produce an advancement verdict. Never substitute Jaccard/rate/count proxies for identity.",
+      "status": "OPEN_SCIENTIFIC_DECISION_NOT_SORT_EXECUTION_FAILURE"
+    }
+  ],
+  "namespaces_fresh_at_preparation": [
+    "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1",
+    "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1_staging",
+    "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1_numba_cache"
+  ],
+  "no_execution_performed": true,
+  "resolved_preparation": [
+    "accepted v4 trained-entry implementation and actual review hash bound",
+    "exact prospective namespaces and serial arm order frozen",
+    "input, crop, field, ops, source, model/template/whitening provenance policy frozen",
+    "intended-factor arm differences made explicit",
+    "resource/service/stop/preservation contract drafted",
+    "predictions, numeric acceptance thresholds and interpretation rules frozen before outcomes",
+    "post-QC evaluator and QC evidence bound; future fresh-arm QC dependency declared",
+    "native hook, mask ordering, adaptive refit, completion and row-order preconditions frozen",
+    "nonzero-origin terminal-validator defect identified before real execution"
+  ],
+  "resource_snapshot": {
+    "data_volume_free_bytes": 1181955702784,
+    "gpu": "UNAVAILABLE_nvidia_smi_driver_communication_failure",
+    "shared_volume_free_bytes": 246455500800
+  },
+  "schema": "en-first-medium-trained-pair-preparation-readiness-v1",
+  "verdict": "NOT_READY_FOR_EXECUTION"
+}

@@ -1,0 +1,20 @@
+Candidate integrity:
+  MANIFEST sha256: 682b3c3cc6cbe9bf3ae9a2bd2a19313888ddacfae99e199e9bd884ff9ffda284
+  COMPLETE sha256: 42e5b6b89a06cf987508aa062316e3b25b7b34704521dd750227a4c94e19d7aa
+  sha256sum -c MANIFEST.sha256: all members OK
+
+Preserved v2 counterexample:
+  configured cap: 1843
+  reported before terminal receipts: 1777
+  actual after false successful return: 2838
+  reproduced: true
+
+Clean v3 suite:
+  14 passed in 0.47s
+
+Independent outer-path audit:
+  below: 3574 < 2000000; COMPLETE present
+  equal: 2000000 == 2000000; COMPLETE present
+  above: 2000383 > 2000000; COMPLETE absent; FAILURE present
+
+No service, voltage, scientific execution, evaluator, RF, or holdout access.

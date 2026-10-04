@@ -1,0 +1,15 @@
+# Implementation checks
+
+- Done: verified the subject `MANIFEST.sha256` member-by-member and verified the exact `COMPLETE.json` hash; no member failed.
+- Done: traced the frozen contract, disabled configs, activation preflight, service proposal, runtime binding, and status. `execution_enabled` and `activation_eligible` remain false; the enabled environment is absent; the service is proposed but not installed or started.
+- Done: verified exact binding to the Phase3 v3 candidate (`3199ddda...`) and H5 independent review (`c0d3f093...`, verdict `GO_PROVENANCE_REPAIR_DELTA`), including their completion and coordination-status hashes.
+- Done: compared the active pair launcher byte-for-byte with the accepted Phase3 producer delta (`9e7290c1...`). AST comparison against the earlier reviewed launcher isolated changes to `_execution_complete` and `execute_pair`; terminal reserve, aggregate accounting, live-budget enforcement, terminal payload, finalization, and single-attempt functions remain unchanged.
+- Done: inspected the activation-preflight delta. It requires the fixed reviewed-launcher ancestry plus the accepted Phase3 producer delta and independent-review chain, and gates eligibility on both those bindings and fresh namespaces.
+- Done: confirmed the four identified stale output references now point to the fresh v2 namespace: REF pre-extraction snapshot, repaired results, trained launch evidence, and trained pre-extraction snapshot. No trained-pair v1 output path remains.
+- Done: confirmed all planned v2 roots, attempt directories, numba cache, and logs are absent. The 17,179,869,184-byte cap, 1,048,576-byte terminal reserve, 17,178,820,608-byte live budget, CPU/RAM/GPU conditions, and 2,700-second wall bound are unchanged.
+- Done: ran the host-portable test subset on H1: 20 passed and 2 H5-runtime-only tests were deselected. Exercised the exact packet in-process with only the unavailable H5 runtime verifier stubbed: bindings and namespace freshness passed, eligibility remained false, and `--require-activation` raised the expected `PermissionError`.
+- Done: checked the producer's bound-runtime receipt: all 22 tests passed on H5, including disabled inspection and require-activation negative controls.
+- Not done: exact H5 runtime bytes were not re-executed on H1 because the contract deliberately names `/home/huklaban5/.../.venv/bin/python`, which does not exist on H1. The authoritative H5 receipt covers that host-bound check.
+- Not done: no activation, service installation/start, recording or voltage access, scientific run, sorting, outcome inspection, RF, or sealed holdout access was performed.
+- Can establish: this disabled derivative is an internally coherent, provenance-complete activation-binding candidate; the accepted Phase3 delta is bound, the four output paths are repaired, namespaces are fresh, and fail-closed behavior is preserved.
+- Cannot establish: activation safety under a future enabled contract, runtime behavior of an installed service, voltage/sorting correctness, scientific benefit, or any outcome claim.

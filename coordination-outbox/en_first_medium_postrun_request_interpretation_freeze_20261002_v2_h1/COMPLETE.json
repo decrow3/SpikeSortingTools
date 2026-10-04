@@ -1,0 +1,13 @@
+{
+  "schema": "first-medium-postrun-request-interpretation-freeze-complete-v2",
+  "status": "COMPLETE_EXECUTION_DISABLED",
+  "manifest_sha256": "a6f389af7234da7d4a2a8c4b51e08db30e321ab3d997fa1d23c9fa7b74094e3d",
+  "verdict": "FROZEN_WITH_VISIBLE_REPEAT_THRESHOLD_CONFLICT",
+  "phase2_existing_b": "OUTSTANDING_NOT_STARTED",
+  "reporting_compatibility_gate": "BLOCKED_PENDING_NARROW_REVIEWED_REPORTING_DELTA_OR_EXPLICIT_PRE_OUTCOME_CONTRACT_RESOLUTION",
+  "execution_enabled": false,
+  "new_outcomes_accessed": false,
+  "service_or_job_started": false,
+  "recording_or_voltage_read": false,
+  "rf_or_holdout_accessed": false
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "en-minimum-training-support-mask-covariance-final-h1-launch-decision-v1",
+  "verdict": "NO_GO_MISSING_REQUIRED_MUTABLE_HOST_EVIDENCE",
+  "candidate_manifest_sha256": "99c6250b527bef1ef5e81c9b9f48e49e67e8d7236a088499cf4592fe9c5479c2",
+  "conditional_review_manifest_sha256": "0e844ac1e9e49bbbe64e953b78c6d226dee644ff50987be453fdc650aafd0dd2",
+  "installed_preflight_manifest_sha256": "6e700eb3b956ba39606ebe8eafcee337626468c98c9d5b7e897805ae8dac5d52",
+  "installed_preflight_complete_sha256": "c2ae570d72c6897e2b92650bdd79b95d0ae5ad1336639ce44f75eec8fa3b76e0",
+  "satisfied": [
+    "installed primary source config service launcher helper and candidate-test hashes",
+    "full installed contract validator with execution enabled",
+    "CUDA available with one NVIDIA RTX A5000",
+    "recording metadata readable and content unopened",
+    "installed candidate plus helper suite 34 of 34 passed",
+    "unit loaded static inactive dead PID zero and zero restarts",
+    "v2 run root results evidence and reservation absent",
+    "554084352 padded-read-byte and 33554432 retained-byte bounds",
+    "stop after whitening Restart=no and non-resumable semantics"
+  ],
+  "missing_required_evidence": [
+    "resolved rescue-production Python absolute path and sha256 equal to 4adb344720ca7a0ccee7cdc77506bae30da64b55a977cd45e15880ddf8bddcc1",
+    "explicit output_parent_writable=true for the exact v2 run-root parent",
+    "explicit frozen Kilosort module path/hash inventory matching the prior independent review"
+  ],
+  "start_allowed": false,
+  "receipt_copy_allowed": false,
+  "reinstall_required_to_cure": false,
+  "voltage_access_required_to_cure": false,
+  "cure": "publish a new immutable metadata-only H5 evidence packet containing the missing checks and repeated immediate unit/fresh-path state",
+  "reviewer_actions": {
+    "service_started": false,
+    "recording_opened": false,
+    "rf_or_holdout_accessed": false
+  }
+}

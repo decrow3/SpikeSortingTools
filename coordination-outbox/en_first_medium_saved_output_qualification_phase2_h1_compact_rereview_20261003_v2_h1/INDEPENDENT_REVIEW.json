@@ -1,0 +1,99 @@
+{
+  "schema": "first-medium-phase2-h1-compact-rereview-v1",
+  "producer": "H1",
+  "review_date": "2026-10-02 America/Los_Angeles",
+  "verdict": "GO_PHASE2_ONE_START_ONLY",
+  "go_phase2_one_start": true,
+  "subject": {
+    "complete_sha256": "b95953d1b2849160dfd93c36b536f83eb1688ae45a0e7939c6ee764b9041e354",
+    "manifest_sha256": "5525e72a7b670e2ce5fb5a8529c4cf6c59cde1e56427b7a138d60711304ece02"
+  },
+  "subject_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase2_runtime_gate_repair_20261003_v2_h5",
+  "decision": "GO_PHASE2_RUNTIME_GATE_REPAIR_FOR_FRESH_ACTIVATION",
+  "accepted": {
+    "subject_manifest_and_all_members_verified": true,
+    "phase1_result_full_manifest_and_semantics_preclaim": true,
+    "phase1_service_full_manifest_semantics_and_result_linkage_preclaim": true,
+    "phase1_h1_postreview_full_manifest_semantics_and_result_service_linkage_preclaim": true,
+    "phase2_go_full_manifest_exact_verdict_and_exact_subject_preclaim": true,
+    "service_execcondition_uses_worker_preclaim_gate": true,
+    "worker_repeats_gate_before_atomic_claim_and_arm_load": true,
+    "block_wrong_subject_missing_and_mutated_cases_fail_closed": true,
+    "scientific_functions_unchanged": true,
+    "fixed_ref_cohort_unchanged": true,
+    "ordered_arms_unchanged": [
+      "REF384",
+      "existing_corrected_B384"
+    ],
+    "measurement_and_recording_domain_unchanged": true,
+    "resources_unchanged": {
+      "cpu_threads_max": 4,
+      "gpu_count": 0,
+      "peak_rss_bytes_max": 10737418240,
+      "persistent_output_bytes_max": 268435456,
+      "wall_seconds_max": 1800
+    },
+    "hmac_atomic_claim_and_no_retry_lifecycle_unchanged": true,
+    "descriptive_only_no_advancement_output_unchanged": true,
+    "focused_tests": "18 passed in 5.22s on H1"
+  },
+  "fresh_activation_constraints": {
+    "no_further_planner_round_required": true,
+    "allowed_derivative_changes_only": [
+      "set top-level execution_enabled true",
+      "set phase2_existing_b.real_execution_enabled true",
+      "set one_start_authorization to this exact phase and GO",
+      "replace prospective Phase2 GO manifest/complete and repair-subject tokens with this exact GO packet and reviewed subject identities",
+      "insert one fresh single-use Phase2 start token and its exact-run HMAC",
+      "make ExecCondition and ExecStart reference the same exact enabled contract, request, and fresh absent output"
+    ],
+    "must_remain_exact": [
+      "reviewed source and eight-module implementation boundary",
+      "Phase1 result/service/postreview paths, hashes, manifests, semantics, and subject linkage",
+      "method-freeze token and receipt",
+      "REF384 then existing_corrected_B384 arms and identities",
+      "61-unit cohort and cohort digest",
+      "recording domain, matching and measurement settings",
+      "resources, one-start atomic claim, no retry, and descriptive-only outputs"
+    ],
+    "prestart_requirements": [
+      "fresh output namespace absent",
+      "fresh token claim absent",
+      "enabled derivative hashes and HMAC recomputed after all substitutions",
+      "ExecCondition passes without claim or arm load",
+      "managed service installed and started once with Restart=no"
+    ],
+    "forbidden": [
+      "reuse of predecessor token, claim, output, contract, request, or service",
+      "scientific code, cohort, arm, estimator, threshold, resource, or output-scope change",
+      "automatic retry or second manual start",
+      "RF, holdout, sorting, training, voltage, repaired-arm, repeat-arm, efficacy, or advancement work"
+    ]
+  },
+  "safety_state_at_review": {
+    "repair_contract_execution_enabled": false,
+    "repair_phase2_execution_enabled": false,
+    "proposed_service_installed": false,
+    "fresh_go_packet_absent_before_publication": true,
+    "future_output_absent": true,
+    "claim_consumed": false,
+    "ref_or_b_arrays_opened_by_h1": false,
+    "scientific_execution_started": false
+  },
+  "implementation_checks": {
+    "done": [
+      "verified subject MANIFEST/COMPLETE identities and every manifest member",
+      "read the exact worker delta, disabled contract/request template, proposed service, Phase1 result/service/postreview packets, and previous blocker",
+      "traced full-manifest hashing, semantic verdicts, subject linkage, GO-only validation, service ExecCondition, repeated worker preclaim gate, HMAC freshness, atomic claim, and arm-open ordering",
+      "independently confirmed unchanged scientific-function AST, unchanged seven supporting modules, exact cohort, arm order, recording/measurement settings, outputs, exclusions, and resources",
+      "confirmed ExecCondition and ExecStart use the same contract, request, and output arguments",
+      "reran 18 focused fixtures including exact success and fail-closed mutation/BLOCK/wrong-subject/missing cases"
+    ],
+    "not_done": [
+      "no enabled derivative existed during review, so its final hashes/HMAC and H5 service state were not directly inspected",
+      "no service install/start, token claim, REF/B array read, result output, RF, holdout, sorting, training, or voltage access"
+    ],
+    "can_establish": "The reviewed repair closes both prior authorization-chain blockers and is suitable for one exact fresh Phase2 activation under the enumerated substitutions and existing authorization.",
+    "cannot_establish": "Real Phase2 completion or metrics, waveform benefit, biological identity/purity, portability, DeltaR, efficacy, repeatability, or scientific advancement."
+  }
+}

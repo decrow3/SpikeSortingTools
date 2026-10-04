@@ -1,0 +1,9 @@
+{
+  "schema": "h1-independent-launcher-r1-r3-rereview-complete-v1",
+  "status": "complete",
+  "verdict": "BLOCK_R2_FINAL_RECEIPTS_CAN_EXCEED_PAIR_WIDE_CAP",
+  "manifest_sha256": "ee4290e237bf65212f84d6ec2718c4147519642a7679f49c3875563238977460",
+  "candidate_manifest_sha256": "cefdbfeb9076513f7063dc0d5ac5fb4776d9fc915b408fd659f61e17ae67f1dc",
+  "completed_at": "2026-10-02T14:15:19-07:00",
+  "completion_written_last": true
+}

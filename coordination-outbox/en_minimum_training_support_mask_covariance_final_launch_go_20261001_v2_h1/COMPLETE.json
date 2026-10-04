@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "packet": "en_minimum_training_support_mask_covariance_final_launch_go_20261001_v2_h1",
+  "status": "final_go_exactly_one_start",
+  "manifest_sha256": "1024277e7ac865a87cf9505c2ac317e5559e9785300079bae00de7c974dabdec",
+  "start_limit": 1,
+  "live_receipt_copy_required": false,
+  "reviewer_started_service": false,
+  "reviewer_opened_recording": false
+}

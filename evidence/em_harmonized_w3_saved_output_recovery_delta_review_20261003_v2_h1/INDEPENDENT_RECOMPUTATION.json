@@ -1,0 +1,26 @@
+{
+  "schema": "em-harmonized-w3-recovery-h1-independent-domain-recomputation-v1",
+  "exact_packet_source_closure_imported": true,
+  "field_sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+  "mask_sha256": "86425e8a6627a10ac8932ba01b799cb7be7141f731ebb4ecc01e303326b9da55",
+  "catalogue_sha256": "46463cda1348c0e0b0c39ad22ae9c71bc46f7c7347797c1c10588944cfc52df1",
+  "global_frames_half_open": [239998073, 250197991],
+  "sampling_frequency_hz": 29999.759166666667,
+  "domain_intervals": 106,
+  "block_edges": 69,
+  "block_domain_exposure_shape": [68, 3],
+  "window_seconds": 339.9999961110807,
+  "domain_exposure_seconds": {
+    "catalogue_outside_remainder": 49.939162662179115,
+    "negative_excursion": 68.35180705826133,
+    "outside_mask_flat": 221.70902639064025
+  },
+  "accepted_catalogue_overlap_seconds_by_domain": {
+    "catalogue_outside_remainder": 3.851840899889794,
+    "negative_excursion": 26.398159100110206,
+    "outside_mask_flat": 0.0
+  },
+  "matches_h5_preflight_receipt": true,
+  "portable_tests": {"passed": 4, "failed": 0, "host_state_test_deselected": 1},
+  "scores_computed": false
+}

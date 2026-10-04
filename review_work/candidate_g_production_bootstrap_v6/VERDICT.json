@@ -1,0 +1,54 @@
+{
+  "schema": "candidate-g-continuation-production-bootstrap-review-v3",
+  "status": "GO_CONTINUATION_PRODUCTION_BOOTSTRAP",
+  "execution_enabled": true,
+  "candidate": "G",
+  "reviewed_packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_continuation_production_bootstrap_external_compact_accounting_20261004_v1_h5",
+  "reviewed_packet_manifest_sha256": "5ca523fce693219d5b0b89beefb7ab96f3a6df5f639b4085086c976894d72e0a",
+  "reviewed_packet_complete_sha256": "5ae24c92dc4cf50c172debbd722a2220d6f8d8dac601d81f4fdf27005d21a402",
+  "reviewed_request_sha256": "9e624f750b0b072ffc7b126e4a1c8c4e4ba6098c2f358f8729ed9ea71a17a308",
+  "coordination_sha256": "a971a241d8449381bf66c2a377c19cfad4f579c56e12bf5a158c3811ee630acb",
+  "reviewed_gate": {
+    "path": "source/release_gate_v6.py",
+    "sha256": "3e3adc657a10fb1507deb743e40fad58b9c4257d3140dd0543d4633a2fc67e18"
+  },
+  "accepted_findings": [
+    "the exact canonical production run and external compact roots are threaded through categories, sample, supervise and finalize and are separately Bubblewrap-bound",
+    "root validation permits only the frozen production pair or disposable smoke pair and rejects noncanonical, symlink, alias, overlap/containment and fake run-local compact configurations",
+    "run-root files remain disjointly classified while the external compact tree is counted exactly once as compact_publication",
+    "the unchanged 16777216-byte compact category cap and 28991029248-byte aggregate stop both include the external compact tree",
+    "topology-matched sibling-root fixtures independently reproduce 47 compact bytes, 311 aggregate bytes, compact stop at 47>46 and aggregate stop at 311>=311",
+    "the authoritative post-publication receipt reports 3546 compact bytes and 27439 total bytes; the six archived compact components independently sum to 3546 and all category values sum to 27439",
+    "the authoritative systemd smoke binds the actual v6 production entry and gate to a 17-member pre-execution closure; all 17 hashes match this sealed packet",
+    "v5 reviewed-template installed-unit identity and mutation negatives remain enforced, and accepted science/state/envelope/resources/lifecycle/publication behavior is unchanged"
+  ],
+  "independent_reruns": {
+    "packet_seal": "58 products verified",
+    "focused_tests": "18 passed in 0.16s on huklaban1",
+    "production_closure": "28 of 30 entries independently opened and hash-verified; the two H5-local state files remain unavailable on huklaban1",
+    "smoke_preexecution_closure": "17 of 17 entries match sealed packet counterparts",
+    "external_compact_known_answer": "PASS; 47 bytes counted once, aggregate 311",
+    "compact_category_stop": "PASS; 47>46",
+    "aggregate_stop": "PASS; 311>=311",
+    "invalid_root_negatives": "PASS; noncanonical, symlink, overlap, alias and fake-local compact reject",
+    "authoritative_final_receipt": "PASS; compact 3546, total 27439, no stop reasons",
+    "canonical_release_attempt_compact_and_units": "absent from paths visible on huklaban1",
+    "recording_voltage_bytes_read": 0,
+    "agglomeration_called": false,
+    "gpu_work_started": false
+  },
+  "frozen_execution_scope": {
+    "attempt_id": "candidate-g-v14-agglomerate-continuation-20261004a",
+    "service_name": "candidate-g-continuation-v1.service",
+    "run_root": "/home/huklaban5/DARTsort_experiment_scratch/candidate_g_continuations/candidate-g-fixed-event-w3-v14-agglomerate-continuation-v1",
+    "compact_output_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_continuation_run_20261004_v1_actual_h5",
+    "cache_envelope_half_open": [239969921, 250200079],
+    "logical_cache_read_limit_bytes": 17179869184,
+    "runtime_max_seconds": 3416,
+    "cpu_quota_percent": 400,
+    "memory_max_bytes": 68719476736,
+    "gpu_count": 1,
+    "retry_count": 0
+  },
+  "authorization": "GO for the exact sealed v6 packet, v6 release gate, reviewed unit templates, canonical release identities and one managed start under the frozen execution scope. No parameter, source, unit, path, resource or retry substitution is authorized. Preserve terminal and compact evidence; any failed start remains failed evidence and requires a new review before retry."
+}

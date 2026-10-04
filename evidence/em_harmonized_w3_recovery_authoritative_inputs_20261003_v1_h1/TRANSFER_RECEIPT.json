@@ -1,0 +1,34 @@
+{
+  "schema": "em-harmonized-w3-recovery-authoritative-input-transfer-v1",
+  "status": "COMPLETE_EXACT_SINGLE_FILE_TRANSFER",
+  "purpose": "Provide the exact prospectively frozen episode catalogue required for the saved-output-only harmonized W3 evaluator recovery on huklaban5.",
+  "source": {
+    "path": "/media/huklab/Data/NPX/Ryansorting/Luke/luke_imec1_medicine_reference_sweep_v2/stage3_q/episode_catalogue.csv",
+    "bytes": 105013,
+    "sha256": "46463cda1348c0e0b0c39ad22ae9c71bc46f7c7347797c1c10588944cfc52df1",
+    "preserved": true
+  },
+  "destination": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/em_harmonized_w3_recovery_authoritative_inputs_20261003_v1_h1/episode_catalogue.csv",
+    "bytes": 105013,
+    "sha256": "46463cda1348c0e0b0c39ad22ae9c71bc46f7c7347797c1c10588944cfc52df1",
+    "exists": true,
+    "exact_byte_identity_verified": true
+  },
+  "human_approval": {
+    "source": "direct user turn in HubPlanner chat",
+    "thread_id": "01a0f560-4882-73c3-90ae-52ca53cd2eea",
+    "turn_id": "01a1051a-a052-7180-b7dd-417d71562288",
+    "response": "yes, and why was this blocked",
+    "scope": "transfer the exact episode-catalogue CSV from H1 to H5's recovery directory",
+    "current_thread_confirmation": "Yes approved",
+    "current_thread_confirmation_after_specific_risk_and_paths": true
+  },
+  "scope": {
+    "files_transferred": 1,
+    "other_data_transferred": false,
+    "score_performed": false,
+    "launch_performed": false,
+    "prior_permission_block_preserved": true
+  }
+}

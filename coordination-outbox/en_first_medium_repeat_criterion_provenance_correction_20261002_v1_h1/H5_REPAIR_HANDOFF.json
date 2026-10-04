@@ -1,0 +1,16 @@
+{
+  "schema": "en-first-medium-h5-enabled-derivative-repair-handoff-v1",
+  "blocking_review": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_enabled_derivative_h1_exact_delta_review_20261002_v1_h1",
+    "manifest_sha256": "8db87c33506a89a6d19f2fb0659fe00973748c91f576b45637ea54e41cb53e9c",
+    "complete_sha256": "e2895af39e0aa2260cc529af1a621a2af4b0329d56032107be09c1c0aad7f34e",
+    "status_sha256": "46657b62e760ef25d82e1028e39e1ccad4b37a88442cf3c84f490277b346c50d",
+    "verdict": "BLOCK_REPAIRED_ARM_APPROVAL_NOT_CONSUMABLY_BOUND"
+  },
+  "repair_scope": [
+    "bind the exact appropriate H1 trained-entry review in repaired_B384 enabled config",
+    "exercise the actual repaired config validator before outer eligibility",
+    "make exact environment identity runtime-consumable or remove unused REQUIRED_* provenance variables"
+  ],
+  "install_or_start_before_repair_review": false
+}

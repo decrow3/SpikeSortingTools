@@ -1,0 +1,15 @@
+{
+  "schema": "first-medium-saved-output-qualification-h5-rereview-request-v2",
+  "requested_reviewer": "H5",
+  "execution_authorization": "NONE_REVIEW_PACKET_ONLY",
+  "requested_review": [
+    "verify production CLI cannot select fixture behavior and fixture paths/hashes are packet-owned",
+    "verify Phase 2 requires real Phase-1 receipts and compares actual Phase-2 REF before B loading",
+    "verify exact token HMAC context and persistent atomic single-use claim under sequential and concurrent replay",
+    "verify resource limits/preconditions precede input loading and controls and external launcher owns lifetime limits",
+    "verify exact ordered REF cohort rule, IDs, digest, and REF-only provenance",
+    "verify accepted measurement/spatial snapshots remain byte-identical and rerun all bounded fixtures"
+  ],
+  "forbidden": ["real phase execution", "B or score access", "voltage", "sorting", "RF", "sealed holdout"]
+}
+

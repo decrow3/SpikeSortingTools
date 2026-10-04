@@ -1,0 +1,11 @@
+{
+  "complete": true,
+  "packet": "en_a_four_unit_physical_signal_capture_relaunch_review_20261001_v1_h1",
+  "status": "conditional_go_for_install_preflight_and_exactly_one_start",
+  "manifest_sha256": "6bd9a9e1caa003a36959bd482d7bd8a3e18066273e55e3a828a6aa84fe43a609",
+  "candidate_manifest_sha256": "f897ff3b18d89d7cd55ea7500be1dfc4019f3f7b117e0cd2abd1edc3ffb5b6f3",
+  "installed": false,
+  "launched": false,
+  "recording_opened": false,
+  "validator_receipt_release_pending_post_install_checks": true
+}

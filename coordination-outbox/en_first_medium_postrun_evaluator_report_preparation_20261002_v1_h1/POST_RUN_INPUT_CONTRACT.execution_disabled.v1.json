@@ -1,0 +1,87 @@
+{
+  "schema": "first-medium-postrun-phase3-input-contract-v1",
+  "status": "PREPARED_EXECUTION_DISABLED_PENDING_PHASE3_IMPLEMENTATION_AND_REVIEW",
+  "execution_enabled": false,
+  "arm_order": ["REF384", "existing_corrected_B384", "repaired_B384", "REF384_repeat"],
+  "new_pair_completion_prerequisite": {
+    "arm_order": ["REF384_repeat", "repaired_B384"],
+    "pair_complete_required": true,
+    "attempt_complete_required": true,
+    "terminal_output_cap_status_required": true,
+    "scientific_outcomes_must_not_be_inspected_during_binding": true
+  },
+  "per_arm_required_files": [
+    "spike_times.npy",
+    "spike_clusters.npy",
+    "full_st.npy",
+    "kept_spikes.npy",
+    "spike_positions.npy",
+    "ops.npy",
+    "cluster_KSLabel.tsv"
+  ],
+  "per_arm_required_receipts": {
+    "saved_array_identity": "digest over exact bytes parsed by the accepted loader",
+    "qc_identity": "fresh amp_truncation/truncation_qc.npz request digest or explicit UNMEASURED absence",
+    "clock": {
+      "saved_frame": "global_acquisition_samples",
+      "crop_origin_global_frame": 208498882,
+      "global_frames_half_open": [208498882, 226498783],
+      "local_frames_half_open": [0, 17999901],
+      "exact_relation": "spike_times.npy == full_st.npy[kept_spikes,0] + 208498882"
+    },
+    "row_ancestry": [
+      "kept_spikes is Boolean or strictly increasing in-range integer indices",
+      "exported rows equal selected full_st rows in exact order",
+      "spike_clusters rows align with exported rows",
+      "amplitudes equal selected full_st column 2",
+      "spike_positions rows align through the same exported row lineage"
+    ],
+    "spatial": {
+      "columns": ["x_um", "physical_probe_depth_y_um"],
+      "reference_frame": "kilosort_probe_xy_feature_mass_unshifted_nblocks0",
+      "nblocks": 0,
+      "dshift": null,
+      "chanMap": "identity physical 0..383",
+      "geometry_float64_sha256_required": true,
+      "event_lineage_sha256_required": true,
+      "spatial_identity_sha256_required": true
+    }
+  },
+  "fixed_measurement": {
+    "reference_cohort_sha256": "3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0",
+    "reference_units": 61,
+    "correspondence_tolerance_frames": 15,
+    "minimum_correspondence_overlap": 0.1,
+    "bilateral_primary_retention": 0.5,
+    "bootstrap_replicates": 20000,
+    "bootstrap_seed": 20261002,
+    "minimum_effect": 0.05,
+    "pass_rule": "one-sided paired-REF-unit bootstrap lower95 > 0.05",
+    "delta": "R(repaired_B384) - R(existing_corrected_B384)",
+    "repeat_diagnostic": "R(REF384_repeat) on the same fixed REF cohort with exclusive matching; continuity/repeat proxy only"
+  },
+  "waveform": {
+    "method_frozen": true,
+    "prospective_arm_receipts_known_now": false,
+    "default_report_status": "UNMEASURED_PENDING_SEPARATE_REVIEWED_CAPTURE",
+    "must_not_be_inferred_from": ["Jaccard", "rate correlation", "unit counts", "short-interval counts"]
+  },
+  "resources": {
+    "job_manager_required": true,
+    "one_start": true,
+    "automatic_retry": false,
+    "fresh_output_namespace": true,
+    "cpu_threads_max": 4,
+    "gpu_count": 0,
+    "wall_seconds_max": 1800,
+    "peak_rss_bytes_max": 10737418240,
+    "persistent_output_bytes_max": 268435456
+  },
+  "hard_exclusions": [
+    "recording or voltage access in the saved-output evaluator",
+    "sorting, training, detection, clustering or refit",
+    "RF or sealed holdout access",
+    "threshold tuning or outcome-dependent cohort changes",
+    "biological identity or purity claims"
+  ]
+}

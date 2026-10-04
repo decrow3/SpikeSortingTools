@@ -1,0 +1,12 @@
+{
+  "schema": "h1-status-em-harmonized-w3-control-integrated-rereview-v2",
+  "status": "NO_GO_LIFECYCLE_REPAIR_REQUIRED",
+  "launch_authorized": false,
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/em_harmonized_w3_control_integrated_rereview_20261003_v2_h1",
+  "manifest_sha256": "6a28f5abbeb64f7ca7f36ce3f86045ed4e03dd161a0951cdb5bb33acbd3f91f9",
+  "complete_sha256": "91d01ae91dc985bf8cb2c06991210fb5e0cba3556360a810846d5a177c025c35",
+  "reviewed_h5_manifest_sha256": "b9e7b61d51ac25b3671b026ee6abe369d7cbb3d3b893f68444d4de8a61a8c191",
+  "resolved": ["frozen scorecard dependency closure", "score/seal worker component", "release resource gate"],
+  "blocking_repair": "Replace startup ordering with terminal-success-triggered scoring and validate success/failure/disconnection using managed dummy jobs.",
+  "scientific_or_cache_redesign_required": false
+}

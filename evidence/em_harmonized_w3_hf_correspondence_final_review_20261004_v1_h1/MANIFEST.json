@@ -1,0 +1,16 @@
+{
+  "schema": "em-harmonized-w3-hf-correspondence-h1-final-review-manifest-v1",
+  "members": [
+    {
+      "path": "FINAL_REVIEW.md",
+      "bytes": 8370,
+      "sha256": "61464a657167b373a7a4db85b8d245e7d659a36cb4257a54b095c73e3ac8a335"
+    },
+    {
+      "path": "VERDICT.json",
+      "bytes": 1693,
+      "sha256": "8d50325df4c51b10983f7eadc58c06f492b36d1be763ae04590ad421e90a5f6c"
+    }
+  ],
+  "member_count": 2
+}

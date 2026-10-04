@@ -1,0 +1,10 @@
+{
+  "completion_written_last": true,
+  "config_sha256": "689edcd28f2faa65edc662fca05d6577b8c78e79c9ea21264bb930df3ddb6b35",
+  "execution_enabled": false,
+  "manifest_sha256": "91bcf5ed0560bf5617815e4929a3d97f82b386f0040ef31dc6a61991a45fd36c",
+  "real_data_execution_performed": false,
+  "schema": "immutable-candidate-completion-v1",
+  "source_sha256": "aafc740beda0ef67fb3e62c37a44d56ba22351b7fa9b1962ed146c0a8b0935ee",
+  "status": "complete"
+}

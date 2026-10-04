@@ -1,0 +1,68 @@
+{
+  "schema": "waveform-launcher-h1-independent-audit-v1",
+  "overall_verdict": "TARGETED_LAUNCHER_REPAIR_REQUIRED",
+  "identities": {
+    "durable_h5_status_sha256": "526eb3676c76b85aecfffc7d67521bd9237119678b17e5e46a37f6e956deb59a",
+    "waveform_manifest_sha256": "50fa0589d6eb459b12a4ac8c5c997fa7b822a58d2b2c1f0cbd2de53f9c47f8a7",
+    "waveform_complete_sha256": "74bd795cee9a3e5c651210c2ed37e977e2476e75491a7e2a5e44ff87f0deb952",
+    "voltage_manifest_sha256": "141a699e7396b62f67329ebba6a62dda3387db148f9ec1e56f18bb1f9e6070c4",
+    "voltage_complete_sha256": "aaa5e9f5d372327baa612de5159f37afb11f2e9ed20e71223f00ede55bfcdfd6",
+    "clock_manifest_sha256": "39fd736b838b81db39b96265a4fd51de0ebf6e102e6fa1876fd56f4132c74af4",
+    "clock_complete_sha256": "74f63fe6880e50c5247f21df2ef16d3ea37f2e3206f60dce89495a69d493cd3d",
+    "launcher_manifest_sha256": "920c628d58af5a583d8a9ace35379ef6c10f83bacec07f8f138e018875a13fb9",
+    "launcher_complete_sha256": "af725225c267a62ad36f866c3490911b7e1ab85b8d199e403ad3a658d6a6f9f6"
+  },
+  "manifest_member_counts": {
+    "waveform": 29,
+    "voltage": 3,
+    "clock": 3,
+    "launcher": 25
+  },
+  "waveform_freeze": {
+    "verdict": "GO_METHOD_FREEZE_ONLY",
+    "execution_enabled": false,
+    "voltage_access_enabled": false,
+    "prospective_inputs_unbound": true,
+    "actual_h5_runtime_members": 89,
+    "actual_h5_runtime_bytes": 3333088832,
+    "runtime_differences": [],
+    "current_voltage_match": true,
+    "compact_preflight_voltage_bytes": 0
+  },
+  "full_voltage_receipt": {
+    "verdict": "PASS_EXACT_MATCH",
+    "bytes": 241309358592,
+    "sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+    "retry": false,
+    "stat_unchanged": true,
+    "binary_is_symlink": false
+  },
+  "clock_v5": {
+    "verdict": "GO_CLOCK_REPAIR_ONLY"
+  },
+  "launcher_accepted_structure": {
+    "distinct_entry_paths": true,
+    "intended_factor_difference": true,
+    "ref_first_b_second": true,
+    "between_arm_completion_state_only": true,
+    "shared_clock_and_row_ancestry_validator": true,
+    "fresh_namespace_checks": true,
+    "disabled_fail_closed": true,
+    "published_tests": "9 passed",
+    "published_validate_only": "PASS_NO_RECORDING_OR_VOLTAGE"
+  },
+  "independent_retry_fixture": {
+    "attempts": ["preflight", "preflight"],
+    "root_exists": false,
+    "second_call_reached_preflight": true
+  },
+  "blockers": {
+    "R1_DURABLE_ONE_START_AND_PRE_ROOT_FAILURE": true,
+    "R2_PERSISTENT_OUTPUT_CAP_UNENFORCED": true,
+    "R3_CURRENT_VOLTAGE_CONTINUITY_NOT_CHECKED_AT_PAIR_LAUNCH": true
+  },
+  "recording_or_voltage_opened_by_h1": false,
+  "scientific_execution_started": false,
+  "service_installed": false
+}
+

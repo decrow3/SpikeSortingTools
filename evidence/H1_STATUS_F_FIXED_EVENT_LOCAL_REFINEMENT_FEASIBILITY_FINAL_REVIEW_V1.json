@@ -1,0 +1,16 @@
+{
+  "schema": "h1-status-f-fixed-event-local-refinement-feasibility-final-review-v1",
+  "status": "CONFIRMED_NOT_FEASIBLE_FROM_SAVED_ARTIFACTS",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_local_refinement_feasibility_final_review_20261004_v1_h1",
+  "manifest_sha256": "6f151098ae3f72b9c96651ac1446508421da1a2b70a001798b48b18147ebc516",
+  "complete_sha256": "a95fd7f585534fc8397eff36a90c542425ed1c81baf075a1cf5e4b15715fcb0f",
+  "verdict_sha256": "999e7335246bf4fc4a13ac8c913dbbd187ba08cd0617f5dad11ad234c4453e88",
+  "reviewed_h5_manifest_sha256": "883b35835e30fbce346b337ba74526f95b8c45ef152f002b01f2f578a4e83fc2",
+  "w3_parent_rows_half_open": [18112500, 18603444],
+  "w3_event_count": 490944,
+  "minimum_regeneration_payload_bytes": 1004400640,
+  "final_label_substitution_allowed": false,
+  "silent_regeneration_allowed": false,
+  "scientific_execution_performed": false,
+  "automatic_progression": false
+}

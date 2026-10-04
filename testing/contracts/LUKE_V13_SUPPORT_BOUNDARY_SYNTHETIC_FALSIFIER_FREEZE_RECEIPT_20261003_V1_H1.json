@@ -1,0 +1,12 @@
+{
+  "schema": "luke-v13-support-boundary-synthetic-falsifier-freeze-receipt-v1",
+  "status": "FROZEN_BEFORE_OUTPUT",
+  "contract_path": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/contracts/luke_v13_support_boundary_synthetic_falsifier_20261003_v1_h1.json",
+  "contract_sha256": "cd273f00e85e8248a7df78d98a2d9c163dedc362adcb3dce28f1d1e0b9499a13",
+  "fixture_source_path": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/luke_v13_support_boundary_synthetic_falsifier.py",
+  "fixture_source_sha256": "3cdc617b88709a337a54374d54fef3c0a5dc1b69bffea818c138749aac2e69dd",
+  "output_absent_when_frozen": true,
+  "real_voltage_accessed": false,
+  "predictions_and_tolerances_frozen": true,
+  "automatic_advancement": false
+}

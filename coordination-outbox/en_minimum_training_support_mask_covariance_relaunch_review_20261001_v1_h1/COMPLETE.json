@@ -1,0 +1,11 @@
+{
+  "complete": true,
+  "packet": "en_minimum_training_support_mask_covariance_relaunch_review_20261001_v1_h1",
+  "status": "conditional_go_for_install_full_validation_and_exactly_one_start",
+  "manifest_sha256": "0e844ac1e9e49bbbe64e953b78c6d226dee644ff50987be453fdc650aafd0dd2",
+  "candidate_manifest_sha256": "99c6250b527bef1ef5e81c9b9f48e49e67e8d7236a088499cf4592fe9c5479c2",
+  "installed": false,
+  "launched": false,
+  "recording_opened": false,
+  "full_installed_path_validation_pending": true
+}

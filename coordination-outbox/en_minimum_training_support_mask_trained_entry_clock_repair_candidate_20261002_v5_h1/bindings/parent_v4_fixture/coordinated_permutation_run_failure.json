@@ -1,0 +1,32 @@
+{
+  "completion_written": false,
+  "contract_digest": "f2cd9284e47ac7dc49dac93bebd0dc88035ac9eceff23e7673fa01da37d9bb67",
+  "exception_message": "integer kept_spikes indices must be strictly increasing in native full-array order",
+  "exception_type": "ValueError",
+  "mask_read_count": 4,
+  "phase_at_failure": "learned_template_extraction",
+  "stage": "validate_and_inventory_saved_artifacts",
+  "status": "failed",
+  "whitening_audit": {
+    "computation_digest": "f2cd9284e47ac7dc49dac93bebd0dc88035ac9eceff23e7673fa01da37d9bb67",
+    "covariance_validation": {
+      "condition_number": 5.505211353302002,
+      "contract_digest": "f2cd9284e47ac7dc49dac93bebd0dc88035ac9eceff23e7673fa01da37d9bb67",
+      "covariance_sha256": "562a693af85b18d9c7017ee2b4b79ec1586ba75d45d39287cce89be6bf845ce7",
+      "finite": true,
+      "maximum_condition_number": 100000000.0,
+      "passed": true,
+      "rank": 4,
+      "reasons": [],
+      "shape": [
+        4,
+        4
+      ]
+    },
+    "sampled_batch_indices": [
+      0
+    ],
+    "whitening_finite": true,
+    "whitening_sha256": "27f1332dcd63f5c503677ba15a7027e761a7a304242858785947ee806ff32ece"
+  }
+}

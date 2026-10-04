@@ -1,0 +1,26 @@
+{
+  "schema": "spike-sorting-project-user-hold-status-v1",
+  "status": "PAUSED_BY_DIRECT_USER_HOLD",
+  "host": "huklaban1",
+  "recorded_date_local": "2026-10-04",
+  "timezone": "America/Los_Angeles",
+  "hold_instruction": "pause all development for a moment to get our bearings",
+  "active_scientific_or_candidate_g_processes": [],
+  "uninterruptible_io_wait_processes": [],
+  "managed_process_stop_action": "none required; no project scientific process was running",
+  "last_completed_artifact": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_continuation_production_preparation_v9_final_review_20261004_v1_h1",
+    "status": "NO_GO_RUNTIME_BUDGET_RESET_OMITS_COMPLETED_AND_FAILED_WORK",
+    "manifest_sha256": "7f2fa858cada3875b2e972330dc3bed5f5c5b56ea837a2719bf849e24b6991c6",
+    "complete_sha256": "4183de2ddfc23b2d3715fe9df6f90d024c4a433a3a6b57bdd2cdd5dbecfe6070",
+    "verdict_sha256": "74d84f5e89ed6698b38c57fb1ba3a04ce08f82bba5c75438b0f7723b6cc8205f"
+  },
+  "unfinished_work": [
+    "focused runtime-only rereview when a correction packet arrives",
+    "bounded H1 shared-mount diagnostic receipt; read-only observations were collected but not packaged",
+    "adjacent-window prototype bridge contract; drafting had not started"
+  ],
+  "scheduling_state": "no project follow-up automation or owned queue was created; nothing required disabling",
+  "publication_state": "no new shared publication after the completed v9 NO-GO review; this hold receipt is host-local only",
+  "resume_condition": "explicit user resume instruction"
+}

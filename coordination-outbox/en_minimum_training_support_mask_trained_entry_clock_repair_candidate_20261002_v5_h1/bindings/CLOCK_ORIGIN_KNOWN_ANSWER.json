@@ -1,0 +1,18 @@
+{
+  "B384": {
+    "all_rows_equal_crop_imin": true,
+    "correct_relation": "spike_times == full_st[kept_spikes,0] + crop.imin",
+    "observed_unique_offset_samples": [
+      208498882
+    ],
+    "rows": 1854340
+  },
+  "REF384": {
+    "all_rows_equal_crop_imin": true,
+    "correct_relation": "spike_times == full_st[kept_spikes,0] + crop.imin",
+    "observed_unique_offset_samples": [
+      208498882
+    ],
+    "rows": 1856371
+  }
+}

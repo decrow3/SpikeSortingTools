@@ -1,0 +1,9 @@
+{
+  "schema": "em-harmonized-w3-saved-output-recovery-h1-review-complete-v1",
+  "status": "COMPLETE_NO_GO_RESEAL_COMPLETE_LAST_ONLY",
+  "manifest_sha256": "bfdfb5279aafda86d349ba39916af81c82c87e8d5821bb5f8092bc3c6e3d76e0",
+  "reviewed_packet_manifest_sha256": "72f9f1bf719f91713015f2e6ac671f34c14998e6d26715caed6f37f34b636e0e",
+  "implementation_delta_pass": true,
+  "scoring_released": false,
+  "score_performed": false
+}

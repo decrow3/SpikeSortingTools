@@ -1,0 +1,10 @@
+{
+  "schema": "en-f-fixed-event-local-refinement-h1-final-review-complete-v1",
+  "status": "NOT_FEASIBLE_FROM_SAVED_ARTIFACTS",
+  "manifest_sha256": "6f151098ae3f72b9c96651ac1446508421da1a2b70a001798b48b18147ebc516",
+  "verdict_sha256": "999e7335246bf4fc4a13ac8c913dbbd187ba08cd0617f5dad11ad234c4453e88",
+  "reviewed_h5_manifest_sha256": "883b35835e30fbce346b337ba74526f95b8c45ef152f002b01f2f578a4e83fc2",
+  "reviewed_h5_complete_sha256": "4bfc48821284815b3b8ab0277baf333ef3fc42787fb323adc402f09a526d19e4",
+  "scientific_execution_performed": false,
+  "automatic_progression": false
+}

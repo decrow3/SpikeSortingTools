@@ -1,0 +1,22 @@
+H1 composition tests, 2026-10-02 UTC
+
+Command:
+  PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR=/tmp/en_qualification_packet_numba MPLCONFIGDIR=/tmp/en_qualification_packet_mpl PYTHONPATH=source pytest -q -p no:cacheprovider tests
+
+Result:
+  6 passed in 4.26s
+
+Covered:
+  - exact active source and bundled Kilosort dependency hashes
+  - accepted measurement matcher versus active spatial-superset matcher AST equivalence
+  - execution-disabled two-phase contract, resource bounds, lifecycle, and no repaired/repeat hash binding
+  - no CLI call to DeltaR/retention_difference and no repaired/repeat/waveform input path
+  - real composed CLI over synthetic saved-format REF arrays
+  - spatial/clock/QC/binding recomputation, REF self R=1, deterministic label permutation R=1
+  - exclusivity/no-double-credit, half-open cell boundaries, exact-stop rejection
+  - conditional REF support and provenance receipt
+  - same-namespace retry rejection with unchanged first COMPLETE
+  - Phase 2 fixture rejection while disabled
+
+No real data, scientific scalar, job, recording, voltage, sorter, waveform, RF,
+or sealed holdout was opened, computed, or run.

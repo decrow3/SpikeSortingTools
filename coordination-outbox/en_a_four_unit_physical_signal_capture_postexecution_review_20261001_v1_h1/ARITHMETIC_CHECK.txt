@@ -1,0 +1,17 @@
+Independent metadata-only recomputation:
+rows 40; unique representation/slot keys 40
+roles: short_pair 8, ordinary_event 8, q0_identity_control 4
+units: 271, 278, 445, 588
+two-representation input samples 41254
+duplicate first-pair input samples 1054
+logical bytes (41254 + 1054) * 384 * 2 = 32492544
+two-representation retained samples 5094
+retained bytes 5094 * 384 * 2 = 3912192
+per-archive retained samples 2547
+per-archive retained bytes 2547 * 384 * 2 = 1956096
+maximum abs(selection seconds_1 - frame_1/fs) = 0.0
+all 40 table ranges and retained lengths match the frozen half-open rules
+all stage metrics are finite
+all four q0 rows are exactly equal across representations for every non-representation CSV field
+
+No waveform archive or recording binary was opened.

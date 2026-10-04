@@ -1,0 +1,36 @@
+{
+  "schema": "em-harmonized-w3-control-h1-integrated-rereview-v2",
+  "status": "NO_GO_LIFECYCLE_REPAIR_REQUIRED",
+  "launch_authorized": false,
+  "reviewed_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/em_harmonized_w3_control_implementation_20261003_v2_h5",
+    "manifest_sha256": "b9e7b61d51ac25b3671b026ee6abe369d7cbb3d3b893f68444d4de8a61a8c191",
+    "complete_sha256": "6d78f1ac88cd2cdd55936fa77a557d376e408bfd5e6b02656a9f2322a8462b58",
+    "h1_request_sha256": "3ddde361e32634c2c13b8922dce15f23fae52bd7042399022798d3320a2067c6"
+  },
+  "v1_blockers": {
+    "frozen_scorecard_dependency_closure": "PASS",
+    "managed_score_worker_component": "PASS",
+    "release_resource_preflight": "PASS",
+    "end_to_end_completion_trigger": "FAIL"
+  },
+  "blocking_finding": {
+    "artifact": "launch/WORKFLOW_RELEASE_TEMPLATE.json",
+    "lines": [22, 35],
+    "reason": "After= and Requires= order startup but do not wait for a normal long-running sort service to terminate successfully; ExecCondition may fail before the terminal receipt exists and will not retry.",
+    "repair": "Use OnSuccess, a terminal-marker path unit, or a managed controller that waits for terminal success; retain independent sort validation and one-shot sealing.",
+    "required_fixture": "real managed dummy success/failure/disconnection lifecycle with zero retry"
+  },
+  "scientific_or_cache_change_required": false,
+  "actions": {
+    "sorts_started": 0,
+    "services_installed": 0,
+    "services_started": 0,
+    "gpu_work": false,
+    "scientific_scoring_runs": 0,
+    "raw_recording_bytes": 0,
+    "rf_or_holdout": 0,
+    "target_a": 0,
+    "long_or_full": 0
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "schema": "immutable-review-completion-v1",
+  "status": "complete",
+  "manifest_sha256": "59aea9f1acbc86bfb6491a6b66cb6c74423ddbba48496e8894f7f6211c802050",
+  "verdict": "EXECUTION_ACCEPTED_ZERO_REPRODUCED_ENDPOINT_NOT_DECISION_VALID_REPAIR_AND_MEASUREMENT_REDESIGN_REQUIRED",
+  "completion_written_last": true,
+  "identity_status": "UNRESOLVED",
+  "waveform_status": "UNMEASURED"
+}

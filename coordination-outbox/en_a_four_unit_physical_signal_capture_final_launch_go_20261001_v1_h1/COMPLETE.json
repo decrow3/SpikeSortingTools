@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "packet": "en_a_four_unit_physical_signal_capture_final_launch_go_20261001_v1_h1",
+  "status": "final_go_exact_receipt_copy_and_one_start",
+  "manifest_sha256": "8d98c8bdde3bff7ae693d9b3acb57f4b509b184247e12c1abf37e8747b8f9d32",
+  "receipt_sha256": "5268a41d4cae91cc030e8be782566d0d491d7a5e8443495820dba5b371b8d2f4",
+  "start_limit": 1,
+  "reviewer_started_service": false,
+  "reviewer_opened_recording": false
+}

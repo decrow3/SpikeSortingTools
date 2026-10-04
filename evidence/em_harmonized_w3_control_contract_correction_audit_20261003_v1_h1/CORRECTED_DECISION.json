@@ -1,0 +1,31 @@
+{
+  "schema": "em-harmonized-w3-control-contract-correction-v1",
+  "status": "ADDITIVE_CORRECTION_NO_PROGRESSION",
+  "preserved_original_result_sha256": "1e0295fca4b92459b18f92004962304f441e4807b0af576030215884ad660d60",
+  "preserved_original_final_review_manifest_sha256": "a96bfe0cf2586e2265e867b2c6d32dea244aa7df928a9ea89b4a15e72964fb61",
+  "primary": {
+    "contrast": "H_minus_F",
+    "point_delta_rho": 0.06599645095644802,
+    "ci95": [0.046296547965893387, 0.0962770414589578],
+    "classification": "INCONCLUSIVE",
+    "reason": "Interval is above zero but neither wholly within [-0.05,0.05] nor wholly above +0.05."
+  },
+  "intended_quality_guardrails": {
+    "comparator": "L_same_window",
+    "H_assigned_cluster_labels": 461,
+    "L_assigned_cluster_labels": 478,
+    "relative_H_minus_L": -0.03556485355648536,
+    "yield_guardrail_at_0.05": "PASS",
+    "negative_excursion_short_interval_at_0.01": "PASS",
+    "outside_mask_flat_short_interval_at_0.01": "PASS",
+    "catalogue_outside_remainder_short_interval_at_0.01": "PASS",
+    "overall": "PASS"
+  },
+  "correction": "The as-executed F whole-population yield gate was unintended and must not be used as the reason for non-advancement. Assigned and eligible counts are arm-local descriptive cluster-label populations, not lost neurons or biological damage.",
+  "rho_context": {"H": 0.7421635214982477, "L": 0.7525836443406859, "F": 0.6761670705417997},
+  "scoped_interpretation": "The observed continuity-proxy difference persisted in this run, with H near L and above F, but missed the frozen +0.05 criterion. No causal or across-run claim follows.",
+  "progression_supported": false,
+  "reason_no_progression": "The primary H-F result remains INCONCLUSIVE under the unchanged frozen rule.",
+  "rescore_performed": false,
+  "threshold_changed": false
+}

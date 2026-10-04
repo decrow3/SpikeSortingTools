@@ -1,0 +1,121 @@
+{
+  "schema": "first-medium-phase2-h1-postexecution-review-v1",
+  "producer": "H1",
+  "review_date": "2026-10-02 America/Los_Angeles",
+  "verdict": "PASS_PHASE2_POSTREVIEW_DESCRIPTIVE_ONLY",
+  "scientific_advancement_authorized": false,
+  "subjects": {
+    "enabled_activation": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase2_enabled_activation_20261003_v3_h5",
+      "manifest_sha256": "76b1036663721aa0d47728484faccf8656a5ebb3c3511d2beff7d36c12794a99",
+      "complete_sha256": "6e5722065655665d2c84519d8161b1438c2a30ddef0993b78cea500535999946",
+      "contract_sha256": "584383127aafc22e9bbad99213d876295bfa7ac41a90cd1669e8a65b713a6396",
+      "request_sha256": "8d7c6d3817256e3c653d6fc8de76b2c05bdaca3d7ee0fd33554de07f10313868"
+    },
+    "result": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase2_existing_b_20261003_v2_h5",
+      "manifest_sha256": "a71bfc0bb8ccbfb15ad0569576b19ed8f29ec1e98ed2ef1a75a4269d8f8e3f8e",
+      "complete_sha256": "ff6a545034bdf2824b36bd2fa508478c8ef9d75068f67566577e69c602d2fb35"
+    },
+    "service_receipt": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase2_service_receipt_20261003_v2_h5",
+      "manifest_sha256": "da3c8ce5da2f7c23a7b410426c658c45cfca5af0e032b962818c899581e005a0",
+      "complete_sha256": "152cb9a5dcc77e75b7377f5d9c557e1c9e3dc28d386583647173874dc5657c71"
+    }
+  },
+  "execution_review": {
+    "all_three_packet_manifests_and_members_verified": true,
+    "enabled_derivative_delta_within_h1_go": true,
+    "executed_source_matches_reviewed_eight_module_boundary": true,
+    "exact_contract_request_output_hmac_recomputed": true,
+    "persistent_claim_sha256": "47b9a380c8b0e9a8291ffd44373a5518ed9f65b0c5e75c1773f58f9cd865f9bf",
+    "claim_context_and_hmac_match": true,
+    "phase1_result_service_postreview_and_phase2_go_chain_revalidated": true,
+    "service_start_count": 1,
+    "service_restarts": 0,
+    "automatic_retry": false,
+    "initial_main_pid": 2227504,
+    "terminal_state_from_sealed_service_receipt": "inactive/dead; success; ExecMainStatus=0",
+    "ref_loaded_and_phase1_bound_before_b_in_executed_source": true,
+    "failure_output_present": false
+  },
+  "domain_and_counting_review": {
+    "ordered_arms": [
+      "REF384",
+      "existing_corrected_B384"
+    ],
+    "saved_clock": "global_acquisition_samples",
+    "crop_origin_global_frame": 208498882,
+    "local_frames_half_open": [
+      0,
+      17999901
+    ],
+    "sampling_frequency_hz": 29999.835983263598,
+    "validated_rows": {
+      "REF384": 1856371,
+      "existing_corrected_B384": 1854340
+    },
+    "depth_axis": "spike_positions[:,1], physical probe depth y in micrometers",
+    "cohort_units": 61,
+    "cohort_sha256": "3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0",
+    "matcher": "complete-sort correspondence; 15-frame tolerance; minimum overlap 0.1; bilateral primary retention 0.5; reciprocal one-to-one primary partner",
+    "event_credit": "greedy chronological exclusive one-to-one event pairs; candidate events cannot receive double credit",
+    "estimand": "equal-REF-unit mean retention; unmatched cohort units contribute zero",
+    "cell_semantics": "ten contiguous half-open 60-second diagnostic cells; pooled counts are diagnostic and are not the equal-unit R estimand"
+  },
+  "descriptive_result": {
+    "R_existing_B_equal_unit": 0.19038843741901643,
+    "matched_units": 16,
+    "reference_cohort_units": 61,
+    "cell_reference_events": 227895,
+    "cell_matched_reference_events": 26269,
+    "pooled_event_retention_not_R": 0.1152679962263323,
+    "conditional_support": {
+      "reference_support_union_fraction_full_cohort_time": 0.08256777470563884,
+      "candidate_support_union_fraction_full_cohort_time": 0.023807445148598592,
+      "common_time_fraction_full_cohort_time": 0.015919497393301237,
+      "supported_units": 0,
+      "supported_unit_fraction_full_cohort": 0.0,
+      "conditional_median_missingness_difference_pp": null
+    },
+    "DeltaR": {
+      "status": "UNAVAILABLE",
+      "value": null,
+      "reason": "no repaired arm is bound"
+    },
+    "advancement_verdict": null,
+    "candidate_ranked_output_emitted": false
+  },
+  "resource_review": {
+    "wall_seconds": 8.15514675527811,
+    "wall_seconds_max": 1800,
+    "peak_rss_kib": 643200,
+    "peak_rss_bytes_max": 10737418240,
+    "cpu_affinity": [0, 1, 2, 3],
+    "cpu_threads_max": 4,
+    "gpu_count": 0,
+    "gpu_visibility_disabled": true,
+    "rlimit_as_bytes": 10737418240,
+    "persistent_output_bytes": 22737,
+    "persistent_output_bytes_max": 268435456
+  },
+  "interpretation": {
+    "can_establish": "For the fixed 61-unit REF cohort and exact saved REF384/existing_corrected_B384 outputs, the one-shot descriptive continuity calculation completed as specified and the reported R, cell counts, and conditional-support summaries reproduce from sealed authoritative outputs.",
+    "cannot_establish": "R is a continuity proxy, not biological identity or purity. This result provides no repaired-arm comparison, DeltaR, efficacy, repeatability, tuning decision, advancement verdict, RF result, or holdout evidence.",
+    "prospective_pair_action": "none; do not reinterpret, tune, or score the prospective pair from this descriptive result"
+  },
+  "implementation_checks": {
+    "done": [
+      "verified every enabled-activation, result, and service-receipt manifest member and exact COMPLETE binding",
+      "traced and independently compared the executed source/effective contract/request/service against the reviewed repair and H1 GO",
+      "recomputed exact HMAC, claim identity, source boundary, Phase1/review receipt chain, cohort digest, R, cells, pooled counts, and support fractions",
+      "checked arm order, REF-before-B source order, clocks, depth axis, matcher/counting semantics, resource envelope, output cap, one start, no retry, and terminal receipt"
+    ],
+    "not_done": [
+      "H1 did not reopen H5-local REF/B arrays or query H5 systemd live; the saved input identities and terminal inactive/dead PID state are established from sealed runtime/service receipts",
+      "no repaired/repeat arm, DeltaR, RF, holdout, waveform, voltage, sorting, training, tuning, efficacy, or advancement evaluation"
+    ],
+    "can_establish": "The exact one-shot existing-B descriptive Phase2 result is implementation-consistent within its fixed saved-output scope.",
+    "cannot_establish": "Biological identity/purity, repaired-preprocessing benefit, prospective-pair outcome, longitudinal replication, or any advancement decision."
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "schema": "en-a-four-unit-capture-approval-readiness-decision-v1-complete",
+  "status": "complete_ready_to_request_explicit_approval_not_capture_authorization",
+  "manifest": "MANIFEST.sha256",
+  "manifest_sha256": "634d341cdff8121c0434bb4649a1560c715097e7aa1233b3a0ee261778fb2b95",
+  "capture_authorized": false,
+  "voltage_read": false,
+  "recording_binary_opened": false
+}
