@@ -1,0 +1,54 @@
+{
+  "observed_utc": "2026-10-02T04:59:23Z",
+  "status": "preflight_passed_start_denied_before_execution",
+  "approval_packet_manifest_sha256": "7df14bb6d8fdbf47b50538879cd17337b4003d42366cd9dcd35ae83274e5f8ca",
+  "live_go_receipt_sha256": "9774defa6d400aa53112fb915d311d56883b6fe5476a7baefbd78caa4aa0e6d0",
+  "live_preflight_sha256": "15bafc3fef26344f93c42abc8b593c7704ef53269182e5e4ae343ed70977c6a0",
+  "bindings": {
+    "config": "f04d63308e1b7b1c77a11b0ab3348412f308287e4d13a5d4ea7f228bc59e2ffd",
+    "service": "f45ea87b9a3fdae201a314e1b0f47ef6530d0d59d39480be0c57007c6697859f",
+    "installed_service": "f45ea87b9a3fdae201a314e1b0f47ef6530d0d59d39480be0c57007c6697859f",
+    "capture_source": "e33bc8346b2acda30cd2032c7b6a00a004f79f7416a1198c6bcd718f3b0c74fd",
+    "validator": "554f91a90090a984398dccde6886445ae6afe339aad9682d76c863da466b2786",
+    "governing_contract_manifest": "8771e60872a497bf505418789a44b249e261fe2bb1acc253f046d122f0ef56b2",
+    "launch_gate_manifest": "bc79199406caaf18b4d468c932ff84c1e9b19d8e3fbb2eea08e2cc58f2c308c0",
+    "launch_argv": "5c71d82cb65af5e04e3b81b56b9a1e902b1ede6ee97730b5e7e3a2c5f4ba596d"
+  },
+  "content_gate_validate_only": {
+    "status": "validated",
+    "child_invocations": 0,
+    "recording_open_attempts": 0,
+    "recording_reads": 0,
+    "recording_bytes_read": 0
+  },
+  "capture_preflight": {
+    "status": "pass_execution_disabled",
+    "recording_open_attempts": 0,
+    "recording_reads": 0,
+    "recording_bytes_read": 0,
+    "planned_read_calls": 41,
+    "planned_logical_bytes": 32492544,
+    "planned_retained_bytes": 3912192
+  },
+  "unit_after_denial": {
+    "name": "en_a_four_unit_physical_signal_capture_approved_v2.service",
+    "load_state": "loaded",
+    "unit_file_state": "static",
+    "active_state": "inactive",
+    "sub_state": "dead",
+    "exec_main_pid": 0,
+    "restarts": 0,
+    "start_timestamp": "n/a",
+    "exit_timestamp": "n/a"
+  },
+  "side_effects_after_denial": {
+    "production_output_absent": true,
+    "launch_log_absent": true,
+    "counters_absent": true,
+    "failure_receipt_absent": true,
+    "completion_receipt_absent": true,
+    "recording_open_attempts": 0,
+    "recording_reads": 0,
+    "recording_bytes_read": 0
+  }
+}

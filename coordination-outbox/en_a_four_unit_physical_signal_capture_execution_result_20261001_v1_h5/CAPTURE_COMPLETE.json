@@ -1,0 +1,9 @@
+{
+  "counters": {
+    "logical_bytes": 32492544,
+    "read_calls": 41,
+    "retained_bytes": 3912192
+  },
+  "schema": "en-a-four-unit-physical-signal-capture-v1",
+  "status": "complete"
+}

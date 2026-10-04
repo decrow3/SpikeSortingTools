@@ -1,0 +1,16 @@
+{
+  "complete": true,
+  "packet": "en_minimum_training_support_mask_covariance_smoke_result_20261002_v2_h5",
+  "status": "explicit_approval_relay_dispatch_denied_before_execution",
+  "manifest_sha256": "51e5203054bb6b03d2c7671a712e199daf6703cf5ac8095d022036e0e1d907c6",
+  "execution_attempts": 0,
+  "normal_tool_requests_this_dispatch": 1,
+  "normal_tool_denials_this_dispatch": 1,
+  "recording_content_opened": false,
+  "read_bytes": 0,
+  "real_service_installed": false,
+  "real_service_started": false,
+  "run_root_created": false,
+  "reservation_created": false,
+  "retry_performed_after_denial": false
+}

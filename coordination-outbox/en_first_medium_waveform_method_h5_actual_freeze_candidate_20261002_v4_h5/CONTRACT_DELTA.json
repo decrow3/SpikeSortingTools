@@ -1,0 +1,197 @@
+{
+  "allowed_change_scope": [
+    "execution-disabled status/enablement wording",
+    "actual-H5 independent runtime verifier and receipt binding",
+    "current full-voltage-hash packet and compact future lstat preflight binding",
+    "resource receipt/accounting descriptions for those two repairs"
+  ],
+  "change_count": 30,
+  "changes": [
+    {
+      "new": "This H5-only freeze remains non-executable. A separately reviewed derivative must bind all prospective arm/anchor inputs, retain every accepted scientific field, verify this actual H5 runtime and current voltage receipt, and set both gates true.",
+      "old": "A fresh reviewed derivative must replace every PROSPECTIVE_BINDING_REQUIRED value with an observed hash or identity from the execution host, retain every algorithmic field byte-for-byte, and set both gates true. This packet cannot launch.",
+      "path": "enablement_rule"
+    },
+    {
+      "new": "receipts/RUNTIME_VERIFICATION_RECEIPT.json",
+      "old": "<ABSENT>",
+      "path": "resources_and_stop_conditions.runtime_closure_preflight.independent_receipt"
+    },
+    {
+      "new": "efadd4f68f381fe481aff83bf7d98b8daadcea16f9f8c085be84442345265a18",
+      "old": "<ABSENT>",
+      "path": "resources_and_stop_conditions.runtime_closure_preflight.independent_receipt_sha256"
+    },
+    {
+      "new": "actual H5 exact runtime only",
+      "old": "<ABSENT>",
+      "path": "resources_and_stop_conditions.runtime_closure_preflight.scope"
+    },
+    {
+      "new": "source/independent_h5_runtime_verifier.py",
+      "old": "<ABSENT>",
+      "path": "resources_and_stop_conditions.runtime_closure_preflight.verification_implementation"
+    },
+    {
+      "new": "27eef195d3951632401a0ffd074a4a8e991f8e217603150ba7d152f2d44239e8",
+      "old": "<ABSENT>",
+      "path": "resources_and_stop_conditions.runtime_closure_preflight.verification_implementation_sha256"
+    },
+    {
+      "new": "os.lstat only; no symlink following; exact current-hash final stat tuple",
+      "old": "os.stat only",
+      "path": "resources_and_stop_conditions.voltage_identity_preflight.binary_operation"
+    },
+    {
+      "new": [
+        "historic MANIFEST.json, COMPLETE.json, and Q0_FULL_HASH_RECEIPT.json",
+        "current MANIFEST.sha256, COMPLETE.json, CURRENT_VOLTAGE_FULL_HASH_RECEIPT.json, and every current manifest member",
+        "recording rescue_recording_manifest.json"
+      ],
+      "old": [
+        "prior MANIFEST.json",
+        "prior COMPLETE.json",
+        "prior Q0_FULL_HASH_RECEIPT.json",
+        "recording rescue_recording_manifest.json"
+      ],
+      "path": "resources_and_stop_conditions.voltage_identity_preflight.compact_files_hashed"
+    },
+    {
+      "new": 0,
+      "old": "<ABSENT>",
+      "path": "resources_and_stop_conditions.voltage_identity_preflight.compact_future_preflight_voltage_bytes_read"
+    },
+    {
+      "new": "<ABSENT>",
+      "old": false,
+      "path": "resources_and_stop_conditions.voltage_identity_preflight.fresh_full_binary_hash"
+    },
+    {
+      "new": "<ABSENT>",
+      "old": 0,
+      "path": "resources_and_stop_conditions.voltage_identity_preflight.full_binary_bytes_read"
+    },
+    {
+      "new": 241309358592,
+      "old": "<ABSENT>",
+      "path": "resources_and_stop_conditions.voltage_identity_preflight.separate_current_full_hash_bytes_read"
+    },
+    {
+      "new": true,
+      "old": "<ABSENT>",
+      "path": "resources_and_stop_conditions.voltage_identity_preflight.separate_current_full_hash_completed"
+    },
+    {
+      "new": "FROZEN_EXECUTION_DISABLED_PENDING_H1_REVIEW_ACTUAL_H5_ONLY",
+      "old": "FROZEN_EXECUTION_DISABLED_PENDING_H1_REREVIEW",
+      "path": "status"
+    },
+    {
+      "new": {
+        "buffer_bytes": 16777216,
+        "cpu_seconds": 859.6472602900001,
+        "final_lstat": {
+          "st_ctime_ns": 1788254629465850600,
+          "st_dev": 93,
+          "st_ino": 8167886,
+          "st_mode": 33261,
+          "st_mtime_ns": 1788254629465850600,
+          "st_size": 241309358592
+        },
+        "max_rss_kib": 47840,
+        "packet_complete_sha256": "aaa5e9f5d372327baa612de5159f37afb11f2e9ed20e71223f00ede55bfcdfd6",
+        "packet_manifest_file": "MANIFEST.sha256",
+        "packet_manifest_sha256": "141a699e7396b62f67329ebba6a62dda3387db148f9ec1e56f18bb1f9e6070c4",
+        "packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_voltage_current_full_hash_20261002_v1_h5",
+        "read_calls_including_final_eof": 14385,
+        "receipt_file": "CURRENT_VOLTAGE_FULL_HASH_RECEIPT.json",
+        "receipt_schema": "current-voltage-full-hash-receipt-v1",
+        "receipt_sha256": "47d4eafaa7a6fbf79a5a973caa0ba4cf7f0a404c19ba243372cf5d70c27e9614",
+        "verification_source_sha256": "97c83ab93993bde6010792224a5e119078d1173e436f993a69e88990449bf8ea",
+        "verified_bytes": 241309358592,
+        "verified_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+        "wall_seconds": 2185.8730681957677
+      },
+      "old": "<ABSENT>",
+      "path": "voltage_identity.current_full_hash_receipt"
+    },
+    {
+      "new": 0,
+      "old": "<ABSENT>",
+      "path": "voltage_identity.preflight.compact_future_preflight_voltage_bytes_read"
+    },
+    {
+      "new": 241309358592,
+      "old": "<ABSENT>",
+      "path": "voltage_identity.preflight.current_full_binary_bytes_read"
+    },
+    {
+      "new": "SEPARATELY_COMPLETED_AND_BOUND",
+      "old": "<ABSENT>",
+      "path": "voltage_identity.preflight.current_full_binary_hash"
+    },
+    {
+      "new": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+      "old": "<ABSENT>",
+      "path": "voltage_identity.preflight.current_full_binary_sha256"
+    },
+    {
+      "new": "<ABSENT>",
+      "old": "FORBIDDEN",
+      "path": "voltage_identity.preflight.fresh_full_binary_hash"
+    },
+    {
+      "new": "The current full read exactly reproduces the historic expected SHA-256 and size; future compact preflight binds that receipt and its exact final lstat tuple.",
+      "old": "The binary content SHA-256 is inherited only from the bound reviewed full-hash receipt; current-run content access is restricted to sampled endpoint segments and cannot independently re-establish the full-file digest.",
+      "path": "voltage_identity.preflight.identity_claim"
+    },
+    {
+      "new": "4eb636749f1b980ae6d01df9775013ae44c3391e68ff94b751a39bf0ed0d6606",
+      "old": "8243bd8391bad9d5f72562d17fb4d3f5c2050b08908d6b8c6179ec6971bf31b4",
+      "path": "voltage_identity.preflight.implementation_sha256"
+    },
+    {
+      "new": "Verify both historic and current full-hash packets and every current manifest member; use os.lstat with no symlink following; require the exact regular-file stat tuple captured after the current hash; hash only compact receipts and the recording manifest.",
+      "old": "Verify the immutable prior receipt packet and its internal MANIFEST/COMPLETE linkage; hash only those compact receipt files and the compact recording manifest; stat but never open or hash the 241-GB voltage binary. Require exact path, regular-file type, and size. Record the initial stat tuple and require exact equality after the final bounded segment read.",
+      "path": "voltage_identity.preflight.rule"
+    },
+    {
+      "new": "<ABSENT>",
+      "old": 0,
+      "path": "voltage_identity.preflight.voltage_bytes_read"
+    },
+    {
+      "new": "actual H5 executable runtime only; exact relocatable-path byte identity; no general cross-host portability",
+      "old": "<ABSENT>",
+      "path": "waveform_extraction.preprocessing.executable_runtime_closure.deployment_scope"
+    },
+    {
+      "new": "receipts/RUNTIME_VERIFICATION_RECEIPT.json",
+      "old": "<ABSENT>",
+      "path": "waveform_extraction.preprocessing.executable_runtime_closure.independent_verifier_receipt"
+    },
+    {
+      "new": "efadd4f68f381fe481aff83bf7d98b8daadcea16f9f8c085be84442345265a18",
+      "old": "<ABSENT>",
+      "path": "waveform_extraction.preprocessing.executable_runtime_closure.independent_verifier_receipt_sha256"
+    },
+    {
+      "new": "Within the actual H5 deployment, paths are diagnostic only and may relocate only when the exact role/basename/size/SHA-256 multiset, platform/Python/backend fields, numerical probe, member count/bytes, and aggregate all match. A nonmatching reviewer host is the required negative control, not a portability failure.",
+      "old": "Resolved paths are diagnostic only. Relocation is accepted if and only if the exact multiset of (role, basename, byte size, SHA-256), platform fields, Python fields, torch build/backend fields, probe-output SHA-256, member count/bytes, and aggregate digest all match. Any added, missing, or changed executable object fails before voltage access.",
+      "path": "waveform_extraction.preprocessing.executable_runtime_closure.portable_rule"
+    },
+    {
+      "new": "source/independent_h5_runtime_verifier.py",
+      "old": "source/runtime_closure.py",
+      "path": "waveform_extraction.preprocessing.executable_runtime_closure.verification_implementation"
+    },
+    {
+      "new": "27eef195d3951632401a0ffd074a4a8e991f8e217603150ba7d152f2d44239e8",
+      "old": "0a433d5b808964565774c141d58dbcb3be585dc119cb28ec223e4ab5847675f6",
+      "path": "waveform_extraction.preprocessing.executable_runtime_closure.verification_implementation_sha256"
+    }
+  ],
+  "new_contract_sha256": "e651326ca1ecdd3f5dc59d0dc76c69632d3de954a28743eb4445debb38583a09",
+  "old_contract_sha256": "f48499733df2d9d4f84553662a24a4c0850b3d56f6b035b4a9a49fe37056d842",
+  "schema": "physical-waveform-evidence-v4-to-v5-delta-v1"
+}

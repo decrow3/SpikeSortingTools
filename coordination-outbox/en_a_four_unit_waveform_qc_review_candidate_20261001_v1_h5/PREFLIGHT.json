@@ -1,0 +1,15 @@
+{
+  "status": "review_pending_execution_disabled",
+  "observed_output": {
+    "outcome_archives_opened": 0,
+    "metadata": {"selection_slots": 20, "geometry_shape": [384, 2], "unit_channel_identities": 4}
+  },
+  "config_sha256": "d3290efd1425f969367aaf2d3e36e7cd0065b614241439b56f6441accbe8b138",
+  "source_sha256": "6c715ac4d0324cb2fa6125d7350ad667b584aed5753ffd9931b2f12252c0db83",
+  "test_sha256": "77bec982197a27ab2c9eb9eac0beb95be0288b43f8b13bed347b421ee0d2c3e7",
+  "synthetic_tests": "6 passed",
+  "planned_output_absent": true,
+  "recording_opened": false,
+  "outcome_archive_opened": false,
+  "service_installed_or_started": false
+}

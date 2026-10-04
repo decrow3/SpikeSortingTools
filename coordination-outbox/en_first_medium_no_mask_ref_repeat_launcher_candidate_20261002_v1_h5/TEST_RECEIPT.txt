@@ -1,0 +1,28 @@
+H5 no-mask REF-repeat heterogeneous launcher candidate, 2026-10-02 PDT
+
+Focused suite
+  command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=source pytest -q -p no:cacheprovider tests/test_pair_launcher.py
+  result: 9 passed in 0.03s
+
+Covered
+  - compact source/config/contract validation without recording access
+  - execution-disabled rejection before namespace creation or arm runners
+  - fixed REF384_repeat then repaired_B384 order
+  - only status and COMPLETE identity inspected between arms
+  - REF failure stops before B and preserves stage failure
+  - B failure preserves REF completion identity and omits pair COMPLETE
+  - existing namespace rejection before runners
+  - swapped order and source mutation rejection
+  - persistent managed-service marker requirement
+  - actual frozen packet binds distinct no-mask REF and support-aware B paths
+  - exact shared global/crop output-clock contract on both arms
+
+Actual frozen contract validate-only
+  contract sha256: 2feeb8b36ebba5c5ef23dc51ca0c9a9abfce1c7a853aa7785dcefe6136e416f5
+  result: validated
+  execution_enabled: false
+  recording_or_voltage_opened: false
+
+Not performed
+  recording or voltage open/read; sort; training; detection; waveform capture;
+  QC/evaluator traversal; RF/holdout access; service install/start.

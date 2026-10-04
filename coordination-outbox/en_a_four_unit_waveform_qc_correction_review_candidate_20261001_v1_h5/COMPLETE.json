@@ -1,0 +1,12 @@
+{
+  "complete": true,
+  "packet": "en_a_four_unit_waveform_qc_correction_review_candidate_20261001_v1_h5",
+  "status": "independent_h1_review_requested_execution_disabled",
+  "created_utc": "2026-10-02T06:51:07Z",
+  "manifest_sha256": "ed1fbb332981b9c4b248dde1d89ae2fa93f7fb685edbe64c92d7963b72e9b57e",
+  "retained_waveform_archives_opened": false,
+  "recording_opened": false,
+  "real_qc_execution_started": false,
+  "historical_fail_preserved": true,
+  "independent_h1_review_requested": true
+}

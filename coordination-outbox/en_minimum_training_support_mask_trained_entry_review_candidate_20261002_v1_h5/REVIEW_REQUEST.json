@@ -1,0 +1,20 @@
+{
+  "schema": "en-minimum-training-support-mask-trained-h1-review-request-v1",
+  "status": "execution_disabled_independent_review_requested",
+  "reviewer": "independent_H1",
+  "requested_checks": [
+    "verify the exact recursive delta against the bound reviewed smoke base",
+    "verify missing required keys fail before any bound data/source hash or open",
+    "verify the unchanged native consumer hook is reused and no smoke bank is injected",
+    "verify phase labels cover covariance, PCA/template learning, universal detection/features, and learned extraction",
+    "verify Wall3 and dependent mapping snapshot timing and ancestry",
+    "verify failure receipts preserve stage/evidence and completion is written last only after the full artifact inventory",
+    "verify native-data prerequisites and medium resource estimate before any later GO"
+  ],
+  "execution_authorized_by_packet": false,
+  "recording_or_voltage_accessed": false,
+  "sort_training_detection_launched": false,
+  "rf_or_holdout_accessed": false,
+  "corrected_waveform_qc_retry_parked": true,
+  "preserved_qc_failure_manifest_sha256": "34a2b053f7c368a83400df607d1c418c98bf4a2bf8a06f997d2fa6470b7d2d15"
+}

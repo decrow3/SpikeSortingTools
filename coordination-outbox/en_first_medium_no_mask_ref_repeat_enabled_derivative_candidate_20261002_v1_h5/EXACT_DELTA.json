@@ -1,0 +1,23 @@
+{
+  "schema": "luke-enabled-derivative-compact-delta-v1",
+  "base_manifest_sha256": "5b3b780e6ebc7a7d74f20bbea9505719bb8cccc4498249693672b6e654dd25c4",
+  "base_complete_sha256": "6fbc0064302b6794b531f720c8cee1816d9eff4989a14364ad8cd5f64266ae08",
+  "base_contract_sha256": "712ec10c342325187e6049dee4c022ce77daa9e512f7d2061d0e7714c9e9cf43",
+  "h1_activation_review_manifest_sha256": "d815d0eae6f36aebb3c7ad8e41a635127bce43e535bbd3612e54183475ff5709",
+  "h1_activation_review_complete_sha256": "c2b1301b9a2cf2d349c4dd8915c3c2d90b5174971fb7f290832f8219023d87ae",
+  "hubplanner_decision_sha256": "92c37aeae06ce59887a072fab67419b8560ad253894f4ce3252d31c30d3c8170",
+  "allowed_changes": [
+    "contract and both arm execution_enabled flags false to true",
+    "status strings from disabled-review state to enabled-candidate pending-H1-review state",
+    "separate H1 activation review and HubPlanner decision provenance bindings",
+    "relocated packet, contract, config, service, and environment references",
+    "derived config, preflight, service, environment, and contract hashes"
+  ],
+  "phase3_machine_status_token": "GO_PROVENANCE_REPAIR_DELTA",
+  "old_launcher_review_preserved_separately": true,
+  "activation_review_preserved_separately": true,
+  "scientific_delta": false,
+  "run_namespace_changed": false,
+  "resource_bounds_changed": false,
+  "service_installed_or_started": false
+}

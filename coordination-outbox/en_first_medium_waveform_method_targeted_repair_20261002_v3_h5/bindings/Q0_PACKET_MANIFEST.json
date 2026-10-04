@@ -1,0 +1,31 @@
+{
+  "arm_a_status": "awaiting_exact_am3_payload",
+  "contains_voltage": false,
+  "files": {
+    "ARM_B_CONTRACT.json": {
+      "bytes": 856,
+      "sha256": "79b351beb89f05e6d3e4b05803ca5aee3b6dd9ca6f7ff29e57cc5416e97c8066"
+    },
+    "ARM_B_SMOKE.json": {
+      "bytes": 30577,
+      "sha256": "ca708d7d2aed94aa5e90749b4197f4cd5da4ae90c2cce299a1abeb860354b336"
+    },
+    "PREFLIGHT.json": {
+      "bytes": 4257,
+      "sha256": "64fa7d0c60f37ec0ed11996783bb8b9d1f1c6774c0ecea50c1de9ec06eb84281"
+    },
+    "Q0_FULL_HASH_RECEIPT.json": {
+      "bytes": 664,
+      "sha256": "0bdeec713c85490599a67b614386ccbc34577c96865a577b04f882f640281d19"
+    },
+    "README.md": {
+      "bytes": 974,
+      "sha256": "1aa1eddde4bf678de2228f56dbeed73bfc6f9de689b35cdfbfb160b3f31d86b8"
+    }
+  },
+  "full_arm_b_status": "in_progress",
+  "outer_holdout_accessed": false,
+  "rf_run": false,
+  "schema_version": "en-preflight-smoke-packet-v1",
+  "status": "complete_interim"
+}

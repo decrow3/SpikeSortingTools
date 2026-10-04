@@ -1,0 +1,15 @@
+{
+  "schema": "luke-durable-coordination-h5-pair-producer-consumer-interface-trace-v1",
+  "item": "H5-PAIR-PRODUCER-CONSUMER-INTERFACE-TRACE",
+  "state": "COMPLETE_INTERFACE_FINDING",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_pair_producer_consumer_interface_trace_20261002_v1_h5",
+  "manifest_sha256": "9923b6016d1154c231e7db7f0a16aa3bfa8d8d4666473e1c8fd5b28d86e08e75",
+  "complete_sha256": "3772f99c5ad25a5b62e08c683b19fde6ff4c7cd20a33143a42bca614495d7997",
+  "finding": "producer exposes exact two arm states, deterministic arm-specific curated paths, and complete native inventories; no arm/pair COMPLETE directly hashes either inventory receipt",
+  "ref_curated_location": "<planned_pair_root>/REF384_repeat/sorter_output",
+  "repaired_curated_location": "<reviewed_config.trained.run_root>/native_results",
+  "consumer_requirement": "bind deterministic inventory receipt hashes and exact resolved paths; verify every consumed file; reject swaps, escapes, symlinks, and same-basename substitutes",
+  "activation_eligible": false,
+  "real_data_or_outcomes_read": false,
+  "voltage_read": false
+}

@@ -1,0 +1,9 @@
+{
+  "schema": "en-first-medium-trained-path-implementation-note-complete-v1",
+  "status": "complete_execution_disabled",
+  "packet": "en_first_medium_trained_path_implementation_note_20261001_v1_h5",
+  "manifest_sha256": "d7a18159803d79b35341f93ce9098b593203bfdb82ee742177f9e2379024de79",
+  "recording_or_voltage_accessed": false,
+  "data_job_launched": false,
+  "review_requested": true
+}

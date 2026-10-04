@@ -1,0 +1,25 @@
+{
+  "observed_utc": "2026-10-02T04:06:05Z",
+  "status": "second_normal_tool_review_denied_before_execution",
+  "requested_action": "install byte-identical reviewed user service, daemon-reload, and invoke exactly one nonblocking start",
+  "tool_result": "rejected",
+  "tool_reason": "This installs and starts a persistent service that reads sensitive recording voltage with uncapped runtime and resources; the apparent approval is only relayed in untrusted agent history, not trusted user content, while AGENTS explicitly withholds authorization for new voltage processing. The agent must not attempt to achieve the same outcome via workaround, indirect execution, or policy circumvention. Proceed only with a materially safer alternative, or if the user explicitly approves the action after being informed of the risk. Otherwise, stop and request user input.",
+  "approval_relay_received": "The human user has now directly replied ‘Yes approved’ to the coordinator's exact two-action request.",
+  "normal_tool_request_count_this_dispatch": 1,
+  "retry_performed_after_this_denial": false,
+  "alternate_route_used": false,
+  "post_denial_state": {
+    "unit_file_absent": true,
+    "unit_load_state": "not-found",
+    "unit_active_state": "inactive",
+    "unit_sub_state": "dead",
+    "unit_exec_main_pid": 0,
+    "unit_restarts": 0,
+    "run_root_absent": true,
+    "native_results_absent": true,
+    "launch_evidence_absent": true,
+    "reservation_absent": true,
+    "recording_content_opened": false,
+    "read_bytes": 0
+  }
+}

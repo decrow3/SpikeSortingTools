@@ -1,0 +1,83 @@
+{
+  "schema": "en-a-axis-unit-support-pair-ledger-v1",
+  "status": "frozen_before_ledger_outcome_inspection",
+  "source_sha256": "4c7dff9c835f1f55797e56e52eb1fdf2500f38c54b50d5c498a927f358739bcf",
+  "sampling_frequency_hz": 29999.835983263598,
+  "num_samples": 314204894,
+  "chunk_size": 1000000,
+  "field": {
+    "field_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_am3_imec0_field_request_20260929_v1/payload/luke0804_imec0_two_layer_motion.npz",
+    "field_sha256": "4c769125020aad3263bf6eaa1889cdaa7eccbf19dcf0aa3a068b185221fadb9f",
+    "time_key": "time_s",
+    "displacement_key": "displacement_um",
+    "rigid_projection": "median across depth"
+  },
+  "field_axis_correction": {
+    "handoff_expected_sha256": "547ff39d1c91d819b758246c701603d868bfd4d50bd6b791e3d5b7140c01c71d",
+    "status": "rejected_for_this_analysis",
+    "reason": "That digest is the B-axis field. The reviewed A-axis producer/config and required A/REF closure bind the 4c7691... field above. Substitution would change the state axis."
+  },
+  "arms": {
+    "A": {
+      "root": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/sort/sorter_output",
+      "unit_metrics_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/tier1_v1/UNIT_METRICS_A_A.csv"
+    },
+    "REF": {
+      "root": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output",
+      "unit_metrics_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/tier1_v1/UNIT_METRICS_A_REF.csv"
+    }
+  },
+  "published_pair_support_counts_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_state_support_diagnosis_20260930_v2/PAIR_SUPPORT_COUNTS.csv",
+  "pair_rule": "Form adjacent same-unit pairs on the original globally ordered train; require both events to be in the same original contiguous A-axis rounded-state segment; then categorize endpoint support. Positive denominator is lag >0; short numerator is lag 1..29; lag 0 is separate.",
+  "unit_flags": {
+    "displaced_dominant": "reference_state_events < 0.1 * spike_count",
+    "interior": "spike_count > 2000 and 400 < median_depth_um < 3600",
+    "strata": [
+      "displaced_dominant_interior",
+      "other_interior",
+      "remaining_boundary_or_ambiguous"
+    ],
+    "arm_local": true
+  },
+  "decision_rule": {
+    "metric": "A-minus-REF both-supported nonzero-state short_1_29 count by separate arm-local stratum",
+    "positive_excess_denominator": "sum(max(A_minus_REF_stratum, 0)) across the three strata",
+    "minimum_positive_excess_share": 0.5,
+    "pass": "displaced_dominant_interior excess is positive and at least 50% of total positive stratum excess",
+    "pass_action": "identify A displaced-dominant interior units as the primary biological validation target",
+    "fail_action": "retire the claim that the displaced-dominant interior population explains the supported short-pair increase",
+    "interpretation_limit": "No cross-arm unit matching or same-neuron causal claim."
+  },
+  "expected_nonzero_totals": {
+    "A": {
+      "both_supported": {"positive_adjacent_intervals": 6776525, "short_1_29": 543454, "zero_lag": 0},
+      "mixed": {"positive_adjacent_intervals": 265451, "short_1_29": 67502, "zero_lag": 0},
+      "both_unsupported": {"positive_adjacent_intervals": 606231, "short_1_29": 199114, "zero_lag": 0},
+      "ambiguous": {"positive_adjacent_intervals": 82, "short_1_29": 5, "zero_lag": 0}
+    },
+    "REF": {
+      "both_supported": {"positive_adjacent_intervals": 5080180, "short_1_29": 331075, "zero_lag": 0},
+      "mixed": {"positive_adjacent_intervals": 23054, "short_1_29": 1892, "zero_lag": 0},
+      "both_unsupported": {"positive_adjacent_intervals": 250953, "short_1_29": 20196, "zero_lag": 0},
+      "ambiguous": {"positive_adjacent_intervals": 73, "short_1_29": 5, "zero_lag": 0}
+    }
+  },
+  "inputs": [
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_state_support_diagnosis.py", "sha256": "2468899514facb5a37c345c238dcce78da4adb0f17bc445c5fe9a33c26a6da9b"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_state_support_diagnosis.v2.json", "sha256": "0d04b298ec3c095ca62be7a437b9be4c420d42ded48fea72d32106395e4dbc57"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_state_support_diagnosis.v1.json", "sha256": "0335c95ca046e476d843b2e6ec6dd5a4df2054f0e940fa8c8d48497fe92eea27"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_state_support_diagnosis_20260930_v2/PAIR_SUPPORT_COUNTS.csv", "sha256": "fdb721c91c3bfc9bc2c8e7494fbc0e0616218d4a1ad25d43cf9340b3a9602b6b"},
+    {"path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_am3_imec0_field_request_20260929_v1/payload/luke0804_imec0_two_layer_motion.npz", "sha256": "4c769125020aad3263bf6eaa1889cdaa7eccbf19dcf0aa3a068b185221fadb9f"},
+    {"path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/tier1_v1/UNIT_METRICS_A_A.csv", "sha256": "8e91381f8cb8d883c56103c0fbcd65f785a3315f0f8614be86a1d1b5a62ffc21"},
+    {"path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/tier1_v1/UNIT_METRICS_A_REF.csv", "sha256": "26306f1826317c2498737192d704bc88c1d6efcf15abf5ce7bc0fb6e45b86695"},
+    {"path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/sort/sorter_output/spike_times.npy", "sha256": "1c7643385dc3f128451880871a643b93fd343dfaa90c4cd7c65a229238ee3bcc"},
+    {"path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/sort/sorter_output/spike_clusters.npy", "sha256": "84409cbbf3548939fc88d44b191824acceb5ebdcb5432a2faf0619960b50454a"},
+    {"path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/sort/sorter_output/spike_positions.npy", "sha256": "cb49eda92a72aaf5cfe48cc09b2c4a7a75f07682877cef26f86089892f70c762"},
+    {"path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/sort/sorter_output/channel_positions.npy", "sha256": "0469ca92fb739a0cfd2f1613262d3a2d75af1098385385d7462ee6e3fd038d75"},
+    {"path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output/spike_times.npy", "sha256": "bf4f2791f5649bf663b7e50cb3bf1e52e5cbdb7a38f53f2366482e22d6d8f6a3"},
+    {"path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output/spike_clusters.npy", "sha256": "07ababac12e45b07ceaad222ee05de0618e64ae08c801844ee10109f8e2bc973"},
+    {"path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output/spike_positions.npy", "sha256": "e34a87845f6f6ae4789eaa9cdf44c310de1991894632016177991c9f90c61781"},
+    {"path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output/channel_positions.npy", "sha256": "0469ca92fb739a0cfd2f1613262d3a2d75af1098385385d7462ee6e3fd038d75"}
+  ],
+  "prohibitions": ["raw voltage", "sort", "matcher replay", "RF", "holdout", "parameter sweep"]
+}

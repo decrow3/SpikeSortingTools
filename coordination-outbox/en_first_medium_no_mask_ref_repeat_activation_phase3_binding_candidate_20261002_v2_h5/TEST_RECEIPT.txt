@@ -1,0 +1,20 @@
+Commands:
+PYTHONPATH=<candidate>/source PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR=/tmp/h5_activation_phase3_numba python -m pytest -q <candidate>/tests/test_pair_launcher.py <candidate>/tests/test_activation_candidate.py
+<bound-venv-python> <candidate>/source/en_first_medium_trained_pair_launch.py --contract <candidate-contract> --expected-contract-sha256 712ec10c342325187e6049dee4c022ce77daa9e512f7d2061d0e7714c9e9cf43 --validate-only
+<bound-venv-python> <candidate>/source/activation_preflight.py --contract <candidate-contract> --expected-contract-sha256 712ec10c342325187e6049dee4c022ce77daa9e512f7d2061d0e7714c9e9cf43 --inspect-disabled
+
+Results:
+22 passed in 1.29s
+launcher validate-only: status=validated, execution_enabled=false, recording_or_voltage_opened=false
+activation inspect: status=INSPECTED_FAIL_CLOSED; exact launcher GO, Phase3 candidate, and Phase3 independent GO bound=true; all namespaces fresh=true; activation eligible=false; recording/voltage/outcomes opened=false
+activation require mode: nonzero fail-closed because an enabled independently reviewed derivative is absent
+
+Coverage:
+- inherited one-start/replay, pair-wide cap, reserve, outer-finalization, and compact voltage-metadata checks;
+- exact launcher-v3 base and accepted producer-delta ancestry;
+- exact Phase3 candidate/review/status bindings and subject identity;
+- all proposed output/evidence paths share the fresh absent v2 namespace;
+- unchanged scientific sources/settings and no false activation.
+
+No service install/enable/start, recording/voltage read, scientific outcome read,
+sort, training, evaluator, RF, or holdout operation occurred.

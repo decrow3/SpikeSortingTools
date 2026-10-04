@@ -1,0 +1,23 @@
+{
+  "schema": "luke-durable-coordination-h5-phase3-composition-review-result-v1",
+  "host": "huklaban5",
+  "item": "H5-PHASE3-COMPOSITION-INDEPENDENT-REVIEW",
+  "state": "COMPLETE_WITH_BLOCKER",
+  "verdict": "BLOCK_PAIR_OUTPUT_PROVENANCE_UNBOUND",
+  "subject_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_phase3_composition_candidate_20261002_v2_h1",
+  "subject_manifest_sha256": "48b32b79f161b94d9c3a09d1bb8be1c5b2366e2e63cdf398333b4c27a7f090a7",
+  "subject_complete_sha256": "d9a326029d6a719a2c1df83be916bbec50d62323422cae229a622dbf6bfd6e83",
+  "subject_coordination_status_sha256": "e15c958da25f659111e71106ad710145c16de008ccc35835f73aa4728e6cc5e9",
+  "review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_phase3_composition_h5_independent_review_20261002_v1_h5",
+  "review_manifest_sha256": "bb9b9a38ef52c9d857219c0eee4f196f80851594ee14e6e77e0855b6ce4ba636",
+  "review_complete_sha256": "906e597219a3e0aad627012a2c80b32c6c27c94e362b2df2e1944b11aae08af8",
+  "candidate_tests": "7 passed independently",
+  "counterexample": "actual managed entry returned success and wrote Phase3 COMPLETE with repaired/repeat outputs outside the pair namespace and a pair COMPLETE lacking execution_states",
+  "required_repair": "bind request repaired/repeat curated outputs to exact pair COMPLETE execution-state paths and hashes; add missing/swapped/unrelated/hash-mismatch negatives in a fresh immutable namespace",
+  "activation_derivative_prepared": false,
+  "execution_enabled": false,
+  "real_outcome_read": false,
+  "voltage_read": false,
+  "service_or_science_executed": false,
+  "rf_or_holdout_accessed": false
+}

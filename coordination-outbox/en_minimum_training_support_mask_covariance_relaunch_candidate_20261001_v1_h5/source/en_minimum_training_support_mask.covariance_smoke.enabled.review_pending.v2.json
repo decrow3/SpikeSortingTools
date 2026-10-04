@@ -1,0 +1,107 @@
+{
+  "schema": "en-minimum-training-support-mask-v4-smoke",
+  "status": "smoke_enabled_contract_review_pending_unlaunched",
+  "execution_enabled": true,
+  "real_covariance_receipt": null,
+  "failure_reason": "Enabled contract is unlaunched pending H1 changed-delta review and normal tool approval",
+  "recording": {
+    "manifest_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/rescue_recording_manifest.json",
+    "manifest_sha256": "46a3845008cb19d9c35a85e67841b308843e071f1a27605e87195a8d4d0a42cf",
+    "required_adapter": "ExactLatticeRemapRecording, proven pairwise equal to SI 0.102.1 nearest/force_zeros on every arm-B state",
+    "recording_content_sha256": "867218a76666c0a35a4cfaaab8a3bdedcb5938217baf4cf61df407393182b289",
+    "num_samples": 314204894,
+    "num_channels": 384,
+    "sampling_frequency_hz": 29999.835983263598,
+    "dtype": "int16",
+    "binary_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/traces_cached_seg0.raw",
+    "binary_name": "traces_cached_seg0.raw",
+    "manifest_recorded_binary_sha256": "a63d61d57d214d7a90a9698143c0fd1ea5c872a73bcac498b683a6d99efed8a2",
+    "binary_hash_policy": "Manifest-recorded identity only; this v2 repair does not open or newly hash the binary"
+  },
+  "crop": {"imin": 208498882, "imax": 226498783},
+  "field": {
+    "path": "/mnt/NPX/Luke/20250804/shared_analysis/luke_improved_motion_two_machine_20260909_v1/estimation_huklaban1_v1/candidate_fields.npz",
+    "sha256": "547ff39d1c91d819b758246c701603d868bfd4d50bd6b791e3d5b7140c01c71d",
+    "time_key": "time_s",
+    "displacement_key": "rigid_displacement_um",
+    "rounding_um": 40.0
+  },
+  "ops": {
+    "path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output/ops.npy",
+    "sha256": "7a8f5d219de1b98776134abb00f637777f85ba94113758ae47a1e4b26b2a44f0"
+  },
+  "frozen_kilosort_settings": {
+    "fs": 29999.835983263598,
+    "batch_size": 60000,
+    "nt": 61,
+    "nt0min": 20,
+    "do_CAR": true,
+    "artifact_threshold": "Infinity",
+    "invert_sign": false,
+    "nblocks": 0,
+    "Th_universal": 12,
+    "Th_learned": 9,
+    "data_dtype": "int16",
+    "settings.nskip": 25,
+    "settings.whitening_range": 32,
+    "settings.highpass_cutoff": 300,
+    "settings.templates_from_data": true,
+    "settings.n_templates": 6,
+    "settings.n_pcs": 6,
+    "settings.Th_single_ch": 6
+  },
+  "covariance_gate": {
+    "expected_shape": [384, 384],
+    "require_finite": true,
+    "require_full_rank": true,
+    "maximum_condition_number": 100000000.0,
+    "current_status": "missing_real_receipt_fail_closed"
+  },
+  "native_invocation": {
+    "filename": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/traces_cached_seg0.raw",
+    "results_dir": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_covariance_smoke_20261001_v2/native_results",
+    "data_dtype": "int16",
+    "do_CAR": true,
+    "invert_sign": false,
+    "device": "cuda",
+    "save_extra_vars": true,
+    "clear_cache": true,
+    "save_preprocessed_copy": false,
+    "settings": {
+      "n_chan_bin": 384, "fs": 29999.835983263598, "batch_size": 60000,
+      "tmin": 6950.00073334281, "tmax": 7550.00073334281,
+      "nt": 61, "nt0min": 20, "nblocks": 0,
+      "Th_universal": 12, "Th_learned": 9,
+      "artifact_threshold": "Infinity", "nskip": 25, "whitening_range": 32,
+      "highpass_cutoff": 300, "binning_depth": 5, "sig_interp": 20,
+      "drift_smoothing": [0.5, 0.5, 0.5], "dmin": null, "dminx": 32,
+      "min_template_size": 10, "template_sizes": 5, "nearest_chans": 20,
+      "nearest_templates": 200, "max_channel_distance": 64, "max_peels": 100,
+      "templates_from_data": true, "n_templates": 6, "n_pcs": 6,
+      "Th_single_ch": 6, "acg_threshold": 0.2, "ccg_threshold": 0.75,
+      "cluster_downsampling": 20, "x_centers": null, "duplicate_spike_ms": 0.25,
+      "position_limit": 100, "shift": null, "scale": null
+    }
+  },
+  "source_bindings": [
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/kilosort_support_mask_candidate.py", "sha256": "705b4af444699a6e40ddd0e8a189232b619c4e1bbff53f8150b448f5ad160391"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/prewhitening_support_mask.py", "sha256": "9c981047f94d91a930e17bd51e634fbc96faa5e956c85d0882f3a603f7f42e0f"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/test_kilosort_support_mask_candidate.py", "sha256": "786c77bd1344381034a78777b43d3e329e22c2e8f2ae59693702c23caec3667d"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/io.py", "sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/preprocessing.py", "sha256": "2329b288ae068361a937632a53461e6cceeb27e30191337e9b9a0fa7404d763d"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/spikedetect.py", "sha256": "db1e8f0357319d9db3530a700bd1002c830337c50fde58b3e74e83e7af140892"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/template_matching.py", "sha256": "39235cc98428dbb279706718f74a1c3d84568ef31a4f9d1d997a60f7002b1a66"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/run_kilosort.py", "sha256": "5c1baee40edef14fa7566e441997da5d2ecc4f7940b8385cf83de40c8bd0f945"}
+  ],
+  "prohibitions": ["recording read", "real covariance", "sort", "RF", "holdout", "waveform transfer"],
+  "base_binding": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_minimum_training_support_mask_execution_readiness_20261001_v1_h5/en_minimum_training_support_mask.infinity_hotfix.review_pending.v1.json",
+    "sha256": "74f20c49418bbe4ad9a530da8a477b72093569fe2eec319682405fbd4431cb47"
+  },
+  "smoke": {
+    "mode": "stop_after_covariance_whitening",
+    "stop_after_whitening": true,
+    "run_root": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_covariance_smoke_20261001_v2",
+    "launch_evidence_dir": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_covariance_smoke_20261001_v2/launch_evidence"
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "batches": [
+    {
+      "consumer_batch": 0,
+      "global_start_frame": 208498821,
+      "global_stop_frame_exclusive": 208558943,
+      "transition_boundaries": 2,
+      "transition_samples_retained": true,
+      "unsupported_values": 90488
+    },
+    {
+      "consumer_batch": 25,
+      "global_start_frame": 209998821,
+      "global_stop_frame_exclusive": 210058943,
+      "transition_boundaries": 0,
+      "transition_samples_retained": true,
+      "unsupported_values": 0
+    },
+    {
+      "consumer_batch": 50,
+      "global_start_frame": 211498821,
+      "global_stop_frame_exclusive": 211558943,
+      "transition_boundaries": 0,
+      "transition_samples_retained": true,
+      "unsupported_values": 0
+    },
+    {
+      "consumer_batch": 75,
+      "global_start_frame": 212998821,
+      "global_stop_frame_exclusive": 213058943,
+      "transition_boundaries": 2,
+      "transition_samples_retained": true,
+      "unsupported_values": 60000
+    },
+    {
+      "consumer_batch": 100,
+      "global_start_frame": 214498821,
+      "global_stop_frame_exclusive": 214558943,
+      "transition_boundaries": 1,
+      "transition_samples_retained": true,
+      "unsupported_values": 75116
+    },
+    {
+      "consumer_batch": 125,
+      "global_start_frame": 215998821,
+      "global_stop_frame_exclusive": 216058943,
+      "transition_boundaries": 0,
+      "transition_samples_retained": true,
+      "unsupported_values": 0
+    },
+    {
+      "consumer_batch": 150,
+      "global_start_frame": 217498821,
+      "global_stop_frame_exclusive": 217558943,
+      "transition_boundaries": 3,
+      "transition_samples_retained": true,
+      "unsupported_values": 45048
+    },
+    {
+      "consumer_batch": 175,
+      "global_start_frame": 218998821,
+      "global_stop_frame_exclusive": 219058943,
+      "transition_boundaries": 2,
+      "transition_samples_retained": true,
+      "unsupported_values": 270488
+    },
+    {
+      "consumer_batch": 200,
+      "global_start_frame": 220498821,
+      "global_stop_frame_exclusive": 220558943,
+      "transition_boundaries": 1,
+      "transition_samples_retained": true,
+      "unsupported_values": 315472
+    },
+    {
+      "consumer_batch": 225,
+      "global_start_frame": 221998821,
+      "global_stop_frame_exclusive": 222058943,
+      "transition_boundaries": 0,
+      "transition_samples_retained": true,
+      "unsupported_values": 0
+    },
+    {
+      "consumer_batch": 250,
+      "global_start_frame": 223498821,
+      "global_stop_frame_exclusive": 223558943,
+      "transition_boundaries": 1,
+      "transition_samples_retained": true,
+      "unsupported_values": 14920
+    },
+    {
+      "consumer_batch": 275,
+      "global_start_frame": 224998821,
+      "global_stop_frame_exclusive": 225058943,
+      "transition_boundaries": 2,
+      "transition_samples_retained": true,
+      "unsupported_values": 300488
+    }
+  ],
+  "completed_batch_indices": [
+    0,
+    25,
+    50,
+    75,
+    100,
+    125,
+    150,
+    175,
+    200,
+    225,
+    250,
+    275
+  ],
+  "contract_digest": "25102362ea5a890c4662a80beceda5e00170d982d24924db4bc411b89240d9c4"
+}

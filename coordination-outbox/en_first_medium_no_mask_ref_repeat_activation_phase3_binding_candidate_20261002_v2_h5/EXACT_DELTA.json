@@ -1,0 +1,23 @@
+{
+  "schema": "luke-phase3-go-bound-activation-derivative-delta-v1",
+  "scope": "activation/provenance composition only; no scientific implementation or parameter change",
+  "parent_activation_candidate_manifest_sha256": "abac807e07e9cf443cb0899fcf05e518b5131d9b9493c688dc35a44d2e919a60",
+  "parent_activation_candidate_complete_sha256": "f02c77831e6350cc704fb4a13f6e573bdb74a61096eb2a2201497e13df16b1d4",
+  "reviewed_launcher_v3_base_sha256": "238c9c997bad67415a13671deaa5569ee121f3a27aa07188fef51c424f2029f8",
+  "accepted_phase3_producer_delta_sha256": "9e7290c182211ad5a71c952e9f178af764b6fe66ffe4d328cf3b2cbc694f84bc",
+  "changes": [
+    "bind exact Phase3 v3 candidate MANIFEST and COMPLETE",
+    "bind exact independent GO MANIFEST, COMPLETE, and coordination status",
+    "make the independently accepted inventory-binding producer delta the proposed pair launcher while preserving its reviewed launcher-v3 ancestry",
+    "retain execution_enabled=false and absent enabled environment",
+    "repair four stale v1 output/evidence paths so all proposed arm outputs share the fresh unused v2 namespace",
+    "extend read-only activation preflight to verify candidate, GO review, status, subject identity, and producer-delta ancestry"
+  ],
+  "finalizer_and_one_start_functions_byte_identical_to_launcher_v3": true,
+  "scientific_sources_and_settings_changed": false,
+  "total_cap_changed": false,
+  "terminal_reserve_changed": false,
+  "run_namespace_prefix": "en_first_medium_trained_pair_20261002_v2",
+  "phase3_review_bound": true,
+  "execution_enabled": false
+}

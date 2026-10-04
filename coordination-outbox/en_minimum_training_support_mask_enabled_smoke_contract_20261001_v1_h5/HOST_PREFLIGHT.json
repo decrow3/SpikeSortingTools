@@ -1,0 +1,69 @@
+{
+  "status": "zero_voltage_preflight_passed_real_smoke_unlaunched",
+  "host": "huklaban5-Precision-5820-Tower",
+  "user_systemd_version": "249 (249.11-0ubuntu3.22)",
+  "user_manager_state": "degraded_due_to_unrelated_historical_failed_units",
+  "real_unit": {
+    "name": "en-minimum-training-support-mask-covariance-smoke-enabled-v1.service",
+    "load_state": "not-found",
+    "active_state": "inactive",
+    "sub_state": "dead",
+    "installed": false,
+    "enabled": false,
+    "started": false
+  },
+  "failed_dummy_preserved_observation": {
+    "name": "en-support-mask-zero-voltage-preflight-20261001-v1.service",
+    "result": "exit-code",
+    "exec_main_status": 1,
+    "cause": "ModuleNotFoundError: No module named 'npx_preprocessing'",
+    "voltage_opened": false,
+    "remediation": "launcher inserts its resolved repository root into sys.path",
+    "collected_after_inspection": true
+  },
+  "passing_dummy": {
+    "name": "en-support-mask-zero-voltage-preflight-20261001-v2.service",
+    "type": "oneshot",
+    "remain_after_exit": true,
+    "restart": "no",
+    "result": "success",
+    "exec_main_status": 0,
+    "observed_active_state_before_collection": "active",
+    "observed_sub_state_before_collection": "exited",
+    "load_state_after_collection": "not-found"
+  },
+  "runtime": {
+    "python": "3.12.4",
+    "python_executable": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+    "kilosort": "4.0.27",
+    "numpy": "1.26.4",
+    "torch": "2.6.0+cu124",
+    "spikeinterface": "0.102.1",
+    "torch_cuda_build": "12.4",
+    "cuda_available": true,
+    "cuda_device_count": 1,
+    "cuda_device_names": ["NVIDIA RTX A5000"],
+    "nvidia_driver": "535.274.02",
+    "gpu_memory_mib": 24564
+  },
+  "config_sha256": "c4c6944fc21a7f9fa21545b569ba15c4219aabcd7b59115f5acea2a16dccae8f",
+  "contract_digest": "43cf4dce5291a44a19747144fb6707048f0e094ed6603e9a1307e34d1dd302c8",
+  "execution_enabled": true,
+  "recording": {
+    "path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/traces_cached_seg0.raw",
+    "stat_size": 241309358592,
+    "stat_mode": "0664",
+    "stat_uid": 1000,
+    "stat_gid": 1000,
+    "metadata_readable": true,
+    "content_opened": false
+  },
+  "output": {
+    "root": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_covariance_smoke_20261001_v1",
+    "parent_writable": true,
+    "root_absent_after_preflight": true,
+    "reservation_created": false,
+    "process_started": false
+  },
+  "kilosort_resumable_within_sort": false
+}

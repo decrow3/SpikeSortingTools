@@ -1,0 +1,14 @@
+{
+  "schema": "en-first-medium-phase3-v3-independent-delta-review-complete-v1",
+  "status": "COMPLETE_EXECUTION_DISABLED",
+  "verdict": "GO_PROVENANCE_REPAIR_DELTA",
+  "manifest_sha256": "c0d3f09341dd8653551eaae205c80c35ba942467d3703ef74a7d643cf403ec33",
+  "candidate_manifest_sha256": "3199ddda56d1b03c6a3d77d87443fbf1c2956d4ab09c08ede52467ca4b09b1cd",
+  "candidate_complete_sha256": "40508353a60978d311e8cdbaa5a533b4b8a67a91f5b045628e78c68f673a7918",
+  "tests": "11 passed",
+  "required_delta": null,
+  "activation_enabled": false,
+  "launch_or_service_started": false,
+  "scientific_execution_started": false,
+  "completion_written_last": true
+}

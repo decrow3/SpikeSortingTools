@@ -1,0 +1,25 @@
+{
+  "status": "pending_independent_h1_implementation_review_no_go",
+  "prior_consumed_result_manifest_sha256": "51e5203054bb6b03d2c7671a712e199daf6703cf5ac8095d022036e0e1d907c6",
+  "candidate_hashes": {
+    "config": "58636c24243d4663c42f9c8c51121d7461ff6d8e929022bc8e3c5a8550b2a704",
+    "service": "791ccb7d7659ffb4f14518bbda74169fa0709b67dd6ed942793ab99cecc60e9c",
+    "candidate_source": "705b4af444699a6e40ddd0e8a189232b619c4e1bbff53f8150b448f5ad160391",
+    "launcher": "59e4c776276e5fe751887bfedea2ac9378ff9bd3764778215b55e79a6bd0d60c",
+    "support_helper": "9c981047f94d91a930e17bd51e634fbc96faa5e956c85d0882f3a603f7f42e0f",
+    "candidate_tests": "786c77bd1344381034a78777b43d3e329e22c2e8f2ae59693702c23caec3667d"
+  },
+  "bounds": {
+    "sampled_batches": [0,25,50,75,100,125,150,175,200,225,250,275],
+    "sampled_interior_seconds": 24.0001312141065,
+    "padded_read_bytes_max": 554084352,
+    "retained_artifact_bytes_max": 33554432,
+    "restart": false,
+    "resumable": false
+  },
+  "resource_condition": "CUDA RTX A5000 required; runtime, CPU, RAM and GPU-utilization caps unspecified",
+  "fresh_live_paths_verified_absent": true,
+  "unchanged_dependency_test_result": "34 passed",
+  "launch_allowed": false,
+  "next_owner": "H1 independent implementation reviewer"
+}

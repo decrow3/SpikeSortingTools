@@ -1,0 +1,14 @@
+{
+  "schema": "immutable-integration-review-complete-v1",
+  "completed_utc": "2026-10-02T07:41:46Z",
+  "status": "complete_unmeasured_blocked_traversal",
+  "manifest_sha256": "0eca3813d6fe60b3f6df7d14a7374178138add41c71baab27f7a5c60d8dcecb7",
+  "manifest_members_verified": true,
+  "complete_written_last": true,
+  "scientific_rows_emitted": 0,
+  "primary_blocker": "clock_frame_mismatch",
+  "secondary_blocker": "cached_truncation_qc_absent_both_arms",
+  "raw_recording_reads": 0,
+  "sort_training_detection_launched": false,
+  "rf_or_holdout_accessed": false
+}

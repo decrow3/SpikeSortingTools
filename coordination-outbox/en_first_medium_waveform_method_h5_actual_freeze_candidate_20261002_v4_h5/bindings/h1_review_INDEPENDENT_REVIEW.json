@@ -1,0 +1,62 @@
+{
+  "schema": "first-medium-waveform-method-h1-changed-path-review-v2",
+  "reviewer": "H1",
+  "review_date": "2026-10-02",
+  "subject": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_waveform_method_targeted_repair_20261002_v3_h5",
+    "manifest_sha256": "dd5baf0036d8700028e5656ba7d3efa6bfb81d5b53be6144ee661316776345a7",
+    "complete_sha256": "91da1db44ff0cedd8a07f28b8a027bb8d4e3183b9346d5d39190e9af7fe58d0a"
+  },
+  "verdict": "TARGETED_REPAIR_REQUIRED",
+  "method_freeze_go": false,
+  "execution_enabled": false,
+  "accepted": {
+    "R3_correlation_priority_and_numeric_fixtures": true,
+    "preprocessing_common_median_unchanged": true,
+    "matching_categories_unchanged": true,
+    "sampling_alignment_unchanged": true,
+    "event_reads_max": 4608,
+    "logical_endpoint_bytes_max": 4052090880,
+    "prospective_bindings_unbound": true,
+    "no_hidden_241GB_preflight_read": true
+  },
+  "runtime_review": {
+    "expected_h5": {
+      "aggregate_sha256": "6658089a5e123b1962d2a61b7b89c230e484fdde0f52a0479e52c102f10cfe48",
+      "member_count": 89,
+      "member_bytes": 3333088832,
+      "python_executable_sha256": "4adb344720ca7a0ccee7cdc77506bae30da64b55a977cd45e15880ddf8bddcc1"
+    },
+    "observed_h1": {
+      "aggregate_sha256": "7828f352cf5dc2269e8811584ce895d115995ba4458692b797a6535356bb6b36",
+      "member_count": 51,
+      "member_bytes": 3310777048,
+      "python_executable_sha256": "c7c1a234ed39ceef4bde5ee8d29db37f55b0f7de6339b82eff5812944ccb74da"
+    },
+    "backend_equal": true,
+    "probe_output_equal": true,
+    "verifier_result": "EXPECTED_FAIL_CLOSED_ON_NONIDENTICAL_H1_RUNTIME",
+    "unresolved": "The producer's 89 executable objects were not available as an independently hashable immutable environment artifact."
+  },
+  "blocking_findings": [
+    {
+      "id": "R1_INDEPENDENT_EXECUTABLE_CLOSURE",
+      "finding": "The JSON inventory is internally bound and rejects H1, but independent review cannot rehash the H5 executable bytes. The claimed portable rule is only path relocation under exact byte identity.",
+      "exact_repair": "Publish a content-addressed immutable runtime artifact or independent verifier receipt over the exact declared bytes; scope the rule as exact relocatable-path identity; make cross-host mismatch an explicit negative fixture."
+    },
+    {
+      "id": "R2_CURRENT_VOLTAGE_CONTINUITY",
+      "finding": "The historic receipt binds old content, while current preflight binds only path and size. Same-size content replacement passes.",
+      "exact_repair": "Bind a trusted immutable snapshot/object/fs-verity identity created with the full hash, or explicitly and separately account for a current full-file verification. Reject symlinks when exact regular-file identity is required."
+    }
+  ],
+  "bounded_tests": {
+    "native_h1": "31 passed, 1 expected host-identity failure",
+    "byte_identical_stage_h1": "31 passed, 1 expected host-identity failure",
+    "same_size_voltage_replacement": "PASS before replacement and PASS after changed same-size contents; exposes blocker",
+    "voltage_accessed": false,
+    "real_event_data_accessed": false,
+    "sorting_rf_holdout_accessed": false
+  }
+}
+

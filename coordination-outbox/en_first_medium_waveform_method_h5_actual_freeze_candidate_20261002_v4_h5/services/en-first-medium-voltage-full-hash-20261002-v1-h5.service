@@ -1,0 +1,20 @@
+[Unit]
+Description=One-shot current full hash of immutable EN recording
+ConditionPathExists=/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw
+ConditionPathExists=!/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/en_first_medium_voltage_current_full_hash_20261002_v1_h5
+
+[Service]
+Type=exec
+WorkingDirectory=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/en_first_medium_waveform_method_h5_actual_freeze_candidate_20261002_v4_h5
+ExecStart=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/en_first_medium_waveform_method_h5_actual_freeze_candidate_20261002_v4_h5/source/current_voltage_full_hash.py
+Restart=no
+RuntimeMaxSec=3600
+MemoryMax=1073741824
+CPUQuota=400%
+AllowedCPUs=0-3
+TasksMax=32
+Nice=5
+IOSchedulingClass=best-effort
+IOSchedulingPriority=6
+Environment=CUDA_VISIBLE_DEVICES=-1
+SyslogIdentifier=en-first-medium-voltage-full-hash-20261002-v1-h5

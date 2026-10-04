@@ -1,0 +1,21 @@
+{
+  "schema": "managed-one-shot-invocation-v1",
+  "unit": "en_a_four_unit_waveform_qc_approved_v1.service",
+  "manager": "systemd user transient service",
+  "command": [
+    "/home/huklaban5/anaconda3/bin/python3.12",
+    "-B",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_waveform_qc_review_candidate_20261001_v1_h5/source/en_a_four_unit_waveform_qc.py",
+    "--config",
+    "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_a_four_unit_waveform_qc.approved.v1.json",
+    "--expected-config-sha256",
+    "641d78dd4c2e083694ef5cae91c83a812333bd211ff0d15efc87558b1678720f",
+    "--phase",
+    "run"
+  ],
+  "limits": {"cpu_quota_percent": 200, "thread_environment_max": 2, "memory_max_bytes": 536870912, "runtime_max_seconds": 120},
+  "environment": {"OMP_NUM_THREADS": "2", "MKL_NUM_THREADS": "2", "OPENBLAS_NUM_THREADS": "2", "NUMEXPR_NUM_THREADS": "2", "VECLIB_MAXIMUM_THREADS": "2", "PYTHONDONTWRITEBYTECODE": "1"},
+  "stdout": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_a_four_unit_waveform_qc_20261001_v1_launch/stdout.log",
+  "stderr": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_a_four_unit_waveform_qc_20261001_v1_launch/stderr.log",
+  "retry": false
+}

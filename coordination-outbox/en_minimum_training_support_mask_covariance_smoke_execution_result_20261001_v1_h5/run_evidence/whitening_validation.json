@@ -1,0 +1,23 @@
+{
+  "contract_digest": "25102362ea5a890c4662a80beceda5e00170d982d24924db4bc411b89240d9c4",
+  "finite": true,
+  "sampled_batch_indices": [
+    0,
+    25,
+    50,
+    75,
+    100,
+    125,
+    150,
+    175,
+    200,
+    225,
+    250,
+    275
+  ],
+  "shape": [
+    384,
+    384
+  ],
+  "whitening_sha256": "752be427fce43138bb6a8fa043f79087d2f27a715c8544e07ab3d830b619c077"
+}

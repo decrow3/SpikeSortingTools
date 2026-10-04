@@ -1,0 +1,13 @@
+{
+  "schema": "en-first-medium-evaluator-h5-traversal-result-v1",
+  "returncode": 1,
+  "status": "UNMEASURED_BLOCKED",
+  "blocker": "saved spike_times/global clock is incompatible with full_st[kept]/crop-local clock in the byte-identical loader",
+  "secondary_blocker": "required cached truncation QC absent for both REF384 and existing_corrected_B384",
+  "first_failure": "ValueError: REF384: full_st[kept_spikes] times do not match spike_times.npy",
+  "four_arm_report_exists": false,
+  "traversal_output_exists": false,
+  "required_adapter_repair": "normalize exactly one clock at load: full_st[kept] + 208498882 must equal saved global spike_times, then emit crop-local times for evaluation; independently bind real QC",
+  "scientific_rows_emitted": 0,
+  "raw_recording_reads": 0
+}

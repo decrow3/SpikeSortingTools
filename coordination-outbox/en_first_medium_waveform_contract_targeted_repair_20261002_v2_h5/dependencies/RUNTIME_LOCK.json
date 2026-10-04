@@ -1,0 +1,16 @@
+{
+  "schema": "first-medium-waveform-runtime-lock-v1",
+  "platform_machine": "x86_64",
+  "python": "3.12.4",
+  "numpy": "1.26.4",
+  "scipy": "1.15.2",
+  "torch": "2.6.0+cu124",
+  "torch_execution_device": "cpu",
+  "kilosort": "4.0.27",
+  "metadata_sha256": {
+    "kilosort-4.0.27.METADATA": "3241ba90f3023f0b8c2e6205f7a032b25bbcf87d9c66c5b0935c7b7f878ed85f",
+    "numpy-1.26.4.METADATA": "b09734a7fed44e84b4c8161934ce532dff1e779ec6822d415644d117f6381070",
+    "scipy-1.15.2.METADATA": "17b941195715733f983ab4fefec2b1880d0b050cbb9207181781b8a25d070e83",
+    "torch-2.6.0+cu124.METADATA": "76581c0d424f2d45de443327dfe1d5e115fd5e090b553deca3c3e23fc31c8da0"
+  }
+}

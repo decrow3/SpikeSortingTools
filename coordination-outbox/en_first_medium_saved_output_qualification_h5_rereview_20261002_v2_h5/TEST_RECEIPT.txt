@@ -1,0 +1,26 @@
+H5 independent changed-path re-review, 2026-10-02
+
+Subject packet:
+  /mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_contract_targeted_repair_20261002_v2_h1
+  MANIFEST.sha256 7208ca62283409872ec786f90da91941ad4e2e900afed7a08a71265ef004af32
+  COMPLETE.json a12edb14c79166cffed77f14ef86ccaed912f91b1d60cb9d149c65ae8a0576f6
+
+Independent native test result:
+  12 passed in 4.26s
+
+Independent byte-identical staged test result:
+  /tmp/en-h5-orchestration-rereview.jKhnWj/packet
+  12 passed in 4.02s
+
+Exact issued Phase-1 validation:
+  production gate PASS
+  active implementation boundary PASS
+  real REF metadata/spatial/QC bindings PASS
+  fixed cohort 61 units, digest 3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0
+  exact token claim in temporary registry PASS
+  replay rejection in temporary registry PASS
+  real registry created empty; issued token unclaimed
+  exact output namespace absent
+
+Scope: lifecycle fixtures and REF-only saved metadata/arrays. No Phase 1 or
+Phase 2 execution, B input or score, voltage, sorter, RF, or sealed holdout.

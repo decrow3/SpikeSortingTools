@@ -1,0 +1,24 @@
+{
+  "schema": "luke-v2-to-v3-focused-r2-delta-v1",
+  "scope": "R2 finalization accounting only",
+  "v2_launcher_sha256": "3f1c15588e856195b8aa31466daec007a2a4b0829eac5be6374111b803843ca8",
+  "v3_launcher_sha256": "238c9c997bad67415a13671deaa5569ee121f3a27aa07188fef51c424f2029f8",
+  "launcher_changes": [
+    "lower ordinary live threshold by an in-cap terminal/control reserve",
+    "derive and validate reserve categories from bounded serialization",
+    "move authoritative success ownership to run_single_attempt outer finalizer",
+    "stage pending terminal receipts before a read-only final aggregate audit",
+    "publish COMPLETE by no-growth rename and perform no later counted write",
+    "retain explicit limitation that polling is not strict instantaneous quota"
+  ],
+  "scientific_source_delta": "none; only pair launcher changed",
+  "ref_config_delta": "pair wrapper SHA-256 binding only",
+  "repaired_config_delta": "source packet path prefix only; source hashes unchanged",
+  "contract_delta": "R2 resource/finalization bindings and H1 blocker provenance only",
+  "r1_reopened": false,
+  "r3_reopened": false,
+  "total_cap_changed": false,
+  "science_changed": false,
+  "execution_enabled": false
+}
+

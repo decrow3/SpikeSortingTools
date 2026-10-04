@@ -1,0 +1,13 @@
+Command:
+env PYTHONPATH=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages /home/huklaban5/anaconda3/bin/python3.12 -m pytest -q testing/test_kilosort_support_mask_trained.py testing/test_kilosort_support_mask_candidate.py testing/test_prewhitening_support_mask.py
+
+Result:
+........................................................                 [100%]
+56 passed in 12.83s
+
+Durable vertical fixture v6:
+- positive semantic completion: passed
+- injected downstream failure preservation: passed
+- corrupted spike alignment rejection: passed
+- missing required key before bound path access: passed
+- actual native prepare_extract/extract hook exercise: passed

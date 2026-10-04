@@ -1,0 +1,87 @@
+{
+  "schema": "first-medium-measurement-redesign-h5-independent-review-v1",
+  "reviewer": "H5",
+  "date": "2026-10-02",
+  "verdict": "TARGETED_REPAIR_REQUIRED_EXECUTION_REMAINS_DISABLED",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_measurement_redesign_implementation_20261002_v1_h1",
+  "reviewed_bindings": {
+    "MANIFEST.sha256": "c47a413501cb57d604b6e29c0d3a6055ceb0e6bae7223261656569aab1d054aa",
+    "COMPLETE.json": "4b6a3c9541d6cb247b3fbe38b24e78fc570a7df408bcd4156e8ef86caeec5349",
+    "source/testing/first_medium_measurement_redesign.py": "167f44ff3ee434a607f00745b8884378811467e5d4ac15d944fcee1e28d9e158",
+    "source/testing/sort_comparison.py": "b4065ba7e6c326e74f5f283de9a6ee76df0dfd3b70b65fd534b1d4559a80de0c",
+    "configs/en_first_medium_measurement_redesign_v1.json": "c0dc9deff29742dd5f841893c530048975e15665ee8ed7a5c0f97c99b6539b86",
+    "tests/test_first_medium_measurement_redesign.py": "3636903d7a23ef069d53da3936429d6e836beb8eab88794ede00d871837178cb"
+  },
+  "packet_integrity": {
+    "manifest_check": "all members OK",
+    "unexpected_files": [],
+    "complete_manifest_binding": true,
+    "complete_written_outside_manifest": true
+  },
+  "verified_semantics": {
+    "equal_unit_R": "unit retentions are averaged without event-count weighting",
+    "paired_DeltaR": "repaired minus existing uses identical ordered REF-unit indexes",
+    "reciprocal_primary": "accepted matcher requires unique mutual best Jaccard and bilateral retention threshold",
+    "exclusive_no_double_credit": "chronological one-to-one matches are reconstructed and candidate event keys are globally guarded",
+    "unmatched_zero": "every absent reciprocal partner contributes an explicit zero row to the fixed-cohort denominator",
+    "fixed_REF_cohort": "same explicit nonempty unique cohort argument is used by both arms; exact IDs and digest remain required by a future execution request",
+    "bootstrap": "paired unit deltas are resampled as rows with replacement; dependence within a unit is preserved, cross-unit shared dependence is disclosed as uncovered",
+    "margin": "one-sided 5th percentile is compared strictly greater than 0.05; original DeltaR>=0.05 and lower95>0 proposal remains visible and rejected as minimum-effect evidence",
+    "cells": "frozen edges are half-open and equal ceil(k*60*fs), clipped at exact stop; boundary assignment uses searchsorted side=right and excludes the stop",
+    "accepted_matcher_reuse": "changed module imports only correspondence from the exact accepted b4065ba7... source",
+    "split_merge": "packaged tied cases and independent dominant cases returned the expected reciprocal-primary outcomes",
+    "hidden_paths": "changed module has no loader, file read/write, execution, recording, voltage, outcome, sorting, RF, or holdout call path; imported dependency defines loaders but the changed module imports only correspondence and does not call them"
+  },
+  "test_results": {
+    "packet_tests": "9 passed",
+    "dominant_split_R": 0.75,
+    "dominant_merge_equal_unit_R": 0.5,
+    "strict_gate_at_equality": false,
+    "final_stop_excluded": true
+  },
+  "blocking_findings": [
+    {
+      "id": "H5-B1",
+      "title": "Amplitude support intervals are not bounded to the declared duration",
+      "evidence": "first_medium_measurement_redesign.py:284-295 validates finiteness, positivity, and overlap but not start>=0/end<=duration; lines 375-377 divide unbounded sums by cohort duration",
+      "known_answer": "two nonoverlapping finite_interior rows [0,60) and [60,120), duration_s=60, returned REF/candidate/common support fractions 2.0",
+      "impact": "coverage disclosure can exceed 100 percent and a pair can pass the common-time threshold using time outside the experiment domain",
+      "repair": "require finite positive duration_s and reject every included REF/candidate interval outside [0,duration_s] before union/intersection"
+    },
+    {
+      "id": "H5-B2",
+      "title": "Complete-sort correspondence is not bound to supplied half-open cell domain",
+      "evidence": "first_medium_measurement_redesign.py:129-143 constructs correspondence before validating cells; lines 176-178 index only cohort REF events, never all REF and candidate events",
+      "known_answer": "REF [10,20], candidate [10,20,60,70,80], cells [0,50): out-of-domain candidate events reduced candidate retention to 0.4 and R to 0.0 instead of raising",
+      "impact": "clock/crop leakage can change primary competition and the primary endpoint while cell diagnostics appear valid",
+      "repair": "when cells are supplied, validate all rt and ct events against the complete half-open domain before correspondence"
+    }
+  ],
+  "required_repair_tests": [
+    "negative and beyond-duration amplitude windows raise",
+    "NaN and infinite duration_s raise",
+    "candidate event at or beyond exact stop raises before correspondence",
+    "non-cohort REF event outside the domain raises before correspondence",
+    "valid exact-boundary in-domain events retain current half-open behavior",
+    "all existing and independent known answers continue to pass"
+  ],
+  "scope": {
+    "real_data_opened": false,
+    "real_scores_or_evaluator_run": false,
+    "recording_or_voltage_access": false,
+    "sorter_or_waveform_run": false,
+    "rf_or_holdout_access": false
+  },
+  "implementation_checks": {
+    "done": [
+      "verified byte-level packet integrity and exact source bindings",
+      "traced accepted matcher, estimand denominators, pairing, bootstrap, margin, cells, conditional support, and import call paths",
+      "reran packaged and independent bounded synthetic known answers"
+    ],
+    "not_done": [
+      "no real input, outcome, power, identity, waveform, or advancement evaluation"
+    ],
+    "can_establish": "core semantics are correct for valid in-domain in-memory inputs; temporal-domain enforcement is incomplete",
+    "cannot_establish": "prospective execution safety or validity under malformed/cross-clock saved artifacts"
+  }
+}

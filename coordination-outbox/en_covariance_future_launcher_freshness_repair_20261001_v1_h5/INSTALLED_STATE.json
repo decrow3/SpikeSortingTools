@@ -1,0 +1,15 @@
+{
+  "observed_utc": "2026-10-02T06:47:01Z",
+  "future_unit": "en_minimum_training_support_mask_covariance_smoke_enabled_v3.service",
+  "installed_path": "/home/huklaban5/.config/systemd/user/en_minimum_training_support_mask_covariance_smoke_enabled_v3.service",
+  "sha256": "7cde6c198d97ff122ff9c62966c30174854c4d9b6271db30963ab69787b7b074",
+  "systemd_analyze_user_verify_exit_status": 0,
+  "load_state": "loaded",
+  "unit_file_state": "static",
+  "active_state": "inactive",
+  "sub_state": "dead",
+  "main_pid": 0,
+  "restarts": 0,
+  "service_started": false,
+  "recording_opened": false
+}

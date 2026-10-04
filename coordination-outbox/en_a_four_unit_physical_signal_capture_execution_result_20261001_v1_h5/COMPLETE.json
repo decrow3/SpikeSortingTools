@@ -1,0 +1,8 @@
+{
+  "schema": "immutable-evidence-packet-completion-v1",
+  "status": "complete",
+  "created_utc": "2026-10-02T05:49:44Z",
+  "manifest_sha256": "9714697d213368f932c0b4f8cafbc152307fffb3dd195ff6aa1bea1960c514ca",
+  "capture_result": "success",
+  "publication_excludes_voltage_arrays": true
+}

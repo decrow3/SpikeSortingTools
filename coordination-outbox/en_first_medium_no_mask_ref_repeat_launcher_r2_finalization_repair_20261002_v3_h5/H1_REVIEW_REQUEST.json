@@ -1,0 +1,20 @@
+{
+  "schema": "luke-h1-focused-r2-finalization-review-request-v1",
+  "status": "REVIEW_REQUEST_EXECUTION_DISABLED",
+  "decision": "accept_or_reject_focused_R2_finalization_accounting_repair_only",
+  "preserved_v2_manifest_sha256": "cefdbfeb9076513f7063dc0d5ac5fb4776d9fc915b408fd659f61e17ae67f1dc",
+  "preserved_v2_complete_sha256": "776be73355ca8939053edba1f7b0ac2e3e52ef5dac952d9a751abcc492c4c07c",
+  "blocking_h1_review_manifest_sha256": "ee4290e237bf65212f84d6ec2718c4147519642a7679f49c3875563238977460",
+  "blocking_h1_review_complete_sha256": "5aa23da5f2e90b96558ffd707d6a5d32e98f38eb6828255e5abbc27d9cb4d48e",
+  "review_scope": [
+    "verify reserve derivation and serialized bounds including temp/replacement, failures, outer terminal receipt, and counted late logs",
+    "verify one outer finalizer and no counted write after read-only final audit",
+    "verify below/equal/above independent final sums through actual run_single_attempt",
+    "verify finalization failure has no false authoritative success",
+    "confirm R1/R3 and frozen scientific sources/settings are unchanged"
+  ],
+  "execution_enabled": false,
+  "service_installed_or_started": false,
+  "recording_or_voltage_read": false
+}
+

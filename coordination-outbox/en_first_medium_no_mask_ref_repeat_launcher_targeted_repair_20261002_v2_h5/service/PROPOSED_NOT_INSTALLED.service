@@ -1,0 +1,27 @@
+[Unit]
+Description=PROPOSED ONLY - EN first-medium single-claim bounded pair
+ConditionPathExists=!/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1_attempt/START_CLAIM.json
+ConditionPathExists=!/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1
+ConditionPathExists=!/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1_numba_cache
+ConditionPathExists=!/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_first_medium_trained_pair_20261002_v1
+
+[Service]
+Type=exec
+Restart=no
+WorkingDirectory=/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_targeted_repair_20261002_v2_h5
+EnvironmentFile=/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_targeted_repair_20261002_v2_h5/service/ENABLED_BINDING_NOT_PRESENT.env
+Environment=EN_FIRST_MEDIUM_PAIR_PERSISTENT_JOB=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONPATH=/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_targeted_repair_20261002_v2_h5/source:/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages
+Environment=NUMBA_CACHE_DIR=/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1_numba_cache
+Environment=OMP_NUM_THREADS=16
+Environment=MKL_NUM_THREADS=16
+Environment=OPENBLAS_NUM_THREADS=16
+AllowedCPUs=0-15
+CPUQuota=1600%
+MemoryMax=68719476736
+RuntimeMaxSec=2700
+TasksMax=256
+ExecStart=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python /mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_targeted_repair_20261002_v2_h5/source/en_first_medium_trained_pair_launch.py --contract ${ENABLED_CONTRACT_PATH} --expected-contract-sha256 ${ENABLED_CONTRACT_SHA256} --attempt-evidence-dir /media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1_attempt --expected-service-sha256 ${ENABLED_SERVICE_SHA256} --execute-reviewed-once
+
+# DRAFT ONLY: env binding intentionally absent; do not install/start before H1 review.

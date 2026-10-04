@@ -1,0 +1,10 @@
+{
+  "candidate_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_four_arm_evaluator_review_candidate_20261002_v2_h1",
+  "manifest_sha256": "67a607934be67e9856299e5f65637797c64352b68a04438caefb7ee165f88fd2",
+  "complete_sha256": "f79caa55a2bf519e83f2dccc37bbb3e2dbc534a8083254e6590e71f7827b7aa9",
+  "all_manifest_members_verified": true,
+  "first_medium_evaluator_sha256": "f5ff00505a9abac8a20c54a326cee5efdb86250ae60aba23cb158c6b633c8c66",
+  "reviewed_sort_comparison_sha256": "ce2896f35288a21829f67007cea429da5d79404f6a6f9d390de3bfa9e649c8a0",
+  "repository_sort_comparison_sha256": "d107acee9824c351233e02665c5cf51eeeeab2dfc53ad6ee8fc6e7fd14b7a5ab",
+  "candidate_config_sha256": "6aa1811a7eba56a63019bad9c70f9544faad3b128ea07d4c8e17ab7b5bb50cc6"
+}

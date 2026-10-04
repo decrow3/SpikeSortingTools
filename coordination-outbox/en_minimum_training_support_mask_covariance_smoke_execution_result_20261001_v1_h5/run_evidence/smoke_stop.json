@@ -1,0 +1,6 @@
+{
+  "before_training_detection": true,
+  "contract_digest": "25102362ea5a890c4662a80beceda5e00170d982d24924db4bc411b89240d9c4",
+  "status": "passed_covariance_and_whitening",
+  "whitening_sha256": "752be427fce43138bb6a8fa043f79087d2f27a715c8544e07ab3d830b619c077"
+}

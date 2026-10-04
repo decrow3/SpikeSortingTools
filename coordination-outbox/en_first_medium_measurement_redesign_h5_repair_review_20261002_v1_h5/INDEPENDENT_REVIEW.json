@@ -1,0 +1,84 @@
+{
+  "schema": "first-medium-measurement-redesign-h5-repair-review-v1",
+  "reviewer": "H5",
+  "date": "2026-10-02",
+  "verdict": "GO_FOR_MEASUREMENT_MODULE_CHANGED_PATH_EXECUTION_REMAINS_DISABLED",
+  "subject": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_measurement_redesign_targeted_repair_20261002_v2_h1",
+    "manifest_sha256": "61758790c555c18066dc2bdea6af1f03d755ef1d5f704f18dfa8c2c868d2bdf0",
+    "complete_sha256": "9cbe08879ebb1ee3921ab80a6009b9a4534c565018b751a6f0cb50461b13b9ad",
+    "repaired_module_sha256": "779b3b82e4328f92f6d50cb0a411153e03d755172d9493ccda937a686f42d0d9",
+    "tests_sha256": "0e5f091a0d0b8c71c61e7998009cdc20d201da79eea49ffe624a2af5489b59ca"
+  },
+  "integrity": {
+    "manifest_members": "all OK",
+    "original_manifest_binding": "c47a413501cb57d604b6e29c0d3a6055ceb0e6bae7223261656569aab1d054aa",
+    "original_complete_binding": "4b6a3c9541d6cb247b3fbe38b24e78fc570a7df408bcd4156e8ef86caeec5349",
+    "prior_h5_review_manifest_binding": "b15e2a3cf689af4b70d12aa0d4f3666fb516f4eaa02548fd1b24ab02b7532ccf",
+    "prior_h5_review_complete_binding": "723a0b7690712251043b95778fe956795a331c936c5b9d4af7bb71587e0fa1e0",
+    "unchanged_matcher_sha256": "b4065ba7e6c326e74f5f283de9a6ee76df0dfd3b70b65fd534b1d4559a80de0c",
+    "unchanged_contract_sha256": "c0dc9deff29742dd5f841893c530048975e15665ee8ed7a5c0f97c99b6539b86",
+    "unchanged_pipeline_config_sha256": "74424d444e05a7ba2d3968d22c1490475ebe8d7c0d213687316ace7cec5cf59c"
+  },
+  "verified_repairs": {
+    "H5-B1": {
+      "result": "CLOSED",
+      "duration": "converted to float and required finite and >0",
+      "whole_table_validation": "all supplied finite_interior rows in both tables are checked before cohort selection",
+      "intervals": "numeric, finite, positive, nonoverlapping within unit, start>=0, end<=duration_s",
+      "coverage": "per-unit and full-cohort coverage uses a finite positive denominator and fail-closed [0,1] constructor",
+      "independent_cases": [
+        "out-of-domain cluster 999 row outside selected cohort rejected",
+        "overlap and NaN stop rejected",
+        "NaN/infinity/zero/negative duration rejected",
+        "exact [0,20] partition accepted with full coverage exactly 1"
+      ]
+    },
+    "H5-B2": {
+      "result": "CLOSED",
+      "validation_order": "both complete integer event arrays are checked against [edges[0],edges[-1]) before correspondence",
+      "independent_cases": [
+        "candidate event at exact stop rejected and matcher sentinel remained uncalled",
+        "negative non-cohort REF event rejected",
+        "events at 0, interior boundary 25, and stop-1=49 accepted and assigned [1,2] across cells"
+      ]
+    }
+  },
+  "preserved_semantics": {
+    "R": "equal-REF-unit mean with unmatched zero and reciprocal-primary/exclusive credit unchanged",
+    "DeltaR": "repaired minus existing on the paired fixed REF cohort unchanged",
+    "matcher": "byte-identical accepted correspondence implementation",
+    "bootstrap": "paired REF-unit composition bootstrap unchanged",
+    "gate": "strict one-sided lower95 > minimum_effect; equality at 0.05 fails",
+    "config": "byte-identical, outcome-blind, execution_enabled=false",
+    "conditional_diagnostic": "finite_interior only, no refit/imputation/threshold relaxation"
+  },
+  "test_results": {
+    "packet_tests": "30 passed in 1.01s from writable byte-identical stage",
+    "independent_adversarial": "passed",
+    "real_scores_or_jobs": false
+  },
+  "scope": {
+    "go": "repaired in-memory measurement-module changed path",
+    "not_go": [
+      "real scoring or evaluator execution",
+      "recording or voltage access",
+      "sorting, training, detection, or waveform work",
+      "RF or sealed holdout access",
+      "scientific effect, power, identity, purity, recovery, or advancement claim"
+    ]
+  },
+  "implementation_checks": {
+    "done": [
+      "exact packet, original, and prior-review bindings",
+      "changed source and validation order",
+      "unchanged matcher/config dependencies",
+      "packet and independent adversarial tests"
+    ],
+    "not_done": [
+      "no real input or scientific execution"
+    ],
+    "can_establish": "Both prior temporal-domain blockers are closed without changing the frozen estimand, bootstrap, or gate.",
+    "cannot_establish": "Any real cross-arm result or readiness outside the reviewed module path."
+  }
+}

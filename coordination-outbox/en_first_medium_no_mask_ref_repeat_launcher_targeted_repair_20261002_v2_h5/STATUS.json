@@ -1,0 +1,14 @@
+{
+  "schema": "no-mask-ref-repeat-launcher-r1-r3-status-v1",
+  "status": "EXECUTION_DISABLED_READY_FOR_H1_REVIEW",
+  "repairs": ["R1_DURABLE_ONE_START_AND_PRE_ROOT_FAILURE", "R2_PERSISTENT_OUTPUT_CAP_UNENFORCED", "R3_CURRENT_VOLTAGE_CONTINUITY_NOT_CHECKED_AT_PAIR_LAUNCH"],
+  "contract_sha256": "8ba7243bf7ffc52f7312e5a63c4b309e35cbfe96bb1b3b2cbe20e0b7598be0a8",
+  "launcher_sha256": "3f1c15588e856195b8aa31466daec007a2a4b0829eac5be6374111b803843ca8",
+  "service_sha256": "4d589d407f3f1d53207e0524ff9da977fee602358864932113e2ab990ba2a129",
+  "focused_tests": "10 passed",
+  "validate_only": "PASS",
+  "actual_compact_voltage_preflight": {"status": "PASS", "voltage_bytes_read": 0, "historic_current_match": true},
+  "execution_enabled": false,
+  "service_installed": false,
+  "scientific_execution_started": false
+}

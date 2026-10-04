@@ -1,0 +1,9 @@
+{
+  "schema": "immutable-independent-repair-review-completion-v1",
+  "status": "complete_go_changed_path_execution_disabled",
+  "manifest_sha256": "9f0bdeb22aa889bc13eed41a98fc783bd16504c829577ab3a3508c3daa09c68e",
+  "verdict": "GO_FOR_MEASUREMENT_MODULE_CHANGED_PATH_EXECUTION_REMAINS_DISABLED",
+  "real_scoring_performed": false,
+  "jobs_started": false,
+  "completion_written_last": true
+}

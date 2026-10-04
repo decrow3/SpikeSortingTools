@@ -1,0 +1,47 @@
+{
+  "schema": "en-saved-bank-template-pair-relevance-v1",
+  "status": "frozen_preoutcome",
+  "purpose": "Outcome-guided saved-event relevance check for the synthetic B384 template 398/399 replay pair",
+  "output": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_saved_bank_template_pair_relevance_20261001_v1",
+  "b384_sorter_output": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output",
+  "sampling_frequency_hz": 29999.835983263598,
+  "recording_duration_s": 10473.5537279367,
+  "accounting_block_seconds": 300,
+  "crop": {
+    "start_frame": 208498882,
+    "stop_frame": 226498783,
+    "half_open": true
+  },
+  "field": {
+    "path": "/mnt/NPX/Luke/20250804/shared_analysis/luke_improved_motion_two_machine_20260909_v1/estimation_huklaban1_v1/candidate_fields.npz",
+    "time_key": "time_s",
+    "displacement_key": "rigid_displacement_um"
+  },
+  "banks": {
+    "B384": {
+      "iU_path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/pre_extraction_snapshot/iU.npy",
+      "iU_physical_path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/pre_extraction_snapshot/iU_physical_binary_channel.npy",
+      "channel_positions_path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output/channel_positions.npy"
+    },
+    "REF384": {
+      "iU_path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/pre_extraction_snapshot/iU.npy",
+      "iU_physical_path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/pre_extraction_snapshot/iU_physical_binary_channel.npy",
+      "channel_positions_path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/sorter_output/channel_positions.npy"
+    }
+  },
+  "frozen_inputs": [
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_saved_bank_template_pair_relevance.py", "sha256": "2a6ea673125372d5f544ca8c3a93dacd529cc32844f560b06f50b80de4749b62"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_common_support_crop_panel.py", "sha256": "cef72b7e713b6a3ca9d579d818da0f7d09cbad951ba5cc0ef54c22cd24b16c3b"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_rounded_field.py", "sha256": "823e788da0095012dd345085bb4667f246efc7f4170a5a811c91082769156e00"},
+    {"path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output/spike_times.npy", "sha256": "c112885db566363907e36da70eb44a4728258e4ef78c466761ef4009a8c741c3"},
+    {"path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output/spike_clusters.npy", "sha256": "90525e505cfec78c1594927848ffad4e264f11ff6ecabbc40178ece2bb10df95"},
+    {"path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output/spike_detection_templates.npy", "sha256": "6b462ef56f6a2b8c21be127ba771a0ad28294f86783edb6e3056a17e1557573b"},
+    {"path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/pre_extraction_snapshot/iU.npy", "sha256": "5b81f6c6710d33648ae89a46c74b335576291f8e1cb2bf9d652c943d65994679"},
+    {"path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/pre_extraction_snapshot/iU_physical_binary_channel.npy", "sha256": "5b81f6c6710d33648ae89a46c74b335576291f8e1cb2bf9d652c943d65994679"},
+    {"path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output/channel_positions.npy", "sha256": "0469ca92fb739a0cfd2f1613262d3a2d75af1098385385d7462ee6e3fd038d75"},
+    {"path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/pre_extraction_snapshot/iU.npy", "sha256": "9a55cd45c91af035e68466aea731d5834cc3922ce57d03204738acc34d8d1350"},
+    {"path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/pre_extraction_snapshot/iU_physical_binary_channel.npy", "sha256": "9a55cd45c91af035e68466aea731d5834cc3922ce57d03204738acc34d8d1350"},
+    {"path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/sorter_output/channel_positions.npy", "sha256": "0469ca92fb739a0cfd2f1613262d3a2d75af1098385385d7462ee6e3fd038d75"},
+    {"path": "/mnt/NPX/Luke/20250804/shared_analysis/luke_improved_motion_two_machine_20260909_v1/estimation_huklaban1_v1/candidate_fields.npz", "sha256": "547ff39d1c91d819b758246c701603d868bfd4d50bd6b791e3d5b7140c01c71d"}
+  ]
+}

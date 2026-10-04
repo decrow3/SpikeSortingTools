@@ -1,0 +1,49 @@
+{
+  "schema": "h5-independent-phase3-composition-review-v1",
+  "reviewer": "H5",
+  "date": "2026-10-02 America/Los_Angeles",
+  "verdict": "BLOCK_PAIR_OUTPUT_PROVENANCE_UNBOUND",
+  "subject": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_phase3_composition_candidate_20261002_v2_h1",
+    "manifest_sha256": "48b32b79f161b94d9c3a09d1bb8be1c5b2366e2e63cdf398333b4c27a7f090a7",
+    "complete_sha256": "d9a326029d6a719a2c1df83be916bbec50d62323422cae229a622dbf6bfd6e83",
+    "coordination_status_sha256": "e15c958da25f659111e71106ad710145c16de008ccc35835f73aa4728e6cc5e9",
+    "superseded_v1_manifest_sha256": "bea1718259d26a70ccc14d5aaab066d592409ef651a67823fb0f8379641bcb64"
+  },
+  "accepted_checks": {
+    "manifest_and_all_members_verify": true,
+    "candidate_tests": "7 passed independently",
+    "corrected_waveform_pair_coverage_present": true,
+    "compact_schema_validation_passes": true,
+    "ref_first_binding_precedes_candidate_load": true,
+    "strict_lower95_boundary_below_equal_above": "PASS",
+    "amplitude_source": "full_st[kept_spikes][:,2]; amplitudes.npy absent",
+    "missing_qc_and_waveform": "UNMEASURED and never advance",
+    "mutation_failure_has_no_false_complete": true
+  },
+  "blocking_finding": {
+    "summary": "Phase3 accepts repaired_B384 and REF384_repeat saved outputs that are not bound to the supplied pair COMPLETE.",
+    "source": "source/testing/first_medium_saved_output_qualification.py:570",
+    "fixture": "INDEPENDENT_PAIR_BINDING_COUNTEREXAMPLE.py",
+    "observed": {
+      "pair_complete_has_execution_states": false,
+      "candidate_paths_outside_pair_namespace": true,
+      "managed_returncode": 0,
+      "phase3_complete_written": true
+    },
+    "cause": "The receipt validator checks only generic finalization fields and hashes of the two supplied JSON files. It neither requires COMPLETE.execution_states nor links each repaired/repeat curated_output to the completed arm path/hash.",
+    "risk": "A valid or synthetic pair receipt from an unrelated run can authorize scoring arbitrary saved repaired/repeat outputs, breaking run attribution."
+  },
+  "required_repair": [
+    "require exact repaired_B384 and REF384_repeat execution_states in pair COMPLETE",
+    "verify each execution-state complete_path exists, is non-symlink, and matches complete_sha256",
+    "bind each request curated_output to the exact completed arm namespace and expected sorter-output location",
+    "reject missing, swapped, unrelated, or hash-mismatched execution states in managed-entry tests",
+    "preserve all estimators, thresholds, cohort, schema, amplitude ancestry, and missing-evidence semantics"
+  ],
+  "execution_enabled": false,
+  "real_outcome_read": false,
+  "voltage_read": false,
+  "service_or_science_executed": false,
+  "rf_or_holdout_accessed": false
+}

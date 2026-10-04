@@ -1,0 +1,45 @@
+{
+  "schema": "h1-independent-r2-finalization-delta-review-v1",
+  "reviewer": "H1",
+  "date": "2026-10-02 America/Los_Angeles",
+  "verdict": "GO_R2_FINALIZATION_REPAIR_ONLY_EXECUTION_REMAINS_DISABLED",
+  "subject": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_r2_finalization_repair_20261002_v3_h5",
+    "manifest_sha256": "682b3c3cc6cbe9bf3ae9a2bd2a19313888ddacfae99e199e9bd884ff9ffda284",
+    "complete_sha256": "42e5b6b89a06cf987508aa062316e3b25b7b34704521dd750227a4c94e19d7aa",
+    "contract_sha256": "55c0dbabc5623bbd1db9e3b49e32c493c9802880e3f28c7c1709ecb25b77ecfa",
+    "launcher_sha256": "238c9c997bad67415a13671deaa5569ee121f3a27aa07188fef51c424f2029f8"
+  },
+  "acceptance": {
+    "v2_counterexample_reproduced": true,
+    "v3_tests": "14 passed in 0.47s",
+    "independent_below_cap_bytes": 3574,
+    "independent_equal_cap_bytes": 2000000,
+    "independent_above_cap_bytes": 2000383,
+    "fixture_cap_bytes": 2000000,
+    "above_cap_authoritative_complete_present": false,
+    "above_cap_failure_receipt_present": true,
+    "outer_run_single_attempt_path_exercised": true,
+    "terminal_reserve_derived_bytes": 1048576,
+    "frozen_total_cap_bytes": 17179869184,
+    "frozen_live_threshold_bytes": 17178820608,
+    "no_growth_completion_rename": true,
+    "no_later_counted_success_write": true
+  },
+  "preserved": {
+    "r1_regressions": "PASS",
+    "r3_regressions": "PASS",
+    "live_crossing_process_group_termination": "PASS",
+    "second_arm_crossing_preserves_ref_state": "PASS",
+    "scientific_sources_byte_identical_to_v2": true,
+    "ref_config_change": "pair-wrapper hash only",
+    "repaired_config_change": "source packet path prefix only; source hashes unchanged",
+    "arm_order": ["REF384_repeat", "repaired_B384"],
+    "execution_enabled": false,
+    "enabled_binding_intentionally_absent": true
+  },
+  "scope": {
+    "go": "R2 terminal/finalization bookkeeping changed path",
+    "not_go": ["service installation or start", "scientific execution", "voltage access", "RF/holdout access", "benefit, waveform, identity or purity conclusion"]
+  }
+}

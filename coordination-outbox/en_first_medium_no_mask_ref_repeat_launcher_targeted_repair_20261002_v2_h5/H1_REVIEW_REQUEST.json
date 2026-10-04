@@ -1,0 +1,23 @@
+{
+  "schema": "no-mask-ref-repeat-launcher-r1-r3-h1-review-request-v1",
+  "requested_reviewer": "H1",
+  "decision": "accept_or_reject_targeted_R1_R3_launcher_repair_only",
+  "original_candidate_manifest_sha256": "920c628d58af5a583d8a9ace35379ef6c10f83bacec07f8f138e018875a13fb9",
+  "blocking_review_manifest_sha256": "9842cca05ee6762aa5af26138b04e2edd792bf2f1504b19485870747837e1381",
+  "repaired_contract_sha256": "8ba7243bf7ffc52f7312e5a63c4b309e35cbfe96bb1b3b2cbe20e0b7598be0a8",
+  "repaired_launcher_sha256": "3f1c15588e856195b8aa31466daec007a2a4b0829eac5be6374111b803843ca8",
+  "execution_authorized_by_packet": false,
+  "repairs": {
+    "R1": "O_EXCL single-start claim and fsynced STARTED precede contract/path/GPU/storage checks; exact terminal pre-root stage/failure is durable; replay rejected before preflight",
+    "R2": "parent runs actual arms as monitored child process groups; aggregate root/log/attempt bytes are checked during each arm, at arm boundaries, and before completion; threshold terminates the process group and preserves evidence",
+    "R3": "reviewed compact full-hash packet/member and exact no-follow lstat continuity runs before resource preflight or REF; voltage bytes read is required to equal zero"
+  },
+  "required_checks": [
+    "sequential and concurrent second attempts cannot reach preflight",
+    "all post-claim pre-root failures preserve exact durable terminal evidence",
+    "aggregate 16 GiB output guard covers both arms and live child processes",
+    "current full-hash packet, every member, recording manifest, non-symlink and exact device/inode/mode/size/mtime/ctime are checked before REF",
+    "accepted distinct REF/B entries, factor diff, order, inter-arm fields, clock/ancestry, namespaces, resources, and disabled state are unchanged"
+  ],
+  "must_not_infer": ["no enabled derivative", "no service install/start", "no scientific execution", "no efficacy, waveform, identity, RF, or holdout conclusion"]
+}

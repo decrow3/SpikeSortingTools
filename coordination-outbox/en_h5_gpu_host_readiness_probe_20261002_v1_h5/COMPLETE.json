@@ -1,0 +1,11 @@
+{
+  "completed_at_local_date": "2026-10-02",
+  "manifest": "MANIFEST.sha256",
+  "manifest_sha256": "d390eb5e6700c43b7865977793ae0a24ee2bdf4a6f1237a6581bb7d626df4064",
+  "packet": "en_h5_gpu_host_readiness_probe_20261002_v1_h5",
+  "producer": "H5",
+  "schema": "immutable-evidence-packet-complete-v1",
+  "scientific_work_run": false,
+  "status": "PASS_GPU_HOST_READY_NOW",
+  "trained_launch_authorized": false
+}

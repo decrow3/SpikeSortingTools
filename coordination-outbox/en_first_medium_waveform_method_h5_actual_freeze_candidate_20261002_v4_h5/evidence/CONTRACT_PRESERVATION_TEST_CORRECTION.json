@@ -1,0 +1,10 @@
+{
+  "schema": "test-development-correction-v1",
+  "failed_result": "5 passed, 1 failed",
+  "cause": "the preservation test named a nonexistent historical key interpretation_and_decision",
+  "implementation_result": "no contract or implementation defect was implicated",
+  "correction": "replace the nonexistent key with the two actual accepted v4 sections denominators_and_intervals and quality_and_decision",
+  "preservation": "the original failure is recorded here and in the final test receipt",
+  "voltage_accessed": false,
+  "execution_enabled": false
+}

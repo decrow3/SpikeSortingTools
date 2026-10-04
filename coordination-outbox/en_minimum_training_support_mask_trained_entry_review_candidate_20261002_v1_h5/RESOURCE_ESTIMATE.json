@@ -1,0 +1,20 @@
+{
+  "schema": "en-medium-trained-resource-estimate-v1",
+  "medium_crop_seconds": 599.9999803346205,
+  "crop_frames_half_open": [208498882, 226498783],
+  "repaired_B384": {
+    "estimated_wall_seconds": [600, 720],
+    "estimated_output_bytes_reference": 1983697263,
+    "gpu_count_max": 1,
+    "ram_bytes_max": 68719476736,
+    "cpu_threads_max": 16,
+    "persistent_output_bytes_max": 8589934592
+  },
+  "repaired_B384_plus_REF384_repeat": {
+    "estimated_wall_seconds_serial": [1200, 1440],
+    "historical_output_bytes_sum_reference": 3965904536,
+    "execution": "serial fresh namespaces"
+  },
+  "estimate_basis": "Observed 120-second smoke sorts took 100-103 seconds and completed 10473.6-second full sorts took 12156-12348 seconds wrapper time.",
+  "checkpointing": "No within-sort resume; interruption requires preserving evidence and restarting only the failed fresh arm after review."
+}

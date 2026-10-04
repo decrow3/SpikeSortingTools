@@ -1,0 +1,3 @@
+Command: environments/rescue-production/.venv/bin/python -B -m unittest testing.test_kilosort_support_mask_candidate testing.test_prewhitening_support_mask
+Result: Ran 34 tests in 0.362s; OK.
+Installed source/config bindings were active. No recording content was opened.

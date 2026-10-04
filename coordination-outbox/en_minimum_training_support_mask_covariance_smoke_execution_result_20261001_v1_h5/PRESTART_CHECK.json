@@ -1,0 +1,37 @@
+{
+  "observed_utc": "2026-10-02T05:58:26Z",
+  "status": "passed_before_exactly_one_start_request",
+  "final_go_manifest_sha256": "1024277e7ac865a87cf9505c2ac317e5559e9785300079bae00de7c974dabdec",
+  "decision_chain": {
+    "candidate_manifest_sha256": "99c6250b527bef1ef5e81c9b9f48e49e67e8d7236a088499cf4592fe9c5479c2",
+    "conditional_review_manifest_sha256": "0e844ac1e9e49bbbe64e953b78c6d226dee644ff50987be453fdc650aafd0dd2",
+    "installed_preflight_manifest_sha256": "6e700eb3b956ba39606ebe8eafcee337626468c98c9d5b7e897805ae8dac5d52",
+    "installed_preflight_complete_sha256": "c2ae570d72c6897e2b92650bdd79b95d0ae5ad1336639ce44f75eec8fa3b76e0",
+    "prior_no_go_manifest_sha256": "8f078cc4a9af77dd3dde0e692d1c48658cafcfcda6037ae7f5aa748c439cd705",
+    "metadata_supplement_manifest_sha256": "25ec1ede84e6fa4230653d29868b0d3eb3858ac4fb4089cd06bf5e6aa1bebd2d",
+    "metadata_supplement_complete_sha256": "5d67c8f644f115c565d5502b833dd039f238f9a027902b859c30e6fb35c8846f"
+  },
+  "installed_hashes": {
+    "config": "58636c24243d4663c42f9c8c51121d7461ff6d8e929022bc8e3c5a8550b2a704",
+    "service_source": "791ccb7d7659ffb4f14518bbda74169fa0709b67dd6ed942793ab99cecc60e9c",
+    "service_unit": "791ccb7d7659ffb4f14518bbda74169fa0709b67dd6ed942793ab99cecc60e9c",
+    "candidate_source": "705b4af444699a6e40ddd0e8a189232b619c4e1bbff53f8150b448f5ad160391",
+    "launcher": "59e4c776276e5fe751887bfedea2ac9378ff9bd3764778215b55e79a6bd0d60c",
+    "support_helper": "9c981047f94d91a930e17bd51e634fbc96faa5e956c85d0882f3a603f7f42e0f",
+    "candidate_tests": "786c77bd1344381034a78777b43d3e329e22c2e8f2ae59693702c23caec3667d",
+    "resolved_python": "4adb344720ca7a0ccee7cdc77506bae30da64b55a977cd45e15880ddf8bddcc1",
+    "kilosort_io": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+    "kilosort_preprocessing": "2329b288ae068361a937632a53461e6cceeb27e30191337e9b9a0fa7404d763d",
+    "kilosort_spikedetect": "db1e8f0357319d9db3530a700bd1002c830337c50fde58b3e74e83e7af140892",
+    "kilosort_template_matching": "39235cc98428dbb279706718f74a1c3d84568ef31a4f9d1d997a60f7002b1a66",
+    "kilosort_run_kilosort": "5c1baee40edef14fa7566e441997da5d2ecc4f7940b8385cf83de40c8bd0f945"
+  },
+  "resolved_python_path": "/home/huklaban5/anaconda3/bin/python3.12",
+  "cuda_device": "NVIDIA RTX A5000",
+  "output_parent_writable": true,
+  "recording_metadata": {"size_bytes": 241309358592, "mode": "664", "content_opened_by_check": false},
+  "unit": {"load_state": "loaded", "unit_file_state": "static", "active_state": "inactive", "sub_state": "dead", "main_pid": 0, "restarts": 0, "active_enter_timestamp": "n/a", "inactive_enter_timestamp": "n/a"},
+  "fresh_namespace": {"run_root_absent": true, "native_results_absent": true, "launch_evidence_absent": true, "reservation_absent": true},
+  "competing_process_observed": false,
+  "publish_destination_absent": true
+}

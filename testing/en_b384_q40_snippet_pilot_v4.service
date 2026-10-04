@@ -1,0 +1,22 @@
+[Unit]
+Description=Bounded reviewed B384 q+40 snippet pilot
+ConditionPathExists=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_b384_q40_snippet_pilot.approved.v2.json
+
+[Service]
+Type=exec
+WorkingDirectory=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools
+Environment=OMP_NUM_THREADS=4
+Environment=MKL_NUM_THREADS=4
+Environment=OPENBLAS_NUM_THREADS=4
+ExecStart=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python -m testing.en_b384_q40_snippet_pilot_v2 --config /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_b384_q40_snippet_pilot.approved.v2.json
+CPUQuota=400%
+MemoryMax=4G
+MemorySwapMax=0
+RuntimeMaxSec=295
+TimeoutStartSec=5
+TimeoutStopSec=5
+KillMode=control-group
+OOMPolicy=stop
+StandardOutput=append:/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_b384_q40_snippet_pilot_v2.launch.log
+StandardError=append:/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_b384_q40_snippet_pilot_v2.launch.log
+

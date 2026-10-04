@@ -1,0 +1,14 @@
+{
+  "schema": "luke-r2-finalization-repair-packet-complete-v1",
+  "status": "COMPLETE_EXECUTION_DISABLED_PENDING_INDEPENDENT_H1_REVIEW",
+  "manifest_file": "MANIFEST.sha256",
+  "manifest_sha256": "682b3c3cc6cbe9bf3ae9a2bd2a19313888ddacfae99e199e9bd884ff9ffda284",
+  "contract_sha256": "55c0dbabc5623bbd1db9e3b49e32c493c9802880e3f28c7c1709ecb25b77ecfa",
+  "launcher_sha256": "238c9c997bad67415a13671deaa5569ee121f3a27aa07188fef51c424f2029f8",
+  "tests": "14 passed",
+  "execution_enabled": false,
+  "service_installed_or_started": false,
+  "recording_or_voltage_read": false,
+  "scientific_execution_started": false,
+  "completion_written_last": true
+}

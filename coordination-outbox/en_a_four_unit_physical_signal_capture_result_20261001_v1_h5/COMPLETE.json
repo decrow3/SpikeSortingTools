@@ -1,0 +1,14 @@
+{
+  "complete": true,
+  "packet": "en_a_four_unit_physical_signal_capture_result_20261001_v1_h5",
+  "status": "preflight_passed_start_denied_before_execution",
+  "manifest_sha256": "551bec4a850cfc9e2fd31ed480f102a653cb878a8f7ac26b0d9007a53b376122",
+  "service_start_requests": 1,
+  "service_starts": 0,
+  "recording_open_attempts": 0,
+  "recording_reads": 0,
+  "recording_bytes_read": 0,
+  "capture_output_created": false,
+  "retry_performed": false,
+  "alternate_route_used": false
+}

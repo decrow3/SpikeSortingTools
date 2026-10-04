@@ -1,0 +1,11 @@
+{
+  "complete": true,
+  "packet": "en_a_four_unit_waveform_qc_review_candidate_20261001_v1_h5",
+  "status": "review_pending_execution_disabled",
+  "created_utc": "2026-10-02T06:12:45Z",
+  "manifest_sha256": "5d0663f4a89ac6b1da6060ffcfff24167b92d018620a244525bad78774b21447",
+  "outcome_archives_opened": false,
+  "recording_opened": false,
+  "execution_started": false,
+  "independent_h1_review_requested": true
+}

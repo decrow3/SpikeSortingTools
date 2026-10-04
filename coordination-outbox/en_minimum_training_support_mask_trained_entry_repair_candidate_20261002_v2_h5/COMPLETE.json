@@ -1,0 +1,15 @@
+{
+  "schema": "en-trained-entry-targeted-repair-complete-v1",
+  "completed_utc": "2026-10-02T07:50:30Z",
+  "status": "complete_execution_disabled_repair_review_candidate",
+  "manifest_sha256": "791206a921226e620c2beb1bce9dfdbbf272705f6110f2f84839ea862beb05da",
+  "manifest_members_verified": true,
+  "complete_written_last": true,
+  "trained_source_sha256": "d75db9794a069e0bbded1ea218ae275eb6107dcdced45050cdfa30b77d40d7df",
+  "disabled_config_sha256": "1cd8354556ec6c5d8077128d08dd4fdaa4a8f898c5bf11999ca3c22d23596cf9",
+  "semantic_artifact_validation": true,
+  "actual_native_prepare_extract_hook_exercised": true,
+  "execution_enabled": false,
+  "recording_reads": 0,
+  "sort_training_detection_launched": false
+}

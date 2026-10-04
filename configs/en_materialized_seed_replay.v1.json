@@ -1,0 +1,155 @@
+{
+  "schema_version": "en-materialized-seed-replay-v1",
+  "status": "frozen_before_recording_reads_or_outcome_scoring",
+  "purpose": "Measure whether state-specific unsupported target rows affect the executed Kilosort 4.0.27 Th_single_ch=6 isolated basis-learning seed pathway, separating stable-state batches from state-change batches.",
+  "interpretation": "This is one historical-configuration operator replay, not final learned-template detection, a purity test, or a production gate.",
+  "implementation_source_sha256": "840206ffb18afabe71557f2e29a1c997fe49392fe5dfbacb78653f577f7a512c",
+  "dependency_sources": [
+    {
+      "path": "environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/io.py",
+      "sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd"
+    },
+    {
+      "path": "environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/preprocessing.py",
+      "sha256": "2329b288ae068361a937632a53461e6cceeb27e30191337e9b9a0fa7404d763d"
+    },
+    {
+      "path": "environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/spikedetect.py",
+      "sha256": "db1e8f0357319d9db3530a700bd1002c830337c50fde58b3e74e83e7af140892"
+    },
+    {
+      "path": "npx_preprocessing/motion/lattice_remap_si.py",
+      "sha256": "0125394629af7bffc6d46a5c26903efd65cd244f30000ae45d3cfa8324abea3a"
+    }
+  ],
+  "limits": {
+    "max_batches_per_arm": 12,
+    "max_recording_seconds_per_arm": 120,
+    "threads": 2,
+    "device": "cpu",
+    "batch_samples": 60000,
+    "padding_samples_each_side": 61,
+    "recording_passes_per_batch": 2,
+    "no_sorting": true,
+    "no_template_fitting": true,
+    "no_rf_or_holdout": true
+  },
+  "selection_rule": {
+    "state_choice": "q0 plus the three nonzero states with greatest full-session exposure, determined from field metadata only",
+    "stable_choice": "up to two padded-stable globally Kilosort-aligned batches near the one-third and two-thirds quantiles; prefer original nskip=25 schedule batches when available",
+    "transition_choice": "one nonoverlapping aligned batch containing a rounded-state change adjacent to the target state, near the temporal median; prefer nskip=25 schedule",
+    "shortages": "retain fewer batches and report the shortage; never relabel a transition batch as stable",
+    "temporal_state_change_bins_seconds": [[0, 0.25], [0.25, 1], [1, 5], [5, null]],
+    "per_transition_attribution": "derive state, exact target support, exposure, and seed counts per sample/time cell; do not assign the batch by midpoint"
+  },
+  "controls": {
+    "all_zero": "all preprocessing stages exactly zero and isolated seed count zero",
+    "time_varying_common_mode": "post-CAR and later stages exactly zero",
+    "one_isolated_value_7": "exact Th_single_ch=6 consumer count one",
+    "two_values_7_separated_by_10_samples": "exact isolated consumer count zero because both fall in the long isolation window",
+    "stage_reconstruction": "manual saved-config stages must be bit-identical to installed BinaryFiltered"
+  },
+  "effective_settings": {
+    "fs": 29999.835983263598,
+    "n_chan_bin": 384,
+    "batch_size": 60000,
+    "nt": 61,
+    "nt0min": 20,
+    "do_CAR": true,
+    "invert_sign": false,
+    "artifact_threshold": "inf",
+    "Th_single_ch": 6.0,
+    "nskip": 25,
+    "effective_nblocks": 0,
+    "dshift_is_none": true,
+    "data_dtype": "int16"
+  },
+  "arms": {
+    "A": {
+      "binary_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/recording/traces_cached_seg0.raw",
+      "binary_bytes": 241309358592,
+      "binary_receipt_sha256": "672938e942d105af6b1a3f7f1bddf206939535e0e4b57bc01153472a1ccb8b69",
+      "num_samples": 314204894,
+      "sorter_output": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/sort/sorter_output",
+      "ops_sha256": "07d61baf2c0da759db2ee2a21ef1d2d7a561bcb90293f568bccfe0a9e0906906",
+      "geometry_sha256": "0469ca92fb739a0cfd2f1613262d3a2d75af1098385385d7462ee6e3fd038d75",
+      "effective_settings": {
+        "fs": 29999.835983263598, "n_chan_bin": 384, "batch_size": 60000,
+        "nt": 61, "nt0min": 20, "do_CAR": true, "invert_sign": false,
+        "artifact_threshold": "inf", "Th_single_ch": 6.0, "nskip": 25,
+        "effective_nblocks": 0, "dshift_is_none": true, "data_dtype": "int16"
+      },
+      "metadata_hashes": [
+        {"path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/recording/rescue_recording_manifest.json", "sha256": "ef2071c9ead186689b804f0df52ff9eb5a25cf1f4bdd610ae14e6c81cab834b2"},
+        {"path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/recording/binary.json", "sha256": "c28e3ea508a531bb7549c635cc13c9b73f8508aa5fbfa3537f016fb7427bdc55"},
+        {"path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/sort/rescue_sort_manifest.json", "sha256": "d7b2edb23491e395a09d9b64a8b8b351a1d08b69bf0e5e89007119e84098a766"}
+      ],
+      "field": {
+        "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_am3_imec0_field_request_20260929_v1/payload/luke0804_imec0_two_layer_motion.npz",
+        "sha256": "4c769125020aad3263bf6eaa1889cdaa7eccbf19dcf0aa3a068b185221fadb9f",
+        "time_key": "time_s", "displacement_key": "displacement_um"
+      },
+      "eligibility": {
+        "target_states_um": [0, -160, -200, -120],
+        "padded_stable_aligned_batches": {"0": 3864, "-160": 1, "-200": 1, "-120": 0},
+        "shortage": "No stable -120 batch; only one stable batch each at -160 and -200. Transition batches preserve major negative-state coverage."
+      },
+      "planned_recording_bytes": 738779136,
+      "planned_equivalent_recording_seconds": 32.06524197454468,
+      "selected_batches": [
+        {"batch_index": 1475, "selection_state_um": -200.0, "selection_kind": "transition", "expected_core_states_um": [-240.0, -200.0, -160.0, -120.0]},
+        {"batch_index": 1900, "selection_state_um": 0.0, "selection_kind": "stable", "expected_core_states_um": [0.0]},
+        {"batch_index": 2225, "selection_state_um": 0.0, "selection_kind": "transition", "expected_core_states_um": [-200.0, -160.0, -120.0, -80.0, 0.0]},
+        {"batch_index": 3050, "selection_state_um": -160.0, "selection_kind": "transition", "expected_core_states_um": [-160.0, -80.0, 0.0]},
+        {"batch_index": 3425, "selection_state_um": 0.0, "selection_kind": "stable", "expected_core_states_um": [0.0]},
+        {"batch_index": 3660, "selection_state_um": -160.0, "selection_kind": "stable", "expected_core_states_um": [-160.0]},
+        {"batch_index": 3669, "selection_state_um": -200.0, "selection_kind": "stable", "expected_core_states_um": [-200.0]},
+        {"batch_index": 3750, "selection_state_um": -120.0, "selection_kind": "transition", "expected_core_states_um": [-200.0, -160.0, -120.0, -40.0]}
+      ]
+    },
+    "B": {
+      "binary_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/traces_cached_seg0.raw",
+      "binary_bytes": 241309358592,
+      "binary_receipt_sha256": "a63d61d57d214d7a90a9698143c0fd1ea5c872a73bcac498b683a6d99efed8a2",
+      "num_samples": 314204894,
+      "sorter_output": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/sort/sorter_output",
+      "ops_sha256": "901e3bbe3c77f0275eee78b524c43c34dea4711bf970d32ab0bfe0bc936e9765",
+      "geometry_sha256": "0469ca92fb739a0cfd2f1613262d3a2d75af1098385385d7462ee6e3fd038d75",
+      "effective_settings": {
+        "fs": 29999.835983263598, "n_chan_bin": 384, "batch_size": 60000,
+        "nt": 61, "nt0min": 20, "do_CAR": true, "invert_sign": false,
+        "artifact_threshold": "inf", "Th_single_ch": 6.0, "nskip": 25,
+        "effective_nblocks": 0, "dshift_is_none": true, "data_dtype": "int16"
+      },
+      "metadata_hashes": [
+        {"path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/rescue_recording_manifest.json", "sha256": "46a3845008cb19d9c35a85e67841b308843e071f1a27605e87195a8d4d0a42cf"},
+        {"path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/binary.json", "sha256": "c28e3ea508a531bb7549c635cc13c9b73f8508aa5fbfa3537f016fb7427bdc55"},
+        {"path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/sort/rescue_sort_manifest.json", "sha256": "974d37a9a063ed52173e1d6eb8f128efe954891fa4bda244a35c921198f8cad4"}
+      ],
+      "field": {
+        "path": "/mnt/NPX/Luke/20250804/shared_analysis/luke_improved_motion_two_machine_20260909_v1/estimation_huklaban1_v1/candidate_fields.npz",
+        "sha256": "547ff39d1c91d819b758246c701603d868bfd4d50bd6b791e3d5b7140c01c71d",
+        "time_key": "time_s", "displacement_key": "rigid_displacement_um"
+      },
+      "eligibility": {
+        "target_states_um": [0, -40, 40, -80],
+        "padded_stable_aligned_batches": {"0": 3324, "-40": 239, "40": 29, "-80": 0},
+        "shortage": "No stable -80 batch; a transition batch preserves -80 coverage."
+      },
+      "planned_recording_bytes": 923473920,
+      "planned_equivalent_recording_seconds": 40.08155246818086,
+      "selected_batches": [
+        {"batch_index": 1250, "selection_state_um": -40.0, "selection_kind": "stable", "expected_core_states_um": [-40.0]},
+        {"batch_index": 1350, "selection_state_um": -40.0, "selection_kind": "stable", "expected_core_states_um": [-40.0]},
+        {"batch_index": 1750, "selection_state_um": 0.0, "selection_kind": "stable", "expected_core_states_um": [0.0]},
+        {"batch_index": 2275, "selection_state_um": -40.0, "selection_kind": "transition", "expected_core_states_um": [-40.0, 0.0]},
+        {"batch_index": 2968, "selection_state_um": 40.0, "selection_kind": "stable", "expected_core_states_um": [40.0]},
+        {"batch_index": 3000, "selection_state_um": 0.0, "selection_kind": "transition", "expected_core_states_um": [0.0, 40.0]},
+        {"batch_index": 3325, "selection_state_um": 0.0, "selection_kind": "stable", "expected_core_states_um": [0.0]},
+        {"batch_index": 3425, "selection_state_um": 40.0, "selection_kind": "transition", "expected_core_states_um": [0.0, 40.0]},
+        {"batch_index": 3543, "selection_state_um": 40.0, "selection_kind": "stable", "expected_core_states_um": [40.0]},
+        {"batch_index": 3750, "selection_state_um": -80.0, "selection_kind": "transition", "expected_core_states_um": [-80.0, -40.0]}
+      ]
+    }
+  }
+}

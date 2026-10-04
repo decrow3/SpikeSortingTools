@@ -1,0 +1,40 @@
+{
+  "schema": "en-a-four-unit-physical-signal-capture-execution-inventory-v1",
+  "source_output_directory": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_a_four_unit_physical_signal_capture_20261001_approved_v2",
+  "source_directory_apparent_bytes": 3934011,
+  "capture_status": "complete",
+  "start_requests_issued": 1,
+  "accepted_start_requests": 1,
+  "retry_requests_issued": 0,
+  "counters": {
+    "read_calls": 41,
+    "logical_bytes": 32492544,
+    "retained_bytes": 3912192
+  },
+  "summary_rows": 40,
+  "retained_arrays": {
+    "original_retained_int16.npz": {
+      "sha256": "0552053555cb8fb0008bb1c796617d636243c0015d0ecaebe730350d132f3838",
+      "file_bytes": 1961518,
+      "array_count": 20,
+      "dtype": "int16",
+      "numeric_bytes": 1956096,
+      "publication": "not_copied; bounded voltage remains on H5"
+    },
+    "corrected_A_retained_int16.npz": {
+      "sha256": "91b8fc7afed9ce4413edd86d53349eb7b9e9906a24f661b18bc308fbedbfb513",
+      "file_bytes": 1961518,
+      "array_count": 20,
+      "dtype": "int16",
+      "numeric_bytes": 1956096,
+      "publication": "not_copied; bounded voltage remains on H5"
+    }
+  },
+  "small_artifacts": {
+    "CAPTURE_COMPLETE.json": "f7b3da302042a62ba2d087041f96c2deb763199dd60ac04e178b42616d93efc4",
+    "COUNTERS.json": "168294a134618689a9965de91e8265312e61fc2d65d7b4c95ff4fed7d070d2b4",
+    "STAGE_SUMMARIES.csv": "a87350e05adf295ce22288285276ad930e94294e2497e9f96d95c2cefacfa553",
+    "H1_GO.v3.json": "5268a41d4cae91cc030e8be782566d0d491d7a5e8443495820dba5b371b8d2f4"
+  },
+  "failed_marker_observed": false
+}

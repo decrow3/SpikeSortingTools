@@ -1,0 +1,22 @@
+{
+  "observed_utc": "2026-10-02T07:06:19Z",
+  "manager": "systemd user transient service",
+  "unit": "en_a_four_unit_waveform_qc_corrected_approved_v1.service",
+  "LoadState": "loaded",
+  "ActiveState": "failed",
+  "SubState": "failed",
+  "Result": "exit-code",
+  "MainPID": 0,
+  "NRestarts": 0,
+  "ExecMainCode": 1,
+  "ExecMainStatus": 1,
+  "ActiveEnterTimestamp": "Fri 2026-10-02 00:04:05 PDT",
+  "InactiveEnterTimestamp": "Fri 2026-10-02 00:04:05 PDT",
+  "surviving_service_process_observed": false,
+  "journal_events": [
+    "2026-10-02T00:04:05-0700 Starting Approved-one-shot-H5-local-corrected-waveform-QC...",
+    "2026-10-02T00:04:05-0700 Started Approved-one-shot-H5-local-corrected-waveform-QC.",
+    "2026-10-02T00:04:05-0700 Main process exited, code=exited, status=1/FAILURE",
+    "2026-10-02T00:04:05-0700 Failed with result 'exit-code'."
+  ]
+}

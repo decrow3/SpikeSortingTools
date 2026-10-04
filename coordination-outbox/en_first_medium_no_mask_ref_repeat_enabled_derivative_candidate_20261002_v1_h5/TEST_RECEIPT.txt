@@ -1,0 +1,13 @@
+Commands:
+PYTHONPATH=<candidate>/source PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR=/tmp/h5_enabled_derivative_numba python -m pytest -q -p no:cacheprovider <candidate>/tests/test_pair_launcher.py <candidate>/tests/test_activation_candidate.py
+<bound-venv-python> <candidate>/source/en_first_medium_trained_pair_launch.py --contract <enabled-contract> --expected-contract-sha256 21452474b4f112d82936759d3898e4b8267a967e4de3bf1b40c2cd5afa68b011 --validate-only
+<bound-venv-python> <candidate>/source/activation_preflight.py --contract <enabled-contract> --expected-contract-sha256 21452474b4f112d82936759d3898e4b8267a967e4de3bf1b40c2cd5afa68b011 --require-activation
+
+Results:
+23 passed in 1.06s
+launcher validate-only: execution_enabled=true; recording_or_voltage_opened=false
+activation preflight: status=INSPECTED_ELIGIBLE_NOT_LAUNCHED; activation_eligible=true; all namespaces fresh=true; exact launcher, Phase3, activation-review, and HubPlanner-decision bindings=true; recording/voltage/outcomes opened=false
+
+No service install/enable/start, start-claim creation, recording/voltage read,
+scientific outcome read, sort, training, evaluator, RF, or holdout operation
+occurred.

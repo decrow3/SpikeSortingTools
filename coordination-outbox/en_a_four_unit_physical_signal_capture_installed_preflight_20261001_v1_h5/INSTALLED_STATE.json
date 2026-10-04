@@ -1,0 +1,42 @@
+{
+  "status": "installed_preflight_passed_pending_final_h1_launch_decision",
+  "candidate_manifest_sha256": "f897ff3b18d89d7cd55ea7500be1dfc4019f3f7b117e0cd2abd1edc3ffb5b6f3",
+  "review_manifest_sha256": "6bd9a9e1caa003a36959bd482d7bd8a3e18066273e55e3a828a6aa84fe43a609",
+  "installed_hashes": {
+    "config": "64ffbeb091c8e4af18848d1734e5432896c054188b8142b4efb41788c91ffe07",
+    "service_source": "02f0b062ba9c9d4847a8ff15b883b2c517a67e840992bffbddf0074dedd19556",
+    "service_unit": "02f0b062ba9c9d4847a8ff15b883b2c517a67e840992bffbddf0074dedd19556",
+    "capture_source": "e33bc8346b2acda30cd2032c7b6a00a004f79f7416a1198c6bcd718f3b0c74fd",
+    "validator": "e0418d1b5f5d07ef162c2066a8df11e04f6d209023bde5d2ab639091f4a0c388"
+  },
+  "unit": {
+    "name": "en_a_four_unit_physical_signal_capture_approved_v3.service",
+    "load_state": "loaded",
+    "unit_file_state": "static",
+    "active_state": "inactive",
+    "sub_state": "dead",
+    "exec_main_pid": 0,
+    "restarts": 0,
+    "start_timestamp": "n/a",
+    "exit_timestamp": "n/a"
+  },
+  "resources": {
+    "cpu_quota": "400%",
+    "memory_max": "2G",
+    "memory_swap_max": 0,
+    "runtime_max_seconds": 300,
+    "restart": false
+  },
+  "fresh_paths": {
+    "production_output_absent": true,
+    "production_log_absent": true,
+    "production_live_receipt_absent": true,
+    "counters_absent": true,
+    "failure_absent": true,
+    "completion_absent": true
+  },
+  "recording_open_attempts": 0,
+  "recording_reads": 0,
+  "recording_bytes_read": 0,
+  "service_started": false
+}

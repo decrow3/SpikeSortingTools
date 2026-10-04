@@ -1,0 +1,21 @@
+{
+  "automatic_retry": false,
+  "contract": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_h5_rereview_20261002_v2_h5/phase1/en_first_medium_saved_output_qualification.phase1_enabled.one_start.v1.json",
+  "environment": {
+    "MPLCONFIGDIR": "/tmp/en_h5_phase1_mpl",
+    "NUMBA_CACHE_DIR": "/tmp/en_h5_phase1_numba"
+  },
+  "launch_state": "not installed; not started; exact start remains a separate authorized operation",
+  "module": "testing.qualification_managed_launcher",
+  "output": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase1_controls_20261002_v1_h5",
+  "python": "/home/huklaban5/anaconda3/bin/python",
+  "pythonpath": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_contract_targeted_repair_20261002_v2_h1/source",
+  "request": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_h5_rereview_20261002_v2_h5/phase1/PHASE1_REQUEST.one_start.v1.json",
+  "restart": "no",
+  "schema": "first-medium-phase1-exact-launch-contract-v1",
+  "service_name": "en-first-medium-phase1-controls-20261002-v1-h5.service",
+  "status": "AUTHORIZED_NOT_STARTED",
+  "stop_condition": "managed launcher exits once; success requires COMPLETE.json, failure is preserved and token cannot be reused",
+  "token_registry": "/mnt/NPX/Luke/DARTsort_motion_experiments/.qualification_token_registry/en_first_medium_saved_output_v1",
+  "working_directory": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_contract_targeted_repair_20261002_v2_h1"
+}

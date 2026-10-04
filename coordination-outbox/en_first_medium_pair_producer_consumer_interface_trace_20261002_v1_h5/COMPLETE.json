@@ -1,0 +1,10 @@
+{
+  "schema": "h5-pair-producer-consumer-interface-trace-complete-v1",
+  "status": "COMPLETE_INTERFACE_FINDING",
+  "manifest_sha256": "9923b6016d1154c231e7db7f0a16aa3bfa8d8d4666473e1c8fd5b28d86e08e75",
+  "finding": "EXISTING_PRODUCER_EXPOSES_ARM_STATES_PATHS_AND_INVENTORIES_BUT_NO_COMPLETE_TO_INVENTORY_HASH_EDGE",
+  "activation_eligible": false,
+  "real_data_or_outcomes_read": false,
+  "voltage_read": false,
+  "completion_written_last": true
+}

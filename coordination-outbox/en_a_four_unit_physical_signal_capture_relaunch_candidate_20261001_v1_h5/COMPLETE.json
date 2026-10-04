@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "packet": "en_a_four_unit_physical_signal_capture_relaunch_candidate_20261001_v1_h5",
+  "status": "candidate_complete_pending_independent_h1_review_no_go",
+  "manifest_sha256": "f897ff3b18d89d7cd55ea7500be1dfc4019f3f7b117e0cd2abd1edc3ffb5b6f3",
+  "installed": false,
+  "launched": false,
+  "recording_opened": false,
+  "fresh_go_receipt_present": false
+}

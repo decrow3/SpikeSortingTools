@@ -1,0 +1,44 @@
+{
+  "schema": "en-a-four-unit-waveform-qc-corrected-execution-failure-v1",
+  "observed_utc": "2026-10-02T07:06:19Z",
+  "status": "failed_one_authorized_invocation_consumed_no_retry",
+  "invocation_count": 1,
+  "retry_count": 0,
+  "failure_class": "reviewed_source_config_contract_mismatch",
+  "exception": {
+    "type": "KeyError",
+    "message": "'unit_channel_identities'",
+    "source_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_waveform_qc_correction_review_candidate_20261001_v1_h5/source/en_a_four_unit_waveform_qc_corrected.py",
+    "source_line": 259,
+    "statement": "visible: dict[int, list[bool]] = {int(unit): [] for unit in config[\"unit_channel_identities\"]}"
+  },
+  "root_cause": "The reviewed executed source requires top-level config key unit_channel_identities, but the byte-exact reviewed and enabled configs do not define that key. Independent H1 review did not detect this executed-path source/config mismatch.",
+  "last_completed_operations": [
+    "validated every configured input SHA-256",
+    "loaded frozen selection rows, geometry, and motion-field metadata",
+    "computed rounded states and exact lattice mappings",
+    "opened each retained NPZ archive once and validated exact frozen key sets",
+    "materialized both retained archive representations",
+    "computed 3912192 retained numeric bytes and enforced the byte ceiling",
+    "created the fresh output directory"
+  ],
+  "not_reached": [
+    "per-member shape and dtype checks",
+    "per-sample exact-remap comparisons",
+    "negative and identity controls",
+    "local detectability metrics",
+    "technical QC verdict",
+    "VALIDATION.json, SAMPLE_STATE_SUMMARY.csv, SLOT_METRICS.csv, COMPARISONS.csv, DECISION.json, COMPLETE.json"
+  ],
+  "fresh_output_root": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_a_four_unit_waveform_qc_corrected_20261002_v1",
+  "fresh_output_state": "directory_exists_empty",
+  "persistent_result_bytes": 0,
+  "corrected_metrics_produced": false,
+  "corrected_verdict": null,
+  "historical_verdict": "FAIL_unchanged",
+  "recording_read_calls": 0,
+  "waveform_transfer": false,
+  "waveform_publication": false,
+  "sort_train_detect": false,
+  "rf_or_holdout_access": false
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": "en-state-support-diagnosis-v2",
+  "status": "frozen_before_support_stratified_outcomes",
+  "base_protocol": {
+    "path": "configs/en_state_support_diagnosis.v1.json",
+    "sha256": "0335c95ca046e476d843b2e6ec6dd5a4df2054f0e940fa8c8d48497fe92eea27"
+  },
+  "correction": {
+    "v1_status": "superseded_before_outcome_scoring",
+    "issue": "v1 used the short label switch-distance for spatial distance to a support boundary in micrometres; it did not define temporal distance to a rounded-state change",
+    "resolution": "retain the spatial support-boundary diagnostic under an explicit name and add the distinct temporal state-change diagnostic below"
+  },
+  "temporal_state_change_attribution": {
+    "definition": "absolute time from each event to the nearest boundary at which the rounded state changes; recording endpoints are not state changes",
+    "event_bins_seconds": [[0, 0.25], [0.25, 1], [1, 5], [5, null]],
+    "interval_rule": "left-closed, right-open; pair bin uses the endpoint nearer a state-change boundary",
+    "pair_identity_rule": "use the original adjacent same-unit pair and require the same original contiguous state segment before categorization; never filter events first",
+    "interpretation": "temporal proximity to a state change is separate from spatial proximity to the supported/unsupported target-row boundary"
+  }
+}

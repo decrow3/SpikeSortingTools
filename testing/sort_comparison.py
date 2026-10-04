@@ -19,10 +19,13 @@ import pandas as pd
 from numba import njit
 
 from pipeline.config import fingerprint
+from pipeline.completeness_timeline import (
+    COMPLETENESS_TIMELINE_SCHEMA, DEFAULT_TIMELINE_PARAMETERS, classify_fit_trust,
+)
 from testing.development_strip import classify_unit_depths
 
 
-COMPARISON_SCHEMA = "long-sort-comparison-v2"
+COMPARISON_SCHEMA = "long-sort-comparison-v3"
 EDGE_COLUMNS = [
     "baseline_cluster", "candidate_cluster", "matched_events", "baseline_events",
     "candidate_events", "unmatched_baseline_events", "unmatched_candidate_events",
@@ -56,6 +59,18 @@ def load_comparison_inputs(
     )
     cached, qc_hash = read_cached_truncation_qc(name, Path(qc_dir))
     windows = build_windows_table(arrays, cached, sampling_frequency_hz)
+    positions_path = curated / "spike_positions.npy"
+    positions = None
+    if positions_path.is_file():
+        # Hash and parse the same bytes: depths affect eligibility and guardrails.
+        position_bytes = positions_path.read_bytes()
+        hashes["spike_positions.npy"] = hashlib.sha256(position_bytes).hexdigest()
+        positions = np.load(io.BytesIO(position_bytes), allow_pickle=False)
+        del position_bytes
+        if positions.ndim != 2 or positions.shape[0] != len(arrays.times) or positions.shape[1] < 2:
+            raise ValueError(f"invalid spike_positions.npy in {curated}")
+        if not np.isfinite(positions[:, 1]).all():
+            raise ValueError(f"nonfinite spike depths in {curated}")
     sort = {
         "st": arrays.times,
         "cl": arrays.clusters,
@@ -66,11 +81,7 @@ def load_comparison_inputs(
             "labels_sha256": hashlib.sha256(label_bytes).hexdigest(),
         }),
     }
-    positions_path = curated / "spike_positions.npy"
-    if positions_path.is_file():
-        positions = np.load(positions_path, mmap_mode="r")
-        if positions.ndim != 2 or positions.shape[0] != len(arrays.times) or positions.shape[1] < 2:
-            raise ValueError(f"invalid spike_positions.npy in {curated}")
+    if positions is not None:
         sort["depth"] = np.asarray(positions[:, 1])
     qc = {"amplitude_windows": windows, "request_digest": qc_hash}
     return sort, qc
@@ -312,12 +323,28 @@ def _unit_metrics(sort: Mapping[str, Any], *, fs: float, duration_s: float,
     return frame
 
 
+def _annotate_fit_trust(windows: pd.DataFrame, threshold: float) -> pd.DataFrame:
+    required = {"status", "missing_pct", "fit_x0", "fit_k", "fit_A"}
+    if not required <= set(windows.columns):
+        raise ValueError(f"amplitude windows missing fit-trust inputs {sorted(required - set(windows.columns))}")
+    windows = windows.copy()
+    norm, disagreement, status = classify_fit_trust(
+        windows.missing_pct.to_numpy(), windows[["fit_x0", "fit_k", "fit_A"]].to_numpy(),
+        disagreement_warning_pp=threshold,
+    )
+    windows["missing_pct_normalization"] = norm
+    windows["fit_disagreement_pp"] = disagreement
+    windows["measurement_status"] = status
+    return windows
+
+
 def _valid_windows(windows: pd.DataFrame, cluster: int) -> np.ndarray:
-    required = {"cluster_id", "status", "start_s", "end_s", "missing_pct"}
+    required = {"cluster_id", "status", "measurement_status", "start_s", "end_s", "missing_pct"}
     if not required <= set(windows.columns):
         raise ValueError(f"amplitude windows missing {sorted(required - set(windows.columns))}")
     return (
-        windows[(windows.cluster_id == cluster) & (windows.status == "finite_interior")]
+        windows[(windows.cluster_id == cluster) & (windows.status == "finite_interior")
+                & (windows.measurement_status == "measured")]
         .sort_values("start_s")[["start_s", "end_s", "missing_pct"]]
         .to_numpy()
     )
@@ -370,8 +397,11 @@ def compare_sorts(
     else:
         primary["interior_primary"] = True
 
-    baseline_windows = baseline_qc["amplitude_windows"].copy()
-    candidate_windows = candidate_qc["amplitude_windows"].copy()
+    fit_threshold = float(config.get(
+        "fit_disagreement_warning_pp", DEFAULT_TIMELINE_PARAMETERS["fit_disagreement_warning_pp"]
+    ))
+    baseline_windows = _annotate_fit_trust(baseline_qc["amplitude_windows"], fit_threshold)
+    candidate_windows = _annotate_fit_trust(candidate_qc["amplitude_windows"], fit_threshold)
     baseline_windows["sort"] = "baseline"
     candidate_windows["sort"] = "candidate"
     amplitude_rows = []
@@ -406,6 +436,24 @@ def compare_sorts(
         "ambiguous_edges": int((~edges.primary_match).sum()) if len(edges) else 0,
         "interpretation": "spike-train correspondence graph; not proof of biological identity",
     }
+    # Unit guardrails use complete trains of units whose median depth is in the
+    # common processing range. Spike guardrails additionally exclude individual
+    # events outside that range. Keep the full inventory tables for inspection.
+    guardrail_units = {}
+    guardrail_sorts = {}
+    for name, sort, units in (("baseline", baseline_sort, baseline_units),
+                              ("candidate", candidate_sort, candidate_units)):
+        if spatial_region is None:
+            guardrail_units[name], guardrail_sorts[name] = units, sort
+            continue
+        if "depth" not in sort or units.spatial_class.eq("unavailable").any():
+            raise ValueError("common-domain guardrails require finite spike depths in both arms")
+        selected = units[units.spatial_class.isin(["interior", "halo", "edge"])]
+        guardrail_units[name] = selected
+        depths = np.asarray(sort["depth"])
+        p0, p1 = spatial_region["processing_depth_um"]
+        keep = np.isin(sort["cl"], selected.cluster_id) & (depths >= p0) & (depths <= p1)
+        guardrail_sorts[name] = {key: np.asarray(sort[key])[keep] for key in ("st", "cl", "depth")}
     coincidence = {
         name: chance_aware_coincidence(
             sort, duration_frames=duration_frames,
@@ -413,20 +461,22 @@ def compare_sorts(
             depth_tolerance_um=float(config["coincidence_depth_um"]),
             seed=int(config.get("coincidence_seed", 20250804)) + index,
         )
-        for index, (name, sort) in enumerate((("baseline", baseline_sort), ("candidate", candidate_sort)))
+        for index, (name, sort) in enumerate(guardrail_sorts.items())
     }
     guardrail_rows = [
         {
             "metric": "median_refractory_violation_fraction_1_5ms",
-            "baseline": float(baseline_units.refractory_violation_fraction_1_5ms.median()),
-            "candidate": float(candidate_units.refractory_violation_fraction_1_5ms.median()),
-            "available": True,
+            "baseline": float(guardrail_units["baseline"].refractory_violation_fraction_1_5ms.median()),
+            "candidate": float(guardrail_units["candidate"].refractory_violation_fraction_1_5ms.median()),
+            "available": all(len(units) and units.refractory_violation_fraction_1_5ms.notna().any()
+                             for units in guardrail_units.values()),
         },
         {
             "metric": "chance_aware_near_coincident_excess",
             "baseline": coincidence["baseline"]["excess"],
             "candidate": coincidence["candidate"]["excess"],
-            "available": coincidence["baseline"]["available"] and coincidence["candidate"]["available"],
+            "available": all(value["available"] and np.isfinite(value["excess"])
+                             for value in coincidence.values()),
         },
     ]
     if spatial_region is not None:
@@ -435,12 +485,20 @@ def compare_sorts(
             ("edge_spike_fraction", "edge_spike_fraction"),
         ):
             if column == "spatial_class":
-                bvalue = float(np.mean(baseline_units[column] == "edge"))
-                cvalue = float(np.mean(candidate_units[column] == "edge"))
+                values = [float(np.mean(units[column] == "edge")) if len(units) else np.nan
+                          for units in guardrail_units.values()]
             else:
-                bvalue = float(np.average(baseline_units[column].fillna(0), weights=baseline_units.spike_count))
-                cvalue = float(np.average(candidate_units[column].fillna(0), weights=candidate_units.spike_count))
-            guardrail_rows.append({"metric": metric, "baseline": bvalue, "candidate": cvalue, "available": True})
+                values = []
+                for sort in guardrail_sorts.values():
+                    classes = classify_unit_depths(
+                        sort["depth"], processing_depth_um=spatial_region["processing_depth_um"],
+                        scoring_depth_um=spatial_region["scoring_depth_um"],
+                        minimum_edge_exclusion_um=spatial_region["minimum_edge_exclusion_um"],
+                    )
+                    values.append(float(np.mean(classes == "edge")) if len(classes) else np.nan)
+            bvalue, cvalue = values
+            guardrail_rows.append({"metric": metric, "baseline": bvalue, "candidate": cvalue,
+                                   "available": bool(np.isfinite(values).all())})
     for metric in ("sliding_rp_contamination", "nn_isolation", "nn_miss_rate", "sd_ratio", "noise_cutoff"):
         bvalue = baseline_qc.get("guardrails", {}).get(metric)
         cvalue = candidate_qc.get("guardrails", {}).get(metric)
@@ -498,6 +556,16 @@ def compare_sorts(
         "candidate_identity": candidate_sort.get("identity_digest"),
         "baseline_qc_identity": baseline_qc.get("request_digest"),
         "candidate_qc_identity": candidate_qc.get("request_digest"),
+        "fit_trust_policy": {
+            "schema_version": COMPLETENESS_TIMELINE_SCHEMA,
+            "fit_disagreement_warning_pp": fit_threshold,
+            "required_status": "finite_interior and measured",
+        },
+        "guardrail_spatial_policy": {
+            "unit_metrics": "complete trains of units with median depth in the processing range",
+            "spike_metrics": "events in the processing range from those units",
+            "spatial_filter_applied": spatial_region is not None,
+        },
     }
     candidate_manifest = {**evaluation_request, "request_digest": fingerprint(evaluation_request)}
     decision = {

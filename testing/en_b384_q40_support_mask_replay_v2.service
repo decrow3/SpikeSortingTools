@@ -1,0 +1,14 @@
+[Unit]
+Description=Review-gated B384 q+40 support-mask paired replay v2
+
+[Service]
+Type=exec
+WorkingDirectory=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools
+ExecStart=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python -m testing.en_b384_q40_support_mask_replay --config /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_b384_q40_support_mask_replay.review_pending.v2.json --mode execute
+Environment=PYTHONUNBUFFERED=1
+CPUQuota=400%
+MemoryMax=4G
+MemorySwapMax=0
+RuntimeMaxSec=295
+TimeoutStopSec=5
+Nice=10

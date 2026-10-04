@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-review-completion-v1",
+  "status": "COMPLETE_TARGETED_REPAIR",
+  "completed_at_utc": "2026-10-02T10:13:08Z",
+  "manifest_sha256": "00d95f0139846d27e47fc93b10e2167b7a1ef9f0a703d1bb7503e7c300c5250b",
+  "verdict_file": "INDEPENDENT_REVIEW.json",
+  "execution_performed": false,
+  "voltage_accessed": false,
+  "rf_or_holdout_accessed": false
+}

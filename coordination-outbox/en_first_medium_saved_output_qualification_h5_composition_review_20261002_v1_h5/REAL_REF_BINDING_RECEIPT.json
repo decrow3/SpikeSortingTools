@@ -1,0 +1,42 @@
+{
+  "schema": "first-medium-ref-only-real-binding-independent-recompute-v1",
+  "host": "huklaban5",
+  "recomputed_at_utc": "2026-10-02T10:55:26Z",
+  "mode": "read_only_saved_output_and_qc_metadata_no_voltage",
+  "arm_id": "REF384",
+  "curated_output": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/sorter_output",
+  "event_rows": 1856371,
+  "cluster_count": 441,
+  "local_frame_min": 15,
+  "local_frame_max": 17999887,
+  "curated_identity_digest": "8f4fb3bfbfff22d7fcd982bbc7d2d272dbc65e72d6b6a2db093102f17d938e53",
+  "qc_request_digest": "ae07ecf970f0c6de93f5f1717254fd11a181ce81b8a693232171f03e4ed524af",
+  "spike_positions_sha256": "653434b726da58644876db9c3d83b64fb37d5a0c901ae329413c8463d3094737",
+  "ops_sha256": "5b3b365a83babe1dc5842fb92ff5e56f35a93aefe2557a1cd31ca42b46d72f58",
+  "event_lineage_sha256": "3aa7da34c17af944c79a26b71e1988b97770f98ba4d7e902fda6d113d1b08380",
+  "geometry_float64_sha256": "d126fb241989698cd445c89638b02f0a2f8153389cfcad5acf49c1a0c4093bc8",
+  "spatial_identity_sha256_v2": "bdc51f5595ff9c9654677d542c798f097d65a2022e5710729c1e7796a2c24414",
+  "position_shape": [1856371, 2],
+  "reference_frame": "kilosort_probe_xy_feature_mass_unshifted_nblocks0",
+  "row_semantics": "exported_event_order_after_native_kept_spikes",
+  "clock": {
+    "saved_frame": "global_acquisition_samples",
+    "crop_origin_global_frame": 208498882,
+    "global_frames_half_open": [208498882, 226498783],
+    "local_frames_half_open": [0, 17999901],
+    "observed_exact_offset": 208498882,
+    "validated_rows": 1856371,
+    "digest": "a6359af079e2a548cc6e6b789b52e16857c51126a4ed2c19cedadc04ce6955ca"
+  },
+  "source_dependency": {
+    "schema": "content-addressed-python-source-root-v1",
+    "digest_sha256": "d1e5a4465d387c66a7655db442ecbf8740d2cae0032c300b0456432b0080c614",
+    "files": {
+      "io.py": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+      "postprocessing.py": "d20da9026de10eb83a02466cdb233c85ae4215c15af7d5656c3593c3809a0a55"
+    }
+  },
+  "binding_result": "PASS",
+  "phase1_start_token_issued": false,
+  "reason_no_token": "composition review has blocking fail-closed and lifecycle findings"
+}

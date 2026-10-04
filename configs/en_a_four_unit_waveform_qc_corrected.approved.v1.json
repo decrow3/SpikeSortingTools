@@ -1,0 +1,161 @@
+{
+  "schema": "en-a-four-unit-waveform-qc-corrected-v1",
+  "status": "approved_for_one_h5_local_execution",
+  "h1_review_manifest_sha256": "f4d173c3b745c29bf80779e63f54742c50b5a2148be53ffc4e5e1c6f22913401",
+  "gates": {
+    "execution_enabled": true,
+    "independent_h1_review_bound": true,
+    "outcome_archive_open_authorized": true
+  },
+  "decision_scope": "whether the same selected A saved signals show technically coherent per-sample original-to-corrected behavior and independently local detectable signal sufficient to inform design of a first trained comparison",
+  "prohibited_claims": [
+    "biological identity",
+    "purity",
+    "waveform localization",
+    "motion-estimator correctness",
+    "sorter efficacy or benefit"
+  ],
+  "historical_result": {
+    "status": "preserved_not_reinterpreted",
+    "verdict": "FAIL",
+    "result_packet_manifest_sha256": "3e33724e8b8a1e7323a64f4dbe62be9b81b192576b2baa6b5792ce37e6324c9b",
+    "result_packet_complete_sha256": "e7db4fff537c2a51a8bf931d3bcf119ae183b08a51560c26bdf951b0067cd9b9",
+    "verdict_summary_sha256": "edaae6320fdad9cbd574c82bced18986f6e80c5221ce89b51a44b513a7280507",
+    "preservation_rule": "The original FAIL, its four unit-278 remap failures, all original global-peak distances, visibility flags, and metric tables remain immutable historical outputs. Corrected QC writes a new namespace and does not overwrite, relabel, or delete them."
+  },
+  "implementation_bindings": [
+    {"path": "source/en_a_four_unit_waveform_qc_corrected.py", "sha256": "e8e5186f2fb91802ae52eff9176ee4ce36d2aca707185871c6a74deb2b69f989"},
+    {"path": "tests/test_en_a_four_unit_waveform_qc_corrected.py", "sha256": "d24a478b626d9ca070e3e13a7e4c2fc76cee85800552e4dc98eafa94bab25573"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_rounded_ks129_arm_a_queue.py", "sha256": "65c531e53b4b47b9420fe5ab570bf130300132dca25004c1201a75bb17866bd6"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_rounded_field.py", "sha256": "823e788da0095012dd345085bb4667f246efc7f4170a5a811c91082769156e00"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/lattice_remap_si.py", "sha256": "0125394629af7bffc6d46a5c26903efd65cd244f30000ae45d3cfa8324abea3a"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_rounded_field_ks129.v1.json", "sha256": "c8d8741abc942c8d75929f5e8d0312cdc1a9553c337691e0dca876248680808b"},
+    {"path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/CONTRACT.json", "sha256": "03fa573319f6e7822658e449ceeda8e7f5d60e00c10a0a6944d8a714c78c8bc2"},
+    {"path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/recording/rescue_recording_manifest.json", "sha256": "ef2071c9ead186689b804f0df52ff9eb5a25cf1f4bdd610ae14e6c81cab834b2"}
+  ],
+  "inputs": {
+    "original_archive": {
+      "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_a_four_unit_physical_signal_capture_20261001_approved_v2/original_retained_int16.npz",
+      "sha256": "0552053555cb8fb0008bb1c796617d636243c0015d0ecaebe730350d132f3838",
+      "review_phase_access": "forbidden"
+    },
+    "corrected_archive": {
+      "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_a_four_unit_physical_signal_capture_20261001_approved_v2/corrected_A_retained_int16.npz",
+      "sha256": "91b8fc7afed9ce4413edd86d53349eb7b9e9906a24f661b18bc308fbedbfb513",
+      "review_phase_access": "forbidden"
+    },
+    "selection_receipt": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_approval_metadata_20261001_v3_h5/SELECTION_RECEIPT.csv",
+      "sha256": "a83a8b358cfc4bfad85d2ed2a6cd0137826f7e93ec5046f902674dce3a226d95"
+    },
+    "channel_positions": {
+      "path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/sort/sorter_output/channel_positions.npy",
+      "sha256": "0469ca92fb739a0cfd2f1613262d3a2d75af1098385385d7462ee6e3fd038d75"
+    },
+    "motion_field": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_am3_imec0_field_request_20260929_v1/payload/luke0804_imec0_two_layer_motion.npz",
+      "sha256": "4c769125020aad3263bf6eaa1889cdaa7eccbf19dcf0aa3a068b185221fadb9f"
+    },
+    "historical_fail_summary": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_waveform_qc_execution_result_20261001_v1_h5/VERDICT_SUMMARY.json",
+      "sha256": "edaae6320fdad9cbd574c82bced18986f6e80c5221ce89b51a44b513a7280507"
+    }
+  },
+  "field_binding": {
+    "keys": ["depth_um", "displacement_um", "sign", "time_s"],
+    "time_key": "time_s",
+    "displacement_key": "displacement_um",
+    "rigid_projection": "median across depth after exact executed shape validation",
+    "period_um": 40.0,
+    "reference": "median of the full-session rigid projection",
+    "rounding": "half away from zero",
+    "sign": "corrected = observed - displacement",
+    "expected_metadata": {
+      "centers": 41895,
+      "first_center_s": 0.0,
+      "last_center_s": 10473.5,
+      "cell_width_s": 0.25,
+      "reference_um": 0.0,
+      "rounded_states_um": [-280.0, -240.0, -200.0, -160.0, -120.0, -80.0, -40.0, 0.0, 40.0]
+    }
+  },
+  "clock_and_edges": {
+    "sampling_frequency_hz": 29999.835983263598,
+    "global_frame_origin": 0,
+    "time_origin_s": 0.0,
+    "sample_time_rule": "time_origin_s + global_frame / sampling_frequency_hz",
+    "retained_global_frames": "[frame_1-60, frame_2+61) for a pair and [frame_1-60, frame_1+61) for a single",
+    "cell_rule": "[center-cell_width/2, center+cell_width/2)",
+    "exact_edge_rule": "numpy.searchsorted(right_edges, sample_times, side='right'); an exact shared edge belongs to the later cell",
+    "state_rule": "derive one rounded state per retained sample from the bound field; receipt state_um is descriptive event-center metadata and must not be broadcast over a member"
+  },
+  "axes_and_scale": {
+    "archive_axis_order": ["channel", "time"],
+    "channels": 384,
+    "dtype": "int16",
+    "amplitude_unit": "ADC_count",
+    "member_shape_rule": "short_pair=(384,121+lag_samples); single=(384,121)",
+    "first_event_index": 60,
+    "second_pair_event_index_rule": "60+lag_samples"
+  },
+  "frozen_selections_and_thresholds": {
+    "selection_slots": 20,
+    "roles": {"short_pair": 8, "ordinary_event": 8, "q0_identity_control": 4},
+    "local_radius_um": 80.0,
+    "local_ptp_snr_threshold": 6.0,
+    "unit_usable_minimum_detectable_singles": 2,
+    "pass_minimum_usable_units": 3,
+    "caution_usable_units": 2,
+    "negative_exact_equality_ceiling": 0.99,
+    "signal_and_baseline_windows": "unchanged from v1: singles signal [40,101), pairs [40,101+lag); baseline [0,30) plus [111+lag,121+lag)"
+  },
+  "corrected_semantics": {
+    "per_sample_remap": "For each retained sample, corrected[target,t] equals original[mapping(state[t],target),t], or zero where that state/target lacks exact support.",
+    "anchor": "The corrected coordinate anchor is fixed by the prior unit-channel table. State-specific original fixed anchors are disabled. Original comparisons use per-sample remapping into corrected coordinates.",
+    "support": "Support is a channel-by-time Boolean mask from the exact mapping for each sample state; a slot-wide or event-center support label is not used for sample comparisons.",
+    "correlation": "Optional correlation is computed only on frozen corrected-local-domain channel/time samples that are supported under the corresponding per-sample mappings; it is descriptive, never an integrity or detectability gate.",
+    "q0_identity": "Whole-array original/corrected identity is enabled only when every retained sample state is exactly zero; otherwise it is disabled and replaced by the per-sample positive remap check.",
+    "negative_controls": "No-shift and per-sample wrong-sign controls are enabled only when at least one sample state is nonzero and the alternative predicted array differs from the positive expected array. Disabled controls are reported, not counted as passes.",
+    "stage_domain": "raw_counts, temporal_centered, and CAR_centered only; native high-pass remains excluded because retained snippets lack original 512-sample padding"
+  },
+  "local_detectability": {
+    "domain": "channels within <=80 um of the frozen corrected-coordinate anchor, chosen before outcome inspection",
+    "metric": "maximum CAR-centered ptp_snr inside the frozen local domain",
+    "criterion": "local_max_ptp_snr >= 6",
+    "global_peak": "reported descriptively over all 384 channels but never used to select a local channel, establish localization, or gate detectability",
+    "noncircularity": "No peak-distance<=80 criterion exists. Membership in the predeclared local domain and the thresholded local metric are the only detectability inputs.",
+    "pair_use": "short-pair slots remain descriptive/integrity-only and do not enter unit usability"
+  },
+  "interpretation_rules": {
+    "integrity": "all archive hash/key/shape/dtype checks and all per-sample exact-remap positives pass; every enabled negative control passes; conditional q0 identity passes where enabled",
+    "unit_usable": "at least two of its three corrected-A single-event slots meet local detectability",
+    "PASS": "integrity passes and at least 3 of 4 units are usable",
+    "CAUTION": "integrity passes and exactly 2 of 4 units are usable",
+    "FAIL": "integrity fails or fewer than 2 units are usable",
+    "scope_limit": "The verdict is a technical saved-array screen only and cannot establish any prohibited claim."
+  },
+  "output_schema": {
+    "fresh_output_root": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_a_four_unit_waveform_qc_corrected_20261002_v1",
+    "files": ["VALIDATION.json", "SAMPLE_STATE_SUMMARY.csv", "SLOT_METRICS.csv", "COMPARISONS.csv", "DECISION.json", "COMPLETE.json"],
+    "complete_written_last": true,
+    "publish_voltage": false,
+    "figures": "disabled to minimize output and avoid implicit waveform publication"
+  },
+  "resources": {
+    "recording_read_calls_max": 0,
+    "archive_opens_max": 2,
+    "archive_numeric_bytes_max": 3912192,
+    "persistent_output_bytes_max": 8388608,
+    "ram_bytes_max": 536870912,
+    "cpu_threads_max": 2,
+    "wall_seconds_max": 120
+  },
+  "stop_conditions": [
+    "any review/gate/hash/source/input mismatch",
+    "any unexpected archive key, shape, axis, dtype, field key, field edge, or state",
+    "any resource ceiling would be exceeded",
+    "any declared output already exists",
+    "any attempt to open a recording path, train, detect, sort, tune, access RF/holdout, or publish waveform arrays"
+  ],
+  "completion_condition": "After a separate independent GO only: all compact outputs are durable, hashes verified, and COMPLETE.json written last with zero recording reads and no waveform export."
+}

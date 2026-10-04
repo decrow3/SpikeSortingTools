@@ -1,0 +1,31 @@
+{
+  "schema": "en-b384-q40-snippet-pilot-v1",
+  "status": "review_pending_do_not_execute",
+  "voltage_stage_reviewed": false,
+  "device": "cpu",
+  "threads_max": 4,
+  "wall_seconds_max": 300,
+  "logical_read_bytes_max": 536870912,
+  "recording_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/traces_cached_seg0.raw",
+  "ops_path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output/ops.npy",
+  "bank_path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/pre_extraction_snapshot/Wall3.npy",
+  "selected_pairs_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_b384_q40_snippet_preparation_20261001_v2/SELECTED_PAIRS.csv",
+  "isolated_controls_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_b384_q40_snippet_preparation_20261001_v2/SELECTED_ISOLATED_CONTROLS.csv",
+  "output": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_b384_q40_snippet_pilot_20261001_v1",
+  "frozen_inputs": [
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_b384_q40_snippet_pilot.py", "sha256": "c8ff8456eb9638365643c0e6b262f455964efe149308692b6e46c0229baf1f12"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_b384_q40_snippet_preparation_20261001_v2/SELECTED_PAIRS.csv", "sha256": "d6dd0941aa2775613d5684586be0435b7d7c927f018ac3db338b4ff063cfd278"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_b384_q40_snippet_preparation_20261001_v2/SELECTED_ISOLATED_CONTROLS.csv", "sha256": "7b7e3c8813fae85265cf9c2deb6f6e149b3a28dbcc164bc05c7f283caa1553e9"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_b384_q40_snippet_preparation_20261001_v2/RESULT.json", "sha256": "255bf67b8b3f9077f5a68b753a61235995aa82c796dd3115635c241e78eabe23"},
+    {"path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output/ops.npy", "sha256": "7a8f5d219de1b98776134abb00f637777f85ba94113758ae47a1e4b26b2a44f0"},
+    {"path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/pre_extraction_snapshot/Wall3.npy", "sha256": "3cfa49a4bf9b8d4c0c46709749be9d9f005e7584091ca08785311b090533a608"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/io.py", "sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/template_matching.py", "sha256": "39235cc98428dbb279706718f74a1c3d84568ef31a4f9d1d997a60f7002b1a66"}
+  ],
+  "decision_rule": {
+    "implementation_controls": "Zero input must return no detections; every selected saved pair endpoint must be exactly reproduced by time and detection-template ID; isolated same-unit controls are reported separately.",
+    "readout": "For each pair compare frozen best-single and two-component saved-bank least-squares residual fractions, coefficients, component cosine, unit role and lag.",
+    "interpretation": "A reproducible second component supports a concrete matcher/representation pathway; a distinct component supports two model components; failure to reproduce or artifact-like broad energy redirects to preprocessing/alignment. No residual outcome proves one or two biological spikes.",
+    "intervention": "Only a repeated model-component pattern concentrated in excluded targets justifies a bounded duplicate-suppression/peel intervention test; otherwise inspect support-edge preprocessing or event alignment before changing matching. Interior controls prevent treating a generic model-fit property as edge-specific."
+  }
+}

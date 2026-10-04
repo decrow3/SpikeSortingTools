@@ -1,0 +1,71 @@
+{
+  "implementation_checks": {
+    "can_establish": "reviewed orchestration is fail-closed for the tested lifecycle deltas and exact REF-only Phase1 request",
+    "cannot_establish": "no scientific efficacy, repeatability, identity, purity, recovery, or advancement result",
+    "done": [
+      "executed source traced through production and fixture entry points",
+      "full packet tests rerun natively and from byte-identical stage",
+      "accepted manifest/complete bindings compared byte-for-byte",
+      "REF cohort recomputed directly from REF arrays without B",
+      "exact contract gate and token binding validated before issue"
+    ],
+    "not_done": [
+      "no real Phase1/Phase2, B read, voltage, sort, RF, holdout, or scientific score"
+    ]
+  },
+  "phase1_authorization": {
+    "composition_review_token": "aa5e007900b82dc8ba04adde2600210632101133d2ad9eab9bd314cf04e18ebe",
+    "contract_sha256": "29051bd579c81986ece405f825368642cb6e4b8932f0bfe52d6a6afc24866681",
+    "output": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase1_controls_20261002_v1_h5",
+    "output_present_at_issue": false,
+    "phase1_start_token": "a51cbf56f022064650e2d6c34d803949c7f93e44031ef3f4a15fa6be1ef51ec3",
+    "registry_claim_present_at_issue": false,
+    "request_sha256": "671f6ea7464c19b79b1e60cff1d6fc8615996e7399ae80e439e031964151d5bc",
+    "start_token_binding_sha256": "d37245c38df414a0753c7a047e8a59f1ed99fbb9fda4f68d76fc48fb98a155e4",
+    "start_token_sha256": "1be9f3b632b75afe87b1da6e01655c5943bc87304f78dc3dc02afe9f3af4deff",
+    "request_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_h5_rereview_20261002_v2_h5/phase1/PHASE1_REQUEST.one_start.v1.json"
+  },
+  "phase1_started": false,
+  "phase2_enabled": false,
+  "prohibited_work_performed": false,
+  "ref_cohort_direct_recompute": {
+    "candidate_or_b_read": false,
+    "cluster_count": 441,
+    "cohort_sha256": "3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0",
+    "event_rows": 1856371,
+    "nearest_outside": {
+      "above_cluster": 225,
+      "above_median_um": 2180.4287109375,
+      "below_cluster": 162,
+      "below_median_um": 1597.307861328125
+    },
+    "selected_depth_range_um": [
+      1612.4267578125,
+      2174.30126953125
+    ],
+    "selected_units": 61,
+    "sources_read": [
+      "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/sorter_output/spike_clusters.npy",
+      "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/sorter_output/spike_positions.npy"
+    ]
+  },
+  "review_scope": [
+    "fixture confinement",
+    "Phase2 rejects fixture/non-real Phase1 and validates REF before B load",
+    "exact-bound single-use tokens",
+    "managed pre-load resource enforcement and external timeout",
+    "exact frozen REF cohort",
+    "accepted snapshots unchanged",
+    "no B access or score"
+  ],
+  "schema": "first-medium-saved-output-qualification-changed-path-rereview-v1",
+  "subject": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_contract_targeted_repair_20261002_v2_h1",
+  "subject_complete_sha256": "a12edb14c79166cffed77f14ef86ccaed912f91b1d60cb9d149c65ae8a0576f6",
+  "subject_manifest_sha256": "7208ca62283409872ec786f90da91941ad4e2e900afed7a08a71265ef004af32",
+  "test_results": {
+    "adversarial_controls": "PASS",
+    "byte_identical_stage": "12 passed in 4.02s",
+    "native": "12 passed in 4.26s"
+  },
+  "verdict": "GO_PHASE1_ONE_START_ONLY"
+}

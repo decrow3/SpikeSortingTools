@@ -1,0 +1,16 @@
+{
+  "schema": "immutable-waveform-method-targeted-repair-completion-v1",
+  "status": "complete_ready_for_h1_rereview_execution_disabled",
+  "manifest_sha256": "dd5baf0036d8700028e5656ba7d3efa6bfb81d5b53be6144ee661316776345a7",
+  "repairs_closed": [
+    "R1_EXECUTABLE_RUNTIME_CLOSURE",
+    "R2_PREFLIGHT_IO_ACCOUNTING",
+    "R3_CORRELATION_REASON_AND_FIXTURES"
+  ],
+  "execution_enabled": false,
+  "voltage_accessed": false,
+  "real_data_accessed": false,
+  "jobs_started": false,
+  "rf_or_holdout_accessed": false,
+  "completion_written_last": true
+}

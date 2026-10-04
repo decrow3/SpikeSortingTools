@@ -1,0 +1,56 @@
+{
+  "schema": "h5-pair-producer-consumer-interface-trace-v1",
+  "status": "COMPLETE_INTERFACE_TRACE",
+  "producer": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_r2_finalization_repair_20261002_v3_h5",
+    "manifest_sha256": "682b3c3cc6cbe9bf3ae9a2bd2a19313888ddacfae99e199e9bd884ff9ffda284",
+    "complete_sha256": "42e5b6b89a06cf987508aa062316e3b25b7b34704521dd750227a4c94e19d7aa",
+    "contract_sha256": "55c0dbabc5623bbd1db9e3b49e32c493c9802880e3f28c7c1709ecb25b77ecfa",
+    "launcher_sha256": "238c9c997bad67415a13671deaa5569ee121f3a27aa07188fef51c424f2029f8"
+  },
+  "finding": "EXISTING_PRODUCER_EXPOSES_ARM_STATES_PATHS_AND_INVENTORIES_BUT_NO_COMPLETE_TO_INVENTORY_HASH_EDGE",
+  "pair_complete_interface": {
+    "exact_execution_state_keys": ["REF384_repeat", "repaired_B384"],
+    "per_state_fields": ["status", "complete_path", "complete_sha256"],
+    "arm_order": ["REF384_repeat", "repaired_B384"],
+    "pair_complete_binds_state_map": true
+  },
+  "ref_interface": {
+    "expected_complete": "<planned_pair_root>/REF384_repeat/COMPLETE.json",
+    "complete_arm_association": "arm == REF384_repeat",
+    "expected_curated_output": "<planned_pair_root>/REF384_repeat/sorter_output",
+    "expected_inventory": "<planned_pair_root>/REF384_repeat/launch_evidence/artifact_inventory.json",
+    "inventory_shape": "native filename -> sha256; snapshot filename -> sha256"
+  },
+  "repaired_interface": {
+    "expected_complete": "<reviewed repaired config trained.run_root>/COMPLETE.json",
+    "complete_arm_association": "config_sha256 equals exact repaired config binding",
+    "expected_curated_output": "<reviewed repaired config native_invocation.results_dir>",
+    "configured_relation": "native_invocation.results_dir == trained.run_root/native_results",
+    "expected_inventory": "<trained.run_root>/launch_evidence/artifact_inventory.json",
+    "inventory_shape": "native filename -> {bytes, sha256}; pre_extraction_snapshot filename -> {bytes, sha256}"
+  },
+  "consumer_bytes_covered_by_both_native_inventories": [
+    "spike_times.npy",
+    "spike_clusters.npy",
+    "full_st.npy",
+    "kept_spikes.npy",
+    "spike_positions.npy",
+    "ops.npy",
+    "cluster_KSLabel.tsv"
+  ],
+  "exact_missing_link": "Neither arm COMPLETE nor pair COMPLETE contains the artifact_inventory.json SHA256. Pair COMPLETE binds only each arm COMPLETE hash. Therefore pair COMPLETE alone does not cryptographically identify the exact saved arrays consumed downstream.",
+  "required_consumer_checks": [
+    "require the execution_states key set to equal exactly REF384_repeat and repaired_B384",
+    "require exact resolved COMPLETE paths, regular non-symlink files, and matching complete_sha256",
+    "validate REF arm field and repaired config_sha256 association",
+    "derive curated paths from producer contract/config, never basename or caller-selected suffix",
+    "require exact resolved inventory paths inside the corresponding arm namespace",
+    "bind both inventory receipt SHA256 values in the reviewed Phase3 request/tokens",
+    "recompute inventory entries against every consumed file and reject missing, extra-role, swapped, escaped, symlinked, or hash/size-mismatched inputs"
+  ],
+  "strict_transitive_option": "If request/token binding of deterministic inventory receipts is not accepted as sufficient, the producer must be revised so each arm COMPLETE directly contains artifact_inventory_sha256; the current producer has no such edge.",
+  "activation_eligible": false,
+  "real_data_or_outcomes_read": false,
+  "voltage_read": false
+}

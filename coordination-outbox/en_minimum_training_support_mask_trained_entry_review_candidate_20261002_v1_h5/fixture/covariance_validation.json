@@ -1,0 +1,14 @@
+{
+  "condition_number": 5.505211353302002,
+  "contract_digest": "96f073c09b4a90318d4bcf2ffca1b694201df3124d4edc82d604830a0126c553",
+  "covariance_sha256": "562a693af85b18d9c7017ee2b4b79ec1586ba75d45d39287cce89be6bf845ce7",
+  "finite": true,
+  "maximum_condition_number": 100000000.0,
+  "passed": true,
+  "rank": 4,
+  "reasons": [],
+  "shape": [
+    4,
+    4
+  ]
+}

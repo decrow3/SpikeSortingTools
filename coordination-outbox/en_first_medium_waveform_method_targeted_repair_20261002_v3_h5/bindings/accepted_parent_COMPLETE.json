@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-waveform-contract-repair-completion-v1",
+  "status": "complete_ready_for_h1_review_execution_disabled",
+  "manifest_sha256": "32c4271856d32ba7930168fea79a4c1bc25e70e276781443195814ad7a9163b0",
+  "execution_enabled": false,
+  "voltage_accessed": false,
+  "jobs_started": false,
+  "rf_or_holdout_accessed": false,
+  "completion_written_last": true
+}

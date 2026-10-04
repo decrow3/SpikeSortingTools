@@ -1,0 +1,29 @@
+{
+  "schema": "luke-hubplanner-enabled-derivative-decision-v1",
+  "decision": "GO_PREPARE_FRESH_IMMUTABLE_ENABLED_DERIVATIVE_NO_INSTALL_OR_START_PENDING_H1_REVIEW",
+  "source_thread_id": "01a0f6aa-07be-7af1-bb86-a67ed23eca72",
+  "accepted_base": {
+    "manifest_sha256": "5b3b780e6ebc7a7d74f20bbea9505719bb8cccc4498249693672b6e654dd25c4",
+    "complete_sha256": "6fbc0064302b6794b531f720c8cee1816d9eff4989a14364ad8cd5f64266ae08",
+    "contract_sha256": "712ec10c342325187e6049dee4c022ce77daa9e512f7d2061d0e7714c9e9cf43"
+  },
+  "h1_activation_review": {
+    "manifest_sha256": "d815d0eae6f36aebb3c7ad8e41a635127bce43e535bbd3612e54183475ff5709",
+    "complete_sha256": "c2b1301b9a2cf2d349c4dd8915c3c2d90b5174971fb7f290832f8219023d87ae",
+    "status_sha256": "96e4c4cad42579a59bc9eec369af585a3474d27f6962a810424ed7fbb79f88ed"
+  },
+  "allowed_delta": [
+    "execution flags and status",
+    "required provenance, review, and decision bindings",
+    "relocated packet references",
+    "service, environment, and config hashes"
+  ],
+  "preserve": [
+    "old launcher review separately from activation review",
+    "literal Phase3 machine status token GO_PROVENANCE_REPAIR_DELTA",
+    "scientific code, settings, and two 600-second REF-then-repaired arms",
+    "unused v2 runtime namespace",
+    "1 GPU, 16 CPU, 64 GiB RAM, 45 minutes, 16 GiB persistent cap with 1 MiB reserve, 200 GiB free, Restart=no"
+  ],
+  "install_or_start_authorized": false
+}

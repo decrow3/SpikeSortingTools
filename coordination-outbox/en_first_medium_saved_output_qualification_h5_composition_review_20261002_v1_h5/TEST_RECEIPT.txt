@@ -1,0 +1,31 @@
+H5 independent composition review, 2026-10-02 UTC
+
+Subject integrity:
+  MANIFEST 9537bf43d65db382edb3d18ca1975e796de3cae3516acf0c877aaa6c0727b186
+  COMPLETE d7f7ec63a527e90c131312971d98d837bd163299b506cce1697ce5f5d040f4bb
+  All manifest members: OK
+
+Native packet tests:
+  PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR=/tmp/en_h5_comp_review_numba MPLCONFIGDIR=/tmp/en_h5_comp_review_mpl PYTHONPATH=source OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 pytest -q -p no:cacheprovider tests
+  Result: 6 passed in 5.11s
+
+Byte-identical staged tests:
+  Staged shared packet under /tmp, verified MANIFEST, reran the same suite.
+  Result: 6 passed in 4.79s
+
+Matcher equivalence:
+  active source sha256:   174a4bb6d621489260927dc0bbc06558e408564158a44657ecdd306fa07db5da
+  reviewed snapshot:      b4065ba7e6c326e74f5f283de9a6ee76df0dfd3b70b65fd534b1d4559a80de0c
+  canonical AST digest for coincidence_counts, exclusive_count, correspondence:
+    bd9ecc09e54acfac045a342af76d479d8c1f5a80e2a23a6bdaac09d8d34d0e04 (both)
+
+Adversarial bounded synthetic controls:
+  - arbitrary-path real_saved schema accepted through public fixture mode
+  - COMPLETE_FIXTURE accepted by Phase-2 receipt verifier
+  - same Phase-1 start token completed in two fresh namespaces
+  - OMP_NUM_THREADS=5 rejected only after control report and actual binding receipt
+
+Real REF read-only binding:
+  1,856,371 saved events; exact global/local offset and domains passed.
+  Position, ops, lineage, geometry, source dependency, curated identity, and QC identity passed.
+  No B arm, cross-arm score, voltage, job, RF, or holdout access.

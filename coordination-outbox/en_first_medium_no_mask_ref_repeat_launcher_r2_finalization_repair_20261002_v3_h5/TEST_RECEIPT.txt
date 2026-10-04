@@ -1,0 +1,28 @@
+Validation command:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<v3>/source python <v3>/source/en_first_medium_trained_pair_launch.py --contract <v3>/contract/en_first_medium_pair.execution_disabled.r2_finalization.v3.json --expected-contract-sha256 55c0dbabc5623bbd1db9e3b49e32c493c9802880e3f28c7c1709ecb25b77ecfa --validate-only
+
+Validation result:
+status=validated
+execution_enabled=false
+arm_order=REF384_repeat,repaired_B384
+recording_or_voltage_opened=false
+
+Test command:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<v3>/source pytest -q <v3>/tests/test_pair_launcher.py
+
+Test result:
+14 passed in 0.55s
+
+Coverage:
+- R1 sequential and concurrent pre-preflight single-start consumption.
+- R2 existing live child termination and second-arm crossing preservation.
+- Actual run_single_attempt below/equal/above total-cap fixtures.
+- Independent final counted-file sums (not aggregate_output_bytes).
+- Finalization failure and no false authoritative COMPLETE.
+- Frozen reserve derivation and live+reserve=total production relation.
+- R3 zero-voltage-read continuity, replacement/symlink rejection, ordering.
+- Actual packet validate-only and frozen science/config assertions.
+
+No service install/start, recording read, voltage processing, sort, training,
+waveform, evaluator, RF, or holdout operation occurred.
+

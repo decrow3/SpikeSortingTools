@@ -1,0 +1,37 @@
+{
+  "checked_utc": "2026-10-02T04:05:08Z",
+  "status": "passed_after_direct_human_approval_before_single_start",
+  "enabled_packet_manifest_sha256": "79576b20e6d6411ba93a350225266b872f3c118e8c7a1b556281848097e14ffd",
+  "independent_review_manifest_sha256": "343be01f110ce3fcc5f01796d302906645680566a283547bae9b5b72c87d7699",
+  "hashes": {
+    "resolved_python": "4adb344720ca7a0ccee7cdc77506bae30da64b55a977cd45e15880ddf8bddcc1",
+    "config": "c4c6944fc21a7f9fa21545b569ba15c4219aabcd7b59115f5acea2a16dccae8f",
+    "candidate_source": "6de6d2740dceb7c1ba85c818a34806d8f8307e9e24de4d63cd2341b7c89a7f81",
+    "support_helper": "9c981047f94d91a930e17bd51e634fbc96faa5e956c85d0882f3a603f7f42e0f",
+    "candidate_tests": "786c77bd1344381034a78777b43d3e329e22c2e8f2ae59693702c23caec3667d",
+    "launcher": "59e4c776276e5fe751887bfedea2ac9378ff9bd3764778215b55e79a6bd0d60c",
+    "service": "65fe6a3339066e9bfb71eb1b157f5cdd613bfbafcf69531f4c659511f51f622d",
+    "kilosort_io": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+    "kilosort_preprocessing": "2329b288ae068361a937632a53461e6cceeb27e30191337e9b9a0fa7404d763d",
+    "kilosort_spikedetect": "db1e8f0357319d9db3530a700bd1002c830337c50fde58b3e74e83e7af140892",
+    "kilosort_template_matching": "39235cc98428dbb279706718f74a1c3d84568ef31a4f9d1d997a60f7002b1a66",
+    "kilosort_run": "5c1baee40edef14fa7566e441997da5d2ecc4f7940b8385cf83de40c8bd0f945"
+  },
+  "preflight": {
+    "contract_digest": "43cf4dce5291a44a19747144fb6707048f0e094ed6603e9a1307e34d1dd302c8",
+    "execution_enabled": true,
+    "cuda_available": true,
+    "cuda_device_names": ["NVIDIA RTX A5000"],
+    "recording_metadata_readable": true,
+    "recording_content_opened": false
+  },
+  "namespace": {
+    "unit_file_absent": true,
+    "unit_load_state": "not-found",
+    "run_root_absent": true,
+    "native_results_absent": true,
+    "launch_evidence_absent": true,
+    "reservation_absent": true,
+    "output_parent_writable": true
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": "en-materialized-seed-replay-v2",
+  "status": "frozen_resource_repair_before_recording_reads_or_outcome_scoring",
+  "base_protocol": {
+    "path": "configs/en_materialized_seed_replay.v1.json",
+    "sha256": "ed11a82ecf760d2992cbe1d365e507456093c59996fd1d5372ebf5363e81f79c"
+  },
+  "supersedes_amendment": {
+    "path": "configs/en_materialized_seed_replay.v2.json",
+    "sha256": "afe5c4310aaeb6d62dcb9276f89e1297e2d58bd4f1ecfdcd929c573c28ae7f5f"
+  },
+  "implementation_source_sha256": "9cb5848fac84abccb596a04658a61a2733a6043ab2b3027de379c36e3c7dd992",
+  "measurement_amendment": {
+    "preserves_v2_measurements": true,
+    "resource_repair": "raw and installed BinaryFiltered readers share one read-only NumPy memmap to avoid a second 241 GB virtual mapping; each selected byte range is still read twice and the frozen read budget is unchanged",
+    "failed_namespace": "testing/outputs/en_materialized_seed_replay_20260930_v1",
+    "failure": "second memmap allocation raised ENOMEM before any selected batch was read",
+    "outcome_driven": false
+  }
+}

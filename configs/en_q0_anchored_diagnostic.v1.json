@@ -1,0 +1,119 @@
+{
+  "schema": "en-q0-anchored-diagnostic-v1",
+  "status": "frozen_pre_nonzero_outcomes",
+  "purpose": "Saved-output-only q0-anchored unit mapping followed by fixed-pair state diagnostics",
+  "source": {
+    "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_q0_anchored_diagnostic.py",
+    "sha256": "3c1e9331d33b378d97646431c7a12dafed93089ac0faf4d5b7a4c83ea924c936",
+    "fixture_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_q0_anchored_diagnostic_fixture.py",
+    "fixture_sha256": "071544dec51310bc6f1886a1b6b0eab9bfd9d71072c35d70d61b6e4efd1f03cf",
+    "fixture_output_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_q0_anchored_diagnostic_preflight_v3/FIXTURE.json",
+    "fixture_output_sha256": "d46a2a20e8feba339bde0029d2da97a02a4b00ebd16eb7e77ef3918725b051a2",
+    "tier1_helper_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_tier1_panel.py",
+    "tier1_helper_sha256": "8b48b795439e39242862868c9367e83c8e148031fe850df6332f5f22b541bef1",
+    "crop_field_helper_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_common_support_crop_panel.py",
+    "crop_field_helper_sha256": "cef72b7e713b6a3ca9d579d818da0f7d09cbad951ba5cc0ef54c22cd24b16c3b",
+    "rounded_field_helper_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_rounded_field.py",
+    "rounded_field_helper_sha256": "823e788da0095012dd345085bb4667f246efc7f4170a5a811c91082769156e00"
+  },
+  "sampling_frequency_hz": 29999.835983263598,
+  "recording_duration_s": 10473.5537279367,
+  "crop": {
+    "start_frame": 208498882,
+    "stop_frame": 226498783,
+    "samples": 17999901,
+    "half_open": true
+  },
+  "field": {
+    "path": "/mnt/NPX/Luke/20250804/shared_analysis/luke_improved_motion_two_machine_20260909_v1/estimation_huklaban1_v1/candidate_fields.npz",
+    "sha256": "547ff39d1c91d819b758246c701603d868bfd4d50bd6b791e3d5b7140c01c71d",
+    "time_key": "time_s",
+    "displacement_key": "rigid_displacement_um",
+    "rounding_period_um": 40.0,
+    "cell_rule": "Build full-session midpoint cells first, clip to effective frame/fs bounds, preserve original segment IDs"
+  },
+  "arms": {
+    "REF384": {
+      "sorter_output": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/sorter_output",
+      "receipt_sha256": "e3798289f79e51545a2da5fefaee99684c7a667cf863d9ec7cc687f6d1164ac9",
+      "spike_times_sha256": "5d18fff413e8d6095a9a43d37157f88b0bd0cee4551378d894bb6231602937fb",
+      "spike_clusters_sha256": "7bb835f0104df59e57f405dc8fc021a6a4428e7390cd0df8097b6d2e9313f937",
+      "population_membership_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_common_support_crop_evaluation_v1/REF384_POPULATION_MEMBERSHIP.csv",
+      "population_membership_sha256": "fa99c4040a7b572d83a30d7d8bcecec7ec41732ea9780957bd60988d31f5f29d",
+      "unit_table_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_common_support_crop_evaluation_v1/REF384_all_output_UNITS.csv",
+      "unit_table_sha256": "0a35715c4f7b52a03badf57d659f958d617055c8b46157b5a3fdd3e3404f19b3"
+    },
+    "B384": {
+      "sorter_output": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output",
+      "receipt_sha256": "8a89ea4330871dce820329ca753890e12877b2695158ce9beddc77e9f190de3b",
+      "spike_times_sha256": "c112885db566363907e36da70eb44a4728258e4ef78c466761ef4009a8c741c3",
+      "spike_clusters_sha256": "90525e505cfec78c1594927848ffad4e264f11ff6ecabbc40178ece2bb10df95",
+      "population_membership_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_common_support_crop_evaluation_v1/B384_POPULATION_MEMBERSHIP.csv",
+      "population_membership_sha256": "39345517aba49fe6d3a6ac912bf348edfa6335371cc6ba2b4d2a76719312ab45",
+      "unit_table_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_common_support_crop_evaluation_v1/B384_all_output_UNITS.csv",
+      "unit_table_sha256": "073de45351086e784538b099de372993d479fa032bbb4dd8120e2ced43c20fe0"
+    },
+    "REF368": {
+      "sorter_output": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF368/sorter_output",
+      "receipt_sha256": "b286b537fcf9b0e126f3cc0f905948e9899467d2f67de5df0b763f0fabcd9bda",
+      "spike_times_sha256": "6c61a8483139a055a27ac4f46b442dc9c597d530d6a42185e818c3890a7c2afc",
+      "spike_clusters_sha256": "d23b6f56240d7e50140eef2e1815e2e9df52e9cbda8b1c507b147632ff8852f7",
+      "population_membership_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_common_support_crop_evaluation_v1/REF368_POPULATION_MEMBERSHIP.csv",
+      "population_membership_sha256": "ccb8766344b7284c71a794a209b2d2360c167853427dd5c87eaa04cb28ea6243",
+      "unit_table_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_common_support_crop_evaluation_v1/REF368_all_output_UNITS.csv",
+      "unit_table_sha256": "ebe8233cb154cdf89edb2634e02c0a75f91425c7d4148bbc217a821592f0b2ed"
+    },
+    "B368": {
+      "sorter_output": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B368/sorter_output",
+      "receipt_sha256": "111bbad84c4d50b22a87def7c2d160f6042b62560e6b4521e0814de3b7c81b11",
+      "spike_times_sha256": "3181171b6eead67e891dc8048a48b70f15dea3a78b97cf2bd7b95ca8de3e3d4e",
+      "spike_clusters_sha256": "b52d8aed34139de73ea6b7dd0a4b52f8dc1606a0d933229bcc9f33df19473ecb",
+      "population_membership_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_common_support_crop_evaluation_v1/B368_POPULATION_MEMBERSHIP.csv",
+      "population_membership_sha256": "cfbabcd073138f9d700067f90b19bf4a78aba3101b6cca2824bec520d9ac8ca2",
+      "unit_table_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_common_support_crop_evaluation_v1/B368_all_output_UNITS.csv",
+      "unit_table_sha256": "1e0bc8e70eec794365e7c04ff4e05b3fef82fbc03cb7fd495d01ccceb07a5a89"
+    }
+  },
+  "reference_arm": "REF384",
+  "comparators": ["REF368", "B384", "B368"],
+  "minimum_q0_events": 100,
+  "tolerance_frames": 15,
+  "tolerance_derivation": "round(0.0005 * 29999.835983263598) = 15",
+  "minimum_overlap": 0.1,
+  "primary_retention": 0.5,
+  "primary_rule": "Reciprocal unique maximum Jaccard and both event retentions >=0.5",
+  "graph_rule": "Build each complete q0 graph with all units before selecting REF384 anchors with >=100 q0 events",
+  "mapping_freeze": "Phase mappings writes and hashes q0-only mappings, then stops before any nonzero endpoint",
+  "accounting_block_seconds": 300.0,
+  "diagnostic_endpoints": [
+    "pairwise anchor coverage and matched/unmatched reference and candidate q0 event mass",
+    "four-way anchor intersection coverage",
+    "per-fixed-pair and cohort state counts",
+    "exclusive same-original-segment event overlap, retentions, and F1",
+    "within-unit full-train same-segment 1-29-sample numerator and positive-interval denominator",
+    "fixed-cohort arm-local state-rate rho versus q0 for interpretation only",
+    "all-population total and 300-second block/state accounting"
+  ],
+  "population_labels": "Retain common/edge labels for reporting only; never select anchors by depth/support label",
+  "secondary_edges": "Preserve ties, degree, and failed-primary edges separately; degree >1 does not invalidate an existing primary",
+  "interpretation": "REF is a comparator, not ground truth. Reference disagreement is not biological loss; rate rho and time-only correspondence do not establish identity or purity.",
+  "uncertainty": "No bootstrap and no arbitrary pass threshold",
+  "phase_commands": {
+    "mappings": "environments/rescue-production/.venv/bin/python -m testing.en_q0_anchored_diagnostic --config configs/en_q0_anchored_diagnostic.v1.json --output testing/outputs/en_q0_anchored_diagnostic_20261001_v1 --phase mappings",
+    "diagnostics": "environments/rescue-production/.venv/bin/python -m testing.en_q0_anchored_diagnostic --config configs/en_q0_anchored_diagnostic.v1.json --output testing/outputs/en_q0_anchored_diagnostic_20261001_v1 --phase diagnostics"
+  },
+  "execution_status": "authorized_after_bounded_repairs_and_passing_fixture",
+  "estimated_runtime": {
+    "mappings_seconds": [20, 90],
+    "diagnostics_seconds": [30, 180],
+    "peak_memory_gib": [1, 4],
+    "basis": "Four saved event arrays (~7.1M events total), three q0 correspondence graphs, and ~140 expected mappings per comparator; no voltage"
+  },
+  "prohibitions": {
+    "new_sort": true,
+    "voltage_read": true,
+    "rf_or_holdout": true,
+    "bootstrap": true,
+    "outcome_tuned_threshold": true
+  }
+}

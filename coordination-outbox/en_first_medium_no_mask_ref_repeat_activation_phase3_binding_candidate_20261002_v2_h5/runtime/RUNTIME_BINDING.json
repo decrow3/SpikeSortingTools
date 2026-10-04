@@ -1,0 +1,22 @@
+{
+  "schema": "en-first-medium-activation-runtime-binding-v1",
+  "host": "huklaban5",
+  "python_executable": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+  "python_executable_is_symlink": true,
+  "python_resolved_path": "/home/huklaban5/anaconda3/bin/python3.12",
+  "python_resolved_sha256": "4adb344720ca7a0ccee7cdc77506bae30da64b55a977cd45e15880ddf8bddcc1",
+  "pyvenv_cfg_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/pyvenv.cfg",
+  "pyvenv_cfg_sha256": "62907d7a27dcf14c93bae40498949e660e0485562c3374335231f4c9598ae868",
+  "python_version": "3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]",
+  "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.35",
+  "packages": {
+    "kilosort": "4.0.27",
+    "numba": "0.61.0",
+    "numpy": "1.26.4",
+    "scipy": "1.15.2",
+    "spikeinterface": "0.102.1",
+    "torch": "2.6.0+cu124"
+  },
+  "scientific_module_hashes_are_bound_separately_in_contract": true,
+  "captured_without_recording_or_voltage_access": true
+}

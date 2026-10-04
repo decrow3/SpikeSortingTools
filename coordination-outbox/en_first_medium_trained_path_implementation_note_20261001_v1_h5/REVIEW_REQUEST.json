@@ -1,0 +1,16 @@
+{
+  "schema": "en-first-medium-trained-path-review-request-v1",
+  "status": "execution_disabled_review_requested",
+  "reviewer": "independent_H1",
+  "requested_checks": [
+    "confirm the installed native Kilosort call chain and all support-mask consumers",
+    "confirm that support-policy changes require arm-local covariance/W/PCA/template refits",
+    "confirm the historical REF384 and B384 identities are adequate for comparator reuse",
+    "review a future trained-mode entry-point delta separately before any launch",
+    "freeze the baseline-repeat decision rule before outcome access"
+  ],
+  "execution_authorized_by_packet": false,
+  "recording_or_voltage_accessed": false,
+  "sort_or_training_launched": false,
+  "rf_or_holdout_accessed": false
+}

@@ -1,0 +1,162 @@
+{
+  "native": {
+    "Wall.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "amplitudes.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "channel_map.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "channel_positions.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "channel_shanks.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "cluster_Amplitude.tsv": {
+      "bytes": 38,
+      "sha256": "849aae84d0578debee55382739eb49e33fde9e2545a73901c9b51d27ac4d8bc2"
+    },
+    "cluster_ContamPct.tsv": {
+      "bytes": 38,
+      "sha256": "849aae84d0578debee55382739eb49e33fde9e2545a73901c9b51d27ac4d8bc2"
+    },
+    "cluster_KSLabel.tsv": {
+      "bytes": 38,
+      "sha256": "849aae84d0578debee55382739eb49e33fde9e2545a73901c9b51d27ac4d8bc2"
+    },
+    "cluster_group.tsv": {
+      "bytes": 38,
+      "sha256": "849aae84d0578debee55382739eb49e33fde9e2545a73901c9b51d27ac4d8bc2"
+    },
+    "full_amp.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "full_clu.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "full_st.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "kept_spikes.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "kilosort4.log": {
+      "bytes": 38,
+      "sha256": "849aae84d0578debee55382739eb49e33fde9e2545a73901c9b51d27ac4d8bc2"
+    },
+    "ops.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "params.py": {
+      "bytes": 38,
+      "sha256": "849aae84d0578debee55382739eb49e33fde9e2545a73901c9b51d27ac4d8bc2"
+    },
+    "pc_feature_ind.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "pc_features.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "similar_templates.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "spike_clusters.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "spike_detection_templates.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "spike_positions.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "spike_templates.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "spike_times.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "tF.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "templates.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "templates_ind.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "whitening_mat.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "whitening_mat_dat.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "whitening_mat_inv.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    }
+  },
+  "pre_extraction_snapshot": {
+    "RECEIPT.json": {
+      "bytes": 197,
+      "sha256": "c192db2006d18e541aa9d556e04f01f4c4c5a7a7d09d4a9ee607c56bf72f4f6c"
+    },
+    "Wall3.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "chanMap.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "iCC.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "iCC_mask.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "iU.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "iU_physical_binary_channel.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "wPCA.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    },
+    "wTEMP.npy": {
+      "bytes": 132,
+      "sha256": "579f4fc9e240b80aade6941d3fba86534d9e959a8520066318b52ed266243e65"
+    }
+  }
+}

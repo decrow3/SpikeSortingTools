@@ -1,0 +1,40 @@
+{
+  "observed_utc": "2026-10-02T05:43:28Z",
+  "status": "missing_metadata_prerequisites_now_complete_no_start",
+  "final_no_go_manifest_sha256": "8f078cc4a9af77dd3dde0e692d1c48658cafcfcda6037ae7f5aa748c439cd705",
+  "resolved_python": {
+    "requested_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+    "resolved_path": "/home/huklaban5/anaconda3/bin/python3.12",
+    "sha256": "4adb344720ca7a0ccee7cdc77506bae30da64b55a977cd45e15880ddf8bddcc1"
+  },
+  "kilosort_modules": [
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/io.py", "sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/preprocessing.py", "sha256": "2329b288ae068361a937632a53461e6cceeb27e30191337e9b9a0fa7404d763d"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/spikedetect.py", "sha256": "db1e8f0357319d9db3530a700bd1002c830337c50fde58b3e74e83e7af140892"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/template_matching.py", "sha256": "39235cc98428dbb279706718f74a1c3d84568ef31a4f9d1d997a60f7002b1a66"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/run_kilosort.py", "sha256": "5c1baee40edef14fa7566e441997da5d2ecc4f7940b8385cf83de40c8bd0f945"}
+  ],
+  "output_parent": {
+    "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools",
+    "writable": true
+  },
+  "unit": {
+    "name": "en_minimum_training_support_mask_covariance_smoke_enabled_v2.service",
+    "load_state": "loaded",
+    "unit_file_state": "static",
+    "active_state": "inactive",
+    "sub_state": "dead",
+    "exec_main_pid": 0,
+    "restarts": 0,
+    "start_timestamp": "n/a",
+    "exit_timestamp": "n/a"
+  },
+  "fresh_namespace": {
+    "run_root_absent": true,
+    "native_results_absent": true,
+    "launch_evidence_absent": true,
+    "reservation_absent": true
+  },
+  "recording_opened": false,
+  "service_started": false
+}

@@ -1,0 +1,19 @@
+{
+  "status": "review_pending_execution_disabled",
+  "metadata": {
+    "cell_width_s": 0.25,
+    "centers": 41895,
+    "first_center_s": 0.0,
+    "geometry_shape": [384, 2],
+    "historical_fail_preserved": true,
+    "last_center_s": 10473.5,
+    "reference_um": 0.0,
+    "retained_archives_opened": 0,
+    "rounded_states_um": [-280.0, -240.0, -200.0, -160.0, -120.0, -80.0, -40.0, 0.0, 40.0],
+    "selection_slots": 20
+  },
+  "config_sha256": "111a5958cd8d70aa514aa52f34c5946a5f960bf5dacf8172ecd0c2dc3535bb6a",
+  "source_sha256": "e8e5186f2fb91802ae52eff9176ee4ce36d2aca707185871c6a74deb2b69f989",
+  "outcome_archives_opened": 0,
+  "recording_reads": 0
+}

@@ -1,0 +1,43 @@
+{
+  "schema": "first-medium-waveform-freeze-input-bindings-v1",
+  "status": "PASS_EXECUTION_DISABLED",
+  "contract": {
+    "path": "contracts/physical_waveform_evidence.execution_disabled.v5.json",
+    "sha256": "e651326ca1ecdd3f5dc59d0dc76c69632d3de954a28743eb4445debb38583a09",
+    "execution_enabled": false,
+    "voltage_access_enabled": false
+  },
+  "runtime": {
+    "receipt": "receipts/RUNTIME_VERIFICATION_RECEIPT.json",
+    "receipt_sha256": "efadd4f68f381fe481aff83bf7d98b8daadcea16f9f8c085be84442345265a18",
+    "verifier_sha256": "27eef195d3951632401a0ffd074a4a8e991f8e217603150ba7d152f2d44239e8",
+    "member_count": 89,
+    "member_bytes": 3333088832,
+    "aggregate_sha256": "6658089a5e123b1962d2a61b7b89c230e484fdde0f52a0479e52c102f10cfe48",
+    "probe_output_sha256": "e904ebc218e24c983580f0f72ea012f9483a7ff72f64bea7b8cd4812aa7b55df",
+    "differences": []
+  },
+  "voltage_identity": {
+    "historic_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+    "current_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+    "bytes": 241309358592,
+    "historic_and_current_match": true,
+    "current_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_voltage_current_full_hash_20261002_v1_h5",
+    "current_packet_manifest_sha256": "141a699e7396b62f67329ebba6a62dda3387db148f9ec1e56f18bb1f9e6070c4",
+    "current_packet_complete_sha256": "aaa5e9f5d372327baa612de5159f37afb11f2e9ed20e71223f00ede55bfcdfd6",
+    "current_receipt_sha256": "47d4eafaa7a6fbf79a5a973caa0ba4cf7f0a404c19ba243372cf5d70c27e9614",
+    "compact_preflight_status": "PASS",
+    "compact_preflight_voltage_bytes_read": 0,
+    "full_hash_was_separate_and_completed": true,
+    "exact_final_lstat": {
+      "st_ctime_ns": 1788254629465850600,
+      "st_dev": 93,
+      "st_ino": 8167886,
+      "st_mode": 33261,
+      "st_mtime_ns": 1788254629465850600,
+      "st_size": 241309358592
+    }
+  },
+  "prospective_arm_and_anchor_bindings_unbound": true,
+  "real_waveform_execution_authorized_by_this_packet": false
+}

@@ -1,0 +1,33 @@
+{
+  "schema": "en-first-medium-evaluator-h5-independent-review-v1",
+  "verdict": "TARGETED_REPAIR_REQUIRED_TRAVERSAL_UNMEASURED",
+  "candidate_delta": {
+    "v1_to_v2": "mandatory arm provenance fields plus mandatory expected curated and QC digests before loading",
+    "fail_closed": true,
+    "negative_test": "unbound real saved provenance rejected before path read"
+  },
+  "synthetic_scientific_separation": {
+    "cli_rejects_synthetic_arrays": true,
+    "scientific_scorecard_requires_both_real_saved": true,
+    "fixture_rows_separate": true
+  },
+  "matching_semantics": {
+    "candidate_edge_screen": "all temporal neighbours within tolerance",
+    "pair_count": "chronological greedy one-to-one exclusive",
+    "primary": "unique reciprocal maximum Jaccard and both retentions >= 0.5",
+    "split_merge_denominator": "all eligible baseline units",
+    "chance_null": "deterministic per-cluster circular shift with the same marked-spike statistic"
+  },
+  "missingness_semantics": {
+    "UNMEASURED": "required evidence unavailable; no numeric value or pass",
+    "UNRESOLVED": "scientific statistic undefined by contract; no numeric value or pass",
+    "overall_unavailable_prospective_arms": "inconclusive"
+  },
+  "blocking_findings": [
+    "both saved spike_times are global while full_st[kept] is crop-local by exact offset 208498882; current loader requires equality and applies no transform",
+    "required truncation_qc.npz is absent for both arms",
+    "packet direct-file invocation can import the non-packet repository sort_comparison because the snapshot is not a self-contained testing package"
+  ],
+  "scientific_rows_emitted": 0,
+  "raw_recording_reads": 0
+}

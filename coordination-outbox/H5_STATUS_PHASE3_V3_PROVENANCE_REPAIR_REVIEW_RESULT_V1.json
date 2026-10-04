@@ -1,0 +1,23 @@
+{
+  "schema": "luke-durable-coordination-h5-phase3-v3-provenance-repair-review-result-v1",
+  "host": "huklaban5",
+  "active_assignment_version": "v4",
+  "active_assignment_sha256": "0e3740964699fc78c4e47414d711b9b9feda792cba699a86e1f00a72737ee2eb",
+  "item": "H5-PHASE3-V3-INDEPENDENT-DELTA-REVIEW",
+  "state": "COMPLETE_EXECUTION_DISABLED",
+  "verdict": "GO_PROVENANCE_REPAIR_DELTA",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_phase3_provenance_repair_h5_independent_review_20261002_v1_h5",
+  "manifest_sha256": "c0d3f09341dd8653551eaae205c80c35ba942467d3703ef74a7d643cf403ec33",
+  "complete_sha256": "94ed2ba6d7d3597dc73a463248412ec8eabf5ed41398a577121e808d1480db53",
+  "candidate_manifest_sha256": "3199ddda56d1b03c6a3d77d87443fbf1c2956d4ab09c08ede52467ca4b09b1cd",
+  "candidate_complete_sha256": "40508353a60978d311e8cdbaa5a533b4b8a67a91f5b045628e78c68f673a7918",
+  "tests": "11 passed",
+  "required_delta": null,
+  "recovery_audit": "clean; no relevant start, claim, partial finalization, or activation",
+  "activation_enabled": false,
+  "launch_or_service_started": false,
+  "real_data_or_outcomes_read": false,
+  "voltage_read": false,
+  "rf_or_holdout_accessed": false,
+  "scientific_execution_started": false
+}

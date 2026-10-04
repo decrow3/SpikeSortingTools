@@ -1,0 +1,25 @@
+{
+  "schema": "luke-h1-enabled-derivative-exact-delta-review-request-v1",
+  "status": "REVIEW_REQUEST_ENABLED_CANDIDATE_NOT_INSTALLED",
+  "decision": "accept_or_reject_exact_enabled_derivative_delta_before_any_install_or_start",
+  "base_manifest_sha256": "5b3b780e6ebc7a7d74f20bbea9505719bb8cccc4498249693672b6e654dd25c4",
+  "base_complete_sha256": "6fbc0064302b6794b531f720c8cee1816d9eff4989a14364ad8cd5f64266ae08",
+  "base_contract_sha256": "712ec10c342325187e6049dee4c022ce77daa9e512f7d2061d0e7714c9e9cf43",
+  "enabled_contract_sha256": "21452474b4f112d82936759d3898e4b8267a967e4de3bf1b40c2cd5afa68b011",
+  "h1_activation_review_manifest_sha256": "d815d0eae6f36aebb3c7ad8e41a635127bce43e535bbd3612e54183475ff5709",
+  "hubplanner_decision_sha256": "92c37aeae06ce59887a072fab67419b8560ad253894f4ce3252d31c30d3c8170",
+  "review_scope": [
+    "confirm only permitted execution/status/provenance/reference/hash fields differ from the accepted disabled base",
+    "confirm launcher review and activation review remain separate exact bindings",
+    "confirm literal Phase3 machine token GO_PROVENANCE_REPAIR_DELTA",
+    "confirm science, two 600-second REF-then-repaired arms, clocks, and unused v2 namespace are unchanged",
+    "confirm 1 GPU, 16 CPU, 64 GiB, 45 minutes, 16 GiB/1 MiB reserve, 200 GiB free, and Restart=no",
+    "confirm enabled service/environment are packet-local and not installed or started"
+  ],
+  "tests": "23 passed",
+  "execution_enabled": true,
+  "activation_eligible": true,
+  "service_installed_or_started": false,
+  "recording_or_voltage_read": false,
+  "scientific_execution_started": false
+}

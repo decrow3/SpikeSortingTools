@@ -1,0 +1,215 @@
+{
+  "schema": "first-medium-physical-waveform-evidence-contract-v2",
+  "status": "FROZEN_EXECUTION_DISABLED_REVIEW_REQUIRED",
+  "execution_enabled": false,
+  "voltage_access_enabled": false,
+  "purpose": "technical physical-signal support screen for retained, gained, lost, and ambiguous event endpoints; never identity, purity, or sorter efficacy evidence",
+  "enablement_rule": "A fresh reviewed derivative must replace every PROSPECTIVE_BINDING_REQUIRED value with an observed hash or identity from the execution host, retain every algorithmic field byte-for-byte, and set both gates true. This packet cannot launch.",
+  "comparisons": [
+    "REF384_vs_existing_corrected_B384",
+    "REF384_vs_repaired_B384",
+    "REF384_vs_REF384_repeat"
+  ],
+  "input_identity": {
+    "event_sources": {
+      "required_arms": ["REF384", "existing_corrected_B384", "repaired_B384", "REF384_repeat"],
+      "required_per_arm": [
+        "spike_times.npy sha256, shape, dtype, and global-acquisition-sample frame",
+        "spike_clusters.npy sha256, shape, dtype, and row equality with spike_times",
+        "spike_positions.npy sha256 and spatial_identity_sha256 from the repaired evaluator",
+        "ops.npy sha256, nblocks=0, dshift=None, identity chanMap, and geometry hash",
+        "curated identity digest and event-lineage digest",
+        "source COMPLETE and MANIFEST hashes"
+      ],
+      "REF384": "PROSPECTIVE_BINDING_REQUIRED",
+      "existing_corrected_B384": "PROSPECTIVE_BINDING_REQUIRED",
+      "repaired_B384": "PROSPECTIVE_BINDING_REQUIRED_NOT_YET_AVAILABLE",
+      "REF384_repeat": "PROSPECTIVE_BINDING_REQUIRED_NOT_YET_AVAILABLE",
+      "truth_scope": "The historical H5 REF/B receipt values are producer claims only. They are not execution bindings until recomputed from local bytes by the enabled preflight."
+    },
+    "anchor_field": {
+      "required_files": ["candidate_fields.npz", "field-cell ledger", "physical-channel back-map ledger"],
+      "required_bindings": ["absolute path", "sha256", "schema", "shape", "dtype", "global-frame domain", "geometry sha256", "motion/field convention"],
+      "values": "PROSPECTIVE_BINDING_REQUIRED",
+      "rule": "Each event receives the exact precomputed physical-channel index from its containing frozen global-frame field cell. Unsupported is -1. No depth-nearness, motion-estimate fallback, or post-outcome anchor substitution is allowed."
+    }
+  },
+  "voltage_identity": {
+    "representation": "original accepted full-probe physical acquisition only",
+    "binary_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+    "binary_size_bytes": 241309358592,
+    "binary_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+    "recording_manifest_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/rescue_recording_manifest.json",
+    "recording_manifest_sha256": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67",
+    "recording_content_sha256": "2d6fac755db3182841bf121d822754f963ebada3bcb8cd9e96e0b63e6f9b7372",
+    "dtype": "int16 little-endian",
+    "num_samples": 314204894,
+    "num_channels": 384,
+    "channel_order": "physical acquisition rows 0..383, identity order; never sorter/template order",
+    "geometry_float64_sha256": "d126fb241989698cd445c89638b02f0a2f8153389cfcad5acf49c1a0c4093bc8",
+    "sampling_frequency_hz": 29999.835983263598,
+    "crop_origin_global_frame": 208498882,
+    "crop_global_frames_half_open": [208498882, 226498783],
+    "crop_local_frames_half_open": [0, 17999901],
+    "crop_effective_duration_s": 599.9999803346205,
+    "preflight": "Before any read, hash the manifest; compare every declared scalar and geometry; stat and hash the binary or validate the existing accepted full-file hash receipt under the reviewed hash policy; abort on any disagreement."
+  },
+  "epochs": {
+    "labels": ["early", "middle", "late"],
+    "global_edges_formula": "edge[k] = crop_origin_global_frame + floor(k * 17999901 / 3), k=0..3",
+    "global_edges_frames": [208498882, 214498849, 220498816, 226498783],
+    "intervals": "half-open; each eligible event belongs to exactly one epoch; final stop excluded",
+    "exposure_minutes": [3.333333224081225, 3.333333224081225, 3.333333224081225],
+    "denominator_scope": "core crop only; filter padding never adds exposure"
+  },
+  "classification_and_matching": {
+    "eligible_event": "global frame in the common crop, arm row identity valid, spatial provenance valid, and frozen physical anchor >=0",
+    "ineligible_anchor": "kept in the full ledger as ambiguous/unsupported_anchor and in population denominators; never silently dropped",
+    "tolerance_reason": "Align exactly with the evaluator's frozen 0.5 ms correspondence tolerance rather than the earlier +/-1-sample sketch.",
+    "tolerance_frames": 15,
+    "tolerance_conversion": "round(0.0005 * 29999.835983263598) = 15",
+    "matching": "Within comparison and epoch, build all cross-arm edges with absolute global-frame lag <=15 and compatible anchors <=80 um. Choose maximum cardinality, then minimum total absolute lag, then lexicographically smallest ordered (REF row_id, candidate row_id) edge list. An endpoint participating in another solution with identical cardinality and total lag is ambiguous, not retained.",
+    "categories": {
+      "retained": "endpoint in a unique selected pair; one endpoint row is retained for each source arm and both share pair_id",
+      "lost": "unmatched REF endpoint with no admissible candidate edge",
+      "gained": "unmatched candidate endpoint with no admissible REF edge",
+      "ambiguous": "endpoint with tied/nonunique optimal assignment, anchor conflict >80 um, unsupported anchor, or provenance conflict"
+    },
+    "partition": "Every source endpoint row in the full crop union has exactly one category. Pairing never removes either endpoint from the ledger.",
+    "no_double_credit": "Each endpoint row appears once and in at most one pair_id."
+  },
+  "sampling": {
+    "seed_utf8": "en-first-medium-waveform-v2|2026-10-02|seed=20261002",
+    "strata": "comparison x epoch x category",
+    "rank_key": "SHA256(seed_utf8 || NUL || comparison || NUL || epoch || NUL || category || NUL || source_arm || NUL || decimal_global_frame || NUL || decimal_source_row_id)",
+    "tie_break": "ascending source_arm, global_frame, source_row_id",
+    "without_replacement": true,
+    "maximum_per_stratum": 128,
+    "sampled_n": "min(population_N,128)",
+    "maximum_strata": 36,
+    "maximum_records": 4608,
+    "outcome_driven_substitution": false,
+    "first_selection_preserved": "Write and hash EVENT_LEDGER and SAMPLE_LEDGER before voltage access; never replace failed or unevaluable selected rows."
+  },
+  "waveform_extraction": {
+    "core_offsets_half_open_samples": [-60, 61],
+    "core_samples": 121,
+    "filter_padding_each_side_samples": 512,
+    "raw_read_offsets_half_open_samples": [-572, 573],
+    "padded_samples": 1145,
+    "raw_channels_per_read": 384,
+    "raw_logical_bytes_per_record": 879360,
+    "padding_rule": "Read exact full-recording samples [global_frame-572, global_frame+573). If either bound is outside [0,314204894), mark missing_padding; do not clip, reflect, zero-fill, resample, or choose a replacement event.",
+    "preprocessing": {
+      "implementation": "kilosort.io.BinaryFiltered.filter",
+      "io_py_sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+      "state": "stateless independent padded record; filter state reset for every record",
+      "settings": {
+        "fs": 29999.835983263598,
+        "highpass_cutoff_hz": 300.0,
+        "do_CAR": true,
+        "invert_sign": false,
+        "artifact_threshold": "Infinity",
+        "shift": null,
+        "scale": null,
+        "whitening": false,
+        "n_chan_bin": 384
+      },
+      "ordered_stages": ["int16_to_filter_float", "per-channel_centering", "common-average-reference", "high-pass", "discard_512_sample_padding_each_side"],
+      "forbidden": ["whitening", "motion interpolation", "template projection", "adaptive thresholding", "cross-record filter state", "channel reordering"]
+    },
+    "analysis_channels": "Sorted union of anchor channel and all physical channel indices whose Euclidean geometry distance from the anchor is <=80.0 um. Read all 384 channels but compute support only on this frozen union.",
+    "baseline_core_indices_half_open": [[0, 30], [91, 121]],
+    "signal_core_indices_half_open": [40, 81],
+    "baseline_reference": "For each analysis channel subtract the median over the 60 baseline samples after preprocessing.",
+    "leading_channel": "Analysis channel with greatest signal-window peak-to-peak amplitude; exact ties choose the lowest physical channel index.",
+    "adjacent_channel": "Non-leading analysis channel with smallest Euclidean geometry distance to the leading channel; exact ties choose the lowest physical channel index.",
+    "noise": "1.4826 * median(abs(baseline_samples - median(baseline_samples))) per channel, floored at 1.0 ADC-equivalent filter unit.",
+    "center_offset": "Absolute sample difference between global_frame/core index 60 and the leading-channel largest-absolute baseline-referenced signal extremum; extremum ties choose earliest sample.",
+    "saturation": "If any raw padded int16 value on any of 384 channels equals -32768 or 32767, mark saturation_clipping and unevaluable.",
+    "persist_waveforms": false,
+    "numeric_waveform_transfer": false
+  },
+  "technical_support": {
+    "technically_evaluable": "valid identities and anchor, complete padding, no saturation/clipping, finite processed core, at least two analysis channels, and finite nonzero noise estimates",
+    "supported": "technically_evaluable AND leading-channel PTP/noise >=6.0 AND adjacent-channel PTP/noise >=4.0 AND center_offset <=15",
+    "retained_pair_correlation": "For retained pairs only, Pearson correlation of flattened baseline-referenced cores over the sorted intersection of physical analysis channels and indices [40,81); descriptive, never a support gate.",
+    "exclusion_priority": ["provenance_failure", "unsupported_anchor", "missing_padding", "saturation_clipping", "insufficient_channels", "nonfinite_filter_output", "invalid_noise"],
+    "missing_semantics": "Every selected record contributes once to sampled_n. Unevaluable is not silently excluded from support denominators and cannot be supported.",
+    "loss_semantics": "Lost means unmatched REF event under the frozen event matcher. It does not mean a biological spike disappeared.",
+    "identity_limit": "Technical support and correlation do not establish biological identity or purity."
+  },
+  "denominators_and_intervals": {
+    "population_N": "all endpoint ledger rows in a comparison/epoch/category stratum, including unsupported/ambiguous rows",
+    "sampled_n": "frozen selected endpoint rows; min(population_N,128)",
+    "technically_evaluable_fraction": "technically_evaluable_n / sampled_n",
+    "waveform_support_fraction": "supported_n / sampled_n; unevaluable rows count as not supported",
+    "conditional_support_fraction": "supported_n / technically_evaluable_n, descriptive only; null when denominator is zero",
+    "wilson": "For k successes in n sampled rows and z=1.959963984540054, center=(k+z^2/2)/(n+z^2), half=z*sqrt(k*(n-k)/n+z^2/4)/(n+z^2), lower=max(0,center-half), upper=min(1,center+half).",
+    "zero_sample": "If population_N=0 then sampled_n=0, fractions and Wilson bounds are null, status=NO_POPULATION; never PASS or FAIL.",
+    "population_rate_per_core_minute": "population_N / epoch_exposure_minutes for lost, gained, and ambiguous endpoint categories",
+    "waveform_supported_rate": "population_rate * waveform_support_fraction",
+    "supported_rate_interval": "population_rate multiplied by Wilson lower and upper bounds; sampling uncertainty only",
+    "unsupported_gained_rate": "gained population_rate * (1 - waveform_support_fraction)",
+    "ambiguous_fraction": "ambiguous endpoint population_N divided by all endpoint rows for the same comparison and epoch",
+    "dependence_scope": "Wilson intervals treat sampled endpoint rows as Bernoulli rows and do not cover within-unit, within-pair, time, recording, or sorter dependence."
+  },
+  "quality_and_decision": {
+    "stratum_PASS": "sampled_n>0 AND technically_evaluable_fraction>=0.80 AND waveform-support Wilson lower>=0.60",
+    "stratum_CAUTION": "sampled_n>0 AND not PASS AND (technically_evaluable_fraction>=0.60 OR waveform-support Wilson lower>=0.40)",
+    "stratum_FAIL": "sampled_n>0 and neither PASS nor CAUTION",
+    "low_N": "Apply the same Wilson formula for 1<=n<128 and disclose n; no normal approximation, imputation, pooling, or threshold relaxation.",
+    "repeat_gate": "REF384_vs_REF384_repeat must not be FAIL in any nonempty epoch/category stratum; otherwise efficacy interpretation is inconclusive.",
+    "benefit": "In at least two epochs, repaired versus existing must reduce the upper bound of waveform-supported lost rate by >=0.5 endpoints/core minute OR reduce ambiguous endpoint fraction by >=0.05, while repaired unsupported-gained-rate upper bound minus existing upper bound <=0.5.",
+    "harm": "For every epoch, repaired waveform-supported lost-rate upper bound minus existing waveform-supported lost-rate lower bound must be <=0.5 endpoints/core minute.",
+    "empty_or_unavailable": "Any required arm, comparison, or epoch unavailable yields INCONCLUSIVE; never infer zero.",
+    "overall": "Technical screen only. No advancement decision is authorized by this contract."
+  },
+  "outputs_and_receipts": {
+    "required": [
+      "FROZEN_INPUT_BINDINGS.json",
+      "EVENT_LEDGER.csv",
+      "SAMPLE_LEDGER.csv",
+      "WAVEFORM_METRICS.csv",
+      "DENOMINATORS.csv",
+      "EPOCH_SCORECARD.csv",
+      "RESOURCE_RECEIPT.json",
+      "READ_RECEIPT.json",
+      "IMPLEMENTATION_PROVENANCE.json",
+      "FAILURE.json when applicable",
+      "MANIFEST.sha256",
+      "COMPLETE.json written last on success only"
+    ],
+    "ledger_required_columns": ["comparison", "epoch", "category", "source_arm", "source_row_id", "global_frame", "cluster_id", "anchor_channel", "pair_id", "eligibility_status", "selection_rank"],
+    "metric_required_columns": ["record_id", "technical_status", "exclusion_reason", "leading_channel", "adjacent_channel", "leading_snr", "adjacent_snr", "center_offset_samples", "supported", "retained_pair_correlation"],
+    "hash_policy": "Hash every input binding, source file, output file, and frozen contract. MANIFEST covers all successful outputs except COMPLETE; COMPLETE binds MANIFEST and is written last.",
+    "publication": "Publish only ledgers, metrics, aggregate scorecards, hashes, and receipts. Do not publish raw voltage or numeric waveform arrays."
+  },
+  "resources_and_stop_conditions": {
+    "cpu_threads_max": 4,
+    "gpu_count": 0,
+    "ram_bytes_max": 2147483648,
+    "wall_seconds_max": 2700,
+    "event_reads_max": 4608,
+    "logical_read_bytes_max": 4052090880,
+    "local_transient_cache_bytes_max": 5368709120,
+    "compact_persistent_bytes_max": 104857600,
+    "stop_before_read": ["identity/hash/geometry/frame disagreement", "missing required arm or anchor binding", "output or staging namespace already exists", "resource preflight failure", "contract not independently reviewed and enabled"],
+    "stop_during_run": ["any resource cap reached", "unexpected file mutation", "read outside frozen bounds", "uncaught validation or filter error"],
+    "on_stop": "Close inputs, preserve frozen ledgers/logs/counters and FAILURE.json, do not write COMPLETE, do not retry or substitute records automatically."
+  },
+  "first_result_preservation": {
+    "output_namespace": "A future enabled contract must name a fresh absent destination and fresh staging directory.",
+    "overwrite": false,
+    "retry": "A retry requires a new namespace and links the failed packet; the first result and first frozen sample ledger remain immutable.",
+    "atomic_publication": "Build in staging, verify hashes, rename once to absent final destination, write COMPLETE last."
+  },
+  "explicit_exclusions": [
+    "RF fitting, rescoring, or comparison",
+    "sealed 20-trial outer holdout access",
+    "sorting, sorter training, detection, clustering, template refit, or threshold search",
+    "parameter sweep or outcome-driven sampling",
+    "biological identity or purity claim",
+    "raw voltage or waveform transfer"
+  ]
+}

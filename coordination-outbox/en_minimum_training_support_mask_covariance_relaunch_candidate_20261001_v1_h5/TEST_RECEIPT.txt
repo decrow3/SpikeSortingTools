@@ -1,0 +1,5 @@
+Command: environments/rescue-production/.venv/bin/python -B -m unittest testing.test_kilosort_support_mask_candidate testing.test_prewhitening_support_mask
+Result: Ran 34 tests in 0.251s; OK.
+This exercises unchanged live dependencies. The supplied one-line candidate
+source-policy namespace delta remains pending H1 review and post-install test.
+No recording binary was opened or read.

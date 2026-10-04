@@ -1,0 +1,34 @@
+{
+  "schema": "no-mask-ref-repeat-launcher-current-status-v1",
+  "current_assignment": "H5-NO-MASK-REF-REPEAT-LAUNCHER",
+  "promotion_basis": "clock GO received and explicit continuation/promotion received after H5_ACK_V3",
+  "full_voltage_hash_service": {
+    "state": "completed_successfully_inactive",
+    "result": "PASS_EXACT_MATCH",
+    "bytes_read": 241309358592,
+    "actual_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+    "retry_count": 0,
+    "packet_manifest_sha256": "141a699e7396b62f67329ebba6a62dda3387db148f9ec1e56f18bb1f9e6070c4",
+    "packet_complete_sha256": "aaa5e9f5d372327baa612de5159f37afb11f2e9ed20e71223f00ede55bfcdfd6"
+  },
+  "clock_v5_review": {
+    "verdict": "GO_CLOCK_REPAIR_ONLY",
+    "packet": "en_minimum_training_support_mask_trained_entry_clock_v5_h5_review_20261002_v1_h5",
+    "manifest_sha256": "39fd736b838b81db39b96265a4fd51de0ebf6e102e6fa1876fd56f4132c74af4",
+    "complete_sha256": "74f63fe6880e50c5247f21df2ef16d3ea37f2e3206f60dce89495a69d493cd3d"
+  },
+  "launcher_candidate": {
+    "status": "execution_disabled_ready_for_independent_h1_review",
+    "contract_sha256": "2feeb8b36ebba5c5ef23dc51ca0c9a9abfce1c7a853aa7785dcefe6136e416f5",
+    "tests": "9 passed",
+    "scientific_execution_started": false,
+    "service_installed": false
+  },
+  "planned_namespaces_fresh": true,
+  "gpu": {
+    "latest_host_probe": "PASS_GPU_HOST_READY_NOW",
+    "packet_manifest_sha256": "d390eb5e6700c43b7865977793ae0a24ee2bdf4a6f1237a6581bb7d626df4064",
+    "packet_complete_sha256": "688b6b9883cec69db5344ed9b48a867f4491aee57ed34ffab98d8bcd59b5a83f",
+    "rule": "must still be rechecked at actual launch"
+  }
+}

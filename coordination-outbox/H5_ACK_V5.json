@@ -1,0 +1,26 @@
+{
+  "schema": "luke-durable-coordination-h5-ack-v5",
+  "host": "huklaban5",
+  "acknowledged_at": "2026-10-02T20:14:02-07:00",
+  "shared_directory": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1",
+  "directory_visibility": "read_write_verified",
+  "active_assignment_version": "v5",
+  "active_assignment_file": "CURRENT_ASSIGNMENT_COORDINATOR_RELAY_V5.json",
+  "active_assignment_sha256": "13b22df6e5a177269f8a99ce6dd4d43edd01b6354d577227585da5d6b843e52d",
+  "coordinator_table_sha256": "898ecfcf55b830ff01fe0ccc430175371a230a8e45eb5078224c4555cac28d2f",
+  "preserved_versions": {
+    "v1_v4": "preserved_immutable",
+    "v4_sha256": "0e3740964699fc78c4e47414d711b9b9feda792cba699a86e1f00a72737ee2eb"
+  },
+  "current_assignment": "H5-PHASE3-BOUND-ACTIVATION-DERIVATIVE",
+  "h1_ready": "H1-PHASE3-BOUND-ACTIVATION-INDEPENDENT-REVIEW",
+  "phase3_go_acknowledged": true,
+  "activation_enabled": false,
+  "hard_exclusions_acknowledged": [
+    "no launch, installation, enablement, or start",
+    "no voltage or recording reads",
+    "no outcomes",
+    "no sort or training",
+    "no RF or holdout"
+  ]
+}

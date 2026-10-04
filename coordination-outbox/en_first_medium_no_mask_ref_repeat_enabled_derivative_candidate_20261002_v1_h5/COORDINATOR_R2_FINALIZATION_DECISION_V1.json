@@ -1,0 +1,33 @@
+{
+  "schema": "luke-coordinator-r2-finalization-decision-v1",
+  "decision_time_utc": "2026-10-02T21:20:00Z",
+  "decision": "PROCEED_ONE_FOCUSED_R2_FINALIZATION_ACCOUNTING_REPAIR_IN_FRESH_V3_NAMESPACE",
+  "blocked_v2_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_targeted_repair_20261002_v2_h5",
+  "blocked_v2_manifest_sha256": "cefdbfeb9076513f7063dc0d5ac5fb4776d9fc915b408fd659f61e17ae67f1dc",
+  "blocked_v2_complete_sha256": "776be73355ca8939053edba1f7b0ac2e3e52ef5dac952d9a751abcc492c4c07c",
+  "h1_blocking_review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_r1_r3_h1_rereview_20261002_v1_h1",
+  "h1_blocking_review_manifest_sha256": "ee4290e237bf65212f84d6ec2718c4147519642a7679f49c3875563238977460",
+  "h1_blocking_review_complete_sha256": "5aa23da5f2e90b96558ffd707d6a5d32e98f38eb6828255e5abbc27d9cb4d48e",
+  "frozen_constraints": {
+    "pair_wide_total_cap_bytes": 17179869184,
+    "science_unchanged": true,
+    "r1_accepted_not_reopened": true,
+    "r3_accepted_not_reopened": true,
+    "rf_holdout_sealed": true
+  },
+  "v3_acceptance_fixtures": [
+    "actual run_single_attempt outer path",
+    "independent final counted-file sum below total cap",
+    "independent final counted-file sum exactly equal to total cap",
+    "independent final counted-file sum above total cap",
+    "finalization failure with no false authoritative success",
+    "existing live and second-arm crossings",
+    "all accepted R1 and R3 regressions"
+  ],
+  "initial_planning_checkpoint": "60-90 minutes; report earlier on scope growth",
+  "v3_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_r2_finalization_repair_20261002_v3_h5",
+  "execution_enabled": false,
+  "service_installed_or_started": false,
+  "recording_or_voltage_read": false,
+  "scientific_execution_started": false
+}

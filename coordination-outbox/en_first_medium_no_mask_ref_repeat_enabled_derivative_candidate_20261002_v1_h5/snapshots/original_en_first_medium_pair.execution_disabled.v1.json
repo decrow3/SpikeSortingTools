@@ -1,0 +1,114 @@
+{
+  "approval": {
+    "h1_review_manifest_sha256": null
+  },
+  "arm_order": [
+    "REF384_repeat",
+    "repaired_B384"
+  ],
+  "between_arm_policy": "inspect execution status and immutable COMPLETE identity only; never inspect scientific outcomes before repaired_B384",
+  "cheapest_adequate_test": "one managed serial REF384 repeat then repaired B384, 600 seconds each, no parameter search",
+  "checkpoint_policy": "each arm is atomic; an interruption requires evidence review and a fresh namespace for that arm; completed REF may be reused only by a new reviewed derivative; no within-arm resume",
+  "completion_condition": "both arms validate and COMPLETE is written last during one managed service start; evaluator/QC are separate reviewed work",
+  "configs": {
+    "REF384_repeat": {
+      "path": "../config/REF384_repeat.execution_disabled.frozen.v2.json",
+      "sha256": "0158e61659594262e2386bca9d2446993ad5f7ed2d7ef8b2604b3c15605d918a"
+    },
+    "historical_screen": {
+      "path": "../config/en_common_support_crop_screen.v1.json",
+      "sha256": "bb6dd8f21539e5ee57f4216702b7c9d4c36d1a0feeefe3859ba25449af52ad17"
+    },
+    "repaired_B384": {
+      "path": "../config/repaired_B384.execution_disabled.clock_v5.json",
+      "sha256": "9a92d12a7a72bf5145e67e0fe7e6a975942f2a1cf27fb9c91f623fbbaf04a043"
+    }
+  },
+  "decision_changed": "whether repaired preprocessing improves frozen retention without unacceptable waveform loss and is safe to advance",
+  "execution_enabled": false,
+  "gates": {
+    "clock_review_complete_sha256": "74f63fe6880e50c5247f21df2ef16d3ea37f2e3206f60dce89495a69d493cd3d",
+    "clock_review_manifest_sha256": "39fd736b838b81db39b96265a4fd51de0ebf6e102e6fa1876fd56f4132c74af4",
+    "clock_review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_minimum_training_support_mask_trained_entry_clock_v5_h5_review_20261002_v1_h5",
+    "clock_review_verdict": "GO_CLOCK_REPAIR_ONLY",
+    "current_voltage_packet_manifest_sha256": "141a699e7396b62f67329ebba6a62dda3387db148f9ec1e56f18bb1f9e6070c4",
+    "current_voltage_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+    "gpu_readiness_recheck_required_at_launch": true,
+    "independent_h1_pair_launcher_review_required": true,
+    "rf_holdout_sealed": true
+  },
+  "milestone": "actual end-to-end representative 600-second prototype pair by end of October 4, 2026 America/Los_Angeles",
+  "planned_paths": {
+    "logs": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_first_medium_trained_pair_20261002_v1",
+    "numba_cache": "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1_numba_cache",
+    "root": "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1",
+    "staged_source_root": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_candidate_20261002_v1_h5/source"
+  },
+  "preservation": {
+    "failure": "preserve stage, journal, stdout/stderr, partial namespace, and no pair COMPLETE",
+    "first_result": "never overwrite or tune",
+    "receipts": "source/config hashes, environment, service properties, per-arm COMPLETE identities, terminal clock/ancestry validation"
+  },
+  "resources": {
+    "cpu_threads_max": 16,
+    "gpu_count_max": 1,
+    "minimum_free_bytes": 214748364800,
+    "persistent_output_bytes_max": 17179869184,
+    "ram_bytes_max": 68719476736,
+    "service_restart": "no",
+    "service_start_limit": 1,
+    "wall_seconds_max": 2700
+  },
+  "schema": "en-first-medium-heterogeneous-pair-launch-contract-v1",
+  "sources": {
+    "historical_ref_runner": {
+      "path": "../source/en_common_support_crop_screen.py",
+      "sha256": "800b190b1ad7f0bb832f310c2b86bf4d6802b63ae5990169138bb86ce5d6c897"
+    },
+    "kilosort_io": {
+      "path": "../dependencies/kilosort/io.py",
+      "sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd"
+    },
+    "kilosort_preprocessing": {
+      "path": "../dependencies/kilosort/preprocessing.py",
+      "sha256": "2329b288ae068361a937632a53461e6cceeb27e30191337e9b9a0fa7404d763d"
+    },
+    "kilosort_run": {
+      "path": "../dependencies/kilosort/run_kilosort.py",
+      "sha256": "5c1baee40edef14fa7566e441997da5d2ecc4f7940b8385cf83de40c8bd0f945"
+    },
+    "kilosort_spikedetect": {
+      "path": "../dependencies/kilosort/spikedetect.py",
+      "sha256": "db1e8f0357319d9db3530a700bd1002c830337c50fde58b3e74e83e7af140892"
+    },
+    "kilosort_template_matching": {
+      "path": "../dependencies/kilosort/template_matching.py",
+      "sha256": "39235cc98428dbb279706718f74a1c3d84568ef31a4f9d1d997a60f7002b1a66"
+    },
+    "pair_launcher": {
+      "path": "../source/en_first_medium_trained_pair_launch.py",
+      "sha256": "0d6fcbe60ed9c05dce3c1adc37b5a061268b190cc7c43f7eefce17f178539d78"
+    },
+    "prewhitening": {
+      "path": "../source/npx_preprocessing/motion/prewhitening_support_mask.py",
+      "sha256": "9c981047f94d91a930e17bd51e634fbc96faa5e956c85d0882f3a603f7f42e0f"
+    },
+    "support_candidate": {
+      "path": "../source/npx_preprocessing/motion/kilosort_support_mask_candidate.py",
+      "sha256": "705b4af444699a6e40ddd0e8a189232b619c4e1bbff53f8150b448f5ad160391"
+    },
+    "trained_terminal": {
+      "path": "../source/npx_preprocessing/motion/kilosort_support_mask_trained.py",
+      "sha256": "46bdf606c7d83263fd4ef70e0482b55d2df61dc2b074c07d0fe6c7f657956cd3"
+    }
+  },
+  "status": "execution_disabled_pending_independent_h1_review",
+  "stop_conditions": [
+    "any contract/config/source/input/geometry/crop/clock hash mismatch",
+    "any output/cache/log namespace already exists",
+    "not exactly one visible CUDA GPU or free storage below 200 GiB",
+    "REF support policy enabled or repaired-B support policy absent",
+    "unexpected dshift, adaptive-state reuse, missing phase audit, semantic validation failure, nonzero exit, or resource breach",
+    "any RF/holdout access, parameter search, preprocessed voltage copy, or unbounded transfer"
+  ]
+}

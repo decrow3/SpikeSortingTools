@@ -1,0 +1,21 @@
+{
+  "schema": "luke-durable-coordination-h5-post-go-activation-candidate-v1",
+  "item": "H5-POST-GO-ACTIVATION-CANDIDATE",
+  "state": "COMPLETE_EXECUTION_DISABLED_PHASE3_REVIEW_REQUIRED",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_activation_candidate_20261002_v1_h5",
+  "manifest_sha256": "abac807e07e9cf443cb0899fcf05e518b5131d9b9493c688dc35a44d2e919a60",
+  "complete_sha256": "f02c77831e6350cc704fb4a13f6e573bdb74a61096eb2a2201497e13df16b1d4",
+  "contract_sha256": "65a94dd52f9264baa70270837b9e441ab8fef69e39a7e905e2c165017355eff5",
+  "reviewed_launcher_sha256": "238c9c997bad67415a13671deaa5569ee121f3a27aa07188fef51c424f2029f8",
+  "activation_preflight_sha256": "d1633143cadc520b73e1c6bb71ac7edf77fa88b73b6866499271f8e162b4a8d4",
+  "service_sha256": "70e0fe56f2fa9d5b62f5a17bee26fcc6438d9470b1aec29af60ac353dda6569f",
+  "runtime_binding_sha256": "2fda60a2bc7f7206ecde87c77554e6daa6f39d3b391cc14e9aaa7e511b771f5c",
+  "h1_launcher_go_manifest_sha256": "7fde2fc6d93a85d3453471176ad66f6e3e8cb14349a449f38ea7e7e44d0fa6c5",
+  "required_phase3_review_manifest_sha256": null,
+  "tests": "20 passed",
+  "activation_eligible": false,
+  "execution_enabled": false,
+  "service_installed_or_started": false,
+  "recording_or_voltage_read": false,
+  "scientific_execution_started": false
+}

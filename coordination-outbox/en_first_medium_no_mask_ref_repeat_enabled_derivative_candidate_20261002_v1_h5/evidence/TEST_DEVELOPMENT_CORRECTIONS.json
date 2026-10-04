@@ -1,0 +1,26 @@
+{
+  "schema": "launcher-r1-r3-test-development-corrections-v1",
+  "preserved_failures": [
+    {
+      "result": "8 passed, 1 failed",
+      "cause": "the synthetic zero-read fixture changed mode after freezing its lstat tuple",
+      "correction": "set mode before constructing the receipt/lstat binding",
+      "implementation_defect": false
+    },
+    {
+      "result": "8 passed, 1 failed",
+      "cause": "the test expected the earlier generic failure stage after the implementation began preserving the exact gpu_and_free_space_preflight stage",
+      "correction": "expect the stronger exact durable stage",
+      "implementation_defect": false
+    },
+    {
+      "result": "8 passed, 1 failed",
+      "cause": "the test retained the word crossed after enforcement was strengthened to terminate when the threshold is reached",
+      "correction": "expect reached during fixture",
+      "implementation_defect": false
+    }
+  ],
+  "final_result": "10 passed",
+  "voltage_read": false,
+  "scientific_execution": false
+}

@@ -1,0 +1,20 @@
+{
+  "schema": "en-a-four-unit-waveform-qc-independent-review-request-v1",
+  "status": "REQUEST_INDEPENDENT_H1_REVIEW_NO_EXECUTION",
+  "review_basis_manifest_sha256": "fbf9aa3a79b0580477b7d75c497df45715436868351e5f4eb2da814f2a9abe00",
+  "candidate_config_sha256": "d3290efd1425f969367aaf2d3e36e7cd0065b614241439b56f6441accbe8b138",
+  "candidate_source_sha256": "6c715ac4d0324cb2fa6125d7350ad667b584aed5753ffd9931b2f12252c0db83",
+  "candidate_test_sha256": "77bec982197a27ab2c9eb9eac0beb95be0288b43f8b13bed347b421ee0d2c3e7",
+  "requested_checks": [
+    "verify archive key shape dtype axis and hash fail-closed validation before outcome use",
+    "verify exact remap sign anchors force-zero semantics and q0 whole-array identity",
+    "verify single and pair signal/baseline windows and pair exclusion from usability counts",
+    "verify raw temporal-centered and CAR-centered stage implementations and the explicit prohibition on retained-window native-highpass claims",
+    "verify robust noise normalization deterministic peak tie-break thresholds and PASS CAUTION FAIL rules",
+    "verify wrong-sign and no-shift outcome negative controls cannot be tuned after inspection",
+    "verify zero recording reads bounded archive access output bounds and COMPLETE-last behavior",
+    "verify decision scope cannot be promoted to biological identity purity or sorter benefit"
+  ],
+  "reviewer_must_not": ["open either waveform archive", "execute real QC", "read recording voltage", "access RF or holdout"],
+  "post_review_requirement": "create a new hash-bound execution-enabled config only after review; never modify this candidate packet"
+}

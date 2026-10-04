@@ -1,0 +1,22 @@
+Scope: candidate source/config plus isolated generated-array and synthetic-orchestration fixtures only.
+Recording voltage, real sort arrays, training, RF, and holdout were not accessed.
+
+Candidate suite
+  staged root: /tmp/h5-clock-v5-review.OA8gyB
+  candidate source sha256: 46bdf606c7d83263fd4ef70e0482b55d2df61dc2b074c07d0fe6c7f657956cd3
+  command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<stage>:/tmp/h5-pytest-pure rescue-python -m pytest -q -p no:cacheprovider testing/test_kilosort_support_mask_trained.py
+  result: 14 passed in 40.05s
+
+Independent H5 fixture
+  source sha256: e67d7b02b01887e53ec706c17dabff79b13fe259c4bc4976fe63c733d3f63852
+  result: PASS
+  positives: exact origin 208498882 relation
+  rejected: crop-local lower and upper bounds; global lower and upper bounds;
+            within-bounds off-by-one; unsigned int64 overflow; crop-contract
+            signed-int64 overflow; wrong origin contract; nonmonotone selected
+            times; cluster ancestry; amplitude ancestry
+
+Native source trace
+  kilosort/io.py sha256: 767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd
+  save_to_phy lines 381-402: spike_times = int64(st[:,0]) + imin, then duplicate mask
+  save_to_phy lines 472-478: full_st saves the original unshifted st

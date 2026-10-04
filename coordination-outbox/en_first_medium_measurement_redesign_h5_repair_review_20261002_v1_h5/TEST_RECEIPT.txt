@@ -1,0 +1,29 @@
+H5 independent workstream-B repair re-review, 2026-10-02
+
+Writable byte-identical stage:
+/tmp/en-wsb-repair-review.Qn4UuO/packet
+
+Integrity:
+sha256sum -c MANIFEST.sha256
+Result: all 17 manifest members OK
+
+Packet tests:
+PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR=/tmp/en_wsb_repair_review_numba PYTHONPATH=source python -m pytest -q -p no:cacheprovider tests/test_first_medium_measurement_redesign.py
+Result: 30 passed in 1.01s
+
+Independent adversarial command:
+PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR=/tmp/en_wsb_repair_review_numba PYTHONPATH=source python tests/independent_adversarial.py
+Result: passed
+
+Independent cases:
+- invalid out-of-cohort finite-interior interval rejected
+- overlapping and NaN intervals rejected
+- NaN, infinity, zero, and negative duration rejected
+- exact [0,duration] partitions emit coverage 1 and all coverage is in [0,1]
+- candidate exact-stop event rejected before a matcher sentinel could run
+- negative non-cohort REF event rejected
+- valid zero/interior-boundary/stop-1 events retain half-open assignments
+- R, DeltaR, paired-bootstrap label, and strict gate equality known answers pass
+
+No real input, score, evaluator, job, recording, voltage, sorter, waveform, RF,
+or holdout operation was accessed or run.

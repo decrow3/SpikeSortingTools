@@ -1,0 +1,52 @@
+{
+  "schema": "h1-independent-launcher-r1-r3-rereview-v1",
+  "reviewed_at": "2026-10-02T14:15:19-07:00",
+  "host": "huklaban1",
+  "verdict": "BLOCK_R2_FINAL_RECEIPTS_CAN_EXCEED_PAIR_WIDE_CAP",
+  "candidate": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_targeted_repair_20261002_v2_h5",
+    "manifest_sha256": "cefdbfeb9076513f7063dc0d5ac5fb4776d9fc915b408fd659f61e17ae67f1dc",
+    "complete_sha256": "776be73355ca8939053edba1f7b0ac2e3e52ef5dac952d9a751abcc492c4c07c",
+    "contract_sha256": "8ba7243bf7ffc52f7312e5a63c4b309e35cbfe96bb1b3b2cbe20e0b7598be0a8",
+    "launcher_sha256": "3f1c15588e856195b8aa31466daec007a2a4b0829eac5be6374111b803843ca8"
+  },
+  "results": {
+    "manifest_all_members": "PASS",
+    "r1_o_excl_single_start_and_replay": "PASS_TESTED_SCOPE",
+    "r2_live_process_group_crossing": "PASS_TESTED_SCOPE",
+    "r2_second_arm_crossing_preserves_ref_state": "PASS_TESTED_SCOPE",
+    "r2_pair_wide_terminal_cap": "FAIL",
+    "r3_compact_receipt_lstat_zero_voltage": "PASS_SOURCE_AND_FIXTURE_SCOPE",
+    "r3_replacement_and_symlink_negatives": "PASS",
+    "r3_precedes_ref": "PASS",
+    "scientific_sources_unchanged": "PASS",
+    "scientific_config_delta_only_bindings_and_disabled_status": "PASS",
+    "fixed_arm_order": "PASS",
+    "distinct_arm_paths": "PASS",
+    "completion_only_between_arm_inspection": "PASS",
+    "clock_and_ancestry_validator_bound": "PASS",
+    "resource_contract_and_service_limits": "PASS",
+    "execution_disabled_and_enabled_binding_absent": "PASS"
+  },
+  "counterexample": {
+    "configured_cap_bytes": 1843,
+    "launcher_reported_bytes_before_final_receipts": 1777,
+    "actual_aggregate_bytes_after_successful_return": 2838,
+    "excess_bytes": 995,
+    "cause": "execute_pair checks the cap before writing repaired_B384_EXECUTION_STATE.json, pair COMPLETE.json, and final CURRENT_STAGE.json; run_single_attempt then also writes ATTEMPT_COMPLETE.json"
+  },
+  "required_repair": [
+    "Make the cap cover every persistent byte through terminal attempt evidence, not only arm output before final receipts.",
+    "Use a reserved receipt budget or stage terminal receipts in a pre-accounted bounded namespace, then verify the post-write aggregate without creating further unaccounted bytes.",
+    "Add a regression fixture whose cap lies between the pre-terminal and post-terminal totals and require fail-closed behavior with no successful completion above the cap.",
+    "Preserve the current live process-group crossing and second-arm crossing fixtures."
+  ],
+  "scope": {
+    "service_installed": false,
+    "service_enabled": false,
+    "service_started": false,
+    "recording_or_voltage_opened": false,
+    "scientific_execution_started": false,
+    "rf_or_holdout_accessed": false
+  }
+}

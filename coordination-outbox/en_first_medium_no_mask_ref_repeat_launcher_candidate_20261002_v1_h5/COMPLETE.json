@@ -1,0 +1,11 @@
+{
+  "schema": "immutable-evidence-packet-complete-v1",
+  "status": "COMPLETE_EXECUTION_DISABLED_READY_FOR_H1_REVIEW",
+  "packet": "en_first_medium_no_mask_ref_repeat_launcher_candidate_20261002_v1_h5",
+  "manifest_sha256": "920c628d58af5a583d8a9ace35379ef6c10f83bacec07f8f138e018875a13fb9",
+  "contract_sha256": "2feeb8b36ebba5c5ef23dc51ca0c9a9abfce1c7a853aa7785dcefe6136e416f5",
+  "execution_enabled": false,
+  "service_installed": false,
+  "scientific_execution_started": false,
+  "written_last": true
+}

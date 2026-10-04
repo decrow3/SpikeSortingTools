@@ -1,0 +1,32 @@
+{
+  "completion_written": false,
+  "contract_digest": "fa9490f3de82fbc85295d4b2d177d83ff0ae7f7b53b3fe8fddd90791b12d316a",
+  "exception_message": "spike_clusters.npy is not aligned to spike_times.npy",
+  "exception_type": "ValueError",
+  "mask_read_count": 4,
+  "phase_at_failure": "learned_template_extraction",
+  "stage": "validate_and_inventory_saved_artifacts",
+  "status": "failed",
+  "whitening_audit": {
+    "computation_digest": "fa9490f3de82fbc85295d4b2d177d83ff0ae7f7b53b3fe8fddd90791b12d316a",
+    "covariance_validation": {
+      "condition_number": 5.505211353302002,
+      "contract_digest": "fa9490f3de82fbc85295d4b2d177d83ff0ae7f7b53b3fe8fddd90791b12d316a",
+      "covariance_sha256": "562a693af85b18d9c7017ee2b4b79ec1586ba75d45d39287cce89be6bf845ce7",
+      "finite": true,
+      "maximum_condition_number": 100000000.0,
+      "passed": true,
+      "rank": 4,
+      "reasons": [],
+      "shape": [
+        4,
+        4
+      ]
+    },
+    "sampled_batch_indices": [
+      0
+    ],
+    "whitening_finite": true,
+    "whitening_sha256": "27f1332dcd63f5c503677ba15a7027e761a7a304242858785947ee806ff32ece"
+  }
+}

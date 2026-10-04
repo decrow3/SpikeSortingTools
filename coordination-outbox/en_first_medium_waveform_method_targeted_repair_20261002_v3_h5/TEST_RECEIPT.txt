@@ -1,0 +1,31 @@
+H5 waveform method targeted repair v3, 2026-10-02 UTC
+
+Command:
+  PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=source:<reviewed-site-packages> CUDA_VISIBLE_DEVICES=-1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 NUMBA_NUM_THREADS=4 pytest -q -p no:cacheprovider tests
+
+Native result:
+  32 passed in 10.26s
+
+Byte-identical /tmp stage result:
+  32 passed in 10.27s
+
+Clean runtime verifier:
+  status PASS
+  closure sha256 f5db3034ab11ac65e17fda77e455300be93bfd82ef30f851da60ae2777269f8e
+  aggregate 6658089a5e123b1962d2a61b7b89c230e484fdde0f52a0479e52c102f10cfe48
+  89 ELF members; 3,333,088,832 bytes rehashed
+
+Covered:
+  - unchanged 10-test accepted preprocessing/matching/sampling/read suite
+  - exact preservation assertions against accepted v3 contract
+  - executable Python and all mapped ELF byte closure after actual median/FFT probe
+  - path relocation accepted only with identical byte identities; byte mutation rejected
+  - immutable prior voltage receipt binding and synthetic no-open/stat-only preflight
+  - corrupt voltage receipt failure
+  - +1/-1 correlations, channel intersection/order, absolute-frame alignment
+  - missing/unselected/technically-invalid endpoints and malformed alignment
+  - insufficient channels, 25-frame failure versus 26-frame success
+  - NaN, +Inf, -Inf, constant vectors, one-sided zero variance
+  - overlapping invalid conditions choose the first frozen priority code
+
+No real recording, voltage, event data, sorter, job, RF, or holdout was opened or run.

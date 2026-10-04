@@ -1,0 +1,11 @@
+Dummy managed-service survival check:
+2026-10-02T10:39:55-0700 huklaban5-Precision-5820-Tower systemd[126584]: Starting /usr/bin/sleep 5...
+2026-10-02T10:40:00-0700 huklaban5-Precision-5820-Tower systemd[126584]: Finished /usr/bin/sleep 5.
+
+Exact one-start Phase-1 service:
+2026-10-02T10:41:20-0700 huklaban5-Precision-5820-Tower systemd[126584]: Starting One-start REF-only saved-output qualification Phase 1...
+2026-10-02T10:41:29-0700 huklaban5-Precision-5820-Tower systemd[126584]: Finished One-start REF-only saved-output qualification Phase 1.
+2026-10-02T10:41:29-0700 huklaban5-Precision-5820-Tower systemd[126584]: en-first-medium-phase1-controls-20261002-v1-h5.service: Consumed 8.897s CPU time.
+
+Final service state: inactive/dead, Result=success, ExecMainStatus=0, NRestarts=0.
+ConditionResult=no after completion because the one-shot output and token claim now exist.

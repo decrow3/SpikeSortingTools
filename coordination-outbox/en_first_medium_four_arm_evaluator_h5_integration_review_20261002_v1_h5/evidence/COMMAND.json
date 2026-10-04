@@ -1,0 +1,21 @@
+{
+  "command": [
+    "/home/huklaban5/anaconda3/bin/python3.12",
+    "-m",
+    "testing.first_medium_evaluator",
+    "--request",
+    "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_first_medium_evaluator_h5_integration_20261002_v4/BOUND_REQUEST.json",
+    "--output",
+    "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_first_medium_evaluator_h5_integration_20261002_v4/traversal_output"
+  ],
+  "cwd": "/tmp",
+  "python": "/home/huklaban5/anaconda3/bin/python3.12",
+  "python_sha256": "4adb344720ca7a0ccee7cdc77506bae30da64b55a977cd45e15880ddf8bddcc1",
+  "candidate_source_sha256": "f5ff00505a9abac8a20c54a326cee5efdb86250ae60aba23cb158c6b633c8c66",
+  "candidate_adapter_sha256": "ce2896f35288a21829f67007cea429da5d79404f6a6f9d390de3bfa9e649c8a0",
+  "runtime_source_sha256": "f5ff00505a9abac8a20c54a326cee5efdb86250ae60aba23cb158c6b633c8c66",
+  "runtime_adapter_sha256": "ce2896f35288a21829f67007cea429da5d79404f6a6f9d390de3bfa9e649c8a0",
+  "package_shim_sha256": "9ed710cd669eeafbd7a8378c9e23168658bfee46e751d5638e2e86f97b402b4c",
+  "dependency_path_extension": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing",
+  "bound_request_sha256": "e797991f0d43bcd1674fb01535edf273744809fd9f324f459f6a8925bed4e07d"
+}
