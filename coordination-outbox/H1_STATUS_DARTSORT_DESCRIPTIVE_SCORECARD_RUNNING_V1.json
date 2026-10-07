@@ -1,0 +1,37 @@
+{
+  "schema": "h1-status-dartsort-descriptive-scorecard-running-v1",
+  "producer": "H1/huklaban1",
+  "observed_at": "2026-10-07T02:42:34-07:00",
+  "milestone": "DARTsort saved-output state-conditioned descriptive scorecard v1",
+  "status": "RUNNING",
+  "managed_job": {
+    "unit": "h1-dartsort-descriptive-scorecard-v1.service",
+    "active_state": "active",
+    "sub_state": "running",
+    "main_pid": 4126715,
+    "started_at": "2026-10-07T02:41:41-07:00",
+    "memory_current_bytes": 2815918080,
+    "memory_max_bytes": 34359738368,
+    "runtime_max_seconds": 7200,
+    "checkpointing": "none; interruption requires restart in a fresh namespace"
+  },
+  "bindings": {
+    "q_lattice_sha256": "92d7a28ccc808f76924a6ba392eb71c1a9b0b867796615a15307d1c59bc7df4f",
+    "matching1_h5_sha256": "cc70606126e94367bdab76fc46afee08164838de55f1801d367a83a660969731",
+    "sorting_npz_sha256": "772acc6a810bd65ea3dd8b99f197c4b8d3fcfb9248091027877d26fca50e7aa7",
+    "scorecard_contract_sha256": "21f21e26404172e7a369d806d30ab2966421a3b473305253aea50141b854e992",
+    "executed_source_sha256": "76674fa91bfb5b86f33de6c77c5f76ce6076dbb85c823bc40cde3405b3aabe6f"
+  },
+  "git": {
+    "freeze_commit": "0bd6db7",
+    "runner_commit": "e0ca336",
+    "pushed": false
+  },
+  "activity": {
+    "new_sort": false,
+    "raw_voltage_read": false,
+    "rf_or_holdout": false,
+    "outcomes_available": false
+  },
+  "next_step": "wait for terminal state, then independently verify manifest, outputs, metric semantics, and scoped interpretation before publication"
+}
