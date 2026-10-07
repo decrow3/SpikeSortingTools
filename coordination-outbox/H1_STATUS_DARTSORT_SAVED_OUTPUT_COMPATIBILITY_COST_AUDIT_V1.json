@@ -1,0 +1,30 @@
+{
+  "schema": "h1-status-dartsort-saved-output-compatibility-cost-audit-v1",
+  "producer": "H1/huklaban1",
+  "milestone": "M0-M1 DARTsort saved-output compatibility and cost audit",
+  "status": "COMPLETE",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_saved_output_compatibility_cost_audit_20261007_v1_h1",
+  "manifest_sha256": "09d4d65f089e497e3d0db84e68d5d171a6dc168ac74df92ad6459134675ef5f9",
+  "complete_sha256": "abd7025e8936e9b8b1e2d39f4f86ff738e00fdaadd342f2b3e32e76038a0fea7",
+  "decision": {
+    "r1_production_endpoint": "NO_GO",
+    "dartsort_specific_descriptive_scorecard": "CONDITIONAL_GO"
+  },
+  "conditions": [
+    "restore and hash the exact imec1 q-state lattice",
+    "bind matching1.h5 by full hash or reviewed chunk manifest",
+    "freeze renamed DARTsort-specific amplitude and depth mappings before outcomes"
+  ],
+  "missing_provenance": [
+    "shared copy of MOTION_DIAGNOSIS_COORDINATOR_PLAN_20261007.md",
+    "exact q lattice expected SHA-256 92d7a28ccc808f76924a6ba392eb71c1a9b0b867796615a15307d1c59bc7df4f"
+  ],
+  "activity": {
+    "new_sort": false,
+    "raw_voltage_read": false,
+    "rf_or_holdout": false,
+    "outcome_scoring": false
+  },
+  "next_owner": "coordinator/HubPlanner",
+  "next_decision": "choose between restoring the compact q lattice for a frozen descriptive scorecard or stopping because original R1 compatibility is unavailable"
+}

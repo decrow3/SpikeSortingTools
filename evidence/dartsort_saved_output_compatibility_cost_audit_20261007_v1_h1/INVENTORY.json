@@ -1,0 +1,34 @@
+{
+  "schema": "dartsort-saved-output-inventory-v1",
+  "authoritative_root": "/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-full-medicine-shared-recovery-20260913-223213",
+  "local_recording_root": "/media/huklab/Expansion3/DARTsort_archive/luke0804_imec1/luke0804-imec1-full-ibllikecmr-float32-nvme-v1",
+  "artifacts": [
+    {"role":"final_sorting","path":"sort/dartsort_sorting.npz","bytes":10937366891,"sha256":"772acc6a810bd65ea3dd8b99f197c4b8d3fcfb9248091027877d26fca50e7aa7","hash_source":"qc receipt"},
+    {"role":"final_feature_h5","path":"sort/matching1.h5","bytes":43817258584,"sha256":null,"identity":"size plus HDF5 schema inspected; hash required before consequential scoring"},
+    {"role":"effective_config","path":"sort/_dartsort_internal_config.json","bytes":42880,"sha256":"24d7594e48ff399bb8c9c0ec2631fdec4459814782b7a94beac085a44534730a"},
+    {"role":"recovery_finalization","path":"recovery-finalization.json","bytes":3268,"sha256":"a3ea42414001b6075aef50f42bdb88d3204a4de066973ac33abd131d34f3f4e3"},
+    {"role":"qc_receipt","path":"qc-phy/receipt.json","sha256":"47da6b0033686c0418e45443e3449d205197d572fc9521716f81a4eec8d7cf7f"},
+    {"role":"si_spike_amplitudes","path":"qc-phy/analyzer/extensions/spike_amplitudes/amplitudes.npy","bytes":261150348,"shape":[65287555],"dtype":"float32","sha256":"ce20eb71bf8c5aef34f65b6d82ee1e2c70928ded5d02a9eabc06153258eea5bb"},
+    {"role":"sampled_waveforms","path":"qc-phy/analyzer/extensions/waveforms/waveforms.npy","bytes":2772590384,"shape":[373866,103,18],"dtype":"float32","sampling":"uniform seed 0, maximum 200 spikes per unit"},
+    {"role":"sampled_indices","path":"qc-phy/analyzer/extensions/random_spikes/random_spikes_indices.npy","bytes":2991056,"shape":[373866],"dtype":"int64","sha256":"86e96d0294ee43a7108d66667e430b978de3c9fa23067fe06f1d5de523fe909f"},
+    {"role":"sampled_principal_components","path":"qc-phy/analyzer/extensions/principal_components/pca_projection.npy","bytes":80755184,"shape":[373866,3,18],"dtype":"float32","settings":"by_channel_local; whiten=true"},
+    {"role":"full_phy_pc_features","path":"qc-phy/phy/pc_features.npy","bytes":14102112008,"note":"not required for the compact route and not equivalent to Kilosort PC norm"},
+    {"role":"templates","path":"qc-phy/analyzer/extensions/templates/average.npy","bytes":590788352,"shape":[1872,103,383],"dtype":"float64"},
+    {"role":"local_preprocessed_voltage","path":"/media/huklab/Expansion3/DARTsort_archive/luke0804_imec1/luke0804-imec1-full-ibllikecmr-float32-nvme-v1/traces_cached_seg0.raw","bytes":481360672008,"use":"not needed for saved-output scorecard"},
+    {"role":"dartsort_motion_field","path":"/media/huklab/Data/NPX/Ryansorting/Luke/DARTsort_motion_experiments/luke0804-imec1-full-medicine-shared-recovery-20260913-223213/motion/fields.npz","bytes":1006334,"sha256":"f67e60c48b4970104d03ac89f6561f91af0af8b879eae6b73091596803527e7b"},
+    {"role":"later_imec1_two_layer_field","path":"/mnt/NPX/Luke/DARTsort_motion_experiments/av_aw_handoff_20260926_v1/d2l_field/luke0804_imec1_two_layer_motion.npz","bytes":372378,"sha256":"85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9","warning":"field alone does not encode the contract's canonical-mask q lattice"}
+  ],
+  "matching1_h5_datasets": {
+    "times_samples":{"shape":[66286937],"dtype":"int64"},
+    "labels":{"shape":[66286937],"dtype":"int32"},
+    "channels":{"shape":[66286937],"dtype":"int64","semantics":"main/template channel; do not treat as measured peak depth"},
+    "denoised_ptp_amplitudes":{"shape":[66286937],"dtype":"float32","semantics":"maximum channel peak-to-peak of denoised event waveform"},
+    "point_source_localizations":{"shape":[66286937,3],"dtype":"float32","columns":["x","y","z_abs"],"semantics":"amortized point-source model from peak-amplitude vectors"},
+    "collisioncleaned_tpca_features":{"shape":[66286937,8,18],"dtype":"float32"},
+    "collisioncleaned_voltages":{"shape":[66286937],"dtype":"float32"},
+    "times_seconds":{"shape":[66286937],"dtype":"float64"},
+    "channel_index":{"shape":[383,18],"dtype":"int64"},
+    "geom":{"shape":[383,2],"dtype":"float64"}
+  },
+  "npz_semantics": "The final NPZ stores times/channels/labels and clustering state and points to matching1.h5 for persistent features. Loading it normally materializes multiple multi-gigabyte clustering arrays; the compact route must not use an unrestricted np.load of every key."
+}

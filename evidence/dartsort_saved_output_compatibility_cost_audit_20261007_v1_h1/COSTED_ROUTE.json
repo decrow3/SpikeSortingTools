@@ -1,0 +1,69 @@
+{
+  "schema": "dartsort-saved-output-costed-route-v1",
+  "route_status": "conditional_go_descriptive_only",
+  "host_conditions_observed": {
+    "available_ram_bytes": 182264414208,
+    "swap_total_bytes": 276924719104,
+    "shared_available_bytes": 383909363712,
+    "local_expansion3_available_bytes": 883908935680,
+    "warning": "The shared filesystem reports 100% used despite about 384 GB available; write only a compact packet and use local scratch for temporary arrays."
+  },
+  "frozen_compact_inputs": [
+    "matching1.h5 datasets times_samples, labels, denoised_ptp_amplitudes, point_source_localizations, sampling_frequency",
+    "matching1.h5 channel_index and geom for support validation",
+    "qc-phy/analyzer/extensions/random_spikes/random_spikes_indices.npy",
+    "qc-phy/analyzer/extensions/waveforms/waveforms.npy only for normalized-unit waveform shape summaries",
+    "exact imec1 q lattice with expected SHA-256 92d7a28ccc808f76924a6ba392eb71c1a9b0b867796615a15307d1c59bc7df4f if common state scoring is enabled",
+    "reviewed R1 evaluator source a31f1349854eff0e4c732063993be37e8cf53de5d206628f66d68a65ff7f341e only for directly portable time/ISI algorithms; do not reuse its rejected fixed-histogram bootstrap path"
+  ],
+  "stages": [
+    {
+      "name": "bind_and_extract_event_core",
+      "reads": "about 1.9 GB logical for times, labels, DARTsort PTP amplitude, and localization; HDF5 metadata first",
+      "cpu": "1 core sufficient; 2-4 cores optional",
+      "ram": "2-6 GB with 1M-row chunks; avoid loading collisioncleaned TPCA or NPZ clustering matrices",
+      "wall_time": "10-40 minutes depending on shared-storage throughput and hashing",
+      "output": "local compact columnar or memmap arrays plus hashes; expected 1.5-2.5 GB",
+      "stop": "schema/row count/sample rate/nonfinite-rate/hash mismatch"
+    },
+    {
+      "name": "unit_and_time_metrics",
+      "reads": "compact arrays only",
+      "cpu": "1-8 CPU cores",
+      "ram": "4-12 GB",
+      "wall_time": "10-45 minutes for counts, presence, ISI, short intervals, median depth, and DARTsort-specific point noise cutoff",
+      "output": "about 1872 unit rows plus compact summaries",
+      "stop": "unsorted times within unit after explicit sort, out-of-range samples, label/cardinality mismatch, or state lattice absent when state metrics requested"
+    },
+    {
+      "name": "optional_exact_block_bootstrap",
+      "reads": "compact event arrays; no raw voltage",
+      "cpu": "8-16 CPU cores",
+      "ram": "8-32 GB depending on exact per-draw amplitude implementation",
+      "wall_time": "benchmark required; plan 1-4 hours for 1000 draws, not a promise",
+      "output": "per-draw deltas only after a new frozen contract and known-answer fixture excluding the maximum-bearing block",
+      "stop": "any attempt to reuse frozen all-session amplitude histogram edges or any timing fixture over 4 hours without a predeclared draw-count rule"
+    },
+    {
+      "name": "optional_sampled_waveform_shape",
+      "reads": "2.77 GB sampled waveforms and 3 MB indices",
+      "cpu": "1-8 CPU cores",
+      "ram": "4-12 GB via mmap/chunks",
+      "wall_time": "10-45 minutes",
+      "output": "normalized-unit waveform shape/PTP distributions; never physical-uV pass counts",
+      "stop": "sample-index binding mismatch, sparsity mismatch, or nonfinite waveforms"
+    }
+  ],
+  "not_required": ["481 GB voltage read", "14.1 GB full Phy PC features", "10.9 GB NPZ clustering matrices", "new detection", "new sorting", "GPU"],
+  "invalidation_conditions": [
+    "matching1.h5 SHA-256 or schema changes after contract freeze",
+    "sorting NPZ hash differs from 772acc6a810bd65ea3dd8b99f197c4b8d3fcfb9248091027877d26fca50e7aa7",
+    "accepted event count differs from 65287555 or unit count differs from 1872",
+    "sample rate differs from 29999.759166666667 Hz or frame count differs from 314204094",
+    "state lattice is reconstructed from a different field, mask, rounding rule, or boundary rule",
+    "physical microvolt thresholds are applied to the normalized recording",
+    "DARTsort PTP or SI peak voltage is relabeled as Kilosort PC norm/amplitude",
+    "a curation/quality label is inferred from unsorted Phy groups without a separately frozen reviewed rule",
+    "results are interpreted as sorter-only effects without a matched arm controlling preprocessing, motion field, curation, and downstream evaluation"
+  ]
+}

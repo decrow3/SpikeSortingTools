@@ -1,0 +1,140 @@
+{
+  "schema": "dartsort-saved-output-compatibility-audit-v1",
+  "status": "complete",
+  "host": "huklaban1",
+  "date": "2026-10-07",
+  "milestone": "M1 DARTsort reuse and measurement compatibility",
+  "decision_changed": "whether existing full-session DARTsort outputs can be scored without another sort",
+  "cheapest_adequate_test": "executed-source/config trace plus metadata-only inspection of saved NPZ/HDF5/analyzer schemas",
+  "completion_condition": "classify each metric, state missing dependencies, cost a no-sort route, and preserve provenance",
+  "go_no_go": {
+    "r1_production_endpoint": "NO_GO",
+    "reason": "The archive is an uncurated imec1 DARTsort result on noise-normalized IBL-like-CMR voltage. R1 was defined for curated outputs and requires a physical 50 uV waveform threshold and a Kilosort/IBL amplitude distribution. Those signals and curation semantics are not equivalent.",
+    "dartsort_specific_descriptive_scorecard": "CONDITIONAL_GO",
+    "conditions": [
+      "Freeze a new scorecard name and interpretation before reading outcomes.",
+      "Restore and hash the exact 41895-row imec1 q-state lattice if common q=0/displaced support is required.",
+      "Bind the 43.817 GB matching1.h5 by a fresh full-file SHA-256 or a reviewed chunk manifest before consequential scoring.",
+      "Use final labels >=0 only and report that all 1872 Phy groups are unsorted.",
+      "Do not call DARTsort denoised PTP or SpikeInterface template-peak voltage a Kilosort PC norm.",
+      "Treat results as pipeline-level descriptive evidence, not sorter-only causality."
+    ]
+  },
+  "metric_classification": [
+    {
+      "metric": "event_count_firing_rate_presence",
+      "class": "directly_comparable_definition",
+      "mapping": "times_samples and final labels>=0; recording-local sample clock; explicitly freeze bin edges",
+      "limits": "Population is uncurated DARTsort, not R1 curated Kilosort."
+    },
+    {
+      "metric": "adjacent_isi_exact_duplicates_and_segment_safe_9_29_sample_fraction",
+      "class": "directly_comparable_definition",
+      "mapping": "sort accepted events by (label,times_samples); one segment; never count across unit, segment, or bootstrap-block boundaries",
+      "limits": "Short intervals are a contamination proxy, not proof of purity or repeated-spike mechanism."
+    },
+    {
+      "metric": "sliding_refractory",
+      "class": "directly_comparable_algorithm_if_port_frozen",
+      "mapping": "Use the reviewed SpikeInterface/IBL port and the actual 29999.759166666667 Hz clock",
+      "limits": "No curation equivalence; known-answer fixtures remain mandatory."
+    },
+    {
+      "metric": "noise_cutoff_on_spike_amplitudes",
+      "class": "adaptable_with_frozen_mapping",
+      "mapping": "Preferred variant: matching1.h5 denoised_ptp_amplitudes, explicitly named dartsort_denoised_ptp_noise_cutoff. Alternative SI amplitudes are recording values at each unit template's peak channel and peak shift, explicitly named si_template_peak_voltage_noise_cutoff.",
+      "limits": "Neither signal is established equivalent to Kilosort amplitudes/PC norms. Exact per-draw histogram maxima are required; frozen all-session histogram support is invalid for the R1 bootstrap."
+    },
+    {
+      "metric": "median_peak_to_peak_waveform_amplitude_ge_50_uV",
+      "class": "invalid",
+      "mapping": null,
+      "limits": "The cached recording was high-pass filtered, bad-channel filtered, common-referenced, divided by per-channel noise level, common-referenced again, and saved as float32. Analyzer return_in_uV=false. The retained 2.34375 gain metadata does not undo the noise normalization."
+    },
+    {
+      "metric": "common_q0_vs_displaced_state_support",
+      "class": "adaptable_with_missing_compact_input",
+      "mapping": "Use the frozen imec1 40-um half-away q lattice on 0.25 s half-open cells from AP frame zero; assign by times_samples/fs.",
+      "limits": "The required lattice_full.csv with expected SHA-256 92d7a28ccc808f76924a6ba392eb71c1a9b0b867796615a15307d1c59bc7df4f is not present on H1/shared storage. The DARTsort MEDiCINe field is a different four-depth-bin continuous field and is not a substitute."
+    },
+    {
+      "metric": "spatial_domain_300_3540_um",
+      "class": "adaptable_with_frozen_mapping",
+      "mapping": "Freeze whether unit depth is median observed amortized point-source z_abs or external-field registered z; use point_source_localizations column 2 only.",
+      "limits": "The HDF5 localizations are model-derived x,y,z_abs, not measured voltage peaks. Do not use channel index as depth or mix observed and registered frames."
+    },
+    {
+      "metric": "allen_like_isi_presence",
+      "class": "directly_comparable_definition",
+      "mapping": "Recompute with frozen 100 equal bins and reviewed ISI definition.",
+      "limits": "Amplitude-cutoff and SNR components are not directly comparable."
+    },
+    {
+      "metric": "kilosort_good_or_curated_unit_count",
+      "class": "invalid",
+      "mapping": null,
+      "limits": "cluster_group.tsv marks all 1872 units unsorted; QC source explicitly filters no units. A new data-driven label would be a redesign, not legacy curation reuse."
+    },
+    {
+      "metric": "sampled_waveform_shape_and_template_similarity",
+      "class": "adaptable_descriptive_only",
+      "mapping": "Use the seed-0 uniform sample of at most 200 spikes/unit, 103 samples, radius-100-um sparsity, plus full templates and cosine similarity.",
+      "limits": "Sampled waveforms are noise-normalized native units and cannot establish physical amplitude completeness."
+    }
+  ],
+  "implementation_findings": {
+    "executed_wrapper": {
+      "path": "/media/huklab/Data/NPX/Ryansorting/Luke/DARTsort_motion_experiments/luke0804-imec1-full-medicine-shared-recovery-20260913-223213/source/pipeline.py",
+      "sha256": "53042b121d74dbea48293d0ba3d21ca6e163d57ade034ab4b5ed148475a874a2",
+      "verified_copies": 3
+    },
+    "executed_qc": {
+      "path": "/media/huklab/Data/NPX/Ryansorting/Luke/DARTsort_motion_experiments/luke0804-imec1-full-medicine-shared-recovery-20260913-223213/source/qc_phy.py",
+      "sha256": "f21db1a241443b683d1e2c7d53f4e707713b2686e7732d277cb5b96e4ac57e28"
+    },
+    "repo_state": {
+      "git_commit": "2162273edd83276e1698cf3b58a8766adf8d4be1",
+      "tracked_diff_sha256": "eacd8536b4414c735fbeefed7d04e1ad2a8e588728e470c9e21d90d1934fc616",
+      "dartsort_version": "0.5.23.post2+gdbda377f.d20260911",
+      "spikeinterface_version": "0.104.8",
+      "dartsort_source_tree_sha256": "cc6d45e00e3a3ed5b6d671a8cf05d125af19d7b541714b6822a527f423b69ee2",
+      "note": "Recorded dirty paths were confined to experiments/dataset_pipeline. Amplitude implementation is byte-identical at dbda377f and 2162273."
+    },
+    "recording": {
+      "stream": "imec1.ap",
+      "frames": 314204094,
+      "sampling_frequency_hz": 29999.759166666667,
+      "channels": 383,
+      "removed_channel": "imec1.ap#AP191",
+      "dtype": "float32",
+      "preprocessing": "ibllikecmr external cache; DARTsort internal preprocessing=none",
+      "preprocessing_chain": ["astype float32", "highpass", "phase_shift if available", "detect/remove bad channels seed 0", "common reference", "divide by native-unit noise level", "common reference", "astype float32"],
+      "time_origin": "AP frame zero; local samples; no hardware firstSample adjustment"
+    },
+    "sorting": {
+      "rows": 66286937,
+      "accepted_events": 65287555,
+      "negative_label_events": 999382,
+      "units": 1872,
+      "labels": "-1 through 1871",
+      "curation": "none; every Phy group is unsorted"
+    },
+    "motion": {
+      "method": "MEDiCINe 1.5 external DARTsort field",
+      "shape_depth_by_time": [4, 41895],
+      "time_range_s": [0.0004666784408352612, 10473.50046667844],
+      "time_step_s": 0.25,
+      "depth_range_um": [-9.210121154785156, 3824.85262298584],
+      "displacement_range_um": [-94.72815704345703, 109.3796615600586],
+      "sign": "corrected depth = observed depth - displacement",
+      "warning": "This is not the imec1 two-layer 40-um q lattice used by the later Arm-A contract."
+    }
+  },
+  "provenance_gaps": [
+    "MOTION_DIAGNOSIS_COORDINATOR_PLAN_20261007.md was absent from the designated shared directory; expected SHA-256 is 4db6adbe9a95325edd4d2b26ec3aefeaa9f4c91aa75f1cb93b1e86de26aa962c.",
+    "The exact compact imec1 q-state lattice is absent from H1/shared storage.",
+    "matching1.h5 has schema/stat identity but no fresh full-file SHA-256 in this audit.",
+    "No reviewed final DARTsort curation selection is bound to the base 1872-label sorting."
+  ],
+  "excluded": ["new sorter run", "raw voltage scoring", "RF", "sealed holdout", "Candidate G", "parameter search", "sorter-only causality"]
+}

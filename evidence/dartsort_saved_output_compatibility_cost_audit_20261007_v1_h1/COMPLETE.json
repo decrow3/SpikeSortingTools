@@ -1,0 +1,7 @@
+{
+  "schema": "dartsort-saved-output-compatibility-complete-v1",
+  "status": "complete",
+  "manifest_sha256": "09d4d65f089e497e3d0db84e68d5d171a6dc168ac74df92ad6459134675ef5f9",
+  "decision": "NO_GO_R1_PRODUCTION_ENDPOINT__CONDITIONAL_GO_DARTSORT_DESCRIPTIVE_SCORECARD",
+  "written_last": true
+}

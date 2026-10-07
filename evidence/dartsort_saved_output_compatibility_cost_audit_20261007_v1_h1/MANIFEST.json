@@ -1,0 +1,15 @@
+{
+  "schema": "dartsort-saved-output-compatibility-manifest-v1",
+  "files": [
+    {"path":"AUDIT.json","bytes":8790,"sha256":"df2e9a74d0fb784b6ebd1b8e1f6065ee2b121ba6922a9eb22cacfa7414f5cc61"},
+    {"path":"COSTED_ROUTE.json","bytes":4427,"sha256":"c38b2017b714764d2d75d7313a82ba4baddd78ab1a386891081e5e75319d2ee2"},
+    {"path":"IMPLEMENTATION_CHECKS.md","bytes":6411,"sha256":"8225a741f78c0373ff7ec985152e118ef8a753c0fbd01f448896a1f9dd7380a6"},
+    {"path":"INVENTORY.json","bytes":4444,"sha256":"51497278cb6591953ce2c5694ea6624358cab27a0416b523308aead6431bf152"}
+  ],
+  "packet_semantics": "Compatibility/cost audit only; no outcome scoring and no production decision.",
+  "preserved_gaps": [
+    "coordinator plan shared copy absent",
+    "exact imec1 q lattice absent",
+    "matching1.h5 full-file hash not computed"
+  ]
+}
