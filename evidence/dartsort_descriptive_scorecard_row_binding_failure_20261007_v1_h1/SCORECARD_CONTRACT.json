@@ -1,0 +1,103 @@
+{
+  "schema": "dartsort-motion-descriptive-scorecard-contract-v1",
+  "status": "frozen_before_outcomes",
+  "name": "DARTsort imec1 saved-output state-conditioned descriptive scorecard v1",
+  "not_names": ["R1", "WIU", "production endpoint", "sorter comparison", "curated yield"],
+  "objective": "Describe how the existing uncurated DARTsort event population and model-derived features vary across the already-frozen Arm-A q states without rereading voltage or rerunning a sorter.",
+  "population": {
+    "events": "matching1.h5 rows with labels >= 0",
+    "units": "all 1872 nonnegative final DARTsort labels",
+    "curation_status": "uncurated; every exported Phy group is unsorted",
+    "exclusions": "negative-label rows only; no unit-quality exclusion",
+    "reporting_subsets": [
+      "all units",
+      "common observed-depth support: unit median amortized z_abs in [300,3540] um",
+      "state-supported units: at least 100 q0 events and at least 100 displaced events"
+    ]
+  },
+  "comparator": {
+    "primary": "within the same DARTsort unit, q0 versus all q!=0 events",
+    "secondary": "each exact q state versus q0 within the same unit",
+    "external_sort_comparator": null,
+    "reason": "No external arm is equivalent in preprocessing, motion field, curation, or amplitude definition; external arm-to-arm differences would not isolate sorter effects."
+  },
+  "common_support": {
+    "time": "one AP-frame-zero segment, samples [0,314204094), fs 29999.759166666667 Hz",
+    "states": "exact supplied Arm-A 40-um q lattice, 0.25 s half-open cells; q0 is q==0 and displaced is q!=0",
+    "depth": "model-derived observed z_abs column 2; common interior unit support is median z_abs in [300,3540] um",
+    "channels": "383 DARTsort channels after AP191 removal; no interpolation to the missing site",
+    "intervals": "within-unit adjacent intervals count only when both events lie in the same contiguous q-state segment and same 300 s block when block summaries are used"
+  },
+  "metrics": [
+    {
+      "name": "event_and_exposure_counts",
+      "outputs": ["state_exposure_s", "events", "units_with_events", "events_per_exposure_hz"],
+      "definitions": "Exposure is the sum of clipped 0.25 s cells by q. Event state uses the frozen event-bin formula."
+    },
+    {
+      "name": "per_unit_state_rates",
+      "outputs": ["unit_id", "state_um", "event_count", "exposure_s", "rate_hz", "q0_to_displaced_rate_ratio"],
+      "definitions": "Ratios use no pseudocount; zero-denominator values are missing and reported."
+    },
+    {
+      "name": "presence",
+      "outputs": ["presence_ratio_60s_full_session", "presence_ratio_100_equal_bins"],
+      "definitions": "Full recording-local support; final partial 60 s bin retained; 100 equal bins include the complete duration."
+    },
+    {
+      "name": "refractory_and_segment_safe_intervals",
+      "outputs": ["exact_duplicate_count", "lag_1_8_count", "lag_9_29_count", "positive_segment_safe_interval_count", "lag_9_29_fraction", "raw_adjacent_isi_lt_1ms_fraction", "sliding_rp_min_contamination", "sliding_rp_pass_10pct_90conf"],
+      "definitions": "Sort events by sample within unit. State-conditioned counts require the same exact q and contiguous q segment. SlidingRP is full-session only and uses the reviewed IBL/SpikeInterface port at the actual fs. Short intervals are contamination proxies only."
+    },
+    {
+      "name": "dartsort_denoised_ptp_distribution",
+      "outputs": ["median", "q10", "q25", "q75", "q90", "q0_to_displaced_median_ratio", "dartsort_denoised_ptp_noise_cutoff"],
+      "definitions": "Input is matching1.h5 denoised_ptp_amplitudes: maximum-channel peak-to-peak of the denoised event waveform in noise-normalized recording units. Noise cutoff uses exact IBL histogram arithmetic on this different signal and is always emitted under the renamed field.",
+      "forbidden_interpretations": ["Kilosort amplitude", "PC norm", "microvolts", "SNR", "physical amplitude completeness"]
+    },
+    {
+      "name": "amortized_point_source_spatial_distribution",
+      "outputs": ["unit_median_observed_z_abs_um", "state_median_observed_z_abs_um", "state_z_abs_iqr_um", "q0_to_displaced_median_z_shift_um", "interior_support"],
+      "definitions": "Input is point_source_localizations[:,2], a model-derived amortized point-source observed z_abs. No channel index is used as depth and no DARTsort or Arm-A displacement is subtracted in v1.",
+      "forbidden_interpretations": ["measured voltage peak depth", "ground-truth tissue motion", "registered depth"]
+    }
+  ],
+  "uncertainty": {
+    "inferential_intervals": "none in v1",
+    "reason": "This is a single-pipeline descriptive audit and event independence is false. Exact counts, unit distributions, medians, IQRs, and denominators are reported instead.",
+    "future_extension": "Any block bootstrap is a separately frozen redesign and must use exact per-draw amplitude histogram maxima; it cannot reuse the rejected R1 fixed-support shortcut."
+  },
+  "interpretation": {
+    "decision_rule": "no production pass/fail and no ranking; emit descriptive tables and flagged data-quality failures only",
+    "can_support": "whether saved DARTsort events/features show state-conditioned changes large enough to motivate a later matched pipeline experiment",
+    "cannot_support": [
+      "original R1 WIU P or K",
+      "production benefit or harm",
+      "physical 50 uV amplitude completeness",
+      "KS-good or curated yield",
+      "biological identity or purity",
+      "sorter-only causality"
+    ]
+  },
+  "outputs": [
+    "INPUT_IDENTITY.json",
+    "EFFECTIVE_CONFIG.json",
+    "PER_UNIT_STATE.csv",
+    "PER_UNIT_SUMMARY.csv",
+    "STATE_SUMMARY.csv",
+    "SCORECARD_SUMMARY.json",
+    "COST_RECEIPT.json",
+    "IMPLEMENTATION_CHECKS.md",
+    "MANIFEST.json",
+    "COMPLETE.json written last"
+  ],
+  "resource_bounds": {
+    "raw_voltage_bytes": 0,
+    "gpu": false,
+    "max_ram_gib": 32,
+    "max_local_scratch_gib": 8,
+    "max_wall_hours": 2,
+    "threads": 8,
+    "stop_condition": "stop before outcomes on any input/schema/hash mismatch; stop runtime at two hours preserving partial evidence"
+  }
+}

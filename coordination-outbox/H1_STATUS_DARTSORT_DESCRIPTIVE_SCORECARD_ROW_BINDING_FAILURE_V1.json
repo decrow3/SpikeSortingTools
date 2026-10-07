@@ -1,0 +1,41 @@
+{
+  "schema": "h1-status-dartsort-descriptive-scorecard-row-binding-failure-v1",
+  "producer": "H1/huklaban1",
+  "observed_at": "2026-10-07T02:53:00-07:00",
+  "status": "BLOCKED_BY_FROZEN_CONTRACT_MISMATCH",
+  "failed_run": {
+    "unit": "h1-dartsort-descriptive-scorecard-v1.service",
+    "authoritative_result": "exit-code",
+    "exit_status": 1,
+    "failed_namespace": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/outputs/dartsort_descriptive_scorecard_20261007_v1_h1",
+    "outcomes_read": false,
+    "namespace_preserved": true
+  },
+  "diagnostic": {
+    "rows": 66286937,
+    "times_mismatch_same_row": 547372,
+    "times_equal_same_row": 65739565,
+    "time_multiset_equal": false,
+    "time_delta_samples_min": -4,
+    "time_delta_samples_max": 2,
+    "labels_mismatch_same_row": 66217880,
+    "labels_equal_same_row": 69057,
+    "diagnostic_sha256": "2e49d9dffea69c198c56a244c470055ed7396c63e8cb47e0f9967bc0f8fe1791"
+  },
+  "implementation_finding": "DARTsort persists final times/labels/channels in the NPZ and persistent features in the parent HDF5; its loader binds them by row index and replaces HDF5 time/label values. The frozen elementwise-equality requirement was invalid.",
+  "required_before_retry": [
+    "freeze a new contract using NPZ final times/labels and HDF5 persistent features by row index",
+    "verify NPZ parent_h5_path and event count",
+    "verify NPZ/HDF5 channels element-for-element",
+    "pass an independent DARTsortSorting.load row-binding known-answer fixture",
+    "use a fresh output namespace"
+  ],
+  "activity": {
+    "new_sort": false,
+    "raw_voltage_read": false,
+    "feature_outcomes_read": false,
+    "rf_or_holdout": false
+  },
+  "next_owner": "coordinator/H1 contract redesign",
+  "next_decision": "authorize/freeze the corrected row-index contract after the two remaining cheap checks; do not reinterpret or overwrite the failed v1 run"
+}

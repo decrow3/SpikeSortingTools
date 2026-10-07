@@ -1,0 +1,6 @@
+{
+  "elapsed_s": 272.14055668748915,
+  "error": "sorting NPZ/HDF5 times_samples row binding mismatch",
+  "error_type": "ValueError",
+  "status": "failed"
+}

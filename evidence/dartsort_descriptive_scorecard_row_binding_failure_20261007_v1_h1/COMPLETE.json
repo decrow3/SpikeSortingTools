@@ -1,0 +1,14 @@
+{
+  "schema": "immutable-evidence-complete-v1",
+  "packet": "dartsort_descriptive_scorecard_row_binding_failure_20261007_v1_h1",
+  "completed_at": "2026-10-07T02:54:30-07:00",
+  "host": "huklaban1",
+  "manifest": {
+    "path": "MANIFEST.json",
+    "bytes": 1826,
+    "sha256": "3821b46ce046c8070253b3d4ac9db8562a88eed0df0936dccc02da343f4da22b"
+  },
+  "decision": "STOP_AND_REDESIGN_ROW_BINDING_CONTRACT",
+  "outcomes_inspected": false,
+  "complete": true
+}

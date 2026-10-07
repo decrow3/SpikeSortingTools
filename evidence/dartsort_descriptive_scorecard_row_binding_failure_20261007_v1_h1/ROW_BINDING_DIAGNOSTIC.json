@@ -1,0 +1,186 @@
+{
+  "either_mismatch_same_row": 66217881,
+  "elapsed_s": 255.20660186372697,
+  "first_mismatches": [
+    {
+      "delta_samples": 0,
+      "h5_label": 601,
+      "h5_time": 44,
+      "npz_label": 604,
+      "npz_time": 44,
+      "row": 0
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 982,
+      "h5_time": 46,
+      "npz_label": 628,
+      "npz_time": 46,
+      "row": 1
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 602,
+      "h5_time": 51,
+      "npz_label": 406,
+      "npz_time": 51,
+      "row": 2
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 956,
+      "h5_time": 52,
+      "npz_label": 990,
+      "npz_time": 52,
+      "row": 3
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 1876,
+      "h5_time": 57,
+      "npz_label": 1486,
+      "npz_time": 57,
+      "row": 4
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 1042,
+      "h5_time": 57,
+      "npz_label": 1087,
+      "npz_time": 57,
+      "row": 5
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 392,
+      "h5_time": 60,
+      "npz_label": 375,
+      "npz_time": 60,
+      "row": 6
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 883,
+      "h5_time": 62,
+      "npz_label": 933,
+      "npz_time": 62,
+      "row": 7
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 1099,
+      "h5_time": 65,
+      "npz_label": 1087,
+      "npz_time": 65,
+      "row": 8
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 1030,
+      "h5_time": 66,
+      "npz_label": 723,
+      "npz_time": 66,
+      "row": 9
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 1403,
+      "h5_time": 66,
+      "npz_label": 1180,
+      "npz_time": 66,
+      "row": 10
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 1809,
+      "h5_time": 69,
+      "npz_label": 1572,
+      "npz_time": 69,
+      "row": 11
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 936,
+      "h5_time": 70,
+      "npz_label": 903,
+      "npz_time": 70,
+      "row": 12
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 590,
+      "h5_time": 69,
+      "npz_label": 919,
+      "npz_time": 69,
+      "row": 13
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 1345,
+      "h5_time": 73,
+      "npz_label": 1088,
+      "npz_time": 73,
+      "row": 14
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 439,
+      "h5_time": 76,
+      "npz_label": 143,
+      "npz_time": 76,
+      "row": 15
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 322,
+      "h5_time": 82,
+      "npz_label": 743,
+      "npz_time": 82,
+      "row": 16
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 912,
+      "h5_time": 83,
+      "npz_label": 702,
+      "npz_time": 83,
+      "row": 17
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 933,
+      "h5_time": 86,
+      "npz_label": 733,
+      "npz_time": 86,
+      "row": 18
+    },
+    {
+      "delta_samples": 0,
+      "h5_label": 774,
+      "h5_time": 90,
+      "npz_label": 384,
+      "npz_time": 90,
+      "row": 19
+    }
+  ],
+  "h5_labels_sha256_array_bytes": "35f7b92759e2a82e78c0d88259a58ba80abb93132b1d5376d306e35ef958b380",
+  "h5_times_sha256_array_bytes": "7cc85bab2644d79de5a7a2276f69de44ab10e467117c533e98dc769dc1bb1e69",
+  "labels_equal_same_row": 69057,
+  "labels_mismatch_same_row": 66217880,
+  "npz_labels_sha256_array_bytes": "0f7a4a63b3c848544a92e41cbeb1af13e09a187a49bcda10fd87c60ffdf87d76",
+  "npz_times_sha256_array_bytes": "a9d14cd8db3f91848f94c6d4a7462918e622dccf4dc2144d81b9cdb4e0a6ea56",
+  "rows": 66286937,
+  "schema": "dartsort-npz-h5-row-binding-diagnostic-v1",
+  "scope": "times_samples and labels only; no saved features or outcomes",
+  "status": "complete",
+  "time_difference_on_mismatches": {
+    "max_samples": 2,
+    "mean_samples": 0.045700181960348724,
+    "median_samples": 1.0,
+    "min_samples": -4,
+    "unique_delta_count": 5
+  },
+  "time_multiset_equal": false,
+  "times_equal_same_row": 65739565,
+  "times_mismatch_same_row": 547372
+}

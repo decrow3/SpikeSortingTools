@@ -1,0 +1,22 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "packet": "dartsort_descriptive_scorecard_row_binding_failure_20261007_v1_h1",
+  "created_at": "2026-10-07T02:54:00-07:00",
+  "host": "huklaban1",
+  "status": "blocked_by_frozen_contract_mismatch",
+  "files": [
+    {"path": "DIAGNOSTIC_COMPLETE.json", "bytes": 138, "sha256": "67c6b379b5eb52d41917d8da3c57e0eddd3e53b0746140ac167783d9119bf8ee"},
+    {"path": "EXECUTED_DIAGNOSTIC_SOURCE.py", "bytes": 3845, "sha256": "29eb67d32c9897506a1476507ea04f55e22808413326233f5ce3a28543444fe4"},
+    {"path": "EXECUTED_SCORECARD_SOURCE.py", "bytes": 19409, "sha256": "76674fa91bfb5b86f33de6c77c5f76ce6076dbb85c823bc40cde3405b3aabe6f"},
+    {"path": "IMPLEMENTATION_REVIEW.md", "bytes": 4667, "sha256": "15fb99915862dcad251a5402e88e3e5cb5cd33d35b7d6bb711f02f1b7045b286"},
+    {"path": "INPUT_IDENTITY.json", "bytes": 1332, "sha256": "3cdc8bc0c30a5765f5f6ab150f2b408be06128aa762c8db526afc5a9f7c32d5b"},
+    {"path": "INPUT_REQUEST_CONTRACT.json", "bytes": 5701, "sha256": "759ede802942ad1f8bba2d499d79d1a2daa012365315b4a5b70d413500852659"},
+    {"path": "LAUNCH.json", "bytes": 1378, "sha256": "4658f829c90a5f6ffff0279046980d848df0d3c59783a8f66800fbbb91670c95"},
+    {"path": "ROW_BINDING_DIAGNOSTIC.json", "bytes": 3956, "sha256": "2e49d9dffea69c198c56a244c470055ed7396c63e8cb47e0f9967bc0f8fe1791"},
+    {"path": "SCORECARD_CONTRACT.json", "bytes": 6160, "sha256": "21f21e26404172e7a369d806d30ab2966421a3b473305253aea50141b854e992"},
+    {"path": "SCORECARD_FAILED.json", "bytes": 156, "sha256": "2734eeea6536a1f112b9a2ea73478c4989c8e5de9c267e88d1410803afa48151"},
+    {"path": "SCORECARD_SERVICE.log", "bytes": 811, "sha256": "d27f1144bcf0243c1c8dc3f95d4cb73da6ea0c99bd5edcbfae7c5ac853a50820"}
+  ],
+  "outcomes_inspected": false,
+  "decision": "STOP_AND_REDESIGN_ROW_BINDING_CONTRACT"
+}
