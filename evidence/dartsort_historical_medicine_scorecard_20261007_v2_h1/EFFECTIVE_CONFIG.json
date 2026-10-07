@@ -1,0 +1,43 @@
+{
+  "applied_motion_field": "historical four-depth MEDiCINe field saved with archive",
+  "archive": "luke0804-imec1-full-medicine-shared-recovery-20260913-223213",
+  "duration_s": 10473.553879363088,
+  "external_q_role": "common time partition only; not the applied DARTsort field",
+  "fs": 29999.759166666667,
+  "gpu": false,
+  "h5": "/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-full-medicine-shared-recovery-20260913-223213/sort/matching1.h5",
+  "lattice": "/mnt/NPX/Luke/DARTsort_motion_experiments/h5_to_h1_imec1_q_lattice_20261007_v1/lattice_full.csv",
+  "max_ram_gib": 32,
+  "max_wall_hours": 2,
+  "noise_cutoff": {
+    "amplitudes_bins_min_ratio": 5,
+    "histogram_smoothing_value": 3,
+    "implementation": "SpikeInterface amplitude_cutoff",
+    "num_histogram_bins": 500
+  },
+  "num_samples": 314204094,
+  "raw_voltage_bytes": 0,
+  "schema": "dartsort-historical-medicine-row-index-scorecard-effective-config-v2",
+  "sliding_rp": {
+    "bin_size_ms": 0.25,
+    "confidence": 0.9,
+    "exclude_ref_period_below_ms": 0.5,
+    "max_ref_period_ms": 10.0,
+    "pass_contamination": 0.1,
+    "window_size_s": 1.0
+  },
+  "sorting_npz": "/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-full-medicine-shared-recovery-20260913-223213/sort/dartsort_sorting.npz",
+  "states_um": [
+    -280,
+    -240,
+    -200,
+    -160,
+    -120,
+    -80,
+    -40,
+    0,
+    40,
+    80
+  ],
+  "threads": 8
+}

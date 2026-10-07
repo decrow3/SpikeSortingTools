@@ -1,0 +1,8 @@
+{
+  "schema": "immutable-evidence-complete-v1",
+  "packet": "dartsort_descriptive_scorecard_v2_freeze_20261007_h1",
+  "completed_at": "2026-10-07T03:01:45-07:00",
+  "manifest": {"path": "MANIFEST.json", "bytes": 520, "sha256": "eb79f2519fc4b6fdfe4adb83e4e56d5ed8728df5fc930b610acef62795efbf88"},
+  "outcomes_inspected": false,
+  "complete": true
+}

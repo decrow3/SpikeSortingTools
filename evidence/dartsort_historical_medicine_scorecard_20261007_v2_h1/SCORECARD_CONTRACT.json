@@ -1,0 +1,73 @@
+{
+  "schema": "dartsort-historical-medicine-row-index-scorecard-contract-v2",
+  "status": "frozen_before_outcomes",
+  "name": "Luke0804 imec1 historical-MEDiCINe DARTsort archive saved-output descriptive scorecard v2",
+  "archive": "luke0804-imec1-full-medicine-shared-recovery-20260913-223213",
+  "applied_motion_field": "the historical four-depth MEDiCINe field saved with this DARTsort archive",
+  "external_partition": {
+    "name": "Arm-A q lattice",
+    "sha256": "92d7a28ccc808f76924a6ba392eb71c1a9b0b867796615a15307d1c59bc7df4f",
+    "role": "external common 0.25-second time partition only",
+    "not_applied_to_dartsort": true,
+    "not_names": ["em2f_full_20260929", "rounded_kriging_v1", "DARTsort applied motion field"]
+  },
+  "row_binding": {
+    "rule": "row i of the final NPZ core arrays is paired with row i of persistent HDF5 features",
+    "npz_governs": ["final times_samples", "final labels", "accepted mask labels>=0", "channels"],
+    "hdf5_governs": ["original extraction times_samples", "denoised_ptp_amplitudes", "point_source_localizations"],
+    "ignored_for_final_sort": ["HDF5 labels"],
+    "required_validations": [
+      "NPZ parent_h5_path resolves exactly to the hash-bound matching1.h5",
+      "NPZ and HDF5 row counts agree",
+      "NPZ and HDF5 channels are element-for-element equal",
+      "NPZ and HDF5 geometry are element-for-element equal",
+      "required feature names are persistent and not overridden in the NPZ",
+      "actual DARTsortSorting.load known-answer fixture preserves distinct feature rows after changed labels and small time shifts",
+      "deliberate channel misbinding fixture is rejected"
+    ],
+    "validated_archive_receipt_sha256": "3b5185323fb9e4cf1520e1343d372d1d8bc471f123c88315c2d18447a0cb3f02",
+    "fixture": "2 passed with NUMBA_DISABLE_JIT=1; JIT disabled only to bypass environment cache import failure"
+  },
+  "state_assignment": {
+    "timing_metrics": "assign external q using final NPZ times_samples",
+    "feature_summaries": "assign external q using original HDF5 extraction times_samples",
+    "boundary_crossing": "q(final NPZ time) != q(original HDF5 extraction time)",
+    "boundary_rule": "report exact crossing count and transition table; exclude crossings from every state-sensitive HDF5 feature summary",
+    "interpretation": "features were not re-extracted at adjusted final times"
+  },
+  "population": "all final NPZ rows with labels>=0; all 1872 uncurated final labels",
+  "interval_rule": "sort final NPZ times within final NPZ unit while carrying row identity; state-conditioned intervals require same final q and contiguous final-q segment",
+  "metrics": [
+    "final-time event/exposure counts and rates by external q",
+    "per-final-unit state rates and full-session presence",
+    "final-time exact duplicates, lag 1-8, lag 9-29, raw <1 ms, and full-session slidingRP",
+    "HDF5 denoised PTP quantiles and renamed noise cutoff by original-extraction q excluding boundary crossings",
+    "HDF5 amortized point-source observed z_abs quantiles by original-extraction q excluding boundary crossings",
+    "exact boundary-crossing counts and q-original to q-final transitions"
+  ],
+  "interpretation": {
+    "decision_rule": "descriptive only; no production pass/fail or ranking",
+    "can_support": "state-conditioned descriptions of final timing and saved persistent features in this one historical-MEDiCINe DARTsort archive",
+    "cannot_support": [
+      "lattice-remapped DARTsort",
+      "em2f_full_20260929 or rounded_kriging_v1 performance",
+      "sorter-only or training effects",
+      "R1 or WIU",
+      "production benefit or harm",
+      "physical amplitude completeness",
+      "curated yield",
+      "biological identity or purity"
+    ]
+  },
+  "uncertainty": "no inferential intervals; exact counts and descriptive unit/event distributions only",
+  "resource_bounds": {
+    "raw_voltage_bytes": 0,
+    "gpu": false,
+    "max_ram_gib": 32,
+    "max_local_scratch_gib": 8,
+    "max_wall_hours": 2,
+    "threads": 8,
+    "stop_condition": "stop before outcomes on any identity, pointer, precedence, channel, geometry, row-count, fixture, or schema mismatch"
+  },
+  "failure_history": "v1 preserved at dartsort_descriptive_scorecard_row_binding_failure_20261007_v1_h1; never overwrite or reinterpret it"
+}

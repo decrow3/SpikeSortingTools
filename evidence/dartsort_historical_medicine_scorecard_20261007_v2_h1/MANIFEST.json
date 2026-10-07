@@ -1,0 +1,29 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "packet": "dartsort_historical_medicine_scorecard_20261007_v2_h1",
+  "created_at": "2026-10-07T03:16:00-07:00",
+  "status": "complete_reviewed_descriptive_only",
+  "files": [
+    {"path":"ARCHIVE_BINDING_VALIDATION.json","bytes":959,"sha256":"3b5185323fb9e4cf1520e1343d372d1d8bc471f123c88315c2d18447a0cb3f02"},
+    {"path":"BINDING_FIXTURE_TEST.py","bytes":2222,"sha256":"5c0290bbba81d9296d4c927636f263d872840cc847e1202dbb886f500f20abc3"},
+    {"path":"BINDING_VALIDATION.json","bytes":959,"sha256":"3b5185323fb9e4cf1520e1343d372d1d8bc471f123c88315c2d18447a0cb3f02"},
+    {"path":"BINDING_VALIDATOR_SOURCE.py","bytes":4541,"sha256":"aa441725606ee40522c0723a043d8a9300900df1bcc22cde5b72394a61719200"},
+    {"path":"BOUNDARY_CROSSING_TRANSITIONS.csv","bytes":66,"sha256":"83e0de2bf380563e0da30272bf7efff3fed93017c27ab849ce1a1074f3b85c22"},
+    {"path":"COST_RECEIPT.json","bytes":195,"sha256":"ef2a801688e50ece6a882485a1a73de808266231870da3744680059d57e7d178"},
+    {"path":"EFFECTIVE_CONFIG.json","bytes":1413,"sha256":"b92d02f1304ae76c4c0d65bb9288a50ef49cada1662e7b8bce63d4199de67d71"},
+    {"path":"EXECUTED_SOURCE.py","bytes":22485,"sha256":"3528a2a8567e7dcb70961753505a4628ea4fb452d89a0d3587343cfc2afef43c"},
+    {"path":"FIXTURE_RECEIPT.json","bytes":844,"sha256":"b798b05090b5031fecfeb673edd6dd0cb695358e226eed44c1eca80f90429f21"},
+    {"path":"IMPLEMENTATION_CHECKS.md","bytes":973,"sha256":"a7e2c9be24b06bb8447b11ac4450437dcc6ed966b550996b667001936b8c3b97"},
+    {"path":"INPUT_IDENTITY.json","bytes":1390,"sha256":"2ea03d373327856dd9fe87f04c13116ed32fcc77610f58f9b4db03d13b49fa83"},
+    {"path":"LAUNCH.json","bytes":1100,"sha256":"e6075d23b432e1697411c7944e44f7a00b5d56e19b0b4ed89df170b1d41d7db3"},
+    {"path":"PER_UNIT_STATE.csv","bytes":3349684,"sha256":"162da82ddfc463fc19f97f926e3adb8161f70674d8662521f9d927f1f7678bc2"},
+    {"path":"PER_UNIT_SUMMARY.csv","bytes":336005,"sha256":"de58ae644509d4b916b3ef7586d58bdc5871331093bfa593b828d411424c050d"},
+    {"path":"POST_EXECUTION_REVIEW.md","bytes":4041,"sha256":"8ba1a5dd1dd8e1340a65db888cd9bbe0088f6a4478eb58c8b0a26742aac6564c"},
+    {"path":"RUN_COMPLETE.json","bytes":136,"sha256":"fb99a7597a397ad8fd981b7fab25696c7d86f13f39b253a70650b900ed0901ca"},
+    {"path":"RUN_MANIFEST.json","bytes":1942,"sha256":"3635a27a6f3c9dfdf1dffd40694722ed85dd30ce3cec4b045400d257454c67c2"},
+    {"path":"SCORECARD_CONTRACT.json","bytes":4317,"sha256":"73f6a32ffe5d215b04aeef6ff0979f5ad939c6454bd5fd3bed9d6a9b3913d8ed"},
+    {"path":"SCORECARD_SUMMARY.json","bytes":7667,"sha256":"abcf7a2c7004bc5e490d2fa28b324642bf8fd2e5fb60784dba5534dd012f96db"},
+    {"path":"STATE_SUMMARY.csv","bytes":2233,"sha256":"03fcec9873d9f3e0d183937c3dd1a321d5ac53905ba5c8717784805b228a43cf"}
+  ],
+  "decision": "REVIEWED_DESCRIPTIVE_ONLY_NO_PRODUCTION_VERDICT"
+}

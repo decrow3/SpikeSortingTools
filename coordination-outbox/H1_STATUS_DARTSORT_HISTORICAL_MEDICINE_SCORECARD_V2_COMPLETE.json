@@ -1,0 +1,23 @@
+{
+  "schema": "h1-status-dartsort-historical-medicine-scorecard-v2-complete",
+  "producer": "H1/huklaban1",
+  "status": "COMPLETE_REVIEWED_DESCRIPTIVE_ONLY",
+  "archive": "luke0804-imec1-full-medicine-shared-recovery-20260913-223213",
+  "applied_motion_field": "historical four-depth MEDiCINe",
+  "external_q_role": "common time partition only; not applied to DARTsort",
+  "population": {"accepted_events": 65287555, "uncurated_units": 1872, "state_supported_units": 1744},
+  "descriptive_result": {
+    "aggregate_q0_rate_hz": 6285.640513291466,
+    "aggregate_displaced_rate_hz": 5985.32966276669,
+    "aggregate_q0_to_displaced_ratio": 1.0501744878637076,
+    "state_supported_unit_rate_ratio_median": 1.1018499988351662,
+    "state_supported_unit_rate_ratio_q10_q90": [0.1601747124846842, 5.114882365033478],
+    "state_supported_ptp_median_ratio_median": 1.0056747198104858,
+    "state_supported_observed_z_displaced_minus_q0_median_um": -36.0777587890625,
+    "boundary_crossing_events_excluded_from_feature_states": 1
+  },
+  "interpretation": "descriptive only; no production verdict or ranking",
+  "cannot_establish": ["lattice-remapped DARTsort", "em2f_full_20260929 or rounded_kriging_v1 performance", "sorter-only or training effects", "R1 or WIU", "production benefit or harm", "physical amplitude completeness", "curated yield", "biological identity or purity"],
+  "activity": {"new_sort": false, "raw_voltage_read": false, "rf_or_holdout": false},
+  "next_decision": "use only as motivation/evidence for a separately matched experiment; do not promote to production or causal claim"
+}

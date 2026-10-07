@@ -1,0 +1,11 @@
+{
+  "schema": "dartsort-row-index-loader-fixture-receipt-v1",
+  "executed_before_outcomes": true,
+  "command": "NUMBA_DISABLE_JIT=1 /home/huklab/Documents/DARTsort/.venv/bin/python -m pytest -q testing/test_luke_dartsort_row_index_binding_v2.py",
+  "result": "2 passed in 3.79s",
+  "positive_arm": "actual DARTsortSorting.load retained distinct HDF5 feature rows while replacing labels and times with shifted NPZ values",
+  "negative_arm": "deliberately permuted NPZ channels were rejected by the v2 binding validator",
+  "environment_note": "NUMBA_DISABLE_JIT bypassed an import-time Numba cache-locator failure; the loader logic itself was unchanged",
+  "test_source_sha256": "5c0290bbba81d9296d4c927636f263d872840cc847e1202dbb886f500f20abc3",
+  "validator_source_sha256": "aa441725606ee40522c0723a043d8a9300900df1bcc22cde5b72394a61719200"
+}

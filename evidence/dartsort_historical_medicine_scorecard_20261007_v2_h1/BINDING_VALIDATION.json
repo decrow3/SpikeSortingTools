@@ -1,0 +1,35 @@
+{
+  "channels_equal": true,
+  "elapsed_s": 101.96410137601197,
+  "ephemeral_feature_names": [
+    "gmm_candidates",
+    "gmm_log_liks",
+    "gmm_responsibilities",
+    "gmm_train",
+    "merged_candidates",
+    "merged_log_liks",
+    "merged_responsibilities",
+    "neighborhood_ids",
+    "unit_log_proportions"
+  ],
+  "geometry_equal": true,
+  "loaded_persistent_features": [
+    "channel_index",
+    "collisioncleaned_tpca_features",
+    "collisioncleaned_voltages",
+    "denoised_ptp_amplitudes",
+    "geom",
+    "point_source_localizations",
+    "scalings",
+    "scores",
+    "template_inds",
+    "time_shifts",
+    "times_seconds",
+    "up_inds"
+  ],
+  "parent_h5_resolved": "/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-full-medicine-shared-recovery-20260913-223213/sort/matching1.h5",
+  "required_features_persistent_not_overridden": true,
+  "rows": 66286937,
+  "schema": "dartsort-row-index-binding-validation-v2",
+  "status": "complete"
+}

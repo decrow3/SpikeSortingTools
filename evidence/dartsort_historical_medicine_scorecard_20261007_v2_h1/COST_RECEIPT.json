@@ -1,0 +1,9 @@
+{
+  "gpu": false,
+  "h5_feature_rows_read": 66286937,
+  "max_rss_gib": 6.809841156005859,
+  "outcome_rows": 65287555,
+  "raw_voltage_bytes": 0,
+  "runtime_s": 518.0338671244681,
+  "threads": 8
+}

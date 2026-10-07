@@ -1,0 +1,8 @@
+{
+  "schema": "immutable-evidence-complete-v1",
+  "packet": "dartsort_historical_medicine_scorecard_20261007_v2_h1",
+  "completed_at": "2026-10-07T03:16:30-07:00",
+  "manifest": {"path": "MANIFEST.json", "bytes": 2838, "sha256": "de62cb0e0e818dd433223370af89057b8674a246dacd65f294fe47e54edf7833"},
+  "decision": "REVIEWED_DESCRIPTIVE_ONLY_NO_PRODUCTION_VERDICT",
+  "complete": true
+}
