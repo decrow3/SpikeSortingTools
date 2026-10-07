@@ -1,0 +1,26 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "packet": "dartsort_descriptive_scorecard_freeze_20261007_v1_h1",
+  "created_at": "2026-10-07T02:24:58-07:00",
+  "host": "huklaban1",
+  "status": "frozen_before_outcomes_waiting_for_compact_input",
+  "files": [
+    {
+      "path": "IMPLEMENTATION_CHECKS.md",
+      "bytes": 3120,
+      "sha256": "8df85dcc15702687abca5e7a4725bfafad6b851cca0d6ed44e841b4282487c2b"
+    },
+    {
+      "path": "INPUT_REQUEST_CONTRACT.json",
+      "bytes": 5701,
+      "sha256": "759ede802942ad1f8bba2d499d79d1a2daa012365315b4a5b70d413500852659"
+    },
+    {
+      "path": "SCORECARD_CONTRACT.json",
+      "bytes": 6160,
+      "sha256": "21f21e26404172e7a369d806d30ab2966421a3b473305253aea50141b854e992"
+    }
+  ],
+  "outcomes_inspected": false,
+  "next_state": "validate supplied q lattice and HDF5 identity, then execute in a fresh namespace"
+}

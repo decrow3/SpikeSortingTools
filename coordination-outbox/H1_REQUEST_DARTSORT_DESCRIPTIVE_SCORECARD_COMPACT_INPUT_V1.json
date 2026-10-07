@@ -1,0 +1,36 @@
+{
+  "schema": "h1-request-dartsort-descriptive-scorecard-compact-input-v1",
+  "producer": "H1/huklaban1",
+  "created_at": "2026-10-07T02:26:00-07:00",
+  "milestone": "pre-outcome freeze for DARTsort saved-output descriptive scorecard",
+  "status": "WAITING_FOR_COMPACT_INPUT",
+  "local_packet": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/evidence/dartsort_descriptive_scorecard_freeze_20261007_v1_h1",
+  "shared_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_descriptive_scorecard_freeze_20261007_v1_h1",
+  "manifest_sha256": "7580db643f808a1c61bc6acf741d04791d2859c7c75b4b0205dc000d18974312",
+  "request": {
+    "q_lattice": {
+      "name": "lattice_full.csv",
+      "expected_sha256": "92d7a28ccc808f76924a6ba392eb71c1a9b0b867796615a15307d1c59bc7df4f",
+      "expected_rows": 41895,
+      "delivery": "compact file plus completed DARTSORT_COMPACT_INPUT_IDENTITY.json"
+    },
+    "matching1_h5_identity": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-full-medicine-shared-recovery-20260913-223213/sort/matching1.h5",
+      "expected_bytes": 43817258584,
+      "delivery": "full-file SHA-256 or a reviewed fixed-size chunk manifest whose aggregate identity is SHA-256-bound"
+    }
+  },
+  "frozen_scope": {
+    "name": "DARTsort imec1 saved-output state-conditioned descriptive scorecard v1",
+    "population": "all 1872 uncurated nonnegative DARTsort labels",
+    "primary_comparator": "within-unit q=0 versus q!=0",
+    "interpretation": "descriptive only; not R1, WIU, production, curated yield, or sorter causality",
+    "raw_voltage_bytes": 0,
+    "new_sort": false,
+    "rf_or_holdout": false
+  },
+  "activation_rule": "H1 may validate and execute in a fresh namespace without another planning gate after both compact bindings pass every frozen check",
+  "failure_rule": "stop without outcome scoring and preserve evidence on any schema, hash, identity, row-binding, clock, or population mismatch",
+  "next_owner": "H5/coordinator",
+  "requested_action": "supply the exact compact q lattice and authoritative matching1.h5 identity receipt"
+}

@@ -1,0 +1,113 @@
+{
+  "schema": "dartsort-descriptive-scorecard-input-request-v1",
+  "status": "frozen_before_outcomes",
+  "requested_from": "H5/coordinator",
+  "requested_for": "H1 saved-output descriptive scoring",
+  "scope": "compact identity and state metadata only; no raw voltage, RF, holdout, or sorter run",
+  "recording_clock": {
+    "stream": "Luke0804 imec1.ap",
+    "sample_origin": "AP frame zero",
+    "acquisition_offset_applied": false,
+    "sampling_frequency_hz": 29999.759166666667,
+    "num_samples": 314204094,
+    "duration_s": 10473.553879363088,
+    "segments": 1,
+    "event_time_seconds_formula": "float64(times_samples) / 29999.759166666667"
+  },
+  "q_lattice": {
+    "required_file": "lattice_full.csv",
+    "expected_sha256": "92d7a28ccc808f76924a6ba392eb71c1a9b0b867796615a15307d1c59bc7df4f",
+    "expected_bytes": null,
+    "rows": 41895,
+    "exact_header_order": ["knot_index", "time_s", "field_um", "reference_median_um", "inside_canonical_mask", "q_um"],
+    "columns": {
+      "knot_index": "int64, exactly arange(41895)",
+      "time_s": "float64, exactly k*0.25 within absolute tolerance 1e-12",
+      "field_um": "finite float64; source two-layer displacement before quantization",
+      "reference_median_um": "finite float64 constant, serialized value within 5e-10 of -4.695588241594664",
+      "inside_canonical_mask": "boolean/0-or-1",
+      "q_um": "finite float64 integral multiples of 40"
+    },
+    "time_start_s": 0.0,
+    "time_end_s": 10473.5,
+    "cell_width_s": 0.25,
+    "time_origin_s": 0.0,
+    "state_values_um": [-280.0, -240.0, -200.0, -160.0, -120.0, -80.0, -40.0, 0.0, 40.0, 80.0],
+    "definition": "q=0 outside the canonical mask; inside the mask q=40*round_half_away((field-reference_median)/40)",
+    "rounding": "halves away from zero",
+    "temporal_assignment": "cells are [k*0.25,(k+1)*0.25); exact boundary belongs to the later cell; the final cell is clipped at recording duration",
+    "event_bin_formula": "clip(floor((times_samples/fs)/0.25), 0, 41894)",
+    "state_groups": {
+      "q0": "q_um == 0",
+      "displaced": "q_um != 0",
+      "per_state": "exact q_um value"
+    },
+    "source_bindings": {
+      "two_layer_field_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/av_aw_handoff_20260926_v1/d2l_field/luke0804_imec1_two_layer_motion.npz",
+      "two_layer_field_sha256": "85062a37f38b3c5212393d627fe387b629fedd95068a4136a72f330b5aa4c2d9",
+      "canonical_mask_sha256": "86425e8a6627a10ac8932ba01b799cb7be7141f731ebb4ecc01e303326b9da55",
+      "reference_source_frames_half_open": [26999783, 37199701],
+      "sign": "target(x,y) reads source(x,y+q); corrected=observed-displacement"
+    }
+  },
+  "dartsort_archive": {
+    "root": "/mnt/NPX/Luke/DARTsort_motion_experiments/luke0804-imec1-full-medicine-shared-recovery-20260913-223213",
+    "sorting_npz": {
+      "relative_path": "sort/dartsort_sorting.npz",
+      "bytes": 10937366891,
+      "sha256": "772acc6a810bd65ea3dd8b99f197c4b8d3fcfb9248091027877d26fca50e7aa7"
+    },
+    "feature_h5": {
+      "relative_path": "sort/matching1.h5",
+      "bytes": 43817258584,
+      "required_identity": "provider-supplied full-file SHA-256, or reviewed fixed-size chunk manifest whose aggregate identity is SHA-256-bound",
+      "required_datasets": {
+        "times_samples": {"shape": [66286937], "dtype": "int64"},
+        "labels": {"shape": [66286937], "dtype": "int32"},
+        "sampling_frequency": {"shape": [], "dtype": "float64", "value": 29999.759166666667},
+        "denoised_ptp_amplitudes": {"shape": [66286937], "dtype": "float32"},
+        "point_source_localizations": {"shape": [66286937, 3], "dtype": "float32", "columns": ["x", "y", "z_abs"]},
+        "geom": {"shape": [383, 2], "dtype": "float64"},
+        "channel_index": {"shape": [383, 18], "dtype": "int64"}
+      },
+      "row_binding": "times_samples and labels must equal the final sorting NPZ arrays element-for-element; persistent feature row i belongs to final HDF5 event row i",
+      "accepted_population": "labels >= 0",
+      "expected_accepted_events": 65287555,
+      "expected_negative_label_events": 999382,
+      "expected_units": 1872
+    },
+    "effective_config_sha256": "24d7594e48ff399bb8c9c0ec2631fdec4459814782b7a94beac085a44534730a",
+    "recovery_finalization_sha256": "a3ea42414001b6075aef50f42bdb88d3204a4de066973ac33abd131d34f3f4e3",
+    "qc_receipt_sha256": "47da6b0033686c0418e45443e3449d205197d572fc9521716f81a4eec8d7cf7f",
+    "executed_pipeline_sha256": "53042b121d74dbea48293d0ba3d21ca6e163d57ade034ab4b5ed148475a874a2"
+  },
+  "required_identity_receipt": {
+    "file_name": "DARTSORT_COMPACT_INPUT_IDENTITY.json",
+    "fields": [
+      "schema",
+      "producer_host",
+      "created_at",
+      "q_lattice.path",
+      "q_lattice.bytes",
+      "q_lattice.sha256",
+      "matching1_h5.path",
+      "matching1_h5.bytes",
+      "matching1_h5.sha256_or_chunk_manifest",
+      "sorting_npz.path",
+      "sorting_npz.bytes",
+      "sorting_npz.sha256",
+      "source_config_hashes",
+      "complete"
+    ],
+    "complete_rule": "write complete=true only after every listed file was re-read and verified"
+  },
+  "failure_conditions": [
+    "q lattice hash, header, row count, knot order, grid, states, reference, mask binding, or field binding differs",
+    "archive NPZ/HDF5 size or cryptographic identity differs",
+    "HDF5 schema/dtypes/shapes differ",
+    "NPZ and HDF5 event rows differ",
+    "accepted counts, unit cardinality, sample clock, recording length, or event bounds differ",
+    "any attempt is made to substitute the DARTsort four-depth MEDiCINe field for the Arm-A q lattice",
+    "any raw-voltage, RF, holdout, sorter, or new curation operation is requested"
+  ]
+}
