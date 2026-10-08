@@ -1,0 +1,17 @@
+{
+  "schema": "luke-h5-enabled-derivative-candidate-status-v1",
+  "status": "COMPLETE_ENABLED_CANDIDATE_NOT_INSTALLED_PENDING_H1_EXACT_DELTA_REVIEW",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_enabled_derivative_candidate_20261002_v1_h5",
+  "contract_sha256": "21452474b4f112d82936759d3898e4b8267a967e4de3bf1b40c2cd5afa68b011",
+  "base_manifest_sha256": "5b3b780e6ebc7a7d74f20bbea9505719bb8cccc4498249693672b6e654dd25c4",
+  "h1_activation_review_manifest_sha256": "d815d0eae6f36aebb3c7ad8e41a635127bce43e535bbd3612e54183475ff5709",
+  "hubplanner_decision_sha256": "92c37aeae06ce59887a072fab67419b8560ad253894f4ce3252d31c30d3c8170",
+  "phase3_machine_status_token": "GO_PROVENANCE_REPAIR_DELTA",
+  "tests": "23 passed",
+  "activation_eligible": true,
+  "execution_enabled": true,
+  "service_installed_or_started": false,
+  "start_claim_consumed": false,
+  "recording_or_voltage_read": false,
+  "scientific_execution_started": false
+}

@@ -1,0 +1,181 @@
+{
+  "schema": "en-common-support-crop-screen-v1",
+  "status": "frozen_preoutcome",
+  "purpose": "600-second four-arm factorial engineering screen of common target support; not production promotion",
+  "hypotheses": {
+    "support_factor": "Removing channels outside B's common target support should reduce support-edge artifacts if those rows are causal.",
+    "motion_factor": "REF versus B on the identical crop and support establishes whether any support effect interacts with the completed rounded remap.",
+    "scope_limit": "A crop result cannot replace diverse-window or full-session validation."
+  },
+  "source": {
+    "runner_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_common_support_crop_screen.py",
+    "runner_sha256": "800b190b1ad7f0bb832f310c2b86bf4d6802b63ae5990169138bb86ce5d6c897",
+    "reader_fixture_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_common_support_crop_reader_fixture.py",
+    "reader_fixture_sha256": "e430eaea02d135c2647b4e469fcfd254156aae84bb411165356ed43a3111310d",
+    "crop_panel_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_common_support_crop_panel.py",
+    "crop_panel_sha256": "cef72b7e713b6a3ca9d579d818da0f7d09cbad951ba5cc0ef54c22cd24b16c3b",
+    "crop_panel_fixture_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_common_support_crop_panel_fixture.py",
+    "crop_panel_fixture_sha256": "b63c917d940815c58e69089b8eff5c4eef3b6b50c544dfbe3a1d1bbcec089c1a",
+    "wiring_fixture_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_common_support_crop_wiring_fixture.py",
+    "wiring_fixture_sha256": "17eb1c9abf7af088c6264ef49b7a0a1807d3a1f78ea5a21eb788911f7ea7b070",
+    "launcher_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/launch_en_common_support_crop_screen.py",
+    "launcher_sha256": "7ea2c50df246c5560e689e3cb1dc7d33e49d378a4c06ee95477da7d3b64e17cf",
+    "kilosort_run_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/run_kilosort.py",
+    "kilosort_run_sha256": "5c1baee40edef14fa7566e441997da5d2ecc4f7940b8385cf83de40c8bd0f945",
+    "kilosort_io_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/io.py",
+    "kilosort_io_sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+    "kilosort_template_matching_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/template_matching.py",
+    "kilosort_template_matching_sha256": "39235cc98428dbb279706718f74a1c3d84568ef31a4f9d1d997a60f7002b1a66",
+    "tier1_panel_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_tier1_panel.py",
+    "tier1_panel_sha256": "8b48b795439e39242862868c9367e83c8e148031fe850df6332f5f22b541bef1"
+  },
+  "window_selection": {
+    "input_only": true,
+    "field_path": "/mnt/NPX/Luke/20250804/shared_analysis/luke_improved_motion_two_machine_20260909_v1/estimation_huklaban1_v1/candidate_fields.npz",
+    "field_sha256": "547ff39d1c91d819b758246c701603d868bfd4d50bd6b791e3d5b7140c01c71d",
+    "rule": "Among 600-s windows starting on a 10-s grid, maximize the minimum exposure among q<0, q=0, q>0; then maximize the minimum signed exposure, then total nonzero exposure, then choose earliest.",
+    "outcomes_inspected_for_selection": false,
+    "rounded_state_exposure_s": {"-120": 0.0, "-80": 10.75, "-40": 86.25, "0": 408.25, "40": 94.75},
+    "negative_exposure_s": 97.0,
+    "positive_exposure_s": 94.75,
+    "q0_exposure_s": 408.25
+  },
+  "crop": {
+    "sampling_frequency_hz": 29999.835983263598,
+    "tmin_s": 6950.00073334281,
+    "tmax_s": 7550.00073334281,
+    "effective_frames_half_open": [208498882, 226498783],
+    "effective_samples": 17999901,
+    "effective_duration_s": 599.9999803346205,
+    "effective_start_s": 6950.000730547928,
+    "effective_end_s": 7550.0007108825475,
+    "frame_rule": "Installed Kilosort BinaryRWFile uses int64(t*fs), i.e. floor for positive times.",
+    "exported_time_rule": "save_to_phy adds bfile.imin, so saved spike_times remain in global recording samples."
+  },
+  "common_support": {
+    "rule": "Retain actual physical channel_map rows whose y is within [120,3780] um inclusive.",
+    "retained_channel_map_half_open": [12, 380],
+    "retained_channels": 368,
+    "excluded_channel_map": [0,1,2,3,4,5,6,7,8,9,10,11,380,381,382,383],
+    "geometry_sha256": "0469ca92fb739a0cfd2f1613262d3a2d75af1098385385d7462ee6e3fd038d75",
+    "implementation": "Keep n_chan_bin=384 and pass excluded physical rows as Kilosort bad_channels; do not SpikeInterface-channel-slice the interleaved binary."
+  },
+  "arms": {
+    "REF384": {
+      "binary_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+      "binary_bytes": 241309358592,
+      "accepted_binary_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+      "recording_manifest_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/rescue_recording_manifest.json",
+      "recording_manifest_sha256": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67",
+      "probe_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output/probe.prb",
+      "probe_sha256": "ac69e60bfdb6b11e48ebe1d923d3559f8ec9df4fe8ba1865be495ee481d90601",
+      "bad_channels": [],
+      "retained_channel_map_half_open": [0,384],
+      "receipt_destination": "REF384/RECEIPT.json"
+    },
+    "B384": {
+      "binary_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/traces_cached_seg0.raw",
+      "binary_bytes": 241309358592,
+      "accepted_binary_sha256": "a63d61d57d214d7a90a9698143c0fd1ea5c872a73bcac498b683a6d99efed8a2",
+      "recording_manifest_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/rescue_recording_manifest.json",
+      "recording_manifest_sha256": "46a3845008cb19d9c35a85e67841b308843e071f1a27605e87195a8d4d0a42cf",
+      "probe_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/sort/sorter_output/probe.prb",
+      "probe_sha256": "ac69e60bfdb6b11e48ebe1d923d3559f8ec9df4fe8ba1865be495ee481d90601",
+      "bad_channels": [],
+      "retained_channel_map_half_open": [0,384],
+      "receipt_destination": "B384/RECEIPT.json"
+    },
+    "REF368": {
+      "binary_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+      "binary_bytes": 241309358592,
+      "accepted_binary_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+      "recording_manifest_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/rescue_recording_manifest.json",
+      "recording_manifest_sha256": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67",
+      "probe_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output/probe.prb",
+      "probe_sha256": "ac69e60bfdb6b11e48ebe1d923d3559f8ec9df4fe8ba1865be495ee481d90601",
+      "bad_channels": [0,1,2,3,4,5,6,7,8,9,10,11,380,381,382,383],
+      "retained_channel_map_half_open": [12,380],
+      "receipt_destination": "REF368/RECEIPT.json"
+    },
+    "B368": {
+      "binary_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/traces_cached_seg0.raw",
+      "binary_bytes": 241309358592,
+      "accepted_binary_sha256": "a63d61d57d214d7a90a9698143c0fd1ea5c872a73bcac498b683a6d99efed8a2",
+      "recording_manifest_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/rescue_recording_manifest.json",
+      "recording_manifest_sha256": "46a3845008cb19d9c35a85e67841b308843e071f1a27605e87195a8d4d0a42cf",
+      "probe_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/sort/sorter_output/probe.prb",
+      "probe_sha256": "ac69e60bfdb6b11e48ebe1d923d3559f8ec9df4fe8ba1865be495ee481d90601",
+      "bad_channels": [0,1,2,3,4,5,6,7,8,9,10,11,380,381,382,383],
+      "retained_channel_map_half_open": [12,380],
+      "receipt_destination": "B368/RECEIPT.json"
+    }
+  },
+  "sorter": {
+    "environment": "environments/rescue-production/.venv",
+    "kilosort_version": "4.0.27",
+    "same_frozen_rescue_settings": true,
+    "Th_universal": 12,
+    "Th_learned": 9,
+    "Th_single_ch": 6,
+    "do_CAR": true,
+    "do_correction": false,
+    "effective_nblocks": 0,
+    "artifact_threshold": "Infinity",
+    "save_extra_vars": true,
+    "snapshot_exact_pre_extraction_bank": true,
+    "snapshot_is_algorithm_changing": false,
+    "compatibility_patch_sha256": "19ba98a8cc752889a4eb2833410f8d69da6a275688fb9580b840075092fde259",
+    "random_seeds": {"numpy": 1, "torch": 1, "torch_cuda_all": 1},
+    "consumed_settings": {
+      "Th_learned": 9, "Th_single_ch": 6, "Th_universal": 12,
+      "acg_threshold": 0.2, "artifact_threshold": "Infinity", "batch_size": 60000,
+      "binning_depth": 5, "ccg_threshold": 0.75, "cluster_downsampling": 20,
+      "dmin": null, "dminx": 32, "drift_smoothing": [0.5,0.5,0.5],
+      "duplicate_spike_ms": 0.25, "fs": 29999.835983263598,
+      "highpass_cutoff": 300, "max_channel_distance": 64, "max_peels": 100,
+      "min_template_size": 10, "n_chan_bin": 384, "n_pcs": 6, "n_templates": 6,
+      "nblocks": 0, "nearest_chans": 20, "nearest_templates": 200, "nskip": 25,
+      "nt": 61, "nt0min": null, "position_limit": 100, "scale": null, "shift": null,
+      "sig_interp": 20, "template_sizes": 5, "templates_from_data": true,
+      "tmin": 6950.00073334281, "tmax": 7550.00073334281,
+      "whitening_range": 32, "x_centers": null
+    },
+    "checkpoint_policy": "Each arm is atomic; interruption requires evidence review and restart of that arm. Completed prior arms remain independently receipted."
+  },
+  "endpoints": {
+    "reuse_existing_en_panel_definitions": [
+      "raw_units", "KS_good_units", "assigned_spike_rate_hz", "median_presence",
+      "chance_aware_coincidence_excess", "edge_unit_fraction",
+      "time_only_primary_correspondence_to_matched_support_REF",
+      "state_specific_short_interval_fraction_1_29", "state_rate_rho_vs_q0"
+    ],
+    "primary_engineering_contrast": "interaction: (B368-B384) - (REF368-REF384), emphasizing state-specific 1-29-sample numerator/denominator and edge localization",
+    "interpretation_limits": "Short intervals are a contamination proxy, rate correlation a continuity proxy, and time-only matches do not establish identity or purity."
+  },
+  "crop_panel_semantics": {
+    "input_spike_times": "Kilosort exports global recording samples because save_to_phy adds bfile.imin exactly once.",
+    "crop_filter": "Require global spike time in [208498882,226498783), then subtract 208498882 exactly once for all crop-local metrics.",
+    "field_time": "Construct full-session midpoint cell edges first; clip them to [effective_start_frame/fs,effective_end_frame/fs), preserve original segment IDs, then subtract effective_start_frame/fs. Never use requested tmin/tmax as the field origin and never slice knots before building edges.",
+    "duration_and_rates": "Use 17999901/fs seconds and crop-filtered spikes only.",
+    "presence": "Construct only complete/partial 60-s blocks within the crop; denominator is crop blocks, never full-session blocks.",
+    "state_intervals": "Preserve the existing EN rule: adjacent-spike intervals cannot cross unit or original state-segment boundaries; pairs may cross crop-block boundaries and are assigned to the second event's block.",
+    "chance_null": "Circular shifts and block support are crop-local; no wrap or exposure outside the crop.",
+    "chance_null_reporting": "Preserve the existing state-confounded null for comparability and always report observed, null, and excess separately; do not interpret excess as causal duplicate reduction.",
+    "correspondence": "Compare same-support pairs REF384-B384 and REF368-B368 on the identical crop; never compare global and crop-local timestamps or 384 and 368 supports as identity evidence.",
+    "bootstrap": "Reuse frozen EN block bootstrap definitions on crop-local blocks; report wide/undefined intervals honestly when support is insufficient.",
+    "eligibility": "Keep the existing q0 >=100 event eligibility threshold and report eligible-unit counts plus bootstrap draw support; do not relax it for the crop.",
+    "preoutcome_freeze": true
+  },
+  "resources": {
+    "execution": "serial arms in one persistent systemd user service",
+    "gpu": "one RTX A5000; current availability must be rechecked at launch",
+    "estimated_sort_seconds_per_600s_arm": [600, 720],
+    "estimated_four_arm_sort_seconds": [2400, 2880],
+    "estimate_basis": "Observed 120-s smoke sorts were 100-103 s; full 10473.6-s sorts were 12156-12348 s wrapper time.",
+    "zero_copy_voltage": true,
+    "minimum_free_bytes": 214748364800,
+    "no_rf": true,
+    "outer_holdout_sealed": true,
+    "no_voltage_transfer": true
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "complete": true,
+  "packet": "en_minimum_training_support_mask_covariance_metadata_supplement_20261001_v1_h5",
+  "status": "metadata_prerequisites_complete_service_still_no_go_unstarted",
+  "manifest_sha256": "25ec1ede84e6fa4230653d29868b0d3eb3858ac4fb4089cd06bf5e6aa1bebd2d",
+  "service_started": false,
+  "recording_opened": false,
+  "run_root_created": false
+}

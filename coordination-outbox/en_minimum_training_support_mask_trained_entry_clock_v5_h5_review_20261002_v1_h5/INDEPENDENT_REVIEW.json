@@ -1,0 +1,46 @@
+{
+  "schema": "trained-entry-clock-v5-h5-independent-review-v1",
+  "reviewer": "H5",
+  "verdict": "GO_CLOCK_REPAIR_ONLY",
+  "candidate": {
+    "packet": "en_minimum_training_support_mask_trained_entry_clock_repair_candidate_20261002_v5_h1",
+    "manifest_sha256": "58c8a3be3f449c65b3bdd0da40f83f6856acc0906659a2cabce9ef62d3bdb6fa",
+    "complete_sha256": "425a4f9d78c303412896b50a27dab72a7395d14d9502a799fb0613d01682ec5e"
+  },
+  "accepted_parent": {
+    "packet": "en_minimum_training_support_mask_trained_entry_ordering_repair_candidate_20261002_v4_h5",
+    "manifest_sha256": "91bcf5ed0560bf5617815e4929a3d97f82b386f0040ef31dc6a61991a45fd36c",
+    "complete_sha256": "9ab3e67a41af42b65cbf56509fc64fc407a39c79496a2391852de39aeb1055df"
+  },
+  "actual_source_delta": {
+    "old_sha256": "aafc740beda0ef67fb3e62c37a44d56ba22351b7fa9b1962ed146c0a8b0935ee",
+    "new_sha256": "46bdf606c7d83263fd4ef70e0482b55d2df61dc2b074c07d0fe6c7f657956cd3",
+    "independently_reconstructed": true
+  },
+  "checks": {
+    "all_candidate_manifest_members_verified": true,
+    "native_io_global_export_and_local_full_st_traced": true,
+    "clock_contract_precedes_bound_data_access": true,
+    "exact_offset_relation_verified": true,
+    "half_open_bounds_verified": true,
+    "signed_int64_guards_verified": true,
+    "row_order_and_ancestry_preserved": true,
+    "isolated_candidate_tests": "14 passed in 40.05s",
+    "independent_h5_boundary_checks": 11,
+    "production_execution_enabled": false
+  },
+  "provenance_correction": {
+    "member": "bindings/parent_v4_delta/source__kilosort_support_mask_trained.py.diff",
+    "issue": "stale v3-to-ordering diff; not the accepted-v4-to-clock-v5 delta",
+    "impact": "do not cite this convenience diff for the clock change",
+    "resolution": "H5 reconstructed the actual delta from manifest-bound parent and candidate sources and verified EXACT_DELTA old/new hashes",
+    "blocks_clock_repair_acceptance": false
+  },
+  "explicit_non_authorizations": [
+    "real trained launch",
+    "no-mask REF-repeat pair launcher",
+    "recording voltage or real sort access in this review",
+    "RF or sealed holdout access",
+    "scientific benefit or identity/purity claim"
+  ]
+}

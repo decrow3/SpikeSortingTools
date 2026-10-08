@@ -1,0 +1,47 @@
+{
+  "contract_digest": "96f073c09b4a90318d4bcf2ffca1b694201df3124d4edc82d604830a0126c553",
+  "phase_counts": {
+    "covariance_and_whitening": 1,
+    "learned_template_extraction": 1,
+    "pca_and_universal_template_learning": 1,
+    "universal_detection_and_features": 1
+  },
+  "rows": [
+    {
+      "consumer_batch": 0,
+      "global_start_frame": -3,
+      "global_stop_frame_exclusive": 23,
+      "pipeline_phase": "covariance_and_whitening",
+      "transition_boundaries": 2,
+      "transition_samples_retained": true,
+      "unsupported_values": 26
+    },
+    {
+      "consumer_batch": 0,
+      "global_start_frame": -3,
+      "global_stop_frame_exclusive": 23,
+      "pipeline_phase": "pca_and_universal_template_learning",
+      "transition_boundaries": 2,
+      "transition_samples_retained": true,
+      "unsupported_values": 26
+    },
+    {
+      "consumer_batch": 0,
+      "global_start_frame": -3,
+      "global_stop_frame_exclusive": 23,
+      "pipeline_phase": "universal_detection_and_features",
+      "transition_boundaries": 2,
+      "transition_samples_retained": true,
+      "unsupported_values": 26
+    },
+    {
+      "consumer_batch": 0,
+      "global_start_frame": -3,
+      "global_stop_frame_exclusive": 23,
+      "pipeline_phase": "learned_template_extraction",
+      "transition_boundaries": 2,
+      "transition_samples_retained": true,
+      "unsupported_values": 26
+    }
+  ]
+}

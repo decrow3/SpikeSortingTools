@@ -1,0 +1,17 @@
+{
+  "contract_sha256": "4323bf1f4c83a0f03351200f8e2769555ea8f819868b90bc9cee40988c066f48",
+  "first_sample_complete": true,
+  "first_sample_unix": 1791459798.6838386,
+  "gpu_compute_returncode": 0,
+  "gpu_returncode": 0,
+  "monitor_service_sha256": "7fd09574eb2e52554ca36079d71e83fd7f4d352ae35be0c987c213ab642f3713",
+  "ready_failures": [],
+  "sample_index": 0,
+  "schema": "candidate2-external-monitor-ready-v1",
+  "systemctl_returncode": "0",
+  "target_active_state": "activating",
+  "target_control_group": "/user.slice/user-1000.slice/user@1000.service/app.slice/luke-candidate2-native-rigid-cache-managed-imec0-20261008-v7.service",
+  "target_invocation_id": "cd421f01856444e3b48bc2c905d9414d",
+  "target_load_state": "loaded",
+  "target_service_sha256": "c2cb7f3f4b668b8e1b195f825da134ffe9710de37b6707b5cc2832ad1e03a712"
+}

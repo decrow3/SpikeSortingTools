@@ -1,0 +1,12 @@
+{
+  "contract_digest": "96f073c09b4a90318d4bcf2ffca1b694201df3124d4edc82d604830a0126c553",
+  "finite": true,
+  "sampled_batch_indices": [
+    0
+  ],
+  "shape": [
+    4,
+    4
+  ],
+  "whitening_sha256": "27f1332dcd63f5c503677ba15a7027e761a7a304242858785947ee806ff32ece"
+}

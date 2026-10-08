@@ -35,6 +35,23 @@ def _atomic_text(path: Path, text: str) -> None:
     os.replace(partial, path)
 
 
+def classify_fit_trust(shape_missing, popts, *, disagreement_warning_pp: float = 5.0):
+    """Shared fit-trust policy for the screening sidecar and paired comparisons."""
+    if not np.isfinite(disagreement_warning_pp) or disagreement_warning_pp < 0:
+        raise ValueError("fit disagreement boundary must be finite and nonnegative")
+    shape_missing = np.asarray(shape_missing, dtype=float).reshape(-1)
+    popts = np.asarray(popts, dtype=float)
+    if popts.shape != (len(shape_missing), 3):
+        raise ValueError("fit parameters must have one three-parameter row per estimate")
+    normalization = missing_pct_from_normalisation(popts)
+    disagreement = np.abs(shape_missing - normalization)
+    status = np.full(len(shape_missing), "measured", dtype=object)
+    status[disagreement > disagreement_warning_pp] = "poor_fit_disagreement"
+    status[is_saturated(shape_missing)] = "censored_at_least_50pct"
+    status[~np.isfinite(shape_missing) | ~np.isfinite(normalization)] = "nonfinite"
+    return normalization, disagreement, status
+
+
 def build_completeness_timeline(
     curated_output: Path,
     legacy_qc_dir: Path,
@@ -69,9 +86,10 @@ def build_completeness_timeline(
         raise ValueError("presence cache arrays have incompatible shapes")
     if not np.all(np.isfinite(present_cids)) or not np.all(present_cids == np.rint(present_cids)):
         raise ValueError("presence cache unit ids must be finite integers")
-    normalization_missing = missing_pct_from_normalisation(popts)
-    disagreement = np.abs(shape_missing - normalization_missing)
-    saturated = is_saturated(shape_missing)
+    normalization_missing, disagreement, fit_status = classify_fit_trust(
+        shape_missing, popts,
+        disagreement_warning_pp=float(params["fit_disagreement_warning_pp"]),
+    )
     rows: list[dict[str, Any]] = []
     per_unit_times: dict[int, np.ndarray] = {}
     for row_index, cid_value in enumerate(cids):
@@ -82,14 +100,7 @@ def build_completeness_timeline(
         first, last = map(int, blocks[row_index])
         if first < 0 or last < first or last >= len(times):
             raise ValueError(f"truncation window outside unit {cid} spike train")
-        if not np.isfinite(shape_missing[row_index]) or not np.isfinite(normalization_missing[row_index]):
-            status = "nonfinite"
-        elif saturated[row_index]:
-            status = "censored_at_least_50pct"
-        elif disagreement[row_index] > float(params["fit_disagreement_warning_pp"]):
-            status = "poor_fit_disagreement"
-        else:
-            status = "measured"
+        status = fit_status[row_index]
         rows.append({
             "unit_id": cid,
             "cache_row": row_index,

@@ -1,0 +1,12 @@
+{
+  "observed_utc": "2026-10-02T04:59:23Z",
+  "status": "normal_tool_review_denied_before_service_start",
+  "requested_action": "daemon-reload and exactly one start of en_a_four_unit_physical_signal_capture_approved_v2.service",
+  "tool_result": "rejected",
+  "tool_reason": "This starts a persistent service that reads and processes sensitive recording voltage; the transcript provides no trusted user authorization for this exact launch, and AGENTS explicitly withholds authorization for new voltage processing. The agent must not attempt to achieve the same outcome via workaround, indirect execution, or policy circumvention. Proceed only with a materially safer alternative, or if the user explicitly approves the action after being informed of the risk. Otherwise, stop and request user input.",
+  "approval_relay_received": "Proceed with the separately approved A waveform capture now that the exact immutable H1 approval packet is published.",
+  "start_requests": 1,
+  "service_starts": 0,
+  "retry_performed": false,
+  "alternate_route_used": false
+}

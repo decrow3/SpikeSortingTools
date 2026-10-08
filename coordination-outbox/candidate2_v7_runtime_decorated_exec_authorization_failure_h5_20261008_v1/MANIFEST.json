@@ -1,0 +1,36 @@
+{
+  "files": [
+    {
+      "bytes": 1730,
+      "path": "REPORT.md",
+      "sha256": "1410a92e89b2bd31fc0b778217713f798063557f6261408b348befbd2b389f20"
+    },
+    {
+      "bytes": 2610,
+      "path": "RESULT.json",
+      "sha256": "d3cdaa0daa8163315003924a52a409040bdc500169a5c03845b6a123f3b1ceb0"
+    },
+    {
+      "bytes": 829,
+      "path": "evidence/READY.json",
+      "sha256": "8ac6169c83353f0b85d3e01ce1e77230db66d5e9c3635582a7bc4c14ca460438"
+    },
+    {
+      "bytes": 35526,
+      "path": "evidence/TELEMETRY.jsonl",
+      "sha256": "9ada252a592c799006b8aafbe01867738bb15c92f2e6456d474048ffb2b49fd1"
+    },
+    {
+      "bytes": 736,
+      "path": "evidence/TERMINAL.json",
+      "sha256": "402037b1d9652ef664ba874d97b1f26346658b9708712b6957d810794e250eb4"
+    },
+    {
+      "bytes": 417,
+      "path": "evidence/service.log",
+      "sha256": "713c3825ca1fc68be1b3d180632e77ce207887caa3b726da407a5f92695bf15c"
+    }
+  ],
+  "schema": "candidate2-v7-runtime-decorated-exec-failure-manifest-v1",
+  "status": "TERMINAL_PRE_READ_PREFLIGHT_FAILURE_NO_RETRY"
+}

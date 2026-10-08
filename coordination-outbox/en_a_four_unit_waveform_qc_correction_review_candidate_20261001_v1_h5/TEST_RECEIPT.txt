@@ -1,0 +1,12 @@
+Command: pytest -q tests/test_en_a_four_unit_waveform_qc_corrected.py
+Result: 6 passed in 0.11s
+
+Covered independent synthetic known-answer cases:
+1. interior state change with per-sample remap;
+2. exact shared edge assigned to the later cell;
+3. unchanged q0 state and identity;
+4. strong distant distractor plus known local signal;
+5. distant-only/no-local-event;
+6. nonzero negative controls proven nonvacuous and q0 alternative explicitly disabled.
+
+No retained waveform archive or recording was opened by these fixtures.

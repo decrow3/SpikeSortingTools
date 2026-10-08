@@ -1,0 +1,32 @@
+{
+  "schema": "en-first-medium-h5-reconnection-recovery-audit-v1",
+  "audited_at": "2026-10-02T20:03:27-07:00",
+  "scope": "read-only first-medium recovery audit before v3 independent review",
+  "managed_process_state": "NO_RELEVANT_SCIENTIFIC_PROCESS_STARTED",
+  "service_evidence": {
+    "en-first-medium-phase1-controls-20261002-v1-h5.service": "inactive/dead; Result=success; start and exit timestamps n/a; disabled; no InvocationID",
+    "en_first_medium_evaluator_post_qc_v1.service": "inactive/dead; start and exit timestamps n/a; no InvocationID"
+  },
+  "start_claims": "absent in the v1 and v2 first-medium pair attempt namespaces",
+  "pending_terminal_receipts": "none found in the scoped first-medium paths",
+  "activation_candidate": {
+    "activation_eligible": false,
+    "execution_enabled": false,
+    "manifest_sha256": "abac807e07e9cf443cb0899fcf05e518b5131d9b9493c688dc35a44d2e919a60",
+    "complete_sha256": "f02c77831e6350cc704fb4a13f6e573bdb74a61096eb2a2201497e13df16b1d4"
+  },
+  "sealed_interface_trace": {
+    "manifest_sha256": "9923b6016d1154c231e7db7f0a16aa3bfa8d8d4666473e1c8fd5b28d86e08e75",
+    "complete_sha256": "3772f99c5ad25a5b62e08c683b19fde6ff4c7cd20a33143a42bca614495d7997",
+    "coordination_status_sha256": "366b3b0b4740fa1f19addb9edc5b5cec9875121df5beb5d314e7d2d1f03d3e69"
+  },
+  "queue": {
+    "assignment": "CURRENT_ASSIGNMENT_COORDINATOR_RELAY_V4.json",
+    "assignment_sha256": "0e3740964699fc78c4e47414d711b9b9feda792cba699a86e1f00a72737ee2eb",
+    "h1_ack": "H1_ACK_V4.json",
+    "h1_ack_sha256": "631f0fdc33116b4c41afa81349b94cf2c6a55b8d1d0813dc6773e78a200c7754",
+    "activation_enabled": false
+  },
+  "partial_or_pending_files_in_sealed_packets": false,
+  "competing_producer_edit_created": false
+}

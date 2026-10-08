@@ -1,0 +1,15 @@
+{
+  "status": "zero_voltage_preflight_passed",
+  "config_sha256": "58636c24243d4663c42f9c8c51121d7461ff6d8e929022bc8e3c5a8550b2a704",
+  "contract_digest": "25102362ea5a890c4662a80beceda5e00170d982d24924db4bc411b89240d9c4",
+  "execution_enabled": true,
+  "cuda_available": true,
+  "cuda_device_count": 1,
+  "cuda_device_names": ["NVIDIA RTX A5000"],
+  "torch_cuda_build": "12.4",
+  "recording_metadata_readable": true,
+  "recording_stat_size": 241309358592,
+  "recording_content_opened": false,
+  "run_root_absent": true,
+  "kilosort_resumable_within_sort": false
+}

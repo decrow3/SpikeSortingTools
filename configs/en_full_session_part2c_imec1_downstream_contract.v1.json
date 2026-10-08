@@ -1,0 +1,67 @@
+{
+  "schema": "en-full-session-part2c-imec1-downstream-contract-v1",
+  "status": "frozen_before_execution",
+  "frozen_at": "2026-10-06T17:30:00-07:00",
+  "milestone": "imec1 candidate curation, bounded waveform QC, and frozen saved-output comparison against imec1 REF",
+  "decision_enabled": "whether the completed imec1 candidate replicates or changes the Part 1 evidence on yield, available contamination proxies, correspondence, and amplitude-completeness support",
+  "cheapest_adequate_test": "reuse the established downstream stages and exact Part 1 comparator on the completed candidate sort; no new sort, RF, holdout, or new estimator",
+  "completion_condition": "identity-bound curation/QC receipts, compact handoff, comparison summary, terminal managed-job result, and preserved provenance",
+  "release_commit": "32d04e7d5d8f15e9bd895ff3a4e633f75088b156",
+  "inputs": {
+    "candidate_sort_dir": "/media/huklaban5/Data/en_full_session_part2b_imec1_sort_bounded_pread_20261006_v4/sort",
+    "candidate_sorter_output": "/media/huklaban5/Data/en_full_session_part2b_imec1_sort_bounded_pread_20261006_v4/sort/sorter_output",
+    "candidate_sort_identity_digest": "eb7d0d84ae9e3642cbcdbc3673b30f4067df73411aeed45b4eb27a3acc695004",
+    "sort_complete_path": "/media/huklaban5/Data/en_full_session_part2b_imec1_sort_bounded_pread_20261006_v4/SORT_COMPLETE.json",
+    "sort_complete_sha256": "2bf4a2b9189ea9903b3ae3bdef7305ab689c6a49132c75f351b9e664e0d0aca6",
+    "candidate_recording_dir": "/media/huklaban5/Data/en_full_session_part2b_imec1_arm_a_20261004_v1/recording",
+    "recording_manifest_path": "/media/huklaban5/Data/en_full_session_part2b_imec1_arm_a_20261004_v1/recording/rescue_recording_manifest.json",
+    "recording_manifest_sha256": "523cc77d34fa2083d2e011842649563cee82e3ffcdfd5b7183abac89d3ee6641",
+    "recording_content_sha256": "f4eaa1c49db8a063c34119d5aa7a9b17b70f467803daa18d5757ece3e68b8899",
+    "recording_binary": "/media/huklaban5/Data/en_full_session_part2b_imec1_arm_a_20261004_v1/recording/traces_cached_seg0.raw",
+    "recording_binary_bytes": 241308744192,
+    "baseline_sort_identity": "/media/huklaban5/Data/en_full_session_part2a_imec1_ref_cur_qc_20261004_v1/downstream/sort_identity.json",
+    "baseline_sort_identity_digest": "7bc7ce4c5c32f7dafc949de83a1c45b4d767d7f7b647019aeba9ca7e1750a80d",
+    "baseline_curation_receipt": "/media/huklaban5/Data/en_full_session_part2a_imec1_ref_cur_qc_20261004_v1/downstream/cur/curation_receipt.json",
+    "baseline_curation_receipt_sha256": "6927b3e3e0db1f908cf72c7bf5b618d180c2caa43f2d3765f25bde569b0b7a3d",
+    "baseline_qc_receipt": "/media/huklaban5/Data/en_full_session_part2a_imec1_ref_cur_qc_20261004_v1/downstream/qc/qc_receipt.json",
+    "baseline_qc_receipt_sha256": "2098d01b0b2dcc597e849c7a8da1a7e516763718ae62951d62f5838b556e4e18"
+  },
+  "stages": {
+    "curation": {"strategy": "run_cur_final_cosine", "cosine_threshold": 0.9, "ccg_threshold": 0.5, "automatic_artifact_pair_merging": false},
+    "legacy_qc": {"waveform_seed": 0, "waveforms_per_unit": 512, "waveform_samples": 82, "waveform_read_chunk_duration_s": 1.0},
+    "standard_qc": "unchanged release implementation; additive, non-curating",
+    "matlab_export": "unchanged release implementation",
+    "comparison": "exact Part 1/XR saved-output comparator and frozen thresholds"
+  },
+  "execution": {
+    "output_root": "/media/huklaban5/Data/en_full_session_part2c_imec1_candidate_qc_compare_20261006_v1",
+    "manager": "systemd user transient service",
+    "unit": "full-session-part2c-imec1-downstream-20261006-v1.service",
+    "interpreter": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+    "clean_source_root": "/tmp/full_session_part1_export_32d04e7d",
+    "controller_sha256": "0ac96c176a1bcc06da66cab72d815bf5d8ff7dad739da2f327fa067849c39679",
+    "comparison_config_sha256": "6d101187fff3fb67663a53be088bea1d3e92427b15e14dd5639bbb908293d92d",
+    "minimum_free_bytes": 107374182400,
+    "resource_condition": "GPU not required; four CPU quota for bounded background execution; no MemoryMax, RuntimeMaxSec, or other new hard resource ceiling",
+    "clean_source_files": [
+      {"path": "/tmp/full_session_part1_export_32d04e7d/pipeline/downstream.py", "sha256": "bbf2e6e1f0cfd5db42226980bc2af488560b1b0c268da32dcf0c44d0e2a0dc26"},
+      {"path": "/tmp/full_session_part1_export_32d04e7d/pipeline/qc.py", "sha256": "cbbab201cfa1276b0770983204fd4965fb89b71266de99c0364d817cf74e27b9"},
+      {"path": "/tmp/full_session_part1_export_32d04e7d/testing/rigid_comparison_handoff.py", "sha256": "16c979e425d83d674411e1eb926490d908f9f04a6a90335c37cc735263216cb3"},
+      {"path": "/tmp/full_session_part1_export_32d04e7d/testing/luke_improved_rigid_comparison.py", "sha256": "c6644427d6fe9bafaf87fb99536c55683a8d6223e2abc5be35d19b666735fa81"},
+      {"path": "/tmp/full_session_part1_export_32d04e7d/testing/sort_comparison.py", "sha256": "0f6468a2ce32cf589f7e3891d72e8bba10218ea11de6fae5dce81b7f4c171609"}
+    ]
+  },
+  "stop_conditions": [
+    "any frozen source, input, receipt, completion, recording-manifest, or sort-identity mismatch",
+    "less than 100 GiB free local space before execution",
+    "curation, QC, handoff, or comparison failure",
+    "user cancellation"
+  ],
+  "excluded": [
+    "new sort or sort retry",
+    "RF fitting, RF rescoring, or sealed holdout access",
+    "parameter tuning or threshold changes",
+    "automatic production promotion",
+    "raw voltage publication"
+  ]
+}

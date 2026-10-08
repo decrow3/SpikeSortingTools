@@ -1,0 +1,57 @@
+{
+  "schema": "en-saved-bank-single-spike-replay-v1",
+  "status": "frozen_preoutcome",
+  "purpose": "Finite sufficient-pathway replay of one model-defined spike through frozen REF384/B384 learned-template banks",
+  "source_sha256": "ab23c927ae9062d09586a0dc83690645b3d53dc9cd5618912e6f8959c4b0b511",
+  "code_inputs": {
+    "harness": {
+      "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_saved_bank_single_spike_replay.py",
+      "sha256": "ab23c927ae9062d09586a0dc83690645b3d53dc9cd5618912e6f8959c4b0b511"
+    },
+    "pinned_matcher": {
+      "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/template_matching.py",
+      "sha256": "39235cc98428dbb279706718f74a1c3d84568ef31a4f9d1d997a60f7002b1a66"
+    },
+    "exact_lattice_mapping": {
+      "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/lattice_remap_si.py",
+      "sha256": "0125394629af7bffc6d46a5c26903efd65cd244f30000ae45d3cfa8324abea3a"
+    }
+  },
+  "parent_config_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_q0_anchored_diagnostic.v1.json",
+  "parent_config_sha256": "ea42f945b4272733cb105a3ef02d9488619c897c4d0516d8ccf42d50392929c5",
+  "q40_root": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_q40_partner_switch_20261001_v1",
+  "q40_manifest_sha256": "44330a21d08fc7c7ae0ea23c6ba2fc818a620ff4e7202a0b4e8ec453a55de0f6",
+  "sort_root": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1",
+  "bank_inputs": {
+    "REF384": {
+      "pre_extraction_snapshot/Wall3.npy": "26bf9560f906b6aba031e2735dad12472f22f09709657a9b5c5025550aa0648c",
+      "pre_extraction_snapshot/wPCA.npy": "8caf4f022dc0215d168742c5b2b7739e7efc46d6b5763fb86ad7f62277e0f62d",
+      "sorter_output/ops.npy": "5b3b365a83babe1dc5842fb92ff5e56f35a93aefe2557a1cd31ca42b46d72f58",
+      "sorter_output/channel_positions.npy": "0469ca92fb739a0cfd2f1613262d3a2d75af1098385385d7462ee6e3fd038d75",
+      "sorter_output/spike_detection_templates.npy": "294ca8aed1a2ca02cb83c91095432e47c9d67a01394767c8f6064bed4b7bca6e"
+    },
+    "B384": {
+      "pre_extraction_snapshot/Wall3.npy": "3cfa49a4bf9b8d4c0c46709749be9d9f005e7584091ca08785311b090533a608",
+      "pre_extraction_snapshot/wPCA.npy": "f7a69044b0551370cd0520e007fea6119315bcb02347d5403683036d325847d5",
+      "sorter_output/ops.npy": "7a8f5d219de1b98776134abb00f637777f85ba94113758ae47a1e4b26b2a44f0",
+      "sorter_output/channel_positions.npy": "0469ca92fb739a0cfd2f1613262d3a2d75af1098385385d7462ee6e3fd038d75",
+      "sorter_output/spike_detection_templates.npy": "6b462ef56f6a2b8c21be127ba771a0ad28294f86783edb6e3056a17e1557573b"
+    }
+  },
+  "selection_count": 4,
+  "fixture_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_saved_bank_single_spike_replay_preflight_v2/FIXTURE.json",
+  "fixture_sha256": "60fa995550084786d30a283c6e172d830b7303de251acf825cfa74ab851ac4d3",
+  "selection_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_saved_bank_single_spike_replay_preflight_v2/SELECTION.json",
+  "selection_sha256": "948242cca6510843835f4095a55a293c4b4be395a6ed1eccea64dc629e306b8e",
+  "output": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_saved_bank_single_spike_replay_20261001_v2",
+  "execution_limits": {
+    "device": "cpu",
+    "threads_max": 4,
+    "memory_gib_max": 4,
+    "wall_seconds_max": 300,
+    "samples_per_trial": 1024,
+    "native_amplitude_only": true,
+    "parameter_sweeps": false
+  },
+  "interpretation": "Model-defined sufficient-pathway stimulus only; not faithful recording preprocessing or biological evidence"
+}

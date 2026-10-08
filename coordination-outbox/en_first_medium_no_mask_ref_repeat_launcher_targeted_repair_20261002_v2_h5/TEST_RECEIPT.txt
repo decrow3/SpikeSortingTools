@@ -1,0 +1,32 @@
+Targeted launcher R1-R3 repair tests, 2026-10-02 PDT
+
+Final focused suite
+  command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=source pytest -q -p no:cacheprovider tests/test_pair_launcher.py
+  result: 10 passed in 0.43s
+
+R1 known answers
+  - sequential replay: first injected pre-root GPU failure durably records claim,
+    STARTED, exact stage and FAILURE; second call is rejected before preflight
+  - concurrent replay: exactly one of two simultaneous calls reaches preflight;
+    the other receives PermissionError from O_EXCL claim consumption
+
+R2 known answers
+  - positive aggregate output remains below the bound and completes
+  - REF crossing stops before B and writes no pair COMPLETE
+  - a live growing child process group is terminated when the threshold is reached
+  - REF remains below the cap, repaired B crosses the aggregate pair cap, REF state
+    remains durable, and pair COMPLETE is absent
+
+R3 known answers
+  - compact receipt/lstat check passes with mode 000 and reads zero voltage bytes
+  - same-size replacement with restored mtime fails on exact stat identity
+  - symlink substitution fails closed
+  - voltage continuity is observed before the REF executor
+
+Actual candidate checks
+  contract validate-only: PASS, execution_enabled false, no recording/voltage opened
+  compact actual voltage continuity: PASS, historic/current match true, voltage bytes 0
+  accepted scientific configuration equality: PASS
+  service installed/started: no
+
+Preserved test-development corrections: evidence/TEST_DEVELOPMENT_CORRECTIONS.json

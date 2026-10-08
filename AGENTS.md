@@ -36,6 +36,52 @@ handoff step in an already authorized analysis.
   voltage modification, deletion, scientific parameter change, or budget
   expansion. Those remain governed by their run-specific instructions.
 
+# Coordination scope and experiment-contract handoffs
+
+Do not carry temporary experiment limits into future handoffs as global project
+restrictions. Handoffs should state the project goal, current evidence, next
+decision, ownership, and applicable standing user instructions. Keep byte,
+runtime, window, arm, and launch limits inside the relevant experiment contract;
+link that contract only when executing or reviewing that experiment.
+
+Mark completed narrow assignments and their restrictions as historical. A later
+experiment does not renew, inherit, or imply human approval merely because its
+scope differs. Preserve experiment contracts and approval history, and obtain
+the authorization required for the current experiment. The automatic-review
+denial of A recording access is a real, narrowly scoped unresolved tool block
+and must be disclosed when relevant; it is not a general project hold. Existing
+explicit standing exclusions remain unchanged.
+
+# Standing post-task Hub check-in
+
+User direction (2026-10-07): after completing an assigned task, do not go idle.
+Check in with the `HubMultiCoordinater` agent on the Hub machine, report the
+completed task and current availability, and request or retrieve the next
+assignment.
+
+This check-in requirement does not itself authorize a new experiment, launch,
+external transfer, destructive action, or other consequential work. Continue to
+honor the applicable project instructions, experiment contracts, approvals, and
+holds for any next assignment.
+
+# Delivery ladder and task sizing
+
+User direction (2026-10-01): debug on snippets for speed, validate the surviving
+approach on representative medium windows, then test the surviving candidate on
+long/full development data. Target delivery in 5–8 days when evidence supports
+progression; reforecast to 10–14 days when a material repair or outage requires
+it.
+
+Every task must name its milestone, the decision it can change, the cheapest
+adequate test, and its completion condition. Snippet tests must preserve required
+padding, geometry, time origin, and training context; they do not establish
+longitudinal performance.
+
+After checking dependencies, reuse unchanged reviewed dependencies and valid
+intermediates. Require one independent review for load-bearing deltas; do not
+repeat serial review ceremonies for unchanged code. Keep experiment budgets in
+their experiment contracts, and preserve all existing exclusions.
+
 # RF evaluation hold for Luke spike-sorting work
 
 Do not automatically start or repeat per-arm, per-pair, or development RF
@@ -86,3 +132,142 @@ their dropout or apparent stationarity does not establish motion-estimator error
 
 See [depth-aware lighthouse policy](docs/luke_depth_aware_lighthouse_policy_20260908.md)
 for the bounded implementation and interpretation requirements.
+
+
+<!-- BEGIN coordinator implementation-first review -->
+# Instructions for work in this folder
+
+These instructions apply to this folder and its descendants. Explicit user
+instructions take precedence. This file adapts the Claude
+`implementation-first-review` skill into standing agent instructions; it does
+not require that skill to be installed or invoked.
+
+## Implementation-first review
+
+Apply this workflow when interpreting experimental or analysis results,
+comparing pipeline arms or conditions, reviewing another agent's or person's
+findings, or proposing follow-up work that depends on a result. Apply it equally
+to your own analyses and earlier claims.
+
+**Check implementation before interpreting science.** Before accepting a
+conclusion or building another analysis on it, check whether a code,
+configuration, or measurement error could produce the result. A completed job,
+verified hash, passing test suite, or internally consistent summary does not
+by itself validate the scientific interpretation.
+
+For a progress-only request, verify current processes, receipts, and artifacts.
+Distinguish execution status from scientific validity. Attribute an unreviewed
+verdict to its report or producing task rather than presenting it as your own
+validated conclusion. If you interpret the result or recommend a next step,
+perform the applicable checks below and include the report block.
+
+### Ten check-questions
+
+1. **What actually ran?** Read the executed source, commit, uncommitted changes,
+   frozen source snapshots where applicable, and effective configuration saved
+   by the run. Trace parameters to the stage and code that consume them; names
+   and defaults are insufficient.
+2. **Did the arms differ only in the intended factor?** List other differences
+   in inputs, preprocessing, channels, intermediate state, template banks,
+   whitening, refitted models, and downstream reruns before attributing an
+   effect.
+3. **Are axes, frames, and coordinates correct?** Verify column semantics and
+   reference frames. Distinguish measured fields from model- or template-derived
+   fields, observed from registered coordinates, and physical from padded or
+   virtual sites.
+4. **Are clocks and time bases correct?** Verify the actual sampling rate,
+   recording and crop origins, timestamp version, per-chunk versus per-event
+   times, and inclusive versus exclusive sample radii and interval boundaries.
+5. **Are there silent caps, filters, rounding, or defaults?** Inspect top-N
+   truncation, quantization, hard-coded constants, missing-metadata fallbacks,
+   clamp bounds, and priors, including their units and practical effect.
+6. **Are matching and counting semantics appropriate?** Check exact versus
+   tolerant matching, greedy versus maximum-cardinality matching, exclusive
+   versus all-neighbour counting, and whether the null uses the same statistic
+   and support as the observation.
+7. **Do states and domains mean what the report says?** Verify the physical
+   meaning of rest, episode, baseline, and displaced states. Check adjacency
+   across excluded gaps, common spatial and temporal support, eligibility, and
+   numerator/denominator definitions across arms.
+8. **Is the validation circular?** Check whether a gate tests actual data or
+   merely transformed saved coordinates, whether a fixture compares a helper
+   against itself, and whether thresholds or selections were chosen using the
+   outcomes they are meant to evaluate.
+9. **Was the claimed state reproduced, and is provenance sufficient?**
+   Distinguish historical reproduction from prospective regeneration. Confirm
+   that intermediate membership, labels, models, and other inputs needed for
+   attribution were actually saved and belong to the claimed run.
+10. **What is the defensible scope?** State which windows, conditions,
+    populations, probes, sorters, and historical or prospective settings support
+    the claim, and what remains unestablished. Continuity proxies do not prove
+    biological identity, and short-interval proxies do not prove contamination
+    or distinguish bad merges from repeated detections of the same spike.
+
+Start with proportionate, cheap checks: executed-source reads, effective-config
+diffs, saved-array inspections, independent known-answer fixtures, and positive
+and negative controls. Identify which questions are applicable and unresolved;
+do not claim that reading this checklist completes them. Recomputing a saved
+ratio validates arithmetic, not the construction of its numerator or denominator.
+
+Name expensive or unavailable checks as prerequisites rather than assuming
+their outcomes. This workflow does not authorize new sorts, voltage processing
+or transfers, parameter searches, RF or holdout access, remote-task messages,
+or budget expansion. Respect the user's existing authorizations and holds.
+
+### Required report block
+
+Attach this block to every conclusion or recommendation drawn from a result,
+including conclusions in chat, review notes, and handoffs. Keep it proportionate
+and cite the executed source or evidence actually inspected.
+
+```text
+Implementation checks
+- Done: <check> -> <outcome> (file:line or artifact/hash where relevant)
+- Not done: <check> -> <why / what it would take>
+- Can establish: <scoped claim>
+- Cannot establish: <what remains open>
+```
+
+If no implementation checks were possible, say so explicitly. Do not turn
+another task's checklist into a claim of independent review. Put implementation
+checks first in any proposed follow-up, before mechanism explanations or new
+experiments.
+
+### Working practices
+
+- **Freeze first.** Fix predictions, acceptance criteria, and interpretation
+  rules before inspecting outcomes. Label later changes as redesigns and retain
+  the original rule and result. Resolve conflicting contract versions visibly.
+- **Preserve failures.** Keep failed and flawed versions with clear labels.
+  Never overwrite historical evidence or tune a failed check until it passes.
+  Use a new output namespace for corrected analyses.
+- **Record corrections.** When a claim changes, record the correction and point
+  to the original claim and the evidence responsible. Apply this to your own
+  reviews as well as other agents' work.
+- **Independent review.** Load-bearing claims need a second reader checking the
+  executed source and artifacts, not just the producer's summary. Use an
+  authorized reviewer or existing independent review. If none is available,
+  record that gap; do not imply the review occurred or message another task
+  without authorization.
+- **Report from artifacts.** Read counts, hashes, and verdicts from authoritative
+  outputs. Check current process state when reporting liveness; stale logs and
+  planned actions are not evidence that work is running or complete.
+
+## Worked examples and provenance
+
+Read [implementation-first-review-patterns.md](implementation-first-review-patterns.md)
+when applying this workflow, especially before proposing an attribution test.
+It is a local copy of the Claude skill's worked examples; treat examples as
+historical cases, not evidence about the current run.
+
+The longer project history is in
+[implementation-first-method.md](implementation-first-method.md).
+
+Adapted on 2026-09-30 from:
+
+- `C:/Users/Declan/.claude/skills/implementation-first-review/SKILL.md`
+- `C:/Users/Declan/.claude/skills/implementation-first-review/patterns.md`
+
+The local instructions and examples are self-contained. The Claude source files
+are provenance references and are not modified by this adaptation.
+<!-- END coordinator implementation-first review -->

@@ -1,0 +1,63 @@
+{
+  "schema": "candidate2-cache-managed-gpu-self-observation-independent-review-v3-final",
+  "verdict": "GO",
+  "scope": "GO_TO_EXACT_BOUND_AUTHORIZATION_FRESH_RECONCILIATION_AND_ONE_MANAGED_V7_ATTEMPT",
+  "supersedes": {
+    "review_md_sha256": "82adb2dede96ef31e82b93a5c0cc82dee824ed53c8e9fdc38958a3910ae5d6e6",
+    "review_status_sha256": "3c57283a35de53734d42feac392ea99aba211ee38e6a9908a13ebdd47d8c6bf0",
+    "verdict": "GO",
+    "reason_for_supersession": "Final authorization reconciliation canonicalizes only ordering of systemd set-valued Requires/BindsTo/After properties while preserving exact membership and scalar comparison."
+  },
+  "authorization_created": false,
+  "execution_started": false,
+  "recording_opened": false,
+  "reviewed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/candidate2_cache_managed_gpu_self_observation_repair_h5_20261008_v1",
+  "bindings": {
+    "contract_sha256": "4323bf1f4c83a0f03351200f8e2769555ea8f819868b90bc9cee40988c066f48",
+    "source_manifest_sha256": "2d1ff9cae67dc0d8993a6a00495adea5092860dec407fff15173725acf3b4ec2",
+    "source_member_count": 31,
+    "runner_sha256": "f62f8c5f42165414233f3532c4ba1a334563bae0bf947b9ac4fe1ae3c5f2da2b",
+    "preflight_sha256": "e1fbc08a0960021abad0ad3b3768b8ef0c41c69e9835f48feceeb961d23d78da",
+    "restored_cache_compat_sha256": "3b28a67b84ea2e259d5d1923d549c1715c97c17490e6dfd3990ea615e8f4da68",
+    "target_service_sha256": "c2cb7f3f4b668b8e1b195f825da134ffe9710de37b6707b5cc2832ad1e03a712",
+    "monitor_service_sha256": "7fd09574eb2e52554ca36079d71e83fd7f4d352ae35be0c987c213ab642f3713",
+    "test_receipt_sha256": "e3d52a4f9c8e125713d8a51c84ff5be4e46c6e535a2252e94d15cd5c82aba885",
+    "deployment_evidence_sha256": "6d1ff5be07f068d2e6e96bae8e752a549d50fa6b3d3ada1cd67c61ecefb3df39"
+  },
+  "checks": {
+    "both_runner_gates_use_exact_self_gpu_rule": true,
+    "both_runner_gates_scan_competing_sorters": true,
+    "post_validation_post_settle_gate_precedes_output_and_sort": true,
+    "only_requires_bindsto_after_order_is_canonicalized": true,
+    "systemd_set_membership_remains_exact": true,
+    "systemd_scalar_properties_remain_exact": true,
+    "actual_interpreter_systemd_set_fixture_passed": true,
+    "actual_interpreter_late_arrival_fixture_passed": true,
+    "isolated_runner_join_and_import_passed": true,
+    "restored_dependency_matches_commit_3c9a1e2": true,
+    "packet_source_manifest_exact": true,
+    "installed_source_manifest_exact": true,
+    "installed_services_match_packet": true,
+    "loaded_units_inactive_dead_pid_zero": true,
+    "no_finite_timeout_memory_or_cpu_cap": true,
+    "restart_and_automatic_retry_absent": true,
+    "output_absent": true,
+    "authorization_absent": true
+  },
+  "blocking_findings": [],
+  "implementation_checks": {
+    "done": [
+      "Traced both final runner resource gates through output creation and run_sorter_config",
+      "Ran actual rescue-production late-arrival and isolated-runner join fixtures",
+      "Ran actual rescue-production set-order/member/scalar authorization fixture",
+      "Verified exact 31-member packet and installed source closures",
+      "Verified installed service bytes and live inactive manager properties",
+      "Repeated accepted GPU and monitor fixed-small tests"
+    ],
+    "not_done": [
+      "Authorization, live managed preflight, recording validation, service start, sort, curation/QC, or scientific comparison"
+    ],
+    "can_establish": "Technical fitness to proceed to exact authorization, fresh reconciliation, and one managed v7 attempt.",
+    "cannot_establish": "Future resources, run success, output validity, or scientific benefit."
+  }
+}

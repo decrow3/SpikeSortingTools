@@ -1,0 +1,23 @@
+{
+  "schema": "luke-h1-activation-candidate-review-request-v1",
+  "status": "REVIEW_REQUEST_EXECUTION_DISABLED_PHASE3_BLOCKED",
+  "decision": "accept_or_reject_post_GO_activation_composition_only",
+  "reviewed_launcher_manifest_sha256": "682b3c3cc6cbe9bf3ae9a2bd2a19313888ddacfae99e199e9bd884ff9ffda284",
+  "reviewed_launcher_sha256": "238c9c997bad67415a13671deaa5569ee121f3a27aa07188fef51c424f2029f8",
+  "h1_launcher_go_manifest_sha256": "7fde2fc6d93a85d3453471176ad66f6e3e8cb14349a449f38ea7e7e44d0fa6c5",
+  "contract_sha256": "65a94dd52f9264baa70270837b9e441ab8fef69e39a7e905e2c165017355eff5",
+  "review_scope": [
+    "exact reviewed launcher/contract/service/runtime/input and H1 GO bindings",
+    "fresh pair/cache/log/attempt namespaces",
+    "unchanged 16 GiB total and 1 MiB in-cap reserve",
+    "preserved R1/R3, frozen science, and one-start semantics",
+    "hard unresolved Phase3 review binding and absent enabled environment",
+    "read-only validate/preflight and proposed-not-installed service artifacts"
+  ],
+  "phase3_review_binding": null,
+  "execution_enabled": false,
+  "service_installed_or_started": false,
+  "recording_or_voltage_read": false,
+  "scientific_execution_started": false
+}
+

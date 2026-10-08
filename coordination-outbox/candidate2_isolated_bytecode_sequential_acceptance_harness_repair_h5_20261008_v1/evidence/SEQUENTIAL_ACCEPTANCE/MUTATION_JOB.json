@@ -1,0 +1,10 @@
+{
+  "bootstrap_pid": 3044711,
+  "error": "RuntimeError: runtime source inventory mismatch: missing=[], extra=['SEQUENTIAL_ACCEPTANCE_MUTATION.txt']",
+  "finished_at": "2026-10-08T12:38:05.524227+00:00",
+  "returncode": null,
+  "schema": "candidate2-verified-managed-job-v1",
+  "started_at": "2026-10-08T12:38:05.522313+00:00",
+  "state": "failed",
+  "traceback": "Traceback (most recent call last):\n  File \"/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/candidate2_isolated_bytecode_sequential_acceptance_harness_repair_h5_20261008_v1/bootstrap.py\", line 108, in main\n    source_proof = verify_source(args.source_root.resolve(), args.source_manifest.resolve(), args.source_manifest_sha256)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/candidate2_isolated_bytecode_sequential_acceptance_harness_repair_h5_20261008_v1/bootstrap.py\", line 61, in verify_source\n    raise RuntimeError(f\"runtime source inventory mismatch: missing={sorted(set(expected)-observed_paths)}, extra={sorted(observed_paths-set(expected))}\")\nRuntimeError: runtime source inventory mismatch: missing=[], extra=['SEQUENTIAL_ACCEPTANCE_MUTATION.txt']\n"
+}

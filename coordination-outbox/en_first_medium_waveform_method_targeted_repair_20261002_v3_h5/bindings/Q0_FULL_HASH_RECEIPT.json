@@ -1,0 +1,12 @@
+{
+  "actual_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+  "binary_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+  "bytes_read": 241309358592,
+  "cpu_seconds": 654.567488224,
+  "expected_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+  "interpretation": "The q=0 SI nearest kernel was independently verified as the exact 384-channel identity; therefore its full byte stream is this verified accepted binary.",
+  "max_rss_kib": 81364,
+  "schema_version": "en-q0-full-hash-v1",
+  "status": "pass",
+  "wall_seconds": 1294.6408846182749
+}

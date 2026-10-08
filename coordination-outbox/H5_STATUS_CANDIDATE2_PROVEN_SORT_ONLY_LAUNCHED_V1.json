@@ -1,0 +1,50 @@
+{
+  "schema": "hub-multicoordinator-worker-status-v1",
+  "owner": "H5",
+  "recipient": "HubMultiCoordinater",
+  "created_utc": "2026-10-08T13:16:04Z",
+  "status": "LAUNCHED_RUNNING_NO_RETRY",
+  "task": "Candidate2 proven sort-only route adaptation and one production invocation",
+  "fixture_verdict": "PASS_FINAL_ENTRYPOINT_CONFIG_BOUNDARY",
+  "fixture_receipt_sha256": "5a78dde14b7ed74c8739ba4d6c7f2870caf9a040e170b7091515b8fefa6ba7e5",
+  "independent_review_verdict": "GO_TO_INSTALL_AND_AUTHORIZE_ONE_SORT_ONLY_INVOCATION",
+  "review_sha256": "3e8682cf3c09d80959e38cf808acce656c329811bcb4fd33a2ddb1274c9ec20a",
+  "review_status_sha256": "ee723853fc0dd001600fd84d9682ce47855fba443b0a580bea1886b0e6ffb5c5",
+  "packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_proven_sort_only_adaptation_h5_20261008_v1",
+    "manifest_sha256": "1c9f41a7ddb08ec81ee72018d7c7d13f56f4f615394b38b8ffdd0222c2a4b963",
+    "complete_sha256": "9233921958e8fe962f1b4a750b783bfc9eaf8a17f5ef03a46005a0dd3ced4db1",
+    "verified_members": 46
+  },
+  "launch": {
+    "namespace": "/media/huklaban5/Data/candidate2_native_rigid_sort_only_launch_h5_20261008_v10",
+    "output": "/media/huklaban5/Data/luke_candidate2_native_rigid_sort_only_imec0_20261008_v10",
+    "service": "luke-candidate2-native-rigid-sort-only-imec0-20261008-v10.service",
+    "service_sha256": "ed922c44522bf066d0c06f408cc31e71385779cb9dc7f661919777a28c7c062b",
+    "authorization_sha256": "072d06bb2058e54ce18039b99c6f8dd15d3416a8facf795e8b64021cf41219fb",
+    "installed": true,
+    "authorized": true,
+    "start_count": 1,
+    "automatic_retry": false,
+    "started_local": "2026-10-08 06:15:42 PDT"
+  },
+  "observed_process": {
+    "active_state": "activating",
+    "sub_state": "start",
+    "exec_main_pid": 3053664,
+    "n_restarts": 0,
+    "memory_current_bytes": 390496256,
+    "output_exists": false,
+    "phase": "pre-output full-content validation or immediate startup; inferred from runner order and absent output"
+  },
+  "prestart_resources": {
+    "mem_available_bytes": 193515982848,
+    "memory_psi_some_avg10": 0.0,
+    "output_free_bytes": 766431477760,
+    "gpu": "RTX A5000, 108 MiB used, 0 percent utilization, no compute applications"
+  },
+  "blocker": null,
+  "eta": "approximately 4.5 to 5 hours from the 06:15 PDT start if runtime matches the successful 3.94-hour Oct-6 sort plus full-content validation",
+  "next_check": "verify transition from content validation to created output/sort stage, then monitor terminal service state without retry",
+  "bespoke_stack": "closed; not reopened"
+}

@@ -1,0 +1,22 @@
+{
+  "schema": "hub-multicoordinator-worker-status-v1",
+  "owner": "H5",
+  "status": "CANDIDATE3_SOURCE_ARTIFACT_INCOMPLETE_EXACT_WRAPPER_FILE_ABSENT_NOT_SCIENTIFIC_INFEASIBILITY",
+  "task": "candidate3_existing_source_artifact_inventory_clarification",
+  "inspected_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_lazy_prewhitening_wrapper_h1_20261008_v1",
+  "inspected_manifest_members": 8,
+  "wrapper_source_present": false,
+  "exact_missing_file": "npx_preprocessing/motion/kilosort_prewhitening_si.py",
+  "expected_wrapper_sha256": "b7f06da5685d3b8af0c7bd18e7ccfeb3af7db8fe3b22b1fa6a619908f43bb690",
+  "present": [
+    "SOURCE_BINDINGS.json with wrapper/import-closure hashes",
+    "synthetic test receipts and reports",
+    "sealed real-equality runner and contracts in separate packets",
+    "exact DARTsort and pristine Kilosort source identities"
+  ],
+  "interpretation": "The missing historical commit is a provenance/source-supply blocker, not evidence that the lazy-wrapper approach is scientifically infeasible. No prospective source-bound contract amendment can yet bind executable wrapper bytes because the file itself is absent.",
+  "required_next_input": "a sealed artifact carrying the complete wrapper source and its import closure with independently verifiable content identities; historical commit reproduction is not required if a prospective amendment labels the new provenance honestly",
+  "dirty_repository_modified": false,
+  "voltage_or_hardware_work": false,
+  "sort_launched": false
+}

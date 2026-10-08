@@ -1,0 +1,71 @@
+{
+  "schema": "candidate2-cache-managed-parser-forwarding-independent-review-v1",
+  "verdict": "GO",
+  "scope": "FOCUSED_PARSER_FORWARDING_AND_FRESH_BINDING_DELTA",
+  "authorization_created": false,
+  "execution_started": false,
+  "reviewed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/candidate2_cache_managed_parser_forwarding_repair_h5_20261008_v1",
+  "parent": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_cache_managed_reporting_redesign_h5_20261008_v1",
+    "contract_sha256": "4dd8b9836853f75cceff60eeba7139632ab6620711fb88f0909fdfd6d8efdd92"
+  },
+  "preserved_failure": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_v5_monitor_preflight_failure_h5_20261008_v1",
+    "manifest_sha256": "9b758a590494c2a115ca61671f1b16c2502844cd41f88ee958ee6eb7ca530be0",
+    "manifest_members_verified": 5,
+    "manifest_mismatches": 0,
+    "cause_confirmed": "argparse abbreviation consumed --target-unit as --target-unit-file before child forwarding"
+  },
+  "subject": {
+    "contract_sha256": "f0319985046ed246c3052d0de91de7ce63228762d85102f56651685b24168c48",
+    "source_manifest_sha256": "dd8ed07fe14c5bb460ae2f1d9119ea6d3c7d5d349ebbcd23b1469cdb3851ac6b",
+    "bootstrap_sha256": "a96ecc3c2cc2a2a921bdd6ab9c9b26591561d02b67da5da73a27c6b59a14b428",
+    "preflight_bootstrap_sha256": "333a9c72d5e940d7e60a9a4666c604bd6c2fb2a4b82dae5c0e62a065cf86eb7f",
+    "monitor_bootstrap_sha256": "3c8f6f73ff71069bc985b2afe69963728d57842e5238aad159ea6747f10de16d",
+    "target_service_sha256": "c5717f5a77930907079d0aee11d9eb88841a09f282a94dee22da2acff6231d71",
+    "monitor_service_sha256": "464ad9d9d1d6ced7ecd25898404e7625202ae1990a92cc36fb840fb89460fc35",
+    "forwarding_regression_sha256": "21717ec9c9558aaa4aab69ba8bd1e58c05074106c1fd892d7d9ebd5ea730e10e",
+    "monitor_known_answer_sha256": "9786d2e9c6abbfd0d1ea67eb30f74abe22a3c66eaefeaa6acab25dbea1d6029d",
+    "test_receipt_sha256": "4b25822c39ebabf7eca4bdfc31f0bf4faeadc4857663db6ddff30408838b2c8b"
+  },
+  "checks": {
+    "failure_packet_integrity": true,
+    "failure_cause_confirmed": true,
+    "only_executable_delta_allow_abbrev_false": true,
+    "actual_frozen_service_option_names_and_order_exercised": true,
+    "packet_and_installed_regression_pass": true,
+    "bound_test_receipt_pass": true,
+    "real_bootstrap_subprocess_used": true,
+    "inert_child_received_target_unit": true,
+    "inert_child_received_adjacent_file_options": true,
+    "all_30_runtime_source_members_unchanged": true,
+    "monitor_classification_unchanged": true,
+    "science_effective_nblocks_and_cache_mode_unchanged": true,
+    "fresh_v6_paths_consistent_and_absent": true,
+    "installed_30_member_source_and_bootstraps_exact": true,
+    "installed_unit_hashes_exact": true,
+    "manager_loaded_commands_and_dependencies_exact": true,
+    "manager_loaded_inactive_dead_never_started": true,
+    "manager_loaded_no_hard_cap_or_retry": true,
+    "no_hard_cap_or_retry_added": true,
+    "authorization_absent": true
+  },
+  "blocking_findings": [],
+  "prohibited_actions_performed": [],
+  "implementation_checks": {
+    "done": [
+      "Verified preserved failure packet and exact cause",
+      "Byte-compared all executable/source artifacts against reviewed parent",
+      "Ran exact service-argv bootstrap-to-inert-child regression against packet and installed files",
+      "Reran monitor known-answer cases",
+      "Verified installed source/bootstrap/unit bytes and manager-loaded properties",
+      "Diffed contract/services and checked fresh output path absence"
+    ],
+    "not_done": [
+      "Authorization, managed preflight, or service start",
+      "Recording/voltage access, GPU work, sort, or outcome review"
+    ],
+    "can_establish": "The parser-forwarding defect is repaired without execution/science/monitor semantic drift.",
+    "cannot_establish": "Post-authorization fresh preflight, launch readiness, execution outcome, or scientific benefit."
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "contract_sha256": "e5d49445b9e2e1edb51e407278f6b0d57faa831eaf0b9d0fca7c62d775561b7c",
+  "finished_unix": 1791460522.5753267,
+  "finished_utc": "2026-10-08T11:55:22.575297+00:00",
+  "input": {
+    "binary": "/tmp/candidate2-v8-full-preflight-uclh9dsg/synthetic.raw",
+    "bytes": 128
+  },
+  "loaded_units": {
+    "monitor": {
+      "After": "basic.target app.slice",
+      "BindsTo": "",
+      "CPUQuotaPerSecUSec": "infinity",
+      "Environment": "",
+      "FragmentPath": "/home/huklaban5/.config/systemd/user/candidate2-v8-preflight-monitor-3035419.service",
+      "MemoryHigh": "infinity",
+      "MemoryMax": "infinity",
+      "OOMPolicy": "stop",
+      "Requires": "basic.target app.slice",
+      "Restart": "no",
+      "RuntimeMaxUSec": "infinity",
+      "TimeoutStartUSec": "infinity"
+    },
+    "target": {
+      "After": "basic.target app.slice",
+      "BindsTo": "",
+      "CPUQuotaPerSecUSec": "infinity",
+      "Environment": "PYTHONDONTWRITEBYTECODE=1 KILOSORT_BOUNDED_PREAD_PATH=/tmp/candidate2-v8-full-preflight-uclh9dsg/synthetic.raw",
+      "FragmentPath": "/home/huklaban5/.config/systemd/user/candidate2-v8-preflight-target-3035419.service",
+      "MemoryHigh": "infinity",
+      "MemoryMax": "infinity",
+      "OOMPolicy": "stop",
+      "Requires": "basic.target app.slice",
+      "Restart": "no",
+      "RuntimeMaxUSec": "infinity",
+      "TimeoutStartUSec": "infinity"
+    }
+  },
+  "monitor_ready": {
+    "contract_sha256": "e5d49445b9e2e1edb51e407278f6b0d57faa831eaf0b9d0fca7c62d775561b7c",
+    "first_sample_complete": true,
+    "first_sample_unix": 1791460521.313846,
+    "gpu_compute_returncode": 0,
+    "gpu_returncode": 0,
+    "monitor_service_sha256": "d72e3035fe680b363ab19764a9304963896951dee8bdfce38c1a61ae95f88543",
+    "ready_failures": [],
+    "schema": "candidate2-external-monitor-ready-v1",
+    "systemctl_returncode": "0",
+    "target_active_state": "active",
+    "target_control_group": "/user.slice/user-1000.slice/user@1000.service/app.slice/candidate2-v8-preflight-target-3035419.service",
+    "target_invocation_id": "7d272fa8c28341b4950bd0d288c702cb",
+    "target_load_state": "loaded",
+    "target_service_sha256": "869f43ec84b55cd45a004a254764a5ae6999c6497aa45ece8f993f4498618271"
+  },
+  "output_free_bytes": 901383835648,
+  "pass": true,
+  "process_conflicts": [],
+  "recording_bytes_read": 0,
+  "recording_opened": false,
+  "resources": {
+    "gpu": {
+      "compute_apps": [
+        {
+          "pid": 3035480,
+          "process_name": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+          "raw": "3035480, /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python, 202",
+          "used_memory_mib": 202
+        }
+      ],
+      "compute_apps_raw": [
+        "3035480, /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python, 202"
+      ],
+      "compute_query_returncode": 0,
+      "device": "NVIDIA RTX A5000",
+      "external_compute_apps": [],
+      "free_bytes": 25091112960,
+      "preflight_pid": 3035480,
+      "self_compute_apps": [
+        {
+          "pid": 3035480,
+          "process_name": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+          "raw": "3035480, /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python, 202",
+          "used_memory_mib": 202
+        }
+      ],
+      "total_bytes": 25422594048
+    },
+    "mem_available_bytes": 193147146240,
+    "pressure": {
+      "full": {
+        "avg10": 0.0,
+        "avg300": 0.0,
+        "avg60": 0.0,
+        "total": 4628125348.0
+      },
+      "some": {
+        "avg10": 0.0,
+        "avg300": 0.0,
+        "avg60": 0.0,
+        "total": 4689231565.0
+      }
+    }
+  },
+  "schema": "candidate2-cache-managed-preflight-v1",
+  "source_manifest_sha256": "90b4b8b0bc6aaf2c3768e87b527e65bf1532bedbb0e3a1bd4b067598b9036b16",
+  "typed_exec_identity": {
+    "monitor": {
+      "ExecStart": [
+        {
+          "argv": [
+            "/usr/bin/python3",
+            "-I",
+            "-S",
+            "-u",
+            "/tmp/candidate2-v8-full-preflight-uclh9dsg/candidate2_cache_managed_monitor.py"
+          ],
+          "executable_path": "/usr/bin/python3",
+          "ignore_errors": false
+        }
+      ],
+      "ExecStartPre": []
+    },
+    "target": {
+      "ExecStart": [
+        {
+          "argv": [
+            "/usr/bin/python3",
+            "-I",
+            "-S",
+            "-u",
+            "/tmp/candidate2-v8-full-preflight-uclh9dsg/candidate2_cache_managed_full.py"
+          ],
+          "executable_path": "/usr/bin/python3",
+          "ignore_errors": false
+        }
+      ],
+      "ExecStartPre": []
+    }
+  }
+}

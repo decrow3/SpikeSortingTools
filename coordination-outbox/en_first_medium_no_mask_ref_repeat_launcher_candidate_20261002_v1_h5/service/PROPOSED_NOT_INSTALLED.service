@@ -1,0 +1,25 @@
+[Unit]
+Description=PROPOSED ONLY - EN first-medium heterogeneous trained pair
+ConditionPathExists=!/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1
+ConditionPathExists=!/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1_numba_cache
+ConditionPathExists=!/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_first_medium_trained_pair_20261002_v1
+
+[Service]
+Type=exec
+Restart=no
+WorkingDirectory=/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_candidate_20261002_v1_h5
+Environment=EN_FIRST_MEDIUM_PAIR_PERSISTENT_JOB=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONPATH=/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_candidate_20261002_v1_h5/source:/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages
+Environment=NUMBA_CACHE_DIR=/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1_numba_cache
+Environment=OMP_NUM_THREADS=16
+Environment=MKL_NUM_THREADS=16
+Environment=OPENBLAS_NUM_THREADS=16
+AllowedCPUs=0-15
+CPUQuota=1600%
+MemoryMax=68719476736
+RuntimeMaxSec=2700
+TasksMax=256
+ExecStart=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python /mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_candidate_20261002_v1_h5/source/en_first_medium_trained_pair_launch.py --contract /mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_candidate_20261002_v1_h5/contract/en_first_medium_pair.execution_disabled.v1.json --expected-contract-sha256 2feeb8b36ebba5c5ef23dc51ca0c9a9abfce1c7a853aa7785dcefe6136e416f5 --execute-reviewed-once
+
+# DRAFT ONLY: execution-disabled contract; do not install/start before H1 review and enabled derivative.

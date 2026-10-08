@@ -1,0 +1,7 @@
+{
+  "schema": "candidate2-v7-runtime-decorated-exec-failure-complete-v1",
+  "status": "TERMINAL_PRE_READ_PREFLIGHT_FAILURE_NO_RETRY",
+  "created_utc": "2026-10-08T11:51:00Z",
+  "manifest_sha256": "e24bfdfce47d4d59fad84047f811e0a04abc04189b548af33fd0f9a8ea7e889e",
+  "member_count": 6
+}

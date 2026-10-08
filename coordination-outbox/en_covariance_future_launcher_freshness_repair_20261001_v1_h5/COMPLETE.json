@@ -1,0 +1,9 @@
+{
+  "complete": true,
+  "packet": "en_covariance_future_launcher_freshness_repair_20261001_v1_h5",
+  "status": "future_launcher_repaired_dummy_freshness_refusal_passed_ready_for_h1_review",
+  "created_utc": "2026-10-02T06:47:51Z",
+  "manifest_sha256": "0d6ef5f54aa2ddc360c2fd8c8a7db017ddd5933b5f4b5faf8b39093d8b782514",
+  "future_data_service_started": false,
+  "recording_reads": 0
+}

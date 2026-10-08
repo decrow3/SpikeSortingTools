@@ -1,0 +1,51 @@
+{
+  "bindings": {
+    "contract_sha256": "f0319985046ed246c3052d0de91de7ce63228762d85102f56651685b24168c48",
+    "installed_monitor_bootstrap_sha256": "3c8f6f73ff71069bc985b2afe69963728d57842e5238aad159ea6747f10de16d",
+    "installed_monitor_service_sha256": "464ad9d9d1d6ced7ecd25898404e7625202ae1990a92cc36fb840fb89460fc35",
+    "installed_target_service_sha256": "c5717f5a77930907079d0aee11d9eb88841a09f282a94dee22da2acff6231d71",
+    "monitor_bootstrap_sha256": "3c8f6f73ff71069bc985b2afe69963728d57842e5238aad159ea6747f10de16d",
+    "monitor_service_sha256": "464ad9d9d1d6ced7ecd25898404e7625202ae1990a92cc36fb840fb89460fc35",
+    "target_service_sha256": "c5717f5a77930907079d0aee11d9eb88841a09f282a94dee22da2acff6231d71",
+    "test_sha256": "21717ec9c9558aaa4aab69ba8bd1e58c05074106c1fd892d7d9ebd5ea730e10e"
+  },
+  "created_utc": "2026-10-08T11:11:28.817847+00:00",
+  "gpu_work_started": false,
+  "pass": true,
+  "recording_bytes_read": 0,
+  "recording_opened": false,
+  "schema": "candidate2-parser-forwarding-focused-test-receipt-v1",
+  "tests": [
+    {
+      "argv": [
+        "python3",
+        "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/candidate2_cache_managed_parser_forwarding_repair_h5_20261008_v1/tests/test_monitor_bootstrap_forwarding.py"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "actual service argv crossed monitor bootstrap boundary with --target-unit intact\n"
+    },
+    {
+      "argv": [
+        "python3",
+        "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/candidate2_cache_managed_parser_forwarding_repair_h5_20261008_v1/tests/test_monitor_bootstrap_forwarding.py",
+        "--bootstrap",
+        "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/monitor_bootstrap.py",
+        "--unit",
+        "/home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v6.service"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "actual service argv crossed monitor bootstrap boundary with --target-unit intact\n"
+    },
+    {
+      "argv": [
+        "python3",
+        "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/candidate2_cache_managed_parser_forwarding_repair_h5_20261008_v1/tests/test_monitor_known_answer.py"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "11 monitor readiness/classification known-answer cases passed\n"
+    }
+  ]
+}

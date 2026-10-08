@@ -1,0 +1,490 @@
+{
+  "classification_and_matching": {
+    "categories": {
+      "ambiguous": "pre-match ambiguous endpoint or endpoint whose partner/matched state varies across co-optimal solutions",
+      "gained": "candidate endpoint that is competitively unmatched in every co-optimal solution, regardless of whether it had an admissible edge consumed by another endpoint",
+      "lost": "REF endpoint that is competitively unmatched in every co-optimal solution, regardless of whether it had an admissible edge consumed by another endpoint",
+      "retained": "endpoint in a stable pair present in every co-optimal solution; exactly two retained endpoint rows share one deterministic pair_id"
+    },
+    "category_denominators": {
+      "all_endpoint_N": "REF endpoint rows plus candidate endpoint rows in comparison and epoch",
+      "ambiguous_endpoint_N": "ambiguous rows from either arm",
+      "closure": "retained_endpoint_N + lost_endpoint_N + gained_endpoint_N + ambiguous_endpoint_N = all_endpoint_N",
+      "gained_endpoint_N": "candidate gained rows",
+      "lost_endpoint_N": "REF lost rows",
+      "retained_endpoint_N": "two times retained_pair_N"
+    },
+    "cooptimal_endpoint_rule": "For each endpoint compare its assignment across every co-optimal solution. A pair present identically in every solution is stable. An endpoint whose partner or matched/unmatched state differs across solutions is ambiguous. An endpoint unmatched in every solution is competitively unmatched.",
+    "endpoint_universe": "Every REF and comparison-arm event row with global frame in the common crop enters exactly once before any anchor or provenance gate.",
+    "matching": "Within comparison and epoch, build all edges between non-pre-ambiguous endpoints with absolute global-frame lag <=15 and physical anchor distance <=80 um. Enumerate the co-optimal solution set: maximum cardinality first, minimum total absolute lag second. Lexicographic edge order is recorded only as an audit representative and never resolves scientific ambiguity.",
+    "no_double_credit": "Each endpoint row appears once and in at most one pair_id; stable retained pair_ids are unique.",
+    "pair_id": "SHA256(comparison || NUL || epoch || NUL || REF source_arm || NUL || decimal REF row_id || NUL || candidate source_arm || NUL || decimal candidate row_id)",
+    "partition": "The four categories are mutually exclusive and collectively exhaustive over endpoint_universe. Assert ledger row count equals REF endpoint count plus candidate endpoint count, each (source_arm,source_row_id) occurs once, each row has exactly one category, lost rows are REF only, gained rows are candidate only, and each retained pair_id has exactly one endpoint from each arm.",
+    "pre_match_ambiguous": "An endpoint with unsupported anchor (-1) or an arm/row provenance conflict is category=ambiguous with a single reason code and is excluded from matching. Merely having a time-near cross-arm endpoint farther than 80 um is not ambiguity; that edge is simply inadmissible.",
+    "tolerance_conversion": "round(0.0005 * 29999.835983263598) = 15",
+    "tolerance_frames": 15,
+    "tolerance_reason": "Align exactly with the evaluator's frozen 0.5 ms correspondence tolerance rather than the earlier +/-1-sample sketch."
+  },
+  "comparisons": [
+    "REF384_vs_existing_corrected_B384",
+    "REF384_vs_repaired_B384",
+    "REF384_vs_REF384_repeat"
+  ],
+  "denominators_and_intervals": {
+    "ambiguous_fraction": "ambiguous endpoint population_N divided by all endpoint rows for the same comparison and epoch",
+    "conditional_support_fraction": "supported_n / technically_evaluable_n, descriptive only; null when denominator is zero",
+    "dependence_scope": "Wilson intervals treat sampled endpoint rows as Bernoulli rows and do not cover within-unit, within-pair, time, recording, or sorter dependence.",
+    "population_N": "endpoint category count from the exhaustive event ledger; retained also reports retained_pair_N=retained_endpoint_N/2",
+    "population_rate_per_core_minute": "population_N / epoch_exposure_minutes for lost, gained, and ambiguous endpoint categories",
+    "sampled_n": "selected endpoint rows: <=128 for each nonretained stratum and exactly twice selected_pair_n for retained",
+    "supported_rate_interval": "population_rate multiplied by Wilson lower and upper bounds; sampling uncertainty only",
+    "technically_evaluable_fraction": "technically_evaluable_n / sampled_n",
+    "unsupported_gained_rate": "gained population_rate * (1 - gained waveform_support_fraction)",
+    "unsupported_gained_rate_interval": "[gained population_rate * (1 - gained support Wilson upper), gained population_rate * (1 - gained support Wilson lower)]",
+    "waveform_support_fraction": "supported_n / sampled_n; unevaluable rows count as not supported",
+    "waveform_supported_rate": "population_rate * waveform_support_fraction",
+    "wilson": "For k successes in n sampled rows and z=1.959963984540054, center=(k+z^2/2)/(n+z^2), half=z*sqrt(k*(n-k)/n+z^2/4)/(n+z^2), lower=max(0,center-half), upper=min(1,center+half).",
+    "zero_sample": "If population_N=0 then sampled_n=0, fractions and Wilson bounds are null, status=NO_POPULATION; never PASS or FAIL."
+  },
+  "enablement_rule": "This H5-only freeze remains non-executable. A separately reviewed derivative must bind all prospective arm/anchor inputs, retain every accepted scientific field, verify this actual H5 runtime and current voltage receipt, and set both gates true.",
+  "epochs": {
+    "denominator_scope": "core crop only; filter padding never adds exposure",
+    "exposure_minutes": [
+      3.333333224081225,
+      3.333333224081225,
+      3.333333224081225
+    ],
+    "global_edges_formula": "edge[k] = crop_origin_global_frame + floor(k * 17999901 / 3), k=0..3",
+    "global_edges_frames": [
+      208498882,
+      214498849,
+      220498816,
+      226498783
+    ],
+    "intervals": "half-open; each eligible event belongs to exactly one epoch; final stop excluded",
+    "labels": [
+      "early",
+      "middle",
+      "late"
+    ]
+  },
+  "execution_enabled": false,
+  "explicit_exclusions": [
+    "RF fitting, rescoring, or comparison",
+    "sealed 20-trial outer holdout access",
+    "sorting, sorter training, detection, clustering, template refit, or threshold search",
+    "parameter sweep or outcome-driven sampling",
+    "biological identity or purity claim",
+    "raw voltage or waveform transfer"
+  ],
+  "first_result_preservation": {
+    "atomic_publication": "Build in staging, verify hashes, rename once to absent final destination, write COMPLETE last.",
+    "output_namespace": "A future enabled contract must name a fresh absent destination and fresh staging directory.",
+    "overwrite": false,
+    "retry": "A retry requires a new namespace and links the failed packet; the first result and first frozen sample ledger remain immutable."
+  },
+  "input_identity": {
+    "anchor_field": {
+      "required_bindings": [
+        "absolute path",
+        "sha256",
+        "schema",
+        "shape",
+        "dtype",
+        "global-frame domain",
+        "geometry sha256",
+        "motion/field convention"
+      ],
+      "required_files": [
+        "candidate_fields.npz",
+        "field-cell ledger",
+        "physical-channel back-map ledger"
+      ],
+      "rule": "Each event receives the exact precomputed physical-channel index from its containing frozen global-frame field cell. Unsupported is -1. No depth-nearness, motion-estimate fallback, or post-outcome anchor substitution is allowed.",
+      "values": "PROSPECTIVE_BINDING_REQUIRED"
+    },
+    "event_sources": {
+      "REF384": "PROSPECTIVE_BINDING_REQUIRED",
+      "REF384_repeat": "PROSPECTIVE_BINDING_REQUIRED_NOT_YET_AVAILABLE",
+      "existing_corrected_B384": "PROSPECTIVE_BINDING_REQUIRED",
+      "repaired_B384": "PROSPECTIVE_BINDING_REQUIRED_NOT_YET_AVAILABLE",
+      "required_arms": [
+        "REF384",
+        "existing_corrected_B384",
+        "repaired_B384",
+        "REF384_repeat"
+      ],
+      "required_per_arm": [
+        "spike_times.npy sha256, shape, dtype, and global-acquisition-sample frame",
+        "spike_clusters.npy sha256, shape, dtype, and row equality with spike_times",
+        "spike_positions.npy sha256 and spatial_identity_sha256 from the repaired evaluator",
+        "ops.npy sha256, nblocks=0, dshift=None, identity chanMap, and geometry hash",
+        "curated identity digest and event-lineage digest",
+        "source COMPLETE and MANIFEST hashes"
+      ],
+      "truth_scope": "The historical H5 REF/B receipt values are producer claims only. They are not execution bindings until recomputed from local bytes by the enabled preflight."
+    }
+  },
+  "outputs_and_receipts": {
+    "hash_policy": "Hash every input binding, source file, output file, and frozen contract. MANIFEST covers all successful outputs except COMPLETE; COMPLETE binds MANIFEST and is written last.",
+    "ledger_required_columns": [
+      "comparison",
+      "epoch",
+      "category",
+      "source_arm",
+      "source_row_id",
+      "global_frame",
+      "cluster_id",
+      "anchor_channel",
+      "pair_id",
+      "eligibility_status",
+      "selection_rank"
+    ],
+    "metric_required_columns": [
+      "record_id",
+      "technical_status",
+      "exclusion_reason",
+      "leading_channel",
+      "adjacent_channel",
+      "leading_snr",
+      "adjacent_snr",
+      "center_offset_samples",
+      "supported"
+    ],
+    "pair_correlation_required_columns": [
+      "pair_id",
+      "REF_record_id",
+      "candidate_record_id",
+      "status",
+      "reason",
+      "common_channel_n",
+      "common_frame_n",
+      "correlation"
+    ],
+    "publication": "Publish only ledgers, metrics, aggregate scorecards, hashes, and receipts. Do not publish raw voltage or numeric waveform arrays.",
+    "required": [
+      "FROZEN_INPUT_BINDINGS.json",
+      "EVENT_LEDGER.csv",
+      "SAMPLE_LEDGER.csv",
+      "WAVEFORM_METRICS.csv",
+      "PAIR_CORRELATIONS.csv",
+      "DENOMINATORS.csv",
+      "EPOCH_SCORECARD.csv",
+      "RESOURCE_RECEIPT.json",
+      "RUNTIME_VERIFICATION_RECEIPT.json",
+      "READ_RECEIPT.json",
+      "IMPLEMENTATION_PROVENANCE.json",
+      "FAILURE.json when applicable",
+      "MANIFEST.sha256",
+      "COMPLETE.json written last on success only"
+    ]
+  },
+  "purpose": "technical physical-signal support screen for retained, gained, lost, and ambiguous event endpoints; never identity, purity, or sorter efficacy evidence",
+  "quality_and_decision": {
+    "benefit": "In at least two epochs: existing waveform-supported-lost lower bound minus repaired waveform-supported-lost upper bound >=0.5 endpoints/core minute OR existing ambiguous fraction minus repaired ambiguous fraction >=0.05; and repaired unsupported-gained upper bound minus existing unsupported-gained upper bound <=0.5.",
+    "empty_or_unavailable": "Any required arm, comparison, or epoch unavailable yields INCONCLUSIVE; never infer zero.",
+    "harm": "For every epoch, repaired waveform-supported lost-rate upper bound minus existing waveform-supported lost-rate lower bound must be <=0.5 endpoints/core minute.",
+    "low_N": "Apply the same Wilson formula for 1<=n<128 and disclose n; no normal approximation, imputation, pooling, or threshold relaxation.",
+    "overall": "Technical screen only. No advancement decision is authorized by this contract.",
+    "repeat_gate": "REF384_vs_REF384_repeat must not be FAIL in any nonempty epoch/category stratum; otherwise efficacy interpretation is inconclusive.",
+    "stratum_CAUTION": "sampled_n>0 AND not PASS AND (technically_evaluable_fraction>=0.60 OR waveform-support Wilson lower>=0.40)",
+    "stratum_FAIL": "sampled_n>0 and neither PASS nor CAUTION",
+    "stratum_PASS": "sampled_n>0 AND technically_evaluable_fraction>=0.80 AND waveform-support Wilson lower>=0.60"
+  },
+  "resources_and_stop_conditions": {
+    "compact_persistent_bytes_max": 104857600,
+    "cpu_threads_max": 4,
+    "event_reads_max": 4608,
+    "gpu_count": 0,
+    "local_transient_cache_bytes_max": 5368709120,
+    "logical_read_bytes_max": 4052090880,
+    "on_stop": "Close inputs, preserve frozen ledgers/logs/counters and FAILURE.json, do not write COMPLETE, do not retry or substitute records automatically.",
+    "ram_bytes_max": 2147483648,
+    "read_accounting": {
+      "application_cache_or_dedup": false,
+      "endpoint_read_count": "number of SAMPLE_LEDGER endpoint rows; retained pairs contribute two",
+      "extra_partner_reads": 0,
+      "kernel_or_device_bytes": "record process and block-device counters before/after as observed diagnostics; caching/read amplification may differ and is not substituted for exact API accounting",
+      "logical_payload_bytes": "endpoint_read_count * 879360",
+      "one_endpoint_read": "one os.pread request for exactly 1145*384*2 = 879360 contiguous bytes from the interleaved physical binary",
+      "physical_api_requested_bytes": "sum of successful os.pread requested byte counts; must equal logical_payload_bytes; short reads fail",
+      "physical_api_requested_bytes_max": 4052090880,
+      "physical_api_returned_bytes": "sum of bytes actually returned by os.pread; must equal physical_api_requested_bytes",
+      "physical_api_returned_bytes_max": 4052090880,
+      "pread_offset_bytes": "(global_frame - 572) * 384 * 2"
+    },
+    "runtime_closure_preflight": {
+      "bytes_hashed": 3333088832,
+      "bytes_hashed_max": 3400000000,
+      "failure": "Any runtime identity/configuration/probe disagreement stops before voltage access.",
+      "files_hashed": 89,
+      "independent_receipt": "receipts/RUNTIME_VERIFICATION_RECEIPT.json",
+      "independent_receipt_sha256": "efadd4f68f381fe481aff83bf7d98b8daadcea16f9f8c085be84442345265a18",
+      "receipt": "RUNTIME_VERIFICATION_RECEIPT.json",
+      "required_before_voltage_access": true,
+      "scope": "actual H5 exact runtime only",
+      "verification_implementation": "source/independent_h5_runtime_verifier.py",
+      "verification_implementation_sha256": "27eef195d3951632401a0ffd074a4a8e991f8e217603150ba7d152f2d44239e8",
+      "wall_seconds_max": 300
+    },
+    "segment_read_receipt_rule": "READ_RECEIPT records one row per SAMPLE_LEDGER endpoint with record_id, global frame, exact offset, requested bytes, returned bytes, and pre/post stat tuple; totals must equal 4,608-or-fewer bounded endpoint calls and no identity-preflight voltage read is included because it is forbidden.",
+    "stop_before_read": [
+      "identity/hash/geometry/frame disagreement",
+      "missing required arm or anchor binding",
+      "output or staging namespace already exists",
+      "resource preflight failure",
+      "contract not independently reviewed and enabled"
+    ],
+    "stop_during_run": [
+      "any resource cap reached",
+      "unexpected file mutation",
+      "read outside frozen bounds",
+      "uncaught validation or filter error"
+    ],
+    "voltage_identity_preflight": {
+      "binary_operation": "os.lstat only; no symlink following; exact current-hash final stat tuple",
+      "compact_files_hashed": [
+        "historic MANIFEST.json, COMPLETE.json, and Q0_FULL_HASH_RECEIPT.json",
+        "current MANIFEST.sha256, COMPLETE.json, CURRENT_VOLTAGE_FULL_HASH_RECEIPT.json, and every current manifest member",
+        "recording rescue_recording_manifest.json"
+      ],
+      "compact_future_preflight_voltage_bytes_read": 0,
+      "receipt": "FROZEN_INPUT_BINDINGS.json",
+      "separate_current_full_hash_bytes_read": 241309358592,
+      "separate_current_full_hash_completed": true
+    },
+    "wall_seconds_max": 2700
+  },
+  "sampling": {
+    "first_selection_preserved": "Write and hash EVENT_LEDGER and SAMPLE_LEDGER before voltage access; never replace failed or unevaluable selected rows.",
+    "maximum_derivation": "3 comparisons * 3 epochs * (3 nonretained categories * 128 endpoint reads + 64 retained pairs * 2 endpoint reads) = 4608",
+    "maximum_records": 4608,
+    "maximum_strata": 36,
+    "nonretained_maximum_endpoints_per_stratum": 128,
+    "nonretained_rank_key": "SHA256(seed_utf8 || NUL || comparison || NUL || epoch || NUL || category || NUL || source_arm || NUL || decimal_global_frame || NUL || decimal_source_row_id)",
+    "outcome_driven_substitution": false,
+    "retained_atomicity": "Select pair_id atomically. Both endpoint rows enter SAMPLE_LEDGER and both are read, or neither is selected. No partner read may occur outside SAMPLE_LEDGER.",
+    "retained_maximum_pairs_per_stratum": 64,
+    "retained_pair_rank_key": "SHA256(seed_utf8 || NUL || comparison || NUL || epoch || NUL || retained || NUL || pair_id || NUL || decimal_REF_global_frame || NUL || decimal_candidate_global_frame || NUL || decimal_REF_row_id || NUL || decimal_candidate_row_id)",
+    "sampled_n": "lost/gained/ambiguous: min(endpoint_population_N,128); retained: two * min(retained_pair_N,64)",
+    "seed_utf8": "en-first-medium-waveform-v3|2026-10-02|seed=20261002",
+    "strata": "comparison x epoch x category",
+    "tie_break": "nonretained: source_arm,global_frame,row_id; retained: pair_id,REF_row_id,candidate_row_id",
+    "without_replacement": true
+  },
+  "schema": "first-medium-physical-waveform-evidence-contract-v4",
+  "status": "FROZEN_EXECUTION_DISABLED_PENDING_H1_REVIEW_ACTUAL_H5_ONLY",
+  "technical_support": {
+    "exclusion_priority": [
+      "provenance_failure",
+      "unsupported_anchor",
+      "missing_padding",
+      "saturation_clipping",
+      "insufficient_channels",
+      "nonfinite_filter_output",
+      "invalid_noise"
+    ],
+    "identity_limit": "Technical support and correlation do not establish biological identity or purity.",
+    "loss_semantics": "Lost means unmatched REF event under the frozen event matcher. It does not mean a biological spike disappeared.",
+    "missing_semantics": "Every selected record contributes once to sampled_n. Unevaluable is not silently excluded from support denominators and cannot be supported.",
+    "retained_pair_correlation": {
+      "channels": "Sorted intersection of the two endpoints' frozen physical analysis-channel indices; require at least 2 common channels.",
+      "formula": "Pearson correlation: subtract each flattened vector mean, dot the centered vectors, divide by product of L2 norms.",
+      "implementation": "source/retained_pair_correlation.py",
+      "implementation_sha256": "26989615440967e1bb994c60a794d6573e988b9d602d2e3699a128cc5c5fbb9a",
+      "invalid_reason_priority": [
+        "MISSING_ENDPOINT",
+        "ENDPOINT_NOT_SELECTED",
+        "ENDPOINT_NOT_TECHNICALLY_EVALUABLE",
+        "ALIGNMENT_FAILURE",
+        "INSUFFICIENT_COMMON_CHANNELS",
+        "INSUFFICIENT_COMMON_FRAMES",
+        "NONFINITE_VALUES",
+        "ZERO_VARIANCE"
+      ],
+      "low_N": "Per comparison/epoch report valid_pair_n and median correlation. n=0 -> null/NO_VALID_PAIRS; n=1 -> the single value with NO_INTERVAL; n>=2 -> median only, no confidence interval or pooling.",
+      "priority_rule": "Evaluate reasons once in the listed order and emit the first applicable code. Never drop nonfinite samples, relax channel/frame minima, or continue to a lower-priority reason. ALIGNMENT_FAILURE covers invalid rank/shape, noninteger or duplicate channel identities, channel/value row disagreement, noninteger center frame, and out-of-range physical channel indices. Constant vectors and any other exactly zero centered L2 norm emit ZERO_VARIANCE unless an earlier reason also applies.",
+      "selection": "Only atomically sampled retained pair_ids; both endpoint reads must be present in SAMPLE_LEDGER. No extra read or one-sided correlation is permitted.",
+      "status": "MEASURED when valid; otherwise UNMEASURED with exactly one frozen reason and null value. Correlation is descriptive and never a technical-support or advancement gate.",
+      "time_alignment": "Use absolute global acquisition frames. Endpoint signal windows are [global_frame-20,global_frame+21). Intersect these half-open windows and map each common absolute frame back to its endpoint core. Require at least 26 common frames; the 15-frame match tolerance guarantees 26 when both full signal windows exist.",
+      "valid": "both endpoints technically_evaluable, both selected, >=2 common channels, >=26 common frames, all values finite, and both centered vectors have nonzero L2 norm",
+      "vectors": "For each endpoint use its own baseline-referenced processed values, ordered channel-major then ascending absolute frame. Flatten the same common channels/frames for both endpoints."
+    },
+    "supported": "technically_evaluable AND leading-channel PTP/noise >=6.0 AND adjacent-channel PTP/noise >=4.0 AND center_offset <=15",
+    "technically_evaluable": "valid identities and anchor, complete padding, no saturation/clipping, finite processed core, at least two analysis channels, and finite nonzero noise estimates"
+  },
+  "voltage_access_enabled": false,
+  "voltage_identity": {
+    "binary_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+    "binary_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+    "binary_size_bytes": 241309358592,
+    "channel_order": "physical acquisition rows 0..383, identity order; never sorter/template order",
+    "crop_effective_duration_s": 599.9999803346205,
+    "crop_global_frames_half_open": [
+      208498882,
+      226498783
+    ],
+    "crop_local_frames_half_open": [
+      0,
+      17999901
+    ],
+    "crop_origin_global_frame": 208498882,
+    "current_full_hash_receipt": {
+      "buffer_bytes": 16777216,
+      "cpu_seconds": 859.6472602900001,
+      "final_lstat": {
+        "st_ctime_ns": 1788254629465850600,
+        "st_dev": 93,
+        "st_ino": 8167886,
+        "st_mode": 33261,
+        "st_mtime_ns": 1788254629465850600,
+        "st_size": 241309358592
+      },
+      "max_rss_kib": 47840,
+      "packet_complete_sha256": "aaa5e9f5d372327baa612de5159f37afb11f2e9ed20e71223f00ede55bfcdfd6",
+      "packet_manifest_file": "MANIFEST.sha256",
+      "packet_manifest_sha256": "141a699e7396b62f67329ebba6a62dda3387db148f9ec1e56f18bb1f9e6070c4",
+      "packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_voltage_current_full_hash_20261002_v1_h5",
+      "read_calls_including_final_eof": 14385,
+      "receipt_file": "CURRENT_VOLTAGE_FULL_HASH_RECEIPT.json",
+      "receipt_schema": "current-voltage-full-hash-receipt-v1",
+      "receipt_sha256": "47d4eafaa7a6fbf79a5a973caa0ba4cf7f0a404c19ba243372cf5d70c27e9614",
+      "verification_source_sha256": "97c83ab93993bde6010792224a5e119078d1173e436f993a69e88990449bf8ea",
+      "verified_bytes": 241309358592,
+      "verified_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+      "wall_seconds": 2185.8730681957677
+    },
+    "dtype": "int16 little-endian",
+    "geometry_float64_sha256": "d126fb241989698cd445c89638b02f0a2f8153389cfcad5acf49c1a0c4093bc8",
+    "immutable_full_hash_receipt": {
+      "packet_complete_sha256": "0056814b0e888fed02a0e0eecd47b4588fe7a4ce3a49ff1ef7e9bcfdcfe7688e",
+      "packet_manifest_file": "MANIFEST.json",
+      "packet_manifest_sha256": "909c9acc4f634f91314da4c03da9ba03ec83d8b216f4cdd7f15dd3e240f98c80",
+      "packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_preflight_smoke_20260929_v1",
+      "receipt_file": "Q0_FULL_HASH_RECEIPT.json",
+      "receipt_schema": "en-q0-full-hash-v1",
+      "receipt_sha256": "0bdeec713c85490599a67b614386ccbc34577c96865a577b04f882f640281d19",
+      "verified_bytes": 241309358592,
+      "verified_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482"
+    },
+    "num_channels": 384,
+    "num_samples": 314204894,
+    "preflight": {
+      "compact_future_preflight_voltage_bytes_read": 0,
+      "current_full_binary_bytes_read": 241309358592,
+      "current_full_binary_hash": "SEPARATELY_COMPLETED_AND_BOUND",
+      "current_full_binary_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+      "identity_claim": "The current full read exactly reproduces the historic expected SHA-256 and size; future compact preflight binds that receipt and its exact final lstat tuple.",
+      "implementation": "source/voltage_identity_preflight.py",
+      "implementation_sha256": "4eb636749f1b980ae6d01df9775013ae44c3391e68ff94b751a39bf0ed0d6606",
+      "rule": "Verify both historic and current full-hash packets and every current manifest member; use os.lstat with no symlink following; require the exact regular-file stat tuple captured after the current hash; hash only compact receipts and the recording manifest."
+    },
+    "recording_content_sha256": "2d6fac755db3182841bf121d822754f963ebada3bcb8cd9e96e0b63e6f9b7372",
+    "recording_manifest_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/rescue_recording_manifest.json",
+    "recording_manifest_sha256": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67",
+    "representation": "original accepted full-probe physical acquisition only",
+    "sampling_frequency_hz": 29999.835983263598
+  },
+  "waveform_extraction": {
+    "adjacent_channel": "Non-leading analysis channel with smallest Euclidean geometry distance to the leading channel; exact ties choose the lowest physical channel index.",
+    "analysis_channels": "Sorted union of anchor channel and all physical channel indices whose Euclidean geometry distance from the anchor is <=80.0 um. Read all 384 channels but compute support only on this frozen union.",
+    "baseline_core_indices_half_open": [
+      [
+        0,
+        30
+      ],
+      [
+        91,
+        121
+      ]
+    ],
+    "baseline_reference": "For each analysis channel subtract the median over the 60 baseline samples after preprocessing.",
+    "center_offset": "Absolute sample difference between global_frame/core index 60 and the leading-channel largest-absolute baseline-referenced signal extremum; extremum ties choose earliest sample.",
+    "core_offsets_half_open_samples": [
+      -60,
+      61
+    ],
+    "core_samples": 121,
+    "filter_padding_each_side_samples": 512,
+    "leading_channel": "Analysis channel with greatest signal-window peak-to-peak amplitude; exact ties choose the lowest physical channel index.",
+    "noise": "1.4826 * median(abs(baseline_samples - median(baseline_samples))) per channel, floored at 1.0 ADC-equivalent filter unit.",
+    "numeric_waveform_transfer": false,
+    "padded_samples": 1145,
+    "padding_rule": "Read exact full-recording samples [global_frame-572, global_frame+573). If either bound is outside [0,314204894), mark missing_padding; do not clip, reflect, zero-fill, resample, or choose a replacement event.",
+    "persist_waveforms": false,
+    "preprocessing": {
+      "accepted_dependency_resolution": {
+        "packet_complete_sha256": "5b6d65a71d2ac50eb8ee66ede938375e9feae85fd6354c81e37c8ab40a147228",
+        "packet_manifest_sha256": "32c4271856d32ba7930168fea79a4c1bc25e70e276781443195814ad7a9163b0",
+        "packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_waveform_contract_targeted_repair_20261002_v2_h5",
+        "rule": "Resolve dependency_closure and all of its members within this immutable accepted parent packet, or within a byte-identical mirror whose MANIFEST and COMPLETE hashes match exactly."
+      },
+      "adapter_sha256": "e9abe2a9a1c22db118a8c652e2a6a083db2fc9f84e8c77a71cec992447bcbe57",
+      "constants_sha256": "40b37e7a1594900f64d677c0b729698affbc029b696465e30969d04aa5e402e5",
+      "dependency_aggregate_sha256": "ebcad89e8c45de0315557c33414ada30e3c3bee951b250d33f3e2ff0ad156e64",
+      "dependency_closure": "dependencies/DEPENDENCY_CLOSURE.json",
+      "executable_runtime_closure": {
+        "aggregate_sha256": "6658089a5e123b1962d2a61b7b89c230e484fdde0f52a0479e52c102f10cfe48",
+        "capture_rule": "In a clean Linux process, load the frozen impulse, execute the accepted 384x1145 CPU float32 median/FFT/ifft/fftshift probe, then hash sys.executable and every unique resolved ELF file mapped in /proc/self/maps.",
+        "deployment_scope": "actual H5 executable runtime only; exact relocatable-path byte identity; no general cross-host portability",
+        "independent_verifier_receipt": "receipts/RUNTIME_VERIFICATION_RECEIPT.json",
+        "independent_verifier_receipt_sha256": "efadd4f68f381fe481aff83bf7d98b8daadcea16f9f8c085be84442345265a18",
+        "member_bytes": 3333088832,
+        "member_count": 89,
+        "path": "dependencies/EXECUTABLE_RUNTIME_CLOSURE.json",
+        "portable_rule": "Within the actual H5 deployment, paths are diagnostic only and may relocate only when the exact role/basename/size/SHA-256 multiset, platform/Python/backend fields, numerical probe, member count/bytes, and aggregate all match. A nonmatching reviewer host is the required negative control, not a portability failure.",
+        "sha256": "f5db3034ab11ac65e17fda77e455300be93bfd82ef30f851da60ae2777269f8e",
+        "verification_implementation": "source/independent_h5_runtime_verifier.py",
+        "verification_implementation_sha256": "27eef195d3951632401a0ffd074a4a8e991f8e217603150ba7d152f2d44239e8"
+      },
+      "forbidden": [
+        "whitening",
+        "motion interpolation",
+        "template projection",
+        "adaptive thresholding",
+        "cross-record filter state",
+        "channel reordering"
+      ],
+      "highpass_filter_float32_npy_sha256": "984639dee1d75eb82c170c1a96ba3e96dc196eaa24383b598266a804729e52b5",
+      "implementation": "packet source/waveform_preprocessing.py reproducing the exercised CPU float32 semantics of kilosort.io.BinaryFiltered.filter and kilosort.preprocessing.fft_highpass",
+      "io_py_sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+      "ordered_stages": [
+        "int16_time_by_channels_to_cpu_float32_channels_by_samples",
+        "per-channel time-mean subtraction",
+        "across-channel common-median subtraction per sample",
+        "frozen-impulse FFT high-pass",
+        "discard 512-sample padding each side"
+      ],
+      "preprocessing_py_sha256": "2329b288ae068361a937632a53461e6cceeb27e30191337e9b9a0fa7404d763d",
+      "reference_warning": "This is not common-average reference. The legacy Kilosort do_CAR name invokes torch.median across channels.",
+      "runtime_lock_sha256": "4abd0fdaad686cd474fa6746249c47b0f9b66e119f6f25ce8c520b53e59c886d",
+      "settings": {
+        "artifact_threshold": "Infinity",
+        "device": "cpu",
+        "dtype": "torch.float32",
+        "fs": 29999.835983263598,
+        "highpass_cutoff_hz": 300.0,
+        "input_layout": "channels_by_samples",
+        "invert_sign": false,
+        "legacy_do_CAR_flag": true,
+        "n_chan_bin": 384,
+        "reference_semantics": "common_median_reference",
+        "scale": null,
+        "shift": null,
+        "whitening": false
+      },
+      "state": "stateless independent padded record; filter state reset for every record"
+    },
+    "raw_channels_per_read": 384,
+    "raw_logical_bytes_per_record": 879360,
+    "raw_read_offsets_half_open_samples": [
+      -572,
+      573
+    ],
+    "saturation": "If any raw padded int16 value on any of 384 channels equals -32768 or 32767, mark saturation_clipping and unevaluable.",
+    "signal_core_indices_half_open": [
+      40,
+      81
+    ]
+  }
+}

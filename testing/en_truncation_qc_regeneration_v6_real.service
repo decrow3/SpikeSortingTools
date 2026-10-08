@@ -1,0 +1,28 @@
+[Unit]
+Description=Luke saved-artifact truncation-QC regeneration v6 (one authorized invocation)
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+Restart=no
+WorkingDirectory=/tmp
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=OMP_NUM_THREADS=4
+Environment=OPENBLAS_NUM_THREADS=4
+Environment=MKL_NUM_THREADS=4
+Environment=NUMEXPR_NUM_THREADS=4
+AllowedCPUs=0-3
+CPUQuota=400%
+LimitCPU=7200
+LimitAS=17179869184
+MemoryMax=17179869184
+MemorySwapMax=0
+TasksMax=64
+RuntimeMaxSec=7200
+TimeoutStartSec=7200
+StandardOutput=append:/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_truncation_qc_regeneration_v6_real_20261002/service.stdout
+StandardError=append:/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_truncation_qc_regeneration_v6_real_20261002/service.stderr
+ExecStart=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python /mnt/NPX/Luke/DARTsort_motion_experiments/en_truncation_qc_regeneration_lifecycle_repair_candidate_20261002_v6_h5/source/testing/en_truncation_qc_regeneration_candidate.py --config /mnt/NPX/Luke/DARTsort_motion_experiments/en_truncation_qc_regeneration_lifecycle_repair_candidate_20261002_v6_h5/config/en_truncation_qc_regeneration.execution_disabled.v2.json --expected-config-sha256 0954d689c3f1ae5d82e0f4f84e059e6481110cf430a5954e22c494cda86a396f --execute-real --gate /mnt/NPX/Luke/DARTsort_motion_experiments/en_truncation_qc_regeneration_lifecycle_v6_one_execution_gate_20261002_v1_h1/ONE_EXECUTION_GATE.json
+
+[Install]
+WantedBy=default.target

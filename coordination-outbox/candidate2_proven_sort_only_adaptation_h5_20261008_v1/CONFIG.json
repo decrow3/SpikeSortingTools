@@ -1,0 +1,55 @@
+{
+  "schema": "candidate2-imec0-native-rigid-proven-sort-only-v1",
+  "status": "EXECUTION_ENABLED_ONLY_WITH_EXACT_AUTHORIZATION",
+  "reader_mode": "bounded_preadv_v1",
+  "recording_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording",
+  "recording_manifest_sha256": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67",
+  "recording_binary_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+  "recording_binary_bytes": 241309358592,
+  "recording_content_sha256": "2d6fac755db3182841bf121d822754f963ebada3bcb8cd9e96e0b63e6f9b7372",
+  "num_samples": 314204894,
+  "num_channels": 384,
+  "sampling_frequency_hz": 29999.835983263598,
+  "candidate2_saved_request": "/media/huklaban5/Data/luke_candidate2_native_rigid_imec0_20261008_v2/kilosort4.partial/spikeinterface_params.json",
+  "candidate2_saved_request_sha256": "58efcdb5c2d9b4c4252a848fff5bf2057bdfa27713b08a76e3c6a7bc17a351b7",
+  "source_manifest_path": "/media/huklaban5/Data/candidate2_native_rigid_sort_only_launch_h5_20261008_v10/SOURCE_MANIFEST.json",
+  "source_manifest_sha256": "06057e8b27dc1ed89b3ef64b9db276ea5c7352e0efcc17b73ed4c38e322db229",
+  "environment_files": {
+    "uv_lock": {
+      "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/uv.lock",
+      "sha256": "6ec57a7184d280221dee99403f7c4b26f7cb82e7e4ad025b312f237b826d2274"
+    },
+    "kilosort_io": {
+      "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/io.py",
+      "sha256": "c6093e14cae920e8cfaae6c3fed8d4c6ca032b046d705ef9868ec171c7bf3c99"
+    },
+    "spikeinterface_kilosort4": {
+      "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/spikeinterface/sorters/external/kilosort4.py",
+      "sha256": "7fb2fd80fcd10c43d3833a3d4a64860fb2c39cc26f10e03181c9873931af2828"
+    }
+  },
+  "preserved_failed_runs": [
+    {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_v8_preflight_bytecode_contamination_failure_h5_20261008_v1/COMPLETE.json",
+      "sha256": "135a688ffc17d7c2eec22edc07bee7d049dc593258448e518884a452ef3cbca2"
+    }
+  ],
+  "output_root": "/media/huklaban5/Data/luke_candidate2_native_rigid_sort_only_imec0_20261008_v10",
+  "minimum_free_bytes": 300000000000,
+  "minimum_mem_available_bytes": 171798691840,
+  "maximum_prelaunch_memory_pressure_avg10": 5.0,
+  "sort_wall_cap_seconds": 25200,
+  "service_timeout_start_seconds": 28800,
+  "cpu_quota_percent": 800,
+  "memory_high": null,
+  "memory_max": null,
+  "expected_effective": {
+    "effective_nblocks": 1,
+    "do_CAR": true,
+    "Th_universal": 12,
+    "Th_learned": 9
+  },
+  "sort_invocations_authorized": 1,
+  "automatic_retry": false,
+  "completion_condition": "SORT_COMPLETE.json with one invocation and saved effective nblocks=1; downstream QC remains separate"
+}

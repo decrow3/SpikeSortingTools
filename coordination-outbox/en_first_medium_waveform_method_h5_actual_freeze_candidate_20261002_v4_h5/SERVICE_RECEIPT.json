@@ -1,0 +1,17 @@
+{
+  "schema": "managed-full-hash-service-receipt-v1",
+  "unit": "en-first-medium-voltage-full-hash-20261002-v1-h5.service",
+  "unit_sha256": "7f21631b5ca9675f3f1950bec69f2bfb4b53e3a8b045839ea980c74a2e8361cb",
+  "started_local": "2026-10-02T11:05:15-07:00",
+  "finished_local": "2026-10-02T11:41:41-07:00",
+  "one_shot": true,
+  "retry_count": 0,
+  "systemd_active_state_after_completion": "inactive",
+  "systemd_sub_state_after_completion": "dead",
+  "systemd_result": "success",
+  "exec_main_status": 0,
+  "service_cpu_time_seconds": 859.700,
+  "receipt_wall_seconds": 2185.8730681957677,
+  "bytes_read": 241309358592,
+  "result": "PASS_EXACT_MATCH"
+}

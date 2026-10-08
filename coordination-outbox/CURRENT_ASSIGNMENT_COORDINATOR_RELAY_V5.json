@@ -1,0 +1,47 @@
+{
+  "schema": "luke-durable-coordination-assignment-v5",
+  "content_authority": "coordinator-authored CURRENT_ASSIGNMENTS_20261002.md relayed byte-faithfully in structured form by H5",
+  "relay_host": "huklaban5",
+  "version": "v5",
+  "coordinator_table_sha256": "898ecfcf55b830ff01fe0ccc430175371a230a8e45eb5078224c4555cac28d2f",
+  "supersedes": {
+    "file": "CURRENT_ASSIGNMENT_COORDINATOR_RELAY_V4.json",
+    "sha256": "0e3740964699fc78c4e47414d711b9b9feda792cba699a86e1f00a72737ee2eb",
+    "preservation": "v1-v4 remain immutable and visible; v5 is the active instruction"
+  },
+  "decision": "Phase3 combined producer/consumer provenance delta has independent GO; prepare and independently review one still-disabled activation binding",
+  "phase3_go": {
+    "candidate_manifest_sha256": "3199ddda56d1b03c6a3d77d87443fbf1c2956d4ab09c08ede52467ca4b09b1cd",
+    "candidate_complete_sha256": "40508353a60978d311e8cdbaa5a533b4b8a67a91f5b045628e78c68f673a7918",
+    "review_manifest_sha256": "c0d3f09341dd8653551eaae205c80c35ba942467d3703ef74a7d643cf403ec33",
+    "review_complete_sha256": "94ed2ba6d7d3597dc73a463248412ec8eabf5ed41398a577121e808d1480db53",
+    "review_status_sha256": "7d439bb156c786e53300def540c7ecd543d0e81b948d3d92d531df765002ac74",
+    "verdict": "GO_PROVENANCE_REPAIR_DELTA"
+  },
+  "queue": {
+    "H5": {
+      "current": {
+        "id": "H5-PHASE3-BOUND-ACTIVATION-DERIVATIVE",
+        "scope": "author one fresh immutable still-disabled activation derivative binding the exact Phase3 candidate and independent GO while preserving launcher-v3 provenance, fresh namespaces, 16 GiB cap, 1 MiB reserve, one-start/no-retry semantics, finalization, and frozen science",
+        "completion": "validate-only and proposed-not-installed packet published for H1 review"
+      },
+      "ready": null
+    },
+    "H1": {
+      "current": null,
+      "ready": {
+        "id": "H1-PHASE3-BOUND-ACTIVATION-INDEPENDENT-REVIEW",
+        "dependency": "H5 publishes the still-disabled activation derivative",
+        "scope": "independently verify exact Phase3 candidate/GO bindings, accepted launcher delta ancestry, preserved finalization/resources/science, fresh namespaces, and fail-closed activation"
+      }
+    }
+  },
+  "activation": "disabled; no launch or installation",
+  "hard_exclusions": [
+    "launch, service installation, enablement, or start",
+    "recording or voltage access",
+    "scientific outcome access",
+    "sort or training execution",
+    "RF or sealed holdout access"
+  ]
+}

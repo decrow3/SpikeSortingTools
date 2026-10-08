@@ -1,0 +1,37 @@
+{
+  "status": "pass_after_preserved_import_bootstrap_failure",
+  "historical_v2_service_sha256": "791ccb7d7659ffb4f14518bbda74169fa0709b67dd6ed942793ab99cecc60e9c",
+  "repaired_v3_service_sha256": "7cde6c198d97ff122ff9c62966c30174854c4d9b6271db30963ab69787b7b074",
+  "launcher_source_sha256": "705b4af444699a6e40ddd0e8a189232b619c4e1bbff53f8150b448f5ad160391",
+  "dummy_source_sha256": "90accfe8b6baa0c95ee6a39fc4789a6ccfebc0c69b92030db0c1b0a77b78c073",
+  "unit_delta": {
+    "description_updated": true,
+    "invalid_condition_path_not_exists_removed": true,
+    "exec_start_unchanged": true,
+    "other_conditions_unchanged": true
+  },
+  "authoritative_freshness_guard": "run_root.mkdir(parents=False, exist_ok=False)",
+  "dummy": {
+    "recording_paths_present_in_config": false,
+    "recording_reads": 0,
+    "first_reservation_succeeded": true,
+    "namespace_evidence_written": true,
+    "results_directory_created": true,
+    "second_reservation_refused": true,
+    "second_refusal_type": "FileExistsError"
+  },
+  "preserved_failure": {
+    "unit": "en_minimum_training_support_mask_covariance_freshness_dummy_v1.service",
+    "result": "exit-code",
+    "exit_status": 1,
+    "cause": "dummy script lacked repository sys.path bootstrap",
+    "recording_reads": 0,
+    "output_created": false
+  },
+  "successful_dummy_unit": {
+    "unit": "en_minimum_training_support_mask_covariance_freshness_dummy_v2.service",
+    "result": "success",
+    "exit_status": 0,
+    "restarts": 0
+  }
+}

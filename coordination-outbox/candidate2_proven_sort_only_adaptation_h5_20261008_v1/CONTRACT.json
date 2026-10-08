@@ -1,0 +1,31 @@
+{
+  "schema": "candidate2-proven-sort-only-adaptation-contract-v1",
+  "status": "REVIEW_PENDING_NOT_INSTALLED_NOT_AUTHORIZED",
+  "milestone": "one full-session imec0 Candidate2 native-rigid sort-only run",
+  "decision": "whether the proven October 6 bounded-pread sort-only route completes Candidate2 with saved effective nblocks=1",
+  "predecessor_runner_sha256": "62905e2df8cfb93869c653a821e4c0a5a26300b919c17ed5604bb4403a3cc90f",
+  "predecessor_success_sha256": "2bf4a2b9189ea9903b3ae3bdef7305ab689c6a49132c75f351b9e664e0d0aca6",
+  "config_sha256": "e4d68dcfbe9a137c63281293c7eada7cd0bc97ac435068ec92c417078eab4397",
+  "source_manifest_sha256": "06057e8b27dc1ed89b3ef64b9db276ea5c7352e0efcc17b73ed4c38e322db229",
+  "runner_sha256": "39a6f8e25443be80bd3b9febc592ff02953cb967686431754f5dfa5693666f52",
+  "service_sha256": "ed922c44522bf066d0c06f408cc31e71385779cb9dc7f661919777a28c7c062b",
+  "boundary_receipt_sha256": "5a78dde14b7ed74c8739ba4d6c7f2870caf9a040e170b7091515b8fefa6ba7e5",
+  "resources": {
+    "minimum_mem_available_bytes": 171798691840,
+    "minimum_free_bytes": 300000000000,
+    "cpu_quota_percent": 800,
+    "sort_wall_cap_seconds": 25200,
+    "service_timeout_seconds": 28800,
+    "memory_cap": null,
+    "gpu": "one idle RTX A5000-equivalent"
+  },
+  "stop_conditions": [
+    "any source/config/input/request/service/import mismatch",
+    "prelaunch memory, pressure, disk or GPU conflict",
+    "nonzero service or sorter exit",
+    "saved effective nblocks is not 1",
+    "timeout or user cancellation"
+  ],
+  "automatic_retry": false,
+  "downstream_qc": "separate after sort completion"
+}

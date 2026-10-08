@@ -1,0 +1,152 @@
+{
+  "schema": "candidate2-cache-managed-run-authorization-v2-typed-systemd",
+  "status": "AUTHORIZED_ONE_FRESH_CANDIDATE2_CACHE_MANAGED_RUN",
+  "created_utc": "2026-10-08T12:10:21Z",
+  "scope": "exactly one fresh Candidate2 v8 managed run; no retry",
+  "contract_sha256": "4769968e7bef087d07097bb61b745de7882afaa9e38c2d20f7c75eb4071d6c68",
+  "source_manifest_sha256": "db2660fbb9d63e706780cef5a9b60855b8b7f1ca190d882705eec40de39a9408",
+  "target_service_sha256": "aecc25da47aaaf9213b8635dd2b5f56360e6c6bc5958624d67c0cebd8a195a11",
+  "monitor_service_sha256": "30b82b2396705f11fc1e7c2177ace6e73a6b74ee27446307dd126d0a071391e7",
+  "review_status_sha256": "91be0ce096640ef0c24ad347c17e4dafa43e74b5d10f4dcac68cd8c29204d775",
+  "review_verdict": "GO",
+  "preserved_v7_failure_manifest_sha256": "e24bfdfce47d4d59fad84047f811e0a04abc04189b548af33fd0f9a8ea7e889e",
+  "final_prestart_identity_sha256": "23a67b885d43a954d61a06b2a25e566d8086cdbeac92aca3be5bcf1c3a261323",
+  "loaded_units": {
+    "monitor": {
+      "After": "basic.target app.slice -.mount media-huklaban5-Data.mount",
+      "BindsTo": "",
+      "CPUQuotaPerSecUSec": "infinity",
+      "Environment": "",
+      "FragmentPath": "/home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v8.service",
+      "MemoryHigh": "infinity",
+      "MemoryMax": "infinity",
+      "OOMPolicy": "stop",
+      "Requires": "basic.target app.slice",
+      "Restart": "no",
+      "RuntimeMaxUSec": "infinity",
+      "TimeoutStartUSec": "infinity"
+    },
+    "target": {
+      "After": "basic.target luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v8.service -.mount media-huklaban5-Data.mount app.slice",
+      "BindsTo": "luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v8.service",
+      "CPUQuotaPerSecUSec": "infinity",
+      "Environment": "PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR=/tmp/spikeglx-rescue-numba-cache KILOSORT_BOUNDED_PREAD_PATH=/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+      "FragmentPath": "/home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-imec0-20261008-v8.service",
+      "MemoryHigh": "infinity",
+      "MemoryMax": "infinity",
+      "OOMPolicy": "stop",
+      "Requires": "basic.target luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v8.service app.slice",
+      "Restart": "no",
+      "RuntimeMaxUSec": "infinity",
+      "TimeoutStartUSec": "infinity"
+    }
+  },
+  "typed_exec_identity": {
+    "monitor": {
+      "ExecStart": [
+        {
+          "argv": [
+            "/usr/bin/python3",
+            "-I",
+            "-S",
+            "-u",
+            "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v8/monitor_bootstrap.py",
+            "--bootstrap-sha256",
+            "3c8f6f73ff71069bc985b2afe69963728d57842e5238aad159ea6747f10de16d",
+            "--monitor-source",
+            "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v8/source/testing/candidate2_cache_managed_monitor.py",
+            "--self-sha256",
+            "0458209bd6848212b838b71e73af7f77782dc4878e10c8de6798a0cb8bf128c2",
+            "--contract",
+            "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_stable_systemd_identity_complete_preflight_h5_20261008_v1/CONTRACT.json",
+            "--contract-sha256",
+            "4769968e7bef087d07097bb61b745de7882afaa9e38c2d20f7c75eb4071d6c68",
+            "--authorization",
+            "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_stable_systemd_identity_complete_preflight_h5_20261008_v1/AUTHORIZATION.json",
+            "--target-unit",
+            "luke-candidate2-native-rigid-cache-managed-imec0-20261008-v8.service",
+            "--target-unit-file",
+            "/home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-imec0-20261008-v8.service",
+            "--monitor-unit-file",
+            "/home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v8.service",
+            "--output",
+            "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v8/monitor",
+            "--service-log",
+            "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v8/service.log"
+          ],
+          "executable_path": "/usr/bin/python3",
+          "ignore_errors": false
+        }
+      ],
+      "ExecStartPre": []
+    },
+    "target": {
+      "ExecStart": [
+        {
+          "argv": [
+            "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+            "-I",
+            "-S",
+            "-u",
+            "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v8/bootstrap.py",
+            "--self-sha256",
+            "a96ecc3c2cc2a2a921bdd6ab9c9b26591561d02b67da5da73a27c6b59a14b428",
+            "--source-root",
+            "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v8/source",
+            "--source-manifest",
+            "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v8/SOURCE_MANIFEST.json",
+            "--source-manifest-sha256",
+            "db2660fbb9d63e706780cef5a9b60855b8b7f1ca190d882705eec40de39a9408",
+            "--contract",
+            "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_stable_systemd_identity_complete_preflight_h5_20261008_v1/CONTRACT.json",
+            "--contract-sha256",
+            "4769968e7bef087d07097bb61b745de7882afaa9e38c2d20f7c75eb4071d6c68",
+            "--receipt",
+            "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v8/JOB.json",
+            "--authorization",
+            "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_stable_systemd_identity_complete_preflight_h5_20261008_v1/AUTHORIZATION.json",
+            "--installed-unit",
+            "/home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-imec0-20261008-v8.service",
+            "--monitor-unit",
+            "/home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v8.service"
+          ],
+          "executable_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+          "ignore_errors": false
+        }
+      ],
+      "ExecStartPre": [
+        {
+          "argv": [
+            "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+            "-I",
+            "-S",
+            "-u",
+            "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v8/preflight_bootstrap.py",
+            "--self-sha256",
+            "333a9c72d5e940d7e60a9a4666c604bd6c2fb2a4b82dae5c0e62a065cf86eb7f",
+            "--source-root",
+            "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v8/source",
+            "--source-manifest",
+            "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v8/SOURCE_MANIFEST.json",
+            "--source-manifest-sha256",
+            "db2660fbb9d63e706780cef5a9b60855b8b7f1ca190d882705eec40de39a9408",
+            "--contract",
+            "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_stable_systemd_identity_complete_preflight_h5_20261008_v1/CONTRACT.json",
+            "--contract-sha256",
+            "4769968e7bef087d07097bb61b745de7882afaa9e38c2d20f7c75eb4071d6c68",
+            "--receipt",
+            "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v8/PREFLIGHT.json",
+            "--installed-unit",
+            "/home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-imec0-20261008-v8.service",
+            "--monitor-unit",
+            "/home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v8.service",
+            "--authorization",
+            "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_stable_systemd_identity_complete_preflight_h5_20261008_v1/AUTHORIZATION.json"
+          ],
+          "executable_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+          "ignore_errors": false
+        }
+      ]
+    }
+  }
+}

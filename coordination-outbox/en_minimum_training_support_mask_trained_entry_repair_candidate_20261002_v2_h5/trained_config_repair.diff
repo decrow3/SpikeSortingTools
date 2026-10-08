@@ -1,0 +1,38 @@
+--- /mnt/NPX/Luke/DARTsort_motion_experiments/en_minimum_training_support_mask_trained_entry_review_candidate_20261002_v1_h5/config/en_minimum_training_support_mask.trained.review_pending.v1.json	2026-10-02 00:26:58.108076800 -0700
++++ configs/en_minimum_training_support_mask.trained.review_pending.v1.json	2026-10-02 00:49:06.801096196 -0700
+@@ -65,7 +65,7 @@
+   },
+   "native_invocation": {
+     "filename": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/traces_cached_seg0.raw",
+-    "results_dir": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_trained_medium_20261002_v1/native_results",
++    "results_dir": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_trained_medium_20261002_v2/native_results",
+     "data_dtype": "int16",
+     "do_CAR": true,
+     "invert_sign": false,
+@@ -128,11 +128,11 @@
+     },
+     {
+       "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/kilosort_support_mask_trained.py",
+-      "sha256": "c1a7617da36dcc0354714e916ce4a0a03e127a29eeb9f771f238907c0310e793"
++      "sha256": "d75db9794a069e0bbded1ea218ae275eb6107dcdced45050cdfa30b77d40d7df"
+     },
+     {
+       "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_minimum_training_support_mask_trained_launch.py",
+-      "sha256": "c98c7d93310919e86e08d30c61eb5646f4d5936244096f04aec241f3744097c2"
++      "sha256": "0df108ea6d659548103ace10232115766d83712bc8a641b8af7ad82304d278cb"
+     },
+     {
+       "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/io.py",
+@@ -202,9 +202,9 @@
+   "trained": {
+     "mode": "full_native_trained",
+     "stop_after_whitening": false,
+-    "run_root": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_trained_medium_20261002_v1",
+-    "launch_evidence_dir": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_trained_medium_20261002_v1/launch_evidence",
+-    "pre_extraction_snapshot_dir": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_trained_medium_20261002_v1/pre_extraction_snapshot",
++    "run_root": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_trained_medium_20261002_v2",
++    "launch_evidence_dir": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_trained_medium_20261002_v2/launch_evidence",
++    "pre_extraction_snapshot_dir": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_trained_medium_20261002_v2/pre_extraction_snapshot",
+     "allow_saved_smoke_bank": false,
+     "recompute_adaptive_state": [
+       "covariance_C",

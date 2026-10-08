@@ -1,0 +1,12 @@
+Command:
+env PYTHONPATH=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages /home/huklaban5/anaconda3/bin/python3.12 -m pytest -q testing/test_kilosort_support_mask_trained.py testing/test_kilosort_support_mask_candidate.py testing/test_prewhitening_support_mask.py
+
+Result:
+......................................................                   [100%]
+54 passed in 9.58s
+
+Historical harness notes:
+- A first durable fixture namespace (v1) stopped before CLI import because the host interpreter lacked Torch; preserved and not overwritten.
+- Fresh v2 passed after binding the reviewed rescue-production interpreter.
+- Fresh final-source v3 passed and is the fixture evidence included in this packet.
+- A direct attempt to run Pytest inside the rescue environment stopped before collection because Pytest is not installed there; the passing command above uses the repository Pytest interpreter with the reviewed runtime packages explicitly on PYTHONPATH.

@@ -1,0 +1,28 @@
+{
+  "schema": "hub-multicoordinator-worker-ack-v1",
+  "owner": "H5",
+  "status": "ACK_STARTED",
+  "task": "candidate2_proven_sort_only_execution_route",
+  "fresh_output_namespace": "/media/huklaban5/Data/luke_candidate2_native_rigid_sort_only_imec0_20261008_v10",
+  "fresh_launch_namespace": "/media/huklaban5/Data/candidate2_native_rigid_sort_only_launch_h5_20261008_v10",
+  "intended_service": "luke-candidate2-native-rigid-sort-only-imec0-20261008-v10.service",
+  "intended_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_proven_sort_only_adaptation_h5_20261008_v1",
+  "exact_predecessor": {
+    "runner": "/tmp/imec1_part2b_timeout_worktree_20261005/testing/imec1_part2b_sort_retry_v2.py",
+    "runner_sha256": "62905e2df8cfb93869c653a821e4c0a5a26300b919c17ed5604bb4403a3cc90f",
+    "service": "/home/huklaban5/.config/systemd/user/full-session-part2b-imec1-sort-bounded-pread-20261006-v4.service",
+    "service_sha256": "c1d0a0cdaf066d2e5dc594ab11727c8c63dfc6ed2b317d3ae3ed8d4af23be11f",
+    "config": "/tmp/imec1_part2b_timeout_worktree_20261005/configs/full_session_part2b_imec1_sort_bounded_pread.v4.json",
+    "config_sha256": "16622ce4dbe063c96f22978269fa4307fce2787e6ca29880fb5537f720d3176f",
+    "successful_sort_receipt_sha256": "2bf4a2b9189ea9903b3ae3bdef7305ab689c6a49132c75f351b9e664e0d0aca6",
+    "successful_sort_seconds": 14168.845
+  },
+  "eta": {
+    "adaptation_and_focused_review": "approximately 2 hours",
+    "earliest_managed_launch_if_go": "approximately 2.5 hours",
+    "sort_duration_after_launch": "approximately 4 hours based on the successful predecessor; finite service timeout will include conservative margin"
+  },
+  "bespoke_stack_ended": true,
+  "automatic_retry": false,
+  "downstream_qc_in_this_task": false
+}

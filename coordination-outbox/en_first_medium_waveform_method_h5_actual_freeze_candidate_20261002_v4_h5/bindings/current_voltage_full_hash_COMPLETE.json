@@ -1,0 +1,12 @@
+{
+  "actual_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+  "bytes_read": 241309358592,
+  "completed_at_local_date": "2026-10-02",
+  "manifest": "MANIFEST.sha256",
+  "manifest_sha256": "141a699e7396b62f67329ebba6a62dda3387db148f9ec1e56f18bb1f9e6070c4",
+  "packet": "en_first_medium_voltage_current_full_hash_20261002_v1_h5",
+  "producer": "H5",
+  "retry_count": 0,
+  "schema": "immutable-evidence-packet-complete-v1",
+  "status": "PASS_EXACT_MATCH"
+}

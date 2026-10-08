@@ -1,0 +1,249 @@
+{
+  "approval": {
+    "h1_review_manifest_sha256": "7fde2fc6d93a85d3453471176ad66f6e3e8cb14349a449f38ea7e7e44d0fa6c5",
+    "phase3_review_manifest_sha256": null
+  },
+  "activation": {
+    "reviewed_launcher_packet": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_r2_finalization_repair_20261002_v3_h5",
+      "manifest_sha256": "682b3c3cc6cbe9bf3ae9a2bd2a19313888ddacfae99e199e9bd884ff9ffda284",
+      "complete_sha256": "42e5b6b89a06cf987508aa062316e3b25b7b34704521dd750227a4c94e19d7aa",
+      "contract_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_r2_finalization_repair_20261002_v3_h5/contract/en_first_medium_pair.execution_disabled.r2_finalization.v3.json",
+      "contract_sha256": "55c0dbabc5623bbd1db9e3b49e32c493c9802880e3f28c7c1709ecb25b77ecfa",
+      "launcher_sha256": "238c9c997bad67415a13671deaa5569ee121f3a27aa07188fef51c424f2029f8"
+    },
+    "h1_launcher_go_review": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_r2_finalization_h1_review_20261002_v1_h1",
+      "manifest_sha256": "7fde2fc6d93a85d3453471176ad66f6e3e8cb14349a449f38ea7e7e44d0fa6c5",
+      "complete_sha256": "8765639ef124917879254aa5c5d9f2c189426522e6bbc46aaaf5d50b7255058b",
+      "verdict": "GO_R2_FINALIZATION_REPAIR_ONLY_EXECUTION_REMAINS_DISABLED"
+    },
+    "runtime_binding": {
+      "path": "../runtime/RUNTIME_BINDING.json",
+      "sha256": "2fda60a2bc7f7206ecde87c77554e6daa6f39d3b391cc14e9aaa7e511b771f5c"
+    },
+    "activation_preflight": {
+      "path": "../source/activation_preflight.py",
+      "sha256": "d1633143cadc520b73e1c6bb71ac7edf77fa88b73b6866499271f8e162b4a8d4"
+    },
+    "required_phase3_review": {
+      "status": "UNRESOLVED_REQUIRED_BINDING",
+      "path": null,
+      "manifest_sha256": null,
+      "complete_sha256": null
+    }
+  },
+  "arm_order": [
+    "REF384_repeat",
+    "repaired_B384"
+  ],
+  "between_arm_policy": "inspect execution status and immutable COMPLETE identity only; never inspect scientific outcomes before repaired_B384",
+  "cheapest_adequate_test": "one managed serial REF384 repeat then repaired B384, 600 seconds each, no parameter search",
+  "checkpoint_policy": "single start is permanently consumed before preflight; each arm is atomic; interruption requires evidence review and a fresh separately reviewed namespace; no within-arm resume",
+  "completion_condition": "both arms and ordinary writers stop; counted pending terminal receipts are prepared; one outer finalizer performs a read-only final aggregate audit; authoritative COMPLETE is published last by same-directory rename with no byte growth and no later counted write",
+  "configs": {
+    "REF384_repeat": {
+      "path": "../config/REF384_repeat.execution_disabled.frozen.v2.json",
+      "sha256": "05f2ddc3c46f96b53889cf7365a067a669cec8b1707a2208fc924d0e5f62d3db"
+    },
+    "historical_screen": {
+      "path": "../config/en_common_support_crop_screen.v1.json",
+      "sha256": "bb6dd8f21539e5ee57f4216702b7c9d4c36d1a0feeefe3859ba25449af52ad17"
+    },
+    "repaired_B384": {
+      "path": "../config/repaired_B384.execution_disabled.clock_v5.json",
+      "sha256": "5a793a2c148090694ef0595042043519debaa9f45d8df13f2533433ef198b2b2"
+    }
+  },
+  "decision_changed": "whether repaired preprocessing improves frozen retention without unacceptable waveform loss and is safe to advance",
+  "execution_enabled": false,
+  "gates": {
+    "blocking_h1_review_complete_sha256": "5aa23da5f2e90b96558ffd707d6a5d32e98f38eb6828255e5abbc27d9cb4d48e",
+    "blocking_h1_review_manifest_sha256": "ee4290e237bf65212f84d6ec2718c4147519642a7679f49c3875563238977460",
+    "launcher_r2_h1_go_manifest_sha256": "7fde2fc6d93a85d3453471176ad66f6e3e8cb14349a449f38ea7e7e44d0fa6c5",
+    "launcher_r2_h1_go_complete_sha256": "8765639ef124917879254aa5c5d9f2c189426522e6bbc46aaaf5d50b7255058b",
+    "launcher_r2_h1_verdict": "GO_R2_FINALIZATION_REPAIR_ONLY_EXECUTION_REMAINS_DISABLED",
+    "phase3_independent_review_required": true,
+    "phase3_review_manifest_sha256": null,
+    "clock_review_complete_sha256": "74f63fe6880e50c5247f21df2ef16d3ea37f2e3206f60dce89495a69d493cd3d",
+    "clock_review_manifest_sha256": "39fd736b838b81db39b96265a4fd51de0ebf6e102e6fa1876fd56f4132c74af4",
+    "clock_review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_minimum_training_support_mask_trained_entry_clock_v5_h5_review_20261002_v1_h5",
+    "clock_review_verdict": "GO_CLOCK_REPAIR_ONLY",
+    "current_voltage_packet_manifest_sha256": "141a699e7396b62f67329ebba6a62dda3387db148f9ec1e56f18bb1f9e6070c4",
+    "current_voltage_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+    "gpu_readiness_recheck_required_at_launch": true,
+    "independent_h1_pair_launcher_r1_r3_review_required": true,
+    "rf_holdout_sealed": true,
+    "waveform_method_candidate_manifest_sha256": "50fa0589d6eb459b12a4ac8c5c997fa7b822a58d2b2c1f0cbd2de53f9c47f8a7",
+    "waveform_method_h1_verdict": "GO_METHOD_FREEZE_ONLY"
+  },
+  "milestone": "actual end-to-end representative 600-second prototype pair by end of October 4, 2026 America/Los_Angeles",
+  "planned_paths": {
+    "attempt_evidence": "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v2_attempt",
+    "logs": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_first_medium_trained_pair_20261002_v2",
+    "numba_cache": "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v2_numba_cache",
+    "root": "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v2",
+    "staged_source_root": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_activation_candidate_20261002_v1_h5/source"
+  },
+  "preservation": {
+    "failure": "durable attempt STARTED and bounded terminal FAILURE exist even for pre-root or final-audit failures; preserve child logs, counted pending markers, and partial namespaces; no authoritative pair COMPLETE",
+    "first_result": "never overwrite, retry, or tune",
+    "receipts": "claim, source/config/service hashes, voltage continuity, output-cap status, per-arm COMPLETE identities, terminal clock/ancestry validation"
+  },
+  "resources": {
+    "cpu_threads_max": 16,
+    "gpu_count_max": 1,
+    "minimum_free_bytes": 214748364800,
+    "output_monitor_interval_seconds": 0.1,
+    "persistent_output_bytes_max": 17179869184,
+    "terminal_control_reserve_bytes": 1048576,
+    "live_output_bytes_max": 17178820608,
+    "counted_late_log_bytes_max": 262144,
+    "ram_bytes_max": 68719476736,
+    "service_restart": "no",
+    "service_start_limit": 1,
+    "wall_seconds_max": 2700
+  },
+  "schema": "en-first-medium-heterogeneous-pair-launch-contract-v1",
+  "service": {
+    "condition_on_start_claim_absence": true,
+    "enabled_binding_intentionally_absent": true,
+    "unit_binding": {
+      "path": "../service/PROPOSED_NOT_INSTALLED.service",
+      "sha256": "70e0fe56f2fa9d5b62f5a17bee26fcc6438d9470b1aec29af60ac353dda6569f"
+    },
+    "unit_name": "en-first-medium-trained-pair-20261002-v2.service"
+  },
+  "sources": {
+    "historical_ref_runner": {
+      "path": "../source/en_common_support_crop_screen.py",
+      "sha256": "800b190b1ad7f0bb832f310c2b86bf4d6802b63ae5990169138bb86ce5d6c897"
+    },
+    "kilosort_io": {
+      "path": "../dependencies/kilosort/io.py",
+      "sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd"
+    },
+    "kilosort_preprocessing": {
+      "path": "../dependencies/kilosort/preprocessing.py",
+      "sha256": "2329b288ae068361a937632a53461e6cceeb27e30191337e9b9a0fa7404d763d"
+    },
+    "kilosort_run": {
+      "path": "../dependencies/kilosort/run_kilosort.py",
+      "sha256": "5c1baee40edef14fa7566e441997da5d2ecc4f7940b8385cf83de40c8bd0f945"
+    },
+    "kilosort_spikedetect": {
+      "path": "../dependencies/kilosort/spikedetect.py",
+      "sha256": "db1e8f0357319d9db3530a700bd1002c830337c50fde58b3e74e83e7af140892"
+    },
+    "kilosort_template_matching": {
+      "path": "../dependencies/kilosort/template_matching.py",
+      "sha256": "39235cc98428dbb279706718f74a1c3d84568ef31a4f9d1d997a60f7002b1a66"
+    },
+    "pair_launcher": {
+      "path": "../source/en_first_medium_trained_pair_launch.py",
+      "sha256": "238c9c997bad67415a13671deaa5569ee121f3a27aa07188fef51c424f2029f8"
+    },
+    "prewhitening": {
+      "path": "../source/npx_preprocessing/motion/prewhitening_support_mask.py",
+      "sha256": "9c981047f94d91a930e17bd51e634fbc96faa5e956c85d0882f3a603f7f42e0f"
+    },
+    "support_candidate": {
+      "path": "../source/npx_preprocessing/motion/kilosort_support_mask_candidate.py",
+      "sha256": "705b4af444699a6e40ddd0e8a189232b619c4e1bbff53f8150b448f5ad160391"
+    },
+    "trained_terminal": {
+      "path": "../source/npx_preprocessing/motion/kilosort_support_mask_trained.py",
+      "sha256": "46bdf606c7d83263fd4ef70e0482b55d2df61dc2b074c07d0fe6c7f657956cd3"
+    },
+    "voltage_preflight": {
+      "path": "../source/voltage_identity_preflight.py",
+      "sha256": "4eb636749f1b980ae6d01df9775013ae44c3391e68ff94b751a39bf0ed0d6606"
+    }
+  },
+  "status": "activation_candidate_execution_disabled_phase3_review_binding_unresolved",
+  "stop_conditions": [
+    "any contract/config/source/input/geometry/crop/clock hash mismatch",
+    "any output/cache/log namespace already exists",
+    "not exactly one visible CUDA GPU or free storage below 200 GiB",
+    "REF support policy enabled or repaired-B support policy absent",
+    "unexpected dshift, adaptive-state reuse, missing phase audit, semantic validation failure, nonzero exit, or resource breach",
+    "any RF/holdout access, parameter search, preprocessed voltage copy, or unbounded transfer",
+    "single persistent start claim already exists",
+    "ordinary counted output exceeds 17178820608 bytes, reserving 1048576 bytes within the unchanged 17179869184-byte total for bounded terminal/control activity",
+    "read-only final aggregate exceeds 17179869184 bytes; no authoritative COMPLETE may be published",
+    "required Phase3 review path/manifest/complete binding is unresolved",
+    "enabled service environment binding is intentionally absent",
+    "current voltage receipt/member/lstat/non-symlink continuity differs"
+  ],
+  "voltage_identity": {
+    "binary_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+    "binary_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+    "binary_size_bytes": 241309358592,
+    "channel_order": "physical acquisition rows 0..383, identity order; never sorter/template order",
+    "crop_effective_duration_s": 599.9999803346205,
+    "crop_global_frames_half_open": [
+      208498882,
+      226498783
+    ],
+    "crop_local_frames_half_open": [
+      0,
+      17999901
+    ],
+    "crop_origin_global_frame": 208498882,
+    "current_full_hash_receipt": {
+      "buffer_bytes": 16777216,
+      "cpu_seconds": 859.6472602900001,
+      "final_lstat": {
+        "st_ctime_ns": 1788254629465850600,
+        "st_dev": 93,
+        "st_ino": 8167886,
+        "st_mode": 33261,
+        "st_mtime_ns": 1788254629465850600,
+        "st_size": 241309358592
+      },
+      "max_rss_kib": 47840,
+      "packet_complete_sha256": "aaa5e9f5d372327baa612de5159f37afb11f2e9ed20e71223f00ede55bfcdfd6",
+      "packet_manifest_file": "MANIFEST.sha256",
+      "packet_manifest_sha256": "141a699e7396b62f67329ebba6a62dda3387db148f9ec1e56f18bb1f9e6070c4",
+      "packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_voltage_current_full_hash_20261002_v1_h5",
+      "read_calls_including_final_eof": 14385,
+      "receipt_file": "CURRENT_VOLTAGE_FULL_HASH_RECEIPT.json",
+      "receipt_schema": "current-voltage-full-hash-receipt-v1",
+      "receipt_sha256": "47d4eafaa7a6fbf79a5a973caa0ba4cf7f0a404c19ba243372cf5d70c27e9614",
+      "verification_source_sha256": "97c83ab93993bde6010792224a5e119078d1173e436f993a69e88990449bf8ea",
+      "verified_bytes": 241309358592,
+      "verified_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+      "wall_seconds": 2185.8730681957677
+    },
+    "dtype": "int16 little-endian",
+    "geometry_float64_sha256": "d126fb241989698cd445c89638b02f0a2f8153389cfcad5acf49c1a0c4093bc8",
+    "immutable_full_hash_receipt": {
+      "packet_complete_sha256": "0056814b0e888fed02a0e0eecd47b4588fe7a4ce3a49ff1ef7e9bcfdcfe7688e",
+      "packet_manifest_file": "MANIFEST.json",
+      "packet_manifest_sha256": "909c9acc4f634f91314da4c03da9ba03ec83d8b216f4cdd7f15dd3e240f98c80",
+      "packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_preflight_smoke_20260929_v1",
+      "receipt_file": "Q0_FULL_HASH_RECEIPT.json",
+      "receipt_schema": "en-q0-full-hash-v1",
+      "receipt_sha256": "0bdeec713c85490599a67b614386ccbc34577c96865a577b04f882f640281d19",
+      "verified_bytes": 241309358592,
+      "verified_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482"
+    },
+    "num_channels": 384,
+    "num_samples": 314204894,
+    "preflight": {
+      "compact_future_preflight_voltage_bytes_read": 0,
+      "current_full_binary_bytes_read": 241309358592,
+      "current_full_binary_hash": "SEPARATELY_COMPLETED_AND_BOUND",
+      "current_full_binary_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+      "identity_claim": "The current full read exactly reproduces the historic expected SHA-256 and size; future compact preflight binds that receipt and its exact final lstat tuple.",
+      "implementation": "source/voltage_identity_preflight.py",
+      "implementation_sha256": "4eb636749f1b980ae6d01df9775013ae44c3391e68ff94b751a39bf0ed0d6606",
+      "rule": "Verify both historic and current full-hash packets and every current manifest member; use os.lstat with no symlink following; require the exact regular-file stat tuple captured after the current hash; hash only compact receipts and the recording manifest."
+    },
+    "recording_content_sha256": "2d6fac755db3182841bf121d822754f963ebada3bcb8cd9e96e0b63e6f9b7372",
+    "recording_manifest_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/rescue_recording_manifest.json",
+    "recording_manifest_sha256": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67",
+    "representation": "original accepted full-probe physical acquisition only",
+    "sampling_frequency_hz": 29999.835983263598
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "schema": "first-medium-waveform-contract-targeted-repair-review-v1",
+  "status": "READY_FOR_H1_REVIEW_EXECUTION_DISABLED",
+  "milestone": "close H1 WF1-WF3 without enabling voltage",
+  "decision_changed": "whether the waveform protocol is dependency-closed and unambiguous enough for a later separately bound enablement review",
+  "cheapest_adequate_test": "source/hash closure audit plus synthetic median-reference, competitive-partition, atomic-sampling, correlation-alignment, and read-cap fixtures",
+  "completion_condition": "all three H1 findings have exact contract language and passing known answers while prospective bindings and both execution gates remain disabled",
+  "bindings": {
+    "h1_review_manifest": "2c2cbe711fb361a90b42fc71ed73b9134b22886b6b9a6d25846dfdd6f1e88031",
+    "h1_review_complete": "35f776bf7132dcfa33c682136d796d1d793d004df4feddb9229b4015dfa277d1",
+    "parent_manifest": "80021b93c3605c95f32f16f600f522e684ae06a1234fe286bce21bbcb2bd61e2",
+    "parent_complete": "63170aff0cadf212ae3270c8a7a9fbdbdf914d82272d3ab826fcb0ff39e95cd9",
+    "prior_contract": "0bcc0794b4d0616cf24d57ca7df399ca6b47fb4655996e940fa6e5dc9934b418",
+    "repaired_contract": "c7693a3400150cd59a4bf0ec9a9618796b9bc820b0f822429f6975064ff575ce",
+    "dependency_closure": "1ff726d26b4bf1cc3e9ec09a88259fdfea1bb2a93d05fc7de33a71fe197edbc1",
+    "dependency_aggregate": "ebcad89e8c45de0315557c33414ada30e3c3bee951b250d33f3e2ff0ad156e64",
+    "preprocessing_adapter": "e9abe2a9a1c22db118a8c652e2a6a083db2fc9f84e8c77a71cec992447bcbe57",
+    "tests": "4131b8b0040aade5ee9c6f216eae22675e200bbaf556500a1efa2e251943764e"
+  },
+  "repairs": {
+    "WF1": {
+      "result": "CLOSED_PENDING_INDEPENDENT_REVIEW",
+      "source": {
+        "io.py": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+        "preprocessing.py": "2329b288ae068361a937632a53461e6cceeb27e30191337e9b9a0fa7404d763d",
+        "highpass_filter_float32.npy": "984639dee1d75eb82c170c1a96ba3e96dc196eaa24383b598266a804729e52b5"
+      },
+      "semantics": "CPU float32 channels-by-samples; per-channel time-mean subtraction; across-channel torch.median subtraction per sample; frozen-impulse FFT high-pass; fftshift; no whitening/drift/shift/scale",
+      "known_answers": [
+        "four-channel common-median literal differs from common-average",
+        "packet adapter is bit-identical to accepted BinaryFiltered.filter on deterministic 384x1145 input",
+        "frozen impulse is bit-identical to get_highpass_filter under locked runtime"
+      ]
+    },
+    "WF2": {
+      "result": "CLOSED_PENDING_INDEPENDENT_REVIEW",
+      "partition": "stable retained, competitively unmatched REF lost, competitively unmatched candidate gained, pre-match or co-optimal assignment nonuniqueness ambiguous",
+      "known_answers": [
+        "REF [0,10], candidate [0] -> retained REF0/candidate0 plus lost REF10",
+        "REF [-1,1], candidate [0] -> all endpoints ambiguous under equal-cost co-optima",
+        "only >80-um edge -> REF lost and candidate gained",
+        "unsupported REF anchor -> REF ambiguous and unmatched candidate gained"
+      ]
+    },
+    "WF3": {
+      "result": "CLOSED_PENDING_INDEPENDENT_REVIEW",
+      "sampling": "64 retained pairs atomically plus 128 endpoints in each nonretained category per comparison/epoch",
+      "correlation": "both selected endpoints; sorted common physical channels; intersected absolute [frame-20,frame+21) windows; >=2 channels, >=26 frames, finite nonzero centered vectors",
+      "low_N": "0 null, 1 descriptive without interval, >=2 median without CI",
+      "accounting": "4608 endpoint pread calls maximum; 879360 bytes each; logical/requested/returned payload maxima 4052090880; zero partner reads outside SAMPLE_LEDGER"
+    }
+  },
+  "tests": {
+    "result": "10 passed",
+    "native_seconds": 2.71,
+    "staged_seconds": 2.73,
+    "voltage_accessed": false,
+    "jobs_started": false
+  },
+  "scope": {
+    "prospective_bindings": "UNBOUND",
+    "execution_enabled": false,
+    "voltage_access_enabled": false,
+    "rf_or_holdout": false
+  },
+  "implementation_checks": {
+    "done": [
+      "H1 finding and parent packet bindings",
+      "actual preprocessing source and transitive impulse/config/runtime closure",
+      "common-median known answer and direct bound-operation equivalence",
+      "exclusive/exhaustive competitive matching categories and denominators",
+      "atomic retained-pair selection, alignment, low-N, and exact read arithmetic"
+    ],
+    "not_done": [
+      "independent H1 review",
+      "prospective event/anchor hashes",
+      "real ledger, voltage, waveform, evaluator, sorter, RF, or holdout execution"
+    ],
+    "can_establish": "WF1-WF3 have explicit dependency-bound contract repairs and passing synthetic known answers.",
+    "cannot_establish": "Future input truth, voltage launch readiness, physical support, scientific efficacy, biological identity, purity, or advancement."
+  }
+}

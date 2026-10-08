@@ -1,0 +1,16 @@
+{
+  "schema": "en-a-four-unit-waveform-qc-corrected-review-request-v1",
+  "status": "independent_h1_review_requested_execution_disabled",
+  "source_sha256": "e8e5186f2fb91802ae52eff9176ee4ce36d2aca707185871c6a74deb2b69f989",
+  "config_sha256": "111a5958cd8d70aa514aa52f34c5946a5f960bf5dacf8172ecd0c2dc3535bb6a",
+  "requested_checks": [
+    "confirm field/fs/origin/half-open-edge/half-away rounding exactly match the executed A materializer",
+    "confirm each retained sample receives its own motion state and exact-coordinate mapping",
+    "confirm state-dependent original anchors, slot-wide support, unconditional q0 identity, and vacuous negatives are removed or explicitly disabled",
+    "confirm local detectability is fixed-domain local SNR only and global peak is descriptive",
+    "confirm synthetic fixtures are independent known-answer tests, including exact-edge and distractor cases",
+    "confirm original FAIL and its global metrics remain immutable historical evidence",
+    "confirm real archive execution remains disabled and no voltage is published"
+  ],
+  "execution_rule": "No real-array invocation is allowed until a separate immutable independent review and launch decision binds the exact source, config, inputs, output namespace, and resource limits."
+}

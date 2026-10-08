@@ -1,0 +1,6 @@
+{
+  "manifest_sha256": "7b4060ea8bf7936af45a512941a7f557239270e48bb63ed4cbba4cbd5506473f",
+  "schema": "candidate2-v8-failure-packet-complete-v1",
+  "status": "complete",
+  "terminal_status": "TERMINAL_PRE_READ_BYTECODE_CONTAMINATION_FAILURE_NO_RETRY"
+}

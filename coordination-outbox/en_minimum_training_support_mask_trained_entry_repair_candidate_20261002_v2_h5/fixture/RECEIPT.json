@@ -1,0 +1,15 @@
+{
+  "files": {
+    "Wall3.npy": "0ee5e8b2a33e3bdce2df96a76609bc520730181aa9c2aaac0c8a88bf4f2fd644",
+    "chanMap.npy": "dc5de563b86c3210ee39b3adc9c39934ef72b87a5c20f475ccc78e336ea75a7e",
+    "iCC.npy": "7e3e8a234b5977dfdb39b60d80d5ccb85946c5fe0663b956932e1979ae25ec36",
+    "iCC_mask.npy": "0cc44c81cb6b681d846f8297a0bd86c2f6e0169c0c7cedcb3dfc627e546b2bdd",
+    "iU.npy": "f6df0000bed676f0a4b777e2a1d915b6608dab452e11737f82c685cebf0e8ba7",
+    "iU_physical_binary_channel.npy": "f6df0000bed676f0a4b777e2a1d915b6608dab452e11737f82c685cebf0e8ba7",
+    "wPCA.npy": "a18591c7e92908bfa2ca924816912d28963d158b90f88e5fb335b25c30455868",
+    "wTEMP.npy": "a18591c7e92908bfa2ca924816912d28963d158b90f88e5fb335b25c30455868"
+  },
+  "orchestration_only": false,
+  "status": "saved_before_learned_batch_extraction",
+  "wall3_axis0_binding": "spike_detection_templates.npy"
+}

@@ -1,0 +1,27 @@
+{
+  "schema": "hub-multicoordinator-status-v1",
+  "owner": "H5",
+  "recipient": "HubMultiCoordinater",
+  "created_utc": "2026-10-08T11:52:00Z",
+  "status": "CANDIDATE2_V7_TERMINAL_PRE_READ_PREFLIGHT_FAILURE_NO_RETRY",
+  "milestone": "Candidate 2 full-session native-rigid Kilosort recovery",
+  "decision_changed": "v7 is terminal and cannot advance Candidate2; a fresh successor needs a narrowly reviewed static-exec-identity comparison repair",
+  "failure_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_v7_runtime_decorated_exec_authorization_failure_h5_20261008_v1",
+  "failure_manifest_sha256": "e24bfdfce47d4d59fad84047f811e0a04abc04189b548af33fd0f9a8ea7e889e",
+  "reviewed_v7_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_cache_managed_gpu_self_observation_repair_h5_20261008_v1",
+  "reviewed_v7_manifest_sha256": "6cb761eb139e7624031b81320835fcf32558a854adb25086233f58c2bccde952",
+  "cause": "systemd changes only runtime annotations inside ExecStart/ExecStartPre after activation; raw string equality rejected the unchanged reviewed command identity",
+  "safe_boundary": {
+    "preflight_receipt_absent": true,
+    "job_receipt_absent": true,
+    "output_namespace_absent": true,
+    "recording_opened": false,
+    "recording_voltage_bytes_read": 0,
+    "sort_gpu_work_started": false,
+    "automatic_retry": false
+  },
+  "proposed_cheapest_fix": "fresh v8 derivative that strips only start_time/stop_time/pid/code/status annotations from ExecStart/ExecStartPre comparison while preserving exact path, argv[], ignore_errors, unit hashes, dependency membership, resource gates and all science",
+  "required_fixture": "inactive versus active runtime annotations compare equal; changed path, argv, ignore_errors, dependency member and scalar property each reject",
+  "candidate3_parallel_status": "ACK_BLOCKED_ONE_MISSING_SOURCE_OBJECT_NO_LAUNCH in candidate3_source_bundle_reconciliation_h5_20261008_v1",
+  "check_in": "H5 terminal task check-in complete; awaiting HubMultiCoordinater continuation or reassignment"
+}

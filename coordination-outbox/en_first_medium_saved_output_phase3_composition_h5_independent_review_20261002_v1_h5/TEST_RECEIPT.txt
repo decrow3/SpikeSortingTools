@@ -1,0 +1,18 @@
+Candidate command:
+NUMBA_CACHE_DIR=/tmp/h5_phase3_review_numba PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<candidate>/source pytest -q -p no:cacheprovider <candidate>/tests/test_phase3_composition.py
+
+Candidate result:
+7 passed in 7.27s
+
+Independent counterexample command:
+MPLCONFIGDIR=/tmp/h5_phase3_review_matplotlib NUMBA_CACHE_DIR=/tmp/h5_phase3_binding_counterexample_numba PYTHONDONTWRITEBYTECODE=1 python INDEPENDENT_PAIR_BINDING_COUNTEREXAMPLE.py
+
+Independent result:
+finding_reproduced=true
+managed_returncode=0
+pair_complete_has_execution_states=false
+candidates_outside_pair_namespace=true
+phase3_report_written=true
+authoritative_complete_written=true
+
+No real data/outcomes/voltage/scientific execution occurred.

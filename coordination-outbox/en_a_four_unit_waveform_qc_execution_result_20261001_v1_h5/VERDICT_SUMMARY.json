@@ -1,0 +1,34 @@
+{
+  "frozen_verdict": "FAIL",
+  "integrity_controls_passed": false,
+  "usable_unit_count": 0,
+  "unit_usable": {"271": false, "278": false, "445": false, "588": false},
+  "control_counts": {
+    "exact_remap": {"passed": 16, "failed": 4},
+    "q0_identity": {"passed": 4, "failed": 0},
+    "wrong_sign_negative": {"passed": 8, "failed": 0},
+    "no_shift_negative": {"passed": 8, "failed": 0},
+    "car_shape_correlation_defined": {"passed": 20, "failed": 0}
+  },
+  "exact_remap_failures": [
+    {"slot_id": "u278_pair_primary", "equality_fraction": 0.7301215277777777},
+    {"slot_id": "u278_pair_secondary", "equality_fraction": 0.6186144406392694},
+    {"slot_id": "u278_ordinary_primary", "equality_fraction": 0.7510545798898072},
+    {"slot_id": "u278_ordinary_secondary", "equality_fraction": 0.6350292699724518}
+  ],
+  "single_event_visibility": [
+    {"slot_id":"u278_ordinary_primary","unit_id":278,"state_um":-200,"local_max_ptp_snr":12.106617733508662,"anchor_channel":104,"peak_channel":18,"peak_distance_um":860.1488037109375,"visible":false},
+    {"slot_id":"u278_ordinary_secondary","unit_id":278,"state_um":-80,"local_max_ptp_snr":10.856776395853203,"anchor_channel":104,"peak_channel":259,"peak_distance_um":1540.0831298828125,"visible":false},
+    {"slot_id":"u278_q0_control","unit_id":278,"state_um":0,"local_max_ptp_snr":104.49917798692994,"anchor_channel":104,"peak_channel":95,"peak_distance_um":101.27191162109375,"visible":false},
+    {"slot_id":"u271_ordinary_primary","unit_id":271,"state_um":-160,"local_max_ptp_snr":10.556075107114356,"anchor_channel":100,"peak_channel":78,"peak_distance_um":220.5810546875,"visible":false},
+    {"slot_id":"u271_ordinary_secondary","unit_id":271,"state_um":-240,"local_max_ptp_snr":75.62398111065806,"anchor_channel":100,"peak_channel":128,"peak_distance_um":280.0,"visible":false},
+    {"slot_id":"u271_q0_control","unit_id":271,"state_um":0,"local_max_ptp_snr":112.54097709935549,"anchor_channel":100,"peak_channel":124,"peak_distance_um":240.0,"visible":false},
+    {"slot_id":"u588_ordinary_primary","unit_id":588,"state_um":-120,"local_max_ptp_snr":10.338454854396563,"anchor_channel":264,"peak_channel":349,"peak_distance_um":840.6093139648438,"visible":false},
+    {"slot_id":"u588_ordinary_secondary","unit_id":588,"state_um":-160,"local_max_ptp_snr":27.12290369931187,"anchor_channel":264,"peak_channel":0,"peak_distance_um":2640.0,"visible":false},
+    {"slot_id":"u588_q0_control","unit_id":588,"state_um":0,"local_max_ptp_snr":12.315814682086968,"anchor_channel":264,"peak_channel":217,"peak_distance_um":481.06549072265625,"visible":false},
+    {"slot_id":"u445_ordinary_primary","unit_id":445,"state_um":-200,"local_max_ptp_snr":7.91695747971151,"anchor_channel":191,"peak_channel":345,"peak_distance_um":1540.0831298828125,"visible":false},
+    {"slot_id":"u445_ordinary_secondary","unit_id":445,"state_um":-120,"local_max_ptp_snr":7.230990261701391,"anchor_channel":191,"peak_channel":336,"peak_distance_um":1460.087646484375,"visible":false},
+    {"slot_id":"u445_q0_control","unit_id":445,"state_um":0,"local_max_ptp_snr":84.80056127430832,"anchor_channel":191,"peak_channel":104,"peak_distance_um":860.1488037109375,"visible":false}
+  ],
+  "interpretation": "technical frozen-rule outcome only; no biological, purity, motion-correctness, or sorter-benefit claim"
+}

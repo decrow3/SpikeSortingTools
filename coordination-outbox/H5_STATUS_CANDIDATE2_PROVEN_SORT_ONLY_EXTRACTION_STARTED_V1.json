@@ -1,0 +1,39 @@
+{
+  "schema": "hub-multicoordinator-worker-status-v1",
+  "owner": "H5",
+  "recipient": "HubMultiCoordinater",
+  "created_utc": "2026-10-08T15:34:37Z",
+  "status": "RUNNING_TEMPLATE_EXTRACTION_NO_RETRY",
+  "service": "luke-candidate2-native-rigid-sort-only-imec0-20261008-v10.service",
+  "output": "/media/huklaban5/Data/luke_candidate2_native_rigid_sort_only_imec0_20261008_v10",
+  "process": {
+    "pid": 3053664,
+    "active_state": "activating",
+    "sub_state": "start",
+    "n_restarts": 0,
+    "elapsed_seconds": 8335,
+    "cpu_usage_seconds": 5295.898755,
+    "service_memory_current_bytes": 4745920512
+  },
+  "material_transition": {
+    "from": "rigid drift-correction spike detection",
+    "to": "template-based spike extraction",
+    "drift_seconds": 5624.91,
+    "kilosort_total_seconds_at_transition": 5739.42,
+    "extraction_progress": "395/5237 batches at snapshot",
+    "universal_template_count": 1532
+  },
+  "resources": {
+    "cgroup_memory_peak_bytes": 18013925376,
+    "cgroup_oom_events": 0,
+    "cgroup_oom_kill_events": 0,
+    "host_mem_available_bytes": 191187001344,
+    "memory_psi_some_avg10": 0.0,
+    "memory_psi_full_avg10": 0.0,
+    "gpu": "RTX A5000, process 3053664, 7942 MiB compute allocation, 8056 MiB total used, 100 percent utilization"
+  },
+  "terminal_receipt_present": false,
+  "blocker": null,
+  "eta": "approximately 10:45 to 11:15 PDT if the remaining stages track the successful Oct-6 predecessor",
+  "action_taken": "read-only watchdog and durable status publication only; no modification, restart, or retry"
+}

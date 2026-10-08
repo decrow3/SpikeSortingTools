@@ -1,0 +1,15 @@
+{
+  "authoritative_guard": "run_root.mkdir(parents=False, exist_ok=False)",
+  "first_atomic_reservation": {
+    "fresh": true,
+    "launch_evidence_dir": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_minimum_training_support_mask_covariance_freshness_dummy_20261001_v1/launch_evidence",
+    "native_results_dir": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_minimum_training_support_mask_covariance_freshness_dummy_20261001_v1/native_results",
+    "run_root": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_minimum_training_support_mask_covariance_freshness_dummy_20261001_v1"
+  },
+  "first_results_directory_exists": true,
+  "recording_paths_present_in_config": false,
+  "recording_reads": 0,
+  "second_refusal_type": "FileExistsError",
+  "second_reservation_refused": true,
+  "status": "pass"
+}

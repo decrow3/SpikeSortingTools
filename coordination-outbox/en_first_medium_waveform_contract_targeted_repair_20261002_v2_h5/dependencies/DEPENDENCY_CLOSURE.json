@@ -1,0 +1,21 @@
+{
+  "schema": "first-medium-waveform-preprocessing-dependency-closure-v1",
+  "aggregate_rule": "sha256(canonical compact sorted-key JSON of the members object)",
+  "aggregate_sha256": "ebcad89e8c45de0315557c33414ada30e3c3bee951b250d33f3e2ff0ad156e64",
+  "members": {
+    "RUNTIME_LOCK.json": "4abd0fdaad686cd474fa6746249c47b0f9b66e119f6f25ce8c520b53e59c886d",
+    "kilosort/constants/PREPROCESSING_CONSTANTS.json": "40b37e7a1594900f64d677c0b729698affbc029b696465e30969d04aa5e402e5",
+    "kilosort/constants/highpass_filter_float32.npy": "984639dee1d75eb82c170c1a96ba3e96dc196eaa24383b598266a804729e52b5",
+    "kilosort/source/io.py": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+    "kilosort/source/preprocessing.py": "2329b288ae068361a937632a53461e6cceeb27e30191337e9b9a0fa7404d763d",
+    "runtime_metadata/kilosort-4.0.27.METADATA": "3241ba90f3023f0b8c2e6205f7a032b25bbcf87d9c66c5b0935c7b7f878ed85f",
+    "runtime_metadata/numpy-1.26.4.METADATA": "b09734a7fed44e84b4c8161934ce532dff1e779ec6822d415644d117f6381070",
+    "runtime_metadata/scipy-1.15.2.METADATA": "17b941195715733f983ab4fefec2b1880d0b050cbb9207181781b8a25d070e83",
+    "runtime_metadata/torch-2.6.0+cu124.METADATA": "76581c0d424f2d45de443327dfe1d5e115fd5e090b553deca3c3e23fc31c8da0"
+  },
+  "executable_adapter": {
+    "path": "source/waveform_preprocessing.py",
+    "sha256": "e9abe2a9a1c22db118a8c652e2a6a083db2fc9f84e8c77a71cec992447bcbe57"
+  },
+  "closure_scope": "The enabled path imports only torch plus the adapter and loads the frozen impulse. scipy/numpy/Kilosort sources and metadata bind how the impulse and reference semantics were produced; no installed Kilosort import is used during extraction."
+}

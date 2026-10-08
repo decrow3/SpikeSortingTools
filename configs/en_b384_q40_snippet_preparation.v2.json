@@ -1,0 +1,52 @@
+{
+  "schema": "en-b384-q40-snippet-preparation-v2",
+  "status": "frozen_preparation",
+  "voltage_reads_permitted": false,
+  "output": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_b384_q40_snippet_preparation_20261001_v2",
+  "sorter_output": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output",
+  "population_membership_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_common_support_crop_evaluation_v1/B384_POPULATION_MEMBERSHIP.csv",
+  "state_metrics_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_common_support_crop_evaluation_v1/STATE_METRICS.csv",
+  "sampling_frequency_hz": 29999.835983263598,
+  "recording_duration_s": 10473.5537279367,
+  "accounting_block_seconds": 300,
+  "crop_start_frame": 208498882,
+  "crop_stop_frame": 226498783,
+  "batch_size": 60000,
+  "nt": 61,
+  "n_chan_bin": 384,
+  "recording_metadata_only": {
+    "path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/traces_cached_seg0.raw",
+    "bytes": 241309358592,
+    "accepted_sha256_from_recording_receipt": "a63d61d57d214d7a90a9698143c0fd1ea5c872a73bcac498b683a6d99efed8a2",
+    "note": "Preparation must not open or hash this recording file"
+  },
+  "future_limits": {
+    "unique_batches_max": 4,
+    "logical_recording_read_bytes_max": 536870912,
+    "wall_seconds_max": 300,
+    "memory_bytes_max": 4294967296,
+    "threads_max": 4,
+    "device": "cpu"
+  },
+  "field": {
+    "path": "/mnt/NPX/Luke/20250804/shared_analysis/luke_improved_motion_two_machine_20260909_v1/estimation_huklaban1_v1/candidate_fields.npz",
+    "time_key": "time_s",
+    "displacement_key": "rigid_displacement_um"
+  },
+  "frozen_inputs": [
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_b384_q40_snippet_preparation.py", "sha256": "3192e5e9f07b8af5f111c2d8a115db7b382c36d1f4c52399aa1342d5a458aa90"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_b384_q40_snippet_pilot.py", "sha256": "c8ff8456eb9638365643c0e6b262f455964efe149308692b6e46c0229baf1f12"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_common_support_crop_panel.py", "sha256": "cef72b7e713b6a3ca9d579d818da0f7d09cbad951ba5cc0ef54c22cd24b16c3b"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_rounded_field.py", "sha256": "823e788da0095012dd345085bb4667f246efc7f4170a5a811c91082769156e00"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/io.py", "sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/template_matching.py", "sha256": "39235cc98428dbb279706718f74a1c3d84568ef31a4f9d1d997a60f7002b1a66"},
+    {"path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output/spike_times.npy", "sha256": "c112885db566363907e36da70eb44a4728258e4ef78c466761ef4009a8c741c3"},
+    {"path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output/spike_clusters.npy", "sha256": "90525e505cfec78c1594927848ffad4e264f11ff6ecabbc40178ece2bb10df95"},
+    {"path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output/spike_detection_templates.npy", "sha256": "6b462ef56f6a2b8c21be127ba771a0ad28294f86783edb6e3056a17e1557573b"},
+    {"path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output/ops.npy", "sha256": "7a8f5d219de1b98776134abb00f637777f85ba94113758ae47a1e4b26b2a44f0"},
+    {"path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/pre_extraction_snapshot/Wall3.npy", "sha256": "3cfa49a4bf9b8d4c0c46709749be9d9f005e7584091ca08785311b090533a608"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_common_support_crop_evaluation_v1/B384_POPULATION_MEMBERSHIP.csv", "sha256": "39345517aba49fe6d3a6ac912bf348edfa6335371cc6ba2b4d2a76719312ab45"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_common_support_crop_evaluation_v1/STATE_METRICS.csv", "sha256": "bf8bef63eb0b06423c10808bfd589607bee72d99ed3a826b63ea1fab54996c72"},
+    {"path": "/mnt/NPX/Luke/20250804/shared_analysis/luke_improved_motion_two_machine_20260909_v1/estimation_huklaban1_v1/candidate_fields.npz", "sha256": "547ff39d1c91d819b758246c701603d868bfd4d50bd6b791e3d5b7140c01c71d"}
+  ]
+}

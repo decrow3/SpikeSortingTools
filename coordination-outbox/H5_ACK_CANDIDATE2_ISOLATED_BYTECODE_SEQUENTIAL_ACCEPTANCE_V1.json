@@ -1,0 +1,19 @@
+{
+  "schema": "hub-multicoordinator-worker-ack-v1",
+  "owner": "H5",
+  "status": "ACK_STARTED",
+  "task": "candidate2_isolated_bytecode_suppression_and_sequential_acceptance",
+  "candidate3_chunk": {
+    "status": "COMPLETE_REVIEWED_BLOCKED",
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_exact_source_bundle_reconciliation_h5_20261008_v2",
+    "manifest_sha256": "2fc9c2587656779b578d674efffcc11e58e8fd5e7773d640401e87af9ca0c048",
+    "hub_status_sha256": "36d3505179acc263173aa7b66b8f672f6bc2cd9270d02dde3f9e995e1658dc76"
+  },
+  "milestone": "Candidate2 fresh authenticated source traversal after v8 pre-read bytecode contamination",
+  "decision": "whether explicit bytecode suppression across every outer and nested interpreter leaves the exact source closure unchanged through actual preflight bootstrap, full preflight, main bootstrap validation and deployed-argv runner import before recording-content access",
+  "cheapest_adequate_test": "one complete sequential acceptance traversal in a fresh source copy with old-fails/new-passes and deliberate source-mutation rejection",
+  "completion_condition": "focused independent review GO on the sequential evidence and fresh deployed bindings, or publish the exact failed stage and do not install, authorize or launch",
+  "preserved_v8_failure_manifest_sha256": "7b4060ea8bf7936af45a512941a7f557239270e48bb63ed4cbba4cbd5506473f",
+  "automatic_retry": false,
+  "recording_access_during_acceptance": false
+}

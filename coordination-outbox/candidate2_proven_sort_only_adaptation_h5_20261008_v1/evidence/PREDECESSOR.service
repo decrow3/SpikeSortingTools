@@ -1,0 +1,22 @@
+[Unit]
+Description=Luke imec1 Part 2b bounded-pread sort-only replacement v4
+ConditionPathExists=/media/huklaban5/Data/en_full_session_part2b_imec1_arm_a_20261004_v1/recording/rescue_recording_manifest.json
+ConditionPathExists=/mnt/NPX/Luke/DARTsort_motion_experiments/en_full_session_part2b_imec1_sort_bounded_pread_authorization_20261006_v4/USER_AUTHORIZATION.json
+ConditionPathExists=!/media/huklaban5/Data/en_full_session_part2b_imec1_sort_bounded_pread_20261006_v4
+
+[Service]
+Type=oneshot
+WorkingDirectory=/tmp/imec1_part2b_timeout_worktree_20261005
+ExecStart=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python -m testing.imec1_part2b_sort_retry_v2 --config /tmp/imec1_part2b_timeout_worktree_20261005/configs/full_session_part2b_imec1_sort_bounded_pread.v4.json --authorization /mnt/NPX/Luke/DARTsort_motion_experiments/en_full_session_part2b_imec1_sort_bounded_pread_authorization_20261006_v4/USER_AUTHORIZATION.json --installed-unit /home/huklaban5/.config/systemd/user/full-session-part2b-imec1-sort-bounded-pread-20261006-v4.service
+Environment=PYTHONPATH=/tmp/imec1_part2b_timeout_worktree_20261005
+Environment=NUMBA_CACHE_DIR=/tmp/spikeglx-rescue-numba-cache
+Environment=KILOSORT_BOUNDED_PREAD_PATH=/media/huklaban5/Data/en_full_session_part2b_imec1_arm_a_20261004_v1/recording/traces_cached_seg0.raw
+Nice=5
+CPUQuota=800%
+OOMPolicy=stop
+TimeoutStartSec=32400
+StandardOutput=append:/media/huklaban5/Data/en_full_session_part2b_imec1_sort_bounded_pread_20261006_v4.service.log
+StandardError=append:/media/huklaban5/Data/en_full_session_part2b_imec1_sort_bounded_pread_20261006_v4.service.log
+
+[Install]
+WantedBy=default.target

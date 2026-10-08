@@ -1,0 +1,168 @@
+"""Minimal SpikeGLX external-reference rescue pipeline.
+
+This package is self-contained: the production curation, QC, refractory,
+truncation, and Kilosort-result modules were extracted from ``pipelineold``
+and narrowed to the definitions the rescue graph actually calls.  Nothing in
+``pipeline`` imports ``pipelineold``.
+
+``pipelineold`` remains in the research repository for the legacy run sheets
+(``SpikeGLX_tip_ref_2024.py``, ``batch_*_patching.py``, ``example*.py``) and
+for the retired curation strategies kept as comparison evidence.  It is not a
+production dependency and is not part of the production extraction.
+"""
+
+from .artifacts import threshold_points, write_artifact_sidecar
+from .config import PIPELINE_VERSION, RescueConfig, fingerprint
+from .preprocess import (
+    RECORDING_MANIFEST_SCHEMA,
+    build_rescue_recording,
+    materialize_rescue_recording,
+    phase_correct,
+    recording_binary_receipt,
+    recording_geometry_receipt,
+    select_bad_channel_ids,
+    validate_accepted_recording,
+)
+from .staging import (
+    SOURCE_STAGE_MANIFEST,
+    SOURCE_STAGE_SCHEMA,
+    stage_spikeglx_stream,
+    validate_staged_spikeglx_stream,
+)
+from .sorting import (
+    build_kilosort4_params,
+    rescue_kilosort4_overrides,
+    run_kilosort4,
+    validate_applied_settings,
+)
+from .downstream import (
+    SORT_IDENTITY_SCHEMA,
+    build_sort_identity,
+    pin_sort_identity,
+    run_curation_stage,
+    run_diagnostics_stage,
+    run_matlab_export_stage,
+    run_pair_audit_stage,
+    run_postcuration_comparison_stage,
+    run_qc_stage,
+    run_completeness_timeline_stage,
+    run_operational_pipeline_validation_stage,
+    run_standard_qc_stage,
+    validate_sort_identity,
+    write_conservative_decision,
+)
+from .preflight import format_preflight, preflight_report
+from .runtime import (
+    PRODUCTION_PACKAGES,
+    PRODUCTION_PYTHON,
+    PRODUCTION_UV_SETUP,
+    PRODUCTION_UV_PROJECT,
+    production_environment_contract,
+    production_environment_receipt,
+    production_lock_sha256,
+    validate_production_environment,
+)
+from .motion_coordinates import (
+    MOTION_COORDINATE_SCHEMA,
+    MOTION_FIELD_SCHEMA,
+    interpolate_motion_at_spikes,
+    build_spikeinterface_motion,
+    load_qualified_motion_field,
+    write_motion_coordinate_sidecar,
+    motion_aware_peeler_kwargs,
+)
+from .motion_sidecar import (
+    DredgeRigidConfig,
+    JobConfig,
+    MotionBackend,
+    MotionEstimatorInputConfig,
+    MotionQC,
+    MotionQCConfig,
+    MotionSidecarConfig,
+    MotionSidecarRun,
+    PeakDetectionConfig,
+    PeakLocalizationConfig,
+    RigidMotionEstimate,
+    build_motion_estimator_input,
+    evaluate_motion_qc,
+    plot_motion_sidecar,
+    run_motion_sidecar,
+    run_motion_sidecar_for_accepted_recording,
+    run_motion_sidecar_safely,
+)
+
+# ``pipeline.bakeoff`` (DARTsort/KIAsort challengers) is deliberately NOT
+# re-exported here. It is research code, excluded from the production
+# extraction; see docs/decisions/0005-dartsort-kiasort-deferred.md. Research
+# scripts import it explicitly as ``pipeline.bakeoff``.
+__all__ = [
+    "preflight_report",
+    "format_preflight",
+    "PIPELINE_VERSION",
+    "PRODUCTION_PACKAGES",
+    "PRODUCTION_PYTHON",
+    "PRODUCTION_UV_SETUP",
+    "PRODUCTION_UV_PROJECT",
+    "RescueConfig",
+    "RECORDING_MANIFEST_SCHEMA",
+    "SOURCE_STAGE_MANIFEST",
+    "SOURCE_STAGE_SCHEMA",
+    "build_kilosort4_params",
+    "build_sort_identity",
+    "build_motion_estimator_input",
+    "build_rescue_recording",
+    "build_spikeinterface_motion",
+    "fingerprint",
+    "materialize_rescue_recording",
+    "MOTION_COORDINATE_SCHEMA",
+    "MOTION_FIELD_SCHEMA",
+    "MotionBackend",
+    "MotionEstimatorInputConfig",
+    "MotionQC",
+    "MotionQCConfig",
+    "MotionSidecarConfig",
+    "MotionSidecarRun",
+    "DredgeRigidConfig",
+    "JobConfig",
+    "PeakDetectionConfig",
+    "PeakLocalizationConfig",
+    "RigidMotionEstimate",
+    "phase_correct",
+    "recording_binary_receipt",
+    "recording_geometry_receipt",
+    "pin_sort_identity",
+    "plot_motion_sidecar",
+    "rescue_kilosort4_overrides",
+    "run_kilosort4",
+    "run_curation_stage",
+    "run_diagnostics_stage",
+    "run_matlab_export_stage",
+    "run_pair_audit_stage",
+    "run_postcuration_comparison_stage",
+    "run_qc_stage",
+    "run_completeness_timeline_stage",
+    "run_operational_pipeline_validation_stage",
+    "run_standard_qc_stage",
+    "run_motion_sidecar",
+    "run_motion_sidecar_for_accepted_recording",
+    "run_motion_sidecar_safely",
+    "select_bad_channel_ids",
+    "stage_spikeglx_stream",
+    "threshold_points",
+    "SORT_IDENTITY_SCHEMA",
+    "interpolate_motion_at_spikes",
+    "evaluate_motion_qc",
+    "load_qualified_motion_field",
+    "motion_aware_peeler_kwargs",
+    "validate_applied_settings",
+    "validate_sort_identity",
+    "validate_accepted_recording",
+    "validate_staged_spikeglx_stream",
+    "validate_production_environment",
+    "write_artifact_sidecar",
+    "write_conservative_decision",
+    "write_motion_coordinate_sidecar",
+    "production_environment_receipt",
+    "production_environment_contract",
+    "production_lock_sha256",
+]

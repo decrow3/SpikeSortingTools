@@ -1,0 +1,9 @@
+{
+  "schema": "candidate2-cache-managed-gpu-self-observation-repair-complete-v1",
+  "status": "COMPLETE_REVIEWED_AUTHORIZED_NOT_YET_STARTED",
+  "created_utc": "2026-10-08T11:48:00Z",
+  "manifest_sha256": "6cb761eb139e7624031b81320835fcf32558a854adb25086233f58c2bccde952",
+  "member_count": 51,
+  "review_verdict": "GO",
+  "execution_started": false
+}

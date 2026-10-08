@@ -1,0 +1,26 @@
+{
+  "schema": "candidate2-gpu-self-observation-and-final-runner-gate-test-receipt-v2",
+  "created_utc": "2026-10-08T11:31:00Z",
+  "pass": true,
+  "bindings": {
+    "contract_sha256": "4323bf1f4c83a0f03351200f8e2769555ea8f819868b90bc9cee40988c066f48",
+    "source_manifest_sha256": "2d1ff9cae67dc0d8993a6a00495adea5092860dec407fff15173725acf3b4ec2",
+    "runner_sha256": "f62f8c5f42165414233f3532c4ba1a334563bae0bf947b9ac4fe1ae3c5f2da2b",
+    "preflight_sha256": "e1fbc08a0960021abad0ad3b3768b8ef0c41c69e9835f48feceeb961d23d78da",
+    "target_service_sha256": "c2cb7f3f4b668b8e1b195f825da134ffe9710de37b6707b5cc2832ad1e03a712",
+    "monitor_service_sha256": "7fd09574eb2e52554ca36079d71e83fd7f4d352ae35be0c987c213ab642f3713"
+  },
+  "tests": [
+    "actual rescue-production interpreter GPU self-observation fixture: 5 case groups passed",
+    "real host live GPU metric: exact self PID excluded and no external compute app observed",
+    "actual isolated runner contract join: accepted scientific parent and stopped at deliberately absent preflight",
+    "actual isolated runner late-arrival fixture: external GPU PID and competing sorter each rejected at final gate",
+    "systemd set canonicalization: reordered dependencies accepted; changed member and scalar rejected",
+    "monitor bootstrap forwarding boundary passed",
+    "11 monitor readiness/classification known-answer cases passed",
+    "exact 31-member source closure matched SOURCE_MANIFEST.json"
+  ],
+  "recording_opened": false,
+  "recording_bytes_read": 0,
+  "sort_gpu_work_started": false
+}

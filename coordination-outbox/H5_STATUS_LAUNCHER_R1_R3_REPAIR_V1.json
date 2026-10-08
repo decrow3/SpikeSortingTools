@@ -1,0 +1,31 @@
+{
+  "schema": "luke-durable-coordination-h5-launcher-r1-r3-repair-v1",
+  "host": "huklaban5-Precision-5820-Tower",
+  "reported_at": "2026-10-02T14:09:22-07:00",
+  "promotion_basis": {
+    "h1_review_manifest_sha256": "9842cca05ee6762aa5af26138b04e2edd792bf2f1504b19485870747837e1381",
+    "h1_review_complete_sha256": "e68d2a06a31586f8b2aa3be1a9e2fdbedb95e420c3929bc02216c745f5bd0590",
+    "durable_status_sha256": "d4827473079f7549cd0467340fb8cb6031ff8b010c3ca1d456e18bb3f3f56c2a"
+  },
+  "completed_item": "H5 targeted launcher lifecycle repair R1-R3",
+  "candidate": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_targeted_repair_20261002_v2_h5",
+    "manifest_sha256": "cefdbfeb9076513f7063dc0d5ac5fb4776d9fc915b408fd659f61e17ae67f1dc",
+    "complete_sha256": "776be73355ca8939053edba1f7b0ac2e3e52ef5dac952d9a751abcc492c4c07c",
+    "contract_sha256": "8ba7243bf7ffc52f7312e5a63c4b309e35cbfe96bb1b3b2cbe20e0b7598be0a8",
+    "launcher_sha256": "3f1c15588e856195b8aa31466daec007a2a4b0829eac5be6374111b803843ca8",
+    "tests": "10 passed",
+    "published_validate_only": "PASS",
+    "published_repaired_b_validate_only": "PASS"
+  },
+  "repairs": {
+    "R1": "durable O_EXCL single-start claim before fallible preflight; exact pre-root terminal evidence; sequential/concurrent replay rejection",
+    "R2": "aggregate pair-root/log/attempt output monitoring during child process groups and at arm/completion boundaries; terminal cap evidence",
+    "R3": "accepted compact current full-hash/member and exact no-follow lstat continuity before REF; zero voltage bytes"
+  },
+  "execution_enabled": false,
+  "enabled_binding_present": false,
+  "service_installed": false,
+  "scientific_execution_started": false,
+  "next_action": "independent H1 changed-path review of R1-R3 only"
+}

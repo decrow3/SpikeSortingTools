@@ -1,0 +1,26 @@
+[Unit]
+Description=Luke imec0 Candidate2 native-rigid cache-managed full run v6
+ConditionPathExists=/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/rescue_recording_manifest.json
+ConditionPathExists=/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_cache_managed_parser_forwarding_repair_h5_20261008_v1/AUTHORIZATION.json
+ConditionPathExists=!/media/huklaban5/Data/luke_candidate2_native_rigid_cache_managed_imec0_20261008_v6
+Requires=luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v6.service
+BindsTo=luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v6.service
+After=luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v6.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=NUMBA_CACHE_DIR=/tmp/spikeglx-rescue-numba-cache
+Environment=KILOSORT_BOUNDED_PREAD_PATH=/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw
+ExecStartPre=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python -I -S -u /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/preflight_bootstrap.py --self-sha256 333a9c72d5e940d7e60a9a4666c604bd6c2fb2a4b82dae5c0e62a065cf86eb7f --source-root /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/source --source-manifest /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/SOURCE_MANIFEST.json --source-manifest-sha256 dd8ed07fe14c5bb460ae2f1d9119ea6d3c7d5d349ebbcd23b1469cdb3851ac6b --contract /mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_cache_managed_parser_forwarding_repair_h5_20261008_v1/CONTRACT.json --contract-sha256 f0319985046ed246c3052d0de91de7ce63228762d85102f56651685b24168c48 --receipt /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/PREFLIGHT.json --installed-unit /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-imec0-20261008-v6.service --monitor-unit /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v6.service --authorization /mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_cache_managed_parser_forwarding_repair_h5_20261008_v1/AUTHORIZATION.json
+ExecStart=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python -I -S -u /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/bootstrap.py --self-sha256 a96ecc3c2cc2a2a921bdd6ab9c9b26591561d02b67da5da73a27c6b59a14b428 --source-root /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/source --source-manifest /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/SOURCE_MANIFEST.json --source-manifest-sha256 dd8ed07fe14c5bb460ae2f1d9119ea6d3c7d5d349ebbcd23b1469cdb3851ac6b --contract /mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_cache_managed_parser_forwarding_repair_h5_20261008_v1/CONTRACT.json --contract-sha256 f0319985046ed246c3052d0de91de7ce63228762d85102f56651685b24168c48 --receipt /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/JOB.json --authorization /mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_cache_managed_parser_forwarding_repair_h5_20261008_v1/AUTHORIZATION.json --installed-unit /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-imec0-20261008-v6.service --monitor-unit /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v6.service
+Nice=5
+Restart=no
+OOMPolicy=stop
+TimeoutStartSec=infinity
+StandardOutput=append:/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/service.log
+StandardError=append:/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/service.log
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,16 @@
+{
+  "complete": true,
+  "packet": "en_minimum_training_support_mask_enabled_smoke_contract_20261001_v1_h5",
+  "created_utc": "2026-10-01T20:05:00Z",
+  "status": "technically_ready_unlaunched_pending_h1_review_no_go",
+  "manifest_sha256": "79576b20e6d6411ba93a350225266b872f3c118e8c7a1b556281848097e14ffd",
+  "recording_content_opened": false,
+  "real_service_installed": false,
+  "real_service_started": false,
+  "run_root_created": false,
+  "reservation_created": false,
+  "go_receipt_present": false,
+  "kilosort_resumable_within_sort": false,
+  "next_owner": "H1 independent changed-delta reviewer",
+  "deny_action": "stop"
+}

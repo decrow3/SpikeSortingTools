@@ -1,0 +1,27 @@
+H5 waveform-contract-only targeted repair, 2026-10-02
+
+Command:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=source:<rescue-production site-packages> OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 python -m pytest -q -p no:cacheprovider tests/test_waveform_contract.py
+
+Native result:
+10 passed in 2.74s
+
+Final writable byte-identical stage:
+/tmp/en-waveform-contract-repair-final.SHyZj5/packet
+Result: 10 passed in 2.73s
+
+Known answers:
+- four-channel per-channel-center/common-median reference equals the literal
+  expected matrix and differs from common-average reference
+- frozen high-pass impulse equals hash-bound Kilosort get_highpass_filter output
+- packet adapter is bit-identical to hash-bound BinaryFiltered.filter for one
+  deterministic CPU float32 384x1145 record
+- asymmetric competition, equal-cost tie, far-anchor, and unsupported-anchor
+  ledgers are exclusive and exhaustive
+- 64 retained pairs create exactly 128 endpoint reads with no one-sided pair
+- full cap is 4608 * 1145 * 384 * 2 = 4052090880 bytes
+- 15-frame pair lag yields exactly 26 common absolute signal frames
+- execution/voltage gates false; prospective bindings present; RF/holdout excluded
+
+No recording, voltage, waveform, evaluator, sorter, training, detection, RF,
+holdout, or managed job was accessed or run.

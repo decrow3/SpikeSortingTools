@@ -1,0 +1,152 @@
+--- /mnt/NPX/Luke/DARTsort_motion_experiments/en_minimum_training_support_mask_trained_entry_review_candidate_20261002_v1_h5/source/kilosort_support_mask_trained.py	2026-10-02 00:26:58.078268800 -0700
++++ npx_preprocessing/motion/kilosort_support_mask_trained.py	2026-10-02 00:47:37.538549699 -0700
+@@ -371,6 +371,133 @@
+     return result
+ 
+ 
++def _load_array(path: Path, *, allow_pickle: bool = False) -> np.ndarray:
++    try:
++        value = np.load(path, allow_pickle=allow_pickle, mmap_mode=None if allow_pickle else "r")
++    except Exception as exc:
++        raise ValueError(f"unparseable required array {path}: {exc}") from exc
++    return value
++
++
++def _require_array(name: str, value: np.ndarray, *, ndim: int | None = None,
++                   integer: bool = False, finite: bool = True) -> None:
++    if not isinstance(value, np.ndarray) or value.size == 0:
++        raise ValueError(f"{name} must be a nonempty ndarray")
++    if ndim is not None and value.ndim != ndim:
++        raise ValueError(f"{name} rank {value.ndim} != {ndim}")
++    if integer and not np.issubdtype(value.dtype, np.integer):
++        raise ValueError(f"{name} must have integer dtype")
++    if finite and np.issubdtype(value.dtype, np.number) and not np.isfinite(value).all():
++        raise ValueError(f"{name} contains nonfinite values")
++
++
++def validate_saved_artifacts(results: Path, snapshot: Path) -> dict[str, Any]:
++    """Parse and semantically cross-check every required trained artifact."""
++    arrays = {name: _load_array(results / name, allow_pickle=name == "ops.npy")
++              for name in REQUIRED_NATIVE_FILES if name.endswith(".npy")}
++    one_dim_int = ("spike_times.npy", "spike_clusters.npy", "spike_templates.npy",
++                   "spike_detection_templates.npy", "channel_map.npy", "channel_shanks.npy",
++                   "full_clu.npy")
++    for name in one_dim_int:
++        _require_array(name, arrays[name], ndim=1, integer=True)
++    _require_array("kept_spikes.npy", arrays["kept_spikes.npy"], ndim=1, finite=False)
++    if arrays["kept_spikes.npy"].dtype != np.bool_ and not np.issubdtype(arrays["kept_spikes.npy"].dtype, np.integer):
++        raise ValueError("kept_spikes.npy must be Boolean or integer")
++    for name, rank in {
++        "spike_positions.npy": 2, "pc_features.npy": 3, "templates.npy": 3,
++        "templates_ind.npy": 2, "similar_templates.npy": 2,
++        "whitening_mat.npy": 2, "whitening_mat_dat.npy": 2,
++        "whitening_mat_inv.npy": 2, "pc_feature_ind.npy": 2,
++        "tF.npy": 3, "Wall.npy": 3, "full_st.npy": 2,
++        "full_amp.npy": 1, "amplitudes.npy": 1,
++    }.items():
++        _require_array(name, arrays[name], ndim=rank)
++    n_spikes = len(arrays["spike_times.npy"])
++    for name in ("spike_clusters.npy", "spike_templates.npy", "spike_detection_templates.npy",
++                 "spike_positions.npy", "amplitudes.npy", "pc_features.npy", "tF.npy"):
++        if arrays[name].shape[0] != n_spikes:
++            raise ValueError(f"{name} is not aligned to spike_times.npy")
++    n_full = arrays["full_st.npy"].shape[0]
++    if arrays["full_st.npy"].shape[1] < 3:
++        raise ValueError("full_st.npy requires at least three columns")
++    if len(arrays["full_clu.npy"]) != n_full or len(arrays["full_amp.npy"]) != n_full:
++        raise ValueError("full_st/full_clu/full_amp are misaligned")
++    kept = arrays["kept_spikes.npy"]
++    kept_count = int(kept.sum()) if kept.dtype == np.bool_ else len(kept)
++    if kept.dtype == np.bool_ and len(kept) != n_full:
++        raise ValueError("Boolean kept_spikes length differs from full_st")
++    if kept.dtype != np.bool_ and (kept.min() < 0 or kept.max() >= n_full):
++        raise ValueError("integer kept_spikes index is outside full_st")
++    if kept_count != n_spikes:
++        raise ValueError("kept_spikes selected count differs from exported spike count")
++    chan_map = arrays["channel_map.npy"].reshape(-1)
++    n_channels = len(chan_map)
++    if len(np.unique(chan_map)) != n_channels:
++        raise ValueError("channel_map.npy is not unique")
++    if arrays["channel_positions.npy"].shape != (n_channels, 2) or len(arrays["channel_shanks.npy"]) != n_channels:
++        raise ValueError("channel metadata is not aligned")
++    for name in ("whitening_mat.npy", "whitening_mat_dat.npy", "whitening_mat_inv.npy"):
++        if arrays[name].shape != (n_channels, n_channels):
++            raise ValueError(f"{name} does not match channel count")
++    n_templates = arrays["templates.npy"].shape[0]
++    if arrays["templates.npy"].shape[2] != n_channels:
++        raise ValueError("templates.npy physical-channel axis differs")
++    if arrays["templates_ind.npy"].shape[0] != n_templates or arrays["similar_templates.npy"].shape != (n_templates, n_templates):
++        raise ValueError("template arrays are not aligned")
++    ops_value = arrays["ops.npy"]
++    if ops_value.shape != () or not isinstance(ops_value.item(), dict):
++        raise ValueError("ops.npy must contain one dictionary")
++    ops = ops_value.item()
++    if "chanMap" not in ops or not np.array_equal(np.asarray(ops["chanMap"]).reshape(-1), chan_map):
++        raise ValueError("ops chanMap ancestry differs from channel_map.npy")
++    snapshot_arrays = {name: _load_array(snapshot / name)
++                       for name in REQUIRED_SNAPSHOT_FILES if name.endswith(".npy")}
++    for name, rank in {"Wall3.npy": 3, "wPCA.npy": 2, "wTEMP.npy": 2,
++                       "chanMap.npy": 1, "iU.npy": 1, "iCC.npy": 2,
++                       "iCC_mask.npy": 2, "iU_physical_binary_channel.npy": 1}.items():
++        _require_array("snapshot/" + name, snapshot_arrays[name], ndim=rank,
++                       integer=name in {"chanMap.npy", "iU.npy", "iCC.npy", "iU_physical_binary_channel.npy"})
++    wall3 = snapshot_arrays["Wall3.npy"]
++    if not np.array_equal(snapshot_arrays["chanMap.npy"], chan_map):
++        raise ValueError("snapshot chanMap differs from native channel_map")
++    if wall3.shape[1] != snapshot_arrays["wPCA.npy"].shape[0] or snapshot_arrays["wPCA.npy"].shape != snapshot_arrays["wTEMP.npy"].shape:
++        raise ValueError("Wall3/wPCA/wTEMP basis axes differ")
++    if wall3.shape[2] != n_channels or len(snapshot_arrays["iU.npy"]) != wall3.shape[0]:
++        raise ValueError("Wall3/iU physical ancestry differs")
++    iCC, iCC_mask = snapshot_arrays["iCC.npy"], snapshot_arrays["iCC_mask.npy"]
++    if iCC.shape != iCC_mask.shape or iCC.shape[1] != n_channels:
++        raise ValueError("iCC/iCC_mask/channel axes differ")
++    if iCC.min() < 0 or iCC.max() >= n_channels:
++        raise ValueError("iCC contains invalid channel indices")
++    iU = snapshot_arrays["iU.npy"].astype(int)
++    if iU.min() < 0 or iU.max() >= n_channels:
++        raise ValueError("iU contains invalid channel indices")
++    if not np.array_equal(snapshot_arrays["iU_physical_binary_channel.npy"], chan_map[iU]):
++        raise ValueError("iU physical-channel binding differs from chanMap[iU]")
++    detection_ids = arrays["spike_detection_templates.npy"]
++    if detection_ids.min() < 0 or detection_ids.max() >= wall3.shape[0]:
++        raise ValueError("spike_detection_templates is outside Wall3 axis 0")
++    receipt = json.loads((snapshot / "RECEIPT.json").read_text())
++    if receipt.get("wall3_axis0_binding") != "spike_detection_templates.npy":
++        raise ValueError("snapshot receipt lacks Wall3 detection-template ancestry")
++    recorded = receipt.get("files")
++    if not isinstance(recorded, dict):
++        raise ValueError("snapshot receipt lacks per-file hashes")
++    for name in snapshot_arrays:
++        if recorded.get(name) != sha256_file(snapshot / name):
++            raise ValueError(f"snapshot receipt hash differs: {name}")
++    for name in ("cluster_Amplitude.tsv", "cluster_ContamPct.tsv", "cluster_KSLabel.tsv", "cluster_group.tsv"):
++        text = (results / name).read_text()
++        if not text.strip() or "cluster_id" not in text.splitlines()[0]:
++            raise ValueError(f"{name} is not a parseable nonempty cluster table")
++    for name in ("params.py", "kilosort4.log"):
++        if not (results / name).read_text().strip():
++            raise ValueError(f"{name} is empty")
++    return {"status": "semantic_validation_passed", "spikes": n_spikes,
++            "full_rows": n_full, "channels": n_channels, "templates": n_templates,
++            "wall3_templates": wall3.shape[0]}
++
++
+ def _native_kwargs(config: dict[str, Any], contract: reviewed.ValidatedSupportMaskContract) -> dict[str, Any]:
+     # The reviewed helper preserves the exact native signature and Infinity handling.
+     with tempfile.TemporaryDirectory(prefix="trained-native-adapter-") as temporary:
+@@ -428,6 +555,7 @@
+         if whitening_audit.whitening_finite is not True or whitening_audit.whitening_sha256 is None:
+             raise RuntimeError("trained runner lacks finite audited whitening")
+         stage = "validate_and_inventory_saved_artifacts"
++        semantic_validation = validate_saved_artifacts(results, snapshot)
+         native_inventory = _inventory(results, REQUIRED_NATIVE_FILES)
+         snapshot_inventory = _inventory(snapshot, REQUIRED_SNAPSHOT_FILES)
+         atomic_json(evidence / "support_reads_by_phase.json", {
+@@ -440,6 +568,7 @@
+         })
+         atomic_json(evidence / "artifact_inventory.json", {
+             "native": native_inventory, "pre_extraction_snapshot": snapshot_inventory,
++            "semantic_validation": semantic_validation,
+         })
+         stage = "write_completion_last"
+         complete = {

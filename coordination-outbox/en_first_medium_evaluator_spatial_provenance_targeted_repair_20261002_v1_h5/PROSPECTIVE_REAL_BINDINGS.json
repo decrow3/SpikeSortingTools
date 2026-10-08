@@ -1,0 +1,40 @@
+{
+  "schema": "first-medium-spatial-real-binding-status-v1",
+  "status": "PROSPECTIVE_NOT_EXECUTION_TRUTH",
+  "purpose": "Preserve historical producer claims without promoting them to independently recomputed H5 execution bindings.",
+  "historical_claims_from_original_candidate": {
+    "REF384": {
+      "spike_positions_sha256": "653434b726da58644876db9c3d83b64fb37d5a0c901ae329413c8463d3094737",
+      "event_lineage_sha256": "3aa7da34c17af944c79a26b71e1988b97770f98ba4d7e902fda6d113d1b08380",
+      "shape": [1856371, 2],
+      "review_scope": "H1 inspected the receipt value but could not recompute it from H5-local bytes"
+    },
+    "existing_corrected_B384": {
+      "spike_positions_sha256": "946954995e3ee1a04e9b7c53ca93e54213a3a13062ef0c34582c89a75f6de0b9",
+      "event_lineage_sha256": "333cbbc28a637b2100e1c8412e485be067335cbae35e4a4ab3db1a9367af8745",
+      "shape": [1854340, 2],
+      "review_scope": "H1 inspected the receipt value but could not recompute it from H5-local bytes"
+    }
+  },
+  "not_asserted": [
+    "The historical hashes equal current H5-local bytes",
+    "A v2 spatial_identity_sha256 for either real arm",
+    "Any repaired_B384 or REF384_repeat spatial receipt",
+    "Any evaluator or scientific outcome"
+  ],
+  "future_execution_binding": {
+    "required": true,
+    "host": "the execution host holding the actual arm arrays",
+    "checks": [
+      "hash spike_positions.npy and parse the same bytes",
+      "hash ops.npy and verify nblocks=0, dshift=None, identity chanMap, and geometry",
+      "recompute row lineage from spike times, clusters, full_st amplitudes, and positions",
+      "verify frame, units, columns, row semantics, clock, crop, and unchanged spatial region",
+      "resolve a Kilosort source root and verify dependency digest d1e5a4465d387c66a7655db442ecbf8740d2cae0032c300b0456432b0080c614",
+      "derive spatial_identity_sha256 from the validated binding",
+      "reject any redundant claimed spatial_identity that differs",
+      "write a fresh immutable receipt before evaluation"
+    ],
+    "real_arm_values": "PROSPECTIVE_BINDING_REQUIRED"
+  }
+}

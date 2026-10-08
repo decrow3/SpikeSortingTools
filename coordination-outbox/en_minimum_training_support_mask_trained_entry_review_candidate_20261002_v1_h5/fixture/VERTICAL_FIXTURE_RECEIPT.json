@@ -1,0 +1,31 @@
+{
+  "schema": "trained-support-mask-vertical-fixture-v1",
+  "orchestration_only": true,
+  "no_recording_voltage_sort_training_detection": true,
+  "success_reached_complete": true,
+  "success_required_artifacts_validated": true,
+  "injected_failure_preserved": true,
+  "missing_key_failed_before_bound_paths": true,
+  "cases": {
+    "success": {
+      "returncode": 0,
+      "stdout": "{\n  \"config_sha256\": \"490813640d9374255ec8aa91012d77a3b44405716cf9708a5efce1ea4b424fb9\",\n  \"contract_digest\": \"96f073c09b4a90318d4bcf2ffca1b694201df3124d4edc82d604830a0126c553\",\n  \"execution_enabled\": true,\n  \"orchestration_only_synthetic\": true,\n  \"recording_binary_opened\": false,\n  \"saved_smoke_bank_allowed\": false,\n  \"status\": \"validated\",\n  \"trained_mode\": \"full_native_trained\"\n}\n{\n  \"complete\": {\n    \"completion_written_last\": true,\n    \"config_sha256\": \"490813640d9374255ec8aa91012d77a3b44405716cf9708a5efce1ea4b424fb9\",\n    \"contract_digest\": \"96f073c09b4a90318d4bcf2ffca1b694201df3124d4edc82d604830a0126c553\",\n    \"orchestration_only_synthetic\": true,\n    \"recomputed_adaptive_state\": [\n      \"covariance_C\",\n      \"whitening_W\",\n      \"wPCA\",\n      \"wTEMP\",\n      \"universal_detections_and_features\",\n      \"Wall3\",\n      \"iU\",\n      \"iCC\",\n      \"iCC_mask\",\n      \"learned_detections_and_features\",\n      \"final_clusters\",\n      \"final_templates\"\n    ],\n    \"required_artifacts_validated\": true,\n    \"smoke_bank_injected\": false,\n    \"status\": \"complete\"\n  },\n  \"result\": {\n    \"status\": \"orchestration_only_success\"\n  }\n}\n",
+      "stderr": "",
+      "config_sha256": "490813640d9374255ec8aa91012d77a3b44405716cf9708a5efce1ea4b424fb9"
+    },
+    "injected_downstream_failure": {
+      "returncode": 1,
+      "stdout": "{\n  \"config_sha256\": \"8149f40e2420985f0e4280c69168c3cebcdab57ad169d04473903dea19a738e6\",\n  \"contract_digest\": \"c8eef9239790949e026c9acbd00c6279481c8bdf432556fc4874992c58956707\",\n  \"execution_enabled\": true,\n  \"orchestration_only_synthetic\": true,\n  \"recording_binary_opened\": false,\n  \"saved_smoke_bank_allowed\": false,\n  \"status\": \"validated\",\n  \"trained_mode\": \"full_native_trained\"\n}\n",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_minimum_training_support_mask_trained_launch.py\", line 138, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_minimum_training_support_mask_trained_launch.py\", line 126, in main\n    result, complete = trained.run_native_trained(\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 478, in run_native_trained\n    return execute_trained(\n           ^^^^^^^^^^^^^^^^\n  File \"/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 424, in execute_trained\n    result = native_runner(**kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_minimum_training_support_mask_trained_launch.py\", line 82, in runner\n    raise RuntimeError(\"injected synthetic downstream failure\")\nRuntimeError: injected synthetic downstream failure\n",
+      "config_sha256": "8149f40e2420985f0e4280c69168c3cebcdab57ad169d04473903dea19a738e6"
+    },
+    "missing_required_key": {
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_minimum_training_support_mask_trained_launch.py\", line 138, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_minimum_training_support_mask_trained_launch.py\", line 105, in main\n    config, contract = trained.validate_trained_contract(\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 192, in validate_trained_contract\n    prevalidate_trained_structure(config)\n  File \"/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 134, in prevalidate_trained_structure\n    _at(config, path)\n  File \"/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/kilosort_support_mask_trained.py\", line 126, in _at\n    raise ValueError(\"missing required config key before data access: \" + \".\".join(path))\nValueError: missing required config key before data access: trained.required_snapshot_files\n",
+      "config_sha256": "21169cb9b5eca42585f658db56f7baf750c0de607f4e62bc2657c84ffc33fe4d",
+      "sentinel_source_exists": false,
+      "sentinel_manifest_exists": false
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "schema": "candidate2-stable-systemd-identity-independent-review-v1",
+  "verdict": "GO",
+  "scope": "GO_TO_CREATE_EXACT_TYPED_AUTHORIZATION_FRESH_RECONCILIATION_AND_ONE_MANAGED_V8_ATTEMPT",
+  "authorization_created": false,
+  "production_execution_started": false,
+  "production_recording_opened": false,
+  "reviewed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/candidate2_stable_systemd_identity_complete_preflight_h5_20261008_v1",
+  "bindings": {
+    "contract_sha256": "4769968e7bef087d07097bb61b745de7882afaa9e38c2d20f7c75eb4071d6c68",
+    "source_manifest_sha256": "db2660fbb9d63e706780cef5a9b60855b8b7f1ca190d882705eec40de39a9408",
+    "source_member_count": 31,
+    "preflight_sha256": "2c3d0e07f4e6a723aa7af16bd865ecc353007d611927f5fe31932753e0eb7da7",
+    "runner_sha256": "f62f8c5f42165414233f3532c4ba1a334563bae0bf947b9ac4fe1ae3c5f2da2b",
+    "target_service_sha256": "aecc25da47aaaf9213b8635dd2b5f56360e6c6bc5958624d67c0cebd8a195a11",
+    "monitor_service_sha256": "30b82b2396705f11fc1e7c2177ace6e73a6b74ee27446307dd126d0a071391e7",
+    "test_receipt_sha256": "814e7400c5251c9df108c91ccbb9d1bcdd59cf34a22edb5b6b6f994a88ea8d5e",
+    "deployment_evidence_sha256": "65303e1a3019e114133cadeedbdfa526ed7af9765148c67292aaefbf44aad9c5",
+    "producer_full_preflight_receipt_sha256": "1d718ddd7426fbb6c6349ac26a9d8d6531d9067d72c8e96139ed815b78e345fc",
+    "reviewer_full_preflight_receipt_sha256": "53a637b69a8b36d87ec723e04c5549e594b3fb1770c0f745a7ec396e9b4c9633",
+    "deployed_typed_identity_sha256": "9e1126c0faec08a6bdfc2ce0d49511752cefb8ab8e9c65e0a6a1fb87f6bcf744",
+    "preserved_v7_failure_manifest_sha256": "e24bfdfce47d4d59fad84047f811e0a04abc04189b548af33fd0f9a8ea7e889e"
+  },
+  "checks": {
+    "manager_getunit_and_typed_service_properties": true,
+    "typed_signature_exact": true,
+    "command_order_cardinality_and_argv_boundaries_preserved": true,
+    "executable_path_and_ignore_errors_exact": true,
+    "empty_command_arrays_explicit": true,
+    "schema_query_and_row_failures_reject": true,
+    "no_regex_or_human_exec_string_stripping": true,
+    "downstream_checks_consume_typed_argv": true,
+    "path_shadow_fixed": true,
+    "actual_full_preflight_positive_receipt_passed": true,
+    "path_argv_ignore_errors_negatives_rejected": true,
+    "full_preflight_gates_not_stubbed": true,
+    "remaining_receipt_sequence_serialized": true,
+    "gpu_five_case_passed": true,
+    "late_arrival_runner_gates_passed": true,
+    "science_cache_and_no_caps_unchanged": true,
+    "packet_and_installed_source_closure_exact": true,
+    "installed_unit_bytes_exact": true,
+    "production_units_inactive_pid_zero": true,
+    "authorization_output_and_receipts_absent": true,
+    "v7_failure_preserved": true
+  },
+  "blocking_findings": [],
+  "implementation_checks": {
+    "done": [
+      "Inspected exact typed D-Bus source and downstream argv consumers",
+      "Compared deployed typed identity with packet unit directives",
+      "Reran actual rescue-production full preflight dummy lifecycle and negatives",
+      "Reverified source/unit deployment, v7 failure, GPU, runner, monitor and dependency fixtures"
+    ],
+    "not_done": [
+      "Production authorization, fresh production preflight, recording validation, service start, sort, curation/QC, or outcome review"
+    ],
+    "can_establish": "Technical fitness for exact typed authorization, fresh reconciliation, and one managed v8 attempt.",
+    "cannot_establish": "Future resource state, run success, outputs, memory outcome, or scientific benefit."
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "active_coordination_v3_sha256": "8a21ac17dd927e84e66f1ef892e77c20da0fc8d554ccac3537329aee16cec10f",
+  "clock_candidate": {
+    "complete_sha256": "425a4f9d78c303412896b50a27dab72a7395d14d9502a799fb0613d01682ec5e",
+    "manifest_sha256": "58c8a3be3f449c65b3bdd0da40f83f6856acc0906659a2cabce9ef62d3bdb6fa",
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_minimum_training_support_mask_trained_entry_clock_repair_candidate_20261002_v5_h1"
+  },
+  "clock_h5_review": {
+    "complete_sha256": "74f63fe6880e50c5247f21df2ef16d3ea37f2e3206f60dce89495a69d493cd3d",
+    "manifest_sha256": "39fd736b838b81db39b96265a4fd51de0ebf6e102e6fa1876fd56f4132c74af4",
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_minimum_training_support_mask_trained_entry_clock_v5_h5_review_20261002_v1_h5"
+  },
+  "current_voltage_hash": {
+    "complete_sha256": "aaa5e9f5d372327baa612de5159f37afb11f2e9ed20e71223f00ede55bfcdfd6",
+    "manifest_sha256": "141a699e7396b62f67329ebba6a62dda3387db148f9ec1e56f18bb1f9e6070c4",
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_voltage_current_full_hash_20261002_v1_h5"
+  },
+  "preparation_packet": {
+    "complete_sha256": "b73a3132ac23e8c6eb251fb1641191f51bf919432f554a2bdea0e8740ae99499",
+    "manifest_sha256": "d412d46d505873225a8f2066e413a347672493ca99b1a88f3b7a04b59048aed2",
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_trained_pair_preparation_readiness_20261002_v1_h5"
+  },
+  "schema": "no-mask-ref-repeat-launcher-provenance-v1"
+}

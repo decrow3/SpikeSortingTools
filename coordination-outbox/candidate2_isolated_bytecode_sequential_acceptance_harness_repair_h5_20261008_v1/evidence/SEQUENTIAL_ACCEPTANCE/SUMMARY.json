@@ -1,0 +1,17 @@
+{
+  "actual_main_bootstrap_runner_import": true,
+  "actual_preflight_bootstrap": true,
+  "inactive_equals_active_typed_identity": true,
+  "negative_cases": [
+    "argv",
+    "ignore_errors",
+    "path"
+  ],
+  "pass": true,
+  "positive_receipt": "/tmp/candidate2-v8-full-preflight-rivj5a8h/positive/PREFLIGHT.json",
+  "recording_bytes_read": 0,
+  "recording_opened": false,
+  "sort_gpu_work_started": false,
+  "source_mutation_rejected": true,
+  "source_unchanged_at_each_boundary": true
+}

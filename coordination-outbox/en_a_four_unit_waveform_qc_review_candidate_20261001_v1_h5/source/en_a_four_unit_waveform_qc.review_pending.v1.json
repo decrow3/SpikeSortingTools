@@ -1,0 +1,115 @@
+{
+  "schema": "en-a-four-unit-waveform-qc-v1",
+  "status": "review_pending_execution_disabled",
+  "gates": {
+    "execution_enabled": false,
+    "independent_h1_review_manifest_sha256": null,
+    "outcome_archive_open_authorized": false
+  },
+  "decision_scope": "whether selected A signals show technically coherent original-versus-corrected waveform and stage behavior worthy of informing the first trained comparison",
+  "prohibited_claims": ["biological identity", "purity", "motion-estimator correctness", "sorter improvement"],
+  "review_lineage": {
+    "postexecution_review_manifest_sha256": "fbf9aa3a79b0580477b7d75c497df45715436868351e5f4eb2da814f2a9abe00",
+    "capture_execution_manifest_sha256": "9714697d213368f932c0b4f8cafbc152307fffb3dd195ff6aa1bea1960c514ca",
+    "capture_execution_complete_sha256": "af4f860729c8bb901bede19d93af0a610bd4d02ab4842302c67fcad40a1b5320"
+  },
+  "inputs": {
+    "original_archive": {
+      "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_a_four_unit_physical_signal_capture_20261001_approved_v2/original_retained_int16.npz",
+      "sha256": "0552053555cb8fb0008bb1c796617d636243c0015d0ecaebe730350d132f3838"
+    },
+    "corrected_archive": {
+      "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_a_four_unit_physical_signal_capture_20261001_approved_v2/corrected_A_retained_int16.npz",
+      "sha256": "91b8fc7afed9ce4413edd86d53349eb7b9e9906a24f661b18bc308fbedbfb513"
+    },
+    "selection_receipt": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_approval_metadata_20261001_v3_h5/SELECTION_RECEIPT.csv",
+      "sha256": "a83a8b358cfc4bfad85d2ed2a6cd0137826f7e93ec5046f902674dce3a226d95"
+    },
+    "channel_positions": {
+      "path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/sort/sorter_output/channel_positions.npy",
+      "sha256": "0469ca92fb739a0cfd2f1613262d3a2d75af1098385385d7462ee6e3fd038d75"
+    }
+  },
+  "axes_and_scale": {
+    "archive_axis_order": ["channel", "time"],
+    "channels": 384,
+    "dtype": "int16",
+    "amplitude_unit": "ADC_count",
+    "sampling_frequency_hz": 29999.835983263598,
+    "frame_origin": 0,
+    "member_shape_rule": "short_pair=(384,121+lag_samples); single=(384,121)",
+    "first_event_index": 60,
+    "second_pair_event_index_rule": "60+lag_samples"
+  },
+  "unit_channel_identities": {
+    "271": {"corrected_anchor_channel": 100, "corrected_anchor_xy_um": [16.0, 1000.0], "states_to_original_anchor": {"-240": 76, "-160": 84, "0": 100}},
+    "278": {"corrected_anchor_channel": 104, "corrected_anchor_xy_um": [16.0, 1040.0], "states_to_original_anchor": {"-200": 84, "-80": 96, "0": 104}},
+    "445": {"corrected_anchor_channel": 191, "corrected_anchor_xy_um": [32.0, 1900.0], "states_to_original_anchor": {"-200": 171, "-120": 179, "0": 191}},
+    "588": {"corrected_anchor_channel": 264, "corrected_anchor_xy_um": [16.0, 2640.0], "states_to_original_anchor": {"-160": 248, "-120": 252, "0": 264}}
+  },
+  "channel_domains": {
+    "local_radius_um": 80.0,
+    "local_domain_rule": "per representation, channels within Euclidean 80 um of that representation's anchor: corrected anchor for corrected_A and state-specific original anchor for original",
+    "global_localization_domain": "all channels 0..383",
+    "remap_rule": "corrected[target,time] equals original[source,time], where source has (x_source,y_source)=(x_target,y_target+state_um); unmatched targets must be zero"
+  },
+  "windows": {
+    "single_signal_half_open": [40, 101],
+    "pair_signal_half_open_rule": "[40,101+lag_samples)",
+    "baseline_half_open_rule": "concatenate [0,30) and [111+lag_samples,121+lag_samples); lag=0 for singles"
+  },
+  "stages": {
+    "raw_counts": "int16 promoted to float64 without scaling",
+    "temporal_centered": "subtract each channel full-member mean",
+    "car_centered": "temporal_centered minus across-channel median at each time",
+    "native_highpass": "not recomputed because the retained windows lack the original 512-sample padding; no channel-level high-pass claim is permitted"
+  },
+  "metrics": {
+    "robust_noise_sigma": "1.4826 * median(abs(baseline - median(baseline))) per channel and stage",
+    "noise_floor_adc": 1.0,
+    "channel_signal_ptp": "max(signal)-min(signal)",
+    "channel_ptp_snr": "channel_signal_ptp / max(robust_noise_sigma,1.0)",
+    "channel_signal_rms_z": "sqrt(mean((signal-baseline_median)^2)) / max(robust_noise_sigma,1.0)",
+    "peak_channel": "lowest channel index among exact maxima of channel_ptp_snr",
+    "peak_distance_um": "Euclidean distance from peak channel to the representation/state anchor",
+    "local_max_ptp_snr": "maximum channel_ptp_snr in the frozen local domain",
+    "local_median_ptp_snr": "median channel_ptp_snr in the frozen local domain",
+    "normalized_shape_correlation": "Pearson correlation of centered signal vectors on exact remap-corresponding channel/time samples; undefined if either norm is zero"
+  },
+  "controls_and_comparisons": {
+    "capture_duplicate_control": "bind prior successful duplicate-read control; do not reread or invent a second archived member",
+    "q0_identity": "all four q0 original/corrected arrays must be byte-identical",
+    "exact_remap_positive": "all 20 corrected arrays must equal the state-specific exact-lattice remap of original, including zero-fill on unsupported targets",
+    "wrong_sign_negative": "for each of eight nonzero ordinary slots, wrong-sign-remapped original must have full-array exact-equality fraction below 0.99 versus corrected",
+    "no_shift_negative": "for each of eight nonzero ordinary slots, unshifted original must have full-array exact-equality fraction below 0.99 versus corrected",
+    "identity_fixture": "synthetic q0 preserves every sample",
+    "positive_fixture": "synthetic translated spike lands at the expected corrected anchor",
+    "negative_fixture": "synthetic wrong-sign and no-shift mappings fail equality"
+  },
+  "interpretation_rules": {
+    "slot_visible": "car_centered local_max_ptp_snr >= 6 and peak_distance_um <= 80",
+    "unit_usable": "at least 2 of its 3 single-event slots are visible in corrected_A",
+    "PASS": "all archive/key/shape/dtype/remap/q0 controls pass, both outcome negative controls pass for all eight ordinary displaced slots, and at least 3 of 4 units are usable",
+    "CAUTION": "all integrity/remap/q0 controls and all negative controls pass, but exactly 2 of 4 units are usable",
+    "FAIL": "any integrity/remap/q0 control fails, any negative control fails, or fewer than 2 units are usable",
+    "pair_use": "short-pair slots are reported for morphology and exact-remap integrity but excluded from visibility and usability counts"
+  },
+  "output_schema": {
+    "output_root": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_a_four_unit_waveform_qc_20261001_v1",
+    "files": ["VALIDATION.json", "CHANNEL_METRICS.csv", "SLOT_SUMMARIES.csv", "COMPARISONS.csv", "DECISION.json", "figures/unit_271.png", "figures/unit_278.png", "figures/unit_445.png", "figures/unit_588.png", "COMPLETE.json"],
+    "complete_written_last": true,
+    "publish_voltage": false
+  },
+  "resources": {
+    "recording_read_calls_max": 0,
+    "archive_opens_max": 4,
+    "archive_numeric_bytes_max": 3912192,
+    "persistent_output_bytes_max": 33554432,
+    "ram_bytes_max": 536870912,
+    "cpu_threads_max": 2,
+    "wall_seconds_max": 120
+  },
+  "stop_conditions": ["any gate or hash mismatch", "any unexpected key shape axis or dtype", "any resource ceiling would be exceeded", "any output path already exists"],
+  "completion_condition": "all frozen outputs are durable and COMPLETE.json is written last; no recording path is opened"
+}

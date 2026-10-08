@@ -1,0 +1,17 @@
+{
+  "schema": "luke-post-go-activation-candidate-complete-v1",
+  "status": "COMPLETE_EXECUTION_DISABLED_PHASE3_REVIEW_REQUIRED",
+  "manifest_file": "MANIFEST.sha256",
+  "manifest_sha256": "abac807e07e9cf443cb0899fcf05e518b5131d9b9493c688dc35a44d2e919a60",
+  "contract_sha256": "65a94dd52f9264baa70270837b9e441ab8fef69e39a7e905e2c165017355eff5",
+  "reviewed_launcher_sha256": "238c9c997bad67415a13671deaa5569ee121f3a27aa07188fef51c424f2029f8",
+  "h1_launcher_go_manifest_sha256": "7fde2fc6d93a85d3453471176ad66f6e3e8cb14349a449f38ea7e7e44d0fa6c5",
+  "phase3_review_binding": null,
+  "tests": "20 passed",
+  "activation_eligible": false,
+  "execution_enabled": false,
+  "service_installed_or_started": false,
+  "recording_or_voltage_read": false,
+  "scientific_execution_started": false,
+  "completion_written_last": true
+}

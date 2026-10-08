@@ -1,0 +1,17 @@
+{
+  "observed_after_completion_utc": "2026-10-02T06:29:50Z",
+  "unit": "en_a_four_unit_waveform_qc_approved_v1.service",
+  "manager": "systemd user transient service",
+  "start_requests": 1,
+  "retry_requests": 0,
+  "journal_start_result": "done",
+  "exit_status": 0,
+  "exit_status_basis": "durable COMPLETE plus successful transient-unit collection with no process-exit or failed-result journal entry",
+  "cpu_usage_nsec": 3247746000,
+  "post_collection_load_state": "not-found",
+  "post_collection_active_state": "inactive",
+  "post_collection_sub_state": "dead",
+  "remaining_process_observed": false,
+  "stdout_bytes": 0,
+  "stderr_bytes": 0
+}

@@ -1,0 +1,55 @@
+{
+  "schema": "luke-durable-coordination-h5-ack-v3",
+  "host": "huklaban5-Precision-5820-Tower",
+  "acknowledged_at": "2026-10-02T12:27:26-07:00",
+  "shared_directory": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1",
+  "directory_visibility": "read_write_verified_by_ack_publication",
+  "active_assignment_version": "v3",
+  "active_assignment_file": "CURRENT_ASSIGNMENT_COORDINATOR_RELAY_V3.json",
+  "active_assignment_sha256": "8a21ac17dd927e84e66f1ef892e77c20da0fc8d554ccac3537329aee16cec10f",
+  "preserved_versions": {
+    "v1_sha256": "a8586a4370cc841c1482d8f687db59fe181700ea3af86ff35a3e4593b4d17954",
+    "v2_sha256": "8241940b4c3b368167a98c7763b76b0e0e285a29964c8edca8aed8804a38e8f7"
+  },
+  "h1_ack_verified": {
+    "file": "H1_ACK_V3.json",
+    "sha256": "5f0b837861c580700840096df921dfa1b6eb277e016565d6dfb53f8119c47c06"
+  },
+  "dated_target_acknowledged": "actual end-to-end first prototype pipeline by end of October 4, 2026 America/Los_Angeles",
+  "daily_priorities_acknowledged": {
+    "october_2": "close or identify clock, waveform-method, and comparator-entry defects",
+    "october_3": "integrate the smallest coherent prototype/baseline entry, complete load-bearing review and cheap real-path checks, prepare evaluator/report inputs, and launch early if ready",
+    "october_4": "complete a representative 600-second intended-preprocessing/native-training/export/clock-ancestry/frozen-evaluator run, aiming to finish the pair and review",
+    "completion_rule": "a process start or snippet pass is insufficient",
+    "date_threat_rule": "escalate early with exact failed stage, minimum defensible scope, and revised estimate"
+  },
+  "queue_acknowledged_without_duplicate_work": {
+    "current": "H5-WAVEFORM-METHOD-FREEZE",
+    "ready": "H5-CLOCK-V5-REVIEW",
+    "conditional": "H5-NO-MASK-REF-REPEAT-LAUNCHER requires clock GO and explicit promotion"
+  },
+  "current_evidence_state": {
+    "waveform_freeze_candidate": {
+      "packet": "en_first_medium_waveform_method_h5_actual_freeze_candidate_20261002_v4_h5",
+      "manifest_sha256": "50fa0589d6eb459b12a4ac8c5c997fa7b822a58d2b2c1f0cbd2de53f9c47f8a7",
+      "complete_sha256": "74bd795cee9a3e5c651210c2ed37e977e2476e75491a7e2a5e44ff87f0deb952",
+      "state": "published execution-disabled; ready for H1 changed-path review"
+    },
+    "clock_v5_review": {
+      "packet": "en_minimum_training_support_mask_trained_entry_clock_v5_h5_review_20261002_v1_h5",
+      "manifest_sha256": "39fd736b838b81db39b96265a4fd51de0ebf6e102e6fa1876fd56f4132c74af4",
+      "complete_sha256": "74f63fe6880e50c5247f21df2ef16d3ea37f2e3206f60dce89495a69d493cd3d",
+      "verdict": "GO_CLOCK_REPAIR_ONLY"
+    },
+    "conditional_launcher": "not started; no explicit promotion inferred"
+  },
+  "workflow_rules_acknowledged": [1, 2, 3, 4, 5, 6, 7],
+  "coordinator_table_reference": {
+    "identity": "CURRENT_ASSIGNMENTS_20261002.md",
+    "sha256": "58f4a6bcf805225d625f2d08e49ce502cb150eb6e8b8fb28e8ada6d7948c3514",
+    "local_file_visible_on_h5": false,
+    "rule": "the exact v3 relay is the durable active instruction; the unmounted coordinator table is not inferred"
+  },
+  "preserved_scope": "all frozen contracts, review gates, permissions, exclusions, failure evidence, and RF/holdout seal remain unchanged",
+  "no_restart_or_duplicate_work": true
+}

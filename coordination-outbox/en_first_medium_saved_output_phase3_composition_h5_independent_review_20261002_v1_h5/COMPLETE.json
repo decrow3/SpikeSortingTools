@@ -1,0 +1,15 @@
+{
+  "schema": "h5-independent-phase3-composition-review-complete-v1",
+  "status": "COMPLETE_WITH_BLOCKER",
+  "verdict": "BLOCK_PAIR_OUTPUT_PROVENANCE_UNBOUND",
+  "manifest_sha256": "bb9b9a38ef52c9d857219c0eee4f196f80851594ee14e6e77e0855b6ce4ba636",
+  "subject_manifest_sha256": "48b32b79f161b94d9c3a09d1bb8be1c5b2366e2e63cdf398333b4c27a7f090a7",
+  "subject_complete_sha256": "d9a326029d6a719a2c1df83be916bbec50d62323422cae229a622dbf6bfd6e83",
+  "candidate_tests": "7 passed independently",
+  "counterexample_reproduced": true,
+  "execution_enabled": false,
+  "real_outcome_read": false,
+  "voltage_read": false,
+  "service_or_science_executed": false,
+  "completion_written_last": true
+}

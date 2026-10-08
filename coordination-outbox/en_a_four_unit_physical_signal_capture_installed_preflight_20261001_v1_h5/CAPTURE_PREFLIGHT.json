@@ -1,0 +1,52 @@
+{
+  "arithmetic": {
+    "base_window_reads": 40,
+    "cap_base_input_bytes": 31844352,
+    "cap_retained_int16_bytes": 4073472,
+    "cap_with_one_max_pair_duplicate_bytes": 32653824,
+    "duplicate_positive_control_reads": 1,
+    "pair_windows": 8,
+    "planned_base_input_bytes": 31683072,
+    "planned_retained_int16_bytes": 3912192,
+    "planned_with_duplicate_input_bytes": 32492544,
+    "raw_read_calls_max": 41,
+    "selection_slots": 20,
+    "single_event_windows": 12
+  },
+  "config_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_a_four_unit_physical_signal_capture.approved.v3.json",
+  "config_sha256": "64ffbeb091c8e4af18848d1734e5432896c054188b8142b4efb41788c91ffe07",
+  "gates": {
+    "execution_enabled": true,
+    "human_approved": true,
+    "voltage_read_authorized": true
+  },
+  "manifest_fields": {
+    "corrected_A": {
+      "binary_size_bytes": 241309358592,
+      "dtype": "int16",
+      "manifest_recorded_binary_sha256": "672938e942d105af6b1a3f7f1bddf206939535e0e4b57bc01153472a1ccb8b69",
+      "num_channels": 384,
+      "num_samples": 314204894,
+      "recording_content_sha256": "90b6a07a22e32fdd741c3f605f582d44f361bc75ed18737c134e13fdd1d76ad9",
+      "sampling_frequency_hz": 29999.835983263598,
+      "selected_end_frame": 314204894,
+      "selected_start_frame": 0
+    },
+    "original": {
+      "binary_size_bytes": 241309358592,
+      "dtype": "int16",
+      "manifest_recorded_binary_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+      "num_channels": 384,
+      "num_samples": 314204894,
+      "recording_content_sha256": "2d6fac755db3182841bf121d822754f963ebada3bcb8cd9e96e0b63e6f9b7372",
+      "sampling_frequency_hz": 29999.835983263598,
+      "selected_end_frame": 314204894,
+      "selected_start_frame": 0
+    }
+  },
+  "recording_bytes_read": 0,
+  "recording_open_attempts": 0,
+  "recording_reads": 0,
+  "schema": "en-a-four-unit-physical-signal-capture-preflight-v1",
+  "status": "pass_execution_disabled"
+}

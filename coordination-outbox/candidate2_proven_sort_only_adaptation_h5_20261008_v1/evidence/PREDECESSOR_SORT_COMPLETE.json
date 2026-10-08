@@ -1,0 +1,114 @@
+{
+  "binding": {
+    "authorization_sha256": "398ab8e65cad50a9b04363bf4315c79e9be2a753e8b8e1782895542af12f4b31",
+    "config_sha256": "16622ce4dbe063c96f22978269fa4307fce2787e6ca29880fb5537f720d3176f",
+    "service_sha256": "c1d0a0cdaf066d2e5dc594ab11727c8c63dfc6ed2b317d3ae3ed8d4af23be11f",
+    "source_commit": "7ed3e2e7b376adfbe4668259d19b62a4830b0c15",
+    "status": "AUTHORIZED_CACHE_MANAGED_REPLACEMENT",
+    "validation_receipt_sha256": "aff55ea6e75ebb2671291a8c694bcca094cef477a0c921b4c6b73729cf12368f"
+  },
+  "cache_patch": {
+    "activation_environment": "KILOSORT_BOUNDED_PREAD_PATH",
+    "applied": true,
+    "expected_patched_sha256": "c6093e14cae920e8cfaae6c3fed8d4c6ca032b046d705ef9868ec171c7bf3c99",
+    "kilosort_version": "4.0.27",
+    "patch_id": "kilosort-4.0.27-bounded-preadv-input-v1",
+    "source_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/io.py",
+    "source_sha256": "c6093e14cae920e8cfaae6c3fed8d4c6ca032b046d705ef9868ec171c7bf3c99"
+  },
+  "completed_utc": "2026-10-06T13:06:35.088669+00:00",
+  "config_sha256": "16622ce4dbe063c96f22978269fa4307fce2787e6ca29880fb5537f720d3176f",
+  "materialization_reused": true,
+  "recording_manifest_sha256": "523cc77d34fa2083d2e011842649563cee82e3ffcdfd5b7183abac89d3ee6641",
+  "schema": "en-full-session-part2b-imec1-sort-cache-retry-complete-v2",
+  "sort": {
+    "compatibility_patches": [
+      {
+        "applied": true,
+        "expected_patched_sha256": "19ba98a8cc752889a4eb2833410f8d69da6a275688fb9580b840075092fde259",
+        "kilosort_version": "4.0.27",
+        "patch_id": "kilosort-4.0.27-empty-clustering-center-v1",
+        "source_sha256": "19ba98a8cc752889a4eb2833410f8d69da6a275688fb9580b840075092fde259"
+      },
+      {
+        "activation_environment": "KILOSORT_BOUNDED_PREAD_PATH",
+        "applied": true,
+        "expected_patched_sha256": "c6093e14cae920e8cfaae6c3fed8d4c6ca032b046d705ef9868ec171c7bf3c99",
+        "kilosort_version": "4.0.27",
+        "patch_id": "kilosort-4.0.27-bounded-preadv-input-v1",
+        "source_sha256": "c6093e14cae920e8cfaae6c3fed8d4c6ca032b046d705ef9868ec171c7bf3c99"
+      }
+    ],
+    "complete": true,
+    "pipeline_version": "spikeglx-ext-ref-rescue-testing-v2",
+    "recording_request_digest": "9749260e82524943d1158c26fb25cb22f741119ae6ebc0bc534aaf96b631e288",
+    "request_digest": "89e7c19520cc82903d87dd5fb4125b5bc621d1158727f988d5cb7b2c3829e26c",
+    "sorter": "kilosort4",
+    "sorter_params": {
+      "Th_learned": 9,
+      "Th_single_ch": 6,
+      "Th_universal": 12,
+      "acg_threshold": 0.2,
+      "artifact_threshold": "Infinity",
+      "bad_channels": null,
+      "batch_size": 60000,
+      "binning_depth": 5,
+      "ccg_threshold": 0.75,
+      "clear_cache": true,
+      "cluster_downsampling": 20,
+      "delete_recording_dat": true,
+      "dmin": null,
+      "dminx": 32,
+      "do_CAR": true,
+      "do_correction": false,
+      "drift_smoothing": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "duplicate_spike_ms": 0.25,
+      "fs": 30000,
+      "highpass_cutoff": 300,
+      "invert_sign": false,
+      "keep_good_only": false,
+      "max_channel_distance": 64,
+      "max_peels": 100,
+      "min_template_size": 10,
+      "n_pcs": 6,
+      "n_templates": 6,
+      "nblocks": 1,
+      "nearest_chans": 20,
+      "nearest_templates": 200,
+      "nskip": 25,
+      "nt": 61,
+      "nt0min": null,
+      "position_limit": 100,
+      "save_extra_vars": true,
+      "save_preprocessed_copy": false,
+      "scale": null,
+      "shift": null,
+      "sig_interp": 20,
+      "skip_kilosort_preprocessing": false,
+      "template_sizes": 5,
+      "templates_from_data": true,
+      "torch_device": "auto",
+      "use_binary_file": true,
+      "whitening_range": 32,
+      "x_centers": null
+    },
+    "summary": {
+      "critical_saved_settings": {
+        "artifact_threshold": "Infinity",
+        "do_CAR": true,
+        "do_correction": false,
+        "effective_nblocks": 0
+      },
+      "final_spike_count": 44212200,
+      "kilosort_good_unit_count": 263,
+      "unit_count": 720
+    }
+  },
+  "sort_invocations": 1,
+  "sort_seconds": 14168.845383792184,
+  "status": "complete_sort_only_downstream_pending"
+}

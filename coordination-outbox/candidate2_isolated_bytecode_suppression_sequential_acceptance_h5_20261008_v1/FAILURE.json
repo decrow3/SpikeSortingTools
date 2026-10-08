@@ -1,0 +1,30 @@
+{
+  "schema": "candidate2-isolated-bytecode-sequential-acceptance-failure-v1",
+  "status": "HARD_STOP_MUTATION_NEGATIVE_RECEIPT_PARENT_HARNESS_FAILURE",
+  "tested_contract_sha256_before_disable": "fa3dce8a4bf861bde1664cf7d406ea5ebabc95941d9a0ea1e2393eb5e73a3a68",
+  "bootstrap_sha256": "672c9fa088f8523adbdde7bf391ae2effe0ead9eefde79c4a5065fb1d8820faa",
+  "preflight_bootstrap_sha256": "d7b6f8573f46d46ca7348c703ea5849d8ac9d7fc805fb6891146c540fad9b81f",
+  "monitor_bootstrap_sha256": "043abbff58a31fe66ece4a7c6266ea9b1830deb15cd91362a413b1c62a98fe9c",
+  "sequential_fixture_sha256": "1ceb5b5a95d922baebd10a7296b37d83b886378daadca91851cd9b9ddccbc0c1",
+  "passed_before_stop": [
+    "actual preflight bootstrap returned zero with valid full preflight receipt",
+    "preflight receipt asserted pass, recording_opened false and recording_bytes_read zero",
+    "full source identity was unchanged after preflight",
+    "actual main bootstrap validation and candidate2_cache_managed_full runner import returned zero under the deployed interpreter argv shape",
+    "JOB receipt asserted complete, returncode zero and sequential_acceptance_import_only mode",
+    "full source identity was unchanged after runner import"
+  ],
+  "failed_stage": "deliberate source-mutation rejection assertion",
+  "exact_failure": "the negative invocation used <fixture>/mutation/JOB.json without first creating its parent directory; bootstrap write_receipt failed before source verification, so the subprocess was nonzero but stderr did not contain the required runtime source inventory mismatch",
+  "traceback_terminal": "AssertionError at test_full_preflight_main.py line 273: expected runtime source inventory mismatch in rejected.stderr",
+  "positive_receipt_durable": false,
+  "reason_positive_receipt_not_durable": "the requested receipt copy occurred after the failed mutation assertion and the fixture cleanup removed the temporary tree",
+  "recording_opened": false,
+  "recording_bytes_read": 0,
+  "sort_gpu_work_started": false,
+  "production_service_installed": false,
+  "authorization_created": false,
+  "production_attempt_started": false,
+  "automatic_retry": false,
+  "preserved_v8_failure_manifest_sha256": "7b4060ea8bf7936af45a512941a7f557239270e48bb63ed4cbba4cbd5506473f"
+}

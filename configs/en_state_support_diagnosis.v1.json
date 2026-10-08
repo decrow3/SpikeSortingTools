@@ -1,0 +1,70 @@
+{
+  "schema_version": "en-state-support-diagnosis-v1",
+  "status": "frozen_before_support_stratified_outcomes",
+  "frozen_date": "2026-09-30",
+  "question": "Do nonzero-state event excess and 1-29-sample adjacent-interval burden concentrate where the state-specific remap lacks exact source support?",
+  "scope": {
+    "sampling_frequency_hz": 29999.835983263598,
+    "num_samples": 314204894,
+    "num_channels": 384,
+    "positive_lag_samples_half_open": [1, 30],
+    "pair_rule": "adjacent events within unit and the same original contiguous rounded-state segment; form pairs before support categorization",
+    "no_voltage": true,
+    "no_rf_or_holdout": true
+  },
+  "tier1_result": {
+    "path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/tier1_v1/RESULT.json",
+    "sha256": "a22df41a92850c1a24b59d8498704d1387d18bc37b4ffcf136824cbd77b7b6d6"
+  },
+  "comparisons": {
+    "A": {
+      "candidate_sorter_output": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/sort/sorter_output",
+      "reference_sorter_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output",
+      "field_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_am3_imec0_field_request_20260929_v1/payload/luke0804_imec0_two_layer_motion.npz",
+      "field_sha256": "4c769125020aad3263bf6eaa1889cdaa7eccbf19dcf0aa3a068b185221fadb9f",
+      "time_key": "time_s",
+      "displacement_key": "displacement_um",
+      "rigid_projection": "median across depth"
+    },
+    "B": {
+      "candidate_sorter_output": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/sort/sorter_output",
+      "reference_sorter_output": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/sorter_output",
+      "field_path": "/mnt/NPX/Luke/20250804/shared_analysis/luke_improved_motion_two_machine_20260909_v1/estimation_huklaban1_v1/candidate_fields.npz",
+      "field_sha256": "547ff39d1c91d819b758246c701603d868bfd4d50bd6b791e3d5b7140c01c71d",
+      "time_key": "time_s",
+      "displacement_key": "rigid_displacement_um"
+    }
+  },
+  "support_attribution": {
+    "primary_position_proxy": "nearest physical target depth row to saved Kilosort spike_positions[:,1]; exact ties are ambiguous; row support is exact-coordinate source availability at that rounded state",
+    "position_semantics": "Kilosort 4.0.27 feature-mass-weighted coordinate over nearby channels, not an observed waveform origin or biological depth",
+    "support_pair_categories": ["both_supported", "mixed", "both_unsupported", "ambiguous"],
+    "missing_side_categories": ["none", "lower", "upper", "interior", "multiple", "ambiguous"],
+    "switch_distance_bins_um": [[0, 20], [20, 60], [60, 140], [140, null]],
+    "switch_distance_interval_rule": "left-closed, right-open; pair bin uses the nearer endpoint; states without a support switch are no_switch",
+    "template_proxy": {
+      "channel_amplitude": "saved template peak-to-peak over time",
+      "active_channel_threshold": "at least 20 percent of the unit maximum channel peak-to-peak",
+      "classes": ["none_missing", "partial_missing", "all_missing", "invalid"],
+      "caveat": "saved templates are arm-specific refitted Kilosort representations, not state-specific observed waveforms"
+    }
+  },
+  "fixture": {
+    "times": [0, 10, 20, 50, 100, 110],
+    "segment_ids": [0, 0, 0, 0, 1, 1],
+    "support": [true, false, true, true, true, true],
+    "expected": {
+      "original_denominator": 4,
+      "original_short": 3,
+      "both_supported_denominator": 2,
+      "both_supported_short": 1,
+      "mixed_denominator": 2,
+      "mixed_short": 2
+    }
+  },
+  "decision_rule": {
+    "concentration_evidence": "candidate-minus-REF nonzero numerator excess is predominantly in unsupported or mixed position-proxy pairs and this direction agrees with the template-footprint proxy",
+    "against_concentration": "most positive numerator excess remains in both-supported position-proxy pairs or the two proxies materially disagree",
+    "interpretation_limit": "association with missing support can prioritize an engineering intervention; it cannot prove duplicate spikes, biological identity, or causality"
+  }
+}

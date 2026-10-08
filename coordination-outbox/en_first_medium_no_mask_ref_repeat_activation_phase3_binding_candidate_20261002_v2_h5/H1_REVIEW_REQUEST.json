@@ -1,0 +1,24 @@
+{
+  "schema": "luke-h1-phase3-bound-activation-review-request-v1",
+  "status": "REVIEW_REQUEST_EXECUTION_DISABLED",
+  "decision": "accept_or_reject_phase3_bound_activation_composition_only",
+  "contract_sha256": "712ec10c342325187e6049dee4c022ce77daa9e512f7d2061d0e7714c9e9cf43",
+  "reviewed_launcher_v3_base_sha256": "238c9c997bad67415a13671deaa5569ee121f3a27aa07188fef51c424f2029f8",
+  "accepted_producer_delta_sha256": "9e7290c182211ad5a71c952e9f178af764b6fe66ffe4d328cf3b2cbc694f84bc",
+  "phase3_candidate_manifest_sha256": "3199ddda56d1b03c6a3d77d87443fbf1c2956d4ab09c08ede52467ca4b09b1cd",
+  "phase3_review_manifest_sha256": "c0d3f09341dd8653551eaae205c80c35ba942467d3703ef74a7d643cf403ec33",
+  "phase3_review_status_sha256": "7d439bb156c786e53300def540c7ecd543d0e81b948d3d92d531df765002ac74",
+  "review_scope": [
+    "exact candidate, independent GO, and coordination status bindings",
+    "producer delta descends from the reviewed launcher-v3 base and is the proposed active launcher",
+    "one-start, terminal reserve, cap, and no-growth finalization functions remain byte-identical",
+    "all proposed arm outputs use the fresh absent v2 namespace",
+    "scientific sources, settings, clocks, arm order, and RF/holdout seal remain frozen",
+    "read-only preflight binds Phase3 GO but rejects activation because execution remains disabled and enabled environment is absent"
+  ],
+  "tests": "22 passed",
+  "execution_enabled": false,
+  "service_installed_or_started": false,
+  "recording_or_voltage_read": false,
+  "scientific_execution_started": false
+}

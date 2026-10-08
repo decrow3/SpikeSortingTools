@@ -1,0 +1,17 @@
+{
+  "schema": "runtime-verifier-development-correction-v1",
+  "status": "PRESERVED_IMPLEMENTATION_CORRECTION",
+  "initial_result": "FAIL_CLOSED",
+  "initial_differences": [
+    "aggregate_sha256",
+    "member_bytes",
+    "member_count",
+    "member_identity_multiset"
+  ],
+  "cause": "The first independent verifier draft imported Python's resource extension before reading /proc/self/maps, adding verifier instrumentation to the runtime being measured.",
+  "correction": "Removed the pre-capture resource import and read VmHWM from /proc/self/status only after the executable closure was captured.",
+  "scientific_or_runtime_threshold_changed": false,
+  "expected_closure_changed": false,
+  "final_result": "PASS with the unchanged frozen 89-object closure, unchanged aggregate, and unchanged numerical probe digest",
+  "note": "The initial command raised before creating an output receipt; this correction record preserves the failure and reason."
+}

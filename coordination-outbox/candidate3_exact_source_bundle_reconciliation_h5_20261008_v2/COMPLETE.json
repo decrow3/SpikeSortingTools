@@ -1,0 +1,10 @@
+{
+  "equality_executed": false,
+  "manifest_sha256": "2fc9c2587656779b578d674efffcc11e58e8fd5e7773d640401e87af9ca0c048",
+  "recording_bytes_read": 0,
+  "review_status_sha256": "4c5d5322db1ae800a015bcbe163e4710643e85962c09e3d56e01008a66d16154",
+  "schema": "candidate3-exact-source-bundle-reconciliation-complete-v2",
+  "sort_started": false,
+  "status": "complete",
+  "verdict": "GO_BLOCKER_ACCURATE"
+}

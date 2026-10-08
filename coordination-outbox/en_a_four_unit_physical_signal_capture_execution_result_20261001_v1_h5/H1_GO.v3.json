@@ -1,0 +1,42 @@
+{
+  "schema": "en-a-four-unit-physical-signal-capture-h1-go-v3",
+  "verdict": "GO",
+  "bindings": {
+    "packet_manifest": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_physical_signal_capture_relaunch_candidate_20261001_v1_h5/MANIFEST.sha256",
+      "sha256": "f897ff3b18d89d7cd55ea7500be1dfc4019f3f7b117e0cd2abd1edc3ffb5b6f3"
+    },
+    "config": {
+      "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_a_four_unit_physical_signal_capture.approved.v3.json",
+      "sha256": "64ffbeb091c8e4af18848d1734e5432896c054188b8142b4efb41788c91ffe07"
+    },
+    "service": {
+      "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_a_four_unit_physical_signal_capture_approved_v3.service",
+      "sha256": "02f0b062ba9c9d4847a8ff15b883b2c517a67e840992bffbddf0074dedd19556"
+    },
+    "capture_source": {
+      "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_a_four_unit_physical_signal_capture.py",
+      "sha256": "e33bc8346b2acda30cd2032c7b6a00a004f79f7416a1198c6bcd718f3b0c74fd"
+    },
+    "validator": {
+      "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_a_four_unit_physical_signal_capture_launch_guard_v3.py",
+      "sha256": "e0418d1b5f5d07ef162c2066a8df11e04f6d209023bde5d2ab639091f4a0c388"
+    },
+    "governing_contract_manifest": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_physical_signal_capture_preparation_20261001_v3_h5/MANIFEST.sha256",
+      "sha256": "8771e60872a497bf505418789a44b249e261fe2bb1acc253f046d122f0ef56b2"
+    }
+  },
+  "launch": {
+    "argv": [
+      "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+      "-m",
+      "testing.en_a_four_unit_physical_signal_capture",
+      "--config",
+      "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_a_four_unit_physical_signal_capture.approved.v3.json",
+      "--phase",
+      "run"
+    ],
+    "argv_sha256": "9216ae9654a6389a7e86aad579c09abb89e5d02bc3dc7d2b47595b34ae38ef95"
+  }
+}

@@ -1,0 +1,22 @@
+[Unit]
+Description=Luke imec0 Candidate2 native-rigid bounded-pread sort-only v10
+ConditionPathExists=/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/rescue_recording_manifest.json
+ConditionPathExists=/media/huklaban5/Data/candidate2_native_rigid_sort_only_launch_h5_20261008_v10/AUTHORIZATION.json
+ConditionPathExists=!/media/huklaban5/Data/luke_candidate2_native_rigid_sort_only_imec0_20261008_v10
+
+[Service]
+Type=oneshot
+WorkingDirectory=/media/huklaban5/Data/candidate2_native_rigid_sort_only_launch_h5_20261008_v10
+ExecStart=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python -B -m testing.candidate2_sort_only_v10 --config /media/huklaban5/Data/candidate2_native_rigid_sort_only_launch_h5_20261008_v10/CONFIG.json --authorization /media/huklaban5/Data/candidate2_native_rigid_sort_only_launch_h5_20261008_v10/AUTHORIZATION.json --installed-unit /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-sort-only-imec0-20261008-v10.service
+Environment=PYTHONPATH=/media/huklaban5/Data/candidate2_native_rigid_sort_only_launch_h5_20261008_v10/source
+Environment=NUMBA_CACHE_DIR=/tmp/spikeglx-rescue-numba-cache
+Environment=KILOSORT_BOUNDED_PREAD_PATH=/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw
+Nice=5
+CPUQuota=800%
+OOMPolicy=stop
+TimeoutStartSec=28800
+StandardOutput=append:/media/huklaban5/Data/candidate2_native_rigid_sort_only_launch_h5_20261008_v10/stdout.log
+StandardError=append:/media/huklaban5/Data/candidate2_native_rigid_sort_only_launch_h5_20261008_v10/stderr.log
+
+[Install]
+WantedBy=default.target

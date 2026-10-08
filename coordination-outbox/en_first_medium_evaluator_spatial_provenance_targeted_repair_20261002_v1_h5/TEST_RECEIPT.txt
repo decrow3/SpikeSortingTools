@@ -1,0 +1,33 @@
+H5 bounded repair validation, 2026-10-02
+
+Command:
+PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR=/tmp/en_spatial_repair_numba MPLCONFIGDIR=/tmp/en_spatial_repair_mpl PYTHONPATH=source python -m pytest -q -p no:cacheprovider tests
+
+Result:
+22 passed in 3.66s
+One pre-existing pandas FutureWarning in sort_comparison.py; no failure.
+
+Packaged CLI command:
+PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR=/tmp/en_spatial_repair_cli_numba MPLCONFIGDIR=/tmp/en_spatial_repair_mpl PYTHONPATH=source python tests/run_packaged_cli_proof.py
+
+Result:
+status=passed; all five imported implementation modules resolved under packet source.
+
+New negative controls:
+- altered declared Kilosort io.py hash rejected
+- altered Kilosort io.py bytes rejected
+- contradictory redundant provenance.spatial_identity rejected
+- waveform contract enablement with prospective bindings rejected
+
+Dependency root:
+dependencies/kilosort/d1e5a4465d387c66a7655db442ecbf8740d2cae0032c300b0456432b0080c614
+io.py sha256 767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd
+postprocessing.py sha256 d20da9026de10eb83a02466cdb233c85ae4215c15af7d5656c3593c3809a0a55
+
+No real arm arrays, evaluator outcome, recording voltage, waveform capture,
+sorter, training, detection, RF, or sealed holdout was opened or run.
+
+Writable byte-identical stage rerun:
+/tmp/en-spatial-repair-stage.QpcmpO/packet
+Result: 22 passed in 4.36s; staged packaged CLI passed. The bundled dependency
+root was resolved under the staged packet, not the workspace or an H5 install.

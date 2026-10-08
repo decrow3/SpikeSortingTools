@@ -1,0 +1,26 @@
+{
+  "schema": "hub-multicoordinator-worker-status-v1",
+  "owner": "H5",
+  "status": "ACK_BLOCKED_EXACT_WRAPPER_COMMIT_UNAVAILABLE_AND_IMPORT_TOPOLOGY_REVIEW_REQUIRED_NO_LAUNCH",
+  "task": "candidate3_exact_source_bearing_bundle_reconciliation_v2",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_exact_source_bundle_reconciliation_h5_20261008_v2",
+  "manifest_sha256": "2fc9c2587656779b578d674efffcc11e58e8fd5e7773d640401e87af9ca0c048",
+  "complete_sha256": "ec07c26f092698b5d630103cf25401435d901686446ffaea2ae051ca4ae0bf1e",
+  "review_verdict": "GO_BLOCKER_ACCURATE",
+  "review_status_sha256": "4c5d5322db1ae800a015bcbe163e4710643e85962c09e3d56e01008a66d16154",
+  "available": [
+    "exact source-bearing v3 runner and contract",
+    "DARTsort commit edcfe1b51d672b4136eb13cc78c0875da804b851 and exact imported module identities",
+    "pristine Kilosort 4.0.27 source with exact required io.py hash"
+  ],
+  "blockers": [
+    "SpikeSortingTools commit aea7431c4026fa74e36ad01139d9e596900a1d25 is absent locally and configured remote direct fetch returns not our ref",
+    "frozen appended Kilosort site imports c6093e14 rather than required 767b76a0",
+    "frozen runner resolves sys.executable but compares against an unresolved venv symlink path"
+  ],
+  "recording_bytes_read": 0,
+  "equality_executed": false,
+  "occupied_repository_modified": false,
+  "service_or_sort_started": false,
+  "next": "Candidate3 remains blocked pending an exact wrapper source object and narrowly reviewed isolated import/path successor; H5 proceeds to HubPlanner's queued Candidate2 isolated bytecode-suppression sequential-acceptance task."
+}

@@ -1,0 +1,255 @@
+{
+  "files": [
+    {
+      "bytes": 20335,
+      "path": "CONTRACT.json",
+      "sha256": "8c918b84f8ccd4aecaf8e5f148a14bbadb0941ffc3512a10b46c8a8c0067b8da"
+    },
+    {
+      "bytes": 2266,
+      "path": "FAILURE.json",
+      "sha256": "8b3a711d549bcfb3644b7f363ff093247b72f8bd5b95f6d13a680df99374be40"
+    },
+    {
+      "bytes": 1074,
+      "path": "IMPLEMENTATION_CHECKS.md",
+      "sha256": "7f0fe85eff018bd0a6f4e6a673ff8f0533972e7f08805d731fc6cd2b43716d06"
+    },
+    {
+      "bytes": 1289,
+      "path": "README.md",
+      "sha256": "574c40a6832eadb89663541f1bc1952989e28e91d769d1f041a1be7815984d4f"
+    },
+    {
+      "bytes": 3247,
+      "path": "SOURCE_MANIFEST.json",
+      "sha256": "db2660fbb9d63e706780cef5a9b60855b8b7f1ca190d882705eec40de39a9408"
+    },
+    {
+      "bytes": 8021,
+      "path": "bootstrap.py",
+      "sha256": "672c9fa088f8523adbdde7bf391ae2effe0ead9eefde79c4a5065fb1d8820faa"
+    },
+    {
+      "bytes": 4148,
+      "path": "luke-candidate2-native-rigid-cache-managed-imec0-20261008-v9.service",
+      "sha256": "d0f65de6acfc70288ef91a6cc3809d944f5473ee030427d24614da84e006ffae"
+    },
+    {
+      "bytes": 2040,
+      "path": "luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v9.service",
+      "sha256": "bfd7252e327db625ad025e86ab7c975f6f261fa53ed8983a80a14384ca13e240"
+    },
+    {
+      "bytes": 2458,
+      "path": "monitor_bootstrap.py",
+      "sha256": "043abbff58a31fe66ece4a7c6266ea9b1830deb15cd91362a413b1c62a98fe9c"
+    },
+    {
+      "bytes": 3126,
+      "path": "preflight_bootstrap.py",
+      "sha256": "d7b6f8573f46d46ca7348c703ea5849d8ac9d7fc805fb6891146c540fad9b81f"
+    },
+    {
+      "bytes": 86170,
+      "path": "source/environments/rescue-production/uv.lock",
+      "sha256": "6ec57a7184d280221dee99403f7c4b26f7cb82e7e4ad025b312f237b826d2274"
+    },
+    {
+      "bytes": 5123,
+      "path": "source/pipeline/__init__.py",
+      "sha256": "2defb79c31c4ec1bc27b3c3f7c69fe383f70eb076be82a1dccece2f395c80e3d"
+    },
+    {
+      "bytes": 10030,
+      "path": "source/pipeline/artifacts.py",
+      "sha256": "ff52b81853072355a24f77210ab21d4c44391c1562d359b9ca0bcb9114e80344"
+    },
+    {
+      "bytes": 85581,
+      "path": "source/pipeline/bakeoff.py",
+      "sha256": "2029ce800ef33c4dcca0f7eeeee410951f60504c2da876f62252aed682745931"
+    },
+    {
+      "bytes": 10443,
+      "path": "source/pipeline/completeness_timeline.py",
+      "sha256": "8f2b55e511427011d6b196a1998209edda2c3bdbfb9e4740be3a80727688ac7d"
+    },
+    {
+      "bytes": 1852,
+      "path": "source/pipeline/config.py",
+      "sha256": "74424d444e05a7ba2d3968d22c1490475ebe8d7c0d213687316ace7cec5cf59c"
+    },
+    {
+      "bytes": 24504,
+      "path": "source/pipeline/curation.py",
+      "sha256": "d2c85736f1b2ff36589ca008a82b102669b1d3f7af104c52ea33c845bf1e5ba8"
+    },
+    {
+      "bytes": 31580,
+      "path": "source/pipeline/downstream.py",
+      "sha256": "bbf2e6e1f0cfd5db42226980bc2af488560b1b0c268da32dcf0c44d0e2a0dc26"
+    },
+    {
+      "bytes": 5937,
+      "path": "source/pipeline/kilosort_bounded_reader_compat.py",
+      "sha256": "04153eb68d6fbb2ae08b63ebbbbfb741d5152ffd46cf572f850f1e4a021bc26b"
+    },
+    {
+      "bytes": 4649,
+      "path": "source/pipeline/kilosort_cache_compat.py",
+      "sha256": "3b28a67b84ea2e259d5d1923d549c1715c97c17490e6dfd3990ea615e8f4da68"
+    },
+    {
+      "bytes": 3723,
+      "path": "source/pipeline/kilosort_compat.py",
+      "sha256": "07070b6f65eed992d66be90d455357b6bea07e2c34cf9a8805fcfa37cb2bb70b"
+    },
+    {
+      "bytes": 4119,
+      "path": "source/pipeline/kilosort_results.py",
+      "sha256": "be7939fea12bf31efa7997314f5775e222430a1abcc6df6ecf7f8a6ac7e1bcda"
+    },
+    {
+      "bytes": 15827,
+      "path": "source/pipeline/motion_aware_merge.py",
+      "sha256": "58de412933fccb540c8649664c3c0adfbcf5e034ce5ca9504f8969970f4c5f17"
+    },
+    {
+      "bytes": 18613,
+      "path": "source/pipeline/motion_coordinates.py",
+      "sha256": "c36123a6371801a8d76aa17110dc31af32a44ac2e29cecd18ab9d58c7ba148a1"
+    },
+    {
+      "bytes": 3196,
+      "path": "source/pipeline/motion_merge_gates.py",
+      "sha256": "e169d6828c93eb24725c182e747e644295cc8c7f7e8dee6dcbe6530230625024"
+    },
+    {
+      "bytes": 66760,
+      "path": "source/pipeline/motion_sidecar.py",
+      "sha256": "07b3f517fa692a72a04f177f4c513ec3577f9bafc228a66dbcd9d6f7f29bb078"
+    },
+    {
+      "bytes": 8461,
+      "path": "source/pipeline/preflight.py",
+      "sha256": "88d050b0951d2ed5abb4862abf4615c6b1b610ceb0ea1c5151c7698098448983"
+    },
+    {
+      "bytes": 22569,
+      "path": "source/pipeline/preprocess.py",
+      "sha256": "ddd127874218d136d4e358889d785ebd11e586515faa9dc5d6bb8fb447d72c89"
+    },
+    {
+      "bytes": 12085,
+      "path": "source/pipeline/qc.py",
+      "sha256": "cbbab201cfa1276b0770983204fd4965fb89b71266de99c0364d817cf74e27b9"
+    },
+    {
+      "bytes": 15040,
+      "path": "source/pipeline/refractory.py",
+      "sha256": "2dc727abc757399f6829c1eb21f9cf8db19a6dac595c3f96d8fc819bd4862e33"
+    },
+    {
+      "bytes": 6462,
+      "path": "source/pipeline/run_config.py",
+      "sha256": "f46e1baab3f51b8d4a7b755cabb17dfab20452e7ad54e8f0f5d2c99982ce6270"
+    },
+    {
+      "bytes": 4645,
+      "path": "source/pipeline/runtime.py",
+      "sha256": "eaed162fab78b0d519dd934dee31fc93fd3fd9880ba2476f2b2748223bd28c66"
+    },
+    {
+      "bytes": 11222,
+      "path": "source/pipeline/sorting.py",
+      "sha256": "48762dba50067b524c417f5d7db637a70f31104ee3ccb621812ee064cc8f3d1c"
+    },
+    {
+      "bytes": 8739,
+      "path": "source/pipeline/staging.py",
+      "sha256": "5ee68b0ee492e4ce0f777ef5ad5910654d9367df9febd5f97ded1c1125fb6f47"
+    },
+    {
+      "bytes": 7569,
+      "path": "source/pipeline/truncation.py",
+      "sha256": "eec2476397c1856891a4b9f1856c1af4a5e2f81a13e934d1ade2f96a02a6e3e6"
+    },
+    {
+      "bytes": 30775,
+      "path": "source/pipeline/unit_quality.py",
+      "sha256": "8b16f1cf05646e7e5e3d3ee21b525e4c1765fa902b5065bc882f96e4ec4f16b0"
+    },
+    {
+      "bytes": 51,
+      "path": "source/testing/__init__.py",
+      "sha256": "7c8710bcea03e82961b1f043d7f3a87b9d9501a99726301aed47764982364d60"
+    },
+    {
+      "bytes": 11225,
+      "path": "source/testing/candidate2_cache_managed_full.py",
+      "sha256": "f62f8c5f42165414233f3532c4ba1a334563bae0bf947b9ac4fe1ae3c5f2da2b"
+    },
+    {
+      "bytes": 12461,
+      "path": "source/testing/candidate2_cache_managed_monitor.py",
+      "sha256": "0458209bd6848212b838b71e73af7f77782dc4878e10c8de6798a0cb8bf128c2"
+    },
+    {
+      "bytes": 17419,
+      "path": "source/testing/candidate2_cache_managed_preflight.py",
+      "sha256": "2c3d0e07f4e6a723aa7af16bd865ecc353007d611927f5fe31932753e0eb7da7"
+    },
+    {
+      "bytes": 12509,
+      "path": "source/testing/ladder_sorter.py",
+      "sha256": "e6e9edac68e5e0fde6fdfd16764834e43637e0aaf77600cc95e82f0d094bc78f"
+    },
+    {
+      "bytes": 1555,
+      "path": "tests/capture_systemd_identity.py",
+      "sha256": "ba69e46ff9e6ba592043049ba1e58eb6b922ff76b356e0905101fbcf8c10d4bd"
+    },
+    {
+      "bytes": 15615,
+      "path": "tests/test_full_preflight_main.py",
+      "sha256": "1ceb5b5a95d922baebd10a7296b37d83b886378daadca91851cd9b9ddccbc0c1"
+    },
+    {
+      "bytes": 5144,
+      "path": "tests/test_gpu_self_observation.py",
+      "sha256": "7ddc77533b38f9c471bee467050d163016c49ecce6a28633524416a48d4699ee"
+    },
+    {
+      "bytes": 4524,
+      "path": "tests/test_monitor_bootstrap_forwarding.py",
+      "sha256": "c4f9463e6e8a2c852acfa9a3ca45618f6554ff4114f7fe87376ab750193aefba"
+    },
+    {
+      "bytes": 2153,
+      "path": "tests/test_monitor_known_answer.py",
+      "sha256": "9786d2e9c6abbfd0d1ea67eb30f74abe22a3c66eaefeaa6acab25dbea1d6029d"
+    },
+    {
+      "bytes": 1827,
+      "path": "tests/test_runner_contract_join.py",
+      "sha256": "616468a1db5fa596a9677891a99fdaaaa5dd7483194800283ed798193efaf087"
+    },
+    {
+      "bytes": 2481,
+      "path": "tests/test_runner_late_arrival_gate.py",
+      "sha256": "b2ed943fb57c5732a7fe02981f580af7389cdf6215a9a843664d0a97be1b3e7b"
+    },
+    {
+      "bytes": 1728,
+      "path": "tests/test_systemd_set_canonicalization.py",
+      "sha256": "9bcc58f5c5c00c00f87985733cb341772dcecd5c02f8437c87620317f69a62b5"
+    },
+    {
+      "bytes": 2830,
+      "path": "tests/test_typed_systemd_identity.py",
+      "sha256": "7f6d44c4317e771901aa5966b40dfb926b84001af804a699742991e077fd9df3"
+    }
+  ],
+  "schema": "candidate2-bytecode-sequential-acceptance-failure-manifest-v1"
+}

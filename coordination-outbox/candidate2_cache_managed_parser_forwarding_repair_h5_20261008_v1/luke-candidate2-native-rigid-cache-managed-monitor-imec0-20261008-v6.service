@@ -1,0 +1,13 @@
+[Unit]
+Description=External telemetry for Luke imec0 Candidate2 cache-managed full run v6
+ConditionPathExists=/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_cache_managed_parser_forwarding_repair_h5_20261008_v1/AUTHORIZATION.json
+
+[Service]
+Type=simple
+WorkingDirectory=/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6
+ExecStart=/usr/bin/python3 -I -S -u /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/monitor_bootstrap.py --bootstrap-sha256 3c8f6f73ff71069bc985b2afe69963728d57842e5238aad159ea6747f10de16d --monitor-source /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/source/testing/candidate2_cache_managed_monitor.py --self-sha256 0458209bd6848212b838b71e73af7f77782dc4878e10c8de6798a0cb8bf128c2 --contract /mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_cache_managed_parser_forwarding_repair_h5_20261008_v1/CONTRACT.json --contract-sha256 f0319985046ed246c3052d0de91de7ce63228762d85102f56651685b24168c48 --authorization /mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_cache_managed_parser_forwarding_repair_h5_20261008_v1/AUTHORIZATION.json --target-unit luke-candidate2-native-rigid-cache-managed-imec0-20261008-v6.service --target-unit-file /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-imec0-20261008-v6.service --monitor-unit-file /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v6.service --output /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/monitor --service-log /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/service.log
+Restart=no
+OOMPolicy=stop
+TimeoutStartSec=infinity
+StandardOutput=append:/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/monitor.log
+StandardError=append:/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v6/monitor.log

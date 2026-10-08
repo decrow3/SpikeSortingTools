@@ -1,0 +1,73 @@
+{
+  "actual_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+  "application_throughput_bytes_per_second": 110394954.81372033,
+  "binary_is_symlink": false,
+  "binary_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+  "buffer_bytes": 16777216,
+  "bytes_read": 241309358592,
+  "cpu_seconds": 859.6472602900001,
+  "expected_bytes": 241309358592,
+  "expected_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+  "final_fstat": {
+    "st_ctime_ns": 1788254629465850600,
+    "st_dev": 93,
+    "st_ino": 8167886,
+    "st_mode": 33261,
+    "st_mtime_ns": 1788254629465850600,
+    "st_size": 241309358592
+  },
+  "final_lstat": {
+    "st_ctime_ns": 1788254629465850600,
+    "st_dev": 93,
+    "st_ino": 8167886,
+    "st_mode": 33261,
+    "st_mtime_ns": 1788254629465850600,
+    "st_size": 241309358592
+  },
+  "finished_epoch_ns": 1790966501314494615,
+  "host": "huklaban5-Precision-5820-Tower",
+  "initial_lstat": {
+    "st_ctime_ns": 1788254629465850600,
+    "st_dev": 93,
+    "st_ino": 8167886,
+    "st_mode": 33261,
+    "st_mtime_ns": 1788254629465850600,
+    "st_size": 241309358592
+  },
+  "max_rss_kib": 47840,
+  "no_retry": true,
+  "proc_io_after": {
+    "cancelled_write_bytes": 0,
+    "rchar": 241310160789,
+    "read_bytes": 0,
+    "syscr": 14506,
+    "syscw": 18,
+    "wchar": 2494,
+    "write_bytes": 61440
+  },
+  "proc_io_before": {
+    "cancelled_write_bytes": 0,
+    "rchar": 802094,
+    "read_bytes": 0,
+    "syscr": 119,
+    "syscw": 4,
+    "wchar": 1148,
+    "write_bytes": 4096
+  },
+  "proc_io_delta": {
+    "cancelled_write_bytes": 0,
+    "rchar": 241309358695,
+    "read_bytes": 0,
+    "syscr": 14387,
+    "syscw": 14,
+    "wchar": 1346,
+    "write_bytes": 57344
+  },
+  "read_calls_including_final_eof": 14385,
+  "schema": "current-voltage-full-hash-receipt-v1",
+  "source_sha256": "97c83ab93993bde6010792224a5e119078d1173e436f993a69e88990449bf8ea",
+  "started_epoch_ns": 1790964315441072711,
+  "stat_unchanged": true,
+  "status": "PASS_EXACT_MATCH",
+  "wall_seconds": 2185.8730681957677
+}

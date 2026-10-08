@@ -1,0 +1,9 @@
+{
+  "manifest_sha256": "a80f9c9469d8343a6fa449d24e860f18b17a0e4adad69383f4bf4f56352bdecc",
+  "production_attempt_started": false,
+  "recording_bytes_read": 0,
+  "review_status_sha256": "bcc53faab228396539db0840b0e617740eb4dd40de5a3902f7cc734610aaf31f",
+  "schema": "candidate2-sequential-harness-review-failure-complete-v1",
+  "status": "complete_no_go",
+  "verdict": "NO_GO_ACTUAL_PRODUCTION_BINDING_DEFECT"
+}

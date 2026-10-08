@@ -1,0 +1,27 @@
+{
+  "schema": "candidate2-stable-systemd-identity-deployed-review-evidence-v1",
+  "created_utc": "2026-10-08T12:15:00Z",
+  "pass": true,
+  "bindings": {
+    "contract_sha256": "4769968e7bef087d07097bb61b745de7882afaa9e38c2d20f7c75eb4071d6c68",
+    "installed_source_manifest_sha256": "db2660fbb9d63e706780cef5a9b60855b8b7f1ca190d882705eec40de39a9408",
+    "installed_preflight_sha256": "2c3d0e07f4e6a723aa7af16bd865ecc353007d611927f5fe31932753e0eb7da7",
+    "installed_runner_sha256": "f62f8c5f42165414233f3532c4ba1a334563bae0bf947b9ac4fe1ae3c5f2da2b",
+    "installed_target_service_sha256": "aecc25da47aaaf9213b8635dd2b5f56360e6c6bc5958624d67c0cebd8a195a11",
+    "installed_monitor_service_sha256": "30b82b2396705f11fc1e7c2177ace6e73a6b74ee27446307dd126d0a071391e7",
+    "typed_identity_capture_sha256": "9e1126c0faec08a6bdfc2ce0d49511752cefb8ab8e9c65e0a6a1fb87f6bcf744"
+  },
+  "source_member_count": 31,
+  "source_closure_exact": true,
+  "typed_identity_capture_method": "temporary enable without start retained inactive units; capture used Manager.GetUnit plus typed Service.ExecStart/ExecStartPre; unit immediately disabled afterward",
+  "target_unit": {"enabled_state": "disabled", "active": "inactive", "sub": "dead", "main_pid": 0, "control_pid": 0, "result": "success"},
+  "monitor_unit": {"enabled_state": "static", "active": "inactive", "sub": "dead", "main_pid": 0, "control_pid": 0, "result": "success"},
+  "authorization_absent": true,
+  "output_absent": true,
+  "preflight_receipt_absent": true,
+  "job_receipt_absent": true,
+  "production_launch_started": false,
+  "recording_opened": false,
+  "recording_voltage_bytes_read": 0,
+  "sort_gpu_work_started": false
+}

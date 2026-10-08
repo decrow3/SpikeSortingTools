@@ -1,0 +1,11 @@
+{
+  "complete": true,
+  "packet": "en_a_four_unit_waveform_qc_execution_result_20261001_v1_h5",
+  "status": "one_shot_execution_complete_frozen_verdict_FAIL",
+  "created_utc": "2026-10-02T06:30:30Z",
+  "manifest_sha256": "3e33724e8b8a1e7323a64f4dbe62be9b81b192576b2baa6b5792ce37e6324c9b",
+  "execution_invocations": 1,
+  "retries": 0,
+  "recording_reads": 0,
+  "voltage_archives_published": false
+}

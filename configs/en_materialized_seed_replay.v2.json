@@ -1,0 +1,21 @@
+{
+  "schema_version": "en-materialized-seed-replay-v2",
+  "status": "frozen_amendment_before_recording_reads_or_outcome_scoring",
+  "base_protocol": {
+    "path": "configs/en_materialized_seed_replay.v1.json",
+    "sha256": "ed11a82ecf760d2992cbe1d365e507456093c59996fd1d5372ebf5363e81f79c"
+  },
+  "implementation_source_sha256": "d5096e72064dbb4aa3bca55f895e001989d64ce40d1b324e06f0097e633ed394",
+  "measurement_amendment": {
+    "reason": "bounded pre-execution review after v1 freeze and before any recording read",
+    "preserves": "all v1 arm/state/batch selections, read limits, controls, preprocessing, and consumer definitions",
+    "adds": [
+      "assert exact padded and core origins and a 60000-sample core",
+      "restrict the simple absolute-threshold site count to the core",
+      "report supported and unsupported channel-sample exposure per state/time-to-switch cell",
+      "report per-state/time-to-switch stage count, RMS, and maximum magnitude",
+      "use exact CPU NumPy quantiles for batch-level stage summaries"
+    ],
+    "outcome_driven": false
+  }
+}

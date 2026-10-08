@@ -1,0 +1,13 @@
+{
+  "schema": "immutable-composition-completion-v1",
+  "status": "COMPLETE_READY_FOR_H5_COMPOSITION_REVIEW_REAL_EXECUTION_DISABLED",
+  "completed_at_utc": "2026-10-02T10:46:31Z",
+  "manifest_sha256": "9537bf43d65db382edb3d18ca1975e796de3cae3516acf0c877aaa6c0727b186",
+  "implementation_review": "IMPLEMENTATION_REVIEW.json",
+  "tests_passed": 6,
+  "real_data_opened": false,
+  "real_scoring_performed": false,
+  "jobs_started": false,
+  "voltage_accessed": false,
+  "rf_or_holdout_accessed": false
+}

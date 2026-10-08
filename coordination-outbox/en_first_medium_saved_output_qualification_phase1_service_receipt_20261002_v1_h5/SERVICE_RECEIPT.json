@@ -1,0 +1,101 @@
+{
+  "schema": "first-medium-phase1-managed-service-receipt-v1",
+  "host": "huklaban5-Precision-5820-Tower",
+  "local_date": "2026-10-02",
+  "status": "COMPLETE_ONE_SHOT_REAL_CONTROL",
+  "authorization": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_h5_rereview_20261002_v2_h5",
+    "manifest_sha256": "f237c1ac4eb40aa5d61e7d37ccab738e135f0a8805efac9fcd137768f7ccc688",
+    "complete_sha256": "ba068ea4857e2fb3a81def4088b72c39dd0b63b4f6b105a710a0a4d7c93bf16b",
+    "contract_sha256": "29051bd579c81986ece405f825368642cb6e4b8932f0bfe52d6a6afc24866681",
+    "request_sha256": "671f6ea7464c19b79b1e60cff1d6fc8615996e7399ae80e439e031964151d5bc"
+  },
+  "prestart": {
+    "exact_hashes_verified": true,
+    "subject_manifest_verified": true,
+    "ref_input_files_present": true,
+    "output_absent": true,
+    "token_claim_absent": true,
+    "service_loaded_inactive_dead": true,
+    "service_prior_start_timestamp": null,
+    "service_prior_restarts": 0,
+    "shared_storage_available_bytes_approx": 246960619520,
+    "required_persistent_output_bytes_max": 134217728,
+    "dummy_disconnect_survival": {
+      "unit": "en-phase1-manager-dummy-20261002-h5.service",
+      "started_local": "2026-10-02T10:39:55-07:00",
+      "finished_local": "2026-10-02T10:40:00-07:00",
+      "result": "success"
+    }
+  },
+  "service": {
+    "unit": "en-first-medium-phase1-controls-20261002-v1-h5.service",
+    "installed_unit": "/home/huklaban5/.config/systemd/user/en-first-medium-phase1-controls-20261002-v1-h5.service",
+    "unit_sha256": "5839b7d271316c2703417851458b299546296849f13a376c19646ace651108cb",
+    "start_count_issued": 1,
+    "automatic_retry": false,
+    "restart_policy": "no",
+    "started_local": "2026-10-02T10:41:20-07:00",
+    "finished_local": "2026-10-02T10:41:29-07:00",
+    "journal_cpu_seconds": 8.897,
+    "result": "success",
+    "exec_main_status": 0,
+    "restarts": 0,
+    "post_completion_state": "inactive/dead",
+    "post_completion_condition_result": false,
+    "post_completion_condition_reason": "the exact output now exists and the exact token claim now exists, so both negated freshness conditions fail"
+  },
+  "token_claim": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/.qualification_token_registry/en_first_medium_saved_output_v1/1be9f3b632b75afe87b1da6e01655c5943bc87304f78dc3dc02afe9f3af4deff.claim.json",
+    "sha256": "e82e4cfa87790ea0da8eea9d1585b93c35e84d9825d861170600328732a47cbf",
+    "persistent": true,
+    "binding_hmac_sha256": "d37245c38df414a0753c7a047e8a59f1ed99fbb9fda4f68d76fc48fb98a155e4"
+  },
+  "result_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_phase1_controls_20261002_v1_h5",
+    "manifest_sha256": "8b73c931155741f84300f3cd3a5d260ae8bf0bcf2e05460a6f717c114712bb04",
+    "complete_sha256": "797ae2d395e25e35f59e15447df7435dfda73a0839ed092fbb25786cdd97077d",
+    "manifest_members_verified": true,
+    "receipt_type": "REAL_CONTROL",
+    "fixture": false,
+    "phase": "phase1_controls"
+  },
+  "resources": {
+    "wall_seconds": 7.418008524924517,
+    "wall_seconds_max": 1200,
+    "peak_rss_kib": 610028,
+    "peak_rss_bytes_max": 8589934592,
+    "cpu_affinity": [0, 1, 2, 3],
+    "cpu_threads_max": 4,
+    "gpu_count": 0,
+    "rlimit_as_bytes": [8589934592, 8589934592],
+    "persistent_output_bytes_max": 134217728
+  },
+  "controls": {
+    "reference_cohort_sha256": "3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0",
+    "reference_cohort_units": 61,
+    "cohort_reference_events": 227895,
+    "ref_self_R_exact": 1.0,
+    "bijective_label_permutation_R_exact": 1.0,
+    "exclusive_duplicate_control_R_exact": 1.0,
+    "credited_candidate_events": 227895,
+    "half_open_boundaries_passed": true,
+    "final_stop_rejected": true,
+    "conditional_missingness_difference_pp": 0.0,
+    "reference_support_union_fraction": 0.08256777470563884,
+    "candidate_support_union_fraction": 0.08256777470563884,
+    "supported_units": 4,
+    "cross_arm_scalar_emitted": false,
+    "candidate_ranked_output_emitted": false,
+    "scientific_score": null
+  },
+  "scope": {
+    "arms_loaded": ["REF384"],
+    "b_access_or_score": false,
+    "voltage_access": false,
+    "sort_or_training": false,
+    "rf_or_holdout_access": false,
+    "phase2_run": false,
+    "scientific_advancement_authorized": false
+  }
+}

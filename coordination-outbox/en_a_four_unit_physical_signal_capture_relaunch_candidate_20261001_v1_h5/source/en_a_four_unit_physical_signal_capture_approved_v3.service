@@ -1,0 +1,24 @@
+[Unit]
+Description=Approved bounded A four-unit physical-signal capture with content-bound H1 gate
+ConditionPathExists=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_a_four_unit_physical_signal_capture.approved.v3.json
+ConditionPathExists=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_a_four_unit_physical_signal_capture_launch_guard_v3.py
+ConditionPathExists=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_a_four_unit_physical_signal_capture_20261001_approved_v2_launch/H1_GO.v3.json
+
+[Service]
+Type=exec
+WorkingDirectory=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools
+Environment=OMP_NUM_THREADS=4
+Environment=MKL_NUM_THREADS=4
+Environment=OPENBLAS_NUM_THREADS=4
+ExecStart=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_a_four_unit_physical_signal_capture_launch_guard_v3.py --receipt /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_a_four_unit_physical_signal_capture_20261001_approved_v2_launch/H1_GO.v3.json --packet-manifest /mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_physical_signal_capture_relaunch_candidate_20261001_v1_h5/MANIFEST.sha256 --config /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_a_four_unit_physical_signal_capture.approved.v3.json --service /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_a_four_unit_physical_signal_capture_approved_v3.service --capture-source /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_a_four_unit_physical_signal_capture.py --validator /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_a_four_unit_physical_signal_capture_launch_guard_v3.py --governing-contract-manifest /mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_physical_signal_capture_preparation_20261001_v3_h5/MANIFEST.sha256 --launch-command /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python -m testing.en_a_four_unit_physical_signal_capture --config /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_a_four_unit_physical_signal_capture.approved.v3.json --phase run
+Restart=no
+CPUQuota=400%
+MemoryMax=2G
+MemorySwapMax=0
+RuntimeMaxSec=300
+TimeoutStartSec=5
+TimeoutStopSec=5
+KillMode=control-group
+OOMPolicy=stop
+StandardOutput=append:/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_a_four_unit_physical_signal_capture_20261001_approved_v2.launch.log
+StandardError=append:/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_a_four_unit_physical_signal_capture_20261001_approved_v2.launch.log

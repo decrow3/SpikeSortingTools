@@ -1,0 +1,13 @@
+{
+  "schema": "immutable-evidence-packet-complete-v1",
+  "completed_utc": "2026-10-02T07:06:19Z",
+  "packet_status": "complete_failure_evidence",
+  "execution_status": "failed_one_authorized_invocation_consumed_no_retry",
+  "manifest_sha256": "34a2b053f7c368a83400df607d1c418c98bf4a2bf8a06f997d2fa6470b7d2d15",
+  "manifest_members_verified": true,
+  "complete_written_last": true,
+  "corrected_verdict": null,
+  "historical_fail_preserved": true,
+  "recording_read_calls": 0,
+  "waveform_payload_in_packet": false
+}

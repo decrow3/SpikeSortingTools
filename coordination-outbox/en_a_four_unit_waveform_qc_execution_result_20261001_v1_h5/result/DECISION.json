@@ -1,0 +1,18 @@
+{
+  "integrity_controls_passed": false,
+  "prohibited_claims": [
+    "biological identity",
+    "purity",
+    "motion-estimator correctness",
+    "sorter improvement"
+  ],
+  "scope": "whether selected A signals show technically coherent original-versus-corrected waveform and stage behavior worthy of informing the first trained comparison",
+  "unit_usable": {
+    "271": false,
+    "278": false,
+    "445": false,
+    "588": false
+  },
+  "usable_unit_count": 0,
+  "verdict": "FAIL"
+}

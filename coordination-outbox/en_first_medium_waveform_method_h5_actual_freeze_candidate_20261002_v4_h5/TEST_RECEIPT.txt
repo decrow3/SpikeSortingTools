@@ -1,0 +1,37 @@
+H5 actual-only waveform freeze candidate tests, 2026-10-02 PDT
+
+Freeze-specific suite
+  command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=source pytest -q -p no:cacheprovider tests/test_actual_h5_freeze.py
+  first result: 5 passed, 1 failed in 0.03s
+  first failure: test referenced nonexistent historical key interpretation_and_decision
+  preserved correction: evidence/CONTRACT_PRESERVATION_TEST_CORRECTION.json
+  corrected result: 6 passed in 0.02s
+
+Accepted subject regression suite
+  subject: en_first_medium_waveform_method_targeted_repair_20261002_v3_h5
+  command: original 32-test suite with source plus reviewed rescue-production site-packages,
+           CUDA disabled, and BLAS/OpenMP/Numba thread caps of 4
+  result: 32 passed in 37.11s
+
+Actual H5 runtime verifier
+  result: PASS
+  independently rehashed: 89 objects, 3,333,088,832 bytes
+  aggregate: 6658089a5e123b1962d2a61b7b89c230e484fdde0f52a0479e52c102f10cfe48
+  numerical probe: e904ebc218e24c983580f0f72ea012f9483a7ff72f64bea7b8cd4812aa7b55df
+  differences: none
+
+Current full voltage identity
+  separate managed read: PASS_EXACT_MATCH
+  bytes: 241,309,358,592
+  sha256: 152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482
+  retry count: 0
+  final stat unchanged: true
+
+Compact future identity preflight
+  result: PASS
+  voltage bytes read: 0
+  historic/current digest equal: true
+  exact no-follow lstat binding: PASS
+
+No waveform extraction, event capture, sorting, training, RF, or holdout was run.
+The contract and packet remain execution disabled.

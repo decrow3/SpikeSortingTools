@@ -1,0 +1,8 @@
+{
+  "authorization_sha256": "2baa2148dadc8aaa76a56c2c574d7e18c9950eec2d457bc6e5f3eea2ccdba83e",
+  "execution_state_at_seal": "AUTHORIZED_NOT_STARTED",
+  "manifest_sha256": "adf19e171cee487d6bfcfb379e3a6c74201f67de829e81fb3ee6088f0e78e458",
+  "review_status_sha256": "91be0ce096640ef0c24ad347c17e4dafa43e74b5d10f4dcac68cd8c29204d775",
+  "schema": "candidate2-stable-systemd-identity-packet-complete-v1",
+  "status": "complete"
+}

@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "packet": "en_minimum_training_support_mask_covariance_relaunch_candidate_20261001_v1_h5",
+  "status": "candidate_complete_pending_independent_h1_review_no_go",
+  "manifest_sha256": "99c6250b527bef1ef5e81c9b9f48e49e67e8d7236a088499cf4592fe9c5479c2",
+  "installed": false,
+  "launched": false,
+  "recording_opened": false,
+  "fresh_go_receipt_present": false
+}

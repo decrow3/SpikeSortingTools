@@ -1,0 +1,27 @@
+[Unit]
+Description=Luke first-medium evaluator v3 post-QC one-shot execution
+
+[Service]
+Type=exec
+Restart=no
+WorkingDirectory=/tmp
+Environment=PYTHONPATH=/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/evaluator_post_qc_v1_staging/source
+Environment=NUMBA_CACHE_DIR=/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/evaluator_post_qc_v1_numba_cache
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=OMP_NUM_THREADS=4
+Environment=MKL_NUM_THREADS=4
+Environment=OPENBLAS_NUM_THREADS=4
+Environment=NUMEXPR_NUM_THREADS=4
+AllowedCPUs=0-3
+CPUQuota=400%
+MemoryMax=17179869184
+LimitAS=17179869184
+RuntimeMaxSec=3600
+TimeoutStartSec=3600
+TasksMax=64
+StandardOutput=append:/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_first_medium_evaluator_post_qc_v1/stdout.log
+StandardError=append:/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_first_medium_evaluator_post_qc_v1/stderr.log
+ExecStart=/home/huklaban5/anaconda3/bin/python -m testing.first_medium_evaluator --request /mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_evaluator_post_qc_execution_request_20261002_v1_h1/config/en_first_medium_four_arm_evaluator.post_qc.execution_disabled.v1.json --output /media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/evaluator_post_qc_v1
+
+[Install]
+WantedBy=default.target

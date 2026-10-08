@@ -1,0 +1,115 @@
+{
+  "fixture_sha256": "0f89e26d4c9a088199b2877b53d33bd36dac7345c66844c1bd77e9eacbbefdd7",
+  "production_bytes": {
+    "bootstrap.py": "672c9fa088f8523adbdde7bf391ae2effe0ead9eefde79c4a5065fb1d8820faa",
+    "monitor_bootstrap.py": "043abbff58a31fe66ece4a7c6266ea9b1830deb15cd91362a413b1c62a98fe9c",
+    "preflight_bootstrap.py": "d7b6f8573f46d46ca7348c703ea5849d8ac9d7fc805fb6891146c540fad9b81f",
+    "runner": "f62f8c5f42165414233f3532c4ba1a334563bae0bf947b9ac4fe1ae3c5f2da2b"
+  },
+  "production_installed": false,
+  "recording_bytes_read": 0,
+  "recording_opened": false,
+  "retained_artifacts": {
+    "evidence/SEQUENTIAL_ACCEPTANCE/AUTH_argv.stderr.txt": {
+      "bytes": 492,
+      "sha256": "ce66472a0602602bb4bea02d515742f2621b73dd14cfba74048e9856a69aa2d7"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/AUTH_argv.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/AUTH_ignore_errors.stderr.txt": {
+      "bytes": 492,
+      "sha256": "ce66472a0602602bb4bea02d515742f2621b73dd14cfba74048e9856a69aa2d7"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/AUTH_ignore_errors.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/AUTH_path.stderr.txt": {
+      "bytes": 492,
+      "sha256": "ce66472a0602602bb4bea02d515742f2621b73dd14cfba74048e9856a69aa2d7"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/AUTH_path.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/JOB.json": {
+      "bytes": 2000,
+      "sha256": "ff06fc35ca05e2cb9775a1b41e1c4079988441ca817930ebde906eb714d05dbb"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/MAIN_IMPORT.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/MAIN_IMPORT.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/MUTATION.stderr.txt": {
+      "bytes": 1221,
+      "sha256": "b5d3c7fad7e4fa7ca26a49d2e98b5ffa7f1b7493405a78530efd6b177a1244d6"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/MUTATION.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/MUTATION_JOB.json": {
+      "bytes": 1337,
+      "sha256": "6d01f89b2f1dba80ba7e636aee79aa5fe776f890edfb82217d106a41d7c874c3"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/PREFLIGHT.json": {
+      "bytes": 4862,
+      "sha256": "ab1b1a1d59bbc9599bbd3a038cad893708a007e2c9ba6d1f09904cbf546c4599"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/PREFLIGHT.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/PREFLIGHT.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/SUMMARY.json": {
+      "bytes": 489,
+      "sha256": "e015d589d27078cd94ded99c1c518100283e523dec96ddd8afea2a465a77e689"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/TREE_AFTER_MAIN_IMPORT.json": {
+      "bytes": 3109,
+      "sha256": "6b97808d4307a398b1902073820689456a0b87847dcc3ca7c62fe40a2f171d4c"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/TREE_AFTER_PREFLIGHT.json": {
+      "bytes": 3109,
+      "sha256": "6b97808d4307a398b1902073820689456a0b87847dcc3ca7c62fe40a2f171d4c"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/TREE_DURING_MUTATION.json": {
+      "bytes": 3217,
+      "sha256": "58d1870f4560637a5f108d2accd53e4a116627daba7b5d2db5ebc830c9fc4f68"
+    },
+    "evidence/SEQUENTIAL_ACCEPTANCE/TREE_FINAL.json": {
+      "bytes": 3109,
+      "sha256": "6b97808d4307a398b1902073820689456a0b87847dcc3ca7c62fe40a2f171d4c"
+    }
+  },
+  "schema": "candidate2-bytecode-sequential-acceptance-test-receipt-v1",
+  "sort_gpu_work_started": false,
+  "status": "PASS",
+  "summary": {
+    "actual_main_bootstrap_runner_import": true,
+    "actual_preflight_bootstrap": true,
+    "inactive_equals_active_typed_identity": true,
+    "negative_cases": [
+      "argv",
+      "ignore_errors",
+      "path"
+    ],
+    "pass": true,
+    "positive_receipt": "/tmp/candidate2-v8-full-preflight-rivj5a8h/positive/PREFLIGHT.json",
+    "recording_bytes_read": 0,
+    "recording_opened": false,
+    "sort_gpu_work_started": false,
+    "source_mutation_rejected": true,
+    "source_unchanged_at_each_boundary": true
+  },
+  "traversal_count": 1
+}

@@ -1,0 +1,40 @@
+{
+  "schema": "en-minimum-training-support-mask-covariance-smoke-result-v1",
+  "status": "passed_covariance_and_whitening_stopped_before_training_detection",
+  "contract_digest": "25102362ea5a890c4662a80beceda5e00170d982d24924db4bc411b89240d9c4",
+  "covariance": {
+    "shape": [384, 384],
+    "dtype": "float32",
+    "finite": true,
+    "rank": 384,
+    "condition_number": 215.0203399658203,
+    "maximum_condition_number": 100000000.0,
+    "array_sha256": "155944a56cfdad66c4ddadfc6607b7eaa5b79de7f35510585d014088e4b70554",
+    "file_sha256": "284ad776287151f5436be9091a1a06edc3801a7093929e1b7857dfe96186430b"
+  },
+  "whitening": {
+    "shape": [384, 384],
+    "dtype": "float32",
+    "finite": true,
+    "array_sha256": "752be427fce43138bb6a8fa043f79087d2f27a715c8544e07ab3d830b619c077",
+    "file_sha256": "98b9e86ea9f5fb43a9d2f68c61608df20afff7af5ae2cea559870cf47cffb974"
+  },
+  "support_and_state_exposure": {
+    "sampled_batches": 12,
+    "sampled_interior_columns": 720000,
+    "valid_samples_per_row_min": 536331,
+    "valid_samples_per_row_max": 720000,
+    "all_384_rows_have_valid_samples": true,
+    "unsupported_values_masked_total": 1172020,
+    "transition_boundaries": 14,
+    "all_transition_samples_retained": true
+  },
+  "stop_boundary": {"before_training_detection": true, "training_started": false, "detection_started": false},
+  "failure_markers": {"run_failure_absent": true, "covariance_failure_absent": true, "whitening_failure_absent": true},
+  "service_warning": {
+    "observed": true,
+    "message": "systemd ignored Unit.ConditionPathNotExists as an unknown key",
+    "impact_on_this_run": "freshness remained fail-closed through the immediate external absence check and the launcher's atomic run_root.mkdir(exist_ok=False); the smoke completed in a fresh namespace",
+    "future_action": "repair and independently review the unit-level condition before any future launch"
+  }
+}

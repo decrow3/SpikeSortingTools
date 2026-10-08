@@ -4,7 +4,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from testing.sort_comparison import compare_sorts, correspondence
+from testing.sort_comparison import compare_sorts, correspondence, load_comparison_inputs
+from pipeline.completeness_timeline import classify_fit_trust
 
 
 def pop(times, clusters, *, labels=None, depths=None, amplitudes=None):
@@ -29,6 +30,9 @@ def windows(cluster, values, *, starts=None, status="finite_interior"):
         "start_s": starts,
         "end_s": starts + 1,
         "missing_pct": values,
+        "fit_x0": 1.0,
+        "fit_k": 1.0,
+        "fit_A": 1.0 / (1.0 - np.asarray(values, dtype=float) / 100.0),
     })
 
 
@@ -179,3 +183,119 @@ def test_wrong_recording_clock_is_rejected():
             {"amplitude_windows": windows(2, [1, 1])},
             config(),
         )
+
+
+SPATIAL = {
+    "processing_depth_um": [0, 400], "scoring_depth_um": [100, 300],
+    "minimum_edge_exclusion_um": 50,
+}
+
+
+def test_outside_units_cannot_change_population_guardrails():
+    # The outside unit is highly refractory and coincides with an edge unit.
+    # Previously it changed all three contamination/boundary summaries.
+    inside = pop([100, 101, 1100, 2100, 2101, 3100], [1, 1, 2, 1, 1, 2],
+                 depths=[20, 20, 200, 20, 20, 200])
+    extended = pop([100, 100, 101, 101, 102, 1100, 2100, 2100, 2101, 2101, 2102, 3100],
+                   [1, 9, 1, 9, 9, 2, 1, 9, 1, 9, 9, 2],
+                   depths=[20, -10, 20, -10, -10, 200, 20, -10, 20, -10, -10, 200])
+    qc = {"amplitude_windows": pd.concat([windows(c, [10]*4) for c in (1, 2, 9)])}
+    clean = compare_sorts(inside, inside, qc, qc, config(), SPATIAL)
+    expanded = compare_sorts(extended, inside, qc, qc, config(), SPATIAL)
+    pd.testing.assert_frame_equal(clean["guardrail_summary"], expanded["guardrail_summary"])
+    assert expanded["summary"]["baseline_units"] == 3  # full inventory retained
+    assert expanded["coverage_summary"]["baseline_eligible_units"] == 1
+    edge = expanded["guardrail_summary"].set_index("metric").loc["edge_unit_fraction"]
+    assert edge.baseline == edge.candidate == 0.5
+
+
+def test_spike_guardrails_exclude_excursions_outside_processing_range():
+    # Median depth is interior but one event is outside; it must not dilute
+    # the edge-spike denominator (two edge events / five supported events).
+    a = pop([100, 200, 300, 1100, 1200, 1300], [1, 1, 1, 2, 2, 2],
+            depths=[200, 200, -10, 20, 20, 200])
+    qc = {"amplitude_windows": pd.concat([windows(c, [10]*4) for c in (1, 2)])}
+    report = compare_sorts(a, a, qc, qc, config(), SPATIAL)
+    guard = report["guardrail_summary"].set_index("metric")
+    assert guard.loc["edge_spike_fraction", "baseline"] == pytest.approx(2/5)
+
+
+def test_empty_common_domain_marks_guardrails_unavailable():
+    a = pop([100, 200], [1, 1], depths=[-20, -20])
+    qc = {"amplitude_windows": windows(1, [10]*4)}
+    report = compare_sorts(a, a, qc, qc, config(), SPATIAL)
+    assert not report["guardrail_summary"].available.any()
+    assert report["coverage_summary"]["endpoint_status"] == "infeasible_insufficient_coverage"
+
+
+def test_spatial_contract_requires_depths():
+    a = pop([100, 200], [1, 1])
+    qc = {"amplitude_windows": windows(1, [10]*4)}
+    with pytest.raises(ValueError, match="finite spike depths"):
+        compare_sorts(a, a, qc, qc, config(), SPATIAL)
+
+
+def test_disagreeing_fits_do_not_count_as_completeness_support():
+    a = pop([100, 1100, 2100, 3100], [1]*4)
+    trusted = windows(1, [20]*4)
+    untrusted = trusted.copy()
+    untrusted["fit_A"] = 1.0  # normalization estimate 0%, shape estimate 20%
+    report = compare_sorts(a, a, {"amplitude_windows": trusted},
+                           {"amplitude_windows": untrusted}, config())
+    assert report["coverage_summary"]["amplitude_measurable_both_common_time"] == 0
+    assert report["amplitude_completeness_pairs"].candidate_valid_windows.item() == 0
+    saved = report["amplitude_windows"]
+    assert (saved.loc[saved['sort']=='candidate', 'measurement_status'] == 'poor_fit_disagreement').all()
+    assert report["candidate_manifest"]["fit_trust_policy"]["fit_disagreement_warning_pp"] == 5.0
+
+
+def test_shared_fit_trust_boundaries_and_status_precedence():
+    _, _, status = classify_fit_trust(
+        [5.0, 5.001, 50.0, np.nan, 10.0],
+        [[1, 1, 1], [1, 1, 1], [1, 1, 1], [1, 1, 1], [1, 1, np.nan]],
+    )
+    assert status.tolist() == ['measured', 'poor_fit_disagreement',
+                               'censored_at_least_50pct', 'nonfinite', 'nonfinite']
+
+
+def test_missing_fit_trust_inputs_fail_closed():
+    a = pop([100, 200], [1, 1])
+    qc = {"amplitude_windows": windows(1, [10]*4).drop(columns="fit_A")}
+    with pytest.raises(ValueError, match="fit-trust inputs"):
+        compare_sorts(a, a, qc, qc, config())
+
+
+def test_depth_bytes_change_identity_and_loaded_arrays_are_stable(tmp_path):
+    curated = tmp_path / 'cur'
+    qc = tmp_path / 'qc'
+    curated.mkdir()
+    (qc / 'amp_truncation').mkdir(parents=True)
+    np.save(curated / 'spike_times.npy', np.array([100, 200], dtype=np.int64))
+    np.save(curated / 'spike_clusters.npy', np.array([1, 1], dtype=np.int64))
+    np.save(curated / 'full_st.npy', np.array([[100, 0, 10], [200, 0, 11]], dtype=float))
+    np.save(curated / 'kept_spikes.npy', np.array([True, True]))
+    (curated / 'cluster_KSLabel.tsv').write_text('cluster_id\tKSLabel\n1\tgood\n')
+    np.savez(qc / 'amp_truncation/truncation_qc.npz', cid=np.empty(0, dtype=int),
+             window_blocks=np.empty((0, 2), dtype=int), popts=np.empty((0, 3)), mpcts=np.empty(0))
+    np.save(curated / 'spike_positions.npy', np.array([[0, 200], [0, 200]], dtype=float))
+    a, _ = load_comparison_inputs('test', curated, qc, sampling_frequency_hz=1000)
+    np.save(curated / 'spike_positions.npy', np.array([[0, 20], [0, 20]], dtype=float))
+    b, _ = load_comparison_inputs('test', curated, qc, sampling_frequency_hz=1000)
+    assert a['identity_digest'] != b['identity_digest']
+    np.testing.assert_array_equal(a['depth'], [200, 200])
+    np.testing.assert_array_equal(b['depth'], [20, 20])
+    np.save(curated / 'spike_positions.npy', np.array([[0, np.nan], [0, 20]]))
+    with pytest.raises(ValueError, match='nonfinite spike depths'):
+        load_comparison_inputs('test', curated, qc, sampling_frequency_hz=1000)
+
+
+def test_v3_refuses_to_overwrite_prior_comparison(tmp_path):
+    prior = '{"request_digest": "historical-v2"}\n'
+    (tmp_path / 'candidate_manifest.json').write_text(prior)
+    (tmp_path / 'summary.json').write_text('historical result\n')
+    a = pop([100, 200], [1, 1])
+    qc = {"amplitude_windows": windows(1, [10]*4)}
+    with pytest.raises(RuntimeError, match='another request'):
+        compare_sorts(a, a, qc, qc, config(), output_dir=tmp_path)
+    assert (tmp_path / 'candidate_manifest.json').read_text() == prior
+    assert (tmp_path / 'summary.json').read_text() == 'historical result\n'

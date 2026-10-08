@@ -1,0 +1,10 @@
+{
+  "commit_object_available_after_mirror_and_direct_fetch": false,
+  "direct_fetch_returncode": 128,
+  "mirror_clone_completed": true,
+  "occupied_repository_modified": false,
+  "remote": "https://github.com/decrow3/SpikeSortingTools.git",
+  "required_commit": "aea7431c4026fa74e36ad01139d9e596900a1d25",
+  "schema": "candidate3-spikesortingtools-remote-commit-probe-v1",
+  "temporary_bare_repository": "/tmp/candidate3-sst-remote-SG8ssZ/repo.git"
+}

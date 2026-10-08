@@ -1,0 +1,27 @@
+{
+  "status": "pending_h1_changed_delta_review",
+  "reviewed_base_sha256": "74f20c49418bbe4ad9a530da8a477b72093569fe2eec319682405fbd4431cb47",
+  "candidate_config_sha256": "c4c6944fc21a7f9fa21545b569ba15c4219aabcd7b59115f5acea2a16dccae8f",
+  "expected_scalar_delta_count": 13,
+  "actual_scalar_delta_count": 13,
+  "exact_set_match": true,
+  "execution_enabled": true,
+  "conditional_policy": "execution_enabled is an allowed delta only when the reviewed base is not true and the candidate is exact true",
+  "v5_disabled_packet_preserved": true,
+  "v5_disabled_manifest_sha256": "8245dc11eda84df0ac0070f1e777a5c8da146b7b814ab1af03bbf4b26ec236c0",
+  "allowed_typed_paths": [
+    "(('key', 'base_binding'), ('key', 'path'))",
+    "(('key', 'base_binding'), ('key', 'sha256'))",
+    "(('key', 'execution_enabled'),)",
+    "(('key', 'failure_reason'),)",
+    "(('key', 'native_invocation'), ('key', 'results_dir'))",
+    "(('key', 'schema'),)",
+    "(('key', 'smoke'), ('key', 'launch_evidence_dir'))",
+    "(('key', 'smoke'), ('key', 'mode'))",
+    "(('key', 'smoke'), ('key', 'run_root'))",
+    "(('key', 'smoke'), ('key', 'stop_after_whitening'))",
+    "(('key', 'source_bindings'), ('index', 0), ('key', 'sha256'))",
+    "(('key', 'source_bindings'), ('index', 2), ('key', 'sha256'))",
+    "(('key', 'status'),)"
+  ]
+}

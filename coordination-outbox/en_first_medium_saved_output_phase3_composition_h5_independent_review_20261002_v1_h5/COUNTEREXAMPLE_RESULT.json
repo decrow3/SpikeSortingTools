@@ -1,0 +1,13 @@
+{
+  "schema": "h5-phase3-pair-binding-counterexample-result-v1",
+  "candidate_manifest_sha256": "48b32b79f161b94d9c3a09d1bb8be1c5b2366e2e63cdf398333b4c27a7f090a7",
+  "managed_entry_invoked": true,
+  "synthetic_saved_format_only": true,
+  "pair_complete_has_execution_states": false,
+  "repaired_and_repeat_paths_outside_pair_namespace": true,
+  "managed_returncode": 0,
+  "phase3_report_written": true,
+  "authoritative_phase3_complete_written": true,
+  "finding_reproduced": true,
+  "real_data_or_outcomes_accessed": false
+}

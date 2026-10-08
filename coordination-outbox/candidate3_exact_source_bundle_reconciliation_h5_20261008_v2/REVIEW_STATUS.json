@@ -1,0 +1,66 @@
+{
+  "schema": "candidate3-exact-source-bundle-reconciliation-independent-review-v1",
+  "verdict": "GO_BLOCKER_ACCURATE",
+  "reviewed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/candidate3_exact_source_bundle_reconciliation_h5_20261008_v2",
+  "execution_ready": false,
+  "launch_authorized": false,
+  "bindings": {
+    "result_sha256": "43220192eb2fdd98e5f1d44172a52e2f6e0698e102805cd52113a8110508e4d4",
+    "runner_sha256": "0bed993b8718f29591b92884e88b65f2bf8a6780cce49490b869ba82823f1f7e",
+    "contract_sha256": "6cb5c29b806b63021bf9edef87535718f24efc9ff27842d9e4e34c3e06e56037",
+    "import_probe_sha256": "31d85ad151882f64bf6812b4cb50e2c495b090ae3de3888676a58e5962b31a62",
+    "source_bindings_sha256": "65bf7ad6460c71b56c0972715c8324f079d434be9b042cb668c918af0f86f05e",
+    "remote_commit_probe_sha256": "cda7b1a1eed74f1ec4c70227cecae1cdb0928bb25bf43ed7e99baa4b780b8a7e",
+    "direct_fetch_stderr_sha256": "49edb73ec4b9cc97cd9c472194183321bfc3faf4f849ea0b0d4477e8ae99a3e1",
+    "contract_composition_evidence_sha256": "462ac18a742e364a414b38208619c2dd459d98ea1d6f9d345224b9c5d5af8d7a",
+    "pristine_kilosort_evidence_sha256": "d4e3619daf3e189fc6e93bb2044ae5bc612f08c094aa7d3aa5d7de0f8363efc3"
+  },
+  "verified": {
+    "carried_runner_matches_sealed_v3": true,
+    "carried_contract_matches_sealed_v3": true,
+    "required_wrapper_commit_absent_local": true,
+    "required_wrapper_commit_absent_isolated_mirror": true,
+    "direct_exact_fetch_not_our_ref_receipt_present": true,
+    "dartsort_commit_and_tree_available": true,
+    "dartsort_commit_and_import_hashes_exact": true,
+    "frozen_append_imports_c6093e14_not_required_767b76a0": true,
+    "pristine_prepend_imports_required_767b76a0": true,
+    "runner_resolved_vs_unresolved_interpreter_defect": true,
+    "occupied_runner_and_contract_paths_absent": true,
+    "no_voltage_equality_service_gpu_or_sort": true
+  },
+  "blocking_findings": [
+    {
+      "id": "EXACT_WRAPPER_COMMIT_UNAVAILABLE",
+      "detail": "Commit aea7431c4026fa74e36ad01139d9e596900a1d25 and required wrapper bytes are unavailable from checked local objects and configured remote evidence."
+    },
+    {
+      "id": "FROZEN_KILOSORT_IMPORT_COMPOSITION_MISMATCH",
+      "detail": "Frozen append imports io.py c6093e14..., while the contract requires 767b76a0...."
+    },
+    {
+      "id": "FROZEN_INTERPRETER_SYMLINK_COMPARISON_DEFECT",
+      "detail": "Runner compares resolved sys.executable with an unresolved expected venv symlink and rejects the declared interpreter."
+    }
+  ],
+  "nonblocking_findings": [
+    {
+      "id": "APPEND_IMPORT_RECEIPT_SCHEMA_DRIFT",
+      "detail": "Current IMPORT_PROBE adds dependency_site:null; the frozen append receipt omits that null field, while all substantive paths and hashes reproduce."
+    }
+  ],
+  "implementation_checks": {
+    "done": [
+      "Rehashed exact carried/sealed runner and contract",
+      "Checked local and preserved isolated Git object absence and direct-fetch receipt",
+      "Verified DARTsort commit/tree, git-show hashes, and actual imports",
+      "Repeated append/prepend import compositions",
+      "Evaluated frozen interpreter path comparison"
+    ],
+    "not_done": [
+      "Network refetch, wrapper reconstruction, successor build, equality, voltage, service, GPU, or sort"
+    ],
+    "can_establish": "The exact no-launch blocker is accurate and a source-bearing isolated successor is required.",
+    "cannot_establish": "Wrapper correctness, equality, execution readiness, feasibility, or scientific benefit."
+  }
+}

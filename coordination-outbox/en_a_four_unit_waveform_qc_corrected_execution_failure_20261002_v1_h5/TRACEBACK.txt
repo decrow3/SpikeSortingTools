@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_waveform_qc_correction_review_candidate_20261001_v1_h5/source/en_a_four_unit_waveform_qc_corrected.py", line 361, in <module>
+    main()
+  File "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_waveform_qc_correction_review_candidate_20261001_v1_h5/source/en_a_four_unit_waveform_qc_corrected.py", line 357, in main
+    execute(config, args.output)
+  File "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_waveform_qc_correction_review_candidate_20261001_v1_h5/source/en_a_four_unit_waveform_qc_corrected.py", line 259, in execute
+    visible: dict[int, list[bool]] = {int(unit): [] for unit in config["unit_channel_identities"]}
+                                                                ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'unit_channel_identities'

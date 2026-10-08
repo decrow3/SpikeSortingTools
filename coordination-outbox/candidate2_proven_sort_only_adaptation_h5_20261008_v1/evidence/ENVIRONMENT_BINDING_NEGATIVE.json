@@ -1,0 +1,10 @@
+{
+  "schema": "candidate2-sort-only-environment-binding-negative-v1",
+  "status": "PASS_FAIL_CLOSED",
+  "mutation": "kilosort_io expected SHA-256 changed by one hexadecimal digit in a temporary config, with the matching temporary config authorization hash",
+  "exit_code": 1,
+  "exception": "RuntimeError: frozen environment file differs: kilosort_io",
+  "recording_bytes_read": 0,
+  "sort_started": false,
+  "production_config_modified": false
+}

@@ -1,0 +1,9 @@
+{
+  "completed_utc": "2026-10-02T10:06:25.457409+00:00",
+  "completion_written_last": true,
+  "effective_config_sha256": "1c7a62432251e705e5f5cc82f1e299082ede8442d17f7475479a348839b43b5f",
+  "execution_enabled": false,
+  "manifest_sha256": "710723d0e965c32895f57914a0edad9a9e2761dc5bfc9a47d319df1a669887f2",
+  "schema": "immutable-review-candidate-completion-v1",
+  "status": "complete"
+}

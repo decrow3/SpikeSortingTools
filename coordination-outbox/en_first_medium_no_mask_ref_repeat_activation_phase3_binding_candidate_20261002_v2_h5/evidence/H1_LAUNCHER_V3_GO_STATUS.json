@@ -1,0 +1,16 @@
+{
+  "schema": "luke-durable-coordination-h1-r2-finalization-review-result-v1",
+  "host": "huklaban1",
+  "active_assignment_version": "v3",
+  "item": "H1-R2-FINALIZATION-DELTA-REVIEW",
+  "state": "COMPLETE_GO",
+  "verdict": "GO_R2_FINALIZATION_REPAIR_ONLY_EXECUTION_REMAINS_DISABLED",
+  "subject_manifest_sha256": "682b3c3cc6cbe9bf3ae9a2bd2a19313888ddacfae99e199e9bd884ff9ffda284",
+  "review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_r2_finalization_h1_review_20261002_v1_h1",
+  "review_manifest_sha256": "7fde2fc6d93a85d3453471176ad66f6e3e8cb14349a449f38ea7e7e44d0fa6c5",
+  "review_complete_sha256": "8765639ef124917879254aa5c5d9f2c189426522e6bbc46aaaf5d50b7255058b",
+  "next": "resume thin execution-disabled Phase3 composition authoring",
+  "scientific_execution_started": false,
+  "service_installed_or_started": false,
+  "voltage_read": false
+}

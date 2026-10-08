@@ -1,0 +1,14 @@
+{
+  "status": "REQUEST_INDEPENDENT_H1_REVIEW_NO_DATA_LAUNCH",
+  "requested_checks": [
+    "confirm historical v2 invalid ConditionPathNotExists evidence is preserved",
+    "confirm v3 removes only the invalid freshness condition plus description wording",
+    "confirm atomic run_root mkdir exist_ok false remains the authoritative guard",
+    "confirm installed v3 syntax verifies and unit remains static inactive dead",
+    "confirm dummy config contains no recording path and first reservation writes evidence",
+    "confirm second reservation fails closed with FileExistsError",
+    "confirm failed import attempt and repaired dummy attempt are both preserved"
+  ],
+  "future_launch_authorization": false,
+  "data_job_started": false
+}

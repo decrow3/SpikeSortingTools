@@ -1,0 +1,32 @@
+{
+  "schema": "candidate2-sequential-acceptance-production-binding-failure-v1",
+  "status": "NO_GO_ACTUAL_PRODUCTION_BINDING_DEFECT",
+  "review_status_sha256": "bcc53faab228396539db0840b0e617740eb4dd40de5a3902f7cc734610aaf31f",
+  "harness_result": "PASS_DYNAMIC_HASH_TRAVERSAL_ONLY",
+  "production_bindings": {
+    "bootstrap": {
+      "actual_sha256": "672c9fa088f8523adbdde7bf391ae2effe0ead9eefde79c4a5065fb1d8820faa",
+      "service_argument_sha256": "a96ecc3c2cc2a2a921bdd6ab9c9b26591561d02b67da5da73a27c6b59a14b428"
+    },
+    "preflight_bootstrap": {
+      "actual_sha256": "d7b6f8573f46d46ca7348c703ea5849d8ac9d7fc805fb6891146c540fad9b81f",
+      "service_argument_sha256": "333a9c72d5e940d7e60a9a4666c604bd6c2fb2a4b82dae5c0e62a065cf86eb7f"
+    },
+    "monitor_bootstrap": {
+      "actual_sha256": "043abbff58a31fe66ece4a7c6266ea9b1830deb15cd91362a413b1c62a98fe9c",
+      "service_argument_sha256": "3c8f6f73ff71069bc985b2afe69963728d57842e5238aad159ea6747f10de16d"
+    },
+    "contract": {
+      "actual_sha256": "8c918b84f8ccd4aecaf8e5f148a14bbadb0941ffc3512a10b46c8a8c0067b8da",
+      "service_argument_sha256": "4769968e7bef087d07097bb61b745de7882afaa9e38c2d20f7c75eb4071d6c68"
+    }
+  },
+  "consequence": "exact service argv would fail bootstrap self or contract verification before the accepted preflight/runner-import path",
+  "recording_opened": false,
+  "recording_bytes_read": 0,
+  "production_service_installed": false,
+  "authorization_created": false,
+  "production_attempt_started": false,
+  "automatic_retry": false,
+  "further_custom_repair": false
+}

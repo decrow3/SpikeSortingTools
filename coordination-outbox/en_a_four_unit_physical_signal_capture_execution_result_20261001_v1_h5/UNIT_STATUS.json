@@ -1,0 +1,15 @@
+{
+  "observed_utc": "2026-10-02T05:49:44Z",
+  "unit": "en_a_four_unit_physical_signal_capture_approved_v3.service",
+  "load_state": "loaded",
+  "unit_file_state": "static",
+  "active_state": "inactive",
+  "sub_state": "dead",
+  "result": "success",
+  "exec_main_code": 0,
+  "exec_main_status": 0,
+  "main_pid": 0,
+  "restarts": 0,
+  "active_enter_timestamp": "n/a",
+  "inactive_enter_timestamp": "n/a"
+}

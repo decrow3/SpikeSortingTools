@@ -1,0 +1,30 @@
+{
+  "schema": "no-mask-ref-repeat-launcher-r1-r3-provenance-v1",
+  "original_candidate": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_candidate_20261002_v1_h5",
+    "manifest_sha256": "920c628d58af5a583d8a9ace35379ef6c10f83bacec07f8f138e018875a13fb9",
+    "complete_sha256": "af725225c267a62ad36f866c3490911b7e1ab85b8d199e403ad3a658d6a6f9f6"
+  },
+  "h1_blocking_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_waveform_launcher_h1_independent_review_20261002_v1_h1",
+    "manifest_sha256": "9842cca05ee6762aa5af26138b04e2edd792bf2f1504b19485870747837e1381",
+    "complete_sha256": "e68d2a06a31586f8b2aa3be1a9e2fdbedb95e420c3929bc02216c745f5bd0590",
+    "durable_status_sha256": "d4827473079f7549cd0467340fb8cb6031ff8b010c3ca1d456e18bb3f3f56c2a"
+  },
+  "accepted_waveform_method": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_waveform_method_h5_actual_freeze_candidate_20261002_v4_h5",
+    "manifest_sha256": "50fa0589d6eb459b12a4ac8c5c997fa7b822a58d2b2c1f0cbd2de53f9c47f8a7",
+    "complete_sha256": "74bd795cee9a3e5c651210c2ed37e977e2476e75491a7e2a5e44ff87f0deb952",
+    "h1_verdict": "GO_METHOD_FREEZE_ONLY"
+  },
+  "clock_v5_review": {
+    "manifest_sha256": "39fd736b838b81db39b96265a4fd51de0ebf6e102e6fa1876fd56f4132c74af4",
+    "complete_sha256": "74f63fe6880e50c5247f21df2ef16d3ea37f2e3206f60dce89495a69d493cd3d",
+    "verdict": "GO_CLOCK_REPAIR_ONLY"
+  },
+  "current_full_voltage": {
+    "manifest_sha256": "141a699e7396b62f67329ebba6a62dda3387db148f9ec1e56f18bb1f9e6070c4",
+    "complete_sha256": "aaa5e9f5d372327baa612de5159f37afb11f2e9ed20e71223f00ede55bfcdfd6",
+    "digest": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482"
+  }
+}

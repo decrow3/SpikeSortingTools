@@ -1,0 +1,64 @@
+{
+  "schema": "candidate3-exact-source-bundle-reconciliation-h5-v2",
+  "status": "ACK_BLOCKED_EXACT_WRAPPER_COMMIT_UNAVAILABLE_AND_IMPORT_TOPOLOGY_REVIEW_REQUIRED_NO_LAUNCH",
+  "decision": "The exact reviewed Candidate3 equality cannot be made execution-ready from currently available source. Runner and contract are now carried as exact source payloads; DARTsort and Kilosort expected source identities are independently available; the exact SpikeSortingTools wrapper commit is absent locally and from the configured remote, and the frozen v3 path/import joins would reject on this host.",
+  "exact_payloads_present": {
+    "runner": {
+      "path": "source_payload/candidate3_h5_real_wrapper_equality_v3.py",
+      "sha256": "0bed993b8718f29591b92884e88b65f2bf8a6780cce49490b869ba82823f1f7e"
+    },
+    "contract": {
+      "path": "source_payload/candidate3_h5_real_wrapper_equality_20261008_v3.json",
+      "sha256": "6cb5c29b806b63021bf9edef87535718f24efc9ff27842d9e4e34c3e06e56037"
+    }
+  },
+  "spikesortingtools": {
+    "required_commit": "aea7431c4026fa74e36ad01139d9e596900a1d25",
+    "required_wrapper_path": "npx_preprocessing/motion/kilosort_prewhitening_si.py",
+    "required_wrapper_sha256": "b7f06da5685d3b8af0c7bd18e7ccfeb3af7db8fe3b22b1fa6a619908f43bb690",
+    "occupied_repository_head": "32d04e7d5d8f15e9bd895ff3a4e633f75088b156",
+    "local_object_available": false,
+    "configured_remote": "https://github.com/decrow3/SpikeSortingTools.git",
+    "mirror_clone_completed": true,
+    "direct_exact_sha_fetch_returncode": 128,
+    "direct_exact_sha_fetch_error": "remote error: upload-pack: not our ref",
+    "remote_object_available": false,
+    "occupied_repository_modified": false
+  },
+  "dartsort": {
+    "required_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+    "commit_object_available": true,
+    "tree": "8d40728c4cb53b7fcbab726c465afda04ddbe32b",
+    "working_repository_head": "fdaad62118d778eec63f8e755a0b0f1422574aff",
+    "expected_file_hashes_reproduced_from_commit_and_actual_import": true,
+    "main_sha256": "e4c03417c1256384c4f8fbf0250560003bd795b7274932ef1e49dcde217bd249",
+    "main_util_sha256": "2846a319c19c25b3cad81ab991057c0868b87d760b66f20e8d2bb3db8ffa3bcc",
+    "preprocess_util_sha256": "566ce1ab60af12585978bcd7e3192cb2ca4cc220ab5e41895140c00bdbc06674",
+    "repository_modified": false
+  },
+  "kilosort": {
+    "required_version": "4.0.27",
+    "required_io_sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+    "pristine_source_available": true,
+    "pristine_source_root": "/home/huklaban5/Documents/kilosort-src-4.0.27/kilosort-4.0.27",
+    "frozen_contract_append_site_io_sha256": "c6093e14cae920e8cfaae6c3fed8d4c6ca032b046d705ef9868ec171c7bf3c99",
+    "frozen_contract_append_site_matches_required": false,
+    "isolated_prepend_source_io_sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+    "isolated_prepend_source_matches_required": true,
+    "interpretation": "Exact Kilosort bytes are available, but selecting them requires a reviewed import-topology successor; the frozen v3 appended site imports the wrong io.py."
+  },
+  "frozen_v3_runner_binding_defects": [
+    "The runner resolves sys.executable but compares it to the unresolved expected venv symlink path, so the declared DARTsort interpreter rejects itself on this host.",
+    "The frozen appended Kilosort site imports io.py hash c6093e14..., not required 767b76a0....",
+    "Runner and contract source bytes were absent from their frozen occupied-repository paths; exact copies are preserved here but installing them there would modify occupied state."
+  ],
+  "minimum_successor": "Supply an immutable source-bearing object/tree containing exact wrapper commit aea7431c...; assemble a fresh isolated root carrying the exact runner and contract; narrow the runner only to compare resolved interpreter identities and select the pristine Kilosort root ahead of dependency-only paths; bind actual imported hashes and obtain focused independent delta review. Retain exact equality, windows, controls, bounds and stop rules.",
+  "actions": {
+    "voltage_read_or_hashed": false,
+    "equality_executed": false,
+    "gpu_used": false,
+    "service_installed_or_started": false,
+    "sort_started": false,
+    "occupied_repository_modified": false
+  }
+}

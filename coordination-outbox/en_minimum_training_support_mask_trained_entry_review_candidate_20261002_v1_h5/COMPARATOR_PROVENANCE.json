@@ -1,0 +1,30 @@
+{
+  "schema": "en-medium-trained-comparator-provenance-v1",
+  "checked_utc": "2026-10-02T07:25:25Z",
+  "frozen_screen_config": {
+    "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_common_support_crop_screen.v1.json",
+    "sha256": "bb6dd8f21539e5ee57f4216702b7c9d4c36d1a0feeefe3859ba25449af52ad17"
+  },
+  "screen_root": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1",
+  "screen_complete_sha256": "30207b59113925b42081dfd367d2f580af72b5b7c1ed508141aa72cae2019bee",
+  "screen_plan_receipt_sha256": "08bffeb44254ad1054ebe9e389b8d32877c778d5396addfa7483647a807c5d3a",
+  "REF384": {
+    "receipt_sha256": "e3798289f79e51545a2da5fefaee99684c7a667cf863d9ec7cc687f6d1164ac9",
+    "status_sha256": "c0373d7d6caa22f6944d4bfa9071dbbb9b5291b838c7d07ca0cb95466d8022e7",
+    "ops_sha256": "5b3b365a83babe1dc5842fb92ff5e56f35a93aefe2557a1cd31ca42b46d72f58",
+    "pre_extraction_receipt_sha256": "06f82d7a057ad09c05a7895b0f1b4d0bc3c8dbd6cdc21f5ac1b268fd41f0d9b9",
+    "recording_manifest_sha256": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67",
+    "file_bytes": 1982207273
+  },
+  "B384": {
+    "receipt_sha256": "8a89ea4330871dce820329ca753890e12877b2695158ce9beddc77e9f190de3b",
+    "status_sha256": "13d08afe1219dddeaa81f388ab65c1e8077f394460126a89bfad65878c0c603e",
+    "ops_sha256": "7a8f5d219de1b98776134abb00f637777f85ba94113758ae47a1e4b26b2a44f0",
+    "pre_extraction_receipt_sha256": "72e9b2742374afb91a798d246cf6b4a9fbe7696efe8c9195958cd9b154beb4f5",
+    "recording_manifest_sha256": "46a3845008cb19d9c35a85e67841b308843e071f1a27605e87195a8d4d0a42cf",
+    "file_bytes": 1983697263
+  },
+  "raw_recordings_rehashed": false,
+  "numeric_arrays_copied": false,
+  "numeric_array_values_opened": false
+}

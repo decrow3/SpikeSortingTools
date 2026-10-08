@@ -1,0 +1,167 @@
+{
+  "arms": [
+    {
+      "arm_id": "REF384",
+      "clock_normalization": {
+        "crop_origin_global_frame": 208498882,
+        "global_frames_half_open": [
+          208498882,
+          226498783
+        ],
+        "local_frames_half_open": [
+          0,
+          17999901
+        ],
+        "saved_frame": "global_acquisition_samples"
+      },
+      "curated_output": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/sorter_output",
+      "evidence_kind": "real_saved",
+      "expected_identity_digest": "8f4fb3bfbfff22d7fcd982bbc7d2d272dbc65e72d6b6a2db093102f17d938e53",
+      "expected_qc_request_digest": "ae07ecf970f0c6de93f5f1717254fd11a181ce81b8a693232171f03e4ed524af",
+      "provenance": {
+        "arm_contract_id": "REF384",
+        "clock_identity": "eefcd8679957b27a54374479387dcdf6606cbd93674d0326614485612e1651c3",
+        "config_identity": "bb6dd8f21539e5ee57f4216702b7c9d4c36d1a0feeefe3859ba25449af52ad17",
+        "geometry_identity": "ff6df902235343f0f54274c532bb29979d7c20854418b6161e5c25f7d06067a3",
+        "input_identity": "3e4e53938997dc453b3d737b9d323877851c3ce9689313719d6ea562527bc71d",
+        "runtime_identity": "8b2a3c79cf86145f34a00b8087369c9164db8474e2634411b9e3a4580f0fd701",
+        "spatial_identity": "bdc51f5595ff9c9654677d542c798f097d65a2022e5710729c1e7796a2c24414"
+      },
+      "qc_dir": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/qc_regeneration_v6/REF384",
+      "spatial_provenance": {
+        "clock_binding": {
+          "crop_origin_global_frame": 208498882,
+          "global_frames_half_open": [
+            208498882,
+            226498783
+          ],
+          "local_frames_half_open": [
+            0,
+            17999901
+          ],
+          "saved_frame": "global_acquisition_samples"
+        },
+        "columns": [
+          {
+            "index": 0,
+            "semantic": "x",
+            "units": "micrometers"
+          },
+          {
+            "index": 1,
+            "semantic": "physical_probe_depth_y",
+            "units": "micrometers"
+          }
+        ],
+        "event_lineage_sha256": "3aa7da34c17af944c79a26b71e1988b97770f98ba4d7e902fda6d113d1b08380",
+        "geometry_float64_sha256": "d126fb241989698cd445c89638b02f0a2f8153389cfcad5acf49c1a0c4093bc8",
+        "ops_path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/sorter_output/ops.npy",
+        "ops_sha256": "5b3b365a83babe1dc5842fb92ff5e56f35a93aefe2557a1cd31ca42b46d72f58",
+        "path": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/sorter_output/spike_positions.npy",
+        "reference_frame": "kilosort_probe_xy_feature_mass_unshifted_nblocks0",
+        "row_count": 1856371,
+        "row_semantics": "exported_event_order_after_native_kept_spikes",
+        "schema": "evaluator-spatial-provenance-v1",
+        "sha256": "653434b726da58644876db9c3d83b64fb37d5a0c901ae329413c8463d3094737",
+        "source_generation": {
+          "dependency": {
+            "digest_sha256": "d1e5a4465d387c66a7655db442ecbf8740d2cae0032c300b0456432b0080c614",
+            "files": {
+              "io.py": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+              "postprocessing.py": "d20da9026de10eb83a02466cdb233c85ae4215c15af7d5656c3593c3809a0a55"
+            },
+            "root": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_contract_targeted_repair_20261002_v2_h1/dependencies/kilosort/d1e5a4465d387c66a7655db442ecbf8740d2cae0032c300b0456432b0080c614",
+            "schema": "content-addressed-python-source-root-v1"
+          },
+          "function": "kilosort.postprocessing.compute_spike_positions"
+        },
+        "spatial_region": {
+          "minimum_edge_exclusion_um": 80.0,
+          "processing_depth_um": [
+            1400.0,
+            2380.0
+          ],
+          "scoring_depth_um": [
+            1600.0,
+            2180.0
+          ],
+          "source": "testing/configs/luke0804_hindsight_ladder_v1.json sha256 c0b564e0476f1af63a01c6c4efd3d0064471193329bf026e503f1bb25adc05d3"
+        },
+        "units": "micrometers"
+      }
+    }
+  ],
+  "data_scope": "real_saved",
+  "phase": "phase1_controls",
+  "prerequisite_tokens": {
+    "composition_review_token": "aa5e007900b82dc8ba04adde2600210632101133d2ad9eab9bd314cf04e18ebe",
+    "fixed_ref_cohort_sha256": "3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0",
+    "phase1_start_token": "a51cbf56f022064650e2d6c34d803949c7f93e44031ef3f4a15fa6be1ef51ec3"
+  },
+  "reference_cohort": [
+    163,
+    164,
+    165,
+    166,
+    167,
+    168,
+    169,
+    170,
+    171,
+    172,
+    173,
+    174,
+    175,
+    176,
+    177,
+    178,
+    179,
+    180,
+    181,
+    182,
+    183,
+    184,
+    185,
+    186,
+    187,
+    188,
+    189,
+    190,
+    191,
+    192,
+    193,
+    194,
+    195,
+    196,
+    197,
+    198,
+    199,
+    200,
+    201,
+    202,
+    203,
+    204,
+    205,
+    206,
+    207,
+    208,
+    209,
+    210,
+    211,
+    212,
+    213,
+    214,
+    215,
+    216,
+    217,
+    219,
+    220,
+    221,
+    222,
+    223,
+    224
+  ],
+  "reference_cohort_sha256": "3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0",
+  "schema": "first-medium-saved-output-qualification-request-v1",
+  "start_token_binding_sha256": "d37245c38df414a0753c7a047e8a59f1ed99fbb9fda4f68d76fc48fb98a155e4"
+}

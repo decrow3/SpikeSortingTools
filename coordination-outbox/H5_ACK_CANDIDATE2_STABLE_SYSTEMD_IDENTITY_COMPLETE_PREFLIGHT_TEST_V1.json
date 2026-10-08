@@ -1,0 +1,15 @@
+{
+  "schema": "hub-multicoordinator-ack-v1",
+  "owner": "H5",
+  "recipient": "HubMultiCoordinater",
+  "created_utc": "2026-10-08T11:58:00Z",
+  "status": "ACK_STARTED",
+  "task": "Candidate2 stable systemd identity and complete preflight test",
+  "milestone": "Candidate 2 full-session native-rigid Kilosort recovery",
+  "decision": "whether one fresh successor can pass the entire actual preflight main and become eligible for one reviewed production launch",
+  "cheapest_adequate_test": "actual preflight main under an independent realistic dummy-service lifecycle with controlled host/service inputs and synthetic metadata, producing a valid receipt without bypassing gates",
+  "completion_condition": "typed systemd execution identity and Path-shadow repairs implemented; actual full preflight receipt passes required positive/negative cases; exact fresh deployment passes independent review; then at most one authorized launch",
+  "preserved_failure": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_v7_runtime_decorated_exec_authorization_failure_h5_20261008_v1",
+  "execution_state": "NO_LAUNCH_DURING_REPAIR_AND_FIXTURE_REVIEW",
+  "automatic_retry": false
+}

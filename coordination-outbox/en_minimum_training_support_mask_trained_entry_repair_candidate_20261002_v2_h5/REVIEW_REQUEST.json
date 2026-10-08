@@ -1,0 +1,17 @@
+{
+  "schema": "en-trained-entry-targeted-repair-h1-request-v1",
+  "status": "execution_disabled_independent_repair_review_requested",
+  "h1_review_manifest_sha256": "ad2eaac82c8848fa994ab7b0dae42564479081370b9ec4453ea2e7cc73114c03",
+  "h1_review_complete_sha256": "6a87a38a57552907f1363c19d1102946e90f2b627d15cedf9a6ad6809ef16725",
+  "requested_checks": [
+    "verify semantic parsing, shapes, dtypes, finiteness, alignment and ancestry for all declared artifacts",
+    "verify corrupted spike alignment fails at the real completion boundary without COMPLETE",
+    "verify actual native prepare_extract and extract hooks are invoked and snapshot is durable before first learned batch",
+    "verify mmap-based runtime effect and fresh execution-disabled v2 namespace",
+    "confirm no other trained-entry policy or reviewed consumer behavior changed"
+  ],
+  "execution_authorized_by_packet": false,
+  "recording_or_voltage_accessed": false,
+  "sort_training_detection_launched": false,
+  "rf_or_holdout_accessed": false
+}

@@ -1,0 +1,90 @@
+{
+  "files": [
+    {
+      "bytes": 1489,
+      "path": "IMPLEMENTATION_CHECKS.md",
+      "sha256": "1e0e6fea1d0535a57d64e1555e376fa21d95113d8315e85b185eea4808e51171"
+    },
+    {
+      "bytes": 2210,
+      "path": "IMPORT_PROBE.py",
+      "sha256": "31d85ad151882f64bf6812b4cb50e2c495b090ae3de3888676a58e5962b31a62"
+    },
+    {
+      "bytes": 1495,
+      "path": "README.md",
+      "sha256": "c64d6ff0f1eee9a86c1cf48bc1cc2551c0333069d902a846b36fe9c0e7d8c1b2"
+    },
+    {
+      "bytes": 4330,
+      "path": "RESULT.json",
+      "sha256": "43220192eb2fdd98e5f1d44172a52e2f6e0698e102805cd52113a8110508e4d4"
+    },
+    {
+      "bytes": 5610,
+      "path": "REVIEW.md",
+      "sha256": "dd10f2c8e5e328cf0dfd0df20caac463ff58d7c57d6076033934562e4273bbae"
+    },
+    {
+      "bytes": 3578,
+      "path": "REVIEW_STATUS.json",
+      "sha256": "4c5d5322db1ae800a015bcbe163e4710643e85962c09e3d56e01008a66d16154"
+    },
+    {
+      "bytes": 831,
+      "path": "evidence/DARTSORT_COMMIT_IDENTITY.json",
+      "sha256": "0818e68a433fdc65233a7b0bc5526d508b4d92dc98e1b1cb8866966a116aca36"
+    },
+    {
+      "bytes": 87,
+      "path": "evidence/DIRECT_COMMIT_FETCH.stderr.txt",
+      "sha256": "49edb73ec4b9cc97cd9c472194183321bfc3faf4f849ea0b0d4477e8ae99a3e1"
+    },
+    {
+      "bytes": 0,
+      "path": "evidence/DIRECT_COMMIT_FETCH.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1696,
+      "path": "evidence/IMPORT_IDENTITY_CONTRACT_COMPOSITION.json",
+      "sha256": "462ac18a742e364a414b38208619c2dd459d98ea1d6f9d345224b9c5d5af8d7a"
+    },
+    {
+      "bytes": 1651,
+      "path": "evidence/IMPORT_IDENTITY_PRISTINE_KILOSORT.json",
+      "sha256": "d4e3619daf3e189fc6e93bb2044ae5bc612f08c094aa7d3aa5d7de0f8363efc3"
+    },
+    {
+      "bytes": 668,
+      "path": "evidence/PATH_BINDING_CHECK.json",
+      "sha256": "27e7b43381245745a1a9d1e39d83dcbed1abc924ca789191c0bfe3e2af561752"
+    },
+    {
+      "bytes": 5484,
+      "path": "evidence/PREDECESSOR_RESULT.json",
+      "sha256": "420e42ef2ef82549c0a12a2a3e86b8d19fa7f4c49f869e87254d15ee56b9bd7c"
+    },
+    {
+      "bytes": 451,
+      "path": "evidence/REMOTE_COMMIT_PROBE.json",
+      "sha256": "cda7b1a1eed74f1ec4c70227cecae1cdb0928bb25bf43ed7e99baa4b780b8a7e"
+    },
+    {
+      "bytes": 2018,
+      "path": "evidence/SOURCE_BINDINGS.json",
+      "sha256": "65bf7ad6460c71b56c0972715c8324f079d434be9b042cb668c918af0f86f05e"
+    },
+    {
+      "bytes": 12326,
+      "path": "source_payload/candidate3_h5_real_wrapper_equality_20261008_v3.json",
+      "sha256": "6cb5c29b806b63021bf9edef87535718f24efc9ff27842d9e4e34c3e06e56037"
+    },
+    {
+      "bytes": 27449,
+      "path": "source_payload/candidate3_h5_real_wrapper_equality_v3.py",
+      "sha256": "0bed993b8718f29591b92884e88b65f2bf8a6780cce49490b869ba82823f1f7e"
+    }
+  ],
+  "schema": "candidate3-exact-source-bundle-reconciliation-manifest-v2"
+}

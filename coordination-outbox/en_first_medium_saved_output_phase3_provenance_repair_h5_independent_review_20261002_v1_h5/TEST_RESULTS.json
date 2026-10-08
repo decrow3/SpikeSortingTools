@@ -1,0 +1,27 @@
+{
+  "schema": "en-first-medium-phase3-v3-independent-test-results-v1",
+  "command": "env PYTHONPATH=<candidate>/source:<candidate>/producer PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR=/tmp/h5_phase3_v3_numba pytest -q <candidate>/tests/test_phase3_composition.py",
+  "result": "11 passed",
+  "elapsed_seconds_reported_by_pytest": 10.90,
+  "warnings": [
+    "pytest cache could not be written inside the read-only shared packet; this did not affect collection or execution"
+  ],
+  "independent_receipt_measurement": {
+    "pair_complete_bytes": 1888,
+    "attempt_terminal_bytes": 584,
+    "control_receipt_bytes_max": 131072,
+    "aggregate_persistent_output_bytes": 29951,
+    "aggregate_persistent_output_limit_bytes": 20000000,
+    "terminal_control_reserve_bytes": 1048576
+  },
+  "negative_controls": [
+    "unfinished pair terminal binding",
+    "mutated consumed saved output",
+    "absent execution state",
+    "swapped execution states",
+    "wrong completion hash",
+    "unrelated same-basename inventory"
+  ],
+  "real_project_data_accessed": false,
+  "scientific_outcomes_accessed": false
+}

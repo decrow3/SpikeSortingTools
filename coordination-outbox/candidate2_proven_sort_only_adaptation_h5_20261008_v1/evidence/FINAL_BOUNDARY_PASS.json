@@ -1,0 +1,30 @@
+{
+  "binding": {
+    "authorization_sha256": "01d1893ecef261ace6b9fdb693d1c8917163b9b35618f7e1ed776c66e740338e",
+    "config_sha256": "e4d68dcfbe9a137c63281293c7eada7cd0bc97ac435068ec92c417078eab4397",
+    "interpreter": "/home/huklaban5/anaconda3/bin/python3.12",
+    "ladder_sorter_path": "/media/huklaban5/Data/candidate2_native_rigid_sort_only_launch_h5_20261008_v10/source/testing/ladder_sorter.py",
+    "runner_path": "/media/huklaban5/Data/candidate2_native_rigid_sort_only_launch_h5_20261008_v10/source/testing/candidate2_sort_only_v10.py",
+    "runner_sha256": "39a6f8e25443be80bd3b9febc592ff02953cb967686431754f5dfa5693666f52",
+    "service_sha256": "ed922c44522bf066d0c06f408cc31e71385779cb9dc7f661919777a28c7c062b",
+    "source_manifest_sha256": "06057e8b27dc1ed89b3ef64b9db276ea5c7352e0efcc17b73ed4c38e322db229",
+    "status": "BOUNDARY_FIXTURE_ONLY",
+    "verified_environment": {
+      "kilosort_io": {
+        "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/io.py",
+        "sha256": "c6093e14cae920e8cfaae6c3fed8d4c6ca032b046d705ef9868ec171c7bf3c99"
+      },
+      "spikeinterface_kilosort4": {
+        "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/spikeinterface/sorters/external/kilosort4.py",
+        "sha256": "7fb2fd80fcd10c43d3833a3d4a64860fb2c39cc26f10e03181c9873931af2828"
+      },
+      "uv_lock": {
+        "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/uv.lock",
+        "sha256": "6ec57a7184d280221dee99403f7c4b26f7cb82e7e4ad025b312f237b826d2274"
+      }
+    }
+  },
+  "recording_bytes_read": 0,
+  "sort_started": false,
+  "status": "PASS_FINAL_ENTRYPOINT_CONFIG_BOUNDARY"
+}

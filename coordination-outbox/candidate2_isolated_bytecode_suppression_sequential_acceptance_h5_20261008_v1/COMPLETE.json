@@ -1,0 +1,8 @@
+{
+  "execution_enabled": false,
+  "manifest_sha256": "a4fd0c8df3e10178afacabd7ba8fbd6a9c0401deabe8aff27933b3cba61605e8",
+  "production_attempt_started": false,
+  "recording_bytes_read": 0,
+  "schema": "candidate2-bytecode-sequential-acceptance-failure-complete-v1",
+  "status": "complete_failure_preserved"
+}

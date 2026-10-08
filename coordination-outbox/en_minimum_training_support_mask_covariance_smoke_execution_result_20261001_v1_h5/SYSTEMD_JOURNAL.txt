@@ -1,0 +1,71 @@
+2026-10-01T22:59:14-0700 huklaban5-Precision-5820-Tower systemd[126584]: /home/huklaban5/.config/systemd/user/en_minimum_training_support_mask_covariance_smoke_enabled_v2.service:5: Unknown key name 'ConditionPathNotExists' in section 'Unit', ignoring.
+2026-10-01T22:59:14-0700 huklaban5-Precision-5820-Tower systemd[126584]: Starting Luke enabled minimum-training-support-mask covariance/W smoke (DO NOT START WITHOUT GO)...
+2026-10-01T22:59:17-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort: Kilosort version 4.0.27
+2026-10-01T22:59:17-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort: Python version 3.12.4
+2026-10-01T22:59:17-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort: ----------------------------------------
+2026-10-01T22:59:17-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort: System information:
+2026-10-01T22:59:17-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort: Linux-6.8.0-124-generic-x86_64-with-glibc2.35 x86_64
+2026-10-01T22:59:17-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort: x86_64
+2026-10-01T22:59:17-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort: Using CUDA device: NVIDIA RTX A5000 23.68GB
+2026-10-01T22:59:17-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort: ----------------------------------------
+2026-10-01T22:59:17-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort: Sorting /media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/traces_cached_seg0.raw
+2026-10-01T22:59:17-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort: clear_cache=True
+2026-10-01T22:59:17-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort:
+2026-10-01T22:59:17-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort: Computing preprocessing variables.
+2026-10-01T22:59:17-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort: ----------------------------------------
+2026-10-01T22:59:17-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort: N samples: 17999901
+2026-10-01T22:59:17-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort: N seconds: 599.9999803346205
+2026-10-01T22:59:17-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort: N batches: 300
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]: kilosort.run_kilosort: Encountered error in `run_kilosort`:
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]: Traceback (most recent call last):
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   File "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/run_kilosort.py", line 228, in run_kilosort
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:     ops = compute_preprocessing(ops, device, tic0=tic0, file_object=file_object)
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   File "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/run_kilosort.py", line 511, in compute_preprocessing
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:     whiten_mat = preprocessing.get_whitening_matrix(bfile, xc, yc, nskip=nskip,
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   File "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/kilosort_support_mask_candidate.py", line 738, in checked
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:     raise SmokeStopAfterWhitening("intentional smoke stop after covariance/W")
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]: npx_preprocessing.motion.kilosort_support_mask_candidate.SmokeStopAfterWhitening: intentional smoke stop after covariance/W
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]: {
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "config_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_minimum_training_support_mask.covariance_smoke.enabled.review_pending.v2.json",
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "config_sha256": "58636c24243d4663c42f9c8c51121d7461ff6d8e929022bc8e3c5a8550b2a704",
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "contract_digest": "25102362ea5a890c4662a80beceda5e00170d982d24924db4bc411b89240d9c4",
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "cuda_available": true,
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "cuda_device_count": 1,
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "cuda_device_names": [
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:     "NVIDIA RTX A5000"
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   ],
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "execution_enabled": true,
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "kilosort_resumable_within_sort": false,
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "packages": {
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:     "kilosort": {
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:       "origin": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/__init__.py",
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:       "version": "4.0.27"
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:     },
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:     "numpy": {
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:       "origin": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy/__init__.py",
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:       "version": "1.26.4"
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:     },
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:     "spikeinterface": {
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:       "origin": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/spikeinterface/__init__.py",
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:       "version": "0.102.1"
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:     },
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:     "torch": {
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:       "origin": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/torch/__init__.py",
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:       "version": "2.6.0+cu124"
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:     }
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   },
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "python_executable": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "python_version": "3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]",
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "recording_content_opened": false,
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "recording_metadata_readable": true,
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "recording_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/traces_cached_seg0.raw",
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "recording_stat_mode": "0o664",
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "recording_stat_size": 241309358592,
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "run_root": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_covariance_smoke_20261001_v2",
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "run_root_absent": true,
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "status": "zero_voltage_preflight_passed",
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]:   "torch_cuda_build": "12.4"
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower python[2084582]: }
+2026-10-01T22:59:19-0700 huklaban5-Precision-5820-Tower systemd[126584]: Finished Luke enabled minimum-training-support-mask covariance/W smoke (DO NOT START WITHOUT GO).

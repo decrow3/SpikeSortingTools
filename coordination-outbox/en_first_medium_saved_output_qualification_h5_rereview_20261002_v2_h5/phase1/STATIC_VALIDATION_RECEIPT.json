@@ -1,0 +1,25 @@
+{
+  "actual_registry_claim_absent": true,
+  "actual_registry_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/.qualification_token_registry/en_first_medium_saved_output_v1",
+  "candidate_or_b_read": false,
+  "contract_sha256": "29051bd579c81986ece405f825368642cb6e4b8932f0bfe52d6a6afc24866681",
+  "gate": "PASS",
+  "implementation_boundary": "PASS",
+  "output_absent": true,
+  "phase1_run": false,
+  "ref_metadata_recomputed": {
+    "cluster_count": 441,
+    "cohort_sha256": "3e28d8c3f4d7dec73427ed778d83562e75c51a0a15a91230994fe3f5647e32c0",
+    "cohort_size": 61,
+    "curated_identity_digest": "8f4fb3bfbfff22d7fcd982bbc7d2d272dbc65e72d6b6a2db093102f17d938e53",
+    "event_rows": 1856371,
+    "qc_request_digest": "ae07ecf970f0c6de93f5f1717254fd11a181ce81b8a693232171f03e4ed524af",
+    "spatial_identity": "bdc51f5595ff9c9654677d542c798f097d65a2022e5710729c1e7796a2c24414"
+  },
+  "request_sha256": "671f6ea7464c19b79b1e60cff1d6fc8615996e7399ae80e439e031964151d5bc",
+  "schema": "first-medium-phase1-exact-static-validation-v1",
+  "start_token_binding_sha256": "d37245c38df414a0753c7a047e8a59f1ed99fbb9fda4f68d76fc48fb98a155e4",
+  "start_token_sha256": "1be9f3b632b75afe87b1da6e01655c5943bc87304f78dc3dc02afe9f3af4deff",
+  "temp_claim": "PASS",
+  "temp_replay_rejected": true
+}

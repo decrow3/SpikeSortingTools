@@ -1,0 +1,18 @@
+{
+  "schema": "hub-multicoordinator-worker-status-v1",
+  "owner": "H5",
+  "status": "ACK_BLOCKED_NO_GO_ACTUAL_PRODUCTION_BINDING_DEFECT",
+  "task": "candidate2_sequential_acceptance_harness_only_correction",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_isolated_bytecode_sequential_acceptance_harness_repair_h5_20261008_v1",
+  "manifest_sha256": "a80f9c9469d8343a6fa449d24e860f18b17a0e4adad69383f4bf4f56352bdecc",
+  "complete_sha256": "27fbb88ab1cd407cd358e86df81b8dfa9ce724f2b0f5f48705854d9e47384818",
+  "review_verdict": "NO_GO_ACTUAL_PRODUCTION_BINDING_DEFECT",
+  "review_status_sha256": "bcc53faab228396539db0840b0e617740eb4dd40de5a3902f7cc734610aaf31f",
+  "test_receipt_sha256": "22befc07ba7e3df901060d675beaa08bc6ee45b14ab606405da64835d66f398f",
+  "finding": "single harness-only traversal passed and is fully retained, but exact frozen service argv carries stale bootstrap, preflight-bootstrap, monitor-bootstrap and contract hashes and would fail before the accepted path",
+  "recording_bytes_read": 0,
+  "production_service_installed": false,
+  "authorization_created": false,
+  "production_attempt_started": false,
+  "repair_or_rerun_performed": false
+}

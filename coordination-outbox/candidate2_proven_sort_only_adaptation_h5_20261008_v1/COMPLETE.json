@@ -1,0 +1,12 @@
+{
+  "schema": "candidate2-proven-sort-only-adaptation-complete-v1",
+  "status": "complete_reviewed_go_not_yet_launched",
+  "verdict": "GO_TO_INSTALL_AND_AUTHORIZE_ONE_SORT_ONLY_INVOCATION",
+  "manifest_sha256": "1c9f41a7ddb08ec81ee72018d7c7d13f56f4f615394b38b8ffdd0222c2a4b963",
+  "review_status_sha256": "ee723853fc0dd001600fd84d9682ce47855fba443b0a580bea1886b0e6ffb5c5",
+  "recording_bytes_read": 0,
+  "sort_started": false,
+  "service_installed": false,
+  "authorization_present": false,
+  "output_present": false
+}

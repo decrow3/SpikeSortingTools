@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-evidence-packet-complete-v1",
+  "status": "COMPLETE_EXECUTION_DISABLED_READY_FOR_H1_REVIEW",
+  "packet": "en_first_medium_waveform_method_h5_actual_freeze_candidate_20261002_v4_h5",
+  "manifest_sha256": "50fa0589d6eb459b12a4ac8c5c997fa7b822a58d2b2c1f0cbd2de53f9c47f8a7",
+  "contract_sha256": "e651326ca1ecdd3f5dc59d0dc76c69632d3de954a28743eb4445debb38583a09",
+  "execution_enabled": false,
+  "voltage_access_enabled": false,
+  "written_last": true
+}

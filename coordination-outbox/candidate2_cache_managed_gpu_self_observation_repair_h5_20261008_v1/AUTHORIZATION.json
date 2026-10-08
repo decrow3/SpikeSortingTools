@@ -1,0 +1,46 @@
+{
+  "contract_sha256": "4323bf1f4c83a0f03351200f8e2769555ea8f819868b90bc9cee40988c066f48",
+  "created_utc": "2026-10-08T11:45:00Z",
+  "loaded_units": {
+    "monitor": {
+      "After": "app.slice media-huklaban5-Data.mount basic.target -.mount",
+      "BindsTo": "",
+      "CPUQuotaPerSecUSec": "infinity",
+      "Environment": "",
+      "ExecStart": "{ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 -I -S -u /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/monitor_bootstrap.py --bootstrap-sha256 3c8f6f73ff71069bc985b2afe69963728d57842e5238aad159ea6747f10de16d --monitor-source /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/source/testing/candidate2_cache_managed_monitor.py --self-sha256 0458209bd6848212b838b71e73af7f77782dc4878e10c8de6798a0cb8bf128c2 --contract /mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_cache_managed_gpu_self_observation_repair_h5_20261008_v1/CONTRACT.json --contract-sha256 4323bf1f4c83a0f03351200f8e2769555ea8f819868b90bc9cee40988c066f48 --authorization /mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_cache_managed_gpu_self_observation_repair_h5_20261008_v1/AUTHORIZATION.json --target-unit luke-candidate2-native-rigid-cache-managed-imec0-20261008-v7.service --target-unit-file /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-imec0-20261008-v7.service --monitor-unit-file /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v7.service --output /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/monitor --service-log /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/service.log ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v7.service",
+      "MemoryHigh": "infinity",
+      "MemoryMax": "infinity",
+      "OOMPolicy": "stop",
+      "Requires": "basic.target app.slice",
+      "Restart": "no",
+      "RuntimeMaxUSec": "infinity",
+      "TimeoutStartUSec": "infinity"
+    },
+    "target": {
+      "After": "-.mount luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v7.service basic.target app.slice media-huklaban5-Data.mount",
+      "BindsTo": "luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v7.service",
+      "CPUQuotaPerSecUSec": "infinity",
+      "Environment": "PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR=/tmp/spikeglx-rescue-numba-cache KILOSORT_BOUNDED_PREAD_PATH=/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+      "ExecStart": "{ path=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python ; argv[]=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python -I -S -u /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/bootstrap.py --self-sha256 a96ecc3c2cc2a2a921bdd6ab9c9b26591561d02b67da5da73a27c6b59a14b428 --source-root /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/source --source-manifest /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/SOURCE_MANIFEST.json --source-manifest-sha256 2d1ff9cae67dc0d8993a6a00495adea5092860dec407fff15173725acf3b4ec2 --contract /mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_cache_managed_gpu_self_observation_repair_h5_20261008_v1/CONTRACT.json --contract-sha256 4323bf1f4c83a0f03351200f8e2769555ea8f819868b90bc9cee40988c066f48 --receipt /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/JOB.json --authorization /mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_cache_managed_gpu_self_observation_repair_h5_20261008_v1/AUTHORIZATION.json --installed-unit /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-imec0-20261008-v7.service --monitor-unit /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v7.service ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "ExecStartPre": "{ path=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python ; argv[]=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python -I -S -u /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/preflight_bootstrap.py --self-sha256 333a9c72d5e940d7e60a9a4666c604bd6c2fb2a4b82dae5c0e62a065cf86eb7f --source-root /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/source --source-manifest /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/SOURCE_MANIFEST.json --source-manifest-sha256 2d1ff9cae67dc0d8993a6a00495adea5092860dec407fff15173725acf3b4ec2 --contract /mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_cache_managed_gpu_self_observation_repair_h5_20261008_v1/CONTRACT.json --contract-sha256 4323bf1f4c83a0f03351200f8e2769555ea8f819868b90bc9cee40988c066f48 --receipt /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/PREFLIGHT.json --installed-unit /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-imec0-20261008-v7.service --monitor-unit /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v7.service --authorization /mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_cache_managed_gpu_self_observation_repair_h5_20261008_v1/AUTHORIZATION.json ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "FragmentPath": "/home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-imec0-20261008-v7.service",
+      "MemoryHigh": "infinity",
+      "MemoryMax": "infinity",
+      "OOMPolicy": "stop",
+      "Requires": "luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v7.service basic.target app.slice",
+      "Restart": "no",
+      "RuntimeMaxUSec": "infinity",
+      "TimeoutStartUSec": "infinity"
+    }
+  },
+  "monitor_service_sha256": "7fd09574eb2e52554ca36079d71e83fd7f4d352ae35be0c987c213ab642f3713",
+  "preserved_v6_failure_manifest_sha256": "7b0adcd455f5c2383501935bdbb69399d413257f94b8980799f7d040d2bebe9d",
+  "review_status_sha256": "8dd879bc2333e7759dbcce921dbf5ae38cd0007e4e8a21113bbcb8849bad5225",
+  "review_verdict": "GO",
+  "schema": "candidate2-cache-managed-run-authorization-v1",
+  "scope": "exactly one fresh Candidate2 v7 managed run; no retry",
+  "source_manifest_sha256": "2d1ff9cae67dc0d8993a6a00495adea5092860dec407fff15173725acf3b4ec2",
+  "status": "AUTHORIZED_ONE_FRESH_CANDIDATE2_CACHE_MANAGED_RUN",
+  "target_service_sha256": "c2cb7f3f4b668b8e1b195f825da134ffe9710de37b6707b5cc2832ad1e03a712"
+}

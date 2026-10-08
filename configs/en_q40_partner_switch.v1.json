@@ -1,0 +1,36 @@
+{
+  "schema": "en-q40-partner-switch-v1",
+  "status": "frozen_pre_outcome",
+  "purpose": "Exploratory +40 um same-rule partner-switch attribution for frozen q0 pairs",
+  "source_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_q40_partner_switch.py",
+  "source_sha256": "49ed831e9b383b16b68a1313de290e63640b9ce8edb7a7c4f84d0ead6538101c",
+  "fixture_source_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_q40_partner_switch_fixture.py",
+  "fixture_source_sha256": "8b074bf8e89e5f35b54c288e0034ce5275e63b106c7471a01c18e86d38c1d479",
+  "fixture_result_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_q40_partner_switch_preflight_v1/FIXTURE.json",
+  "fixture_result_sha256": "b12f1741d08c0a31ea0c2606f1b301f2d713d4fdad810041168b0c49d2539cde",
+  "parent_config_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_q0_anchored_diagnostic.v1.json",
+  "parent_config_sha256": "ea42f945b4272733cb105a3ef02d9488619c897c4d0516d8ccf42d50392929c5",
+  "mapping_root": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_q0_anchored_diagnostic_20261001_v1",
+  "mapping_manifest_sha256": "93d19f19002edc056c0eadaba62bf4ad841c383b9145b0cdafea3c3d431928c5",
+  "state_um": 40.0,
+  "comparisons": ["REF384_vs_REF368", "REF384_vs_B384", "REF384_vs_B368"],
+  "matching_rule": {
+    "tolerance_frames": 15,
+    "minimum_overlap": 0.1,
+    "primary": "reciprocal unique maximum Jaccard with both retentions >=0.5",
+    "grouping": "same original contiguous state segment and same 300-second accounting block",
+    "graph_population": "all units before frozen q0 cohort restriction"
+  },
+  "cohorts": ["pairwise frozen q0 primary pairs", "frozen four-way q0 intersection"],
+  "secondary_rule": "Preserve full qualifying edge tables and endpoint best edges; never sum secondary matched counts as unique recovery",
+  "interpretation": "Exploratory state-specific attribution only; REF is a comparator, and partner changes do not establish biological identity or loss",
+  "output": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_q40_partner_switch_20261001_v1",
+  "command": "environments/rescue-production/.venv/bin/python -m testing.en_q40_partner_switch --config configs/en_q40_partner_switch.v1.json --output testing/outputs/en_q40_partner_switch_20261001_v1",
+  "prohibitions": {
+    "new_sort": true,
+    "voltage_read": true,
+    "rf_or_holdout": true,
+    "bootstrap_or_confidence_interval": true,
+    "promotion_threshold": true
+  }
+}

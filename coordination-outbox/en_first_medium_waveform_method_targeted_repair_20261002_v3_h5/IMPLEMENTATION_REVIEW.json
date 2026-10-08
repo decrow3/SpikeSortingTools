@@ -1,0 +1,102 @@
+{
+  "schema": "first-medium-waveform-method-targeted-repair-review-v3",
+  "producer": "H5",
+  "completed_at_utc": "2026-10-02T11:14:09Z",
+  "status": "READY_FOR_H1_REREVIEW_EXECUTION_DISABLED",
+  "milestone": "close exactly the three residual waveform method-contract findings without voltage or data execution",
+  "decision_changed": "whether executable runtime identity, total voltage I/O semantics, and correlation invalid statuses are frozen enough for H1 method rereview",
+  "cheapest_adequate_test": "clean-process runtime hash verification plus synthetic immutable-receipt and numeric correlation known answers",
+  "completion_condition": "fresh immutable disabled packet, accepted method unchanged, all bounded tests passing, no voltage/data execution, and exact H1/parent bindings",
+  "bindings": {
+    "h1_review_manifest": "e8d654cc3859439457acdf7e67a48af3dd81d5d919e5c3a340149bb4937775c9",
+    "h1_review_complete": "d51472887b424cfbbecdde4a6b8ab449eac4d011fd918b40ab93dbf35b61cb13",
+    "accepted_parent_manifest": "32c4271856d32ba7930168fea79a4c1bc25e70e276781443195814ad7a9163b0",
+    "accepted_parent_complete": "5b6d65a71d2ac50eb8ee66ede938375e9feae85fd6354c81e37c8ab40a147228",
+    "accepted_preprocessing_adapter": "e9abe2a9a1c22db118a8c652e2a6a083db2fc9f84e8c77a71cec992447bcbe57",
+    "v4_contract": "f48499733df2d9d4f84553662a24a4c0850b3d56f6b035b4a9a49fe37056d842"
+  },
+  "repairs": [
+    {
+      "id": "R1_EXECUTABLE_RUNTIME_CLOSURE",
+      "result": "REPAIRED",
+      "implementation": "source/runtime_closure.py sha256 0a433d5b... and dependencies/EXECUTABLE_RUNTIME_CLOSURE.json sha256 f5db3034...",
+      "closure": {
+        "aggregate_sha256": "6658089a5e123b1962d2a61b7b89c230e484fdde0f52a0479e52c102f10cfe48",
+        "members": 89,
+        "bytes": 3333088832,
+        "python_executable_sha256": "4adb344720ca7a0ccee7cdc77506bae30da64b55a977cd45e15880ddf8bddcc1",
+        "torch_config_sha256": "d79e4b234f46d728f88054ba7278186ab7efa02dfe343a2fd12a9523cc6b6a78",
+        "probe_output_sha256": "e904ebc218e24c983580f0f72ea012f9483a7ff72f64bea7b8cd4812aa7b55df"
+      },
+      "fail_closed": "Any missing/added/changed identity, runtime scalar, backend field, or probe output fails before voltage access.",
+      "portable_rule": "Paths may relocate only when exact role/basename/size/SHA-256 multiset and all bound scalars match."
+    },
+    {
+      "id": "R2_PREFLIGHT_IO_ACCOUNTING",
+      "result": "REPAIRED_NO_REHASH_POLICY",
+      "implementation": "source/voltage_identity_preflight.py sha256 8243bd83...",
+      "prior_receipt": {
+        "packet_manifest_sha256": "909c9acc4f634f91314da4c03da9ba03ec83d8b216f4cdd7f15dd3e240f98c80",
+        "packet_complete_sha256": "0056814b0e888fed02a0e0eecd47b4588fe7a4ce3a49ff1ef7e9bcfdcfe7688e",
+        "receipt_sha256": "0bdeec713c85490599a67b614386ccbc34577c96865a577b04f882f640281d19",
+        "verified_binary_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+        "verified_binary_bytes": 241309358592
+      },
+      "current_run": "Fresh full binary hash forbidden; compact receipt/manifest hashes plus binary stat only; zero voltage bytes for identity preflight. Each future sampled endpoint read receives an exact offset/request/return/stat receipt under unchanged caps."
+    },
+    {
+      "id": "R3_CORRELATION_REASON_AND_FIXTURES",
+      "result": "REPAIRED",
+      "implementation": "source/retained_pair_correlation.py sha256 26989615...",
+      "priority": [
+        "MISSING_ENDPOINT",
+        "ENDPOINT_NOT_SELECTED",
+        "ENDPOINT_NOT_TECHNICALLY_EVALUABLE",
+        "ALIGNMENT_FAILURE",
+        "INSUFFICIENT_COMMON_CHANNELS",
+        "INSUFFICIENT_COMMON_FRAMES",
+        "NONFINITE_VALUES",
+        "ZERO_VARIANCE"
+      ],
+      "fixtures": "Numeric +1/-1, channel order/intersection, absolute-frame alignment, constant/zero variance, NaN/Inf, too few frames, malformed alignment, missing endpoint, insufficient channels, and every adjacent overlapping-priority boundary."
+    }
+  ],
+  "preservation": {
+    "preprocessing_adapter_byte_identical": true,
+    "matching_contract_identical": true,
+    "sampling_contract_identical": true,
+    "event_reads_max": 4608,
+    "logical_endpoint_bytes_max": 4052090880,
+    "read_accounting_object_identical": true,
+    "prospective_bindings_unchanged": true,
+    "execution_enabled": false,
+    "voltage_access_enabled": false
+  },
+  "tests": {
+    "native": "32 passed in 10.26s",
+    "byte_identical_stage": "32 passed in 10.27s",
+    "clean_runtime_verifier": "PASS; 89 members and 3333088832 bytes rehashed",
+    "real_recording_opened": false,
+    "voltage_accessed": false,
+    "real_event_data_opened": false,
+    "jobs_started": false,
+    "rf_or_holdout_accessed": false
+  },
+  "implementation_checks": {
+    "done": [
+      "verified exact H1 review and accepted-parent MANIFEST/COMPLETE bytes",
+      "traced and exercised actual CPU median and FFT runtime closure",
+      "implemented exact path-independent byte identity comparison with corruption negative control",
+      "bound immutable prior full-hash receipt and removed fresh 241-GB hashing from the contract",
+      "implemented no-open synthetic voltage preflight fixtures and receipt-corruption failure",
+      "implemented numeric correlation and exhaustive ordered-overlap fixtures",
+      "asserted accepted preprocessing, matching, sampling, and read arithmetic preservation"
+    ],
+    "not_done": [
+      "H1 has not rereviewed this packet",
+      "no real voltage/data preflight or read, real waveform result, sorter, job, RF, or holdout work"
+    ],
+    "can_establish": "The three requested residual method gaps are repaired and reproducible under bounded synthetic/runtime tests while execution remains disabled.",
+    "cannot_establish": "Real waveform support, biological identity, purity, efficacy, advancement, or future runtime/data availability."
+  }
+}

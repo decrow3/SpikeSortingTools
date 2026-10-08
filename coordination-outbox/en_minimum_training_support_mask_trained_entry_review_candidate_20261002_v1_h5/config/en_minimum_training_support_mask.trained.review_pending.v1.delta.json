@@ -1,0 +1,1351 @@
+{
+  "base_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_minimum_training_support_mask.covariance_smoke.enabled.review_pending.v2.json",
+  "base_sha256": "58636c24243d4663c42f9c8c51121d7461ff6d8e929022bc8e3c5a8550b2a704",
+  "difference_count": 132,
+  "differences": [
+    {
+      "base": {
+        "length": 16,
+        "type": "dict"
+      },
+      "pointer": "",
+      "trained": {
+        "length": 20,
+        "type": "dict"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/approval",
+      "trained": {
+        "length": 1,
+        "type": "dict"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/approval/h1_review_manifest_sha256",
+      "trained": {
+        "type": "NoneType",
+        "value": null
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_minimum_training_support_mask_execution_readiness_20261001_v1_h5/en_minimum_training_support_mask.infinity_hotfix.review_pending.v1.json"
+      },
+      "pointer": "/base_binding/path",
+      "trained": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_minimum_training_support_mask.covariance_smoke.enabled.review_pending.v2.json"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "74f20c49418bbe4ad9a530da8a477b72093569fe2eec319682405fbd4431cb47"
+      },
+      "pointer": "/base_binding/sha256",
+      "trained": {
+        "type": "str",
+        "value": "58636c24243d4663c42f9c8c51121d7461ff6d8e929022bc8e3c5a8550b2a704"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators",
+      "trained": {
+        "length": 5,
+        "type": "dict"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/B384",
+      "trained": {
+        "length": 8,
+        "type": "dict"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/B384/arrays_copied",
+      "trained": {
+        "type": "bool",
+        "value": false
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/B384/ops_sha256",
+      "trained": {
+        "type": "str",
+        "value": "7a8f5d219de1b98776134abb00f637777f85ba94113758ae47a1e4b26b2a44f0"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/B384/pre_extraction_receipt_sha256",
+      "trained": {
+        "type": "str",
+        "value": "72e9b2742374afb91a798d246cf6b4a9fbe7696efe8c9195958cd9b154beb4f5"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/B384/raw_recording_rehashed",
+      "trained": {
+        "type": "bool",
+        "value": false
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/B384/receipt_sha256",
+      "trained": {
+        "type": "str",
+        "value": "8a89ea4330871dce820329ca753890e12877b2695158ce9beddc77e9f190de3b"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/B384/recording_manifest_sha256",
+      "trained": {
+        "type": "str",
+        "value": "46a3845008cb19d9c35a85e67841b308843e071f1a27605e87195a8d4d0a42cf"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/B384/root",
+      "trained": {
+        "type": "str",
+        "value": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/B384/status_sha256",
+      "trained": {
+        "type": "str",
+        "value": "13d08afe1219dddeaa81f388ab65c1e8077f394460126a89bfad65878c0c603e"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/REF384",
+      "trained": {
+        "length": 8,
+        "type": "dict"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/REF384/arrays_copied",
+      "trained": {
+        "type": "bool",
+        "value": false
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/REF384/ops_sha256",
+      "trained": {
+        "type": "str",
+        "value": "5b3b365a83babe1dc5842fb92ff5e56f35a93aefe2557a1cd31ca42b46d72f58"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/REF384/pre_extraction_receipt_sha256",
+      "trained": {
+        "type": "str",
+        "value": "06f82d7a057ad09c05a7895b0f1b4d0bc3c8dbd6cdc21f5ac1b268fd41f0d9b9"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/REF384/raw_recording_rehashed",
+      "trained": {
+        "type": "bool",
+        "value": false
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/REF384/receipt_sha256",
+      "trained": {
+        "type": "str",
+        "value": "e3798289f79e51545a2da5fefaee99684c7a667cf863d9ec7cc687f6d1164ac9"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/REF384/recording_manifest_sha256",
+      "trained": {
+        "type": "str",
+        "value": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/REF384/root",
+      "trained": {
+        "type": "str",
+        "value": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/REF384/status_sha256",
+      "trained": {
+        "type": "str",
+        "value": "c0373d7d6caa22f6944d4bfa9071dbbb9b5291b838c7d07ca0cb95466d8022e7"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/frozen_config_sha256",
+      "trained": {
+        "type": "str",
+        "value": "bb6dd8f21539e5ee57f4216702b7c9d4c36d1a0feeefe3859ba25449af52ad17"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/screen_complete_sha256",
+      "trained": {
+        "type": "str",
+        "value": "30207b59113925b42081dfd367d2f580af72b5b7c1ed508141aa72cae2019bee"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/comparators/screen_plan_receipt_sha256",
+      "trained": {
+        "type": "str",
+        "value": "08bffeb44254ad1054ebe9e389b8d32877c778d5396addfa7483647a807c5d3a"
+      }
+    },
+    {
+      "base": {
+        "type": "bool",
+        "value": true
+      },
+      "pointer": "/execution_enabled",
+      "trained": {
+        "type": "bool",
+        "value": false
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "Enabled contract is unlaunched pending H1 changed-delta review and normal tool approval"
+      },
+      "pointer": "/failure_reason",
+      "trained": {
+        "type": "str",
+        "value": "No trained real-data execution before separate H1 delta review and GO"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_covariance_smoke_20261001_v2/native_results"
+      },
+      "pointer": "/native_invocation/results_dir",
+      "trained": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_trained_medium_20261002_v1/native_results"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/orchestration_only",
+      "trained": {
+        "length": 2,
+        "type": "dict"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/orchestration_only/label",
+      "trained": {
+        "type": "str",
+        "value": "none_real_future_execution_requires_separate_h1_go"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/orchestration_only/synthetic",
+      "trained": {
+        "type": "bool",
+        "value": false
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/resources",
+      "trained": {
+        "length": 8,
+        "type": "dict"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/resources/cpu_threads_max",
+      "trained": {
+        "type": "int",
+        "value": 16
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/resources/estimate_basis",
+      "trained": {
+        "type": "str",
+        "value": "observed 120-s smoke 100-103 s and full 10473.6-s 12156-12348 s"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/resources/estimate_fresh_repaired_plus_ref_repeat_seconds",
+      "trained": {
+        "length": 2,
+        "type": "list"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/resources/estimate_fresh_repaired_plus_ref_repeat_seconds/0",
+      "trained": {
+        "type": "int",
+        "value": 1200
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/resources/estimate_fresh_repaired_plus_ref_repeat_seconds/1",
+      "trained": {
+        "type": "int",
+        "value": 1440
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/resources/estimate_seconds_per_600s_arm",
+      "trained": {
+        "length": 2,
+        "type": "list"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/resources/estimate_seconds_per_600s_arm/0",
+      "trained": {
+        "type": "int",
+        "value": 600
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/resources/estimate_seconds_per_600s_arm/1",
+      "trained": {
+        "type": "int",
+        "value": 720
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/resources/gpu_count_max",
+      "trained": {
+        "type": "int",
+        "value": 1
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/resources/persistent_output_bytes_max",
+      "trained": {
+        "type": "int",
+        "value": 8589934592
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/resources/ram_bytes_max",
+      "trained": {
+        "type": "int",
+        "value": 68719476736
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/resources/wall_seconds_max",
+      "trained": {
+        "type": "int",
+        "value": 1800
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "en-minimum-training-support-mask-v4-smoke"
+      },
+      "pointer": "/schema",
+      "trained": {
+        "type": "str",
+        "value": "en-minimum-training-support-mask-v5-trained"
+      }
+    },
+    {
+      "base": {
+        "length": 4,
+        "type": "dict"
+      },
+      "pointer": "/smoke",
+      "trained": {
+        "type": "missing"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_covariance_smoke_20261001_v2/launch_evidence"
+      },
+      "pointer": "/smoke/launch_evidence_dir",
+      "trained": {
+        "type": "missing"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "stop_after_covariance_whitening"
+      },
+      "pointer": "/smoke/mode",
+      "trained": {
+        "type": "missing"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_covariance_smoke_20261001_v2"
+      },
+      "pointer": "/smoke/run_root",
+      "trained": {
+        "type": "missing"
+      }
+    },
+    {
+      "base": {
+        "type": "bool",
+        "value": true
+      },
+      "pointer": "/smoke/stop_after_whitening",
+      "trained": {
+        "type": "missing"
+      }
+    },
+    {
+      "base": {
+        "length": 8,
+        "type": "list"
+      },
+      "pointer": "/source_bindings",
+      "trained": {
+        "length": 9,
+        "type": "list"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/test_kilosort_support_mask_candidate.py"
+      },
+      "pointer": "/source_bindings/2/path",
+      "trained": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/npx_preprocessing/motion/kilosort_support_mask_trained.py"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "786c77bd1344381034a78777b43d3e329e22c2e8f2ae59693702c23caec3667d"
+      },
+      "pointer": "/source_bindings/2/sha256",
+      "trained": {
+        "type": "str",
+        "value": "c1a7617da36dcc0354714e916ce4a0a03e127a29eeb9f771f238907c0310e793"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/io.py"
+      },
+      "pointer": "/source_bindings/3/path",
+      "trained": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_minimum_training_support_mask_trained_launch.py"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd"
+      },
+      "pointer": "/source_bindings/3/sha256",
+      "trained": {
+        "type": "str",
+        "value": "c98c7d93310919e86e08d30c61eb5646f4d5936244096f04aec241f3744097c2"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/preprocessing.py"
+      },
+      "pointer": "/source_bindings/4/path",
+      "trained": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/io.py"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "2329b288ae068361a937632a53461e6cceeb27e30191337e9b9a0fa7404d763d"
+      },
+      "pointer": "/source_bindings/4/sha256",
+      "trained": {
+        "type": "str",
+        "value": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/spikedetect.py"
+      },
+      "pointer": "/source_bindings/5/path",
+      "trained": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/preprocessing.py"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "db1e8f0357319d9db3530a700bd1002c830337c50fde58b3e74e83e7af140892"
+      },
+      "pointer": "/source_bindings/5/sha256",
+      "trained": {
+        "type": "str",
+        "value": "2329b288ae068361a937632a53461e6cceeb27e30191337e9b9a0fa7404d763d"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/template_matching.py"
+      },
+      "pointer": "/source_bindings/6/path",
+      "trained": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/spikedetect.py"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "39235cc98428dbb279706718f74a1c3d84568ef31a4f9d1d997a60f7002b1a66"
+      },
+      "pointer": "/source_bindings/6/sha256",
+      "trained": {
+        "type": "str",
+        "value": "db1e8f0357319d9db3530a700bd1002c830337c50fde58b3e74e83e7af140892"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/run_kilosort.py"
+      },
+      "pointer": "/source_bindings/7/path",
+      "trained": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/template_matching.py"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "5c1baee40edef14fa7566e441997da5d2ecc4f7940b8385cf83de40c8bd0f945"
+      },
+      "pointer": "/source_bindings/7/sha256",
+      "trained": {
+        "type": "str",
+        "value": "39235cc98428dbb279706718f74a1c3d84568ef31a4f9d1d997a60f7002b1a66"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/source_bindings/8",
+      "trained": {
+        "length": 2,
+        "type": "dict"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/source_bindings/8/path",
+      "trained": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/run_kilosort.py"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/source_bindings/8/sha256",
+      "trained": {
+        "type": "str",
+        "value": "5c1baee40edef14fa7566e441997da5d2ecc4f7940b8385cf83de40c8bd0f945"
+      }
+    },
+    {
+      "base": {
+        "type": "str",
+        "value": "smoke_enabled_contract_review_pending_unlaunched"
+      },
+      "pointer": "/status",
+      "trained": {
+        "type": "str",
+        "value": "execution_disabled_pending_independent_h1_delta_review"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained",
+      "trained": {
+        "length": 11,
+        "type": "dict"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/allow_saved_smoke_bank",
+      "trained": {
+        "type": "bool",
+        "value": false
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/completion_written_last",
+      "trained": {
+        "type": "bool",
+        "value": true
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/failure_stage_preserved",
+      "trained": {
+        "type": "bool",
+        "value": true
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/launch_evidence_dir",
+      "trained": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_trained_medium_20261002_v1/launch_evidence"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/mode",
+      "trained": {
+        "type": "str",
+        "value": "full_native_trained"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/pre_extraction_snapshot_dir",
+      "trained": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_trained_medium_20261002_v1/pre_extraction_snapshot"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/recompute_adaptive_state",
+      "trained": {
+        "length": 12,
+        "type": "list"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/recompute_adaptive_state/0",
+      "trained": {
+        "type": "str",
+        "value": "covariance_C"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/recompute_adaptive_state/1",
+      "trained": {
+        "type": "str",
+        "value": "whitening_W"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/recompute_adaptive_state/10",
+      "trained": {
+        "type": "str",
+        "value": "final_clusters"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/recompute_adaptive_state/11",
+      "trained": {
+        "type": "str",
+        "value": "final_templates"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/recompute_adaptive_state/2",
+      "trained": {
+        "type": "str",
+        "value": "wPCA"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/recompute_adaptive_state/3",
+      "trained": {
+        "type": "str",
+        "value": "wTEMP"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/recompute_adaptive_state/4",
+      "trained": {
+        "type": "str",
+        "value": "universal_detections_and_features"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/recompute_adaptive_state/5",
+      "trained": {
+        "type": "str",
+        "value": "Wall3"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/recompute_adaptive_state/6",
+      "trained": {
+        "type": "str",
+        "value": "iU"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/recompute_adaptive_state/7",
+      "trained": {
+        "type": "str",
+        "value": "iCC"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/recompute_adaptive_state/8",
+      "trained": {
+        "type": "str",
+        "value": "iCC_mask"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/recompute_adaptive_state/9",
+      "trained": {
+        "type": "str",
+        "value": "learned_detections_and_features"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files",
+      "trained": {
+        "length": 30,
+        "type": "list"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/0",
+      "trained": {
+        "type": "str",
+        "value": "ops.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/1",
+      "trained": {
+        "type": "str",
+        "value": "channel_map.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/10",
+      "trained": {
+        "type": "str",
+        "value": "kept_spikes.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/11",
+      "trained": {
+        "type": "str",
+        "value": "templates.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/12",
+      "trained": {
+        "type": "str",
+        "value": "templates_ind.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/13",
+      "trained": {
+        "type": "str",
+        "value": "similar_templates.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/14",
+      "trained": {
+        "type": "str",
+        "value": "whitening_mat.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/15",
+      "trained": {
+        "type": "str",
+        "value": "whitening_mat_dat.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/16",
+      "trained": {
+        "type": "str",
+        "value": "whitening_mat_inv.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/17",
+      "trained": {
+        "type": "str",
+        "value": "pc_features.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/18",
+      "trained": {
+        "type": "str",
+        "value": "pc_feature_ind.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/19",
+      "trained": {
+        "type": "str",
+        "value": "cluster_Amplitude.tsv"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/2",
+      "trained": {
+        "type": "str",
+        "value": "channel_positions.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/20",
+      "trained": {
+        "type": "str",
+        "value": "cluster_ContamPct.tsv"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/21",
+      "trained": {
+        "type": "str",
+        "value": "cluster_KSLabel.tsv"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/22",
+      "trained": {
+        "type": "str",
+        "value": "cluster_group.tsv"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/23",
+      "trained": {
+        "type": "str",
+        "value": "params.py"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/24",
+      "trained": {
+        "type": "str",
+        "value": "kilosort4.log"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/25",
+      "trained": {
+        "type": "str",
+        "value": "tF.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/26",
+      "trained": {
+        "type": "str",
+        "value": "Wall.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/27",
+      "trained": {
+        "type": "str",
+        "value": "full_st.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/28",
+      "trained": {
+        "type": "str",
+        "value": "full_clu.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/29",
+      "trained": {
+        "type": "str",
+        "value": "full_amp.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/3",
+      "trained": {
+        "type": "str",
+        "value": "channel_shanks.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/4",
+      "trained": {
+        "type": "str",
+        "value": "spike_times.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/5",
+      "trained": {
+        "type": "str",
+        "value": "spike_clusters.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/6",
+      "trained": {
+        "type": "str",
+        "value": "spike_templates.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/7",
+      "trained": {
+        "type": "str",
+        "value": "spike_detection_templates.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/8",
+      "trained": {
+        "type": "str",
+        "value": "spike_positions.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_native_files/9",
+      "trained": {
+        "type": "str",
+        "value": "amplitudes.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_snapshot_files",
+      "trained": {
+        "length": 9,
+        "type": "list"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_snapshot_files/0",
+      "trained": {
+        "type": "str",
+        "value": "Wall3.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_snapshot_files/1",
+      "trained": {
+        "type": "str",
+        "value": "wPCA.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_snapshot_files/2",
+      "trained": {
+        "type": "str",
+        "value": "wTEMP.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_snapshot_files/3",
+      "trained": {
+        "type": "str",
+        "value": "chanMap.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_snapshot_files/4",
+      "trained": {
+        "type": "str",
+        "value": "iU.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_snapshot_files/5",
+      "trained": {
+        "type": "str",
+        "value": "iCC.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_snapshot_files/6",
+      "trained": {
+        "type": "str",
+        "value": "iCC_mask.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_snapshot_files/7",
+      "trained": {
+        "type": "str",
+        "value": "iU_physical_binary_channel.npy"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/required_snapshot_files/8",
+      "trained": {
+        "type": "str",
+        "value": "RECEIPT.json"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/run_root",
+      "trained": {
+        "type": "str",
+        "value": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_trained_medium_20261002_v1"
+      }
+    },
+    {
+      "base": {
+        "type": "missing"
+      },
+      "pointer": "/trained/stop_after_whitening",
+      "trained": {
+        "type": "bool",
+        "value": false
+      }
+    }
+  ],
+  "schema": "exact-recursive-trained-delta-v1",
+  "trained_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_minimum_training_support_mask.trained.review_pending.v1.json",
+  "trained_sha256": "c5a8327c53b0fe3c57071e5dacfb12b853e74697965d2ae02461b370a8e90a40"
+}

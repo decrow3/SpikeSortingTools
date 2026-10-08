@@ -1,0 +1,111 @@
+{
+  "schema": "first-medium-saved-output-qualification-independent-composition-review-v1",
+  "reviewer_host": "huklaban5",
+  "reviewed_at_utc": "2026-10-02T10:55:26Z",
+  "subject": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_qualification_contract_20261002_v1_h1",
+    "manifest_sha256": "9537bf43d65db382edb3d18ca1975e796de3cae3516acf0c877aaa6c0727b186",
+    "complete_sha256": "d7f7ec63a527e90c131312971d98d837bd163299b506cce1697ce5f5d040f4bb"
+  },
+  "verdict": "TARGETED_REPAIR_REQUIRED_NO_PHASE1_TOKEN",
+  "execution_decision": {
+    "phase1_real_execution": "NO_GO_PENDING_CR1_CR2_CR3_CR4",
+    "phase1_start_token": null,
+    "phase1_contract": null,
+    "phase2": "DISABLED_AND_NOT_FAIL_CLOSED_AGAINST_FIXTURE_PREREQUISITES",
+    "real_work_in_review": "REF_METADATA_AND_SAVED_ARRAY_BINDING_READ_ONLY"
+  },
+  "accepted_bindings": {
+    "measurement_packet_manifest": "61758790c555c18066dc2bdea6af1f03d755ef1d5f704f18dfa8c2c868d2bdf0",
+    "measurement_packet_complete": "9cbe08879ebb1ee3921ab80a6009b9a4534c565018b751a6f0cb50461b13b9ad",
+    "measurement_review_manifest": "9f0bdeb22aa889bc13eed41a98fc783bd16504c829577ab3a3508c3daa09c68e",
+    "measurement_review_complete": "c056001be08e3a00db44d6e9694392696fb95385dc41dd6fbf718f46dbe3c44e",
+    "spatial_packet_manifest": "80021b93c3605c95f32f16f600f522e684ae06a1234fe286bce21bbcb2bd61e2",
+    "spatial_packet_complete": "63170aff0cadf212ae3270c8a7a9fbdbdf914d82272d3ab826fcb0ff39e95cd9",
+    "spatial_review_manifest": "2c2cbe711fb361a90b42fc71ed73b9134b22886b6b9a6d25846dfdd6f1e88031",
+    "spatial_review_complete": "35f776bf7132dcfa33c682136d796d1d793d004df4feddb9229b4015dfa277d1",
+    "byte_comparison": "all eight bound MANIFEST/COMPLETE files are exact copies of their source packet bytes"
+  },
+  "implementation_boundary": {
+    "cli_sha256": "75c0300e3b2d120fc31bd8312583ddf2bc95ef3b3e31feaf19f56cf5fbcd01f0",
+    "measurement_module_sha256": "779b3b82e4328f92f6d50cb0a411153e03d755172d9493ccda937a686f42d0d9",
+    "spatial_loader_sha256": "da3d5d5af8227f6ef70747dca32b3e2c52206230b5494d7bc9015cba24fcdf35",
+    "active_matcher_sha256": "174a4bb6d621489260927dc0bbc06558e408564158a44657ecdd306fa07db5da",
+    "reviewed_matcher_sha256": "b4065ba7e6c326e74f5f283de9a6ee76df0dfd3b70b65fd534b1d4559a80de0c",
+    "canonical_correspondence_ast_sha256_both": "bd9ecc09e54acfac045a342af76d479d8c1f5a80e2a23a6bdaac09d8d34d0e04",
+    "matcher_equivalence": "PASS for correspondence and its two direct matching helpers",
+    "thin_cli_composition": "PASS; the CLI composes the accepted loader and measurement functions and adds gates, controls, receipts, and lifecycle code"
+  },
+  "positive_checks": {
+    "phase1_arms": "PASS: exactly one REF384 arm",
+    "phase1_output_schema": "PASS: diagnostic controls, provenance, null scientific_score, and explicit false cross-arm/ranked flags only",
+    "cross_arm_outcome_absence": "PASS: Phase 1 has no B/repaired/repeat input and no real cross-arm scalar, ranking, tuning, or advancement computation",
+    "diagnostic_label": "PASS: DIAGNOSTIC_CONTROLS_ONLY_NOT_EFFICACY",
+    "saved_format_cli_fixture": "PASS through the actual spatial loader and composed CLI",
+    "fresh_namespace": "PASS: existing output path is rejected and mkdir is atomic",
+    "same_namespace_retry": "PASS: first COMPLETE remains unchanged",
+    "real_ref_binding": "PASS: independently recomputed exact position, ops, lineage, clock, row count, geometry, source dependency, curated identity, and QC identity"
+  },
+  "blocking_findings": [
+    {
+      "id": "CR1",
+      "severity": "blocking_real_phase1",
+      "title": "Request-controlled fixture mode bypasses real-execution disablement",
+      "evidence": "source/testing/first_medium_saved_output_qualification.py:299-305 trusts data_scope plus the public FIXTURE_TOKEN and does not constrain arm evidence_kind or input paths. tests/test_first_medium_saved_output_qualification.py:115-129 labels fixture data real_saved. A bounded adversarial run accepted an arbitrary outside-packet path while both real-execution flags remained false.",
+      "repair": "Use a separate fixture-only entry point or bind fixture mode to exact packaged fixture file hashes and a dedicated non-real evidence kind. The production CLI must reject fixture mode and all unreviewed paths before any input load. Add a negative test using a real_saved arm and arbitrary external path."
+    },
+    {
+      "id": "CR2",
+      "severity": "blocking_phase2_fail_closed",
+      "title": "Phase 2 accepts a fixture Phase-1 completion as its prerequisite",
+      "evidence": "source/testing/first_medium_saved_output_qualification.py:329-332 accepts either COMPLETE_ONE_SHOT or COMPLETE_FIXTURE. The adversarial verifier proof supplied a valid fixture packet and was accepted.",
+      "repair": "Require COMPLETE_ONE_SHOT only; bind and compare Phase-1 contract/request hashes and REF ACTUAL_BINDING_RECEIPT identity against the Phase-2 REF before loading B; reject fixture=true anywhere in the prerequisite chain. Add positive real-receipt and negative fixture/mismatched-REF fixtures."
+    },
+    {
+      "id": "CR3",
+      "severity": "blocking_one_start",
+      "title": "The start token is replayable across fresh namespaces",
+      "evidence": "source/testing/first_medium_saved_output_qualification.py:309-314 only compares supplied token strings; lines 404-423 protect a namespace but do not consume the token globally. The same start token completed twice in two fresh namespaces in a bounded synthetic proof.",
+      "repair": "Before input loading, atomically claim the unique start token in a fixed contract-bound registry using exclusive creation. Bind token, contract hash, request hash, output namespace, phase, and host/job identity. Preserve the claim on failure and reject every replay. Add concurrent and sequential replay fixtures."
+    },
+    {
+      "id": "CR4",
+      "severity": "blocking_resource_claim",
+      "title": "Resource limits are post-hoc observations rather than preflight/lifetime enforcement",
+      "evidence": "source/testing/first_medium_saved_output_qualification.py:357-393 checks thread declarations, elapsed wall, RSS, and output bytes only during finalization after lines 424-431 have loaded inputs, computed controls, and written bindings. A five-thread adversarial run produced PHASE1_CONTROL_REPORT and ACTUAL_BINDING_RECEIPT before failing. gpu_count is never checked.",
+      "repair": "Validate thread/GPU policy before input loading; run under the reviewed managed job with hard wall timeout and memory/CPU/GPU limits or explicitly downgrade post-hoc fields to diagnostics. Enforce output quota before and during writes. Persist scheduler/cgroup limits and terminal state in the resource receipt; add over-thread, timeout, memory, GPU, and output-cap fixtures."
+    }
+  ],
+  "additional_freeze_requirement": {
+    "status": "REQUIRED_BEFORE_TOKEN",
+    "finding": "The exact REF cohort has no frozen selection rule or exact ID list in this packet. _load_cohort verifies uniqueness, presence, and the caller-supplied digest only (lines 102-114).",
+    "repair": "Freeze an outcome-blind REF-only selection rule and exact ordered cluster-ID artifact with source identity, or bind an externally reviewed exact cohort artifact. Make the production request reference that artifact rather than accepting an arbitrary present-unit subset."
+  },
+  "tests": {
+    "native": "6 passed in 5.11s",
+    "byte_identical_stage": "manifest all OK; 6 passed in 4.79s",
+    "adversarial": "fixture isolation failed, fixture Phase-2 prerequisite failed closedness, same token replayed twice, resource check occurred after controls and binding",
+    "real_cross_arm_score_computed": false,
+    "voltage_accessed": false,
+    "jobs_started": false,
+    "rf_or_holdout_accessed": false
+  },
+  "implementation_checks": {
+    "done": [
+      "verified subject and all manifest member bytes",
+      "verified all accepted dependency MANIFEST/COMPLETE copies against source packets",
+      "recomputed matcher hashes and canonical helper/correspondence AST equivalence",
+      "traced Phase-1 inputs, computations, output schema, labels, and absence of cross-arm outputs",
+      "traced namespace, token, resource, failure, manifest, and completion lifecycles",
+      "recomputed real REF saved-output spatial, clock, row, source, curated, and QC identities read-only",
+      "reran native, staged, and bounded synthetic adversarial tests"
+    ],
+    "not_done": [
+      "no real Phase-1 controls run or start token",
+      "no B-arm read or cross-arm result",
+      "no voltage, sorter, training, RF, holdout, or managed job"
+    ],
+    "can_establish": "The accepted measurement/spatial implementation and real REF binding are intact, but the orchestration is not yet fail-closed enough for a one-start real Phase 1.",
+    "cannot_establish": "Any B result, DeltaR, efficacy, repeatability, identity, purity, recovery, advancement, or launch readiness."
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "expected_contract_path_exists": false,
+  "expected_interpreter_literal": "/home/huklaban5/Documents/DARTsort/.venv/bin/python",
+  "expected_interpreter_resolved": "/home/huklaban5/.local/share/uv/python/cpython-3.12.4-linux-x86_64-gnu/bin/python3.12",
+  "expected_runner_path_exists": false,
+  "frozen_comparison_equal": false,
+  "occupied_repository_modified": false,
+  "runner_line": "Path(sys.executable).resolve() != Path(source_contract[expected_h5_interpreter])",
+  "runner_observed_sys_executable_resolved": "/home/huklaban5/.local/share/uv/python/cpython-3.12.4-linux-x86_64-gnu/bin/python3.12",
+  "schema": "candidate3-frozen-v3-path-binding-check-v1"
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "en-minimum-training-support-mask-covariance-smoke-resource-accounting-v1",
+  "completed_covariance_batch_count": 12,
+  "completed_batch_indices": [0, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275],
+  "padded_frame_columns_per_batch": 60122,
+  "channels": 384,
+  "dtype_bytes": 2,
+  "logical_recording_bytes_derived_from_completed_batch_journal": 554084352,
+  "planned_recording_read_bytes_upper_bound": 554084352,
+  "within_read_ceiling": true,
+  "actual_covariance_numeric_bytes": 589824,
+  "actual_whitening_numeric_bytes": 589824,
+  "retained_matrix_numeric_bytes": 1179648,
+  "run_root_apparent_bytes": 1216754,
+  "retained_artifact_bytes_max": 33554432,
+  "within_retained_ceiling": true,
+  "recording_read_counter_semantics": "derived from one native BinaryRWFile padded read per completed audited covariance batch; not an OS physical-I/O counter"
+}

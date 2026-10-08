@@ -1,0 +1,8 @@
+{
+  "schema": "immutable-evidence-packet-complete-v1",
+  "status": "COMPLETE",
+  "packet": "en_minimum_training_support_mask_trained_entry_clock_v5_h5_review_20261002_v1_h5",
+  "manifest_sha256": "39fd736b838b81db39b96265a4fd51de0ebf6e102e6fa1876fd56f4132c74af4",
+  "verdict": "GO_CLOCK_REPAIR_ONLY",
+  "written_last": true
+}

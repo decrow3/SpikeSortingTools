@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/media/huklaban5/Data/candidate2_native_rigid_sort_only_launch_h5_20261008_v10/source/testing/candidate2_sort_only_v10.py", line 193, in <module>
+    main()
+  File "/media/huklaban5/Data/candidate2_native_rigid_sort_only_launch_h5_20261008_v10/source/testing/candidate2_sort_only_v10.py", line 101, in main
+    raise RuntimeError("accepted recording clock/channel extent differs")
+RuntimeError: accepted recording clock/channel extent differs

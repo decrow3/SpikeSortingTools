@@ -1,0 +1,11 @@
+{
+  "complete": true,
+  "packet": "en_a_four_unit_physical_signal_capture_installed_preflight_20261001_v1_h5",
+  "status": "installed_preflight_passed_pending_final_h1_launch_decision",
+  "manifest_sha256": "a88e610a937d1b0c99007513d06b93df37f428514c257f0b18776fd6332a95a8",
+  "service_started": false,
+  "production_live_receipt_created": false,
+  "recording_open_attempts": 0,
+  "recording_reads": 0,
+  "recording_bytes_read": 0
+}

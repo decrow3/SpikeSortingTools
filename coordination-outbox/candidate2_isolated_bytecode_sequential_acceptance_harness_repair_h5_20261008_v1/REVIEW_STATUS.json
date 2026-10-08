@@ -1,0 +1,70 @@
+{
+  "schema": "candidate2-isolated-bytecode-sequential-acceptance-harness-independent-review-v1",
+  "verdict": "NO_GO_ACTUAL_PRODUCTION_BINDING_DEFECT",
+  "reviewed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/candidate2_isolated_bytecode_sequential_acceptance_harness_repair_h5_20261008_v1",
+  "another_traversal_run": false,
+  "production_installed_or_started": false,
+  "bindings": {
+    "contract_sha256": "8c918b84f8ccd4aecaf8e5f148a14bbadb0941ffc3512a10b46c8a8c0067b8da",
+    "source_manifest_sha256": "db2660fbb9d63e706780cef5a9b60855b8b7f1ca190d882705eec40de39a9408",
+    "test_receipt_sha256": "22befc07ba7e3df901060d675beaa08bc6ee45b14ab606405da64835d66f398f",
+    "harness_sha256": "0f89e26d4c9a088199b2877b53d33bd36dac7345c66844c1bd77e9eacbbefdd7",
+    "preserved_v9_manifest_sha256": "a4fd0c8df3e10178afacabd7ba8fbd6a9c0401deabe8aff27933b3cba61605e8",
+    "bootstrap_sha256": "672c9fa088f8523adbdde7bf391ae2effe0ead9eefde79c4a5065fb1d8820faa",
+    "preflight_bootstrap_sha256": "d7b6f8573f46d46ca7348c703ea5849d8ac9d7fc805fb6891146c540fad9b81f",
+    "monitor_bootstrap_sha256": "043abbff58a31fe66ece4a7c6266ea9b1830deb15cd91362a413b1c62a98fe9c",
+    "runner_sha256": "f62f8c5f42165414233f3532c4ba1a334563bae0bf947b9ac4fe1ae3c5f2da2b"
+  },
+  "blocking_findings": [
+    {
+      "id": "STALE_ALL_THREE_SERVICE_BOOTSTRAP_SELF_HASHES",
+      "failure_allowed": "Exact target ExecStartPre, target ExecStart, and monitor ExecStart each fail self-hash verification before the demonstrated preflight/import boundary.",
+      "pairs": {
+        "bootstrap.py": {
+          "actual": "672c9fa088f8523adbdde7bf391ae2effe0ead9eefde79c4a5065fb1d8820faa",
+          "service_argument": "a96ecc3c2cc2a2a921bdd6ab9c9b26591561d02b67da5da73a27c6b59a14b428"
+        },
+        "preflight_bootstrap.py": {
+          "actual": "d7b6f8573f46d46ca7348c703ea5849d8ac9d7fc805fb6891146c540fad9b81f",
+          "service_argument": "333a9c72d5e940d7e60a9a4666c604bd6c2fb2a4b82dae5c0e62a065cf86eb7f"
+        },
+        "monitor_bootstrap.py": {
+          "actual": "043abbff58a31fe66ece4a7c6266ea9b1830deb15cd91362a413b1c62a98fe9c",
+          "service_argument": "3c8f6f73ff71069bc985b2afe69963728d57842e5238aad159ea6747f10de16d"
+        }
+      }
+    },
+    {
+      "id": "STALE_SERVICE_CONTRACT_HASH",
+      "failure_allowed": "Frozen services pass contract hash 4769968e..., while the referenced packet contract is 8c918b84...; bootstrap contract verification fails before project import."
+    }
+  ],
+  "passed": {
+    "preserved_v9_manifest_exact": true,
+    "production_bytes_unchanged_from_v9": true,
+    "only_harness_executable_delta": true,
+    "retained_artifact_hashes_exact": true,
+    "retained_traversal_count_one": true,
+    "actual_preflight_bootstrap_valid_receipt": true,
+    "dynamic_main_bootstrap_real_runner_import": true,
+    "runner_import_before_recording_access": true,
+    "tree_identity_31_at_all_clean_boundaries": true,
+    "single_extra_file_mutation_rejected": true,
+    "path_argv_ignore_errors_negatives_retained": true,
+    "production_recording_sort_install_auth_start_absent": true,
+    "exact_deployed_argv_tested": false
+  },
+  "implementation_checks": {
+    "done": [
+      "Compared preserved-v9 production bytes and isolated harness delta",
+      "Inspected literal service argv against actual bootstrap and contract hashes",
+      "Rehashed retained evidence and all source-tree boundary identities",
+      "Traced preflight, import-only runner, mutation and authorization-negative behavior"
+    ],
+    "not_done": [
+      "Another traversal, repair, installation, authorization, production start, recording, sort, or GPU workload"
+    ],
+    "can_establish": "Sequential harness acceptance with dynamically correct bindings.",
+    "cannot_establish": "Exact deployed-argv acceptance or production readiness."
+  }
+}

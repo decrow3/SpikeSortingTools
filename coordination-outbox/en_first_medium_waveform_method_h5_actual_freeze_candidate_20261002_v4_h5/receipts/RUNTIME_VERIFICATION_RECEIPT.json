@@ -1,0 +1,693 @@
+{
+  "adapter_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_waveform_method_targeted_repair_20261002_v3_h5/source/waveform_preprocessing.py",
+  "adapter_sha256": "e9abe2a9a1c22db118a8c652e2a6a083db2fc9f84e8c77a71cec992447bcbe57",
+  "aggregate_sha256": "6658089a5e123b1962d2a61b7b89c230e484fdde0f52a0479e52c102f10cfe48",
+  "backend": {
+    "deterministic_algorithms": true,
+    "mkl_available": true,
+    "mkldnn_available": true,
+    "mkldnn_enabled": true,
+    "num_interop_threads": 10,
+    "num_threads": 4,
+    "openmp_available": true,
+    "probe_output_sha256": "e904ebc218e24c983580f0f72ea012f9483a7ff72f64bea7b8cd4812aa7b55df",
+    "torch_config_sha256": "d79e4b234f46d728f88054ba7278186ab7efa02dfe343a2fd12a9523cc6b6a78",
+    "torch_version": "2.6.0+cu124"
+  },
+  "command_argv": [
+    "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/en_first_medium_waveform_method_h5_actual_freeze_candidate_20261002_v4_h5/source/independent_h5_runtime_verifier.py",
+    "--expected",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_waveform_method_targeted_repair_20261002_v3_h5/dependencies/EXECUTABLE_RUNTIME_CLOSURE.json",
+    "--impulse",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_waveform_contract_targeted_repair_20261002_v2_h5/dependencies/kilosort/constants/highpass_filter_float32.npy",
+    "--adapter",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_waveform_method_targeted_repair_20261002_v3_h5/source/waveform_preprocessing.py",
+    "--output",
+    "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/en_first_medium_waveform_method_h5_actual_freeze_candidate_20261002_v4_h5/receipts/RUNTIME_VERIFICATION_RECEIPT.json"
+  ],
+  "cpu_seconds": 7.495249055,
+  "cwd": "/tmp",
+  "differences": [],
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "-1",
+    "MKL_NUM_THREADS": "4",
+    "NUMBA_NUM_THREADS": "4",
+    "OMP_NUM_THREADS": "4",
+    "OPENBLAS_NUM_THREADS": "4",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_waveform_method_targeted_repair_20261002_v3_h5/source:/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages"
+  },
+  "expected_closure_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_waveform_method_targeted_repair_20261002_v3_h5/dependencies/EXECUTABLE_RUNTIME_CLOSURE.json",
+  "expected_closure_sha256": "f5db3034ab11ac65e17fda77e455300be93bfd82ef30f851da60ae2777269f8e",
+  "host": "huklaban5-Precision-5820-Tower",
+  "impulse_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_waveform_contract_targeted_repair_20261002_v2_h5/dependencies/kilosort/constants/highpass_filter_float32.npy",
+  "impulse_sha256": "984639dee1d75eb82c170c1a96ba3e96dc196eaa24383b598266a804729e52b5",
+  "member_bytes_hashed": 3333088832,
+  "member_count": 89,
+  "members": [
+    {
+      "basename": "libcusparseLt.so.0",
+      "bytes": 212602113,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/cusparselt/lib/libcusparseLt.so.0",
+      "role": "mapped_elf",
+      "sha256": "42385f413fe87ce1c844b13890f920b66873dbd36030a3b0fd2c143d722f6879"
+    },
+    {
+      "basename": "libgfortran-040039e1.so.5.0.0",
+      "bytes": 2686065,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy.libs/libgfortran-040039e1.so.5.0.0",
+      "role": "mapped_elf",
+      "sha256": "14afb3129b1a8b50bc40a3b0820c7f1152ea9bc10121aab152943f7057472886"
+    },
+    {
+      "basename": "libopenblas64_p-r0-0cf96a72.3.23.dev.so",
+      "bytes": 35123345,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy.libs/libopenblas64_p-r0-0cf96a72.3.23.dev.so",
+      "role": "mapped_elf",
+      "sha256": "9254d0854dd7615e11de28d771ae408878ca8123a7ac204f21e4cc7a376cc2e5"
+    },
+    {
+      "basename": "libquadmath-96973f99.so.0.0.0",
+      "bytes": 247609,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy.libs/libquadmath-96973f99.so.0.0.0",
+      "role": "mapped_elf",
+      "sha256": "934c22ded0e7d169c4d4678876c96051adf3d94545da962f60b41659b075da3b"
+    },
+    {
+      "basename": "_multiarray_tests.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 175912,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy/core/_multiarray_tests.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "0b2cbb7419ffc2f712987aabaf518a3b1d9de8406093f79dcb1d712a34ab6057"
+    },
+    {
+      "basename": "_multiarray_umath.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 7463681,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy/core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "6a650810a8735cbdb988f74729973740a337645dd1585fef696e73e2dbc65beb"
+    },
+    {
+      "basename": "_pocketfft_internal.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 97008,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy/fft/_pocketfft_internal.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "38d22249f351b1d50e9269c596889ffc638639ebc150c1e75fc9f55a0f331ab5"
+    },
+    {
+      "basename": "_umath_linalg.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 216793,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "8822e772d743d405983f1b9c6b34b704dd297780890dc245454f1081adf50a4c"
+    },
+    {
+      "basename": "_bounded_integers.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 348704,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy/random/_bounded_integers.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "b39f7e2b4ccfd6904ae60fe1517f6bda8be7835b5bf69d54dec0d693c5e8b793"
+    },
+    {
+      "basename": "_common.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 258888,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy/random/_common.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "abd88ca8f447f22c4f51f226734d34732966bae61edd2aa25f74bfec954bee28"
+    },
+    {
+      "basename": "_generator.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 946872,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy/random/_generator.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "5b3ef2ac8b78aa83bc869b70e30e2a70fbd3ab373c5253ed6eba9982a55fd7e2"
+    },
+    {
+      "basename": "_mt19937.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 119488,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy/random/_mt19937.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "3619f7f91b9ee7197c2902c0e197e69b2e5dd45fb11cd22e572e9b0b886514a9"
+    },
+    {
+      "basename": "_pcg64.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 125040,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy/random/_pcg64.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "577c1468f4fb40bb23184343e2c1b645a17d1d493641ea92c052f286dc6eb556"
+    },
+    {
+      "basename": "_philox.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 106712,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy/random/_philox.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "2c9b1fe53ef119e3ed2acb73c802cf2996502b0fd51d4926d4047576cea57514"
+    },
+    {
+      "basename": "_sfc64.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 76224,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy/random/_sfc64.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "5883302ce33afd54db6631adbf5e000297b8eb42c0ec894bbec318b5e6b14268"
+    },
+    {
+      "basename": "bit_generator.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 234016,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy/random/bit_generator.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "87c5c730887943c603b16c53cf213398336ee410ef46595518093977afd5b0cb"
+    },
+    {
+      "basename": "mtrand.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 749040,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy/random/mtrand.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "8d866b4b6107401ab9546044564208e0a5899c3903da09277d1c4875d98bcf0f"
+    },
+    {
+      "basename": "libcublas.so.12",
+      "bytes": 109604768,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/nvidia/cublas/lib/libcublas.so.12",
+      "role": "mapped_elf",
+      "sha256": "4cc45526449a95d3985389785e985b7832460ea3db178bc9e9963be2111fbee8"
+    },
+    {
+      "basename": "libcublasLt.so.12",
+      "bytes": 441938896,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/nvidia/cublas/lib/libcublasLt.so.12",
+      "role": "mapped_elf",
+      "sha256": "44a813aa2da08830f9083f81d0eb73f1ae4052a4d9b0b0de480a8f6cd9eb3078"
+    },
+    {
+      "basename": "libcupti.so.12",
+      "bytes": 7748112,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/nvidia/cuda_cupti/lib/libcupti.so.12",
+      "role": "mapped_elf",
+      "sha256": "fb2a7c5b15c84df9505dd47e553fe46f3121a57d30391fca24179d202f73f3f7"
+    },
+    {
+      "basename": "libnvrtc.so.12",
+      "bytes": 60418376,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/nvidia/cuda_nvrtc/lib/libnvrtc.so.12",
+      "role": "mapped_elf",
+      "sha256": "466d6f14d6cfde99838a132cfa7a23f90ba08acfadaa4d9e4c9defe1277f7bf1"
+    },
+    {
+      "basename": "libcudart.so.12",
+      "bytes": 707904,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/nvidia/cuda_runtime/lib/libcudart.so.12",
+      "role": "mapped_elf",
+      "sha256": "8774224f5b11a73b15d074a3fcce7327322c5c4cfdfd924d6a826779eec968fe"
+    },
+    {
+      "basename": "libcudnn.so.9",
+      "bytes": 104664,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib/libcudnn.so.9",
+      "role": "mapped_elf",
+      "sha256": "74a4c495a26d5104150241e84a10842442c024c129cdc274ad8b6a7a8794980e"
+    },
+    {
+      "basename": "libcufft.so.11",
+      "bytes": 292889192,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/nvidia/cufft/lib/libcufft.so.11",
+      "role": "mapped_elf",
+      "sha256": "f3921c4133925242459ebfdbf7901db4ebfae6bbcfff9dc5ce53b1ff13fb42ff"
+    },
+    {
+      "basename": "libcurand.so.10",
+      "bytes": 96525744,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/nvidia/curand/lib/libcurand.so.10",
+      "role": "mapped_elf",
+      "sha256": "dab8074b610b82a863a42eceda788e9b08364b545bab948509306b48c46018cf"
+    },
+    {
+      "basename": "libcusparse.so.12",
+      "bytes": 281313984,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/nvidia/cusparse/lib/libcusparse.so.12",
+      "role": "mapped_elf",
+      "sha256": "cb4288c965453a8020653c0fd92cdfcd12bb5a646843d663e9d4e5f520f8915c"
+    },
+    {
+      "basename": "libnccl.so.2",
+      "bytes": 251616632,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/nvidia/nccl/lib/libnccl.so.2",
+      "role": "mapped_elf",
+      "sha256": "78df2f31f6db8142ec546a1e5a31cb066f7892d12d2f665b448f8069a08ef807"
+    },
+    {
+      "basename": "libnvJitLink.so.12",
+      "bytes": 53594512,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/nvidia/nvjitlink/lib/libnvJitLink.so.12",
+      "role": "mapped_elf",
+      "sha256": "cbd1488bbef82b8d64c2dd51a9b6aef3f6b0bc3a7a80a9821be48d1c07f700e7"
+    },
+    {
+      "basename": "_C.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 37881,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/torch/_C.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "3b4fcc74e3b3470934e8cd1b67c291058293dafcdb4231b91be8af3969adc2e4"
+    },
+    {
+      "basename": "libc10.so",
+      "bytes": 1455209,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/torch/lib/libc10.so",
+      "role": "mapped_elf",
+      "sha256": "9e8b46af9a5b5f1bf3200f2aabc3376597f1fb4787a179428e8c91f7253af78d"
+    },
+    {
+      "basename": "libc10_cuda.so",
+      "bytes": 720929,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/torch/lib/libc10_cuda.so",
+      "role": "mapped_elf",
+      "sha256": "99caf7bd0183e53103a28a0d27d6c54e8be338dcf71e4444e51b1c9bf529ef11"
+    },
+    {
+      "basename": "libgomp-a34b3233.so.1",
+      "bytes": 169113,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/torch/lib/libgomp-a34b3233.so.1",
+      "role": "mapped_elf",
+      "sha256": "aa9c09dd9d3b8f42b355048284f2894f1b4023f676843a69084276e754914206"
+    },
+    {
+      "basename": "libshm.so",
+      "bytes": 52793,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/torch/lib/libshm.so",
+      "role": "mapped_elf",
+      "sha256": "1bcc0868eaa8b49a3ae062d3dbb92f57e2fae521cbedf459a8cc0aeb887914a4"
+    },
+    {
+      "basename": "libtorch.so",
+      "bytes": 196201,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/torch/lib/libtorch.so",
+      "role": "mapped_elf",
+      "sha256": "a5d97e6bd79ef3bed0d038f9847c89441b85f886d8ccce7e5ec96fa344f0381c"
+    },
+    {
+      "basename": "libtorch_cpu.so",
+      "bytes": 441856673,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so",
+      "role": "mapped_elf",
+      "sha256": "b2ee8c3b1196a14f1db23dfcc7951f121fff2f190790776587cb03556239d564"
+    },
+    {
+      "basename": "libtorch_cuda.so",
+      "bytes": 902652937,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/torch/lib/libtorch_cuda.so",
+      "role": "mapped_elf",
+      "sha256": "be787f5be705cc47463b9737ac7091e2c0a6654308f19680d1928f32578262bb"
+    },
+    {
+      "basename": "libtorch_global_deps.so",
+      "bytes": 21193,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/torch/lib/libtorch_global_deps.so",
+      "role": "mapped_elf",
+      "sha256": "4c08044712a9f1193d61f3d1449d0d82558c41baa2ec77aa4000d73be7c2e0ee"
+    },
+    {
+      "basename": "libtorch_python.so",
+      "bytes": 29537089,
+      "observed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/torch/lib/libtorch_python.so",
+      "role": "mapped_elf",
+      "sha256": "7ddb480605f29ebb39d3d7ac22562d7b352300eb429a468c83f5e478f2378a18"
+    },
+    {
+      "basename": "python3.12",
+      "bytes": 30652904,
+      "observed_path": "/home/huklaban5/anaconda3/bin/python3.12",
+      "role": "python_executable",
+      "sha256": "4adb344720ca7a0ccee7cdc77506bae30da64b55a977cd45e15880ddf8bddcc1"
+    },
+    {
+      "basename": "libbz2.so.1.0.8",
+      "bytes": 229016,
+      "observed_path": "/home/huklaban5/anaconda3/lib/libbz2.so.1.0.8",
+      "role": "mapped_elf",
+      "sha256": "4979469ae49ac144f62202f75bbdd69b17197aedb879d633337c8cf7e4aba301"
+    },
+    {
+      "basename": "libcrypto.so.3",
+      "bytes": 5163664,
+      "observed_path": "/home/huklaban5/anaconda3/lib/libcrypto.so.3",
+      "role": "mapped_elf",
+      "sha256": "4349865a57c7598eec0973c2ad9ff18b4b0531d1160ea0a2a06ca03c90b6b222"
+    },
+    {
+      "basename": "libffi.so.8.1.2",
+      "bytes": 72144,
+      "observed_path": "/home/huklaban5/anaconda3/lib/libffi.so.8.1.2",
+      "role": "mapped_elf",
+      "sha256": "a5d54aeb8ed2fd5e0ccf9d38b28cad6dec76517f69224a5d9687c1970b57b194"
+    },
+    {
+      "basename": "libgcc_s.so.1",
+      "bytes": 475272,
+      "observed_path": "/home/huklaban5/anaconda3/lib/libgcc_s.so.1",
+      "role": "mapped_elf",
+      "sha256": "d912bad5e511194c15b506fe7eafe4454bc2dc4073a0fdebc60e86af59a0f2bc"
+    },
+    {
+      "basename": "liblzma.so.5.4.6",
+      "bytes": 213984,
+      "observed_path": "/home/huklaban5/anaconda3/lib/liblzma.so.5.4.6",
+      "role": "mapped_elf",
+      "sha256": "503b2e072bbcea1bcc70eac2a522852fff337203253d2df83958144521d6e1c0"
+    },
+    {
+      "basename": "libssl.so.3",
+      "bytes": 775736,
+      "observed_path": "/home/huklaban5/anaconda3/lib/libssl.so.3",
+      "role": "mapped_elf",
+      "sha256": "e6e75465feba03ba609ef403f76850dcb6ec9876818966dde78c1752f9f31ce1"
+    },
+    {
+      "basename": "libstdc++.so.6.0.29",
+      "bytes": 17981480,
+      "observed_path": "/home/huklaban5/anaconda3/lib/libstdc++.so.6.0.29",
+      "role": "mapped_elf",
+      "sha256": "4f045231ff3a95c2fbfde450575f0ef45d23e95be15193c8729b521fc363ece4"
+    },
+    {
+      "basename": "libuuid.so.1.3.0",
+      "bytes": 35944,
+      "observed_path": "/home/huklaban5/anaconda3/lib/libuuid.so.1.3.0",
+      "role": "mapped_elf",
+      "sha256": "b42fa6cf1dcaca6b84e8155c4649d6bad561eaca2e8fa9473db178dbaa4aec53"
+    },
+    {
+      "basename": "libz.so.1.2.13",
+      "bytes": 124744,
+      "observed_path": "/home/huklaban5/anaconda3/lib/libz.so.1.2.13",
+      "role": "mapped_elf",
+      "sha256": "0b0e682a9dc7fd4895a6783288f851b793dc89633f28714027974fa4d66f3914"
+    },
+    {
+      "basename": "_asyncio.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 370984,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_asyncio.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "5d7e844113a8d95d04daea5820212d789c8403bcd7bc60bb65fbbaa763e96634"
+    },
+    {
+      "basename": "_bisect.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 78640,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_bisect.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "7694659c2dea71e84ca42f0bc460dd8bad88a9971263182b91621a2aba08c00e"
+    },
+    {
+      "basename": "_blake2.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 264680,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_blake2.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "8d6f81f975efd43245211233d6350f55c7b9775a3af8c8279fd3ae78130a766a"
+    },
+    {
+      "basename": "_bz2.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 98880,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_bz2.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "1ba83c781a880da47da85fb7a89fb9add41b83936ede5f7d953ffbec984fcf92"
+    },
+    {
+      "basename": "_contextvars.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 27176,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_contextvars.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "7fdb1cf53dd1167e132c0aa9f32e98b08bf2102fe138cd30c1dc6c8eb4f66c40"
+    },
+    {
+      "basename": "_csv.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 165920,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_csv.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "2412b98e59136f34d235dc581ec819d58ad79163904640fc0d7241a1d58d31bc"
+    },
+    {
+      "basename": "_ctypes.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 871272,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_ctypes.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "65e9108eed07e35da63c19446a6be2ca02b3586bfeee50e13cf5c93f3f865846"
+    },
+    {
+      "basename": "_datetime.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 724264,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_datetime.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "0d768c77505d0e0764f91a84b7c9995f2d09ee47164ad54d90eb93a924673a8c"
+    },
+    {
+      "basename": "_hashlib.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 218760,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "5d00ef3921fc50cf555a78138c2ca2e7e733a1174dd71318cbea48ad523fa1fa"
+    },
+    {
+      "basename": "_heapq.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 115200,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_heapq.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "4fe2b41cd3e2590e5803880fb3d5989f4528db3e9d2ee5542dfa7d5015e6dab5"
+    },
+    {
+      "basename": "_json.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 285320,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "ce243e7213253aac36bc246d99dea848a53ee11b49a6b14190d3ab5bec2403d2"
+    },
+    {
+      "basename": "_lzma.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 157440,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_lzma.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "7f88e8f6da1a2d447e9ee5bfcece827ece8fc85329f4dce0f998cf046c8a57af"
+    },
+    {
+      "basename": "_multiprocessing.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 69312,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_multiprocessing.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "c163b858b0dda8da6e91301b31c388dfd8d185d59273492ca9d0c7e43d06c4c2"
+    },
+    {
+      "basename": "_opcode.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 31264,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_opcode.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "735c366c73453d15a442aeb933dc88ce276505e2e37ba3ebf5cbb2885902c3bc"
+    },
+    {
+      "basename": "_pickle.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 715968,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_pickle.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "c5d6d2a676acca5fce4c34bf70cc92edba2c056f876e49c3ffff78ab8c9296a0"
+    },
+    {
+      "basename": "_posixsubprocess.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 172872,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_posixsubprocess.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "e9f1538de7b9892260c0f5197bc11fb6af2c0f5e4f08c56278583fbd2f7f3c2c"
+    },
+    {
+      "basename": "_queue.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 58912,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_queue.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "1edc27342268b0f13620918e74e6f3e9af88429ff6d9d097a383c6d625bd8879"
+    },
+    {
+      "basename": "_random.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 65352,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_random.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "69dba6e4d4c736cda12dab1d3612b494fef03fc6159ac314d532ce9ad58c2825"
+    },
+    {
+      "basename": "_sha2.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 1434360,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_sha2.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "61eba753529759d0a806757ce7a1e6d8bf465eb9ace5a9d787af346a6a7d5238"
+    },
+    {
+      "basename": "_socket.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 314192,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_socket.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "08de41a4f34033dbc4772a4f844deb0ce51ce0b21719a6822763b9787dca9f2a"
+    },
+    {
+      "basename": "_ssl.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 519064,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_ssl.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "34137c9771a1cdbb91619e352f7ea48d3d839e99cad772201b58dd64ac3d62f4"
+    },
+    {
+      "basename": "_struct.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 228720,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_struct.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "c5eb716854534b1c96b9723cfae56547b1571fd2d6b6263af70961f95113a9be"
+    },
+    {
+      "basename": "_uuid.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 26648,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/_uuid.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "7e656c811e1fc89823086f5a4fa2b6dbcd9f73012f2fcc1d653b3a42b224b7bb"
+    },
+    {
+      "basename": "array.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 262328,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/array.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "f52bf9b92607dba9247c9cc5e296487f0fafca37125e7248f3349d9b6d9a32ca"
+    },
+    {
+      "basename": "binascii.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 197840,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/binascii.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "dd61083af4d3e78d44f32ff473fbcff7f5dbdb21db702a5babf05825e4f5a6f2"
+    },
+    {
+      "basename": "cmath.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 170296,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/cmath.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "4eb32581c77d6a5c005e1f7a03531ab3f355ac5e59e685fc45c7e112deb6edbb"
+    },
+    {
+      "basename": "fcntl.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 58608,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/fcntl.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "183e13527124b832c86e8a0cd78d3c56862d467f3fab98ab82d07eb7e8dcd1d4"
+    },
+    {
+      "basename": "grp.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 56848,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/grp.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "707a97187fc3693aed2018f93d10b586443efff8a4029b42a51e00ab2982546d"
+    },
+    {
+      "basename": "math.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 388464,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/math.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "67a2a81dec8bd6cb3ddf5057860e144afed0dcb36ad3d8ee6e174439607f9707"
+    },
+    {
+      "basename": "mmap.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 92616,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/mmap.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "077f1668a04c17a6d05256fdd33aa3caea3ba2731ad0025408f1bc86e9bdaebd"
+    },
+    {
+      "basename": "select.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 118512,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/select.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "af832746bfcce6aacbc162558348a359e79e9a297ef38520996043fa63074cbd"
+    },
+    {
+      "basename": "unicodedata.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 1245112,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/unicodedata.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "8ee002b856eed64bda45816dc0b77de7eb02a3f7b883d0f6b49fbead076d2d88"
+    },
+    {
+      "basename": "zlib.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 166024,
+      "observed_path": "/home/huklaban5/anaconda3/lib/python3.12/lib-dynload/zlib.cpython-312-x86_64-linux-gnu.so",
+      "role": "mapped_elf",
+      "sha256": "701ac4d4e7b79e3541ad56d382d62c36efbc786a29659f33605fe59c876b0aa2"
+    },
+    {
+      "basename": "ld-linux-x86-64.so.2",
+      "bytes": 240936,
+      "observed_path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "role": "mapped_elf",
+      "sha256": "41daf7836f7fce21a40ca63a00c5caf21b05a35a76ccc075d86f1716212cdf01"
+    },
+    {
+      "basename": "libc.so.6",
+      "bytes": 2220400,
+      "observed_path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "role": "mapped_elf",
+      "sha256": "b2cf6c33b74d2f22543b7a469a75b538911e690f769d0b238843a49465b83793"
+    },
+    {
+      "basename": "libcuda.so.535.274.02",
+      "bytes": 29384912,
+      "observed_path": "/usr/lib/x86_64-linux-gnu/libcuda.so.535.274.02",
+      "role": "mapped_elf",
+      "sha256": "e9b8b1a1556dd438a5f8868987deb90a945d46ddd6a71ca48bd0a2e2aee34425"
+    },
+    {
+      "basename": "libdl.so.2",
+      "bytes": 14432,
+      "observed_path": "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+      "role": "mapped_elf",
+      "sha256": "3eaaa4aefd9c28f3867c96a427c3cbec9191cb61c4c9d0a2cb4a765d66064499"
+    },
+    {
+      "basename": "libm.so.6",
+      "bytes": 940560,
+      "observed_path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "role": "mapped_elf",
+      "sha256": "3dd5511ae94785c9f921429b0f2b2f7aabb461b6f0e6de6dfdbef15f24bdfee6"
+    },
+    {
+      "basename": "libpthread.so.0",
+      "bytes": 21448,
+      "observed_path": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+      "role": "mapped_elf",
+      "sha256": "fbed9505adacada2abb37c6b43be2df6de81e742712c6025694ba48de62c7e78"
+    },
+    {
+      "basename": "librt.so.1",
+      "bytes": 14664,
+      "observed_path": "/usr/lib/x86_64-linux-gnu/librt.so.1",
+      "role": "mapped_elf",
+      "sha256": "5f20d34fb3bb4d84b4edeb6ca11fa5b48c705207253741619acab7cc758185fb"
+    },
+    {
+      "basename": "libutil.so.1",
+      "bytes": 14432,
+      "observed_path": "/usr/lib/x86_64-linux-gnu/libutil.so.1",
+      "role": "mapped_elf",
+      "sha256": "ee98a316fe33727cf23cc81d3a7f9628350d6ef75e905c7b713e5f5e68e177dc"
+    }
+  ],
+  "platform_machine": "x86_64",
+  "platform_system": "Linux",
+  "python_executable": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+  "python_executable_resolved": "/home/huklaban5/anaconda3/bin/python3.12",
+  "python_implementation": "CPython",
+  "python_version": "3.12.4",
+  "schema": "independent-h5-waveform-runtime-verification-receipt-v1",
+  "scope": "actual H5 deployment exact relocatable-path identity; no general cross-host portability claim",
+  "status": "PASS",
+  "uname": [
+    "Linux",
+    "huklaban5-Precision-5820-Tower",
+    "6.8.0-124-generic",
+    "#124~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 21:05:19 UTC ",
+    "x86_64",
+    "x86_64"
+  ],
+  "verifier_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/en_first_medium_waveform_method_h5_actual_freeze_candidate_20261002_v4_h5/source/independent_h5_runtime_verifier.py",
+  "verifier_sha256": "27eef195d3951632401a0ffd074a4a8e991f8e217603150ba7d152f2d44239e8",
+  "vm_hwm_kib": 423112,
+  "wall_seconds": 7.132053058594465
+}

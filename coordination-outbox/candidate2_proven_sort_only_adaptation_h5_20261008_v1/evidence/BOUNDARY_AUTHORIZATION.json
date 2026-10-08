@@ -1,0 +1,7 @@
+{
+  "config_sha256": "e4d68dcfbe9a137c63281293c7eada7cd0bc97ac435068ec92c417078eab4397",
+  "runner_sha256": "39a6f8e25443be80bd3b9febc592ff02953cb967686431754f5dfa5693666f52",
+  "service_sha256": "ed922c44522bf066d0c06f408cc31e71385779cb9dc7f661919777a28c7c062b",
+  "source_manifest_sha256": "06057e8b27dc1ed89b3ef64b9db276ea5c7352e0efcc17b73ed4c38e322db229",
+  "status": "BOUNDARY_FIXTURE_ONLY"
+}

@@ -1,0 +1,16 @@
+{
+  "archiveable_without_checkout": true,
+  "commit_object_available": true,
+  "files": {
+    "src/dartsort/main.py": "e4c03417c1256384c4f8fbf0250560003bd795b7274932ef1e49dcde217bd249",
+    "src/dartsort/util/main_util.py": "2846a319c19c25b3cad81ab991057c0868b87d760b66f20e8d2bb3db8ffa3bcc",
+    "src/dartsort/util/preprocess_util.py": "566ce1ab60af12585978bcd7e3192cb2ca4cc220ab5e41895140c00bdbc06674",
+    "uv.lock": "68f3fa53642043313bc9a4e56b7fc35dbd27af81030e436ffdba82de683f5034"
+  },
+  "occupied_repository_modified": false,
+  "repository": "/home/huklaban5/Documents/DARTsort",
+  "required_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+  "required_tree": "8d40728c4cb53b7fcbab726c465afda04ddbe32b",
+  "schema": "candidate3-dartsort-commit-identity-v1",
+  "working_head": "fdaad62118d778eec63f8e755a0b0f1422574aff"
+}

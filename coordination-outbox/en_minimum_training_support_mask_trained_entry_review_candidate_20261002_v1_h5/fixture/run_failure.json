@@ -1,0 +1,32 @@
+{
+  "completion_written": false,
+  "contract_digest": "c8eef9239790949e026c9acbd00c6279481c8bdf432556fc4874992c58956707",
+  "exception_message": "injected synthetic downstream failure",
+  "exception_type": "RuntimeError",
+  "mask_read_count": 4,
+  "phase_at_failure": "learned_template_extraction",
+  "stage": "native_trained_pipeline",
+  "status": "failed",
+  "whitening_audit": {
+    "computation_digest": "c8eef9239790949e026c9acbd00c6279481c8bdf432556fc4874992c58956707",
+    "covariance_validation": {
+      "condition_number": 5.505211353302002,
+      "contract_digest": "c8eef9239790949e026c9acbd00c6279481c8bdf432556fc4874992c58956707",
+      "covariance_sha256": "562a693af85b18d9c7017ee2b4b79ec1586ba75d45d39287cce89be6bf845ce7",
+      "finite": true,
+      "maximum_condition_number": 100000000.0,
+      "passed": true,
+      "rank": 4,
+      "reasons": [],
+      "shape": [
+        4,
+        4
+      ]
+    },
+    "sampled_batch_indices": [
+      0
+    ],
+    "whitening_finite": true,
+    "whitening_sha256": "27f1332dcd63f5c503677ba15a7027e761a7a304242858785947ee806ff32ece"
+  }
+}

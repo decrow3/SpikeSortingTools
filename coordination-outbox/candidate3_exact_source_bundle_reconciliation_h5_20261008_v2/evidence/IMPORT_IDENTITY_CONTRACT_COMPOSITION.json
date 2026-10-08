@@ -1,0 +1,24 @@
+{
+  "bytecode_disabled": true,
+  "extra_kilosort_root": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages",
+  "interpreter": "/home/huklaban5/.local/share/uv/python/cpython-3.12.4-linux-x86_64-gnu/bin/python3.12",
+  "kilosort_version": "4.0.27",
+  "mode": "append",
+  "paths": {
+    "dartsort_main": "/home/huklaban5/Documents/DARTsort/src/dartsort/main.py",
+    "dartsort_main_util": "/home/huklaban5/Documents/DARTsort/src/dartsort/util/main_util.py",
+    "dartsort_package": "/home/huklaban5/Documents/DARTsort/src/dartsort/__init__.py",
+    "dartsort_preprocess_util": "/home/huklaban5/Documents/DARTsort/src/dartsort/util/preprocess_util.py",
+    "kilosort_io": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/io.py",
+    "kilosort_package": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/__init__.py"
+  },
+  "schema": "candidate3-import-identity-probe-v1",
+  "sha256": {
+    "dartsort_main": "e4c03417c1256384c4f8fbf0250560003bd795b7274932ef1e49dcde217bd249",
+    "dartsort_main_util": "2846a319c19c25b3cad81ab991057c0868b87d760b66f20e8d2bb3db8ffa3bcc",
+    "dartsort_package": "49c66914e522522fd5fc9260dd0b1a64b1e83820989daecd1e9f7b506f21bb26",
+    "dartsort_preprocess_util": "566ce1ab60af12585978bcd7e3192cb2ca4cc220ab5e41895140c00bdbc06674",
+    "kilosort_io": "c6093e14cae920e8cfaae6c3fed8d4c6ca032b046d705ef9868ec171c7bf3c99",
+    "kilosort_package": "fc29b4412cae21a5dc62643015016a819a34acde7688a3b4331150d0e059c6d7"
+  }
+}

@@ -1,0 +1,3 @@
+Command: python -m unittest -v coordination-outbox/en_a_four_unit_physical_signal_capture_relaunch_candidate_20261001_v1_h5/tests/test_launch_guard_v3.py
+Result: Ran 13 tests in 2.500s; OK.
+No recording path was opened and no production child was invoked.

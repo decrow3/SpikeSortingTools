@@ -1,0 +1,63 @@
+{
+  "schema": "first-medium-spatial-provenance-targeted-repair-review-v1",
+  "status": "READY_FOR_H1_REVIEW_EXECUTION_DISABLED",
+  "milestone": "workstream-A independent-review repair and waveform-contract freeze",
+  "decision_changed": "whether the spatial loader is independently portable and whether the waveform plan is sufficiently frozen for a later separate enablement review",
+  "cheapest_adequate_test": "packet-only saved-format synthetic fixtures, packaged CLI, dependency corruption controls, redundant-identity contradiction control, and contract arithmetic checks",
+  "completion_condition": "fresh immutable packet with all bounded tests passing, no host-specific fixture path, no unchecked redundant identity, frozen execution-disabled waveform contract, and no real execution",
+  "bindings": {
+    "original_candidate_manifest": "710723d0e965c32895f57914a0edad9a9e2761dc5bfc9a47d319df1a669887f2",
+    "original_candidate_complete": "8beba945d3e276914c9511a03bf88210e7a8d7337597682dbd792ec53da2afb6",
+    "h1_review_manifest": "00d95f0139846d27e47fc93b10e2167b7a1ef9f0a703d1bb7503e7c300c5250b",
+    "h1_review_complete": "8cb04260e22ca7a17d6c8594b6f3464ad40c35a4183065048ff736ed2c7830d9",
+    "repaired_evaluator_source": "da3d5d5af8227f6ef70747dca32b3e2c52206230b5494d7bc9015cba24fcdf35",
+    "kilosort_dependency_digest": "d1e5a4465d387c66a7655db442ecbf8740d2cae0032c300b0456432b0080c614",
+    "waveform_contract": "0bcc0794b4d0616cf24d57ca7df399ca6b47fb4655996e940fa6e5dc9934b418"
+  },
+  "repairs": [
+    {
+      "id": "R1",
+      "result": "REPAIRED",
+      "implementation": "first_medium_evaluator.py:31-36 freezes accepted file and aggregate hashes; lines 119-146 validate an explicit absolute dependency root. Tests and CLI derive the packet-bundled digest-named root.",
+      "negative_controls": ["declared io.py hash changed", "io.py bytes changed under a correctly declared dependency"]
+    },
+    {
+      "id": "R2",
+      "result": "REPAIRED",
+      "implementation": "first_medium_evaluator.py:243-277 derives spatial_identity_sha256 from actual validated bindings; lines 337-341 reject a contradictory redundant provenance claim and otherwise emit the derived identity.",
+      "negative_controls": ["provenance.spatial_identity set to an unrelated 64-hex value"]
+    },
+    {
+      "id": "R3",
+      "result": "FROZEN_CONTRACT_ONLY",
+      "implementation": "contracts/physical_waveform_evidence.execution_disabled.v2.json freezes inputs, voltage, matching, sampling, preprocessing, extraction, denominators, quality, outputs, resources, preservation, and exclusions.",
+      "negative_controls": ["contract cannot be enabled while prospective binding markers remain"]
+    }
+  ],
+  "test_result": {
+    "pytest": "22 passed, 1 unrelated pandas FutureWarning",
+    "packaged_cli": "passed",
+    "real_data_opened": false,
+    "voltage_accessed": false,
+    "jobs_launched": false
+  },
+  "real_binding_scope": "Historical REF/B receipt values are preserved only as producer claims. Current H5-local bytes and new v2 spatial identities must be recomputed prospectively before any real evaluation.",
+  "implementation_checks": {
+    "done": [
+      "exact original and review packet hashes",
+      "changed source and test trace",
+      "dependency-root hash verification and corruption controls",
+      "spatial-identity derivation and contradiction control",
+      "packaged CLI from unrelated cwd",
+      "waveform contract crop, epoch, read, and resource arithmetic"
+    ],
+    "not_done": [
+      "unchanged H1 rerun",
+      "real H5-local REF/B byte and lineage recomputation",
+      "prospective repaired/repeat/anchor binding",
+      "evaluator, voltage, sorter, waveform, RF, or holdout execution"
+    ],
+    "can_establish": "The repaired changed path is portable and fail-closed on synthetic saved-format inputs on H5, and the waveform protocol is fully specified but disabled.",
+    "cannot_establish": "Independent-host acceptance, real receipt truth, prospective arm readiness, waveform support, efficacy, biological identity, purity, or advancement."
+  }
+}

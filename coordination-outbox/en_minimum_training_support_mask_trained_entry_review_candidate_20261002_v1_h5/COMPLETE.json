@@ -1,0 +1,17 @@
+{
+  "schema": "immutable-review-packet-complete-v1",
+  "completed_utc": "2026-10-02T07:25:25Z",
+  "status": "complete_execution_disabled_review_candidate",
+  "manifest_sha256": "906c45d6ed99b2621c6e6629f86437f8be533be4d0be5fa34419ed0f2a842ef7",
+  "manifest_members_verified": true,
+  "complete_written_last": true,
+  "trained_source_sha256": "c1a7617da36dcc0354714e916ce4a0a03e127a29eeb9f771f238907c0310e793",
+  "trained_config_sha256": "c5a8327c53b0fe3c57071e5dacfb12b853e74697965d2ae02461b370a8e90a40",
+  "exact_delta_sha256": "8c4abff01278a7084a5e6583634dc73c6fb0ebcecb893ffdfa2262d3136a310f",
+  "vertical_fixture_receipt_sha256": "efd7ae2bfce7482c180bf7450d4598e03e53e32744ea560c6f0959b219d02900",
+  "execution_enabled": false,
+  "real_recording_reads": 0,
+  "sort_training_detection_launched": false,
+  "rf_or_holdout_accessed": false,
+  "waveform_or_numeric_arrays_published": false
+}

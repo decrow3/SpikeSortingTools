@@ -1,0 +1,18 @@
+{
+  "schema": "luke-h5-r2-finalization-repair-status-v1",
+  "status": "EXECUTION_DISABLED_PENDING_INDEPENDENT_H1_REVIEW",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_launcher_r2_finalization_repair_20261002_v3_h5",
+  "contract_sha256": "55c0dbabc5623bbd1db9e3b49e32c493c9802880e3f28c7c1709ecb25b77ecfa",
+  "launcher_sha256": "238c9c997bad67415a13671deaa5569ee121f3a27aa07188fef51c424f2029f8",
+  "service_sha256": "704d6990b4e7b5367498e4101f4e8909567aad599d7aa90b84d5648b5d3511ad",
+  "preserved_v2_manifest_sha256": "cefdbfeb9076513f7063dc0d5ac5fb4776d9fc915b408fd659f61e17ae67f1dc",
+  "blocking_h1_manifest_sha256": "ee4290e237bf65212f84d6ec2718c4147519642a7679f49c3875563238977460",
+  "total_cap_bytes": 17179869184,
+  "terminal_control_reserve_bytes": 1048576,
+  "live_output_bytes_max": 17178820608,
+  "tests": "14 passed",
+  "scientific_execution_started": false,
+  "service_installed_or_started": false,
+  "recording_or_voltage_read": false
+}
+

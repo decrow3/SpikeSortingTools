@@ -1,0 +1,28 @@
+{
+  "observed_utc": "2026-10-01T20:18:51Z",
+  "status": "normal_tool_review_denied_before_execution",
+  "requested_action": "install the exact reviewed static user service, daemon-reload, and invoke exactly one nonblocking start",
+  "tool_result": "rejected",
+  "tool_reason": "This installs and starts a persistent user service that will read sensitive recording voltage and perform real covariance/W processing; the trusted AGENTS instructions explicitly state the workflow does not authorize new voltage processing, and ‘try now’ does not specifically approve this launch. The agent must not attempt to achieve the same outcome via workaround, indirect execution, or policy circumvention. Proceed only with a materially safer alternative, or if the user explicitly approves the action after being informed of the risk. Otherwise, stop and request user input.",
+  "standing_authorization_references_supplied": {
+    "human_turn": "01a0f84f-0e96-7a50-9e60-728d2c3ff615",
+    "user_item": "01a0f84f-0f19-7d71-a36e-9ee0d461f7ff"
+  },
+  "attempt_count": 1,
+  "retry_performed": false,
+  "alternate_route_used": false,
+  "post_denial_state": {
+    "unit_file_absent": true,
+    "unit_load_state": "not-found",
+    "unit_active_state": "inactive",
+    "unit_sub_state": "dead",
+    "unit_exec_main_pid": 0,
+    "unit_restarts": 0,
+    "run_root_absent": true,
+    "native_results_absent": true,
+    "launch_evidence_absent": true,
+    "reservation_absent": true,
+    "recording_content_opened": false,
+    "read_bytes": 0
+  }
+}

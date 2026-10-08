@@ -1,0 +1,24 @@
+{
+  "classification": "managed_job_failure_or_preflight_refusal",
+  "final_memory_events": {},
+  "final_target": {
+    "ActiveState": "failed",
+    "CPUUsageNSec": "2948370000",
+    "ControlGroup": "",
+    "ControlPID": "0",
+    "ExecMainCode": "0",
+    "ExecMainPID": "0",
+    "ExecMainStatus": "0",
+    "InvocationID": "cd421f01856444e3b48bc2c905d9414d",
+    "LoadState": "loaded",
+    "MemoryCurrent": "[not set]",
+    "NRestarts": "0",
+    "Result": "exit-code",
+    "SubState": "failed",
+    "returncode": "0"
+  },
+  "finished_utc": "2026-10-08T11:43:48.781351+00:00",
+  "samples": 4,
+  "schema": "candidate2-external-monitor-terminal-v1",
+  "telemetry_sha256": "9ada252a592c799006b8aafbe01867738bb15c92f2e6456d474048ffb2b49fd1"
+}

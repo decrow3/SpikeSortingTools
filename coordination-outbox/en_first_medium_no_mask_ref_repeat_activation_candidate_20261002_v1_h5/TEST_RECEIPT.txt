@@ -1,0 +1,26 @@
+Commands:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<candidate>/source python -m pytest -q <candidate>/tests
+<bound-venv-python> <candidate>/source/activation_preflight.py --contract <candidate-contract> --expected-contract-sha256 65a94dd52f9264baa70270837b9e441ab8fef69e39a7e905e2c165017355eff5 --inspect-disabled
+<reviewed-launcher> --contract <candidate-contract> --expected-contract-sha256 65a94dd52f9264baa70270837b9e441ab8fef69e39a7e905e2c165017355eff5 --validate-only
+
+Results:
+20 passed in 0.95s
+launcher validate-only: status=validated, execution_enabled=false,
+recording_or_voltage_opened=false
+activation inspect: status=INSPECTED_FAIL_CLOSED, exact H1 GO bound=true,
+all namespaces fresh=true, Phase3 review bound=false,
+activation eligible=false, recording/voltage/outcomes opened=false
+activation require mode: nonzero fail-closed because enabled derivative and Phase3
+review are absent
+
+Coverage:
+- inherited 14 R1/R2/R3, outer-finalization, cap-boundary fixtures;
+- exact H1 GO and reviewed launcher identity;
+- fresh namespace and proposed service/env boundaries;
+- runtime/input binding and frozen resource relationship;
+- unresolved Phase3 rejection and no false activation;
+- byte-identical scientific sources.
+
+No service install/enable/start, recording/voltage read, scientific outcome read,
+sort, training, evaluator, RF, or holdout operation occurred.
+

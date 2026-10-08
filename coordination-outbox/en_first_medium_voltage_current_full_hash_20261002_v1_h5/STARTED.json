@@ -1,0 +1,21 @@
+{
+  "binary_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+  "buffer_bytes": 16777216,
+  "expected_bytes": 241309358592,
+  "expected_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+  "host": "huklaban5-Precision-5820-Tower",
+  "initial_lstat": {
+    "st_ctime_ns": 1788254629465850600,
+    "st_dev": 93,
+    "st_ino": 8167886,
+    "st_mode": 33261,
+    "st_mtime_ns": 1788254629465850600,
+    "st_size": 241309358592
+  },
+  "python": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+  "schema": "current-voltage-full-hash-started-v1",
+  "source_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/en_first_medium_waveform_method_h5_actual_freeze_candidate_20261002_v4_h5/source/current_voltage_full_hash.py",
+  "source_sha256": "97c83ab93993bde6010792224a5e119078d1173e436f993a69e88990449bf8ea",
+  "started_epoch_ns": 1790964315441072711,
+  "status": "STARTED_ONE_SHOT_NO_RETRY"
+}

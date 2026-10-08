@@ -1,0 +1,14 @@
+{
+  "schema": "immutable-packet-complete-v1",
+  "status": "AUTHORIZED_REVIEWED_INSTALLED_NOT_STARTED",
+  "manifest_sha256": "9212e97c0f4df181351374b264b345811dfeeee1b0e8e7a436324f434b93a081",
+  "manifest_members": 45,
+  "manifest_bytes": 616607,
+  "review_status_sha256": "c917b34e1d2b684964fee72e1df70e5be0a82c71f9c7acc33d584666b581e5a9",
+  "authorization_sha256": "0aa43caf40d800bccd5b9e03b0337f63130ac310fd3b23d3c37a75cf25c4ce6a",
+  "execution_authorized": true,
+  "installed": true,
+  "started": false,
+  "recording_bytes_read": 0,
+  "gpu_work_started": false
+}

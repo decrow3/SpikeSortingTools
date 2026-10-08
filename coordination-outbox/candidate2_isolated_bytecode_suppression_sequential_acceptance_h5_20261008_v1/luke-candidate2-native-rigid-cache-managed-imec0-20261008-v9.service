@@ -1,0 +1,26 @@
+[Unit]
+Description=Luke imec0 Candidate2 native-rigid cache-managed full run v7
+ConditionPathExists=/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/rescue_recording_manifest.json
+ConditionPathExists=/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_isolated_bytecode_suppression_sequential_acceptance_h5_20261008_v1/AUTHORIZATION.json
+ConditionPathExists=!/media/huklaban5/Data/luke_candidate2_native_rigid_cache_managed_imec0_20261008_v9
+Requires=luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v9.service
+BindsTo=luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v9.service
+After=luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v9.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v9
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=NUMBA_CACHE_DIR=/tmp/spikeglx-rescue-numba-cache
+Environment=KILOSORT_BOUNDED_PREAD_PATH=/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw
+ExecStartPre=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python -I -B -S -u /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v9/preflight_bootstrap.py --self-sha256 333a9c72d5e940d7e60a9a4666c604bd6c2fb2a4b82dae5c0e62a065cf86eb7f --source-root /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v9/source --source-manifest /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v9/SOURCE_MANIFEST.json --source-manifest-sha256 db2660fbb9d63e706780cef5a9b60855b8b7f1ca190d882705eec40de39a9408 --contract /mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_isolated_bytecode_suppression_sequential_acceptance_h5_20261008_v1/CONTRACT.json --contract-sha256 4769968e7bef087d07097bb61b745de7882afaa9e38c2d20f7c75eb4071d6c68 --receipt /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v9/PREFLIGHT.json --installed-unit /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-imec0-20261008-v9.service --monitor-unit /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v9.service --authorization /mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_isolated_bytecode_suppression_sequential_acceptance_h5_20261008_v1/AUTHORIZATION.json
+ExecStart=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python -I -B -S -u /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v9/bootstrap.py --self-sha256 a96ecc3c2cc2a2a921bdd6ab9c9b26591561d02b67da5da73a27c6b59a14b428 --source-root /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v9/source --source-manifest /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v9/SOURCE_MANIFEST.json --source-manifest-sha256 db2660fbb9d63e706780cef5a9b60855b8b7f1ca190d882705eec40de39a9408 --contract /mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_isolated_bytecode_suppression_sequential_acceptance_h5_20261008_v1/CONTRACT.json --contract-sha256 4769968e7bef087d07097bb61b745de7882afaa9e38c2d20f7c75eb4071d6c68 --receipt /media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v9/JOB.json --authorization /mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_isolated_bytecode_suppression_sequential_acceptance_h5_20261008_v1/AUTHORIZATION.json --installed-unit /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-imec0-20261008-v9.service --monitor-unit /home/huklaban5/.config/systemd/user/luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v9.service
+Nice=5
+Restart=no
+OOMPolicy=stop
+TimeoutStartSec=infinity
+StandardOutput=append:/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v9/service.log
+StandardError=append:/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v9/service.log
+
+[Install]
+WantedBy=default.target

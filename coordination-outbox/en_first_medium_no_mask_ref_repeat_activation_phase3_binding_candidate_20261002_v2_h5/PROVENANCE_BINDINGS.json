@@ -1,0 +1,36 @@
+{
+  "schema": "luke-phase3-go-bound-activation-provenance-v1",
+  "parent_activation_candidate": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_no_mask_ref_repeat_activation_candidate_20261002_v1_h5",
+    "manifest_sha256": "abac807e07e9cf443cb0899fcf05e518b5131d9b9493c688dc35a44d2e919a60",
+    "complete_sha256": "f02c77831e6350cc704fb4a13f6e573bdb74a61096eb2a2201497e13df16b1d4"
+  },
+  "reviewed_launcher_v3": {
+    "manifest_sha256": "682b3c3cc6cbe9bf3ae9a2bd2a19313888ddacfae99e199e9bd884ff9ffda284",
+    "complete_sha256": "42e5b6b89a06cf987508aa062316e3b25b7b34704521dd750227a4c94e19d7aa",
+    "contract_sha256": "55c0dbabc5623bbd1db9e3b49e32c493c9802880e3f28c7c1709ecb25b77ecfa",
+    "launcher_sha256": "238c9c997bad67415a13671deaa5569ee121f3a27aa07188fef51c424f2029f8",
+    "h1_go_manifest_sha256": "7fde2fc6d93a85d3453471176ad66f6e3e8cb14349a449f38ea7e7e44d0fa6c5",
+    "h1_go_complete_sha256": "8765639ef124917879254aa5c5d9f2c189426522e6bbc46aaaf5d50b7255058b"
+  },
+  "phase3_candidate": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_phase3_provenance_repair_candidate_20261002_v3_h1",
+    "manifest_sha256": "3199ddda56d1b03c6a3d77d87443fbf1c2956d4ab09c08ede52467ca4b09b1cd",
+    "complete_sha256": "40508353a60978d311e8cdbaa5a533b4b8a67a91f5b045628e78c68f673a7918",
+    "producer_delta_sha256": "9e7290c182211ad5a71c952e9f178af764b6fe66ffe4d328cf3b2cbc694f84bc",
+    "consumer_delta_sha256": "dedef77b9a580969c94bfdc4cfe4084595ad43f0a9673280dd83440c93ca05b8"
+  },
+  "phase3_independent_go": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_first_medium_saved_output_phase3_provenance_repair_h5_independent_review_20261002_v1_h5",
+    "manifest_sha256": "c0d3f09341dd8653551eaae205c80c35ba942467d3703ef74a7d643cf403ec33",
+    "complete_sha256": "94ed2ba6d7d3597dc73a463248412ec8eabf5ed41398a577121e808d1480db53",
+    "status_sha256": "7d439bb156c786e53300def540c7ecd543d0e81b948d3d92d531df765002ac74",
+    "verdict": "GO_PROVENANCE_REPAIR_DELTA"
+  },
+  "candidate_contract_sha256": "712ec10c342325187e6049dee4c022ce77daa9e512f7d2061d0e7714c9e9cf43",
+  "candidate_service_sha256": "5d8603cee6dbae293477e2408d9a7f842e4feece4e1e44408c47f40d3c23d9a9",
+  "runtime_binding_sha256": "2fda60a2bc7f7206ecde87c77554e6daa6f39d3b391cc14e9aaa7e511b771f5c",
+  "assignment_relay_v5_sha256": "13b22df6e5a177269f8a99ce6dd4d43edd01b6354d577227585da5d6b843e52d",
+  "h5_ack_v5_sha256": "899436884db21ea095b8dd430752c68413574463cec962532eda6e37aea5133f",
+  "execution_enabled": false
+}

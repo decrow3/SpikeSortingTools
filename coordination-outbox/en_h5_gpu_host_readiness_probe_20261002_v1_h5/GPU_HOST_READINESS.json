@@ -1,0 +1,147 @@
+{
+  "schema": "en-h5-gpu-host-readiness-probe-v1",
+  "host": "huklaban5-Precision-5820-Tower",
+  "observed_at_local": "2026-10-02T10:47:43-07:00",
+  "verdict": "PASS_GPU_HOST_READY_NOW",
+  "scope": "bounded read-only host/GPU/runtime/storage readiness only",
+  "phase1_status": {
+    "status": "COMPLETE_ONE_SHOT_REAL_CONTROL",
+    "result_manifest_sha256": "8b73c931155741f84300f3cd3a5d260ae8bf0bcf2e05460a6f717c114712bb04",
+    "result_complete_sha256": "797ae2d395e25e35f59e15447df7435dfda73a0839ed092fbb25786cdd97077d",
+    "note": "Phase-1 is complete and is not part of this GPU probe."
+  },
+  "sandbox_diagnostic": {
+    "sandbox_nvidia_smi_exit": 9,
+    "sandbox_torch_cuda_available": false,
+    "sandbox_visible_device_nodes": [],
+    "interpretation": "Expected platform sandbox device isolation; not a host-driver outage. Host-level repetition is authoritative."
+  },
+  "host_gpu": {
+    "nvidia_smi_exit": 0,
+    "index": 0,
+    "uuid": "GPU-5223d544-b6f5-f52c-7843-d4febddb4ffc",
+    "name": "NVIDIA RTX A5000",
+    "pci_bus": "00000000:65:00.0",
+    "compute_capability": "8.6",
+    "driver_version": "535.274.02",
+    "nvidia_smi_cuda_version": "12.2",
+    "temperature_c": 34,
+    "pstate": "P8",
+    "power_w": 23,
+    "memory_total_mib": 24564,
+    "memory_used_mib": 124,
+    "memory_free_mib": 24120,
+    "utilization_percent": 0,
+    "persistence_mode": false,
+    "persistence_daemon": {
+      "load_state": "loaded",
+      "active_state": "active",
+      "sub_state": "running",
+      "main_pid": 1324,
+      "restarts": 0,
+      "result": "success"
+    },
+    "device_nodes": {
+      "/dev/nvidia0": "char 195:0 mode 0666 root:root",
+      "/dev/nvidiactl": "char 195:255 mode 0666 root:root",
+      "/dev/nvidia-uvm": "char 234:0 mode 0666 root:root",
+      "/dev/nvidia-uvm-tools": "char 234:1 mode 0666 root:root",
+      "/dev/nvidia-modeset": "char 195:254 mode 0666 root:root"
+    },
+    "driver_identity": {
+      "kernel": "6.8.0-124-generic",
+      "kernel_module": "/lib/modules/6.8.0-124-generic/updates/dkms/nvidia.ko",
+      "kernel_module_version": "535.274.02",
+      "kernel_module_sha256": "02a05e1f96c80af549640f74ab9c3530790b716742e09f147361c92b425f846e",
+      "libcuda_sha256": "e9b8b1a1556dd438a5f8868987deb90a945d46ddd6a71ca48bd0a2e2aee34425",
+      "libnvidia_ml_sha256": "25e82746a4eb51597e9e901bc59d5a4e05c5971f8e0069df49c6d4f6cfeb4b51",
+      "nvidia_smi_sha256": "f058037fa1110022066734e9b300fe17031a7b93ad37fe5bd98043193ecf7fad"
+    }
+  },
+  "proposed_runtime": {
+    "python": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+    "python_resolved": "/home/huklaban5/anaconda3/bin/python3.12",
+    "python_sha256": "4adb344720ca7a0ccee7cdc77506bae30da64b55a977cd45e15880ddf8bddcc1",
+    "python_version": "3.12.4",
+    "torch_version": "2.6.0+cu124",
+    "torch_cuda_build": "12.4",
+    "cudnn_version": 90100,
+    "torch_init_sha256": "5a190666c3853aa236c4d48ed64e2d4bbcd23bd32c21e64c0867646a6852e43f",
+    "kilosort_version": "4.0.27",
+    "kilosort_init_sha256": "fc29b4412cae21a5dc62643015016a819a34acde7688a3b4331150d0e059c6d7",
+    "numpy_version": "1.26.4",
+    "numpy_init_sha256": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e",
+    "scipy_version": "1.15.2",
+    "numba_version": "0.61.0",
+    "numba_init_sha256": "39cc5219d972a3597c345fd1144518416ff0b73fd85ddcffd5bf212203a41787",
+    "cuda_visible_devices": "0",
+    "torch_cuda_available": true,
+    "torch_cuda_device_count": 1,
+    "torch_device_total_memory_bytes": 25422594048,
+    "torch_device_multiprocessors": 64,
+    "tiny_kernel": {
+      "expression": "sum(arange(16, float32, cuda) * 3 + 1)",
+      "expected": 376.0,
+      "observed": 376.0,
+      "synchronize_completed": true,
+      "status": "PASS"
+    },
+    "nvcc_present": false,
+    "nvcc_note": "A compiler toolkit is absent but is not required by the frozen PyTorch/Kilosort runtime; the actual CUDA kernel passed."
+  },
+  "competing_gpu_work": {
+    "scientific_compute_jobs": [],
+    "desktop_processes": [
+      {"pid": 1551, "name": "/usr/lib/xorg/Xorg", "memory_mib": 94},
+      {"pid": 1689, "name": "/usr/bin/gnome-shell", "memory_mib": 7},
+      {"pid": 127826, "name": "snapd-desktop-integration", "memory_mib": 8, "listed_by_compute_query": true}
+    ],
+    "interpretation": "No conflicting sorter/training/torch workload; 0% utilization and 24120 MiB free."
+  },
+  "storage": {
+    "minimum_required_free_bytes": 214748364800,
+    "workspace_free_bytes": 920488460288,
+    "media_free_bytes": 1181955702784,
+    "shared_project_free_bytes": 246404919296,
+    "all_checked_filesystems_above_200_gib": true,
+    "shared_project_margin_note": "Shared storage is the narrowest at about 229.5 GiB free; recheck immediately before any future launch."
+  },
+  "fresh_namespaces": {
+    "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_trained_medium_20261002_v2": "ABSENT",
+    "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_ref384_repeat_medium_20261002_v1": "ABSENT",
+    "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/evaluator_first_medium_four_arm_v1": "ABSENT",
+    "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1": "ABSENT",
+    "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1_staging": "ABSENT",
+    "/media/huklaban5/Data/en_first_medium_trained_pair_20261002_v1_numba_cache": "ABSENT",
+    "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_first_medium_trained_pair_20261002_v1": "ABSENT"
+  },
+  "permissions": {
+    "user": "huklaban5 uid=1000 gid=1000",
+    "gpu_nodes_world_read_write": true,
+    "workspace_parent_writable": true,
+    "media_parent_writable": true,
+    "shared_project_parent_writable": true,
+    "systemd_user_manager_reachable": true,
+    "systemd_user_manager_state": "degraded due to unrelated historical failed units; Phase-1 managed service completed successfully immediately before this probe"
+  },
+  "fault_classification": {
+    "driver_outage": false,
+    "environment_package_issue": false,
+    "configuration_issue": false,
+    "platform_sandbox_device_isolation": true,
+    "owner": null,
+    "next_action": "No GPU remediation. Re-run the host-level nvidia-smi, free-space, freshness, and competing-job preflight immediately before any separately authorized launch."
+  },
+  "separate_non_gpu_blockers": {
+    "trained_launch_authorized": false,
+    "reason": "GPU readiness does not repair or review the known trained saved-time validation delta, waveform-method definition, enabled contract, or independent one-start launch gate.",
+    "waveform_method_repair_in_this_probe": false
+  },
+  "prohibited_work": {
+    "driver_or_service_change": false,
+    "sort_or_training_launch": false,
+    "voltage_access": false,
+    "rf_or_holdout_access": false,
+    "waveform_method_change": false
+  }
+}

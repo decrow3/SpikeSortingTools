@@ -1,0 +1,39 @@
+{
+  "schema": "luke-durable-coordination-h5-ack-v2",
+  "host": "huklaban5-Precision-5820-Tower",
+  "acknowledged_at": "2026-10-02T11:26:03-07:00",
+  "shared_directory": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1",
+  "directory_visibility": "read_write_verified_by_ack_publication",
+  "active_assignment_version": "v2",
+  "active_assignment_file": "CURRENT_ASSIGNMENT_COORDINATOR_RELAY_V2.json",
+  "active_assignment_sha256": "8241940b4c3b368167a98c7763b76b0e0e285a29964c8edca8aed8804a38e8f7",
+  "superseded_assignment_preserved": {
+    "version": "v1",
+    "file": "CURRENT_ASSIGNMENT_COORDINATOR_RELAY_V1.json",
+    "sha256": "a8586a4370cc841c1482d8f687db59fe181700ea3af86ff35a3e4593b4d17954"
+  },
+  "h1_ack_verified": {
+    "file": "H1_ACK_V2.json",
+    "sha256": "b781bcac72efd577929d3f5616ae06ab296bb21f069973d1cc133e4cb1e7d824"
+  },
+  "queue_acknowledged": {
+    "current": "H5-WAVEFORM-METHOD-FREEZE",
+    "ready": "H5-CLOCK-V5-REVIEW",
+    "conditional": "H5-NO-MASK-REF-REPEAT-LAUNCHER pending clock GO"
+  },
+  "operational_state": {
+    "current": "one-shot current-voltage full hash healthy under managed service; no retry",
+    "ready": "bounded source/synthetic-only clock review permitted to overlap after live resource audit",
+    "conditional": "not started"
+  },
+  "workflow_rules_acknowledged": [1, 2, 3, 4, 5, 6, 7],
+  "coordinator_table_reference": {
+    "identity": "CURRENT_ASSIGNMENTS_20261002.md",
+    "sha256": "1742a57519ebbd7af1c34c15e5e81f6ef37e8d2da02ccf443cf84aedd34719e3",
+    "local_file_visible_on_h5": false,
+    "rule": "The exact v2 relay is the durable active instruction; no unmounted coordinator table is inferred."
+  },
+  "operational_gap": "The coordinator table file itself is not mounted on H5; its identity is available only through the verified v2 relay. Shared project storage is visible and writable.",
+  "execution_scope": "finish H5-only waveform freeze; clock review is source/synthetic only; no sort/training, RF, holdout, or waveform extraction",
+  "invalidation_and_retry_policy": "preserve exact failures; no silent repair or transferred approval; the running full hash has one start and no retry"
+}

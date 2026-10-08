@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "packet": "en_minimum_training_support_mask_covariance_installed_preflight_20261001_v1_h5",
+  "status": "installed_preflight_passed_pending_final_h1_launch_decision",
+  "manifest_sha256": "6e700eb3b956ba39606ebe8eafcee337626468c98c9d5b7e897805ae8dac5d52",
+  "service_started": false,
+  "recording_content_opened": false,
+  "run_root_created": false,
+  "test_result": "34 passed"
+}

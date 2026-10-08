@@ -1,0 +1,252 @@
+{
+  "schema": "candidate2-native-rigid-cache-managed-imec0-gpu-self-observation-repair-contract-v1",
+  "created_local_date": "2026-10-08",
+  "status": "ENABLED_PENDING_FOCUSED_GPU_SELF_OBSERVATION_AND_FINAL_RUNNER_GATE_REREVIEW",
+  "execution_enabled": true,
+  "parent_contract_sha256": "1a68ab33ee49c7a5e2c729a709109f5a7dc8e90e778c86a7b7962fc8eb47d7dc",
+  "operational_predecessor_contract_sha256": "f0319985046ed246c3052d0de91de7ce63228762d85102f56651685b24168c48",
+  "historical_parent_status": "V6_TERMINAL_PRE_READ_GPU_SELF_REGISTRATION_PREFLIGHT_FAILURE_NO_RETRY_REMAINS_VALID",
+  "planner_redesign_basis": "HubPlanner 2026-10-08 Candidate2 GPU preflight self-observation correction",
+  "preflight_receipt": "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/PREFLIGHT.json",
+  "milestone": "Candidate 2 full-session native-rigid Kilosort recovery",
+  "decision": "whether one cache-managed full-session Candidate 2 sort reaches saved effective nblocks=1 and becomes eligible for downstream comparison against REF and A",
+  "cheapest_adequate_test": "one fresh full-session run because the cache failure emerged only under full-session access and the accepted cache-managed mode already has synthetic and production precedent",
+  "completion_condition": "one fresh managed imec0 sort plus existing curation/QC reaches a terminal receipt with saved effective nblocks=1, or one preserved terminal failure; never retry automatically",
+  "scope": {
+    "development_only": true,
+    "probe": "imec0",
+    "rf_or_holdout_access": false,
+    "science_parameter_change": false,
+    "new_memory_cap": false,
+    "automatic_retry": false
+  },
+  "repair_delta": {
+    "only_executable_change": "candidate2_cache_managed_preflight.py records raw post-CUDA compute-app rows and current os.getpid(), excludes only that exact live self PID from external-conflict classification, and otherwise fails closed; it canonicalizes only the ordering of systemd set-valued Requires/BindsTo/After properties before exact authorization comparison; candidate2_cache_managed_full.py reuses the exact GPU rule and competing-sorter scan at both runner resource gates, including after full identity validation and the five-second cache-settle interval",
+    "reason": "torch.cuda.mem_get_info creates the preflight CUDA context before compute-app enumeration, so the unchanged any-row rule rejected its own PID on v6",
+    "required_regression": "actual rescue-production interpreter subprocess exercises self-only, self-plus-external, low-memory, query-error, and malformed-or-unknown identity cases through the changed metric and gate decision path",
+    "accepted_unchanged_dependency": "the v6 allow_abbrev=False monitor-bootstrap repair and exact installed-service boundary regression remain accepted and unchanged",
+    "runner_contract_join": "retain the unchanged runner-bound scientific parent hash 1a68ab33... and bind v6 separately as the operational predecessor; an actual isolated runner subprocess must pass this guard and stop only on a deliberately missing preflight receipt",
+    "late_arrival_regression": "actual rescue-production interpreter fixture first passes a clean runner gate, then verifies that a newly arrived external GPU PID and a newly arrived competing sorter each fail the final runner gate",
+    "systemd_set_regression": "actual rescue-production interpreter fixture accepts only reordering of Requires/BindsTo/After tokens and rejects changed membership or any changed scalar property",
+    "unchanged": "sorter, monitor implementation/classification, science parameters, input, cache-managed three-operation mode, GPU free-memory threshold, lifecycle and absence of hard memory/runtime caps"
+  },
+  "attempt": {
+        "attempt_id": "candidate2-native-rigid-cache-managed-imec0-20261008-v7",
+        "output_root": "/media/huklaban5/Data/luke_candidate2_native_rigid_cache_managed_imec0_20261008_v7",
+        "results_dir": "/media/huklaban5/Data/luke_candidate2_native_rigid_cache_managed_imec0_20261008_v7/kilosort4",
+        "partial_results_dir": "/media/huklaban5/Data/luke_candidate2_native_rigid_cache_managed_imec0_20261008_v7/kilosort4.partial",
+        "launch_root": "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7",
+        "service_name": "luke-candidate2-native-rigid-cache-managed-imec0-20261008-v7.service",
+        "monitor_service_name": "luke-candidate2-native-rigid-cache-managed-monitor-imec0-20261008-v7.service",
+        "monitor_output": "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/monitor",
+    "derivation_rule": "output_root is the single attempt root; results_dir must equal output_root/kilosort4 and partial_results_dir must equal results_dir+'.partial'; the executor must recompute and compare all three before any recording open",
+    "freshness": "all output, partial, launch, log, receipt and service identities must be absent before installation/start"
+  },
+  "input": {
+    "recording_dir": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording",
+    "recording_manifest": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/rescue_recording_manifest.json",
+    "recording_manifest_sha256": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67",
+    "recording_binary": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+    "recording_binary_realpath_required": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+    "recording_binary_bytes": 241309358592,
+    "recording_binary_sha256_from_accepted_manifest": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+    "recording_content_sha256": "2d6fac755db3182841bf121d822754f963ebada3bcb8cd9e96e0b63e6f9b7372",
+    "num_samples": 314204894,
+    "num_channels": 384,
+    "sampling_frequency_hz": 29999.835983263598,
+    "dtype": "int16",
+    "validation_policy": "perform the existing full accepted-content validation once, with exact-target 8 MiB completed ranges advised POSIX_FADV_DONTNEED; do not omit identity validation and do not perform an unmanaged duplicate hash"
+  },
+  "science_binding": {
+    "baseline_sort_manifest_sha256": "6996e6cb20ed802eef13ca29ad95db117489f3b628c9f123cf9771819f0bccc4",
+    "candidate2_saved_request": "/media/huklaban5/Data/luke_candidate2_native_rigid_imec0_20261008_v2/kilosort4.partial/spikeinterface_params.json",
+    "candidate2_saved_request_sha256": "58efcdb5c2d9b4c4252a848fff5bf2057bdfa27713b08a76e3c6a7bc17a351b7",
+    "reference_saved_request": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/kilosort4/spikeinterface_params.json",
+    "reference_saved_request_sha256": "02a9ac872ea61dc37f6ce697d3f0fde2753fe123f13223eb42ccec101b45c0ad",
+    "required_candidate_settings": {
+      "do_correction": true,
+      "nblocks": 1,
+      "Th_universal": 12,
+      "Th_learned": 9,
+      "batch_size": 60000,
+      "nt": 61,
+      "nskip": 25,
+      "whitening_range": 32,
+      "highpass_cutoff": 300,
+      "do_CAR": true,
+      "artifact_threshold": "Infinity",
+      "clear_cache": true
+    },
+    "required_effective_settings": {
+      "effective_nblocks": 1,
+      "do_CAR": true,
+      "Th_universal": 12,
+      "Th_learned": 9
+    },
+    "arm_difference": "relative to REF, only do_correction changes false->true; both requested nblocks=1 but REF resolves to effective 0 and Candidate2 must resolve to effective 1",
+    "full_parameter_rule": "the complete candidate sorter parameter dictionary must equal the saved Candidate2 request byte-for-byte after JSON-safe normalization; the listed subset is not a replacement for the full equality gate"
+  },
+  "cache_managed_mode": {
+    "mode": "bounded_preadv_v1_intact_three_operation_mode",
+    "activation_environment": "KILOSORT_BOUNDED_PREAD_PATH",
+    "activation_value": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+    "required_operations": [
+      "full-content validator advises each completed 8 MiB exact-target range POSIX_FADV_DONTNEED",
+      "immediately before sort, issue whole-file POSIX_FADV_DONTNEED, wait 5 seconds, record before/after MemAvailable and PSI, and reapply the launch gates",
+      "Kilosort exact-target reader uses one grow-as-needed reusable preadv buffer and advises each completed input batch range POSIX_FADV_DONTNEED after device copy"
+    ],
+    "no_component_claimed_sufficient_alone": true,
+    "installed_kilosort_io_sha256": "c6093e14cae920e8cfaae6c3fed8d4c6ca032b046d705ef9868ec171c7bf3c99",
+    "cache_dropping_validator_sha256": "ddd127874218d136d4e358889d785ebd11e586515faa9dc5d6bb8fb447d72c89",
+    "presort_consumer_sha256": "62905e2df8cfb93869c653a821e4c0a5a26300b919c17ed5604bb4403a3cc90f",
+    "compatibility_source_sha256": "04153eb68d6fbb2ae08b63ebbbbfb741d5152ffd46cf572f850f1e4a021bc26b",
+    "source_commit": "7ed3e2e7b376adfbe4668259d19b62a4830b0c15",
+    "known_answer_receipt_sha256": "a999b2f213016b76d1b40df5250858f3d7ea18c88db92e946ba0ed6aec9c45ca",
+    "production_validation_receipt_sha256": "aff55ea6e75ebb2671291a8c694bcca094cef477a0c921b4c6b73729cf12368f",
+    "production_success_receipt_sha256": "2bf4a2b9189ea9903b3ae3bdef7305ab689c6a49132c75f351b9e664e0d0aca6"
+  },
+  "source_and_environment": {
+    "interpreter": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+    "uv_lock_sha256": "6ec57a7184d280221dee99403f7c4b26f7cb82e7e4ad025b312f237b826d2274",
+    "kilosort_version": "4.0.27",
+    "spikeinterface_version": "0.102.1",
+    "torch_version": "2.6.0+cu124",
+    "candidate2_base_commit": "32d04e7d5d8f15e9bd895ff3a4e633f75088b156",
+        "source_closure_rule": "exact 31-member source inventory is frozen by SOURCE_MANIFEST.json; isolated bootstrap rejects missing, extra, symlink, bytecode, or changed members before project import",
+        "source_root": "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/source",
+        "source_manifest": "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/SOURCE_MANIFEST.json",
+        "source_manifest_sha256": "2d1ff9cae67dc0d8993a6a00495adea5092860dec407fff15173725acf3b4ec2",
+        "source_member_count": 31,
+        "bootstrap": "/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v7/bootstrap.py",
+        "bootstrap_sha256": "a96ecc3c2cc2a2a921bdd6ab9c9b26591561d02b67da5da73a27c6b59a14b428",
+        "runner_sha256": "f62f8c5f42165414233f3532c4ba1a334563bae0bf947b9ac4fe1ae3c5f2da2b",
+        "preflight_sha256": "e1fbc08a0960021abad0ad3b3768b8ef0c41c69e9835f48feceeb961d23d78da",
+        "external_monitor_sha256": "0458209bd6848212b838b71e73af7f77782dc4878e10c8de6798a0cb8bf128c2",
+        "preflight_bootstrap_sha256": "333a9c72d5e940d7e60a9a4666c604bd6c2fb2a4b82dae5c0e62a065cf86eb7f",
+        "monitor_bootstrap_sha256": "3c8f6f73ff71069bc985b2afe69963728d57842e5238aad159ea6747f10de16d",
+    "installed_source_sha256": {
+      "spikeinterface/sorters/external/kilosort4.py": "7fb2fd80fcd10c43d3833a3d4a64860fb2c39cc26f10e03181c9873931af2828",
+      "kilosort/run_kilosort.py": "5c1baee40edef14fa7566e441997da5d2ecc4f7940b8385cf83de40c8bd0f945",
+      "kilosort/io.py": "c6093e14cae920e8cfaae6c3fed8d4c6ca032b046d705ef9868ec171c7bf3c99",
+      "kilosort/parameters.py": "2274598ab4d6c1ff1c5257aa80e1a87320b6cce21f77b1d9220a883978ecdec6",
+      "kilosort/datashift.py": "21404144305a313fd80a3a7f49ecf297d783ff8d4b69fc3f396a15dc77d3c850",
+      "environment_uv_lock": "6ec57a7184d280221dee99403f7c4b26f7cb82e7e4ad025b312f237b826d2274"
+    },
+    "binding_policy": "post-review AUTHORIZATION.json must bind exact contract, source manifest and installed service hashes; preflight and bootstrap both verify it"
+  },
+  "resource_conditions": {
+    "minimum_output_free_bytes": 300000000000,
+    "minimum_mem_available_bytes": 171798691840,
+    "maximum_memory_psi_some_avg10": 5.0,
+    "minimum_gpu_free_bytes": 21474836480,
+    "gpu_required": "one idle NVIDIA RTX A5000-equivalent CUDA device with no competing compute process",
+    "process_required": "no competing full sort, materialization, large recording hash, or memory-intensive project service",
+    "oomd_required": "capture current user-slice and proposed-unit oomd policy; no active oomd event or material pressure before start",
+    "inode_required": "record free inodes and require enough for projected outputs; no fixed inode count is inferred from stale state",
+    "hard_memory_cap": null,
+    "memory_high": null,
+    "runtime_timeout_seconds": null,
+    "systemd_timeout_start": "infinity",
+    "runtime_estimate": "approximately 6-10 hours for sort plus existing downstream; observational planning range, not a stop or timeout",
+    "working_set_model": {
+      "host_bounded_input_buffer_bytes": 46173696,
+      "validator_buffer_bytes": 8388608,
+      "recording_virtual_mapping_bytes": 241309358592,
+      "preprocessing_source_visible_gpu_live_envelope": "less than approximately 1.5 GiB before backend workspaces; not an enforced cap",
+      "historical_whole_pipeline_peak_rss_kib": 100628824,
+      "historical_whole_pipeline_cuda_reserved_bytes": 8009023488,
+      "interpretation": "historical values and source accounting guide the 160 GiB availability condition; they are not hard caps or guaranteed peaks"
+    }
+  },
+  "telemetry": {
+    "required": true,
+    "interval_seconds": 10,
+        "scope": "reuse the existing reviewed external systemd/cgroup telemetry pattern at 10 seconds; the separately managed monitor survives target failure and records terminal reconciliation",
+    "fields": [
+      "wall_time_utc",
+      "target_pid_and_descendants",
+      "process_rss_vms_and_state",
+      "user_slice_memory_current_peak_events_and_stat_anon_file_shmem_kernel_stack_pagetables",
+      "system_memavailable",
+      "system_and_cgroup_psi_some_full_avg10_avg60_avg300",
+      "gpu_memory_used_free_and_compute_processes",
+      "service_active_substate_result_exec_status_and_invocation_id",
+      "current_kilosort_log_stage_and_batch_when available"
+    ],
+        "failure_policy": "telemetry startup and first fresh sample remain prelaunch gates; target BindsTo monitor liveness. Later missing monitor terminal is a documented observability failure and is never success; merged or unknown causes remain failed or unresolved without inferred attribution."
+  },
+  "launch_and_lifecycle": {
+        "manager": "persistent systemd --user oneshot target service plus separate external simple monitor service",
+    "effective_timeout_requirement": "installed service TimeoutStartUSec must resolve to infinity before start; omission or any finite value is rejected because the host manager default is finite",
+    "restart": "no",
+    "chat_independent": true,
+    "dummy_survival_check": "reuse the already verified systemd user-service launch method; record its prior survival receipt in the enabled derivative",
+    "checkpoint_truth": "Kilosort has no within-sort checkpoint; interruption restarts from the beginning in another separately reviewed fresh namespace",
+    "terminal_receipt": "monitor labels describe service state only and may merge or leave failure causes unresolved. Missing monitor terminal is permitted only as documented observability failure. Any failed, missing or inconsistent completion evidence is incomplete, failed or unresolved, never successful.",
+    "external_final_reconciliation": {
+      "owner": "H5/coordinator on terminal notification or next resumption; no always-running reconciler",
+      "required_evidence": [
+        "manager loaded properties and exact real ExecStart invocation",
+        "manager InvocationID, Result, ExecMainCode and ExecMainStatus",
+        "journal and service stdout/stderr",
+        "JOB receipt proving real child command rather than verify-only and zero child exit",
+        "status.json final stage",
+        "effective_settings.json effective_nblocks=1",
+        "valid sorter, curation and all requested QC output receipts/artifacts"
+      ],
+      "full_completion_rule": "claim candidate2 sort-and-QC completion only when all required evidence matches the exact source, input, attempt and invocation; manager and child exits are zero; status stage is candidate2_sort_and_qc_complete_comparison_pending; effective_nblocks is 1; and sort, curation and QC outputs are valid",
+      "partial_success_rule": "if sorting completed but later curation or QC failed, preserve and report sort success separately from downstream failure; never claim complete comparison",
+      "scientific_rule": "scientific benefit remains a separate reviewed analysis and is never inferred from process status"
+    },
+    "completion_outputs": [
+      "frozen effective configuration",
+      "source and service hashes",
+      "cache-mode receipt",
+      "pre-eviction and post-eviction resource receipt",
+      "telemetry JSONL",
+      "stdout/stderr",
+      "systemd terminal properties",
+      "saved effective Kilosort settings",
+      "curation/QC receipts on success",
+      "immutable terminal packet"
+    ]
+  },
+  "stop_conditions": [
+    "normal completion of sort, curation and QC",
+    "any provenance, path-derivation, environment, source-hash, cache-mode or effective-setting mismatch",
+    "failure of any prelaunch disk, memory, PSI, GPU, oomd or process-conflict condition",
+    "any nonzero managed-job exit, sorter exception or oomd action",
+    "unexpected competing full sort or memory-intensive recording job",
+    "user cancellation"
+  ],
+  "preserved_failures": [
+    {
+      "kind": "Candidate2 full-run terminal oomd failure",
+      "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_native_rigid_v2_terminal_failure_h5_20261008_v1"
+    },
+    {
+      "kind": "preprocessing diagnostic line permanent stop",
+      "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_preprocessing_memory_diagnostic_direct_supervision_terminal_failure_h5_20261008_v2"
+    },
+    {
+      "kind": "source-only recovery and rejected sole-env proposal history",
+      "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_source_only_recovery_h5_20261008_v2"
+    },
+    {
+      "kind": "v5 pre-read monitor-bootstrap argument-forwarding failure",
+      "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_v5_monitor_preflight_failure_h5_20261008_v1",
+      "manifest_sha256": "9b758a590494c2a115ca61671f1b16c2502844cd41f88ee958ee6eb7ca530be0"
+    },
+    {
+      "kind": "v6 pre-read GPU self-registration preflight failure",
+      "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_v6_gpu_self_registration_preflight_failure_h5_20261008_v1",
+      "manifest_sha256": "7b0adcd455f5c2383501935bdbb69399d413257f94b8980799f7d040d2bebe9d"
+    }
+  ],
+  "authorization_and_release": {
+    "standing_user_authorization_applies_to_comparable_full_sort": true,
+    "hub_conditional_release": "one fresh full Candidate2 run is authorized after the exact executable/contract/service join receives focused bound GO and fresh exact input/source/GPU/host/process/output reconciliation passes",
+    "this_packet_authorizes_execution": true,
+    "release_requirement": "install/start only after focused GPU self-observation plus remaining preflight-to-runner and deployed-binding GO creates exact AUTHORIZATION.json and fresh reconciliation passes; no further H1, planner or human release round is required"
+  }
+}

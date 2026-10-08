@@ -1,0 +1,70 @@
+{
+  "files": [
+    {
+      "bytes": 8482,
+      "path": "AUTHORIZATION.json",
+      "sha256": "2baa2148dadc8aaa76a56c2c574d7e18c9950eec2d457bc6e5f3eea2ccdba83e"
+    },
+    {
+      "bytes": 20334,
+      "path": "CONTRACT.json",
+      "sha256": "4769968e7bef087d07097bb61b745de7882afaa9e38c2d20f7c75eb4071d6c68"
+    },
+    {
+      "bytes": 1266,
+      "path": "IMPLEMENTATION_CHECKS.md",
+      "sha256": "51bc257e96f192df627998ea432bfa63c406f4dff341764df43c5b3798b83462"
+    },
+    {
+      "bytes": 1310,
+      "path": "README.md",
+      "sha256": "4654056966f5a214f2b065f18ded7d98a7c67a760ecd9034f8b595a8c52745dc"
+    },
+    {
+      "bytes": 1245,
+      "path": "TERMINAL_STATUS.json",
+      "sha256": "f3307fdb1e9e83f3a1c6e64afadebe298aab2e93d9fd400d36bd7ff11ba9dee8"
+    },
+    {
+      "bytes": 861,
+      "path": "evidence/BYTECODE_CONTAMINATION.json",
+      "sha256": "6e8c82d56cb3af0c793311891c6c8572d4bd1124e1ba8188a7608c95726a7975"
+    },
+    {
+      "bytes": 1113,
+      "path": "evidence/JOB.json",
+      "sha256": "5aaedff3870174beeeb88b12388671d2b22231f17fe56ec5ac64a20a741bfafc"
+    },
+    {
+      "bytes": 829,
+      "path": "evidence/MONITOR_READY.json",
+      "sha256": "d8a41dfaa9e9e95f71249f5ef0a7d2c05b64a767f28e74cbae257a2bbc1db9e2"
+    },
+    {
+      "bytes": 742,
+      "path": "evidence/MONITOR_TERMINAL.json",
+      "sha256": "95fb6962d32a2a1831cb5c3d04020f4a8c9ff756965eb46db0b7001b1715be0a"
+    },
+    {
+      "bytes": 10559,
+      "path": "evidence/PREFLIGHT.json",
+      "sha256": "5c239ffe6ae6d22ffcbd5475cc4c1d073e9cb06b35834983df0fc30caa533dee"
+    },
+    {
+      "bytes": 7621,
+      "path": "evidence/executed_bootstrap.py",
+      "sha256": "a96ecc3c2cc2a2a921bdd6ab9c9b26591561d02b67da5da73a27c6b59a14b428"
+    },
+    {
+      "bytes": 3090,
+      "path": "evidence/executed_preflight_bootstrap.py",
+      "sha256": "333a9c72d5e940d7e60a9a4666c604bd6c2fb2a4b82dae5c0e62a065cf86eb7f"
+    },
+    {
+      "bytes": 903,
+      "path": "evidence/service.log",
+      "sha256": "cb5480970e1555e3290b41d2d3e6205ddbe9044cb7a53dd0e578addb6c25ab28"
+    }
+  ],
+  "schema": "candidate2-v8-failure-packet-manifest-v1"
+}

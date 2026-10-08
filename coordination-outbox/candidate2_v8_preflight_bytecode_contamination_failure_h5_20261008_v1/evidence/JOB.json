@@ -1,0 +1,10 @@
+{
+  "bootstrap_pid": 3039287,
+  "error": "RuntimeError: runtime source contains bytecode: testing/__pycache__/candidate2_cache_managed_preflight.cpython-312.pyc",
+  "finished_at": "2026-10-08T12:11:52.267063+00:00",
+  "returncode": null,
+  "schema": "candidate2-verified-managed-job-v1",
+  "started_at": "2026-10-08T12:11:52.264724+00:00",
+  "state": "failed",
+  "traceback": "Traceback (most recent call last):\n  File \"/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v8/bootstrap.py\", line 107, in main\n    source_proof = verify_source(args.source_root.resolve(), args.source_manifest.resolve(), args.source_manifest_sha256)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/media/huklaban5/Data/candidate2_native_rigid_cache_managed_launch_h5_20261008_v8/bootstrap.py\", line 59, in verify_source\n    raise RuntimeError(f\"runtime source contains bytecode: {rel}\")\nRuntimeError: runtime source contains bytecode: testing/__pycache__/candidate2_cache_managed_preflight.cpython-312.pyc\n"
+}

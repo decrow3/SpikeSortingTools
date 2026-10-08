@@ -1,0 +1,4 @@
+2026-10-02T00:04:05-0700 huklaban5-Precision-5820-Tower systemd[126584]: Starting Approved-one-shot-H5-local-corrected-waveform-QC...
+2026-10-02T00:04:05-0700 huklaban5-Precision-5820-Tower systemd[126584]: Started Approved-one-shot-H5-local-corrected-waveform-QC.
+2026-10-02T00:04:05-0700 huklaban5-Precision-5820-Tower systemd[126584]: en_a_four_unit_waveform_qc_corrected_approved_v1.service: Main process exited, code=exited, status=1/FAILURE
+2026-10-02T00:04:05-0700 huklaban5-Precision-5820-Tower systemd[126584]: en_a_four_unit_waveform_qc_corrected_approved_v1.service: Failed with result 'exit-code'.

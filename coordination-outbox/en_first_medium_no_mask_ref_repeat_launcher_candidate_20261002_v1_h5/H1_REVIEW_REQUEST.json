@@ -1,0 +1,22 @@
+{
+  "contract_sha256": "2feeb8b36ebba5c5ef23dc51ca0c9a9abfce1c7a853aa7785dcefe6136e416f5",
+  "decision": "accept_or_reject_execution_disabled_heterogeneous_pair_launcher",
+  "execution_authorized_by_packet": false,
+  "must_not_infer": [
+    "no scientific execution GO",
+    "no evaluator/QC GO",
+    "no RF/holdout access",
+    "no efficacy or identity conclusion"
+  ],
+  "requested_reviewer": "H1",
+  "required_checks": [
+    "REF path is exact historical no-mask REF384 and never installs the support hook",
+    "repaired-B path uses clock-v5 support-aware trained entry",
+    "fixed REF-then-B order and only execution-state inspection between arms",
+    "disabled gate precedes namespaces and all recording access",
+    "one-start managed-service bounds, failure preservation, and completion-last semantics",
+    "terminal global/local clock and row ancestry validation for both arms",
+    "all exact source/config/provenance hashes and frozen namespaces"
+  ],
+  "schema": "no-mask-ref-repeat-launcher-h1-review-request-v1"
+}

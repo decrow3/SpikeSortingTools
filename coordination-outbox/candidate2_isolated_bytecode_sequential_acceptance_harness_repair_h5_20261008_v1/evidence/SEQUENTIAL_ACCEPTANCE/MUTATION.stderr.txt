@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/candidate2_isolated_bytecode_sequential_acceptance_harness_repair_h5_20261008_v1/bootstrap.py", line 157, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/candidate2_isolated_bytecode_sequential_acceptance_harness_repair_h5_20261008_v1/bootstrap.py", line 108, in main
+    source_proof = verify_source(args.source_root.resolve(), args.source_manifest.resolve(), args.source_manifest_sha256)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/candidate2_isolated_bytecode_sequential_acceptance_harness_repair_h5_20261008_v1/bootstrap.py", line 61, in verify_source
+    raise RuntimeError(f"runtime source inventory mismatch: missing={sorted(set(expected)-observed_paths)}, extra={sorted(observed_paths-set(expected))}")
+RuntimeError: runtime source inventory mismatch: missing=[], extra=['SEQUENTIAL_ACCEPTANCE_MUTATION.txt']

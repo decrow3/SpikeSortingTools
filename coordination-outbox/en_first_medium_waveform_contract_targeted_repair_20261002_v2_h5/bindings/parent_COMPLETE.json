@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-targeted-repair-completion-v1",
+  "status": "complete_ready_for_h1_review_execution_disabled",
+  "manifest_sha256": "80021b93c3605c95f32f16f600f522e684ae06a1234fe286bce21bbcb2bd61e2",
+  "execution_enabled": false,
+  "voltage_accessed": false,
+  "evaluator_executed_on_real_arms": false,
+  "jobs_launched": false,
+  "completion_written_last": true
+}

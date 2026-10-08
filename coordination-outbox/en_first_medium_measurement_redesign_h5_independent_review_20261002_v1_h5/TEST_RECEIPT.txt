@@ -1,0 +1,31 @@
+Review stage: /tmp/h1-wsb-review.9DkaU7
+Review source: byte-identical copy of the H1 immutable packet
+
+Integrity command:
+sha256sum -c MANIFEST.sha256
+Result: all 13 manifest members OK
+
+Packet-only command:
+PYTHONPATH=source python -m pytest -q -p no:cacheprovider tests/test_first_medium_measurement_redesign.py
+Result: 9 passed in 0.97s
+
+Independent bounded synthetic command:
+PYTHONPATH=source python /tmp/review_workstream_b.py
+Passing known answers:
+- dominant split R=0.75 with only the unique reciprocal branch credited
+- dominant merge equal-unit R=0.5 with the losing REF unit unmatched-zero
+- lower95 exactly 0.05 fails the strict replacement gate
+- half-open cell start included and final stop excluded
+- AST audit found no changed-module file-loader/read/write calls
+
+Blocking probes:
+- amplitude rows [0,60), [60,120), duration_s=60 were accepted and all three full-cohort-time support fractions were 2.0
+- REF [10,20], candidate [10,20,60,70,80], cells [0,50) was accepted; out-of-domain candidate events reduced candidate retention to 0.4, removed the reciprocal primary, and returned R=0.0
+
+Cell-edge audit:
+- sampling frequency: 29999.835983263598 Hz
+- local stop: 17999901
+- frozen edges exactly equal min(stop, ceil(k*60*fs)) for k=0..10
+
+Only synthetic in-memory arrays and packet text/source were accessed. No real
+scores/data/evaluator/sort/waveform, recording voltage, RF, or holdout was used.

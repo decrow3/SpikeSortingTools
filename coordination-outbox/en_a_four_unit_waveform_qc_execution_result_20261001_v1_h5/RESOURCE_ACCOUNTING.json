@@ -1,0 +1,24 @@
+{
+  "managed_limits_requested_and_accepted": {
+    "thread_environment_max": 2,
+    "cpu_quota_percent": 200,
+    "memory_max_bytes": 536870912,
+    "runtime_max_seconds": 120
+  },
+  "observed": {
+    "internal_elapsed_seconds": 0.9856739277020097,
+    "journal_cpu_seconds": 3.247746,
+    "memory_peak_bytes": null,
+    "memory_peak_note": "transient unit was garbage-collected before a post-run MemoryPeak query; the accepted launch command durably records MemoryMax",
+    "archive_count": 2,
+    "members_per_archive": 20,
+    "archive_numeric_bytes": 3912192,
+    "recording_reads": 0,
+    "result_tree_apparent_bytes": 7110888,
+    "persistent_output_bytes_max": 33554432,
+    "within_persistent_output_limit": true,
+    "undeclared_output_files": 0,
+    "numeric_waveform_exports": 0,
+    "complete_written_last": true
+  }
+}

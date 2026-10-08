@@ -1,0 +1,41 @@
+H5 bounded read-only GPU/host readiness probe, 2026-10-02
+
+Scope anchor:
+  Read PROPOSED_ONE_EXECUTION_CONTRACT.json and reviewed candidate config only to
+  identify the proposed Python runtime, CUDA request, resource threshold, and
+  fresh output paths.
+
+Sandbox diagnostic commands:
+  timeout 15 nvidia-smi
+  nvidia-smi --query-gpu=index,uuid,name,driver_version,pstate,memory.total,memory.used,memory.free,utilization.gpu,temperature.gpu --format=csv,noheader
+  nvidia-smi --query-compute-apps=gpu_uuid,pid,process_name,used_memory --format=csv,noheader
+  ls -l /dev/nvidia*
+  lsmod | rg '^nvidia|^nouveau'
+  cat /proc/driver/nvidia/version
+  lspci -nnk | rg -A4 -B1 'VGA|3D|NVIDIA'
+  CUDA_VISIBLE_DEVICES=0 <proposed-python> <bounded torch probe>
+
+Sandbox result:
+  nvidia-smi exit 9; no NVIDIA character devices visible; torch CUDA false.
+  This was treated as a platform-isolation hypothesis, not a host failure.
+
+Authoritative host-level commands (read-only escalation):
+  nvidia-smi
+  nvidia-smi --query-gpu=index,uuid,name,driver_version,pstate,memory.total,memory.used,memory.free,utilization.gpu,temperature.gpu --format=csv,noheader
+  nvidia-smi --query-compute-apps=gpu_uuid,pid,process_name,used_memory --format=csv,noheader
+  ls -l /dev/nvidia*
+  CUDA_VISIBLE_DEVICES=0 <proposed-python> <bounded torch allocation/kernel/synchronize probe>
+  systemctl is-active/show nvidia-persistenced.service
+  df -B1 and df -i on workspace, media, and shared project storage
+  exact test -e freshness checks for all proposed output/stage/cache/log roots
+  systemctl --user state and running relevant-service scan
+  pgrep sorter/training/torch scan
+  importlib.metadata package identities and SHA256 of runtime/driver components
+
+Host result:
+  NVIDIA RTX A5000 UUID GPU-5223d544-b6f5-f52c-7843-d4febddb4ffc,
+  driver 535.274.02, 0% utilization, 24120 MiB free, torch CUDA available,
+  one device, tiny kernel exact sum 376.0 PASS. No competing scientific GPU job.
+
+No driver/service/config mutation, sorting/training, voltage, RF, holdout, or
+waveform-method work was performed.

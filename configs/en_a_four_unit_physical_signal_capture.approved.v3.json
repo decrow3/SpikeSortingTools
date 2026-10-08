@@ -1,0 +1,121 @@
+{
+  "schema": "en-a-four-unit-physical-signal-capture-v1",
+  "status": "approved_for_bounded_capture",
+  "config_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_a_four_unit_physical_signal_capture.approved.v3.json",
+  "source_sha256": "e33bc8346b2acda30cd2032c7b6a00a004f79f7416a1198c6bcd718f3b0c74fd",
+  "service": {
+    "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_a_four_unit_physical_signal_capture_approved_v3.service",
+    "sha256": "02f0b062ba9c9d4847a8ff15b883b2c517a67e840992bffbddf0074dedd19556"
+  },
+  "gates": {
+    "execution_enabled": true,
+    "human_approved": true,
+    "voltage_read_authorized": true
+  },
+  "authorization": {
+    "received_at": "2026-10-01T09:33:02-07:00",
+    "text": "Standing user authorization is now explicit: comparable recording-read and voltage-processing experiments needed to pursue the project goal are approved as similar in-scope tasks. Do not carry this A contract's limits into unrelated future handoffs; use the contract only for this execution. Platform/tool permissions and explicit standing exclusions still apply."
+  },
+  "review_lineage": {
+    "packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_physical_signal_capture_preparation_20261001_v3_h5",
+    "packet_manifest_sha256": "8771e60872a497bf505418789a44b249e261fe2bb1acc253f046d122f0ef56b2",
+    "reviewed_source_sha256": "e33bc8346b2acda30cd2032c7b6a00a004f79f7416a1198c6bcd718f3b0c74fd",
+    "reviewed_service_sha256": "b569f0f94606a557940d5c6a66cb9a023b64b8f34dbb340f5446f0eb4f3d27a5",
+    "reviewed_config_sha256": "6038cc880919e5f3183def53fc16bda118e280ebed19039bc7b1a32abb244c93"
+  },
+  "selection_receipt": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_approval_metadata_20261001_v3_h5/SELECTION_RECEIPT.csv",
+    "sha256": "a83a8b358cfc4bfad85d2ed2a6cd0137826f7e93ec5046f902674dce3a226d95"
+  },
+  "frozen_metadata": [
+    {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_approval_metadata_20261001_v3_h5/MANIFEST.json",
+      "sha256": "885a0617841b39014623d4b5df7111239afde0635c56b9feb3a3f5838c4b50b2"
+    },
+    {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_independent_metadata_verification_20261001_v3_h5/MANIFEST.json",
+      "sha256": "9424b1a0507d1d1c3efdf8eccf98e810e297f075018ec6978b8a451fa1c4acf4"
+    },
+    {
+      "path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/sort/sorter_output/ops.npy",
+      "sha256": "07d61baf2c0da759db2ee2a21ef1d2d7a561bcb90293f568bccfe0a9e0906906"
+    },
+    {
+      "path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/test_en_a_four_unit_physical_signal_capture.py",
+      "sha256": "8204599433614051e22c1d6a2793f4eb03728328e3a598659f0410517f37bd8e"
+    }
+  ],
+  "ops_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/sort/sorter_output/ops.npy",
+  "representations": {
+    "original": {
+      "binary_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+      "manifest_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/rescue_recording_manifest.json",
+      "manifest_sha256": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67",
+      "expected_manifest_fields": {
+        "num_samples": 314204894,
+        "num_channels": 384,
+        "sampling_frequency_hz": 29999.835983263598,
+        "dtype": "int16",
+        "selected_start_frame": 0,
+        "selected_end_frame": 314204894,
+        "recording_content_sha256": "2d6fac755db3182841bf121d822754f963ebada3bcb8cd9e96e0b63e6f9b7372",
+        "binary_size_bytes": 241309358592,
+        "manifest_recorded_binary_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482"
+      }
+    },
+    "corrected_A": {
+      "binary_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/recording/traces_cached_seg0.raw",
+      "manifest_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/recording/rescue_recording_manifest.json",
+      "manifest_sha256": "ef2071c9ead186689b804f0df52ff9eb5a25cf1f4bdd610ae14e6c81cab834b2",
+      "expected_manifest_fields": {
+        "num_samples": 314204894,
+        "num_channels": 384,
+        "sampling_frequency_hz": 29999.835983263598,
+        "dtype": "int16",
+        "selected_start_frame": 0,
+        "selected_end_frame": 314204894,
+        "recording_content_sha256": "90b6a07a22e32fdd741c3f605f582d44f361bc75ed18737c134e13fdd1d76ad9",
+        "binary_size_bytes": 241309358592,
+        "manifest_recorded_binary_sha256": "672938e942d105af6b1a3f7f1bddf206939535e0e4b57bc01153472a1ccb8b69"
+      }
+    }
+  },
+  "arithmetic": {
+    "selection_slots": 20,
+    "pair_windows": 8,
+    "single_event_windows": 12,
+    "base_window_reads": 40,
+    "duplicate_positive_control_reads": 1,
+    "raw_read_calls_max": 41,
+    "planned_base_input_bytes": 31683072,
+    "planned_with_duplicate_input_bytes": 32492544,
+    "planned_retained_int16_bytes": 3912192,
+    "cap_base_input_bytes": 31844352,
+    "cap_with_one_max_pair_duplicate_bytes": 32653824,
+    "cap_retained_int16_bytes": 4073472
+  },
+  "limits": {
+    "cpu_threads_max": 4,
+    "logical_input_bytes_max": 34603008,
+    "ram_bytes_max": 2147483648,
+    "retained_numeric_bytes_max": 6291456,
+    "wall_seconds_max": 300
+  },
+  "preprocessing": {
+    "implementation": "installed kilosort.io.BinaryFiltered.filter using frozen ops.npy",
+    "stages": ["per-channel_centered", "CAR", "highpass"],
+    "whitening": false,
+    "float_stage_buffers": "transient_one_window_at_a_time",
+    "persistent_numeric_payload": "H5-local retained int16 snippets only"
+  },
+  "output": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/outputs/en_a_four_unit_physical_signal_capture_20261001_approved_v2",
+  "prohibitions": [
+    "sort",
+    "matcher replay",
+    "RF",
+    "holdout",
+    "threshold search",
+    "parameter sweep",
+    "numeric waveform transfer"
+  ]
+}

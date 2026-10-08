@@ -1,0 +1,9 @@
+{
+  "schema": "immutable-evidence-packet-completion-v1",
+  "status": "complete",
+  "created_utc": "2026-10-02T06:02:10Z",
+  "manifest_sha256": "07de38b2fa8d0b3be8a625d8864d856b2ed722e032f7244a5e8316c8bb86d34e",
+  "run_result": "passed_covariance_and_whitening_stopped_before_training_detection",
+  "start_requests_issued": 1,
+  "retries_issued": 0
+}

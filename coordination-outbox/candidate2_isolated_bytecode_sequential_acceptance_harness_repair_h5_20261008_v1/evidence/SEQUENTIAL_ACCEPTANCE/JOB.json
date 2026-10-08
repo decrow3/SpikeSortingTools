@@ -1,0 +1,41 @@
+{
+  "bootstrap_pid": 3044671,
+  "child_pid": 3044672,
+  "command": [
+    "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python",
+    "-I",
+    "-B",
+    "-u",
+    "-c",
+    "import sys; sys.dont_write_bytecode=True; root=sys.argv.pop(1); sys.path.insert(0, root); sys.argv[0]='testing.candidate2_cache_managed_full'; from testing.candidate2_cache_managed_full import main; main() if sys.argv.pop(1)=='run' else None",
+    "/tmp/candidate2-v8-full-preflight-rivj5a8h/runtime/source",
+    "import-only",
+    "--contract",
+    "/tmp/candidate2-v8-full-preflight-rivj5a8h/CONTRACT.json",
+    "--contract-sha256",
+    "b6469c3f38b3a7cea8f40cfd437fecb2087604bcc495604e0e438df0e485df93",
+    "--source-manifest-sha256",
+    "90b4b8b0bc6aaf2c3768e87b527e65bf1532bedbb0e3a1bd4b067598b9036b16",
+    "--preflight",
+    "/tmp/candidate2-v8-full-preflight-rivj5a8h/positive/PREFLIGHT.json"
+  ],
+  "finished_at": "2026-10-08T12:38:05.442522+00:00",
+  "installed_source_sha256": {
+    "environment_uv_lock": "6ec57a7184d280221dee99403f7c4b26f7cb82e7e4ad025b312f237b826d2274",
+    "kilosort/datashift.py": "21404144305a313fd80a3a7f49ecf297d783ff8d4b69fc3f396a15dc77d3c850",
+    "kilosort/io.py": "c6093e14cae920e8cfaae6c3fed8d4c6ca032b046d705ef9868ec171c7bf3c99",
+    "kilosort/parameters.py": "2274598ab4d6c1ff1c5257aa80e1a87320b6cce21f77b1d9220a883978ecdec6",
+    "kilosort/run_kilosort.py": "5c1baee40edef14fa7566e441997da5d2ecc4f7940b8385cf83de40c8bd0f945",
+    "spikeinterface/sorters/external/kilosort4.py": "7fb2fd80fcd10c43d3833a3d4a64860fb2c39cc26f10e03181c9873931af2828"
+  },
+  "mode": "sequential_acceptance_import_only",
+  "returncode": 0,
+  "schema": "candidate2-verified-managed-job-v1",
+  "source": {
+    "manifest_sha256": "90b4b8b0bc6aaf2c3768e87b527e65bf1532bedbb0e3a1bd4b067598b9036b16",
+    "members": 31
+  },
+  "started_at": "2026-10-08T12:38:03.799020+00:00",
+  "state": "complete",
+  "verified_at": "2026-10-08T12:38:03.802893+00:00"
+}

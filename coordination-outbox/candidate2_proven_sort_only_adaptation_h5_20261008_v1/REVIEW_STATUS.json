@@ -1,0 +1,56 @@
+{
+  "schema": "candidate2-proven-sort-only-adaptation-independent-review-v1",
+  "verdict": "GO_TO_INSTALL_AND_AUTHORIZE_ONE_SORT_ONLY_INVOCATION",
+  "reviewed_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/candidate2_proven_sort_only_adaptation_h5_20261008_v1",
+  "bindings": {
+    "config_sha256": "e4d68dcfbe9a137c63281293c7eada7cd0bc97ac435068ec92c417078eab4397",
+    "contract_sha256": "41f0c10780b3f4bbcef18d9476b14578551c2f3bdbc9d5505e820859d10b341c",
+    "source_manifest_sha256": "06057e8b27dc1ed89b3ef64b9db276ea5c7352e0efcc17b73ed4c38e322db229",
+    "runner_sha256": "39a6f8e25443be80bd3b9febc592ff02953cb967686431754f5dfa5693666f52",
+    "service_sha256": "ed922c44522bf066d0c06f408cc31e71385779cb9dc7f661919777a28c7c062b",
+    "final_boundary_pass_sha256": "5a78dde14b7ed74c8739ba4d6c7f2870caf9a040e170b7091515b8fefa6ba7e5",
+    "environment_binding_negative_sha256": "f59cc479df54230218517009a544457a0a49254800a90cac9120af7d96a0c217",
+    "predecessor_commit": "7ed3e2e7b376adfbe4668259d19b62a4830b0c15",
+    "predecessor_runner_sha256": "62905e2df8cfb93869c653a821e4c0a5a26300b919c17ed5604bb4403a3cc90f",
+    "predecessor_success_sha256": "2bf4a2b9189ea9903b3ae3bdef7305ab689c6a49132c75f351b9e664e0d0aca6",
+    "candidate2_saved_request_sha256": "58efcdb5c2d9b4c4252a848fff5bf2057bdfa27713b08a76e3c6a7bc17a351b7",
+    "recording_manifest_sha256": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67"
+  },
+  "independent_checks": {
+    "predecessor_exact_runner_recovered_and_hashed": true,
+    "predecessor_success_and_ordinary_service_verified": true,
+    "source_manifest_exact_30_members": true,
+    "stable_source_copy_byte_identical": true,
+    "environment_files_exact": true,
+    "saved_request_exact_46_fields": true,
+    "candidate2_native_rigid_request_consumed": true,
+    "saved_effective_nblocks_one_required": true,
+    "three_cache_operations_present_and_ordered": true,
+    "literal_final_boundary_independently_passed": true,
+    "independent_boundary_receipt_matches_frozen_hash": true,
+    "recording_bytes_read": 0,
+    "sort_started": false,
+    "service_installed": false,
+    "authorization_present": false,
+    "output_present": false,
+    "memory_high_or_max_present": false,
+    "automatic_retry_present": false,
+    "downstream_qc_called": false
+  },
+  "non_blocking_findings": [
+    {
+      "id": "STALE_UNBOUND_CHANGED_BOUNDARY_STDERR",
+      "finding": "CHANGED_BOUNDARY.stderr.txt has traceback line numbers from an older runner and is not bound by the contract or final receipts; it was excluded from verdict evidence."
+    }
+  ],
+  "future_launch_checks": [
+    "install exact reviewed service and reconcile installed bytes",
+    "confirm fresh authorization and absent output",
+    "confirm live disk, memory, pressure, and idle-GPU conditions",
+    "permit exactly one invocation with no retry"
+  ],
+  "implementation_checks": {
+    "can_establish": "Technical readiness for installation and one separately authorized Candidate2 native-rigid sort-only invocation.",
+    "cannot_establish": "Future content validation, runtime or memory outcome, completion, QC, or scientific benefit."
+  }
+}

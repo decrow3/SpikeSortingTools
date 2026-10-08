@@ -1,0 +1,103 @@
+{
+  "schema": "en-first-medium-four-arm-evaluator-request-v1",
+  "execution_enabled": false,
+  "purpose": "saved-output-only evaluation; never launches sorting, training, detection, recording reads, RF, or holdout work",
+  "evaluation_config": {
+    "sampling_frequency_hz": 29999.835983263598,
+    "duration_s": 599.9999803346205,
+    "correspondence_tolerance_ms": 0.5,
+    "minimum_correspondence_overlap": 0.1,
+    "primary_retention": 0.5,
+    "minimum_valid_amplitude_windows": 2,
+    "minimum_common_time_fraction": 0.5,
+    "minimum_measurable_unit_fraction": 0.5,
+    "coincidence_tolerance_ms": 0.5,
+    "coincidence_depth_um": 75.0,
+    "coincidence_seed": 20250804,
+    "longitudinal_bin_s": 300.0
+  },
+  "spatial_region": {
+    "processing_depth_um": [
+      1400.0,
+      2380.0
+    ],
+    "scoring_depth_um": [
+      1600.0,
+      2180.0
+    ],
+    "minimum_edge_exclusion_um": 80.0,
+    "source": "testing/configs/luke0804_hindsight_ladder_v1.json sha256 c0b564e0476f1af63a01c6c4efd3d0064471193329bf026e503f1bb25adc05d3"
+  },
+  "common_clock": {
+    "frame": "crop-local integer acquisition samples",
+    "local_frames_half_open": [
+      0,
+      17999901
+    ],
+    "global_frames_half_open": [
+      208498882,
+      226498783
+    ],
+    "global_equals_local_plus": 208498882
+  },
+  "common_geometry": {
+    "physical_channel_rows": [
+      0,
+      383
+    ],
+    "channel_count": 384,
+    "geometry_float64_sha256": "d126fb241989698cd445c89638b02f0a2f8153389cfcad5acf49c1a0c4093bc8"
+  },
+  "arms": [
+    {
+      "arm_id": "REF384",
+      "evidence_kind": "real_saved",
+      "curated_output": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/sorter_output",
+      "qc_dir": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/qc",
+      "provenance": {
+        "arm_contract_id": "REF384",
+        "input_identity": "3e4e53938997dc453b3d737b9d323877851c3ce9689313719d6ea562527bc71d",
+        "clock_identity": "eefcd8679957b27a54374479387dcdf6606cbd93674d0326614485612e1651c3",
+        "geometry_identity": "ff6df902235343f0f54274c532bb29979d7c20854418b6161e5c25f7d06067a3",
+        "runtime_identity": "8b2a3c79cf86145f34a00b8087369c9164db8474e2634411b9e3a4580f0fd701",
+        "config_identity": "bb6dd8f21539e5ee57f4216702b7c9d4c36d1a0feeefe3859ba25449af52ad17"
+      },
+      "expected_identity_digest": "739f433cd65e369af83cad4fa3dbfc2763ebc79a087c902ae98bb0405b9d1cc4",
+      "expected_qc_request_digest": "UNMEASURED_ABSENT_TRUNCATION_QC"
+    },
+    {
+      "arm_id": "existing_corrected_B384",
+      "evidence_kind": "real_saved",
+      "curated_output": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output",
+      "qc_dir": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/qc",
+      "provenance": {
+        "arm_contract_id": "existing_corrected_B384",
+        "input_identity": "ced1822ef22935ff6b352613007529eb1d8a3bfbdbc44be6fc452d4bcc008fd4",
+        "clock_identity": "88658065733dbc5f78cf06f39d96b94129ac01a6db8910df63433dfe38a4d640",
+        "geometry_identity": "ff6df902235343f0f54274c532bb29979d7c20854418b6161e5c25f7d06067a3",
+        "runtime_identity": "6beac463a3a1e6e63b46997f18e2427c09201885e7b08c8571dc515a89b7ad9a",
+        "config_identity": "bb6dd8f21539e5ee57f4216702b7c9d4c36d1a0feeefe3859ba25449af52ad17"
+      },
+      "expected_identity_digest": "55496fca68263842b83a5fdc5ae7f1a758a2dcb325e601d3981e13f83d953e20",
+      "expected_qc_request_digest": "UNMEASURED_ABSENT_TRUNCATION_QC"
+    },
+    {
+      "arm_id": "repaired_B384",
+      "evidence_kind": "unavailable",
+      "provenance": {
+        "lifecycle": "fresh_prospective",
+        "role": "fresh_end_to_end_trained_support_aware_candidate",
+        "status": "UNAVAILABLE_not_run"
+      }
+    },
+    {
+      "arm_id": "REF384_repeat",
+      "evidence_kind": "unavailable",
+      "provenance": {
+        "lifecycle": "fresh_prospective",
+        "role": "diagnostic_repeat_not_efficacy_arm",
+        "status": "UNAVAILABLE_not_run"
+      }
+    }
+  ]
+}

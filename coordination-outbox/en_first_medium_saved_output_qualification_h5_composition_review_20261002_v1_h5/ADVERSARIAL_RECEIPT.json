@@ -1,0 +1,23 @@
+{
+  "schema": "first-medium-composition-adversarial-review-receipt-v1",
+  "scope": "bounded synthetic saved-format data only",
+  "public_fixture_token_accepted_real_saved_schema_at_arbitrary_path": true,
+  "fixture_complete_status": "COMPLETE_FIXTURE",
+  "phase2_receipt_verifier_accepted_fixture_complete": true,
+  "same_start_token_two_fresh_namespaces_returncodes": [0, 0],
+  "same_start_token_replay_both_completed": true,
+  "resource_thread_violation_returncode_nonzero": true,
+  "resource_violation_detected_only_after_control_report": true,
+  "resource_violation_detected_only_after_binding_receipt": true,
+  "resource_failure": {
+    "schema": "first-medium-qualification-failure-v1",
+    "phase": "phase1_controls",
+    "error_type": "RuntimeError",
+    "error": "CPU thread bound exceeded",
+    "retry_allowed": false
+  },
+  "real_data_opened": false,
+  "real_score_computed": false,
+  "voltage_accessed": false,
+  "jobs_started": false
+}

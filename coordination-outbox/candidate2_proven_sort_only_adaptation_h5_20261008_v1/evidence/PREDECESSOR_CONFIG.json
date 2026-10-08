@@ -1,0 +1,47 @@
+{
+  "schema": "en-full-session-part2b-imec1-sort-bounded-pread-v4",
+  "milestone": "complete the authorized imec1 full-session sort with a bounded non-mmap input reader",
+  "decision": "whether byte-identical bounded preadv input eliminates mapped-file pressure while preserving the frozen sort",
+  "reader_mode": "bounded_preadv_v1",
+  "recording_path": "/media/huklaban5/Data/en_full_session_part2b_imec1_arm_a_20261004_v1/recording",
+  "recording_manifest_sha256": "523cc77d34fa2083d2e011842649563cee82e3ffcdfd5b7183abac89d3ee6641",
+  "recording_binary_sha256": "8d23e0a2cc7a39548f6b5da1188545a449d477e1e84ed83ce1de644aed2bdcaf",
+  "recording_binary_bytes": 241308744192,
+  "q0_receipt_path": "/media/huklaban5/Data/en_full_session_part2b_imec1_q0_20261004_v1/Q0_RECEIPT.json",
+  "q0_receipt_sha256": "f19dbb7f03c87ea551ed4adb311ed3268b2f7643e0695e4fe1c86ca6e4a39d01",
+  "preserved_failed_runs": [
+    {
+      "status_path": "/media/huklaban5/Data/en_full_session_part2b_imec1_arm_a_20261004_v1/STATUS.json",
+      "status_sha256": "98e606abd1d12c254b0ea1931d9b80ad6deba894d7c5ad34995d38382e6fe9a5",
+      "stage": "sorting_full_once"
+    },
+    {
+      "status_path": "/media/huklaban5/Data/en_full_session_part2b_imec1_sort_retry_20261005_v1/STATUS.json",
+      "status_sha256": "c891c18958e19b0747e3944bb6a2daeae5ad0e5939225859367462f021631741",
+      "stage": "sorting_retry_full_once"
+    },
+    {
+      "status_path": "/media/huklaban5/Data/en_full_session_part2b_imec1_sort_cache_retry_20261005_v3/STATUS.json",
+      "status_sha256": "d5038f7b744189e97a38a0241693d920c490ce0a12669a157cdf3a21ff11190a",
+      "stage": "sorting_cache_managed_retry_full_once"
+    }
+  ],
+  "output_root": "/media/huklaban5/Data/en_full_session_part2b_imec1_sort_bounded_pread_20261006_v4",
+  "validation_receipt_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_full_session_part2b_imec1_bounded_pread_validation_20261006_v2/VALIDATION_RECEIPT.json",
+  "validation_receipt_sha256": "aff55ea6e75ebb2671291a8c694bcca094cef477a0c921b4c6b73729cf12368f",
+  "minimum_free_bytes": 300000000000,
+  "minimum_mem_available_bytes": 30000000000,
+  "maximum_prelaunch_memory_pressure_avg10": 5.0,
+  "sort_wall_cap_seconds": 21600,
+  "service_timeout_start_seconds": 32400,
+  "resource_condition": "no MemoryHigh or MemoryMax; exact-target 8 MiB identity-hash cache drops; one reusable approximately 46 MiB Kilosort preadv buffer; cache drop after every GPU batch copy; 10-second anon/file/mapped/kernel/PSI telemetry",
+  "launch_method": {
+    "manager": "systemd --user",
+    "survival_check_invocation_id": "a628f310941542d797d0f89d8e5b959f",
+    "final_result": "success"
+  },
+  "checkpoint_truth": "completed materialization reused; Kilosort restarts from its beginning; all three failed partial sorts are preserved and never consumed",
+  "completion_condition": "SORT_COMPLETE.json exists with one invocation, preserved recording identity, bounded-reader receipt, and sort_complete_downstream_pending status",
+  "stop_condition": "service timeout, provenance mismatch, preflight failure, bounded-reader mismatch, sorter error, oomd action, or user cancellation",
+  "sort_invocations_authorized": 1
+}

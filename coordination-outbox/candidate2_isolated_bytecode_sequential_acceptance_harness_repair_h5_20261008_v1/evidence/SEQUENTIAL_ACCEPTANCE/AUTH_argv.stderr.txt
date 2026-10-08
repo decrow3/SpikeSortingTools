@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/coordination-outbox/candidate2_isolated_bytecode_sequential_acceptance_harness_repair_h5_20261008_v1/source/testing/candidate2_cache_managed_preflight.py", line 283, in main
+    raise RuntimeError("manager-loaded typed execution identity differs from authorization")
+RuntimeError: manager-loaded typed execution identity differs from authorization

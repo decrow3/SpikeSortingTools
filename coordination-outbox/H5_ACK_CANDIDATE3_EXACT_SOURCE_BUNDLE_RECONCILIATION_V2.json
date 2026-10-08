@@ -1,0 +1,17 @@
+{
+  "schema": "hub-multicoordinator-worker-ack-v1",
+  "owner": "H5",
+  "status": "ACK_STARTED",
+  "task": "candidate3_exact_source_bearing_bundle_reconciliation_v2",
+  "milestone": "Candidate3 real-H5 wrapper equality source closure",
+  "decision": "whether exact wrapper, runner, contract, DARTsort and Kilosort identities can be assembled and independently reviewed in isolation without changing occupied repositories",
+  "cheapest_adequate_test": "reconcile the frozen packet, all local Git object databases, the configured SpikeSortingTools remote in a temporary bare repository, exact commit archives, and actual imported module paths/hashes; do not read voltage or execute equality",
+  "completion_condition": "publish an immutable reviewed isolated readiness successor if complete, otherwise an immutable exact blocker naming the sole missing source object and all verified available bindings",
+  "constraints": {
+    "occupied_repositories_modified": false,
+    "equality_weakened": false,
+    "h1_contact_required": false,
+    "voltage_access": false,
+    "service_or_sort_launch": false
+  }
+}

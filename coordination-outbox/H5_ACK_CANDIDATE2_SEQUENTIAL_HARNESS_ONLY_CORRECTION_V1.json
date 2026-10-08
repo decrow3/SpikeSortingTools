@@ -1,0 +1,14 @@
+{
+  "schema": "hub-multicoordinator-worker-ack-v1",
+  "owner": "H5",
+  "status": "ACK_STARTED",
+  "task": "candidate2_sequential_acceptance_harness_only_correction",
+  "preserved_v9_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate2_isolated_bytecode_suppression_sequential_acceptance_h5_20261008_v1",
+  "preserved_v9_manifest_sha256": "a4fd0c8df3e10178afacabd7ba8fbd6a9c0401deabe8aff27933b3cba61605e8",
+  "allowed_delta": "test harness only: create mutation receipt parent and preserve positive/negative receipts, stdout/stderr and tree hashes before cleanup including on failure",
+  "production_executable_change": false,
+  "science_change": false,
+  "traversals_authorized": 1,
+  "automatic_retry": false,
+  "completion_condition": "one fresh retained sequential traversal plus focused independent review, or exact blocker with no install/authorization/launch"
+}

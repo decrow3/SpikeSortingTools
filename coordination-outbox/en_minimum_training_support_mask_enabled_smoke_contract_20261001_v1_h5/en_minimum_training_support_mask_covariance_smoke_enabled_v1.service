@@ -1,0 +1,15 @@
+[Unit]
+Description=Luke enabled minimum-training-support-mask covariance/W smoke (DO NOT START WITHOUT GO)
+ConditionPathExists=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_minimum_training_support_mask.covariance_smoke.enabled.review_pending.v1.json
+ConditionPathExists=/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_b_v2/full/recording/traces_cached_seg0.raw
+ConditionPathNotExists=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/en_minimum_training_support_mask_covariance_smoke_20261001_v1
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+Restart=no
+WorkingDirectory=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/bin/python -B /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_minimum_training_support_mask_smoke_launch.py --config /home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/configs/en_minimum_training_support_mask.covariance_smoke.enabled.review_pending.v1.json --expected-config-sha256 c4c6944fc21a7f9fa21545b569ba15c4219aabcd7b59115f5acea2a16dccae8f --execute-smoke
+StandardOutput=journal
+StandardError=journal

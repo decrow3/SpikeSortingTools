@@ -1,0 +1,38 @@
+{
+  "schema": "en-truncation-qc-regeneration-v2",
+  "status": "review_pending_execution_disabled",
+  "execution_enabled": false,
+  "purpose": "One-shot regeneration of production truncation QC from hash-bound saved sorter arrays only; no recording or voltage access",
+  "source_bindings": [
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/en_truncation_qc_regeneration_candidate.py", "sha256": "39cc76a96ad0cac1047dcff973202fe5108deba56d3e50ef55402c8a600a26eb"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/pipeline/qc.py", "sha256": "cbbab201cfa1276b0770983204fd4965fb89b71266de99c0364d817cf74e27b9"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/pipeline/truncation.py", "sha256": "eec2476397c1856891a4b9f1856c1af4a5e2f81a13e934d1ade2f96a02a6e3e6"},
+    {"path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/pipeline/refractory.py", "sha256": "2dc727abc757399f6829c1eb21f9cf8db19a6dac595c3f96d8fc819bd4862e33"}
+  ],
+  "runtime": {
+    "executable": "/home/huklaban5/anaconda3/bin/python3.12",
+    "executable_sha256": "4adb344720ca7a0ccee7cdc77506bae30da64b55a977cd45e15880ddf8bddcc1",
+    "python_version": "3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]",
+    "modules": {
+      "matplotlib": {"origin": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/matplotlib/__init__.py", "sha256": "5d7b90b10521cd6af61b4a05f22890f429b8880ae35f28f02bf15761babfc97c", "version": "3.9.1"},
+      "numpy": {"origin": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/numpy/__init__.py", "sha256": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e", "version": "1.26.4"},
+      "scipy": {"origin": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/scipy/__init__.py", "sha256": "185913aa107512fafd5cf89dfd452a8719b45a6eba833e2dcee2cbfd18b4bbe5", "version": "1.15.2"},
+      "sklearn": {"origin": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/sklearn/__init__.py", "sha256": "7a2a7d742b4681503a9bfac50fcaf69706f86069deb3eb287408f1f32721e1fc", "version": "1.6.1"},
+      "torch": {"origin": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/torch/__init__.py", "sha256": "5a190666c3853aa236c4d48ed64e2d4bbcd23bd32c21e64c0867646a6852e43f", "version": "2.6.0+cu124"},
+      "tqdm": {"origin": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/tqdm/__init__.py", "sha256": "f6640d6124aa3fdf496acb9b102d4f3892cc9a1924047e9c259c4f211e46da94", "version": "4.70.0"}
+    }
+  },
+  "authorization": {"one_shot_token": "synthetic-review-fixture-only-real-token-requires-distinct-review", "consume_on_invocation": true, "automatic_retry": false, "real_execution_review_required": true},
+  "activation": {"gate_schema": "truncation-qc-one-execution-gate-v1", "required_verdict": "ONE_EXECUTION_GO", "enabled_status": "reviewed_one_execution_enabled", "enabled_execution_value": true, "allowed_config_mutations": ["status", "execution_enabled"], "global_ledger_root": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/qc_regeneration_authorization_ledger_v1", "frozen_real_output_root": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/qc_regeneration_v6"},
+  "estimator": {"function": "pipeline.qc.truncation_qc", "max_isi_s": 10.0, "spikes_per_window": 1000, "fit_x_min_rule": "minimum observed amplitude in each historical 999-value half-open fit slice", "amplitude_source": "full_st[kept_spikes,2] sorter-native units", "time_source": "full_st[kept_spikes,0] crop-local samples divided by sampling_frequency_hz"},
+  "clock": {"sampling_frequency_hz": 29999.835983263598, "crop_origin_global_frame": 208498882, "local_frames_half_open": [0, 17999901], "global_frames_half_open": [208498882, 226498783], "saved_spike_times_frame": "global_acquisition_samples", "full_st_frame": "crop_local_samples"},
+  "inputs": [
+    {"arm_id": "REF384", "curated_output": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/REF384/sorter_output", "files": {"spike_times.npy": "5d18fff413e8d6095a9a43d37157f88b0bd0cee4551378d894bb6231602937fb", "spike_clusters.npy": "7bb835f0104df59e57f405dc8fc021a6a4428e7390cd0df8097b6d2e9313f937", "full_st.npy": "4cd9f52f40319fb636d609000760952f321b5ad2d127658bcbcf4239a6d36308", "kept_spikes.npy": "7257d64556a63b0e11c9abcf87e90f3a4b2bec6f472c4c459391ef253ebd9666"}, "output_dir": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/qc_regeneration_v6/REF384"},
+    {"arm_id": "existing_corrected_B384", "curated_output": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/B384/sorter_output", "files": {"spike_times.npy": "c112885db566363907e36da70eb44a4728258e4ef78c466761ef4009a8c741c3", "spike_clusters.npy": "90525e505cfec78c1594927848ffad4e264f11ff6ecabbc40178ece2bb10df95", "full_st.npy": "09a52a989789b4cf301556666c8c4e13a7a8725f6de4493e032382945fee638e", "kept_spikes.npy": "c54da383fe1ff90c5acf3027fe3f8d3cb64812b44f635e2068a784f548ee5869"}, "output_dir": "/media/huklaban5/Data/en_common_support_crop_screen_20260930_v1/qc_regeneration_v6/existing_corrected_B384"}
+  ],
+  "output_schema": {"truncation_qc.npz": {"cid": ["N"], "window_blocks": ["N", 2], "popts": ["N", 3], "mpcts": ["N"]}, "present_qc.npz": {"cid": ["M"], "valid_blocks": ["M", 2]}, "truncation_qc.pdf": "nonempty PDF"},
+  "resources": {"wall_seconds_max": 7200, "cpu_time_seconds_max": 7200, "ram_bytes_max": 17179869184, "cpu_threads_max": 4, "persistent_output_bytes_max": 1073741824},
+  "synthetic_known_answer": {"input_rows": 2200, "window_blocks": [[100, 1099], [1100, 2099]], "valid_blocks": [[100, 2100]], "popts": [[9.023405513653755, 2.460415426165979, 1.07682440797192], [10.837866633211512, 2.4604154289459097, 1.0768244071323554]], "mpcts": [11.435933497974595, 11.435933452934167], "absolute_tolerance": 1e-6},
+  "stop_conditions": ["any config/source/runtime/input hash mismatch", "any clock, dtype or row-semantics mismatch", "global authorization token already consumed", "caller output differs from frozen real destination", "any existing output namespace", "any resource bound exceeded", "any nonfinite production amplitude", "any output-schema or synthetic-known-answer mismatch", "first exception", "no automatic retry"],
+  "prohibitions": ["recording or voltage access", "sorting, training, detection or clustering", "RF or sealed holdout access", "outcome-derived threshold changes", "substitute estimator", "overwrite prior QC or evidence", "automatic retry", "caller-selected real output destination"]
+}

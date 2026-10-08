@@ -1,0 +1,36 @@
+{
+  "schema_version": "luke-improved-rigid-comparison-v1",
+  "development_only": true,
+  "baseline": {
+    "curated_output": "/media/huklaban5/Data/en_full_session_part2a_imec1_ref_cur_qc_20261004_v1/downstream/cur/cur_output",
+    "qc_dir": "/media/huklaban5/Data/en_full_session_part2a_imec1_ref_cur_qc_20261004_v1/downstream/qc",
+    "curation_receipt": "/media/huklaban5/Data/en_full_session_part2a_imec1_ref_cur_qc_20261004_v1/downstream/cur/curation_receipt.json",
+    "expected_sort_identity_digest": "7bc7ce4c5c32f7dafc949de83a1c45b4d767d7f7b647019aeba9ca7e1750a80d"
+  },
+  "candidate": {
+    "handoff_dir": "/media/huklaban5/Data/en_full_session_part2c_imec1_candidate_qc_compare_20261006_v1/handoff",
+    "expected_sort_identity_digest": "eb7d0d84ae9e3642cbcdbc3673b30f4067df73411aeed45b4eb27a3acc695004"
+  },
+  "output_dir": "/media/huklaban5/Data/en_full_session_part2c_imec1_candidate_qc_compare_20261006_v1/comparison",
+  "evaluation": {
+    "sampling_frequency_hz": 29999.759166666667,
+    "duration_s": 10473.553879363088,
+    "correspondence_tolerance_ms": 0.5,
+    "minimum_correspondence_overlap": 0.1,
+    "primary_retention": 0.5,
+    "longitudinal_bin_s": 300.0,
+    "coincidence_tolerance_ms": 0.5,
+    "coincidence_depth_um": 75.0,
+    "coincidence_seed": 20250804,
+    "minimum_valid_amplitude_windows": 2,
+    "minimum_common_time_fraction": 0.5,
+    "minimum_measurable_unit_fraction": 0.5
+  },
+  "common_spatial_domain": {
+    "processing_depth_um": [200.0, 3640.0],
+    "scoring_depth_um": [300.0, 3540.0],
+    "minimum_edge_exclusion_um": 100.0,
+    "note": "Exact Part 1/XR numeric-domain rule; no cross-frame transform."
+  },
+  "interpretation": "Frozen paired development comparison of the completed imec1 external-remap candidate against the operational imec1 REF. Correspondence is not proof of biological identity; no automatic production promotion is permitted."
+}

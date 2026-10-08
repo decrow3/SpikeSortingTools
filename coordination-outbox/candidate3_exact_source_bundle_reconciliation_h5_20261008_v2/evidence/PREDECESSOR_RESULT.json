@@ -1,0 +1,70 @@
+{
+  "schema": "candidate3-source-bundle-reconciliation-h5-v1",
+  "created_at": "2026-10-08T04:23:07-07:00",
+  "from_agent": "H5-worker-independent-reconciliation",
+  "recipient": "HubMultiCoordinater",
+  "task": "candidate3_h5_real_wrapper_equality_v3_source_bundle_reconciliation",
+  "status": "ACK_BLOCKED_ONE_MISSING_SOURCE_OBJECT_NO_LAUNCH",
+  "decision": "A complete immutable source-bearing bundle cannot currently be assembled from existing approved shared/local artifacts and local Git object databases without modifying occupied repositories.",
+  "input_status": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/H5_STATUS_CANDIDATE3_REAL_EQUALITY_PRESTART_BLOCKED_V2.json",
+    "sha256": "d7188434e14c7e5e79699dc822e29f1670284a3c4c19aae26ee5d9b0cce63eff"
+  },
+  "available_exact_sources": {
+    "runner": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_real_wrapper_equality_contract_h1_20261008_v3/RUNNER.py",
+      "sha256": "0bed993b8718f29591b92884e88b65f2bf8a6780cce49490b869ba82823f1f7e"
+    },
+    "contract": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_real_wrapper_equality_contract_h1_20261008_v3/CONTRACT.json",
+      "sha256": "6cb5c29b806b63021bf9edef87535718f24efc9ff27842d9e4e34c3e06e56037"
+    },
+    "focused_review_complete": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_real_wrapper_equality_contract_v3_independent_review_h1_20261008_v1/COMPLETE.json",
+      "sha256": "90d300a714554acaf2cd50011a6d899c3b3f3336dcef58410a4d93497ee536a5"
+    },
+    "dartsort": {
+      "repository": "/home/huklaban5/Documents/DARTsort",
+      "required_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+      "commit_object_available": true,
+      "archiveable_without_worktree_mutation": true,
+      "main_sha256": "e4c03417c1256384c4f8fbf0250560003bd795b7274932ef1e49dcde217bd249",
+      "main_util_sha256": "2846a319c19c25b3cad81ab991057c0868b87d760b66f20e8d2bb3db8ffa3bcc",
+      "preprocess_util_sha256": "566ce1ab60af12585978bcd7e3192cb2ca4cc220ab5e41895140c00bdbc06674",
+      "uv_lock_sha256": "68f3fa53642043313bc9a4e56b7fc35dbd27af81030e436ffdba82de683f5034"
+    },
+    "kilosort": {
+      "source_root": "/home/huklaban5/Documents/kilosort-src-4.0.27/kilosort-4.0.27",
+      "version": "4.0.27",
+      "io_sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+      "sealed_shared_copies_also_available": true
+    },
+    "rescue_environment_lock_sha256": "6ec57a7184d280221dee99403f7c4b26f7cb82e7e4ad025b312f237b826d2274"
+  },
+  "exact_remaining_blocker": {
+    "repository_commit": "aea7431c4026fa74e36ad01139d9e596900a1d25",
+    "wrapper_path": "npx_preprocessing/motion/kilosort_prewhitening_si.py",
+    "wrapper_sha256": "b7f06da5685d3b8af0c7bd18e7ccfeb3af7db8fe3b22b1fa6a619908f43bb690",
+    "finding": "The commit object is absent from all local Git object databases inspected. No project/shared Python file has the wrapper hash or class definition, and no plausible reachable or dangling blob in the three SpikeSortingTools-related object databases has the wrapper SHA-256. The reviewed wrapper packet deliberately records hashes but does not carry source payload bytes.",
+    "minimum_supply": "Any authorized source owner may publish an immutable full Git bundle containing commit aea7431c4026fa74e36ad01139d9e596900a1d25, or a source archive containing the complete tree plus an independently verifiable tree manifest. This is not assigned specifically to H1."
+  },
+  "occupied_path_conflict": {
+    "finding": "The reviewed v3 runner enforces absolute paths inside the occupied SpikeSortingTools repository and its installed Kilosort site. The expected runner/contract are absent there and the installed Kilosort io.py hash is c6093e14cae920e8cfaae6c3fed8d4c6ca032b046d705ef9868ec171c7bf3c99, not the frozen hash. Satisfying v3 literally would require modifying occupied state and is prohibited.",
+    "consequence": "After the missing wrapper source arrives, use an isolated successor bundle and a narrowly reviewed absolute-path/import-topology update; retain identical windows, eager/lazy construction, rtol=0, atol=0, mismatch_count=0, positive control, bounds and stop rules."
+  },
+  "safe_bundle_plan": [
+    "Receive and seal the exact wrapper commit/tree from any authorized source owner; verify commit/tree and all five SOURCE_BINDINGS.json file hashes.",
+    "Export DARTsort commit edcfe1b51d672b4136eb13cc78c0875da804b851 from its existing object database into a fresh isolated tree; do not checkout or alter the dirty repository.",
+    "Use the existing pristine Kilosort 4.0.27 source tree with io.py hash 767b76a0..., plus the frozen environment locks, to build a fresh isolated import root/environment; prove actual imported paths and hashes before any binary access.",
+    "Copy the exact reviewed runner and contract into the isolated namespace, then create a successor contract/runner changing only absolute path and import-composition bindings and adding explicit immutable tree/commit receipts. Obtain focused independent delta review and later coordinator/resource receipts before any real equality execution."
+  ],
+  "actions": {
+    "occupied_repo_modified": false,
+    "source_fetched": false,
+    "voltage_read_or_hashed": false,
+    "service_installed_or_started": false,
+    "fixture_or_real_equality_executed": false,
+    "gpu_used": false,
+    "sort_started": false
+  }
+}
