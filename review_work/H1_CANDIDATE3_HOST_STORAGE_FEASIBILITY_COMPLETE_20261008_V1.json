@@ -1,0 +1,39 @@
+{
+  "schema": "coordination-handoff-v1",
+  "host": "huklaban1",
+  "task_key": "candidate3_full_session_host_storage_feasibility",
+  "reported_at": "2026-10-08T01:49:30-07:00",
+  "terminal_state": "COMPLETE_INDEPENDENTLY_REVIEWED",
+  "author_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_full_session_host_storage_feasibility_h1_20261008_v1",
+    "manifest_sha256": "fcfa3167f03ae0c084740537fab09cb2a366229b44330eb840c6bd3537e4dd40",
+    "complete_sha256": "acdc0301c7a1357e5586841b61b4f23a0a42ebb8592327d92e6f69cb256607f9",
+    "verdict": "H5_CONDITIONALLY_PREFERRED_H1_CONDITIONAL_NOT_LAUNCH_READY"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_full_session_host_storage_feasibility_independent_review_h1_20261008_v1",
+    "manifest_sha256": "4c29453529f9665a3d4e0007d5badcefb469e3a1c7dde7561ceff41a0637afe0",
+    "complete_sha256": "3e91a24ef08a4bc40037893481b4ea9ceb93ed0f88f842112e37101bae432a7d",
+    "verdict": "PASS_SCOPED_HOST_STORAGE_FEASIBILITY_WITH_PLACEMENT_REBIND_REQUIRED"
+  },
+  "decision": "H5 remains the conditionally preferred data-local topology; H1 is a conditional streaming fallback. Neither host is launch-ready.",
+  "key_findings": [
+    "DARTsort core can avoid the 482618717184-byte float32 materialization with preprocessing=none, no recording copy and no tmp workdir",
+    "the context-correct lazy prewhitening wrapper remains unimplemented/reviewed because Kilosort FFT filtering depends on request block length and padding",
+    "H1 root ext4 has capacity for the 120 GB planning floor but not materialization plus that floor; accepted Arm-A is absent and REF is remote read-only CIFS",
+    "H5 has the accepted input local and stronger stale capacity evidence, but current storage/memory/oomd/GPU/job/source state requires fresh preflight"
+  ],
+  "review_qualifications": [
+    "accepted binary/content hashes are metadata-recorded bindings; this task did not freshly read or hash voltage payload",
+    "exact writable mount/target remains unbound on both hosts and must be rebound in the future launch contract"
+  ],
+  "parallel_transition_disposition": {
+    "v5_review_verdict": "GO_EXACT_V5_ONE_V7_REPLACEMENT_AFTER_FRESH_PRESTART",
+    "v7_launch": false,
+    "v7_blocker": "H1 host coexistence failed before launch: load about 55 on 20 CPUs, 36 blocked tasks and about 78-79 percent I/O wait from unrelated filesystem search",
+    "receipt": "H1_CANDIDATE3_V7_PRESTART_BLOCKED_HOST_COEXISTENCE_20261008_V1.json",
+    "retry_authorized": false
+  },
+  "successor_owner_requested": "HubMultiCoordinater",
+  "successor_request": "Acknowledge completion and assign the next bounded task; H1 will not go idle."
+}
