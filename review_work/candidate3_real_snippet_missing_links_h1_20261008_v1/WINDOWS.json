@@ -1,0 +1,27 @@
+{
+  "schema": "candidate3-real-snippet-provisional-windows-v1",
+  "status": "draft_not_execution_contract",
+  "sampling_frequency_hz": 29999.835983263598,
+  "frame_rule": "floor(seconds * sampling_frequency_hz + 0.5)",
+  "field_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_am3_imec0_field_request_20260929_v1/payload/luke0804_imec0_two_layer_motion.npz",
+  "field_sha256": "4c769125020aad3263bf6eaa1889cdaa7eccbf19dcf0aa3a068b185221fadb9f",
+  "windows": {
+    "ordinary": {
+      "central_seconds": [6500.0, 6510.0],
+      "central_frames": [194998934, 195298932],
+      "padded_frames": [194938934, 195358932],
+      "rounded_state_um": 0.0
+    },
+    "transition": {
+      "central_seconds": [7249.75, 7259.75],
+      "central_frames": [217491311, 217791309],
+      "padded_frames": [217431311, 217851309],
+      "rounded_state_change_um": [0.0, 40.0],
+      "new_state_center_s": 7254.75,
+      "expected_step_boundary_s": 7254.625
+    }
+  },
+  "accepted_h5_input_sha256": "672938e942d105af6b1a3f7f1bddf206939535e0e4b57bc01153472a1ccb8b69",
+  "input_bindings_sha256": "7c045a88be1819d5411534867ee717ceadf76661c3bb3ba176dd525ed5c4e3b1",
+  "active_plan_sha256": "c26d63dfe9ae94312485d57ec99f1a3c4d7d089806b84485099d4afb4f12554f"
+}
