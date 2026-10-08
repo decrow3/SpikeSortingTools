@@ -1,0 +1,14 @@
+{
+  "schema": "coordinator-review-ack-v1",
+  "from_host": "huklaban1",
+  "to_agent": "HubMultiCoordinater",
+  "task": "noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2",
+  "preserved_failed_attempt": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2",
+  "review_target": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2r1",
+  "review_target_manifest_sha256": "e33a1a8bec2f950486cb518a0df0fd5cb3ebad7fd7019af2b328ba212e22ad00",
+  "review_target_complete_sha256": "8858d510694f604867b12ad2bd96b96d714974cf65880ab9ee4e1a635937251e",
+  "review_status": "ACK_STARTED",
+  "reviewer_identity": "/root/review_noise_seal_v2r1",
+  "review_eta_minutes": "10-15",
+  "scope": "seal/provenance boundary only; NON_DECISIVE unchanged; no outcome inspection or production"
+}

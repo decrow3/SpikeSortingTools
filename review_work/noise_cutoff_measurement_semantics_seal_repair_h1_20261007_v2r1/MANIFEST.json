@@ -1,0 +1,11 @@
+{
+  "schema": "immutable-packet-manifest-v1",
+  "created_local": "2026-10-07T22:58:15-07:00",
+  "packet": "noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2r1",
+  "members": [
+    {"path": "BOUNDARY_RECEIPT.json", "bytes": 496, "sha256": "4187da2cfca94e5ce0668e4fee3cd8c8f2e1bc74e353cd77e1cb14a8c9f40c52"},
+    {"path": "FROZEN_CONTRACT.md", "bytes": 1855, "sha256": "355f34bbda975c60ef826dc5b7832aa3fda666a5519801ee2c596ddf5ef4d032"},
+    {"path": "PROVENANCE.json", "bytes": 1427, "sha256": "a397286adfc86ed4279d232451d4bdea726e962c86c00a6a4cb255862a799d7c"},
+    {"path": "SCIENTIFIC_VERDICT.md", "bytes": 395, "sha256": "a09d02461ef5b9e7912ea433fd43782d8e1e36c4305e6f50eab4c9c0635c5887"}
+  ]
+}

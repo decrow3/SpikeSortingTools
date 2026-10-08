@@ -1,0 +1,11 @@
+{
+  "schema": "immutable-packet-complete-v1",
+  "status": "COMPLETE_SEAL_REPAIR_PENDING_INDEPENDENT_REVIEW",
+  "completed_local": "2026-10-07T22:58:30-07:00",
+  "scientific_verdict": "NON_DECISIVE_UNCHANGED",
+  "manifest_path": "MANIFEST.json",
+  "manifest_sha256": "e33a1a8bec2f950486cb518a0df0fd5cb3ebad7fd7019af2b328ba212e22ad00",
+  "changed_boundary": "seal_chronology_only",
+  "failed_v2_preserved": true,
+  "production_launch": false
+}

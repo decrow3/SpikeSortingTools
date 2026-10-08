@@ -1,0 +1,14 @@
+{
+  "schema": "seal-repair-failed-attempt-v1",
+  "task": "noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2",
+  "status": "FAILED_SEAL_CHRONOLOGY_PRESERVED_NO_OVERWRITE",
+  "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2",
+  "manifest_sha256": "871f725ea0f1370b15b6427746d73f4cd1e0339955d0c8fa3719c264a0817596",
+  "complete_sha256": "41a7bb94ba5e22279cfaf3200c032804d4540fa5e8812543a58abc8d79afde4a",
+  "observed_manifest_mtime_ns": 1791439011735373300,
+  "observed_complete_mtime_ns": 1791439011735847300,
+  "observed_max_member_mtime_ns": 1791439011736423600,
+  "failure": "COMPLETE was later than MANIFEST but not later than every member; the shared filesystem finalized copied member mtimes after the later command segments.",
+  "scientific_verdict_changed": false,
+  "retry_namespace": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2r1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "noise-cutoff-seal-repair-boundary-receipt-v2r1",
+  "changed_boundary": "fresh packet publication order and provenance only",
+  "scientific_outcome_inspection_performed": false,
+  "scientific_verdict_carried_forward": "NON_DECISIVE",
+  "predecessors_modified": false,
+  "failed_v2_preserved": true,
+  "source_host_contract_launched": false,
+  "raw_or_waveform_reads": 0,
+  "rf_or_holdout_access": false,
+  "sort_or_production_launch": false,
+  "independent_review_required": true
+}

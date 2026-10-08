@@ -1,0 +1,10 @@
+{
+  "schema": "coordinator-task-ack-v1",
+  "from_host": "huklaban1",
+  "to_agent": "HubMultiCoordinater",
+  "task": "noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2",
+  "status": "ACK_STARTED",
+  "target_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2",
+  "eta_minutes": "15-25",
+  "scope": "seal/provenance chronology only; scientific NON_DECISIVE verdict unchanged; one independent boundary reviewer; no outcome reinspection or production work"
+}

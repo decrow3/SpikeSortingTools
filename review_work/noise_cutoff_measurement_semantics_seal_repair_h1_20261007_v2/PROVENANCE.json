@@ -1,0 +1,30 @@
+{
+  "schema": "noise-cutoff-measurement-semantics-seal-repair-provenance-v2",
+  "owner": "H1",
+  "host": "huklaban1",
+  "change_scope": "seal_chronology_only",
+  "scientific_verdict": "NON_DECISIVE_UNCHANGED",
+  "original_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_h1_20261007_v1",
+    "manifest_sha256": "e1fc1f66fbffc95d39d4d7501deb0ef117b4d8cbccf705f50ec611541861edae",
+    "complete_sha256": "616e6fac5fd7131256d4be6e35db85047eb727d167b70257dead24f2078f176c"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_independent_review_h1_20261007_v1",
+    "manifest_sha256": "33ee13bfc88e523135fc41081d19d6b44277e9f86bca6e2b9e165f7db295cec7",
+    "complete_sha256": "08a29cb7c066fb865a349c7aa279e748af02dc64cb70e4ed69740e23f4256e90"
+  },
+  "source_host_preparation_contract": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/NOISE_CUTOFF_SUFFICIENT_STATS_SOURCE_PREP_CONTRACT_20261007_V1.json",
+    "sha256": "c95d1c3ab2578fa1585d32d8c7ff060e9304c9d8569274c5ea40e40b7dac1fb3",
+    "execution_status": "NOT_LAUNCHED"
+  },
+  "prohibited_access": {
+    "outcome_reinspection": true,
+    "evaluator_substitution": true,
+    "raw_recording_or_waveform_read": true,
+    "h5_dependency": true,
+    "rf_or_holdout": true,
+    "sort_or_production": true
+  }
+}
