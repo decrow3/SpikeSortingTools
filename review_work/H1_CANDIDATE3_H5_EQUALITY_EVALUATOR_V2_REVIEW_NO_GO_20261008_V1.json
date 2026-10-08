@@ -1,0 +1,26 @@
+{
+  "schema": "coordination-handoff-v1",
+  "host": "huklaban1",
+  "task_key": "candidate3_h5_equality_result_evaluator_v2_independent_review",
+  "reported_at": "2026-10-08T03:26:00-07:00",
+  "terminal_state": "NO_GO_REPAIR_MALFORMED_SCHEMA_EXCEPTION_CLASSIFICATION",
+  "reviewed_author_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_equality_result_evaluator_h1_20261008_v2",
+    "manifest_sha256": "97247989e57f01bf77d2674fa35f8735b32bf1c1d4d994f1c110b41e70c78a19",
+    "complete_sha256": "154c9dc6917768503a3d513177a8c873f181765130705fc84a4bbc568d16ba64",
+    "evaluator_sha256": "c611acdd30bec755ef8d50ef60ae76b3684e567d66ad709edab8643be42ce678",
+    "contract_sha256": "4aa189c0120749829cee1749ae5ef75ff9835779bb111f5fe41a67fcf48ce34f"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_equality_result_evaluator_v2_independent_review_h1_20261008_v1",
+    "manifest_sha256": "904ba10265a2b029cf88084610302b432571b2f1de72171ade1b9206e0c60c19",
+    "complete_sha256": "7fd8716f3d17e5a927b29d709b51387f71114c9b20b38f7c7689494230694131"
+  },
+  "passing_delta": "All three v1 fail-open fixtures are repaired; exact digest, argv, receipt and failure-status validation works for well-typed valid JSON; ten stock controls pass including fully bound synthetic real-schema reachability.",
+  "remaining_blocker": "Correctly hashed malformed FAILURE JSON raises uncaught JSONDecodeError, and an ill-typed truthy release path raises uncaught TypeError. No category or sealed minimum coordinator action is emitted.",
+  "minimal_repair": "Catch FAILURE parse/schema errors as REJECT_SEAL_OR_SCHEMA_STOP; type-check release paths and catch path/file/receipt parse-schema errors as REJECT_PROVENANCE_STOP; add both controls without changing scientific or decision semantics.",
+  "coordinator_action": "Do not use evaluator v2 on a real result; preserve it and review the narrow exception-boundary repair first.",
+  "execution_state": "No H5 contact, real result, voltage, service/GPU/sort/RF/holdout or execution framework was accessed.",
+  "execution_owner": "/root",
+  "reviewer_next_state": "checked in with HubMultiCoordinater; available for focused repair review"
+}

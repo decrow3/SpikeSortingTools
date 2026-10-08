@@ -1,0 +1,27 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "created_at": "2026-10-08T03:25:21-07:00",
+  "status": "NO_GO_REPAIR_MALFORMED_SCHEMA_EXCEPTION_CLASSIFICATION",
+  "members": {
+    "ADVERSARIAL_RESULTS.json": {
+      "size": 956,
+      "sha256": "0117e5ede2b6a19fd88f8d46b8631f8dc68f55527f7f35bdcd9e1714560ccf03"
+    },
+    "CHECKS.json": {
+      "size": 955,
+      "sha256": "f87a6d5c5fc18303edb6ef36c29d085b0510d2cf5c99af5d22214c3699abeaec"
+    },
+    "PROVENANCE.json": {
+      "size": 969,
+      "sha256": "65cc0fabc9eab39c18f8200443e8cd258b7ba046341a72dce47ab7752f067136"
+    },
+    "REVIEW.md": {
+      "size": 4807,
+      "sha256": "b2d89119e8e90b2e4b931dd6502c8ac05fb3c325a4e0b9a8bcbd26cbcfa41ccd"
+    },
+    "independent_malformed_controls.py": {
+      "size": 3429,
+      "sha256": "a2bfed4707e53eddf2e2ef6e1c8620c9cdaaac76314972033eb7b0b25c4e034c"
+    }
+  }
+}

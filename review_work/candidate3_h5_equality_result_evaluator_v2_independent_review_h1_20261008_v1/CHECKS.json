@@ -1,0 +1,17 @@
+{
+  "schema": "candidate3-h5-equality-result-evaluator-v2-independent-review-checks-v1",
+  "reviewed_evaluator_sha256": "c611acdd30bec755ef8d50ef60ae76b3684e567d66ad709edab8643be42ce678",
+  "reviewed_contract_sha256": "4aa189c0120749829cee1749ae5ef75ff9835779bb111f5fe41a67fcf48ce34f",
+  "checks": {
+    "packet_seal": "PASS",
+    "strict_output_digests": "PASS",
+    "exact_real_argv_and_receipt_reconstruction": "PASS_FOR_WELL_TYPED_VALID_JSON",
+    "failure_status_and_schema": "PASS_FOR_VALID_JSON",
+    "v1_adversarial_regressions": "PASS_3_OF_3",
+    "fully_bound_real_schema_reachability": "PASS_SYNTHETIC_SCHEMA_ONLY",
+    "deterministic_malformed_failure_classification": "FAIL_UNHANDLED_JSONDecodeError",
+    "deterministic_malformed_release_classification": "FAIL_UNHANDLED_TypeError",
+    "minimum_coordinator_action_output": "FAIL_ON_UNHANDLED_INPUT_SCHEMA_ERRORS"
+  },
+  "verdict": "NO_GO_REPAIR_MALFORMED_SCHEMA_EXCEPTION_CLASSIFICATION"
+}

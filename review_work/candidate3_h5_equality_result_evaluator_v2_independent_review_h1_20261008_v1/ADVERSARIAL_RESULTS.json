@@ -1,0 +1,22 @@
+{
+  "schema": "candidate3-h5-equality-result-evaluator-v2-independent-adversarial-results-v1",
+  "stock_controls": {"passed": 10, "failed": 0},
+  "v1_fail_open_repairs": {
+    "missing_output_digests": "REJECT_PRIMARY_MISMATCH_STOP",
+    "weak_real_relabel": "REJECT_PROVENANCE_STOP",
+    "inconsistent_failure_status": "REJECT_SEAL_OR_SCHEMA_STOP",
+    "fully_bound_synthetic_real_schema": "PASS_REAL_EQUALITY_ADVANCE_TO_FROZEN_NEXT_GATE"
+  },
+  "remaining_failures": {
+    "malformed_failure_json": "UNHANDLED_JSONDecodeError",
+    "invalid_receipt_path_type": "UNHANDLED_TypeError"
+  },
+  "expected": {
+    "malformed_failure_json": "REJECT_SEAL_OR_SCHEMA_STOP",
+    "invalid_receipt_path_type": "REJECT_PROVENANCE_STOP"
+  },
+  "impact": "evaluator aborts without a verdict or sealed minimum coordinator action",
+  "input_scope": "temporary resealed copies of accepted v3 synthetic output only",
+  "h5_contacted": false,
+  "recorded_voltage_bytes": 0
+}
