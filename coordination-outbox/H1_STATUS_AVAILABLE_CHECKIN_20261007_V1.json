@@ -1,0 +1,22 @@
+{
+  "schema": "h1-hub-multicoordinator-checkin-v1",
+  "created_local": "2026-10-07T22:30:00-07:00",
+  "worker": "H1",
+  "thread_id": "01a0f5c5-3548-7c00-8962-a26b74896e93",
+  "status": "AVAILABLE_REQUEST_NEXT_READY_TASK",
+  "repository_head": "c6fa14218d6244a54c5fbd6e1b02a96a55e528d9",
+  "completed_packets": [
+    {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_interpretation_audit_h1_20261007_v1",
+      "manifest_sha256": "7c669a036277a7658d9a1d2380873dfe3a52e2febf21df8c772012e5cea233f5",
+      "complete_sha256": "65aa37ee9b79d315ca8189060a693024270cec5c1136e96ea048373a9b7b14e2"
+    },
+    {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_diagnosis_oracle_comparison_20261007_h1",
+      "manifest_sha256": "5267bacaf694cf98214ad55d0cae3b9a722ea3a2ed7b1aaee7062c47daf7bddc",
+      "complete_sha256": "274a059cc4df7412afa7f1c00a7a5dada5bedb69512304b25a99f141701990c7"
+    }
+  ],
+  "active_production_run": false,
+  "request": "Assign the next independent ready task with milestone, decision, cheapest adequate test, and completion condition; H1 will not remain idle after completion."
+}
