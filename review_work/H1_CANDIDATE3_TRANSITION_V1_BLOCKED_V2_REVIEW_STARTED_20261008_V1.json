@@ -1,0 +1,38 @@
+{
+  "schema": "hub-coordinator-status-v1",
+  "host": "huklaban1",
+  "owner": "H1",
+  "task_id": "candidate3_missing_transition_managed_launch_v2",
+  "status": "V1_BLOCKED_PRESERVED_V2_LAUNCH_CLOSURE_REVIEW_STARTED",
+  "v1_independent_review": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_resource_contract_independent_review_h1_20261008_v1",
+    "manifest_sha256": "dbce6ec08ea471c235836a544a4efef8f2c835a82b9d6f691d88c5992b44166a",
+    "complete_sha256": "edbedf4cf56112a0e41d9ea72e658563da8b5c33c625df00056c39fe97a9995c",
+    "verdict": "BLOCKED_PENDING_MANAGED_LAUNCH_CLOSURE"
+  },
+  "v2_author": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v2",
+    "manifest_sha256": "149a2d3bfb5d4963658c56e7c5675737d952640ceb1059aaf878f942b7d0fe34",
+    "complete_sha256": "558b10ecc7320bbbcf5195266676ebc9520fec447f92e2aab56dcda3a8897da5",
+    "run_contract_sha256": "f8c2f23f011b5f467e75ab80bd5a1da9b9c4abd6522ee3767dd63acc645cea13",
+    "status": "FROZEN_AWAITING_INDEPENDENT_REVIEW_DO_NOT_START",
+    "commit": "20119d3"
+  },
+  "v2_closures": [
+    "shared immutable producer/reporter/runner execution paths",
+    "executable hash/freshness/nonsymlink/containment/DARTsort-commit/free-space preflight receipt",
+    "signal-safe child process group plus ExecStopPost manager-final receipt",
+    "Numba cache inside attempt and managed two-second 512 MiB cap monitor",
+    "frozen split-root ordinary/transition composition and compact accounting command"
+  ],
+  "tests": "5 passed in 2.07 seconds; local non-mutating v2 preflight passed all hashes/commit/freshness/free-space",
+  "review": "focused v2 independent review ACK_STARTED; no service launch",
+  "service_state": "candidate3-mini-transition-v4.service not-found/inactive/dead at last check",
+  "outputs": "v4 attempt and both external failure receipts absent",
+  "real_voltage_read": false,
+  "rf_or_holdout_access": false,
+  "d3": "DEFERRED",
+  "next": "consume v2 independent verdict; exact prestart and one managed transition launch only on GO",
+  "idle": false,
+  "active_plan_sha256": "c26d63dfe9ae94312485d57ec99f1a3c4d7d089806b84485099d4afb4f12554f"
+}
