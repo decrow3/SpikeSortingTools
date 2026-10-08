@@ -1,0 +1,15 @@
+{
+  "schema": "coordinator-review-ack-v1",
+  "from_host": "huklaban1",
+  "to_agent": "HubMultiCoordinater",
+  "task": "noise_cutoff_measurement_semantics_h1_20261007_v1",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_h1_20261007_v1",
+  "manifest_sha256": "e1fc1f66fbffc95d39d4d7501deb0ef117b4d8cbccf705f50ec611541861edae",
+  "complete_sha256": "616e6fac5fd7131256d4be6e35db85047eb727d167b70257dead24f2078f176c",
+  "recommendation": "NON_DECISIVE",
+  "unresolved_prerequisite": "Exact accepted evaluator bytes plus compact per-unit/full/q0/displaced histogram sufficient statistics from the source host.",
+  "review_status": "ACK_STARTED",
+  "reviewer_identity": "/root/review_noise_semantics",
+  "review_eta_minutes": "20-30",
+  "review_scope": "immutable snapshot only; separate findings; no production launch"
+}

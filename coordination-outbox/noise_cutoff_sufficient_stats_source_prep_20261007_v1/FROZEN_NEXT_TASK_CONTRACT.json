@@ -1,0 +1,52 @@
+{
+  "schema": "noise-cutoff-sufficient-stats-source-prep-contract-v1",
+  "status": "FROZEN_NOT_LAUNCHED_BLOCKED_ON_SOURCE_HOST_OWNER",
+  "milestone": "M1_to_M2_measurement_repair",
+  "decision": "Determine whether the saved noise-cutoff gap survives exact reconstruction and whether dynamic-maximum or finite-count occupancy sensitivity materially drives classification.",
+  "author": "H1",
+  "required_owner": "source host holding accepted evaluator and curated sort arrays",
+  "inputs": {
+    "accepted_evaluator": {
+      "commit": "ba21bc97ad177ba5f2a1b79fb69d37f4f3eac3ad",
+      "path": "testing/full_session_r1_evaluation.py",
+      "sha256": "415f29d7f26102606143d0bd4fbb8ed9a136199a6642e664d50c2a6716b7c423"
+    },
+    "historical_per_unit_table_hashes": {
+      "imec0_REF": "6a15dbfa3041c4ebdf26c6c43e63fcfa290b688eb8d9fd656b63012e519693c7",
+      "imec0_A": "f92e866b636bf0630a9a7ad74f9133d8474514541ce43807c57eae601261b3ee",
+      "imec1_REF": "6b5d3405a775f43e068aafc3734d9a570f6baa9082e417b824d06c06917e5057",
+      "imec1_A": "8ef1bcedd90a6d9559c4e81b991b0d1708a0eea0275b181157b374dc58230f0f"
+    },
+    "semantic_review_packet": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_h1_20261007_v1",
+      "manifest_sha256": "e1fc1f66fbffc95d39d4d7501deb0ef117b4d8cbccf705f50ec611541861edae"
+    }
+  },
+  "required_outputs": [
+    "exact accepted evaluator snapshot and hash binding",
+    "per unit and full/q0/displaced subset: total count, finite count, negative count, maximum, exact 100 edges or defining range, 99 histogram counts",
+    "peak index/count, occupied-top count, high-start, high-tail count/mean/population standard deviation, second occupied-bin count, cutoff, cutoff margin to 5, explicit undefined reason",
+    "independent exact or roundoff-bounded reconstruction receipt against every historical saved scalar",
+    "predeclared single-maximum-removal diagnostic",
+    "predeclared deterministic within-unit/subset count-matching diagnostic",
+    "immutable provenance, MANIFEST and COMPLETE written last"
+  ],
+  "frozen_semantics": {
+    "historical_decision_unchanged": "finite cutoff strictly less than 5 passes",
+    "diagnostics_do_not_replace_historical_metric": true,
+    "no_cross_arm_identity_claim": true,
+    "original_and_diagnostic_outputs_separate": true,
+    "undefined_not_failure_or_zero": true
+  },
+  "resource_bounds": {
+    "raw_recording_reads": 0,
+    "waveform_reads": 0,
+    "rf_or_holdout_access": false,
+    "sort_started": false,
+    "gpu_work": false,
+    "parameter_sweep": false,
+    "max_output_bytes": 67108864
+  },
+  "stop_condition": "Stop after exact source binding, compact sufficient-stat export, two frozen diagnostics, independent reconstruction, and immutable seals; preserve a failed namespace on any mismatch or missing input.",
+  "blocker": "H1 does not hold the exact accepted evaluator object or the source-host curated amplitudes. Execution would require the authorized source-host owner; H1 has not requested or created new H5 output."
+}
