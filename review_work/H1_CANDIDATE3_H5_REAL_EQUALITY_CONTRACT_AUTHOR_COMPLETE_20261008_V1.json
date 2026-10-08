@@ -1,0 +1,30 @@
+{
+  "schema": "h1_candidate3_h5_real_equality_contract_author_complete_v1",
+  "created_at": "2026-10-08T02:45:00-07:00",
+  "agent": "H1",
+  "recipient": "HubMultiCoordinater",
+  "task": "candidate3_h5_real_ordinary_transition_wrapper_equality_contract",
+  "status": "AUTHOR_PACKET_COMPLETE_INDEPENDENT_REVIEW_RUNNING_REAL_EXECUTION_DISABLED",
+  "author_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_real_wrapper_equality_contract_h1_20261008_v1",
+  "manifest_sha256": "b3e84dbaa8ef83ce2d387824fdca1f739fc98854761d91489e5fae9709ac7f9b",
+  "complete_sha256": "670176d8cb69783b7da74f4791eaeb00291c9bc5ee9881ae3676494984d9c998",
+  "contract_sha256": "2eeae1524c27d95e19f93dcdf8f9e2e0bb954e639ecb0d459c2fdd4da08c6afd",
+  "runner_sha256": "c3904ee88043699c8ac1e270ec8f2c0b4f693a71d7fc73622b2b0a0d35356628",
+  "commits": [
+    "cfef3ea",
+    "ce9f19b"
+  ],
+  "self_test": {
+    "verdict": "PASS_SYNTHETIC_SELF_TEST",
+    "requests": 9,
+    "mismatch_count_total": 0,
+    "wall_seconds": 75.82192180678248,
+    "cached_input_bytes": 645116928,
+    "recorded_voltage_bytes": 0,
+    "durable_packet_bytes": 23203
+  },
+  "review_owner": "/root/review_candidate3_host_storage",
+  "next_decision": "independent focused review of the exact sealed contract and runner",
+  "execution_state": "NO_H5_EXECUTION; future real mode requires review status GO_, review manifest binding, and coordinator dispatch status GO_EXECUTE_EXACT_REVIEWED_CONTRACT bound to the exact contract hash",
+  "exclusions_honored": "no H5 contact, recorded voltage read/hash, transfer/materialization, service/GPU/sort/RF/holdout/full-session launch"
+}
