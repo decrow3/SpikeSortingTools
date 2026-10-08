@@ -1,0 +1,11 @@
+{
+  "schema": "h1-candidate3-reentry-metadata-probe-fixture-results-v3",
+  "run_at": "2026-10-08T03:56:00-07:00",
+  "command": "pytest -q testing/test_h1_candidate3_reentry_metadata_probe_v3.py",
+  "result": "14 passed in 0.14s",
+  "exit_code": 0,
+  "live_runner_executed": false,
+  "new_v3_coverage": "A pre-existing receipt causes atomic create-if-absent to raise FileExistsError and remains byte-identical.",
+  "retained_v2_coverage": "Exact metadata/no-content behavior, adversarial membership/type/size, bounded timeout/reap, atomic local write, and bound snapshot-1 PASS plus >=600-second snapshot-2 placement all remain passing.",
+  "limitation": "Local fixtures do not establish live mount recovery, kernel interruptibility of a future blocked syscall, or H1 launch readiness."
+}

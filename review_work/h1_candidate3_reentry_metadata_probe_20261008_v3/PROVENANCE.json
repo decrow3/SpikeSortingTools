@@ -1,0 +1,19 @@
+{
+  "schema": "h1-candidate3-reentry-metadata-probe-provenance-v3",
+  "created_at": "2026-10-08T03:56:00-07:00",
+  "host": "huklaban1",
+  "branch": "codex/motionqc-phase1",
+  "v1_commit": "ac78a0e",
+  "v1_verdict": "NO_GO_SNAPSHOT_ORDER_AND_GAP_NOT_ENFORCED_BY_RUNNER",
+  "v1_independent_review_manifest_sha256": "9c9142db34fb7fba6f54973d9d2009eb27bb9710e535dd5549e8a4762c1b223f",
+  "v1_independent_review_complete_sha256": "f83137ddc1ef04a71d924d25f94db8d02a177572c50c79bdbec69da95e7a58d9",
+  "v2_commit": "45401a0",
+  "v2_verdict": "NO_GO_RECEIPT_CREATE_NOT_ATOMIC_NO_OVERWRITE",
+  "v3_contract_sha256": "c5fa62db94da2d81b63bf30050d86e8abbbf295a7dcf3e41913d1f59e7d372a4",
+  "v3_runner_sha256": "0662fb11c131a27d485d112470e03bdd36c2255384d58ffa02c1c2f4e90a26f8",
+  "v3_tests_sha256": "67ab5bb7b259806832de04b7c21ded3c68fcd4c0ab657c6908ace7195fc2cfe5",
+  "v3_delta": "Replace check-then-os.replace receipt installation with same-directory fsynced temporary plus atomic link(2) create-if-absent; add an adversarial preservation test.",
+  "live_runner_executed": false,
+  "new_live_mount_lookup": false,
+  "mutations": "local v3 source, contract, tests and compact packet files only; no process/service/mount/H5/voltage/recording/sort mutation"
+}
