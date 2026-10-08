@@ -1,0 +1,6 @@
+{
+  "schema": "immutable-evidence-complete-v1",
+  "completed_at": "2026-10-08T03:56:14-07:00",
+  "status": "NO_GO_REPAIR_ATOMIC_PRESPAWN_ATTEMPT_CLAIM",
+  "manifest_sha256": "f5acf80285c2f14d638ab41cd84b4f9840d11ae40ee6226d9e60f882761ef62a"
+}

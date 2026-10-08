@@ -1,0 +1,12 @@
+{
+  "schema": "h1-candidate3-reentry-metadata-probe-v3-independent-concurrency-result-v1",
+  "fixture": "two simultaneous snapshot_1 invocations with run_worker_bounded mocked; no live target access",
+  "mocked_worker_calls": 2,
+  "invocation_exit_codes": [0, 30],
+  "final_receipt_count": 1,
+  "final_receipt_status": "PASS_METADATA_GATE",
+  "loser_status": "BLOCKED_RECEIPT_WRITE",
+  "receipt_overwritten": false,
+  "contract_expectation": "concurrency=1 and at most one worker per declared snapshot",
+  "verdict": "FAIL_PRESPAWN_EXCLUSIVITY_NOT_ENFORCED"
+}

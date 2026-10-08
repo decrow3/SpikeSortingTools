@@ -1,0 +1,23 @@
+{
+  "schema": "coordination-handoff-v1",
+  "host": "huklaban1",
+  "task_key": "h1_candidate3_reentry_metadata_probe_v3_full_independent_review",
+  "reported_at": "2026-10-08T03:56:30-07:00",
+  "terminal_state": "NO_GO_REPAIR_ATOMIC_PRESPAWN_ATTEMPT_CLAIM",
+  "author_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/h1_candidate3_reentry_metadata_probe_20261008_v3",
+    "manifest_sha256": "873a9773e15be22fba1e0bdd5a20f740f188a4be86bb11c12c04f5e31065d597",
+    "complete_sha256": "7888476d31f38b33f82a4bd3614f3faf17f31ad1bf77d6434be4f8df4c05a21a"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/h1_candidate3_reentry_metadata_probe_v3_independent_review_20261008_v1",
+    "manifest_sha256": "f5acf80285c2f14d638ab41cd84b4f9840d11ae40ee6226d9e60f882761ef62a",
+    "complete_sha256": "8dcbc841e39c24aa91297aaf706509378025f718e5d70bbb81128ef49d7c6e3b"
+  },
+  "passing_scope": "Full source confirms exact no-content metadata operation, bound snapshot-1 PASS plus >=600-second gap, contracted timeout/reap with kill-race handling, and atomic no-overwrite link publication; 14/14 fixtures pass.",
+  "blocker": "Receipt exclusivity is acquired only after the live worker. A local mocked concurrent control started two workers before one receipt link lost, violating concurrency=1 and at-most-one-worker-per-snapshot.",
+  "minimal_repair": "Atomically create and fsync an immutable per-snapshot attempt claim before predecessor validation or worker spawn; any existing claim/receipt blocks before live access; preserve claim and bind final receipt to it; add concurrent-start fixture.",
+  "decision": "Do not execute v3 live. Preserve it and review the pre-spawn-claim repair first.",
+  "execution_state": "No live runner/mount probe or process/service/mount/H5/voltage/recording/sort action occurred.",
+  "reviewer_next_state": "checked in with HubMultiCoordinater"
+}

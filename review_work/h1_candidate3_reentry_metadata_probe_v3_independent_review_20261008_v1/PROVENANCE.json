@@ -1,0 +1,13 @@
+{
+  "schema": "h1-candidate3-reentry-metadata-probe-v3-independent-review-provenance-v1",
+  "created_at": "2026-10-08T03:55:10-07:00",
+  "reviewer_host": "huklaban1",
+  "author_packet": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/review_work/h1_candidate3_reentry_metadata_probe_20261008_v3",
+  "shared_copy": "/mnt/NPX/Luke/DARTsort_motion_experiments/h1_candidate3_reentry_metadata_probe_20261008_v3",
+  "author_commit": "7d49afbbc5948fa9d3f549a8c97dc62f60e52ff8",
+  "author_manifest_sha256": "873a9773e15be22fba1e0bdd5a20f740f188a4be86bb11c12c04f5e31065d597",
+  "author_complete_sha256": "7888476d31f38b33f82a4bd3614f3faf17f31ad1bf77d6434be4f8df4c05a21a",
+  "scope": "full static source/contract review, 14 local fixtures and one mocked concurrency control",
+  "live_runner_executed": false,
+  "excluded": "live mount probe, process/service/mount/H5/voltage/recording/sort/RF/holdout changes"
+}
