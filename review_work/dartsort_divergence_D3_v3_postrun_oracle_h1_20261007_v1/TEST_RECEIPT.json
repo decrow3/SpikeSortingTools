@@ -1,0 +1,26 @@
+{
+  "schema": "d3-v3-postrun-oracle-test-receipt-v1",
+  "observed_at": "2026-10-07T23:12:02-07:00",
+  "commands": [
+    "pytest -q -p no:cacheprovider test_postrun_oracle.py",
+    "python -m py_compile postrun_oracle.py test_postrun_oracle.py",
+    "python -c 'import postrun_oracle; postrun_oracle.verify_predecessors()'"
+  ],
+  "result": "8 passed in 0.12s; py_compile passed; predecessor verification passed",
+  "fixtures": [
+    "positive_final_only",
+    "missing_required_clock_field",
+    "stale_member_hash",
+    "reordered_pair_rows",
+    "false_parent_attribution",
+    "valid_failure_closure",
+    "mixed_failure_and_complete"
+  ],
+  "failed_fixture_version_preserved": "FAILED_TEST_RECEIPT_V0.json",
+  "production_runner_imported": false,
+  "future_production_namespace_inspected": false,
+  "new_h5_output_read": false,
+  "raw_or_waveform_read": false,
+  "rf_or_holdout_access": false,
+  "sort_or_parameter_change": false
+}

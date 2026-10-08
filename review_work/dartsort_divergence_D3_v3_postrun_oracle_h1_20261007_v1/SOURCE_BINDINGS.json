@@ -1,0 +1,26 @@
+{
+  "schema": "d3-v3-postrun-oracle-source-bindings-v1",
+  "frozen_before_future_outcome_visibility": true,
+  "executable_derivative": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_v3_executable_derivative_prep_h5_20261007_v2",
+    "manifest_sha256": "10cdbcd20afdd665840496fa3549b1e5119b4c21f8e32ffb519e03ea49b0dee7",
+    "complete_sha256": "24228709fe0d032112f6224d4fe69ba0117d74c9da631e096ea1aebe4c89eb90",
+    "contract_sha256": "c41c9c521accf0fcd3c95778afd0511a4e4b799394491a6c5e3134302fd29dd5",
+    "runner_sha256": "725d811d2793a2d9a0fabd5ae20880a5cfaab80057dab0b8b5562e25657b5bb3",
+    "request_sha256": "1d8ba4ebf7576b4c8aa1f481ef4901adc28599e613e029d874e4aa53106c40a4",
+    "members_verified": 11
+  },
+  "technical_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_v3_executable_derivative_review_h5_20261007_v2",
+    "manifest_sha256": "7874adc42c7aadf9da6bd93be0bb4d635ed7458874ab27c98a49195c3387e3fe",
+    "complete_sha256": "71be7fbab5e36892d9882cfaba850ff3a11a3c910d2af14f52072512626d37b6",
+    "release_sha256": "d830db10c9841046ac26183015086c502dedbdd13ca6d0f07b469245545ca684",
+    "members_verified": 4
+  },
+  "accepted_dependencies": {
+    "adapter_sha256": "60ecddfdd01d1fbcdeffaa77642d6e4a88bf689dc7a7b1d9275b303efd37526b",
+    "matcher_sha256": "989198578116ec53dd409bca96e544bca983f60f05bde051e0321810f21126c2"
+  },
+  "future_production_namespace_inspected": false,
+  "production_execution_performed": false
+}

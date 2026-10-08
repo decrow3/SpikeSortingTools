@@ -1,0 +1,13 @@
+{
+  "schema": "coordinator-task-ack-v1",
+  "from_host": "huklaban1",
+  "to_agent": "HubMultiCoordinater",
+  "task": "dartsort_divergence_D3_v3_postrun_oracle_h1_20261007_v1",
+  "status": "ACK_STARTED",
+  "target_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_v3_postrun_oracle_h1_20261007_v1",
+  "eta_minutes": "30-45",
+  "bound_executable_derivative_manifest_sha256": "10cdbcd20afdd665840496fa3549b1e5119b4c21f8e32ffb519e03ea49b0dee7",
+  "bound_technical_review_manifest_sha256": "7874adc42c7aadf9da6bd93be0bb4d635ed7458874ab27c98a49195c3387e3fe",
+  "future_production_outcomes_inspected": false,
+  "scope": "pre-outcome post-run interpretation oracle and independent synthetic fixtures only; no production launch or scientific outcome read"
+}

@@ -1,0 +1,14 @@
+{
+  "schema": "immutable-packet-complete-v1",
+  "status": "COMPLETE_FROZEN_PRE_OUTCOME_ORACLE",
+  "completed_local": "2026-10-07T23:12:30-07:00",
+  "manifest_path": "MANIFEST.json",
+  "manifest_sha256": "3162ed5c3b5145abedecb30a43a891a6e61015ca30260d7352420cdbfc6ef807",
+  "executable_derivative_manifest_sha256": "10cdbcd20afdd665840496fa3549b1e5119b4c21f8e32ffb519e03ea49b0dee7",
+  "technical_review_manifest_sha256": "7874adc42c7aadf9da6bd93be0bb4d635ed7458874ab27c98a49195c3387e3fe",
+  "future_production_namespace_inspected": false,
+  "production_execution_performed": false,
+  "raw_voltage_bytes_read": 0,
+  "gpu_work": false,
+  "rf_or_holdout_access": false
+}
