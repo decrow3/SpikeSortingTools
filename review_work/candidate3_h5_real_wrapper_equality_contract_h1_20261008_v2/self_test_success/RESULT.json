@@ -1,0 +1,208 @@
+{
+  "binary_read_bytes": 0,
+  "cached_input_bytes": 645116928,
+  "dartsort_boundary": [
+    {
+      "copy_flag": false,
+      "preprocess_same_object": true,
+      "work_dir": null,
+      "workdir_same_object": true
+    },
+    {
+      "copy_flag": false,
+      "preprocess_same_object": true,
+      "work_dir": null,
+      "workdir_same_object": true
+    }
+  ],
+  "positive_controls": [
+    {
+      "arm": "ordinary",
+      "comparison": "padded_filter_cropped_core_vs_core_filtered_alone",
+      "max_abs_error": 136.28862762451172,
+      "mismatch_count": 115195591
+    },
+    {
+      "arm": "transition",
+      "comparison": "padded_filter_cropped_core_vs_core_filtered_alone",
+      "max_abs_error": 162.01445770263672,
+      "mismatch_count": 115195436
+    }
+  ],
+  "requests": [
+    {
+      "arm": "ordinary",
+      "dtype": "float32",
+      "eager_sha256": "78a4e5cb0d3628436cfb04351a6d3b5cca11052b1c2af408698cfff9458ef036",
+      "finite": true,
+      "first_mismatch_index": null,
+      "global_frames": [
+        194938934,
+        195358932
+      ],
+      "lazy_sha256": "78a4e5cb0d3628436cfb04351a6d3b5cca11052b1c2af408698cfff9458ef036",
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "request": "padded_full",
+      "shape": [
+        419998,
+        384
+      ]
+    },
+    {
+      "arm": "ordinary",
+      "dtype": "float32",
+      "eager_sha256": "ec4a154ab66326ed8a2efeedd86ab60715359b27c0d19a703a4db7602398ee8c",
+      "finite": true,
+      "first_mismatch_index": null,
+      "global_frames": [
+        194998934,
+        195298932
+      ],
+      "lazy_sha256": "ec4a154ab66326ed8a2efeedd86ab60715359b27c0d19a703a4db7602398ee8c",
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "request": "central_full",
+      "shape": [
+        299998,
+        384
+      ]
+    },
+    {
+      "arm": "ordinary",
+      "dtype": "float32",
+      "eager_sha256": "c3cc71474961aefb8188c2a2d018e5affd3fded0b3f871fa420470ed9a1abf49",
+      "finite": true,
+      "first_mismatch_index": null,
+      "global_frames": [
+        194998934,
+        195028934
+      ],
+      "lazy_sha256": "c3cc71474961aefb8188c2a2d018e5affd3fded0b3f871fa420470ed9a1abf49",
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "request": "central_first_chunk",
+      "shape": [
+        30000,
+        384
+      ]
+    },
+    {
+      "arm": "ordinary",
+      "dtype": "float32",
+      "eager_sha256": "3b4bdcc2d68f6047b14921e3e12fd2e557c30fb4ea6e764f634c07ee0585764f",
+      "finite": true,
+      "first_mismatch_index": null,
+      "global_frames": [
+        195268932,
+        195298932
+      ],
+      "lazy_sha256": "3b4bdcc2d68f6047b14921e3e12fd2e557c30fb4ea6e764f634c07ee0585764f",
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "request": "central_last_chunk",
+      "shape": [
+        30000,
+        384
+      ]
+    },
+    {
+      "arm": "transition",
+      "dtype": "float32",
+      "eager_sha256": "f8e02fe85ff787fa7ee8a238d66d7a323dd64e5e06d2429ecc751c750f80ce58",
+      "finite": true,
+      "first_mismatch_index": null,
+      "global_frames": [
+        217431311,
+        217851309
+      ],
+      "lazy_sha256": "f8e02fe85ff787fa7ee8a238d66d7a323dd64e5e06d2429ecc751c750f80ce58",
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "request": "padded_full",
+      "shape": [
+        419998,
+        384
+      ]
+    },
+    {
+      "arm": "transition",
+      "dtype": "float32",
+      "eager_sha256": "5551c5ac11c2940b5024ba3359b923abfc258e46ae9489a587aa1416c26c29f8",
+      "finite": true,
+      "first_mismatch_index": null,
+      "global_frames": [
+        217491311,
+        217791309
+      ],
+      "lazy_sha256": "5551c5ac11c2940b5024ba3359b923abfc258e46ae9489a587aa1416c26c29f8",
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "request": "central_full",
+      "shape": [
+        299998,
+        384
+      ]
+    },
+    {
+      "arm": "transition",
+      "dtype": "float32",
+      "eager_sha256": "32f9de6496b323c681b5b9d8f546f95d7e497635b03e0afcaac16de7ebc8fef4",
+      "finite": true,
+      "first_mismatch_index": null,
+      "global_frames": [
+        217491311,
+        217521311
+      ],
+      "lazy_sha256": "32f9de6496b323c681b5b9d8f546f95d7e497635b03e0afcaac16de7ebc8fef4",
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "request": "central_first_chunk",
+      "shape": [
+        30000,
+        384
+      ]
+    },
+    {
+      "arm": "transition",
+      "dtype": "float32",
+      "eager_sha256": "0f8a660f649ac887cfa911ca4832a334a31c1b1c3133927b2a61b749f869de79",
+      "finite": true,
+      "first_mismatch_index": null,
+      "global_frames": [
+        217761309,
+        217791309
+      ],
+      "lazy_sha256": "0f8a660f649ac887cfa911ca4832a334a31c1b1c3133927b2a61b749f869de79",
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "request": "central_last_chunk",
+      "shape": [
+        30000,
+        384
+      ]
+    },
+    {
+      "arm": "transition",
+      "dtype": "float32",
+      "eager_sha256": "10735bef592c5d240d12e4771ee8cd910e108a3635c21b0edc597c786387fda0",
+      "finite": true,
+      "first_mismatch_index": null,
+      "global_frames": [
+        217622560,
+        217652560
+      ],
+      "lazy_sha256": "10735bef592c5d240d12e4771ee8cd910e108a3635c21b0edc597c786387fda0",
+      "max_abs_error": 0.0,
+      "mismatch_count": 0,
+      "request": "expected_boundary_chunk",
+      "shape": [
+        30000,
+        384
+      ]
+    }
+  ],
+  "temporary_bytes_final": 5001,
+  "verdict": "PASS_SYNTHETIC_SELF_TEST",
+  "wall_seconds": 74.20477671176195
+}

@@ -1,0 +1,184 @@
+{
+  "schema": "candidate3-h5-real-wrapper-equality-contract-v2",
+  "frozen_at": "2026-10-08T02:49:00-07:00",
+  "status": "EXECUTION_DISABLED_UNTIL_FOCUSED_REVIEW_GO_AND_H5_DISPATCH",
+  "decision": "does the reviewed lazy adapter reproduce the accepted eager Kilosort immediate-prewhitening construction exactly on one ordinary and one state-transition padded Arm-A window on H5?",
+  "input": {
+    "probe": "Luke0804 imec0",
+    "path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/recording/traces_cached_seg0.raw",
+    "frames_half_open": [0, 314204894],
+    "sampling_frequency_hz": 29999.835983263598,
+    "channels": 384,
+    "dtype": "int16",
+    "gain_uv_per_count_metadata": 2.34375,
+    "kilosort_scale": null,
+    "kilosort_shift": null,
+    "bytes": 241309358592,
+    "recorded_file_sha256": "672938e942d105af6b1a3f7f1bddf206939535e0e4b57bc01153472a1ccb8b69",
+    "recording_content_sha256": "90b6a07a22e32fdd741c3f605f582d44f361bc75ed18737c134e13fdd1d76ad9",
+    "input_bindings_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_a_four_unit_approval_metadata_20261001_v3_h5/INPUT_BINDINGS.json",
+    "input_bindings_sha256": "7c045a88be1819d5411534867ee717ceadf76661c3bb3ba176dd525ed5c4e3b1",
+    "recording_manifest_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/recording/rescue_recording_manifest.json",
+    "recording_manifest_sha256": "ef2071c9ead186689b804f0df52ff9eb5a25cf1f4bdd610ae14e6c81cab834b2",
+    "geometry_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/sort/sorter_output/channel_positions.npy",
+    "geometry_sha256": "0469ca92fb739a0cfd2f1613262d3a2d75af1098385385d7462ee6e3fd038d75",
+    "geometry_shape": [384, 2],
+    "channel_ids": "integers 0 through 383 in order",
+    "time_origin_s": 0.0,
+    "identity_rule": "rehash compact metadata and geometry; stat exact binary path/size; do not full-hash the 241 GB binary inside this bounded equality run"
+  },
+  "source": {
+    "spike_sorting_tools_commit": "aea7431c4026fa74e36ad01139d9e596900a1d25",
+    "wrapper_sha256": "b7f06da5685d3b8af0c7bd18e7ccfeb3af7db8fe3b22b1fa6a619908f43bb690",
+    "runner_sha256": "3db928375cbcd75e9f79f1ab593978ef0af736f5ea3adbc0b9a0e46853c217fc",
+    "kilosort_version": "4.0.27",
+    "kilosort_io_sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+    "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+    "dartsort_main_sha256": "e4c03417c1256384c4f8fbf0250560003bd795b7274932ef1e49dcde217bd249",
+    "dartsort_main_util_sha256": "2846a319c19c25b3cad81ab991057c0868b87d760b66f20e8d2bb3db8ffa3bcc",
+    "dartsort_preprocess_util_sha256": "566ce1ab60af12585978bcd7e3192cb2ca4cc220ab5e41895140c00bdbc06674",
+    "required_imports": [
+      "npx_preprocessing.motion.KilosortPrewhiteningRecording",
+      "kilosort.io.BinaryFiltered",
+      "kilosort.preprocessing.get_highpass_filter",
+      "dartsort.DARTsortInternalConfig",
+      "dartsort.util.preprocess_util.preprocess",
+      "dartsort.util.main_util.ds_will_copy_recording",
+      "dartsort.util.main_util.ds_all_to_workdir"
+    ],
+    "expected_h5_interpreter": "/home/huklaban5/Documents/DARTsort/.venv/bin/python",
+    "expected_h5_repository": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools",
+    "expected_h5_contract_path": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/testing/contracts/candidate3_h5_real_wrapper_equality_20261008_v2.json",
+    "expected_h5_kilosort_site": "/home/huklaban5/Documents/SpikeSortingTools/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages",
+    "import_composition": "run with the DARTsort interpreter; append the Kilosort site-packages path after the interpreter's own site-packages so DARTsort dependency versions retain precedence; import hashes must still match",
+    "import_rule": "actual H5 runner and imported files must rehash exactly before binary access; real mode also requires the exact frozen interpreter, repository, contract, and appended Kilosort-site paths",
+    "invocation_rule": "execute RUNNER.py with --contract at expected_h5_contract_path, --expected-contract-sha256 equal to the exact contract file hash, a fresh bounded --output, --extra-kilosort-site at expected_h5_kilosort_site, exact hash-bound --review-complete, --dispatch-receipt and --resource-receipt arguments, and --execute-real; argv is preserved in provenance"
+  },
+  "filter": {
+    "device": "cpu",
+    "channel_map": "0:384",
+    "invert_sign": false,
+    "per_channel_temporal_centering": true,
+    "global_lower_median_car": true,
+    "highpass_cutoff_hz": 300.0,
+    "fft_nt": "exact request length independently for every listed request",
+    "artifact_threshold": "Infinity_disabled",
+    "whiten_mat": null,
+    "dshift": null,
+    "output_dtype": "float32"
+  },
+  "windows": [
+    {
+      "name": "ordinary",
+      "central_frames": [194998934, 195298932],
+      "padded_frames": [194938934, 195358932],
+      "padding_frames": [60000, 60000],
+      "padded_request_length": 419998,
+      "context": "inside accepted rounded 0 um state"
+    },
+    {
+      "name": "transition",
+      "central_frames": [217491311, 217791309],
+      "padded_frames": [217431311, 217851309],
+      "padding_frames": [60000, 60000],
+      "padded_request_length": 419998,
+      "expected_step_boundary_frame": 217637560,
+      "field_center_change_frame": 217641310,
+      "context": "spans accepted rounded 0 to +40 um state transition; both boundary conventions remain inside the request"
+    }
+  ],
+  "requests": [
+    {"name": "padded_full", "relative_start": 0, "relative_end": 419998, "length": 419998},
+    {"name": "central_full", "relative_start": 60000, "relative_end": 359998, "length": 299998},
+    {"name": "central_first_chunk", "relative_start": 60000, "relative_end": 90000, "length": 30000},
+    {"name": "central_last_chunk", "relative_start": 329998, "relative_end": 359998, "length": 30000}
+  ],
+  "transition_extra_request": {
+    "name": "expected_boundary_chunk",
+    "global_start": 217622560,
+    "global_end": 217652560,
+    "relative_start": 191249,
+    "relative_end": 221249,
+    "length": 30000
+  },
+  "acceptance": {
+    "primary": "for every request, lazy and eager arrays have identical shape [length,384], float32 dtype, finite mask, values and SHA-256",
+    "rtol": 0.0,
+    "atol": 0.0,
+    "required_max_abs_error": 0.0,
+    "required_mismatch_count": 0,
+    "clock": "local sample zero equals padded_global_start/fs and global request times equal global_frame/fs",
+    "channels_geometry": "channel IDs/order and geometry equal the hash-bound 384x2 input",
+    "dartsort": "preprocessing=none, copy_recording_to_tmpdir=no and work_in_tmpdir=false return the identical lazy recording object with copy_flag=false and work_dir=null",
+    "positive_control": "filtering the 299998-frame central interval alone must differ from cropping frames [60000,359998) from the 419998-frame padded filter; report mismatch count/max error without treating it as a primary failure",
+    "verdict_pass": "all primary comparisons and metadata/import/resource guards pass and the positive control differs",
+    "verdict_fail": "any primary mismatch, nonfinite output, identity/import/resource breach or missing positive-control difference"
+  },
+  "mismatch_interpretation": {
+    "primary_mismatch": "wrapper/producer/import/request-context incompatibility; stop, preserve exact request and first mismatch coordinates, do not tune tolerance or launch a sort",
+    "positive_control_difference": "expected proof that FFT request context matters; not a voltage-quality or motion result",
+    "positive_control_no_difference": "fixture noninformative; fail closed",
+    "scope": "neither pass nor failure measures sorting benefit, biological identity, purity or full-session performance"
+  },
+  "resources": {
+    "binary_read_bytes_max": 645116928,
+    "read_rule": "read each 419998x384 int16 padded window exactly once, sequentially; all comparisons operate on the cached bounded arrays",
+    "memory_max_bytes": 17179869184,
+    "wall_seconds_max": 1800,
+    "cpu_threads_max": 8,
+    "gpu": "disabled",
+    "persistent_output_bytes_max": 67108864,
+    "temporary_bytes_max": 2147483648,
+    "no_numeric_array_output": true,
+    "no_retry": true,
+    "enforcement": "runner lowers RLIMIT_AS and RLIMIT_FSIZE before scientific imports, installs an active wall timer, directs TMPDIR and NUMBA_CACHE_DIR into one owned temporary root watched at 0.1 s intervals, and computes sealed success/failure packet size before writing MANIFEST and COMPLETE; the managed H5 job must independently enforce the same or tighter MemoryMax, RuntimeMaxSec, temporary-filesystem size, CPU and GPU exclusions"
+  },
+  "output_schema": {
+    "fresh_output_directory": true,
+    "members": [
+      "INTERPRETATION_FREEZE.json",
+      "CONTRACT_COPY.json",
+      "PROVENANCE.json",
+      "RESULT.json or FAILURE.json",
+      "MANIFEST.json",
+      "COMPLETE.json"
+    ],
+    "per_request_result": [
+      "arm",
+      "request",
+      "global_frames",
+      "shape",
+      "dtype",
+      "lazy_sha256",
+      "eager_sha256",
+      "finite",
+      "mismatch_count",
+      "max_abs_error",
+      "first_mismatch_index"
+    ],
+    "numeric_policy": "save hashes, counts and scalar diagnostics only; never save raw or prewhitened arrays",
+    "seal_rule": "MANIFEST hashes every durable member except COMPLETE; projected bytes including MANIFEST and COMPLETE must fit before either is written; COMPLETE is written last for success or failure",
+    "outer_launch_receipt": "the managed job writes a separate immutable outer receipt even when runner argument, contract, source, environment or release preflight fails before output creation; it binds exact argv, manager_job_id, resource settings, stdout/stderr hashes, exit status, start/end state, contract/runner/review/dispatch/resource hashes, and whether exactly one RESULT.json or FAILURE.json exists in a sealed runner packet"
+  },
+  "stop_conditions": [
+    "contract, runner or imported source hash mismatch",
+    "input metadata/geometry hash, binary stat/size, frame or clock mismatch",
+    "read, memory, wall, thread, output or temporary bound breach",
+    "any primary equality mismatch or nonfinite output",
+    "positive control does not differ",
+    "output directory exists",
+    "any attempted full binary hash, full-recording copy/materialization, GPU/service/sort/RF/holdout access"
+  ],
+  "release": {
+    "rule": "real mode requires immutable focused-review COMPLETE and coordinator-dispatch receipts supplied with exact external hashes; later H5 execution also requires fresh dedup/resource reconciliation but no new generic human approval",
+    "review_schema": "candidate3-h5-real-wrapper-equality-focused-review-complete-v1",
+    "review_status": "GO_EXECUTION_READY",
+    "review_complete": "JSON must exactly match review_schema/review_status, include manifest_sha256, and bind reviewed_contract_sha256 plus reviewed_runner_sha256",
+    "resource_receipt_schema": "candidate3-h5-real-wrapper-equality-managed-resource-prestart-v1",
+    "resource_receipt_status": "GO_EXACT_LIMITS_EXTERNALLY_ENFORCED",
+    "resource_receipt": "hash-bound JSON must bind the exact contract and runner plus memory, wall, CPU, temporary, persistent-output and GPU limits; it must identify the independent manager job and a persistent outer receipt path that captures pre-output failures",
+    "dispatch_task": "candidate3_h5_real_wrapper_equality_v2",
+    "dispatch_status": "GO_EXECUTE_EXACT_REVIEWED_CONTRACT",
+    "dispatch_contract_binding": "dispatch JSON contract_sha256 must equal the command-line expected contract hash; runner_sha256 must equal the contract runner hash; review_complete_sha256 and resource_receipt_sha256 must equal the separately supplied receipt hashes"
+  }
+}

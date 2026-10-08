@@ -1,0 +1,18 @@
+{
+  "members": {
+    "CONTRACT_COPY.json": {
+      "sha256": "40bd2c181730f48acd92f882cdf9c2414498b4ab7fdd26a460eaac3fcc880dae",
+      "size": 11923
+    },
+    "FAILURE.json": {
+      "sha256": "5384f40bc8fea33d393da78664e02d137c683425ea644e78f98484643afd7721",
+      "size": 1040
+    },
+    "INTERPRETATION_FREEZE.json": {
+      "sha256": "1e18117af8bca02308ecd1fdfc322843f866806692d3dc9f790c023827d8cd51",
+      "size": 1991
+    }
+  },
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "FAILED_PRESERVED_NO_RETRY"
+}

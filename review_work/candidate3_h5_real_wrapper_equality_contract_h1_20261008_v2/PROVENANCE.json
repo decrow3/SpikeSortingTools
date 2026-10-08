@@ -1,0 +1,15 @@
+{
+  "schema": "candidate3-h5-real-wrapper-equality-contract-provenance-v2",
+  "created_at": "2026-10-08T02:56:00-07:00",
+  "author_host": "huklaban1",
+  "repository_commit": "6c5fc39",
+  "wrapper_commit": "aea7431c4026fa74e36ad01139d9e596900a1d25",
+  "contract_sha256": "432b6aebab7469fc1f71350625feec9f50c56dcd105bf5034d89faf7a1507110",
+  "runner_sha256": "3db928375cbcd75e9f79f1ab593978ef0af736f5ea3adbc0b9a0e46853c217fc",
+  "success_complete_sha256": "024c9f737ec425a4652a5c0696c7d33b7924057251d44e6393973401a8b46e4c",
+  "success_manifest_sha256": "1b1a42dc8d5fc7929ee7daf4589d31055db954821b7fde11201701323abecf81",
+  "failure_complete_sha256": "c112d545a8ff3993193bc92c4a21b94cb3cf35839bb37b7176eda9a9e3f2dd67",
+  "failure_manifest_sha256": "23784bce3fad5b268c8e1cef9507f0e242a18adf123d0655259607b372c92e39",
+  "scope": "v1 NO-GO repair, metadata/source review, and local synthetic full-shape success plus source-hash negative control",
+  "excluded": "H5 contact, recorded-voltage access, real equality, service/GPU/sort/RF/holdout/full-session launch"
+}

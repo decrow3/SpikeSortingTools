@@ -1,0 +1,21 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "V2_REPAIR_READY_FOR_INDEPENDENT_REVIEW_REAL_EXECUTION_DISABLED",
+  "members": {
+    "CONTRACT.json": {"size": 11923, "sha256": "432b6aebab7469fc1f71350625feec9f50c56dcd105bf5034d89faf7a1507110"},
+    "CORRECTION.md": {"size": 3065, "sha256": "eae60ae6344abf6e69f45682d0a1d73ac1b06a3407b90ce6ad0befc51b4bb45c"},
+    "PROVENANCE.json": {"size": 1059, "sha256": "b3eb3ef0be68e7e5055cd3a93d58a6ef4698d3a638e895e9d3b91ed4c776504c"},
+    "RUNNER.py": {"size": 26332, "sha256": "3db928375cbcd75e9f79f1ab593978ef0af736f5ea3adbc0b9a0e46853c217fc"},
+    "self_test_failure/COMPLETE.json": {"size": 179, "sha256": "c112d545a8ff3993193bc92c4a21b94cb3cf35839bb37b7176eda9a9e3f2dd67"},
+    "self_test_failure/CONTRACT_COPY.json": {"size": 11923, "sha256": "40bd2c181730f48acd92f882cdf9c2414498b4ab7fdd26a460eaac3fcc880dae"},
+    "self_test_failure/FAILURE.json": {"size": 1040, "sha256": "5384f40bc8fea33d393da78664e02d137c683425ea644e78f98484643afd7721"},
+    "self_test_failure/INTERPRETATION_FREEZE.json": {"size": 1991, "sha256": "1e18117af8bca02308ecd1fdfc322843f866806692d3dc9f790c023827d8cd51"},
+    "self_test_failure/MANIFEST.json": {"size": 526, "sha256": "23784bce3fad5b268c8e1cef9507f0e242a18adf123d0655259607b372c92e39"},
+    "self_test_success/COMPLETE.json": {"size": 178, "sha256": "024c9f737ec425a4652a5c0696c7d33b7924057251d44e6393973401a8b46e4c"},
+    "self_test_success/CONTRACT_COPY.json": {"size": 11923, "sha256": "432b6aebab7469fc1f71350625feec9f50c56dcd105bf5034d89faf7a1507110"},
+    "self_test_success/INTERPRETATION_FREEZE.json": {"size": 1991, "sha256": "aca232a83b98e6f7cd875616b175f8c9d103dcf13bff2837ea2d719ae3322457"},
+    "self_test_success/MANIFEST.json": {"size": 659, "sha256": "1b1a42dc8d5fc7929ee7daf4589d31055db954821b7fde11201701323abecf81"},
+    "self_test_success/PROVENANCE.json": {"size": 1898, "sha256": "1244abaf8214919158db0a28178d6399e9cace22df1bd58cb9315b9869b62856"},
+    "self_test_success/RESULT.json": {"size": 5558, "sha256": "c113d5d525912956cf7ce861b4d743936a847e08cdeb8732659a7b5886c81dde"}
+  }
+}

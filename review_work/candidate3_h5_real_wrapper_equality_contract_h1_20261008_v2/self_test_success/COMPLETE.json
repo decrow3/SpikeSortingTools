@@ -1,0 +1,5 @@
+{
+  "manifest_sha256": "1b1a42dc8d5fc7929ee7daf4589d31055db954821b7fde11201701323abecf81",
+  "schema": "immutable-evidence-complete-v1",
+  "status": "PASS_SYNTHETIC_SELF_TEST"
+}
