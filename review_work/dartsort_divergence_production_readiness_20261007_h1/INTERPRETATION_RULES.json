@@ -1,0 +1,41 @@
+{
+  "schema": "dartsort-divergence-production-interpretation-freeze-h1-v1",
+  "status": "FROZEN_BEFORE_PRODUCTION_OUTCOMES",
+  "anchors": 4,
+  "pairings": ["REF-A", "REF-DARTsort", "A-DARTsort"],
+  "clock": {
+    "representation": "int64 AP-frame-zero acquisition samples",
+    "sampling_frequency_hz": 29999.759166666667,
+    "support": "intersection of declared half-open supports",
+    "event_match_tolerance_samples": 15,
+    "tolerance_boundary": "inclusive"
+  },
+  "candidate_rule": {
+    "minimum_unit_events": 100,
+    "minimum_matches": 25,
+    "minimum_smaller_train_retention": 0.01,
+    "ranking": ["exclusive_matches_desc", "smaller_train_retention_desc", "exclusive_f1_desc"],
+    "ties": "dense rank; final label only stabilizes serialization",
+    "top_n_cap": null,
+    "report_complete_eligible_table": true,
+    "report_all_passing": true
+  },
+  "earliest_observable_divergence": {
+    "allowed_checkpoints": [
+      "kilosort_original_to_curated_accounting",
+      "dartsort_matching_to_final_accounting",
+      "cross_pipeline_final_temporal_correspondence"
+    ],
+    "missing_checkpoint": "unresolved",
+    "ambiguous_parent": "ambiguous_not_unique",
+    "transitive_identity": false
+  },
+  "required_limits": [
+    "temporal correspondence is not biological identity",
+    "short-interval or duplicate accounting is not purity",
+    "REF historical executable semantics are unavailable",
+    "cross-pipeline preprocessing differences prevent sorter-only attribution",
+    "no automatic merge deletion intervention or production sorter recommendation"
+  ],
+  "production_outcomes_inspected": false
+}

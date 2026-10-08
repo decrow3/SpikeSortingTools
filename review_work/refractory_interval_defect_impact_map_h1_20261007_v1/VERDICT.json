@@ -1,0 +1,20 @@
+{
+  "schema": "refractory-interval-defect-impact-map-h1-v1",
+  "status": "COMPLETE_IMPACT_CONFIRMED_RECALCULATION_REQUIRED",
+  "completed_at": "2026-10-07T21:03:02-07:00",
+  "defect": "R1 observed ACG counts use 7-sample bins while the Poisson confidence model uses nominal 0.25-ms bin edges",
+  "decision": {
+    "r1_r1t_verdicts_citable_without_qualification": false,
+    "corrected_outcome_computable_from_published_summaries": false,
+    "raw_voltage_required": false,
+    "saved_spike_time_traversal_required": true,
+    "d0_d2_divergence_mechanics_blocked_by_this_defect": false
+  },
+  "exact_missing_artifacts": [
+    "per-unit per-scope 40-bin observed positive-lag counts for point estimates",
+    "per-unit by 300-s-block by scope 40-bin ACG counts and per-block spike counts for bootstrap",
+    "exact R1c executed source snapshot sha256 415f29d7f26102606143d0bd4fbb8ed9a136199a6642e664d50c2a6716b7c423"
+  ],
+  "priority_next_action": "freeze and independently review a spike-time-only correction contract with sample-derived RP edges and known-answer fixtures",
+  "exclusions": ["raw voltage", "waveform arrays", "RF/holdout", "new sorting", "unfrozen outcome inspection"]
+}

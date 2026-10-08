@@ -1,0 +1,44 @@
+{
+  "schema": "refractory-interval-defect-impact-provenance-v1",
+  "reviewer": "H1",
+  "started_at": "2026-10-07T20:58:38-07:00",
+  "completed_at": "2026-10-07T21:03:02-07:00",
+  "evidence": {
+    "earlier_evaluator_source": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_full_session_r1_imec0_rescore_review_request_20261004_v1_h5/source/full_session_r1_evaluation.py",
+      "sha256": "a31f1349854eff0e4c732063993be37e8cf53de5d206628f66d68a65ff7f341e"
+    },
+    "census_source": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/post_sort_structure_census_h5_20261007_v1/SOURCE.py",
+      "sha256": "dc33e5d4d536998cfcd74a8d317b979577ab982c20c339e158b32925f74388ac"
+    },
+    "census_contract": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/post_sort_structure_census_h5_20261007_v1/CONTRACT.json",
+      "sha256": "e90ad62778b5fa9422102c2f0d9ffeefa0c710a38ceba68d6d79ad9553bf5ea3"
+    },
+    "availability_ledger": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/post_sort_structure_census_h5_20261007_v1/AVAILABILITY_LEDGER.csv",
+      "sha256": "ba7b811a0d736a664c15264c21e72df6015d5928d165ffa1999ee2be92c6f0f9"
+    },
+    "panel_selection_source": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/post_sort_structure_panel_selection_h5_20261007_v1/SOURCE.py",
+      "sha256": "f919f14cdfb960a0bfbddf47a7364d4e0bf35d0772a1aeb96ef7a2b46c7b3319"
+    },
+    "panel_analysis_source": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/post_sort_structure_panel_analysis_h5_20261007_v1/SOURCE.py",
+      "sha256": "90a24e67a85538958675e42cbc785655ea2c42599208ad5e0ae5da56e85a34ed"
+    },
+    "d0_decision": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D0_h5_20261007_v1/DECISION.md",
+      "sha256": "8caeda2c50ff50680448b6a2791408308c1441d834e5dfd3430665c47ccb3d4e"
+    }
+  },
+  "operations": {
+    "raw_recording_reads": 0,
+    "waveform_array_reads": 0,
+    "rf_or_holdout_access": 0,
+    "sorts_started": 0,
+    "scientific_outcomes_recomputed": 0
+  },
+  "provenance_gap": "The exact R1c executed source snapshot with sha256 415f29d7... is bound by the census contract but absent from the shared tree."
+}
