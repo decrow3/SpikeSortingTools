@@ -1,0 +1,8 @@
+{
+  "schema": "immutable-packet-publication-history-v1",
+  "status": "FRESH_REPUBLICATION_AFTER_TIMESTAMP_ORDER_FAILURE",
+  "preserved_failed_namespace": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_v3_postrun_oracle_independent_review_h1_20261007_v1",
+  "failure": "shared filesystem mtimes did not demonstrate members before MANIFEST before COMPLETE",
+  "content_verdict_changed": false,
+  "replacement_namespace": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_v3_postrun_oracle_independent_review_h1_20261007_v1r1"
+}

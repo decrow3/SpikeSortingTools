@@ -1,0 +1,14 @@
+{
+  "schema": "immutable-packet-complete-v1",
+  "status": "COMPLETE_BLOCKED_FALSE_ACCEPTS",
+  "completed_local": "2026-10-07T23:20:00-07:00",
+  "manifest_path": "MANIFEST.json",
+  "manifest_sha256": "8a68c8cec143de76b35b4bfd8b6fa8247162b019a29ff1e0af9b21a4650ee9e9",
+  "reviewed_manifest_sha256": "3162ed5c3b5145abedecb30a43a891a6e61015ca30260d7352420cdbfc6ef807",
+  "verdict": "BLOCKED_FALSE_ACCEPTS",
+  "production_outcome_inspected": false,
+  "production_execution_performed": false,
+  "raw_voltage_bytes_read": 0,
+  "gpu_work": false,
+  "rf_or_holdout_access": false
+}

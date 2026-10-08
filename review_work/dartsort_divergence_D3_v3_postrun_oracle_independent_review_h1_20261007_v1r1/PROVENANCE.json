@@ -1,0 +1,14 @@
+{
+  "schema": "d3-v3-postrun-oracle-independent-review-provenance-v1",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_v3_postrun_oracle_h1_20261007_v1",
+  "reviewed_manifest_sha256": "3162ed5c3b5145abedecb30a43a891a6e61015ca30260d7352420cdbfc6ef807",
+  "reviewed_complete_sha256": "f61724a2c6305d8c69381f366951c7e950e60acf6aafad75ecd14b902e72505b",
+  "executable_derivative_manifest_sha256": "10cdbcd20afdd665840496fa3549b1e5119b4c21f8e32ffb519e03ea49b0dee7",
+  "technical_review_manifest_sha256": "7874adc42c7aadf9da6bd93be0bb4d635ed7458874ab27c98a49195c3387e3fe",
+  "runner_sha256": "725d811d2793a2d9a0fabd5ae20880a5cfaab80057dab0b8b5562e25657b5bb3",
+  "oracle_source_sha256": "5e0fdf65b41a4dde6ad7af222c765c847d9f806251fb5ba97eec3735bfb8ff24",
+  "oracle_tests_sha256": "014158909f48f7b5a2a7642a47f895bf647b93a9b36f992a44c290de16fde0c6",
+  "review_scope": "immutable pre-outcome consumer, schemas, clocks/support, ordering, resources, failure closure, and final-only claim boundary",
+  "future_production_namespace_inspected": false,
+  "production_execution_performed": false
+}

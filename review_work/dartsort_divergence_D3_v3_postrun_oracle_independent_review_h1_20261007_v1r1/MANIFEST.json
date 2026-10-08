@@ -1,0 +1,14 @@
+{
+  "schema": "immutable-packet-manifest-v1",
+  "created_local": "2026-10-07T23:17:09-07:00",
+  "packet": "dartsort_divergence_D3_v3_postrun_oracle_independent_review_h1_20261007_v1r1",
+  "reviewed_manifest_sha256": "3162ed5c3b5145abedecb30a43a891a6e61015ca30260d7352420cdbfc6ef807",
+  "members": [
+    {"path": "PROVENANCE.json", "bytes": 1120, "sha256": "7fb1890f2c3ce2f41761f3d1e894f1996301f7e9f6d8dfee80057c56510e346c"},
+    {"path": "PUBLICATION_HISTORY.json", "bytes": 561, "sha256": "4b55e7faf0b32fb8f4bbce3769a4d9002d98bcde4203be574a9c20589db18c5f"},
+    {"path": "REVIEW.md", "bytes": 5670, "sha256": "67e9a24e0023c4bfd84a9f0c7b64a4b04fb0e426351a6d498702b03cd20da03a"},
+    {"path": "TEST_RECEIPT.json", "bytes": 1218, "sha256": "1d1f5641a14d6db2515061016db65f8c29db9cf63046ca47fef18e5a3e4385e4"},
+    {"path": "VERDICT.json", "bytes": 1247, "sha256": "db41d01d14b1e9b22ecaf53ce579ed7e2c500a21b09f554fe4345c000cf69249"},
+    {"path": "independent_adversarial_review.py", "bytes": 5564, "sha256": "ab5886192f72e91558f0deb6fbd5fe64a9eaff2b7c8a5f8e873d6c82bda6df87"}
+  ]
+}

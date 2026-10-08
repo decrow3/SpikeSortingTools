@@ -1,0 +1,22 @@
+{
+  "schema": "d3-v3-postrun-oracle-independent-review-verdict-v1",
+  "status": "BLOCKED_FALSE_ACCEPTS",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_v3_postrun_oracle_h1_20261007_v1",
+  "reviewed_manifest_sha256": "3162ed5c3b5145abedecb30a43a891a6e61015ca30260d7352420cdbfc6ef807",
+  "reviewed_complete_sha256": "f61724a2c6305d8c69381f366951c7e950e60acf6aafad75ecd14b902e72505b",
+  "baseline_fixtures": "PASS_8_OF_8",
+  "independent_required_fixtures": "PASS_EXPECTED_CLASSIFICATION_6_OF_6",
+  "blocking_false_accepts": [
+    "matched event pairs separated by 1000 samples accepted despite inclusive 15-sample contract",
+    "one ranked candidate accepted while matcher ordering reports two eligible final units",
+    "candidate and anchor event totals inconsistent with reported retention and F1 accepted"
+  ],
+  "permitted_claim_now": "none for a future production outcome until the consumer is repaired and re-frozen",
+  "intermediate_matching_to_final_attribution": "unavailable",
+  "production_outcome_inspected": false,
+  "production_execution_performed": false,
+  "new_h5_output_read": false,
+  "raw_or_waveform_read": false,
+  "rf_or_holdout_access": false,
+  "sort_or_parameter_change": false
+}
