@@ -1,0 +1,25 @@
+{
+  "schema": "hub-coordinator-status-v1",
+  "host": "huklaban1",
+  "owner": "H1",
+  "task_id": "candidate3_h1_sequence_20261007",
+  "status": "ACK_STARTED_INVENTORY_SEALED_FOCUSED_REVIEW_ACTIVE",
+  "observed_local": "2026-10-07T23:40:00-07:00",
+  "policy_sha256": "34414087180e5ba50812ae453c7cc2fd672e7c7b21e2f665d8a42f7a3e98cb08",
+  "plan_sha256": "39f55c319ca13b392fb04237829540d72aec6719336c2d43f0d67ab3a99684f8",
+  "input_source_inventory_target": "completed Luke0804 imec0 Arm A, exact REF+AM.3 lineage, Kilosort immediate pre-whitening boundary, clean DARTsort editable source/environment, checkpoint/save/resume path, H1 GPU/storage",
+  "completion_condition": "reviewed exact source/input boundary plus fault-tested checkpoint behavior and sample-equal ordinary/transition snippets, yielding a reviewed full-session contract or a precise readiness/host gap",
+  "inventory_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_readiness_inventory_h1_20261007_v1",
+  "inventory_manifest_sha256": "0370b607b3240fb4da6b31ba1defe4907e6956a47539c9f22e6efe6f74074f7e",
+  "inventory_complete_sha256": "cfda092933eef6484fa6ea6c05e734f8fab0b48b69011a115b3f1578edc9c05a",
+  "inventory_verdict": "H1_NOT_FULL_SESSION_READY_SNIPPET_INSTRUMENTATION_READY",
+  "blockers": [
+    "DARTsort chunk checkpoint marker is advanced before data append and is not yet fault-tested or transactionally safe",
+    "H1 currently exposes no CUDA device",
+    "accepted Arm-A materialized binary is H5-local; H1 reconstruction requires equality proof"
+  ],
+  "independent_reviewer": "/root/review_d3_postrun_oracle",
+  "eta": "checkpoint fault fixture and wrapper/synthetic equality implementation review target 00:30-01:00 PDT; full-session launch remains blocked pending readiness and current host verification",
+  "next": "freeze and run CPU-only checkpoint fault fixture plus pre-whitening wrapper synthetic equality fixtures; no sort launch",
+  "idle": false
+}

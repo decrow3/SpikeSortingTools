@@ -1,0 +1,21 @@
+{
+  "schema": "hub-coordinator-status-v1",
+  "host": "huklaban1",
+  "owner": "H1",
+  "status": "D3_V3_POSTRUN_ORACLE_BLOCKED_AFTER_REPEATED_REPAIR_REVIEW",
+  "observed_local": "2026-10-07T23:36:00-07:00",
+  "oracle_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_v3_postrun_oracle_h1_20261007_v3",
+  "oracle_manifest_sha256": "d367aa95fac7623bff1e14607bdebf80707ae10ef72cba0db515ec36131e84ed",
+  "oracle_complete_sha256": "0a2433a25513b71a36fe63c34deb59e36e5f3c212a290fe7ca87da784b517742",
+  "review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_v3_postrun_oracle_v3_independent_review_h1_20261007_v1",
+  "review_manifest_sha256": "832d3a89931c84b072193feb3545360233ff2a5c97309fa7ef09a6d43c47c85a",
+  "review_complete_sha256": "a89d6c178c1d32b55fcc74c80fa9ce039323a1d3e6f328f68322d91ccd607742",
+  "verdict": "BLOCKED_CANONICAL_UNIVERSE_NOT_SOURCE_BOUND",
+  "resolved": "literal duplicate-label and negative-index counterexamples reject; baseline and earlier counterexamples pass 13/13",
+  "remaining_false_accept": "self-consistent label 7-to-999 substitution across all rankings, pair summaries/relations and stage rows returns GO",
+  "required_repair": "producer/schema must emit the sorted canonical eligible_final_labels derived from candidate_index; oracle must require exact equality for every anchor ranking",
+  "escalation": "two repair/review cycles have not closed the load-bearing source-binding gap; HubMultiCoordinater should relay this blocker/attempt history/minimal repair to HubPlanner and assign producer ownership before another oracle revision",
+  "production_outcome_inspected": false,
+  "independent_work": "candidate-3 readiness inventory is active under its frozen source/metadata-only contract",
+  "idle": false
+}

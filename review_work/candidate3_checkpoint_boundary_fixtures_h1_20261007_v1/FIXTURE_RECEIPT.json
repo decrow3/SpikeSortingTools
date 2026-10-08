@@ -1,0 +1,39 @@
+{
+  "checkpoint": {
+    "changed_chunk_starts_rejected": true,
+    "false_completed_chunk": true,
+    "fault_resume": {
+      "done": false,
+      "last_chunk_index": 0,
+      "next_chunk_index": 1
+    },
+    "fault_rows_written": 0,
+    "injected_failure_observed": true,
+    "positive_resume": {
+      "done": false,
+      "last_chunk_index": 0,
+      "next_chunk_index": 1
+    },
+    "verdict": "CHECKPOINT_UNSAFE_MARKER_PRECEDES_APPEND"
+  },
+  "ordinary": {
+    "array_equal": true,
+    "channel_ids_equal": true,
+    "geometry_equal": true,
+    "integer_none_rejected": true,
+    "kind": "ordinary",
+    "max_abs_error": 0.0
+  },
+  "raw_or_real_voltage_read": false,
+  "schema": "candidate3-checkpoint-boundary-fixture-receipt-v1",
+  "sort_launched": false,
+  "temporary_hdf5_preserved": false,
+  "transition": {
+    "array_equal": true,
+    "channel_ids_equal": true,
+    "geometry_equal": true,
+    "integer_none_rejected": true,
+    "kind": "transition",
+    "max_abs_error": 0.0
+  }
+}

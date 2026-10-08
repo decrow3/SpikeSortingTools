@@ -1,0 +1,11 @@
+{
+  "schema": "immutable-packet-complete-v1",
+  "status": "COMPLETE_CHECKPOINT_UNSAFE_SYNTHETIC_BOUNDARY_EXACT",
+  "completed_local": "2026-10-07T23:43:28-07:00",
+  "manifest_path": "MANIFEST.json",
+  "manifest_sha256": "96f9b81f01471ba88564426ab86d3e9810d794894e8d8e8de6a87187f512d446",
+  "raw_or_real_voltage_bytes_read": 0,
+  "sort_launched": false,
+  "gpu_work": false,
+  "rf_or_holdout_access": false
+}

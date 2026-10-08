@@ -1,0 +1,64 @@
+{
+  "schema": "candidate3-h1-readiness-inventory-v1",
+  "status": "H1_NOT_FULL_SESSION_READY_SNIPPET_INSTRUMENTATION_READY",
+  "arm_a_target": {
+    "probe": "Luke0804 imec0",
+    "support_samples_half_open": [0, 314204894],
+    "sampling_frequency_hz": 29999.835983263598,
+    "channels": 384,
+    "gain_uv_per_count": 2.34375,
+    "arm_a_complete_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_tier1_rounded_field_result_20260930_v1/ARM_A_COMPLETE.json",
+    "arm_a_complete_sha256": "4f49d6d4959ab54bd78338564c4d3caa88b3203fbe75685ce8f1d46dc4aea499",
+    "field_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_am3_imec0_field_request_20260929_v1/payload/luke0804_imec0_two_layer_motion.npz",
+    "field_sha256": "4c769125020aad3263bf6eaa1889cdaa7eccbf19dcf0aa3a068b185221fadb9f",
+    "ref_recording_manifest": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/rescue_recording_manifest.json",
+    "ref_recording_manifest_sha256": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67",
+    "ref_binary": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+    "ref_binary_bytes": 241309358592,
+    "ref_binary_manifest_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+    "arm_a_materialized_binary_bytes": 241309358592,
+    "arm_a_recording_content_sha256": "90b6a07a22e32fdd741c3f605f582d44f361bc75ed18737c134e13fdd1d76ad9",
+    "arm_a_materialized_path_on_h1": null,
+    "arm_a_materialized_path_gap": "accepted Arm-A recording was produced on H5 and its binary path is not mounted on H1; H1 can reconstruct it from the exact REF recording plus field but must prove snippet equality first"
+  },
+  "prewhitening_boundary": {
+    "definition": "Arm-A remapped int16 voltage after Kilosort per-channel centering, global median CAR, 300 Hz FFT high-pass and artifact handling, immediately before multiplication by the whitening matrix",
+    "artifact_threshold": "Infinity (disabled)",
+    "kilosort_io_path": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/io.py",
+    "kilosort_io_sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+    "implementation_lines": "BinaryFiltered.filter lines 952-985; set whiten_mat=None while preserving chan_map, inversion, centering, CAR, hp_filter and artifact_threshold",
+    "dartsort_preprocessing_required": "none",
+    "dartsort_boundary_risk": "DARTsort preprocessing='none' requires float input; wrapper and equality fixtures are not yet implemented"
+  },
+  "dartsort_source": {
+    "clone": "/home/huklab/Documents/DARTsort",
+    "git_head": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+    "git_status": "clean",
+    "uv_lock_sha256": "68f3fa53642043313bc9a4e56b7fc35dbd27af81030e436ffdba82de683f5034",
+    "python": "3.12.4",
+    "spikeinterface": "0.104.8",
+    "torch": "2.6.0+cu124",
+    "reported_dartsort_version": "0.5.23.post2+gdbda377f.d20260911",
+    "editable_install": true,
+    "version_gap": "installed distribution version string names historical gdbda377f while imported editable source is current HEAD edcfe1b5; bind Git/source hashes, not version string",
+    "main_py_sha256": "e4c03417c1256384c4f8fbf0250560003bd795b7274932ef1e49dcde217bd249",
+    "main_util_py_sha256": "2846a319c19c25b3cad81ab991057c0868b87d760b66f20e8d2bb3db8ffa3bcc",
+    "peel_base_py_sha256": "ac357ade5b6f23b690a403e297a2260ea93c2a1b35df13ee7798d8fc8591a2d4",
+    "preprocess_util_py_sha256": "566ce1ab60af12585978bcd7e3192cb2ca4cc220ab5e41895140c00bdbc06674"
+  },
+  "checkpoint_inventory": {
+    "stage_resume": "ds_fast_forward finds subtraction.h5, matchingN.h5 and optional refinedN_labels.npy",
+    "within_peel_resume": "check_resuming verifies exact chunk_starts_samples and resumes after last_chunk_index",
+    "models": "featurization_pipeline.pt is saved/loaded per peeler model folder",
+    "load_bearing_gap": "gather_chunk_result advances last_chunk_index/start before appending residuals and per-spike datasets and has no explicit flush/transaction; abrupt termination can therefore mark an incompletely written chunk complete",
+    "required_next_test": "fault-injection fixture through the actual gather/resume path, followed by transactional marker repair or an explicit whole-stage restart rule"
+  },
+  "host": {
+    "gpu_check": "FAIL: nvidia-smi cannot communicate with the driver; torch.cuda.is_available false and device_count 0 in the DARTsort environment",
+    "root_free_bytes_approx": 489626271744,
+    "shared_free_bytes_approx": 57982058496000,
+    "environment_import": "PASS only after NUMBA_CACHE_DIR is directed to writable /tmp; default import fails because numba cannot cache the SpikeInterface function from the environment path"
+  },
+  "next": "run CPU-only checkpoint fault fixtures and implement the exact pre-whitening wrapper plus synthetic equality fixtures; do not launch a sort",
+  "full_session_host_alternative": "H5, because the accepted Arm-A materialization and known RTX A5000 environment are there, conditional on current DARTsort environment/GPU/storage verification and a reviewed contract"
+}

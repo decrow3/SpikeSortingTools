@@ -1,0 +1,18 @@
+{
+  "schema": "hub-coordinator-status-v1",
+  "host": "huklaban1",
+  "owner": "H1",
+  "task_id": "candidate3_h1_sequence_20261007",
+  "status": "CHECKPOINT_BOUNDARY_FIXTURES_COMPLETE_BLOCKED_ON_CHECKPOINT_REPAIR",
+  "observed_local": "2026-10-07T23:44:00-07:00",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_checkpoint_boundary_fixtures_h1_20261007_v1",
+  "manifest_sha256": "96f9b81f01471ba88564426ab86d3e9810d794894e8d8e8de6a87187f512d446",
+  "complete_sha256": "c4af65ec8c1188cccbcd055852fad137bb97518dd44a0c1dccf20f247a836284",
+  "checkpoint_verdict": "UNSAFE: injected append failure leaves zero rows but advances resume to the next chunk",
+  "boundary_verdict": "synthetic ordinary and transition Kilosort pre-whitening outputs traverse DARTsort preprocessing=none exactly with zero error and stable IDs/geometry",
+  "completion_condition_progress": "source boundary and synthetic plumbing established; current checkpoint fails; real Arm-A equality, repaired crash/reload fixtures, GPU/host readiness and reviewed full-run contract remain",
+  "next": "prepare transactional checkpoint repair design and fault fixtures; preserve whole-stage restart as the explicit fallback; no sort launch",
+  "raw_or_real_voltage_read": false,
+  "sort_launched": false,
+  "idle": false
+}

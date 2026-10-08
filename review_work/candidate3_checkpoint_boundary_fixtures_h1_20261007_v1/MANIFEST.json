@@ -1,0 +1,14 @@
+{
+  "schema": "immutable-packet-manifest-v1",
+  "created_local": "2026-10-07T23:43:11-07:00",
+  "packet": "candidate3_checkpoint_boundary_fixtures_h1_20261007_v1",
+  "members": [
+    {"path": "FROZEN_CONTRACT.md", "bytes": 2793, "sha256": "bb31c3101a201ff8c1bfd6ec590ef1650c704aecbde8ceb9027508f0eb45d9e0"},
+    {"path": "FIXTURE_RECEIPT.json", "bytes": 994, "sha256": "780c85333d43e5f95a8a079c6b7959077bde08bcf1711346086f15d124a30acd"},
+    {"path": "RESULT.md", "bytes": 3131, "sha256": "8f9085a6b787f35c60ec3b8689b3cc5b24b51f02b5a21447ce7af076692c0611"},
+    {"path": "checkpoint_fault_fixture.py", "bytes": 3267, "sha256": "5e897314df1343bab0a34ef463ec0108fe57a623e45b0ce8bc8c9dae7d149dc3"},
+    {"path": "dartsort_boundary_consumer.py", "bytes": 1690, "sha256": "61e6c0c97f7aa3d2ae525c9589edc0ac14cd1b1f773773b77e95d8fd9b029cc6"},
+    {"path": "kilosort_boundary_producer.py", "bytes": 1408, "sha256": "67e8575029bd4cc6c0d988396b80fd32fb8c31af295f21506de672d7cf40dde9"},
+    {"path": "run_fixtures.py", "bytes": 1553, "sha256": "4cbcf1f3ea5f0f7a41d90f0c2d6d81fa723b4f71da8fbe78f62e01936582bf90"}
+  ]
+}

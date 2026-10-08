@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-packet-manifest-v1",
+  "created_local": "2026-10-07T23:38:44-07:00",
+  "packet": "candidate3_readiness_inventory_h1_20261007_v1",
+  "members": [
+    {"path": "FROZEN_CONTRACT.md", "bytes": 2977, "sha256": "933787a1a732746153824a2b445bb6937d6e4c69f3c7909d1bd3798e0e1c9bb5"},
+    {"path": "INVENTORY.json", "bytes": 5228, "sha256": "aa0ed086cf950bcab711fc52db8b9aa1bc7118b8351a79ffafe26615af2d5f2c"},
+    {"path": "REPORT.md", "bytes": 4189, "sha256": "a64eedb73b596046092c2c79af5f4c83c1541b3bafa368a877ba709bc86d67c9"}
+  ]
+}

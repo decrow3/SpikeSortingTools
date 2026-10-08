@@ -1,0 +1,17 @@
+{
+  "schema": "hub-coordinator-status-v1",
+  "host": "huklaban1",
+  "owner": "H1",
+  "status": "CANDIDATE3_READINESS_INVENTORY_STARTED",
+  "observed_local": "2026-10-07T23:35:00-07:00",
+  "policy_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/AGENTS.md",
+  "policy_sha256": "34414087180e5ba50812ae453c7cc2fd672e7c7b21e2f665d8a42f7a3e98cb08",
+  "plan_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/DARTSORT_DIVERGENCE_PLAN_20261007.md",
+  "plan_sha256": "39f55c319ca13b392fb04237829540d72aec6719336c2d43f0d67ab3a99684f8",
+  "dispatch_key": "candidate3_h1_sequence_20261007|plan:39f55c319ca13b392fb04237829540d72aec6719336c2d43f0d67ab3a99684f8|recipient:h1",
+  "first_task": "read-only source/environment/input/checkpoint readiness inventory under a frozen bounded contract",
+  "contract_path": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/review_work/candidate3_readiness_inventory_h1_20261007_v1/FROZEN_CONTRACT.md",
+  "d3_oracle_status": "v3 sealed and independently found BLOCKED_CANONICAL_ELIGIBLE_LABEL_IDENTITY_UNBOUND; reviewer packet pending seal",
+  "d3_production_outcome_inspected": false,
+  "idle": false
+}

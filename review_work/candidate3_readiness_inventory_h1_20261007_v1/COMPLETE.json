@@ -1,0 +1,11 @@
+{
+  "schema": "immutable-packet-complete-v1",
+  "status": "COMPLETE_H1_NOT_FULL_SESSION_READY_SNIPPET_INSTRUMENTATION_READY",
+  "completed_local": "2026-10-07T23:38:59-07:00",
+  "manifest_path": "MANIFEST.json",
+  "manifest_sha256": "0370b607b3240fb4da6b31ba1defe4907e6956a47539c9f22e6efe6f74074f7e",
+  "raw_voltage_bytes_read": 0,
+  "scientific_arrays_read": false,
+  "sort_launched": false,
+  "rf_or_holdout_access": false
+}
