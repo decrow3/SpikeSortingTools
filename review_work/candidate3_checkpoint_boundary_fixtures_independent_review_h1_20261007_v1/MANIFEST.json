@@ -1,0 +1,12 @@
+{
+  "schema": "immutable-packet-manifest-v1",
+  "created_local": "2026-10-07T23:55:00-07:00",
+  "packet": "candidate3_checkpoint_boundary_fixtures_independent_review_h1_20261007_v1",
+  "reviewed_manifest_sha256": "96f9b81f01471ba88564426ab86d3e9810d794894e8d8e8de6a87187f512d446",
+  "members": [
+    {"path": "CHECK_RECEIPT.json", "bytes": 984, "sha256": "beffc7a32764b25f914ff26ecb0facce27223559c533843ac9954ebf9a088b59"},
+    {"path": "PROVENANCE.json", "bytes": 1272, "sha256": "9d8df3712544f9fa74906c9fd697628dc9e5c147bdf287d2604e0facee06d85e"},
+    {"path": "REVIEW.md", "bytes": 4552, "sha256": "7d9025205e6108d208be51f86989c8f4d2a7991851af8b6695a9ae0b3606c7c4"},
+    {"path": "VERDICT.json", "bytes": 1253, "sha256": "9483060c9b766ed99aa6ed2624808d7c61af37538639e6964acb88beaedeb473"}
+  ]
+}

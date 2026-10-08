@@ -1,0 +1,21 @@
+{
+  "schema": "candidate3-checkpoint-boundary-fixtures-independent-review-verdict-v1",
+  "status": "GO_SCOPED_FIXTURE_CONCLUSIONS",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_checkpoint_boundary_fixtures_h1_20261007_v1",
+  "reviewed_manifest_sha256": "96f9b81f01471ba88564426ab86d3e9810d794894e8d8e8de6a87187f512d446",
+  "reviewed_complete_sha256": "c4af65ec8c1188cccbcd055852fad137bb97518dd44a0c1dccf20f247a836284",
+  "checkpoint_conclusion": "accepted: injected failure persists last_chunk_index 0 with zero rows, and peel resumes from index 1",
+  "boundary_conclusion": "accepted for tested synthetic 4-channel 512-sample batches only: DARTsort none returns exact Kilosort pre-whitening float32 samples",
+  "operational_rule": "until repaired and independently reviewed, interruption requires restarting the affected peel stage",
+  "not_established": [
+    "real Arm-A sample equality",
+    "full Kilosort batch/padding or real remap-transition equivalence",
+    "all residual and multi-dataset crash boundaries",
+    "full-session readiness or scientific benefit"
+  ],
+  "raw_or_real_voltage_read": false,
+  "sort_launched": false,
+  "gpu_work": false,
+  "rf_or_holdout_access": false,
+  "d3_outcome_access": false
+}

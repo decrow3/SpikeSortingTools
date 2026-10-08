@@ -1,0 +1,30 @@
+{
+  "schema": "candidate3-checkpoint-boundary-fixtures-independent-review-check-receipt-v1",
+  "observed_at": "2026-10-07T23:52:00-07:00",
+  "packet_members_verified": 7,
+  "packet_chronology_verified": true,
+  "independent_rerun_exit_code": 0,
+  "checkpoint": {
+    "injected_failure_observed": true,
+    "fault_rows_written": 0,
+    "persisted_last_chunk_index": 0,
+    "peel_next_chunk_index_from_source": 1,
+    "changed_chunk_starts_rejected": true
+  },
+  "ordinary": {
+    "array_equal": true,
+    "max_abs_error": 0.0,
+    "channel_ids_equal": true,
+    "geometry_equal": true,
+    "integer_none_rejected": true
+  },
+  "transition": {
+    "array_equal": true,
+    "max_abs_error": 0.0,
+    "channel_ids_equal": true,
+    "geometry_equal": true,
+    "integer_none_rejected": true
+  },
+  "dartsort_none_warning_observed": "float synthetic amplitudes triggered the heuristic looks-unpreprocessed warning; no transform or rejection occurred",
+  "raw_or_real_voltage_read": false
+}

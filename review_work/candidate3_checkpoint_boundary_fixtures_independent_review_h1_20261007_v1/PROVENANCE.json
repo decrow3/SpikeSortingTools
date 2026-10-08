@@ -1,0 +1,18 @@
+{
+  "schema": "candidate3-checkpoint-boundary-fixtures-independent-review-provenance-v1",
+  "reviewed_manifest_sha256": "96f9b81f01471ba88564426ab86d3e9810d794894e8d8e8de6a87187f512d446",
+  "reviewed_complete_sha256": "c4af65ec8c1188cccbcd055852fad137bb97518dd44a0c1dccf20f247a836284",
+  "inventory_manifest_sha256": "0370b607b3240fb4da6b31ba1defe4907e6956a47539c9f22e6efe6f74074f7e",
+  "dartsort_git_head": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+  "dartsort_peel_base_sha256": "ac357ade5b6f23b690a403e297a2260ea93c2a1b35df13ee7798d8fc8591a2d4",
+  "dartsort_preprocess_util_sha256": "566ce1ab60af12585978bcd7e3192cb2ca4cc220ab5e41895140c00bdbc06674",
+  "kilosort_io_sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+  "fixture_source_hashes": {
+    "checkpoint_fault_fixture.py": "5e897314df1343bab0a34ef463ec0108fe57a623e45b0ce8bc8c9dae7d149dc3",
+    "dartsort_boundary_consumer.py": "61e6c0c97f7aa3d2ae525c9589edc0ac14cd1b1f773773b77e95d8fd9b029cc6",
+    "kilosort_boundary_producer.py": "67e8575029bd4cc6c0d988396b80fd32fb8c31af295f21506de672d7cf40dde9"
+  },
+  "review_scope": "synthetic temporary HDF5 checkpoint injection and synthetic voltage-boundary arrays only",
+  "raw_or_real_voltage_read": false,
+  "d3_outcome_access": false
+}

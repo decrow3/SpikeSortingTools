@@ -1,0 +1,14 @@
+{
+  "schema": "immutable-packet-complete-v1",
+  "status": "COMPLETE_GO_SCOPED_FIXTURE_CONCLUSIONS",
+  "completed_local": "2026-10-07T23:55:30-07:00",
+  "manifest_path": "MANIFEST.json",
+  "manifest_sha256": "51aa28f087b6ea5a9e106378bae22c40cdce6e707521ec0a520db59166a0f8b7",
+  "reviewed_manifest_sha256": "96f9b81f01471ba88564426ab86d3e9810d794894e8d8e8de6a87187f512d446",
+  "verdict": "GO_SCOPED_FIXTURE_CONCLUSIONS",
+  "raw_or_real_voltage_read": false,
+  "sort_launched": false,
+  "gpu_work": false,
+  "rf_or_holdout_access": false,
+  "d3_outcome_access": false
+}
