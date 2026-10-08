@@ -1,0 +1,22 @@
+{
+  "schema": "coordination-handoff-v1",
+  "host": "huklaban1",
+  "task_key": "candidate3_mini_transition_v5_resource_delta_review",
+  "reported_at": "2026-10-08T01:44:30-07:00",
+  "terminal_state": "GO_EXACT_V5_ONE_V7_REPLACEMENT_AFTER_FRESH_PRESTART",
+  "reviewed_author_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v5",
+    "manifest_sha256": "87f741047d51e28d2bcf2adf2d8b646231566fa7bf82f8184c9826a5d86133c2",
+    "contract_sha256": "782f00f8798ce3758c152b00dd5a749efc07f0a89c044bd6b2dc4266d474549d"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_v5_resource_delta_independent_review_h1_20261008_v1",
+    "manifest_sha256": "023eb02c66a06d984c94358ce68f0025e6f49b321abad3dd4d18957255e7b55a",
+    "complete_sha256": "7d859b2fe6d64589dc4669d7cc4c07230803eac55bbcb843205f98d8004f7643"
+  },
+  "decision": "Release only the exact v5 contract for one fresh v7 attempt after all recorded fresh-prestart and in-service live-leaf gates pass; preserve v6 invalid evidence and never retry either namespace.",
+  "cpu_policy": "NO_ENFORCED_QUOTA; no timing-comparability or bitwise-determinism claim",
+  "mandatory_prestart": "rehash packet/input/ordinary/DARTsort; all v7 paths and unit absent; no competing H1 spike sort/high-load scientific job; >=20 allowed and online CPUs; >=32 GiB MemAvailable; compatible load; >=2 GiB /tmp; then live leaf memory.max=17179869184, pids.max=128 and absent or unbounded cpu.max before attempt creation",
+  "execution_owner": "/root",
+  "reviewer_next_state": "checked in with HubMultiCoordinater; available for bounded follow-up and not launching the service"
+}

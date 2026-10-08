@@ -1,0 +1,43 @@
+{
+  "schema": "candidate3-mini-transition-v5-resource-delta-independent-review-v1",
+  "verdict": "GO_EXACT_V5_ONE_V7_REPLACEMENT_AFTER_FRESH_PRESTART",
+  "reviewed_packet_manifest_sha256": "87f741047d51e28d2bcf2adf2d8b646231566fa7bf82f8184c9826a5d86133c2",
+  "reviewed_contract_sha256": "782f00f8798ce3758c152b00dd5a749efc07f0a89c044bd6b2dc4266d474549d",
+  "predecessor_v4_manifest_sha256": "ac55b926edc2534f34120e1a6be0e71a4b0c4c8f60bb1ccb49bd082343c3d153",
+  "predecessor_v4_review_manifest_sha256": "c85374eb3553f266fbf70b2ea71b52a5883b3af05c9bf0d19050043b35c92bac",
+  "v6_failure_manifest_sha256": "63b038bfe88011a9310fbac6b40cd5b2afc392b04c4c1d6978dfbaa82db95485",
+  "v6_independent_correction_manifest_sha256": "05d09078f5d5f93ebfe6abc97932ea3b64fd84c40de145b015a03d4382a569c4",
+  "source_hashes": {
+    "runner": "f19426019e215c4d077953bc4245b9c7c197a765820be250d5284942156c23a1",
+    "producer_unchanged": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a",
+    "reporter_unchanged": "e627b1aaba5355a6a156aab908bd6bc4e19f82cfffbb359ffcaf1ee1ef67d32e"
+  },
+  "delta_checks": {
+    "cpu_policy": "NO_ENFORCED_QUOTA; no CPUQuota property; live finite cpu.max rejected",
+    "memory": "live leaf memory.max must equal 17179869184 before attempt creation",
+    "pids": "live leaf pids.max must equal 128 before attempt creation",
+    "host": "actual affinity >=20, MemAvailable >=34359738368, online CPUs/load recorded",
+    "science": "unchanged producer, reporter, full input/ordinary manifests, DARTsort commit, commands, config/seed and accounting",
+    "timer_termination_output": "unchanged 45-minute manager timer, 30-second control-group stop, ExecStopPost, no restart, 2-second 512 MiB aggregate monitor",
+    "ordering": "verify_manager completes before attempt root mkdir and scientific subprocess",
+    "syntax": "three v5 Python sources compile with external pycache"
+  },
+  "launch_scope": {
+    "attempts": 1,
+    "unit": "candidate3-mini-transition-v7.service",
+    "attempt_root": "/tmp/candidate3_mini_e2e_20261008_v7",
+    "retry": false,
+    "v6_reuse": false,
+    "requires_fresh_prestart": true,
+    "requires_no_other_h1_spike_sort": true
+  },
+  "excluded": [
+    "service launch or mutation",
+    "raw voltage read",
+    "RF or holdout access",
+    "D3",
+    "timing comparability claim",
+    "bitwise determinism claim",
+    "real-input or scientific-benefit inference"
+  ]
+}

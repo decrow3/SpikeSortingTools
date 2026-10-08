@@ -1,0 +1,28 @@
+{
+  "schema": "independent-review-provenance-v1",
+  "reviewed_at": "2026-10-08T01:43:24-07:00",
+  "reviewer_task": "/root/review_candidate3_v5_delta",
+  "workspace": "/home/huklab/Documents/RyanSorting/SpikeSortingTools",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v5",
+  "reviewed_packet_manifest_sha256": "87f741047d51e28d2bcf2adf2d8b646231566fa7bf82f8184c9826a5d86133c2",
+  "reviewed_contract_sha256": "782f00f8798ce3758c152b00dd5a749efc07f0a89c044bd6b2dc4266d474549d",
+  "evidence": [
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v4",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_v4_independent_review_h1_20261008_v1",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_v6_resource_failure_h1_20261008_v1r1",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_v6_cpu_enforcement_failure_independent_review_h1_20261008_v1",
+    "/tmp/candidate3_mini_e2e_20261008_v6_OUTER_LAUNCH.json",
+    "/tmp/candidate3_mini_e2e_20261008_v6/job/PRELAUNCH.json",
+    "/tmp/candidate3_mini_e2e_20261008_v6/job/FINAL_STATUS.json",
+    "/tmp/candidate3_mini_e2e_20261008_v6/job/MANAGER_FINAL.json"
+  ],
+  "methods": [
+    "verified v5 manifest/member sizes and SHA-256 values",
+    "diffed exact v4 and v5 runner sources and contracts",
+    "verified producer/reporter identity by SHA-256",
+    "inspected source ordering for pre-attempt effective-resource checks",
+    "inspected v6 stop/finalizer receipts and independent correction",
+    "compiled all v5 Python sources using a /tmp pycache",
+    "did not launch or mutate any service"
+  ]
+}

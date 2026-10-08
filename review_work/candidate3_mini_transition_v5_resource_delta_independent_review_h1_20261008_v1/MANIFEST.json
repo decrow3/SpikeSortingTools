@@ -1,0 +1,19 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "created_at": "2026-10-08T01:44:19-07:00",
+  "status": "GO_EXACT_V5_ONE_V7_REPLACEMENT_AFTER_FRESH_PRESTART",
+  "members": {
+    "CHECKS.json": {
+      "size": 2420,
+      "sha256": "515ac50fea7629f7208f5fd0e7bba5ec07e97de65c20828389452d0fd2b96df7"
+    },
+    "PROVENANCE.json": {
+      "size": 1752,
+      "sha256": "3d2809f9cc9f9f39d76557526bf7b6c594055e2d6f97c768cc9a2d743f210afb"
+    },
+    "REPORT.md": {
+      "size": 5322,
+      "sha256": "b1cc3b10b57d5eb315a964137a26b097d3b287d6e809353c3c85433a7a6dd996"
+    }
+  }
+}

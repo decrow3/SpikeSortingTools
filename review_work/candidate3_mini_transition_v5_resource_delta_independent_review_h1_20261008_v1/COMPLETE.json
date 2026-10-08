@@ -1,0 +1,6 @@
+{
+  "schema": "immutable-evidence-complete-v1",
+  "completed_at": "2026-10-08T01:44:30-07:00",
+  "status": "GO_EXACT_V5_ONE_V7_REPLACEMENT_AFTER_FRESH_PRESTART",
+  "manifest_sha256": "023eb02c66a06d984c94358ce68f0025e6f49b321abad3dd4d18957255e7b55a"
+}
