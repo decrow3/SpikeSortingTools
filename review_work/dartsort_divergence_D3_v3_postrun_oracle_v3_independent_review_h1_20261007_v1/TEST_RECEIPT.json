@@ -1,0 +1,13 @@
+{
+  "schema": "d3-v3-postrun-oracle-v3-independent-review-test-receipt-v1",
+  "observed_at": "2026-10-07T23:33:00-07:00",
+  "baseline": "13 passed in 0.27s; py_compile passed; predecessor verification passed",
+  "positive": "GO_FINAL_REF_A_TO_DARTSORT_CORRESPONDENCE_ONLY",
+  "earlier_counterexamples": "all five rejected as expected by baseline suite",
+  "v2_duplicate_label": "REJECTED duplicate eligible final label row",
+  "v2_negative_match_index": "REJECTED matched index is null or out of range",
+  "canonical_label_substitution": "FALSE_ACCEPT GO_FINAL_REF_A_TO_DARTSORT_CORRESPONDENCE_ONLY",
+  "independent_script_sha256": "e6a9672b2d79abc35fe296adae7fe01e415c8a24ecd83708f53a332f14237506",
+  "intentional_script_exit": 1,
+  "production_outcome_inspected": false
+}

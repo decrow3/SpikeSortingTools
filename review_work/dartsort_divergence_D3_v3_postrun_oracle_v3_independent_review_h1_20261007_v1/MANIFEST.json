@@ -1,0 +1,13 @@
+{
+  "schema": "immutable-packet-manifest-v1",
+  "created_local": "2026-10-07T23:34:00-07:00",
+  "packet": "dartsort_divergence_D3_v3_postrun_oracle_v3_independent_review_h1_20261007_v1",
+  "reviewed_manifest_sha256": "d367aa95fac7623bff1e14607bdebf80707ae10ef72cba0db515ec36131e84ed",
+  "members": [
+    {"path": "PROVENANCE.json", "bytes": 1130, "sha256": "83d355f11fb623523f52dae094599c267cfadad9344fb58c056d70e0501b3be0"},
+    {"path": "REVIEW.md", "bytes": 3832, "sha256": "f3a35556aa19c53d7b1a3d3dd5057862ee5bdb7b11f9198686b2cc7ba5a084a0"},
+    {"path": "TEST_RECEIPT.json", "bytes": 774, "sha256": "9143c169e7eef6792c9a61f4e809336b322ce31dcc3f4b3f13162711859ebef4"},
+    {"path": "VERDICT.json", "bytes": 1083, "sha256": "ae43a4d7912b210977b7262f4ec1a81e092a94dafa7b75ea83907cec9fba2361"},
+    {"path": "independent_v3_review.py", "bytes": 4328, "sha256": "e6a9672b2d79abc35fe296adae7fe01e415c8a24ecd83708f53a332f14237506"}
+  ]
+}

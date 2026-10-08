@@ -1,0 +1,13 @@
+{
+  "schema": "immutable-packet-complete-v1",
+  "status": "COMPLETE_BLOCKED_CANONICAL_UNIVERSE_NOT_SOURCE_BOUND",
+  "completed_local": "2026-10-07T23:34:30-07:00",
+  "manifest_path": "MANIFEST.json",
+  "manifest_sha256": "832d3a89931c84b072193feb3545360233ff2a5c97309fa7ef09a6d43c47c85a",
+  "reviewed_manifest_sha256": "d367aa95fac7623bff1e14607bdebf80707ae10ef72cba0db515ec36131e84ed",
+  "verdict": "BLOCKED_CANONICAL_UNIVERSE_NOT_SOURCE_BOUND",
+  "production_outcome_inspected": false,
+  "raw_voltage_bytes_read": 0,
+  "gpu_work": false,
+  "rf_or_holdout_access": false
+}

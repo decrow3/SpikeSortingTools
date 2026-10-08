@@ -1,0 +1,16 @@
+{
+  "schema": "d3-v3-postrun-oracle-v3-independent-review-verdict-v1",
+  "status": "BLOCKED_CANONICAL_UNIVERSE_NOT_SOURCE_BOUND",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_v3_postrun_oracle_h1_20261007_v3",
+  "reviewed_manifest_sha256": "d367aa95fac7623bff1e14607bdebf80707ae10ef72cba0db515ec36131e84ed",
+  "reviewed_complete_sha256": "0a2433a25513b71a36fe63c34deb59e36e5f3c212a290fe7ca87da784b517742",
+  "v2_blockers_literal_fixtures": "REPAIRED",
+  "baseline_tests": "13 passed in 0.27s",
+  "blocking_false_accept": "self-consistent substitution of label 999 for label 7 across rankings, pair outputs, and stage rows returns GO because no independent canonical eligible-label list is bound",
+  "required_repair": "producer must emit canonical eligible_final_labels in DARTSORT_MATCHER_ORDERING and oracle must require exact equality for every anchor ranking",
+  "production_outcome_inspected": false,
+  "new_h5_output_read": false,
+  "raw_or_waveform_read": false,
+  "rf_or_holdout_access": false,
+  "sort_or_parameter_change": false
+}

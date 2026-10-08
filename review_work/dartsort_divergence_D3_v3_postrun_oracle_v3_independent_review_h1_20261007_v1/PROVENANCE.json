@@ -1,0 +1,14 @@
+{
+  "schema": "d3-v3-postrun-oracle-v3-independent-review-provenance-v1",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_v3_postrun_oracle_h1_20261007_v3",
+  "reviewed_manifest_sha256": "d367aa95fac7623bff1e14607bdebf80707ae10ef72cba0db515ec36131e84ed",
+  "reviewed_complete_sha256": "0a2433a25513b71a36fe63c34deb59e36e5f3c212a290fe7ca87da784b517742",
+  "oracle_source_sha256": "c1cd254605b2547c779486fe6465c6ac7751f287cb452e0385e95074dbc142af",
+  "oracle_tests_sha256": "a858440824c19ee93114b6ecd197645dda2983f462ff3bf7ddacce4afb7e7da1",
+  "blocked_v2_review_manifest_sha256": "8d0647588300e93f4e35c10ca89991798394ba6bc1e22c011333f47290a351d2",
+  "executable_derivative_manifest_sha256": "10cdbcd20afdd665840496fa3549b1e5119b4c21f8e32ffb519e03ea49b0dee7",
+  "technical_review_manifest_sha256": "7874adc42c7aadf9da6bd93be0bb4d635ed7458874ab27c98a49195c3387e3fe",
+  "review_scope": "v2 blocker repairs, all earlier counterexamples, positive baseline, and canonical eligible-label source binding",
+  "future_production_namespace_inspected": false,
+  "production_execution_performed": false
+}
