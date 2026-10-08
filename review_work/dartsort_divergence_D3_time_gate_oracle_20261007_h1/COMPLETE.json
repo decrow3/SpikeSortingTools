@@ -1,0 +1,9 @@
+{
+  "schema": "immutable-packet-complete-v1",
+  "status": "COMPLETE",
+  "completed_local": "2026-10-07T21:47:22-07:00",
+  "manifest_path": "MANIFEST.json",
+  "manifest_sha256": "57b6acea805908b8fef988ef4047897f8942e9244080571d91e468cb05b673f9",
+  "verdict": "REPAIR_REQUIRED_EXACT_EQUALITY_GATE_INVALID",
+  "production_retry_authorized": false
+}

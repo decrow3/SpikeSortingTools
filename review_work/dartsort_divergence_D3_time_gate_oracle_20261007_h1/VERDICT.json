@@ -1,0 +1,23 @@
+{
+  "schema": "dartsort-divergence-d3-time-gate-oracle-verdict-v1",
+  "status": "REPAIR_REQUIRED_EXACT_EQUALITY_GATE_INVALID",
+  "frozen_local": "2026-10-07T21:45:39-07:00",
+  "decision": {
+    "full_raw_row_time_equality_scientifically_correct": false,
+    "row_index_binding_scientifically_supported": true,
+    "general_time_relation": "final_time[row] = matching_time[row] + cumulative_postmatching_shift[row]",
+    "matching_h5_time_shifts_is_the_cumulative_postmatching_shift": "not established and contradicted as a general assumption because peeling applies that feature before H5 times are emitted",
+    "cross_pipeline_event_clock": "final NPZ times_samples",
+    "matching_stage_attribution_clock": "parent H5 times_samples on the same source row",
+    "nearest_time_final_h5_ancestry_allowed": false,
+    "production_retry_authorized": false
+  },
+  "invalidated": [
+    "D1/D2/D3 exact final/H5 time equality as a row-binding requirement",
+    "D3 v2 full-row equality portion of STAGE_VALIDATION",
+    "any inference that this terminal error proves corrupt DARTsort ancestry"
+  ],
+  "additional_required_repair": "stably sort each final-label train by final_time and source_row_id before temporal matching",
+  "scientific_results_available": false,
+  "scope": "source-bound interpretation of the prospective pre-evaluation gate failure only"
+}

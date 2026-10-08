@@ -1,0 +1,27 @@
+{
+  "schema": "immutable-packet-manifest-v1",
+  "created_local": "2026-10-07T21:47:13-07:00",
+  "packet": "dartsort_divergence_D3_time_gate_oracle_20261007_h1",
+  "members": [
+    {
+      "path": "CHECKS.json",
+      "bytes": 2438,
+      "sha256": "3235c72da90f60295a70a375a85d19578f46b1f2441ed8167462827e8ac9799f"
+    },
+    {
+      "path": "FROZEN_ORACLE.md",
+      "bytes": 9228,
+      "sha256": "90190226e75f0ee2bd169bd33998f58245979cb845c760103b8840a37e883386"
+    },
+    {
+      "path": "PROVENANCE.json",
+      "bytes": 2306,
+      "sha256": "f4e128529a23a556892280f6c5d9bbd6b60981f46e92c45b0a0a8f96281acbb8"
+    },
+    {
+      "path": "VERDICT.json",
+      "bytes": 1357,
+      "sha256": "abaee64fdae2864604731b4f73085af09daf2eeb04802fd8effcf3a85e640d95"
+    }
+  ]
+}

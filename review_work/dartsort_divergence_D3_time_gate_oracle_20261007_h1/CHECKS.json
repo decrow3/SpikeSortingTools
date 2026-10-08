@@ -1,0 +1,50 @@
+{
+  "schema": "dartsort-divergence-d3-time-gate-oracle-checks-v1",
+  "frozen_local": "2026-10-07T21:45:39-07:00",
+  "host": "huklaban1",
+  "inspection_boundary": {
+    "h5_failure_artifact_opened": false,
+    "h5_diagnosis_opened": false,
+    "production_input_opened": false,
+    "reported_error_string_only": "ContractError: DARTsort final/H5 time rows differ"
+  },
+  "repaired_acceptance_checks": [
+    "resolved parent_h5_path equals frozen matching H5",
+    "final times/labels/channels, H5 times/channels/labels, and consumed features share row count",
+    "final channels equal H5 channels rowwise",
+    "row index is preserved as ancestry key",
+    "final-minus-H5 time delta receives compact diagnostics but is not required to be zero",
+    "used final events are inside frozen half-open recording support",
+    "each final-label train is stably sorted by final time and source row id before matching",
+    "emitted relations preserve original source row ids"
+  ],
+  "required_positive_fixture": {
+    "nonzero_shift_signs": ["positive", "negative"],
+    "merged_source_labels": 2,
+    "requires_local_time_order_inversion": true,
+    "expected": "row binding passes and temporal matching uses sorted final times with preserved row ids"
+  },
+  "required_negative_fixtures": [
+    "parent path drift",
+    "row count drift",
+    "channel row drift",
+    "feature row count drift"
+  ],
+  "bounded_real_diagnostic": {
+    "location": "H5",
+    "raw_voltage_bytes": 0,
+    "gpu": false,
+    "scientific_candidate_analysis": false,
+    "outputs": [
+      "row counts and dtypes",
+      "channel equality",
+      "delta nonzero count/fraction/min/max/value counts or bounded histogram",
+      "source-fixed stage/sign statement and full-row final-minus-H5 delta without fitting plus/minus relations",
+      "deterministic bounded mismatch examples",
+      "global and per-final-unit inversion counts",
+      "final-NPZ clock used for cross-pipeline support/correspondence; H5 clock used only for same-row matching-stage attribution"
+    ]
+  },
+  "fallback_if_exact_ancestry_unavailable": "final-event comparison may proceed on final times/labels, but matching-to-final attribution must be unavailable; nearest-time final/H5 alignment is prohibited",
+  "stop_condition": "stop after fixed-small adversarial repair tests and one compact full-row saved-time diagnostic receipt; no production retry without new frozen v3 review/release"
+}

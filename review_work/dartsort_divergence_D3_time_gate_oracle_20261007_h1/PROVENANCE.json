@@ -1,0 +1,42 @@
+{
+  "schema": "dartsort-divergence-d3-time-gate-oracle-provenance-v1",
+  "created_local": "2026-10-07T21:45:39-07:00",
+  "host": "huklaban1",
+  "reviewer": "H1",
+  "d3_contract": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_production_contract_h5_20261007_v2/RUN_CONTRACT.json",
+    "sha256": "81ac32ec196aea9336f8883eca5cdfd868fde5c1a91011ec6c252a93b45dbfa1"
+  },
+  "d3_runner": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_production_contract_h5_20261007_v2/source/production_saved_output_runner.py",
+    "sha256": "fc304240486f48f2791159256f1320d51a37ea08fd03175387256e35b3ca5a23"
+  },
+  "d1_adapter": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D1_adapter_repair_h5_20261007_v2/source/saved_output_adapter.py",
+    "sha256": "60ecddfdd01d1fbcdeffaa77642d6e4a88bf689dc7a7b1d9275b303efd37526b"
+  },
+  "d0_bindings": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D0_h5_20261007_v1/SOURCE_AND_INPUT_BINDINGS.json",
+    "sha256": "baaf258948eb86f6aa9bce1528e7e78400cf1d9f60d8e4287eea22ab840c9351"
+  },
+  "dartsort_source": {
+    "repository": "/home/huklab/Documents/DARTsort",
+    "run_commit": "fdaad62118d778eec63f8e755a0b0f1422574aff",
+    "reviewed_core_paths_unmodified_relative_to_run_commit": true,
+    "files": {
+      "src/dartsort/main.py": "e4c03417c1256384c4f8fbf0250560003bd795b7274932ef1e49dcde217bd249",
+      "src/dartsort/util/data_util.py": "5e5ee25f412a9a077b6d729ccc0a908349aa7399c1c802c9de889f1a83c7e93b",
+      "src/dartsort/templates/realignment.py": "db59a342591c4c2ca1c51eef2bfa1edae15da06b232377fd1ccabac7f250b8a5",
+      "src/dartsort/clustering/cluster_util.py": "75e2e63aeee3784ebc3ceaaf9109c35919d7b5c857779c970409ffcc17ce7820",
+      "src/dartsort/peel/peel_lib.py": "6f3c7f271663258b573302ebb775a77e636f8e9b2f589105456bf35facfca17d"
+    },
+    "limitation": "D0 records a separate tracked diff and pipeline-source hash whose bytes were not included in the compact packet; core reviewed files above have no local diff from the run commit"
+  },
+  "resource_accounting": {
+    "raw_voltage_bytes_read": 0,
+    "production_saved_array_bytes_read": 0,
+    "gpu_used": false,
+    "sort_or_fit_run": false,
+    "rf_or_holdout_access": false
+  }
+}
