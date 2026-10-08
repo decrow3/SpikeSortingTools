@@ -1,0 +1,27 @@
+{
+  "schema": "h1_candidate3_h5_placement_readiness_spec_ack_started_v1",
+  "created_at": "2026-10-08T01:55:38-07:00",
+  "agent": "H1",
+  "recipient": "HubMultiCoordinater",
+  "task": "candidate3_h5_preferred_full_session_placement_readiness_handoff_spec",
+  "status": "ACK_STARTED",
+  "inputs": {
+    "feasibility_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_full_session_host_storage_feasibility_h1_20261008_v1",
+    "feasibility_manifest_sha256": "fcfa3167f03ae0c084740537fab09cb2a366229b44330eb840c6bd3537e4dd40",
+    "feasibility_complete_sha256": "acdc0301c7a1357e5586841b61b4f23a0a42ebb8592327d92e6f69cb256607f9",
+    "accepted_review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_full_session_host_storage_feasibility_independent_review_h1_20261008_v1",
+    "review_manifest_sha256": "4c29453529f9665a3d4e0007d5badcefb469e3a1c7dde7561ceff41a0637afe0",
+    "review_complete_sha256": "3e91a24ef08a4bc40037893481b4ea9ceb93ed0f88f842112e37101bae432a7d"
+  },
+  "decision": "freeze a ready-to-run H5 checklist without claiming current H5 readiness",
+  "scope": "existing accepted metadata and source/config evidence only",
+  "exclusions": [
+    "no H5 contact",
+    "no voltage read",
+    "no data transfer or materialization",
+    "no service installation or launch",
+    "no RF or holdout access"
+  ],
+  "completion_condition": "immutable packet plus focused local validation covering identities, placement roles, conservative capacity/headroom, transient host checks, effective manager controls, invalidation conditions, and exact fresh H5 prestart checks",
+  "execution_state": "no candidate3 full-session process or service launched by this task"
+}

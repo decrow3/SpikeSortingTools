@@ -1,0 +1,26 @@
+{
+  "schema": "candidate3-h5-full-session-placement-readiness-validation-v1",
+  "validated_at": "2026-10-08T02:00:10-07:00",
+  "status": "PASS",
+  "checks": {
+    "json_parse": true,
+    "fresh_check_count_12": true,
+    "fresh_check_ids_unique": true,
+    "storage_arithmetic_exact": true,
+    "materialization_prohibited": true,
+    "wrapper_visibly_absent": true,
+    "full_config_visibly_not_frozen": true,
+    "task_mutation_flags_all_false": true,
+    "source_author_manifest_hash": true,
+    "source_author_complete_hash": true,
+    "source_review_manifest_hash": true,
+    "source_review_complete_hash": true
+  },
+  "storage_arithmetic": {
+    "aggregate_run_write_cap_bytes": 482618717184,
+    "emergency_free_reserve_bytes": 120000000000,
+    "prestart_free_bytes_minimum": 602618717184
+  },
+  "validation_history": "The first jq assertion invocation had a jq operator-precedence/type error in the validation expression and did not assess the specification. The corrected parenthesized assertion passed; the draft files were not changed to obtain the pass.",
+  "scope": "local structural/provenance validation only; not an independent review and not an H5 readiness check"
+}

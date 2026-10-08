@@ -1,0 +1,27 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "created_at": "2026-10-08T02:00:25-07:00",
+  "status": "H5_PREFERRED_CHECKLIST_FROZEN_NOT_CURRENTLY_READY",
+  "members": {
+    "FROZEN_SCOPE.md": {
+      "size": 871,
+      "sha256": "c6138ff5a4126bfdc5f9eb0becaa979516334c21dc9599cbb6f31a748f619e90"
+    },
+    "HANDOFF.md": {
+      "size": 3231,
+      "sha256": "0c8dd53a52f171a272cc6f513c1008b3c1f5c9576706a1f981f69363b9f71f2a"
+    },
+    "PROVENANCE.json": {
+      "size": 2403,
+      "sha256": "6c848d53b6eccfc219cc601b8a9790eff78b227c4d595e0748c61e442f7ccffb"
+    },
+    "READINESS_SPEC.json": {
+      "size": 12276,
+      "sha256": "ccb0fbe3454f3713991450eea3545b69feb725523ce69fe4e67b1054b8005c38"
+    },
+    "VALIDATION.json": {
+      "size": 1185,
+      "sha256": "4fdc2fbf4e98bff138bede09bd617a405343c5d15988d2c08bc79711db92260e"
+    }
+  }
+}

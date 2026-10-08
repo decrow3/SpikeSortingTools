@@ -1,0 +1,47 @@
+{
+  "schema": "candidate3-h5-full-session-placement-readiness-provenance-v1",
+  "host": "huklaban1",
+  "author": "H1",
+  "created_at": "2026-10-08T01:57:28-07:00",
+  "source_packets": {
+    "host_storage_feasibility": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_full_session_host_storage_feasibility_h1_20261008_v1",
+      "manifest_sha256": "fcfa3167f03ae0c084740537fab09cb2a366229b44330eb840c6bd3537e4dd40",
+      "complete_sha256": "acdc0301c7a1357e5586841b61b4f23a0a42ebb8592327d92e6f69cb256607f9"
+    },
+    "host_storage_review": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_full_session_host_storage_feasibility_independent_review_h1_20261008_v1",
+      "manifest_sha256": "4c29453529f9665a3d4e0007d5badcefb469e3a1c7dde7561ceff41a0637afe0",
+      "complete_sha256": "3e91a24ef08a4bc40037893481b4ea9ceb93ed0f88f842112e37101bae432a7d"
+    },
+    "active_path_map": {
+      "path": "review_work/candidate3_active_path_map_h1_20261007_v1",
+      "manifest_sha256": "03ac17f855805d004936dc548325efd2aa7bf834f4312caf3ce44aed171d04aa",
+      "complete_sha256": "4040633ba5f7741e7b2018ab427fffb3a362e6bbd88c7050e09cdcf6f3683e77"
+    },
+    "readiness_inventory": {
+      "path": "review_work/candidate3_readiness_inventory_h1_20261007_v1",
+      "manifest_sha256": "0370b607b3240fb4da6b31ba1defe4907e6956a47539c9f22e6efe6f74074f7e",
+      "complete_sha256": "cfda092933eef6484fa6ea6c05e734f8fab0b48b69011a115b3f1578edc9c05a"
+    },
+    "whole_stage_restart": {
+      "path": "review_work/candidate3_whole_stage_restart_actual_path_h1_20261008_v2",
+      "manifest_sha256": "ad5ae1d0eef0977d25109c2030d67e972238a8de54202b246b7a9661dd9d7cdf",
+      "complete_sha256": "041e54efa34ec91451a98517a89332289ffd4c0dad14ca9143e97904109627ab",
+      "review_manifest_sha256": "518307b8f5b412d4c973472919dce8415ef0f285c68db70479f5c88610325f18",
+      "review_complete_sha256": "fcbae063f28efcb194cd8e2c598a1b148c90b04e40a826dc85c2aad2e5e98be5"
+    }
+  },
+  "active_plan_sha256": "c26d63dfe9ae94312485d57ec99f1a3c4d7d089806b84485099d4afb4f12554f",
+  "task_actions": {
+    "h5_contacted": false,
+    "voltage_payload_read": false,
+    "payload_hashed": false,
+    "transfer_performed": false,
+    "materialization_performed": false,
+    "service_installed": false,
+    "service_launched": false,
+    "sort_launched": false,
+    "rf_or_holdout_accessed": false
+  }
+}

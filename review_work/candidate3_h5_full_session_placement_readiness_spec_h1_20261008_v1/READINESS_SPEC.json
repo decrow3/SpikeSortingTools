@@ -1,0 +1,176 @@
+{
+  "schema": "candidate3-h5-full-session-placement-readiness-spec-v1",
+  "created_at": "2026-10-08T01:57:28-07:00",
+  "status": "SPECIFICATION_COMPLETE_H5_NOT_CURRENTLY_PROVEN_READY",
+  "host_preference": "H5",
+  "decision_scope": "placement and operational readiness only; not launch authorization, scientific validity, or performance",
+  "accepted_input_identity": {
+    "probe": "Luke0804 imec0",
+    "support_samples_half_open": [0, 314204894],
+    "sampling_frequency_hz": 29999.835983263598,
+    "channels": 384,
+    "dtype": "int16",
+    "gain_uv_per_count": 2.34375,
+    "bytes": 241309358592,
+    "h5_local_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/recording/traces_cached_seg0.raw",
+    "recorded_file_sha256": "672938e942d105af6b1a3f7f1bddf206939535e0e4b57bc01153472a1ccb8b69",
+    "recording_content_sha256": "90b6a07a22e32fdd741c3f605f582d44f361bc75ed18737c134e13fdd1d76ad9",
+    "input_bindings_sha256": "7c045a88be1819d5411534867ee717ceadf76661c3bb3ba176dd525ed5c4e3b1",
+    "arm_a_complete_sha256": "4f49d6d4959ab54bd78338564c4d3caa88b3203fbe75685ce8f1d46dc4aea499",
+    "field_sha256": "4c769125020aad3263bf6eaa1889cdaa7eccbf19dcf0aa3a068b185221fadb9f",
+    "identity_qualification": "hashes are accepted metadata bindings, not fresh H5 payload verification"
+  },
+  "required_source_and_boundary": {
+    "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+    "dartsort_source_sha256": {
+      "main.py": "e4c03417c1256384c4f8fbf0250560003bd795b7274932ef1e49dcde217bd249",
+      "main_util.py": "2846a319c19c25b3cad81ab991057c0868b87d760b66f20e8d2bb3db8ffa3bcc",
+      "preprocess_util.py": "566ce1ab60af12585978bcd7e3192cb2ca4cc220ab5e41895140c00bdbc06674",
+      "peel_base.py": "ac357ade5b6f23b690a403e297a2260ea93c2a1b35df13ee7798d8fc8591a2d4"
+    },
+    "kilosort_io_sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+    "exact_lattice_remap_recording_source_sha256": "0125394629af7bffc6d46a5c26903efd65cd244f30000ae45d3cfa8324abea3a",
+    "boundary": "accepted Arm-A remapped int16 voltage after accepted Kilosort per-channel centering, global median CAR, 300 Hz FFT high-pass, disabled artifact gate, and before whitening",
+    "wrapper_state": "ABSENT_NOT_REVIEWED",
+    "hard_gate": "freeze and review the actual H5 lazy wrapper; bind request chunk length, padding/overlap, crop, channel order, geometry, scaling, centering/CAR/filter/artifact order and transition context; pass predeclared ordinary and transition real-window sample equality before launch",
+    "dartsort_config_required": {
+      "preprocessing": "none",
+      "copy_recording_to_tmpdir": "no",
+      "work_in_tmpdir": false
+    },
+    "full_effective_config_state": "NOT_FROZEN; separate run contract must freeze every consumed setting, seed, training sample schedule and output schema"
+  },
+  "placement_roles": {
+    "input": "read-only accepted H5-local Arm-A binary at the exact accepted path",
+    "persistent_run_root": "one new exact H5-local writable directory on a named filesystem; must be absent before launch and remain independent of chat or SSH lifetime",
+    "output": "persistent_run_root/output; final sorting and stage outputs",
+    "scratch": "persistent_run_root/scratch; attempt-specific temporary stage data only",
+    "cache": "persistent_run_root/cache; explicit Numba/Torch/DARTsort caches, never an ambient or fixture-populated cache",
+    "failure_retention": "persistent_run_root/failures; immutable quarantined partial stages and manager terminal receipts",
+    "logs_receipts": "persistent_run_root/receipts; launch command, effective config, cgroup state, stdout/stderr, monitoring, terminal exit and provenance",
+    "shared_publication": "compact manifests, reports, settings, logs and receipts only after validation; no voltage or large scratch/cache publication",
+    "same_filesystem_rule": "output, scratch, cache and failure_retention must resolve to the same named local run filesystem whose free-space accounting is recorded; input may be on another H5-local filesystem"
+  },
+  "storage_envelope": {
+    "full_float32_materialization_bytes": 482618717184,
+    "materialization_policy": "PROHIBITED",
+    "aggregate_run_write_cap_bytes": 482618717184,
+    "aggregate_cap_includes": [
+      "output",
+      "scratch",
+      "cache",
+      "logs and receipts",
+      "one quarantined failed whole-stage attempt",
+      "filesystem-visible temporary files under the run root"
+    ],
+    "emergency_free_reserve_bytes": 120000000000,
+    "prestart_free_bytes_minimum": 602618717184,
+    "derivation": "482618717184 aggregate run-write cap plus 120000000000 emergency reserve; this is a conservative placement gate, not an estimate that the run will consume the cap",
+    "monitor_stop_conditions": [
+      "sum of allocated bytes under persistent_run_root exceeds 482618717184",
+      "free bytes on the bound run filesystem fall below 120000000000",
+      "writes escape persistent_run_root or resolve to a different filesystem",
+      "a second full-recording materialization appears"
+    ],
+    "stop_behavior": "stop the managed process group, preserve the attempt and terminal evidence, do not delete or retry, and report the exact breached condition"
+  },
+  "checkpoint_and_failure_policy": {
+    "within_peel_resume": "NOT_TRUSTED",
+    "allowed_restart": "fresh whole-peel-stage recomputation in a distinct validated namespace from unchanged upstream bindings",
+    "reuse_rule": "reuse only completed stages whose exact inputs, source, configuration and manifest hashes remain valid",
+    "partial_rule": "quarantine partial or manager-killed stages; never reopen them through stock automatic resume",
+    "interruption_disclosure": "an interruption of an incomplete peel stage loses that stage and requires whole-stage restart; this is not within-stage resumability",
+    "retry_rule": "no automatic restart; any new attempt requires terminal investigation and a new explicit dispatch"
+  },
+  "fresh_h5_checks": [
+    {
+      "id": "H5-01-input",
+      "pass": "accepted metadata packets rehash exactly; the exact path is a readable regular file of 241309358592 bytes; a fresh full-file SHA-256 equals 672938e942d105af6b1a3f7f1bddf206939535e0e4b57bc01153472a1ccb8b69",
+      "fail": "block; do not substitute another path or reconstruct silently"
+    },
+    {
+      "id": "H5-02-wrapper",
+      "pass": "immutable reviewed wrapper/source/config packet exists and the actual H5 producer-consumer path passes predeclared ordinary and transition padded-window equality with channel, geometry, gain, clock and state-switch checks",
+      "fail": "block; wrapper is currently absent"
+    },
+    {
+      "id": "H5-03-environment",
+      "pass": "actual H5 interpreter, executable hash, lock/environment, imported module paths and source hashes are frozen; DARTsort tree is clean at the required commit; actual imports match the frozen files",
+      "fail": "block; an installed version string alone is insufficient"
+    },
+    {
+      "id": "H5-04-config-lineage",
+      "pass": "full effective DARTsort config, seed, full-session training schedule, clock/origin, stage output schema and lineage members are frozen; config consumes preprocessing=none, copy_recording_to_tmpdir=no and work_in_tmpdir=false",
+      "fail": "block; no full effective config is currently frozen"
+    },
+    {
+      "id": "H5-05-placement",
+      "pass": "exact new run root is absent, writable and nonsymlinked; role subpaths resolve beneath it; all write roles share the recorded local filesystem; the input remains read-only; no full float32 destination is configured",
+      "fail": "block"
+    },
+    {
+      "id": "H5-06-storage",
+      "pass": "fresh statvfs on the bound run filesystem reports at least 602618717184 free bytes before any attempt creation; the aggregate write-cap and 120000000000-byte reserve monitors are installed and exercised by a cheap fixture",
+      "fail": "block or freeze a separately reviewed smaller evidence-based envelope; do not waive the reserve ad hoc"
+    },
+    {
+      "id": "H5-07-memory-oomd",
+      "pass": "the separate run contract freezes MemoryMax from representative operational evidence; fresh MemAvailable is at least MemoryMax plus max(34359738368, 25% of MemoryMax); parent and leaf oomd/memory-pressure policy, swap limit and effective memory.max are recorded; no sustained pressure or recent unresolved oomd condition is present",
+      "fail": "block; available-memory arithmetic alone does not clear oomd risk"
+    },
+    {
+      "id": "H5-08-gpu",
+      "pass": "the exact H5 runtime sees the frozen GPU UUID, performs a tiny CUDA allocation, has enough free device memory for the frozen envelope, and no other spike sort or unowned compute process occupies the selected GPU",
+      "fail": "block; candidate 2 and candidate 3 must not share an occupied GPU"
+    },
+    {
+      "id": "H5-09-manager",
+      "pass": "persistent manager survives launcher disconnection; exact unit/command/environment are frozen; Restart=no, KillMode=control-group, TasksMax, MemoryMax, swap policy, wall limit and terminal finalizer are effective in the live leaf cgroup; CPU policy is explicitly bounded with kernel proof or explicitly unbounded; normal, failure, timeout, oomd/cgroup kill and user-stop terminal receipts are preserved",
+      "fail": "block; declarative properties without effective cgroup evidence are insufficient"
+    },
+    {
+      "id": "H5-10-dedup-conflicts",
+      "pass": "exact service, timer, process, run root and output namespace are absent; no candidate-2 or other full sort is active; stale failed namespaces remain preserved and are not reused",
+      "fail": "block without stopping an unrelated job"
+    },
+    {
+      "id": "H5-11-checkpoint",
+      "pass": "actual runner disables trust in partial peel resume, uses fresh whole-stage attempt namespaces, validates completed-stage reuse, and retains a failure-injection receipt through the installed entrypoint",
+      "fail": "block"
+    },
+    {
+      "id": "H5-12-publication-stop",
+      "pass": "launch and terminal receipt destinations are persistent and writable before start; stop conditions and no-retry rule are frozen; compact publication excludes raw voltage and large caches; COMPLETE is written last",
+      "fail": "block"
+    }
+  ],
+  "required_saved_provenance": [
+    "exact launch command and installed service bytes",
+    "resolved input/source/config/interpreter hashes",
+    "training sample times, state coverage and randomness",
+    "construction memberships and event/parent source-row identities",
+    "extraction, matching and final times with each realignment transformation",
+    "labels before and after refinement",
+    "template-to-unit lineage, stage banks and fitted models",
+    "stage reuse/restart decisions and hashes",
+    "periodic storage, host memory, cgroup memory and GPU telemetry",
+    "terminal manager properties and final exit status"
+  ],
+  "invalidation_conditions": [
+    "accepted input path, size, hashes, clock, channel order, geometry, gain or support changes",
+    "wrapper, Kilosort boundary source/order, DARTsort commit/imports or effective config changes after review",
+    "run-root mount, filesystem identity, free space or write-role placement changes",
+    "memory, oomd, swap, GPU, CPU, pids, wall-time or manager policy differs from the frozen effective state",
+    "another full sort starts on H5 or the selected GPU becomes occupied",
+    "checkpoint/restart or failure-retention behavior differs from the reviewed runner",
+    "any listed fresh check is stale at launch time"
+  ],
+  "current_blockers": [
+    "lazy context-correct prewhitening wrapper is absent and real ordinary/transition equality is unproven",
+    "full effective candidate-3 configuration and H5 runtime bindings are not frozen",
+    "exact H5 run root/filesystem and current capacity are unbound",
+    "current H5 memory/oomd, GPU, process/service and effective-manager state are unverified"
+  ],
+  "release_rule": "All H5-01 through H5-12 must pass against one immutable run contract immediately before exactly one coordinator-dispatched launch. This specification alone does not authorize or start the run."
+}
+
