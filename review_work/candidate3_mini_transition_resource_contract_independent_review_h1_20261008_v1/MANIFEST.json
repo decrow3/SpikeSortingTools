@@ -1,0 +1,9 @@
+{
+  "files": {
+    "CHECKS.json": "091358f967f20ffc2e95ea156b52008421ac621d44c93c3774b003d42d48dd45",
+    "PROVENANCE.json": "97d0127cedfc0b4203c28752a8ea93684d10ed5fdeced333863cd8b0eac906ea",
+    "REPORT.md": "0b29bf1e9567bfc8a50f36af94cd1cba4cdedc0f31880f9e6d293a7baff53b4d"
+  },
+  "packet": "candidate3_mini_transition_resource_contract_independent_review_h1_20261008_v1",
+  "verdict": "BLOCKED_PENDING_MANAGED_LAUNCH_CLOSURE"
+}

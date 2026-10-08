@@ -1,0 +1,20 @@
+{
+  "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+  "host": "huklaban1",
+  "managed_job_sha256": "5867440e5495c7a1689892810d14d18a5f856572d2f89a3d628a0742375d5d3f",
+  "reviewed_contract": {
+    "complete_sha256": "fb48e3fe9e54432de3f04675da74982ebb15bb1d9eecc983129ba0288842bfd2",
+    "manifest_sha256": "847eee86d2dc461b1a6fd88ceb229d8f78440ae90faaf416035eb08e57bb134c",
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_resource_contract_h1_20261008_v1"
+  },
+  "reviewed_dependencies": {
+    "mini_stage_review_v2_manifest_sha256": "3e3aa9b27637c67b92bc49880dff167e9078802406d7a2990c6a9d92ad6e8a48",
+    "source_recovery_manifest_sha256": "747618557284507285754a868e44f124811d15554a9c94a108ed5cf84dd0d2ff"
+  },
+  "scope_exclusions": [
+    "service launch or mutation",
+    "real voltage",
+    "RF or holdout",
+    "D3 work or outcome"
+  ]
+}

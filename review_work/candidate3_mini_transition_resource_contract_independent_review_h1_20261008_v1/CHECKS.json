@@ -1,0 +1,38 @@
+{
+  "arithmetic": {
+    "cap_bytes": 536870912,
+    "derived_need_bytes": 515872650,
+    "headroom_bytes": 103174530,
+    "margin_bytes": 20998262,
+    "projection_bytes": 160279947,
+    "subtotal_bytes": 412698120,
+    "valid": true
+  },
+  "blockers": [
+    "mutable workspace source path differs from immutable contract binding",
+    "hash freshness containment and nonsymlink preflight has no executable receipt implementation",
+    "timeout OOM cancellation and outer-launch failure lack durable terminal manager receipt",
+    "storage cap and external NUMBA cache lack managed accounting enforcement",
+    "post-run compact accounting/report command and output contract are absent"
+  ],
+  "current_state": {
+    "service_active_state": "inactive",
+    "service_load_state": "not-found",
+    "v4_job_absent": true,
+    "v4_receipt_absent": true,
+    "v4_root_absent": true,
+    "v4_transition_output_absent": true
+  },
+  "dependencies": {
+    "mini_review_complete_sha256": "dd33c8d59845be8409ae0a26b151f66b61e681ef709930a0621a0cd5a0cb87af",
+    "mini_review_manifest_sha256": "3e3aa9b27637c67b92bc49880dff167e9078802406d7a2990c6a9d92ad6e8a48",
+    "source_recovery_complete_sha256": "11602c0bcf06e9cdff5064e562d799f4b0e3578b167d7aedbf883c40caea9364",
+    "source_recovery_manifest_sha256": "747618557284507285754a868e44f124811d15554a9c94a108ed5cf84dd0d2ff"
+  },
+  "subject": {
+    "complete_sha256": "fb48e3fe9e54432de3f04675da74982ebb15bb1d9eecc983129ba0288842bfd2",
+    "manifest_members_valid": 3,
+    "manifest_sha256": "847eee86d2dc461b1a6fd88ceb229d8f78440ae90faaf416035eb08e57bb134c"
+  },
+  "verdict": "BLOCKED_PENDING_MANAGED_LAUNCH_CLOSURE"
+}
