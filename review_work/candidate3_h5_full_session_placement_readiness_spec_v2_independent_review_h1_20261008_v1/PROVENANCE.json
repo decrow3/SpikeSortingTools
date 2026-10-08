@@ -1,0 +1,16 @@
+{
+  "schema": "candidate3-h5-full-session-placement-readiness-v2-independent-review-provenance-v1",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_full_session_placement_readiness_spec_h1_20261008_v2",
+  "reviewed_manifest_sha256": "86f23f9a04b18b1a3ef60aeb13a4cf7bd85867fc57d205292d17108194ed7d37",
+  "reviewed_complete_sha256": "175dae90c577621eb607af9eaf025c82e505a6b4e2e2b0f1e97504713174c70e",
+  "parent_v1_manifest_sha256": "43c670308750c00f9d45e2167267196dd494b74798dd0c883e6c6609aff38f19",
+  "parent_v1_complete_sha256": "d51ebe4f9881764408fc7326bbf34afb2de105cb2eeda2242fa724a453084609",
+  "blocking_review_manifest_sha256": "d3da3c463fc18c5b55cdf5157e3023a65fcccf2ec991951488099971cf1565cb",
+  "blocking_review_complete_sha256": "7fa54b1d7213e571e8f867c22b9ecfb9d5344cc9fa7e8340660ae2265978068d",
+  "h5_contacted": false,
+  "voltage_payload_read_or_hashed": false,
+  "transfer_or_materialization": false,
+  "service_or_fixture_executed": false,
+  "launch_or_sort_started": false,
+  "rf_or_holdout_accessed": false
+}

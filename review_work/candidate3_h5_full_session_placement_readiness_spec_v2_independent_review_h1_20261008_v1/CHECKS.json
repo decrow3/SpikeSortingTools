@@ -1,0 +1,22 @@
+{
+  "schema": "candidate3-h5-full-session-placement-readiness-v2-independent-checks-v1",
+  "verdict": "GO_REPAIRED_CHECKLIST_SPECIFICATION_ONLY_H5_NOT_READY_NO_LAUNCH",
+  "packet_seal_valid": true,
+  "complete_last_local_and_shared": true,
+  "parent_v1_unchanged": true,
+  "correction_pointer_count": 4,
+  "correction_pointers_unique": true,
+  "all_old_values_match_v1": true,
+  "effective_fresh_check_count": 12,
+  "effective_fresh_check_ids_unique": true,
+  "h5_06_repairs_storage_accounting": true,
+  "h5_11_repairs_managed_kill_boundary": true,
+  "capacity_numbers_unchanged": true,
+  "unrelated_effective_semantics_changed": false,
+  "current_h5_readiness_claimed": false,
+  "launch_authorized": false,
+  "implementation_or_fixture_pass_claimed": false,
+  "h5_contacted": false,
+  "voltage_payload_read_or_hashed": false,
+  "service_or_fixture_executed": false
+}

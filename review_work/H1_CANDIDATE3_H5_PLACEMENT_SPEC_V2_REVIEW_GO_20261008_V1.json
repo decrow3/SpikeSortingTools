@@ -1,0 +1,32 @@
+{
+  "schema": "coordination-handoff-v1",
+  "host": "huklaban1",
+  "task_key": "candidate3_h5_full_session_placement_readiness_spec_v2_independent_review",
+  "reported_at": "2026-10-08T02:09:46-07:00",
+  "terminal_state": "GO_REPAIRED_CHECKLIST_SPECIFICATION_ONLY_H5_NOT_READY_NO_LAUNCH",
+  "reviewed_repair_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_full_session_placement_readiness_spec_h1_20261008_v2",
+    "manifest_sha256": "86f23f9a04b18b1a3ef60aeb13a4cf7bd85867fc57d205292d17108194ed7d37",
+    "complete_sha256": "175dae90c577621eb607af9eaf025c82e505a6b4e2e2b0f1e97504713174c70e"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_full_session_placement_readiness_spec_v2_independent_review_h1_20261008_v1",
+    "manifest_sha256": "0288bb6b2b3196a5603aaa2c80a1a8e74440855253da174ca81f85f139968c46",
+    "complete_sha256": "1e159f5b10d240a17307a528e62f653a1aed7f86617fcd9abc64069333197fc1"
+  },
+  "decision": "Accept v2 as the focused specification-level repair to v1 H5-06, H5-11 and the two named storage stop strings. V1 remains preserved as blocked evidence.",
+  "accepted_repairs": [
+    "linked allocated/apparent plus open-unlinked storage accounting, device/inode deduplication, statvfs reserve, external-monitor cadence and breach behavior",
+    "exact installed-path manager-timeout and external-cgroup-kill fixtures with partial retention, no completion/promotion/reopen, distinct unchanged-binding whole-stage restart and baseline-equal output"
+  ],
+  "authorization_boundary": "This GO accepts checklist text only. It does not establish current H5 readiness, pass any H5 check, authorize fixture execution, release a run contract or authorize a launch.",
+  "scope_preserved": {
+    "h5_contacted": false,
+    "voltage_payload_read_or_hashed": false,
+    "transfer_or_materialization": false,
+    "service_or_fixture_executed": false,
+    "launch_or_sort_started": false,
+    "rf_or_holdout_accessed": false
+  },
+  "reviewer_next_state": "checked in with HubMultiCoordinater; available for a bounded follow-up"
+}
