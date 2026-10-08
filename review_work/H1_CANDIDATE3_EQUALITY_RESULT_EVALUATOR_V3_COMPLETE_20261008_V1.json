@@ -1,0 +1,21 @@
+{
+  "schema": "h1_candidate3_equality_result_evaluator_v3_complete_v1",
+  "created_at": "2026-10-08T03:42:00-07:00",
+  "agent": "H1",
+  "recipient": "HubMultiCoordinater",
+  "task": "candidate3_equality_result_interpreter_v3",
+  "status": "GO_READY_FOR_FUTURE_EXACT_V3_RESULT_PACKET",
+  "author_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_equality_result_evaluator_h1_20261008_v3",
+  "author_manifest_sha256": "480e5e079a792f4254b6664b9b86364215fdd211605be2300d9380e54ad7e4ba",
+  "author_complete_sha256": "028f093b549d5ba8b66db061119a415f1c4516ee546894e90ba0ae61059ac028",
+  "evaluator_sha256": "7af98e2b2652dd6fcb9ee657d82f4db2e98a8bc19b161ea14513c522c058027c",
+  "contract_sha256": "f9a70c6885f994ec1654b2a4cfe456b1f53fcde1de630c17cec9e27aa30416a5",
+  "review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_equality_result_evaluator_v3_independent_review_h1_20261008_v1",
+  "review_manifest_sha256": "bdfd1736a8785bd5c23df034515a59d16347b09246af8a961ae80eee1baa2a28",
+  "review_complete_sha256": "aa37a5cfa622d7d0ed7a5201c4e86e3d1165b79aeae85878d5e1df2140b74a4b",
+  "review_commit": "e6e193d",
+  "controls": "12_of_12_passed_including_all_independent_adversarial_fixtures",
+  "minimum_decision": "apply only to a sealed exact candidate3 equality v3 result; synthetic pass never advances H5; real pass advances only to the already-frozen next gate",
+  "current_execution_state": "NO_H5_CONTACT_NO_REAL_RESULT_INSPECTION_NO_VOLTAGE_ACCESS",
+  "exclusions_honored": "no service/GPU/sort/RF/holdout or new execution framework"
+}
