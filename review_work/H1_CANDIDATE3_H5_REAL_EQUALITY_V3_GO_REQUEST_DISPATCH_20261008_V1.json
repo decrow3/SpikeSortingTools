@@ -1,0 +1,22 @@
+{
+  "schema": "h1_candidate3_h5_real_equality_v3_go_request_dispatch_v1",
+  "created_at": "2026-10-08T03:14:00-07:00",
+  "agent": "H1",
+  "recipient": "HubMultiCoordinater",
+  "task": "candidate3_h5_real_wrapper_equality_v3",
+  "status": "GO_REVIEW_COMPLETE_AWAITING_H5_MANAGED_PRESTART_AND_EXACT_DISPATCH",
+  "author_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_real_wrapper_equality_contract_h1_20261008_v3",
+  "author_manifest_sha256": "0dadacfd850286456345d3b9d447fb1bc38a94da171c889347a2a3e914c032f3",
+  "author_complete_sha256": "eb42b4446d4818b25d8abbfadfc7096d83503bcb0fd54707e7fd94c61fc3c438",
+  "contract_sha256": "6cb5c29b806b63021bf9edef87535718f24efc9ff27842d9e4e34c3e06e56037",
+  "runner_sha256": "0bed993b8718f29591b92884e88b65f2bf8a6780cce49490b869ba82823f1f7e",
+  "independent_review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_real_wrapper_equality_contract_v3_independent_review_h1_20261008_v1",
+  "independent_review_manifest_sha256": "89f88b2148ecd6e801419b35e38846e6c609e0bb7e11fbefcc61baf1da42da8c",
+  "independent_review_complete_sha256": "90d300a714554acaf2cd50011a6d899c3b3f3336dcef58410a4d93497ee536a5",
+  "independent_review_commit": "e7843b2d6f4030b33c06ea01a69b540136e8b0c5",
+  "review_verdict": "GO_EXECUTION_READY",
+  "requested_next_action": "coordinator may prepare the frozen managed-resource prestart receipt and exact semantic dispatch receipt after fresh H5 resource/dedup/output-absence reconciliation",
+  "hard_gate": "do not execute unless resource and dispatch receipts exactly satisfy CONTRACT.json and bind the reviewed contract, runner, review COMPLETE, absolute paths, exact output topology and outer receipt",
+  "current_execution_state": "NO_H5_CONTACT_NO_LAUNCH_NO_VOLTAGE_ACCESS",
+  "stop_rule_honored": "v3 was the terminal repair cycle; no v4 created"
+}
