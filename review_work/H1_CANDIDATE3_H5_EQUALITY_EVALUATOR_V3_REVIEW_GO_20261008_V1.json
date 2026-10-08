@@ -1,0 +1,25 @@
+{
+  "schema": "coordination-handoff-v1",
+  "host": "huklaban1",
+  "task_key": "candidate3_h5_equality_result_evaluator_v3_independent_review",
+  "reported_at": "2026-10-08T03:28:15-07:00",
+  "terminal_state": "GO_FROZEN_V3_RESULT_CONSUMER_ONLY",
+  "reviewed_author_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_equality_result_evaluator_h1_20261008_v3",
+    "manifest_sha256": "480e5e079a792f4254b6664b9b86364215fdd211605be2300d9380e54ad7e4ba",
+    "complete_sha256": "028f093b549d5ba8b66db061119a415f1c4516ee546894e90ba0ae61059ac028",
+    "evaluator_sha256": "7af98e2b2652dd6fcb9ee657d82f4db2e98a8bc19b161ea14513c522c058027c",
+    "contract_sha256": "f9a70c6885f994ec1654b2a4cfe456b1f53fcde1de630c17cec9e27aa30416a5"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_equality_result_evaluator_v3_independent_review_h1_20261008_v1",
+    "manifest_sha256": "bdfd1736a8785bd5c23df034515a59d16347b09246af8a961ae80eee1baa2a28",
+    "complete_sha256": "aa37a5cfa622d7d0ed7a5201c4e86e3d1165b79aeae85878d5e1df2140b74a4b"
+  },
+  "decision": "Exact evaluator v3 is accepted only as the frozen consumer of a future exact equality-v3 runner packet. Both malformed-input regressions now map deterministically and the CLI seals a final fail-closed category.",
+  "controls": "12/12 pass using sealed v3 synthetic copies; no real outcome inspected.",
+  "invalidation": "Any evaluator, contract, packet, member, receipt, path, hash, schema, resource or provenance mismatch retains its stop category; a real pass permits only consideration of an already-frozen next gate and authorizes nothing further.",
+  "execution_state": "No H5 contact, real result, voltage, service/GPU/sort/RF/holdout or execution framework was accessed.",
+  "execution_owner": "/root",
+  "reviewer_next_state": "checked in with HubMultiCoordinater; available for bounded follow-up"
+}

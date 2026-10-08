@@ -1,0 +1,13 @@
+{
+  "schema": "candidate3-h5-equality-result-evaluator-v3-independent-review-provenance-v1",
+  "created_at": "2026-10-08T03:27:12-07:00",
+  "reviewer_host": "huklaban1",
+  "author_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_equality_result_evaluator_h1_20261008_v3",
+  "author_manifest_sha256": "480e5e079a792f4254b6664b9b86364215fdd211605be2300d9380e54ad7e4ba",
+  "author_complete_sha256": "028f093b549d5ba8b66db061119a415f1c4516ee546894e90ba0ae61059ac028",
+  "evaluator_sha256": "7af98e2b2652dd6fcb9ee657d82f4db2e98a8bc19b161ea14513c522c058027c",
+  "evaluator_contract_sha256": "f9a70c6885f994ec1654b2a4cfe456b1f53fcde1de630c17cec9e27aa30416a5",
+  "repository_commit_at_review": "6d0a55c77408e1b1190a8e922440016772fe57b6",
+  "scope": "final narrow source/config delta review and 12 compact controls using sealed v3 synthetic copies",
+  "excluded": "H5 contact, real outcome, voltage, service/GPU/sort/RF/holdout or execution framework"
+}

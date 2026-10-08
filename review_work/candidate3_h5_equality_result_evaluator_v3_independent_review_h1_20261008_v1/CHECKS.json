@@ -1,0 +1,18 @@
+{
+  "schema": "candidate3-h5-equality-result-evaluator-v3-independent-review-checks-v1",
+  "reviewed_evaluator_sha256": "7af98e2b2652dd6fcb9ee657d82f4db2e98a8bc19b161ea14513c522c058027c",
+  "reviewed_contract_sha256": "f9a70c6885f994ec1654b2a4cfe456b1f53fcde1de630c17cec9e27aa30416a5",
+  "checks": {
+    "packet_seal": "PASS",
+    "v1_fail_open_repairs_preserved": "PASS",
+    "malformed_failure_json_category": "PASS_REJECT_SEAL_OR_SCHEMA_STOP",
+    "invalid_receipt_path_type_category": "PASS_REJECT_PROVENANCE_STOP",
+    "receipt_file_parse_and_top_level_types": "PASS",
+    "cli_final_sealed_fail_closed_guard": "PASS",
+    "exact_request_equality_positive_resource_boundary_logic": "PASS_UNCHANGED",
+    "fully_bound_real_schema_reachability": "PASS_SYNTHETIC_SCHEMA_ONLY",
+    "control_suite": "PASS_12_OF_12",
+    "real_h5_outcome": "NOT_ACCESSED"
+  },
+  "verdict": "GO_FROZEN_V3_RESULT_CONSUMER_ONLY"
+}
