@@ -1,0 +1,22 @@
+{
+  "schema": "candidate3-readiness-inventory-independent-review-findings-v1",
+  "status": "CORE_NOT_READY_VERDICT_ACCEPTED_BINDING_REPAIR_REQUIRED",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_readiness_inventory_h1_20261007_v1",
+  "reviewed_manifest_sha256": "0370b607b3240fb4da6b31ba1defe4907e6956a47539c9f22e6efe6f74074f7e",
+  "reviewed_complete_sha256": "cfda092933eef6484fa6ea6c05e734f8fab0b48b69011a115b3f1578edc9c05a",
+  "accepted_findings": [
+    "H1 is not full-session ready because no CUDA device is visible and the accepted Arm-A binary is H5-local",
+    "the intended boundary is Kilosort output after channel selection/sign/centering/CAR/high-pass/artifact handling and before whitening, supplied to DARTsort as float with preprocessing none",
+    "DARTsort gather_chunk_result writes resume markers before residual and spike data and has no explicit flush in that function",
+    "marker ordering establishes a checkpoint risk, not an observed corruption event"
+  ],
+  "required_binding_repairs": [
+    "bind the authoritative H5 Arm-A binary path and its materialization-manifest hash in the next snippet contract",
+    "bind the exact ExactLatticeRemapRecording source hash or frozen source snapshot used for reconstruction"
+  ],
+  "checkpoint_next_step": "run zero-event and nonzero-event fault injection through actual gather/resume before claiming interruption-safe resume",
+  "scientific_arrays_read": false,
+  "sort_launched": false,
+  "rf_or_holdout_access": false,
+  "d3_outcome_access": false
+}

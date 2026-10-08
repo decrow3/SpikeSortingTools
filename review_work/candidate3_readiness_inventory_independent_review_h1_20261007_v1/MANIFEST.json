@@ -1,0 +1,13 @@
+{
+  "schema": "immutable-packet-manifest-v1",
+  "created_local": "2026-10-07T23:47:00-07:00",
+  "packet": "candidate3_readiness_inventory_independent_review_h1_20261007_v1",
+  "reviewed_manifest_sha256": "0370b607b3240fb4da6b31ba1defe4907e6956a47539c9f22e6efe6f74074f7e",
+  "members": [
+    {"path": "CHECK_RECEIPT.json", "bytes": 988, "sha256": "8772bebc47f280db2325acf85f0c0b3f74adba29648588ce901f88395db6a858"},
+    {"path": "FINDINGS.json", "bytes": 1551, "sha256": "ff7ffef1a0a8d0bb286d40731f321d7223a3c5327df5f936298236649bd16120"},
+    {"path": "PROVENANCE.json", "bytes": 1370, "sha256": "3cc77241b29fc6669d9804c24bfb83d321f90192ee7601b6f4de11292ce8678e"},
+    {"path": "REVIEW.md", "bytes": 5233, "sha256": "ca2e6086bc78b0a9d886e3c1c32b897346d75e20b3649cec9e09d3a9ad9711f0"},
+    {"path": "checkpoint_order_fixture.py", "bytes": 2164, "sha256": "ff6a9493acea3e42a9632016ce718c51efb57e3cd3a6a02f4b4afddf3383d6ef"}
+  ]
+}

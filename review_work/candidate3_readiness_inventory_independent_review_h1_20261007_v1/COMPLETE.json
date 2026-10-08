@@ -1,0 +1,13 @@
+{
+  "schema": "immutable-packet-complete-v1",
+  "status": "COMPLETE_CORE_NOT_READY_VERDICT_ACCEPTED_BINDING_REPAIR_REQUIRED",
+  "completed_local": "2026-10-07T23:47:30-07:00",
+  "manifest_path": "MANIFEST.json",
+  "manifest_sha256": "a3011e203c8392cdb75513a88883823a9bd56876183019baacaeaa1dcf1a72e2",
+  "reviewed_manifest_sha256": "0370b607b3240fb4da6b31ba1defe4907e6956a47539c9f22e6efe6f74074f7e",
+  "verdict": "CORE_NOT_READY_VERDICT_ACCEPTED_BINDING_REPAIR_REQUIRED",
+  "scientific_arrays_read": false,
+  "sort_launched": false,
+  "rf_or_holdout_access": false,
+  "d3_outcome_access": false
+}

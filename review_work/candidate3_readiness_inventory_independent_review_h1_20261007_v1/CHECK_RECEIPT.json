@@ -1,0 +1,22 @@
+{
+  "schema": "candidate3-readiness-inventory-independent-review-check-receipt-v1",
+  "observed_at": "2026-10-07T23:45:00-07:00",
+  "packet_members_verified": 3,
+  "packet_chronology_verified": true,
+  "dartsort_git_head": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+  "dartsort_git_clean": true,
+  "dartsort_import_with_tmp_numba_cache": "PASS",
+  "dartsort_import_without_tmp_numba_cache": "FAIL no locator available for SpikeInterface numba cache",
+  "cuda_available": false,
+  "cuda_device_count": 0,
+  "nvidia_smi": "FAIL cannot communicate with NVIDIA driver",
+  "checkpoint_fixture": {
+    "marker_lines": [635, 638],
+    "first_data_write_line": 641,
+    "explicit_flush_lines": [],
+    "result": "PASS source ordering claim"
+  },
+  "checkpoint_fixture_sha256": "ff6a9493acea3e42a9632016ce718c51efb57e3cd3a6a02f4b4afddf3383d6ef",
+  "local_and_archived_adapter_source_sha256": "0125394629af7bffc6d46a5c26903efd65cd244f30000ae45d3cfa8324abea3a",
+  "scientific_arrays_read": false
+}

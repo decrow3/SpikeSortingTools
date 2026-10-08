@@ -1,0 +1,17 @@
+{
+  "schema": "candidate3-readiness-inventory-independent-review-provenance-v1",
+  "reviewed_manifest_sha256": "0370b607b3240fb4da6b31ba1defe4907e6956a47539c9f22e6efe6f74074f7e",
+  "reviewed_complete_sha256": "cfda092933eef6484fa6ea6c05e734f8fab0b48b69011a115b3f1578edc9c05a",
+  "arm_a_complete_sha256": "4f49d6d4959ab54bd78338564c4d3caa88b3203fbe75685ce8f1d46dc4aea499",
+  "ref_recording_manifest_sha256": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67",
+  "authoritative_h5_input_bindings_sha256": "7c045a88be1819d5411534867ee717ceadf76661c3bb3ba176dd525ed5c4e3b1",
+  "kilosort_io_sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+  "dartsort_main_sha256": "e4c03417c1256384c4f8fbf0250560003bd795b7274932ef1e49dcde217bd249",
+  "dartsort_main_util_sha256": "2846a319c19c25b3cad81ab991057c0868b87d760b66f20e8d2bb3db8ffa3bcc",
+  "dartsort_peel_base_sha256": "ac357ade5b6f23b690a403e297a2260ea93c2a1b35df13ee7798d8fc8591a2d4",
+  "dartsort_preprocess_util_sha256": "566ce1ab60af12585978bcd7e3192cb2ca4cc220ab5e41895140c00bdbc06674",
+  "adapter_candidate_sha256": "0125394629af7bffc6d46a5c26903efd65cd244f30000ae45d3cfa8324abea3a",
+  "review_scope": "source, configuration, filesystem metadata, environment diagnostics, and synthetic source-order fixture only",
+  "scientific_arrays_read": false,
+  "d3_outcome_access": false
+}
