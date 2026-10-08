@@ -1,0 +1,13 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "created_at": "2026-10-08T01:40:00-07:00",
+  "status": "FROZEN_AWAITING_RESOURCE_DELTA_REVIEW_DO_NOT_START",
+  "members": {
+    "LAUNCH_REQUEST.json": {"size": 567, "sha256": "0e8ef02a797d5e8fff85ec7ccb6e0596328d85a17bd4513daa301c46cbe5aaf0"},
+    "REPORT.md": {"size": 3114, "sha256": "003ce3b7cf024390ab0a2e838ae5952fe78f255bcee9b3c0fa3f5fb7ba0661bf"},
+    "RUN_CONTRACT.json": {"size": 8303, "sha256": "782f00f8798ce3758c152b00dd5a749efc07f0a89c044bd6b2dc4266d474549d"},
+    "source/candidate3_mini_transition_managed.py": {"size": 18954, "sha256": "f19426019e215c4d077953bc4245b9c7c197a765820be250d5284942156c23a1"},
+    "source/producer.py": {"size": 9468, "sha256": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a"},
+    "source/reporter.py": {"size": 13444, "sha256": "e627b1aaba5355a6a156aab908bd6bc4e19f82cfffbb359ffcaf1ee1ef67d32e"}
+  }
+}

@@ -1,0 +1,200 @@
+{
+  "schema": "candidate3-mini-transition-managed-v2",
+  "revision": "v5-explicit-unbounded-cpu-replacement",
+  "status": "FROZEN_AWAITING_RESOURCE_DELTA_REVIEW_DO_NOT_START",
+  "packet_hashes": {
+    "source/candidate3_mini_transition_managed.py": "f19426019e215c4d077953bc4245b9c7c197a765820be250d5284942156c23a1",
+    "source/producer.py": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a",
+    "source/reporter.py": "e627b1aaba5355a6a156aab908bd6bc4e19f82cfffbb359ffcaf1ee1ef67d32e"
+  },
+  "input_root": "/tmp/candidate3_mini_e2e_20261008_v2/inputs",
+  "tree_manifests": {
+    "inputs": {
+      "INPUT_RECEIPT.json": {
+        "size": 1744,
+        "sha256": "5f4dd3354c0257449cef69493c5b669a6390b7283080316c9445df2a77622fa3"
+      },
+      "ordinary_prewhitening.npy": {
+        "size": 28512128,
+        "sha256": "290221b1b91e5a5110ee845c5e42d044b6f2d7b3eb85564554d9c3cd624d3523"
+      },
+      "transition_prewhitening.npy": {
+        "size": 28512128,
+        "sha256": "dc78516734e154e45bec8f29f8f757bff904bbd32938fe0a2e0d1767f41a46f2"
+      },
+      "truth_events.npy": {
+        "size": 55256,
+        "sha256": "0525b9838e98b07e210876a12f957573996fce5a11c21ce05bf49bdb8a3a9dc9"
+      }
+    },
+    "ordinary": {
+      "RUN_RECEIPT.json": {
+        "size": 190,
+        "sha256": "706f6ddbdbe3d0a72c42417a362d8f0564550d8c2938d2cd7f1676a97a5e7f26"
+      },
+      "_dartsort_internal_config.json": {
+        "size": 40432,
+        "sha256": "70ef3ebd40ddd826111fb1181481e3c11273f2fb2281014fadc8ad27f083a610"
+      },
+      "dartsort_sorting.npz": {
+        "size": 364880,
+        "sha256": "623051e789435de15b59e2daf1cdedc3a095534ed32af4962c67bbcec78fcb8a"
+      },
+      "initial_labels.npy": {
+        "size": 190624,
+        "sha256": "fe32b2cb9af79cbcb719a904776b09bcb6ad740b6e7529c6dc5e2c52901d9336"
+      },
+      "matching1.h5": {
+        "size": 95813884,
+        "sha256": "3d1bdea655e1fb8fced22920e8553e2f1f1ea8267cacc967ca90e22a33847e20"
+      },
+      "matching1_models/featurization_pipeline.pt": {
+        "size": 380802,
+        "sha256": "9f4372e5b250ab881d2aa2ab89f6825f43470e31f040daab3265acafb9705005"
+      },
+      "matching1_models/template_data.npz": {
+        "size": 1584209,
+        "sha256": "eea6a4825b5a2867fc55e83494ed0c2bca4f56cc59e77d99b98e7a71526e6737"
+      },
+      "motion.pkl": {
+        "size": 592,
+        "sha256": "e73ac1428130e0022feb041c41edd60a20aaa02cb9fe897f1e368a25b235d89f"
+      },
+      "refined0_0_pcmerge__labels.npy": {
+        "size": 190624,
+        "sha256": "bd600ca00ceff5781efb137c963e0ba9c7bd6f2cbc1faacb54a2652a89bebed1"
+      },
+      "refined0_1_tmm__labels.npy": {
+        "size": 381120,
+        "sha256": "71b65d8ec905709216f1a1d7e6f2c10636dfac849cbabd278cc85a3b10a90517"
+      },
+      "refined0_1_tmm_tmm00em_labels.npy": {
+        "size": 381120,
+        "sha256": "aaf5ca388ee87289b4c1cfbd240c6f70526a3844383362c03849fe07ad3482f2"
+      },
+      "refined0_1_tmm_tmm00split_labels.npy": {
+        "size": 381120,
+        "sha256": "fa6aaa761efb8151296ea617b59e71dbf873e875519679517353adaf53649b32"
+      },
+      "refined0_1_tmm_tmm01demolish_labels.npy": {
+        "size": 381120,
+        "sha256": "8e6f29be82467aeeeb588a857a77908bdf9c1c887f08250f9b841704a72c774d"
+      },
+      "refined0_1_tmm_tmm02demolish.npz": {
+        "size": 4816344,
+        "sha256": "41e7f061f608263a58d81c55ac4d94816953af9dc17072ae03eb3e0c5944abac"
+      },
+      "refined0_2_filter__labels.npy": {
+        "size": 381120,
+        "sha256": "2e4075555d8cd234b61d3ccfeefddc38195f30dc493bf133bb9acde2d5ef812f"
+      },
+      "refined0_9_prematch_labels.npy": {
+        "size": 381120,
+        "sha256": "abe1d91bfe40e88f52a24069f70eeff82d5302c9c829c9a46da842512c56424a"
+      },
+      "refined0_labels.npy": {
+        "size": 381120,
+        "sha256": "2e4075555d8cd234b61d3ccfeefddc38195f30dc493bf133bb9acde2d5ef812f"
+      },
+      "refined1_0_agglomerate__labels.npy": {
+        "size": 9316,
+        "sha256": "1801eeac6b814a96ba4f60c86ac0b641f2e5f04059867cb6d9b9dfbe99a1a427"
+      },
+      "refined1_labels.npy": {
+        "size": 9316,
+        "sha256": "1801eeac6b814a96ba4f60c86ac0b641f2e5f04059867cb6d9b9dfbe99a1a427"
+      },
+      "threshold.h5": {
+        "size": 22124684,
+        "sha256": "5cf07b1b6018ffa63ed31590f62675099869f31882424a5887f481d745949dd4"
+      },
+      "threshold_models/featurization_pipeline.pt": {
+        "size": 17186,
+        "sha256": "e0e5cb43c08de223bc6b79503c98f2a722c5a47af7131c9e29c21be907dd1af7"
+      },
+      "timing.json": {
+        "size": 746,
+        "sha256": "89564d2f03c1e7a00c707d6db0c3984acb81b4b3f9966d32f2351bc9275ad5ed"
+      }
+    }
+  },
+  "dartsort_repo": "/home/huklab/Documents/DARTsort",
+  "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+  "cwd": "/home/huklab/Documents/RyanSorting/SpikeSortingTools",
+  "attempt_parent": "/tmp",
+  "attempt_root": "/tmp/candidate3_mini_e2e_20261008_v7",
+  "preflight_failure_receipt": "/tmp/candidate3_mini_e2e_20261008_v7_PRELAUNCH_FAILURE.json",
+  "preflight_manager_receipt": "/tmp/candidate3_mini_e2e_20261008_v7_MANAGER_FINAL.json",
+  "ordinary_root": "/tmp/candidate3_mini_e2e_20261008_v3/runs/ordinary",
+  "baseline_bytes": 185292925,
+  "cap_bytes": 536870912,
+  "minimum_free_bytes": 2147483648,
+  "transition_command": [
+    "/home/huklab/Documents/DARTsort/.venv/bin/python",
+    "{packet}/source/producer.py",
+    "run",
+    "/tmp/candidate3_mini_e2e_20261008_v2/inputs",
+    "{transition}",
+    "transition"
+  ],
+  "report_command": [
+    "/home/huklab/Documents/DARTsort/.venv/bin/python",
+    "{packet}/source/reporter.py",
+    "summarize",
+    "/tmp/candidate3_mini_e2e_20261008_v2/inputs",
+    "{combined}",
+    "{report}/ACCOUNTING.json"
+  ],
+  "monitor_interval_seconds": 2,
+  "restart": "none; preserve failure and investigate before a whole-arm retry in a new namespace",
+  "replacement_authorization": {
+    "attempts_authorized": 1,
+    "predecessor_invalid_attempt": "/tmp/candidate3_mini_e2e_20261008_v6",
+    "predecessor_failure_manifest_sha256": "63b038bfe88011a9310fbac6b40cd5b2afc392b04c4c1d6978dfbaa82db95485",
+    "predecessor_independent_review_manifest_sha256": "05d09078f5d5f93ebfe6abc97932ea3b64fd84c40de145b015a03d4382a569c4",
+    "science_delta": "none: identical transition input, producer source/config/seed, ordinary bindings, reporter/accounting and DARTsort commit",
+    "resource_delta": "remove the ineffective CPUQuota request; explicitly allow all host-allowed CPUs while retaining effective 16 GiB memory, 128 task, 45 minute, 30 second stop and 512 MiB storage safeguards"
+  },
+  "real_voltage_read": false,
+  "rf_or_holdout_access": false,
+  "active_plan_sha256": "c26d63dfe9ae94312485d57ec99f1a3c4d7d089806b84485099d4afb4f12554f",
+  "outer_launch_receipt": "/tmp/candidate3_mini_e2e_20261008_v7_OUTER_LAUNCH.json",
+  "service_unit": "candidate3-mini-transition-v7.service",
+  "manager_properties": {
+    "Type": "exec",
+    "Restart": "no",
+    "RuntimeMaxUSec": "45min",
+    "MemoryMax": "17179869184",
+    "TasksMax": "128",
+    "KillMode": "control-group",
+    "TimeoutStopUSec": "30s"
+  },
+  "effective_resource_policy": {
+    "cpu_policy": "NO_ENFORCED_QUOTA",
+    "timing_comparability_claim": false,
+    "bitwise_determinism_claim": false,
+    "minimum_allowed_cpu_count": 20,
+    "minimum_mem_available_bytes": 34359738368,
+    "memory_max_bytes": 17179869184,
+    "pids_max": 128,
+    "host_sharing_condition": "all 20 allowed online CPUs may be consumed; record load averages and do not coexist with another spike sort on H1"
+  },
+  "systemd_argv": [
+    "/usr/bin/systemd-run",
+    "--user",
+    "--unit=candidate3-mini-transition-v7",
+    "--property=Type=exec",
+    "--property=Restart=no",
+    "--property=RuntimeMaxSec=2700",
+    "--property=MemoryMax=16G",
+    "--property=TasksMax=128",
+    "--property=KillMode=control-group",
+    "--property=TimeoutStopSec=30",
+    "--property=ExecStopPost=/home/huklab/Documents/DARTsort/.venv/bin/python {packet}/source/candidate3_mini_transition_managed.py finalize {packet}/RUN_CONTRACT.json {contract_sha256}",
+    "/home/huklab/Documents/DARTsort/.venv/bin/python",
+    "{packet}/source/candidate3_mini_transition_managed.py",
+    "run",
+    "{packet}/RUN_CONTRACT.json",
+    "{contract_sha256}"
+  ]
+}

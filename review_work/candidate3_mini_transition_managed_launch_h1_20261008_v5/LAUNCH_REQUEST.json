@@ -1,0 +1,13 @@
+{
+  "schema": "candidate3-mini-transition-replacement-request-v1",
+  "status": "REVIEW_REQUIRED_DO_NOT_START",
+  "requested_attempts": 1,
+  "unit": "candidate3-mini-transition-v7.service",
+  "attempt_root": "/tmp/candidate3_mini_e2e_20261008_v7",
+  "contract_sha256": "782f00f8798ce3758c152b00dd5a749efc07f0a89c044bd6b2dc4266d474549d",
+  "cpu_policy": "NO_ENFORCED_QUOTA",
+  "science_delta_from_v6": "none",
+  "required_review": "resource-policy/launch delta and genuine open scientific prerequisites only",
+  "automatic_release_after_go": true,
+  "no_retry": true
+}

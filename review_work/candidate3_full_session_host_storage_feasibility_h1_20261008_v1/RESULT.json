@@ -1,0 +1,97 @@
+{
+  "schema": "candidate3-full-session-host-storage-feasibility-v1",
+  "status": "H5_CONDITIONALLY_PREFERRED_H1_CONDITIONAL_NOT_LAUNCH_READY",
+  "observed_at": "2026-10-08T01:41:00-07:00",
+  "accepted_input": {
+    "frames_half_open": [0, 314204894],
+    "sampling_frequency_hz": 29999.835983263598,
+    "channels": 384,
+    "dtype": "int16",
+    "bytes": 241309358592,
+    "h5_local_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/recording/traces_cached_seg0.raw",
+    "file_sha256": "672938e942d105af6b1a3f7f1bddf206939535e0e4b57bc01153472a1ccb8b69",
+    "content_sha256": "90b6a07a22e32fdd741c3f605f582d44f361bc75ed18737c134e13fdd1d76ad9",
+    "input_bindings_sha256": "7c045a88be1819d5411534867ee717ceadf76661c3bb3ba176dd525ed5c4e3b1",
+    "arm_a_complete_sha256": "4f49d6d4959ab54bd78338564c4d3caa88b3203fbe75685ce8f1d46dc4aea499"
+  },
+  "storage_arithmetic": {
+    "float32_materialization_bytes": 482618717184,
+    "current_output_planning_floor_bytes": 120000000000,
+    "materialization_plus_floor_bytes": 602618717184,
+    "qualification": "120 GB is a planning floor, not a safe upper bound; scratch, failed-stage retention, caches, logs and publication remain unmeasured"
+  },
+  "streaming_consumer": {
+    "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+    "main_py_sha256": "e4c03417c1256384c4f8fbf0250560003bd795b7274932ef1e49dcde217bd249",
+    "main_util_py_sha256": "2846a319c19c25b3cad81ab991057c0868b87d760b66f20e8d2bb3db8ffa3bcc",
+    "preprocess_util_py_sha256": "566ce1ab60af12585978bcd7e3192cb2ca4cc220ab5e41895140c00bdbc06674",
+    "kilosort_io_sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+    "required_config": {
+      "preprocessing": "none",
+      "copy_recording_to_tmpdir": "no or if_preprocessing",
+      "work_in_tmpdir": false
+    },
+    "core_can_avoid_copy": true,
+    "accepted_boundary_wrapper_ready": false,
+    "blocker": "The lazy SpikeInterface float recording wrapper is not implemented/reviewed. Kilosort BinaryFiltered.filter builds its FFT high-pass with NT equal to each requested block length, so chunk size, overlap/padding, edge cropping, CAR/centering and transition-state context must be frozen and checked against accepted samples before full-session use."
+  },
+  "options": {
+    "H1": {
+      "status": "CONDITIONAL_CAPACITY_ONLY_NOT_LAUNCH_READY",
+      "input": "241309358592-byte original REF visible over read-only CIFS; accepted H5 Arm-A materialization absent",
+      "input_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+      "input_mount": "read-only CIFS",
+      "output_and_scratch_target": "a fresh run-specific directory on H1 root ext4; /media/huklab/Data and /mnt are currently read-only",
+      "current_root_free_bytes": 488032186368,
+      "current_data_free_bytes": 184387878912,
+      "remaining_after_output_floor_on_root_bytes": 368032186368,
+      "deficit_for_materialization_plus_floor_on_root_bytes": 114586530816,
+      "read_locality": "remote CIFS, unbenchmarked",
+      "advantages": ["exact DARTsort checkout and working actual-context RTX A5000 already observed"],
+      "blockers": [
+        "accepted Arm-A bytes are not local or mounted",
+        "context-correct on-the-fly ExactLatticeRemapRecording plus Kilosort prewhitening wrapper is absent and real equality unproven",
+        "sustained CIFS read throughput is unknown",
+        "120 GB is only an output floor, so root capacity is not yet a safe aggregate bound",
+        "current candidate-3 CPU supervision route requires a separate resolved launch policy"
+      ],
+      "invalidation_conditions": [
+        "root free space falls below the future frozen aggregate cap plus reserve",
+        "the reviewed streaming wrapper fails padded real-window equality",
+        "CIFS throughput cannot support the frozen wall condition",
+        "another full spike sort occupies H1",
+        "actual managed CUDA/memory/output safeguards fail prestart"
+      ]
+    },
+    "H5": {
+      "status": "CONDITIONALLY_PREFERRED_PENDING_FRESH_PREFLIGHT",
+      "input": "exact accepted Arm-A materialization is data-local",
+      "input_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/recording/traces_cached_seg0.raw",
+      "output_and_scratch_target": "fresh H5-local run volume colocated with the accepted input; compact publication only after completion",
+      "stale_run_volume_free_bytes_20261004": 904844582912,
+      "stale_memory_available_bytes_20261004": 191968174080,
+      "remaining_after_output_floor_bytes_using_stale_receipt": 784844582912,
+      "remaining_after_materialization_plus_floor_bytes_using_stale_receipt": 302225865728,
+      "read_locality": "local accepted binary; no network transfer required",
+      "advantages": [
+        "only option with the exact accepted input already local",
+        "October 4 receipt had substantially more run-volume headroom than H1"
+      ],
+      "blockers": [
+        "October 4 storage/memory/GPU receipt is stale and its exact run mount must be rebound",
+        "exact candidate-3 DARTsort checkout/interpreter and lazy prewhitening wrapper are not yet frozen on H5",
+        "recent candidate-2 was killed by systemd-oomd, so current memory/oomd and competing-job state require fresh reconciliation",
+        "120 GB remains only an output floor"
+      ],
+      "invalidation_conditions": [
+        "accepted input hash/path or local readability changes",
+        "fresh local free space is below the future frozen aggregate cap plus reserve",
+        "current memory/oomd policy cannot protect the frozen envelope",
+        "another full sort occupies H5",
+        "candidate-3 source/environment or padded streaming-boundary equality differs"
+      ]
+    }
+  },
+  "minimum_safe_topology": "Prefer H5 after fresh preflight because the accepted input is local. Use a lazy, context-correct float32 SpikeInterface wrapper; DARTsort preprocessing=none, copy_recording_to_tmpdir=no, work_in_tmpdir=false; colocate output, scratch, cache and failed-stage retention on one monitored local run volume; publish only compact evidence to shared storage. H1 is fallback only after wrapper equality and bounded CIFS throughput evidence, with output/scratch on root ext4 and no full materialization.",
+  "decision_scope": "host/storage feasibility only; no launch readiness or scientific-performance claim"
+}

@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "created_at": "2026-10-08T01:43:00-07:00",
+  "status": "H5_CONDITIONALLY_PREFERRED_H1_CONDITIONAL_NOT_LAUNCH_READY",
+  "members": {
+    "FROZEN_SCOPE.md": {"size": 655, "sha256": "266ff025a2f100cc934c7212bf730353c429abfb5e1bdbf9f369e1a1af88599f"},
+    "REPORT.md": {"size": 4194, "sha256": "97ef22808136403cb7141f795dbcd341d89a18784ea757bb8800f12998b1c995"},
+    "RESULT.json": {"size": 6478, "sha256": "9cb7136457c18279f949b9a0bcd5c4e629528ef5507ee20f2f20dd4e8f89ee2d"}
+  }
+}

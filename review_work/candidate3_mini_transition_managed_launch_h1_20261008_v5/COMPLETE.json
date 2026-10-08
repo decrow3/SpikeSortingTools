@@ -1,0 +1,6 @@
+{
+  "schema": "immutable-evidence-complete-v1",
+  "completed_at": "2026-10-08T01:40:20-07:00",
+  "status": "FROZEN_AWAITING_RESOURCE_DELTA_REVIEW_DO_NOT_START",
+  "manifest_sha256": "87f741047d51e28d2bcf2adf2d8b646231566fa7bf82f8184c9826a5d86133c2"
+}

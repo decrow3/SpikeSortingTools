@@ -1,0 +1,14 @@
+{
+  "schema": "coordination-ack-v1",
+  "host": "huklaban1",
+  "task_key": "candidate3_full_session_host_storage_feasibility",
+  "acknowledgment": "ACK_STARTED",
+  "started_at": "2026-10-08T01:36:30-07:00",
+  "milestone": "candidate-3 full-session host/storage readiness",
+  "decision": "identify the minimum safe execution topology on H1 versus H5 without materialization or transfer",
+  "cheapest_adequate_test": "inspect exact accepted pre-whitening input bindings, actual consumer source/config, existing host/storage metadata, and current H1 filesystem headroom",
+  "completion_condition": "immutable compact receipt with two concrete host options, feasibility/blockers/resource estimates/invalidation conditions, followed by one local independent review",
+  "scope": "source/config/metadata only; no large transfer, raw-voltage read, sort, materialization, RF/holdout, or dependency on new H5 work",
+  "predecessor_failure_manifest_sha256": "63b038bfe88011a9310fbac6b40cd5b2afc392b04c4c1d6978dfbaa82db95485",
+  "predecessor_failure_review_manifest_sha256": "05d09078f5d5f93ebfe6abc97932ea3b64fd84c40de145b015a03d4382a569c4"
+}

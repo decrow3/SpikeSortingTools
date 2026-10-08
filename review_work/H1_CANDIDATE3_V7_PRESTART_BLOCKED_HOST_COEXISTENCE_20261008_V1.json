@@ -1,0 +1,43 @@
+{
+  "schema": "candidate3-v7-prestart-disposition-v1",
+  "host": "huklaban1",
+  "observed_at": "2026-10-08T01:45:54-07:00",
+  "status": "ACK_BLOCKED_NO_LAUNCH_HOST_COEXISTENCE_INADEQUATE",
+  "contract_sha256": "782f00f8798ce3758c152b00dd5a749efc07f0a89c044bd6b2dc4266d474549d",
+  "author_manifest_sha256": "87f741047d51e28d2bcf2adf2d8b646231566fa7bf82f8184c9826a5d86133c2",
+  "review_manifest_sha256": "023eb02c66a06d984c94358ce68f0025e6f49b321abad3dd4d18957255e7b55a",
+  "review_verdict": "GO_EXACT_V5_ONE_V7_REPLACEMENT_AFTER_FRESH_PRESTART",
+  "passed": {
+    "packet_input_ordinary_and_dartsort_hash_preflight": true,
+    "baseline_bytes": 185292925,
+    "packet_free_bytes": 488013860864,
+    "allowed_cpus": "0-19",
+    "online_cpus": "0-19",
+    "allowed_cpu_count": 20,
+    "mem_available_bytes": 181467856896,
+    "tmp_free_bytes": 488013271040,
+    "minimum_tmp_free_bytes": 2147483648,
+    "v7_service_state": "not-found/inactive/dead",
+    "v7_paths_absent": true,
+    "other_spike_sort_service_found": false
+  },
+  "failed": {
+    "gate": "compatible host sharing/headroom",
+    "load_average": [55.44, 53.98, 55.86],
+    "online_cpu_count": 20,
+    "vmstat_samples": [
+      {"r": 0, "b": 36, "cpu_user_percent": 2, "cpu_system_percent": 1, "cpu_idle_percent": 20, "cpu_iowait_percent": 78},
+      {"r": 0, "b": 36, "cpu_user_percent": 1, "cpu_system_percent": 0, "cpu_idle_percent": 20, "cpu_iowait_percent": 79}
+    ],
+    "observed_competing_activity": "an unrelated long-running full-filesystem find/search was visible; it was not altered",
+    "reason": "Launching an explicitly unbounded 20-CPU transition job while 36 tasks are blocked and host I/O wait is about 79% is not compatible coexistence."
+  },
+  "launch": {
+    "systemd_run_called": false,
+    "service_started": false,
+    "attempt_root_created": false,
+    "scientific_child_started": false,
+    "retry_authorized": false
+  },
+  "next": "Preserve v5 and this prestart failure; do not launch v7. Continue the independently assigned full-session host/storage feasibility task and await coordinator disposition."
+}
