@@ -1,0 +1,19 @@
+{
+  "schema": "d3-v3-postrun-oracle-v2-independent-review-verdict-v1",
+  "status": "BLOCKED_REPAIR_INCOMPLETE",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_v3_postrun_oracle_h1_20261007_v2",
+  "reviewed_manifest_sha256": "d1bc141c59385f21c8642fa72901d49ac8f067d2791a5b4d0e384d3bdd551d34",
+  "reviewed_complete_sha256": "0e657bb4eac9c2a30a731fc055201a78e1e9824a3f632b4d0840ecc6e1b42501",
+  "original_counterexamples_rejected": 3,
+  "baseline_tests": "11 passed in 0.22s",
+  "remaining_false_accepts": [
+    "duplicate candidate-label rows satisfy eligible_final_units count and return GO",
+    "negative matched_other_pair_local_row_index is accepted through Python negative indexing"
+  ],
+  "permitted_claim_now": "none for a future production outcome until both false-accept paths are repaired and independently re-reviewed",
+  "production_outcome_inspected": false,
+  "new_h5_output_read": false,
+  "raw_or_waveform_read": false,
+  "rf_or_holdout_access": false,
+  "sort_or_parameter_change": false
+}

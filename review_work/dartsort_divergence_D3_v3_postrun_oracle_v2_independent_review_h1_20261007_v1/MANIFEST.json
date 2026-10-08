@@ -1,0 +1,13 @@
+{
+  "schema": "immutable-packet-manifest-v1",
+  "created_local": "2026-10-07T23:27:00-07:00",
+  "packet": "dartsort_divergence_D3_v3_postrun_oracle_v2_independent_review_h1_20261007_v1",
+  "reviewed_manifest_sha256": "d1bc141c59385f21c8642fa72901d49ac8f067d2791a5b4d0e384d3bdd551d34",
+  "members": [
+    {"path": "PROVENANCE.json", "bytes": 1050, "sha256": "800ce1c627ba8349d9b24aa43c2f2facea3099126bc783820235771f3ea30b7b"},
+    {"path": "REVIEW.md", "bytes": 3900, "sha256": "f3986da8f3a0fa1a4f3dd3eeb6d7b788014682d223a1ad95521948986c4a2104"},
+    {"path": "TEST_RECEIPT.json", "bytes": 905, "sha256": "ba6f754b6e98e7f70cbffaa3f84e404c21cf7604eca506214e56e55213392ed0"},
+    {"path": "VERDICT.json", "bytes": 1046, "sha256": "100b602f00322ef5ee917426773fb208e26080252d3835753d329f8167e9618c"},
+    {"path": "independent_delta_review.py", "bytes": 4750, "sha256": "293840b489a427ff49fa4fada210e767debc5eade250dd9dd41fed2067637ece"}
+  ]
+}

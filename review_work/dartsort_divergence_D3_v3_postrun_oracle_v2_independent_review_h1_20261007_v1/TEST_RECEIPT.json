@@ -1,0 +1,17 @@
+{
+  "schema": "d3-v3-postrun-oracle-v2-independent-review-test-receipt-v1",
+  "observed_at": "2026-10-07T23:26:00-07:00",
+  "baseline": "11 passed in 0.22s; py_compile passed; predecessor verification passed",
+  "original_counterexamples": {
+    "far_apart_match": "REJECTED neighbor window differs from inclusive tolerance",
+    "incomplete_universe_count": "REJECTED ranked universe count differs from eligible_final_units",
+    "inconsistent_metric": "REJECTED smaller-train retention differs from counts"
+  },
+  "new_boundary_fixtures": {
+    "duplicate_label_count": "FALSE_ACCEPT GO_FINAL_REF_A_TO_DARTSORT_CORRESPONDENCE_ONLY",
+    "negative_matched_index": "FALSE_ACCEPT GO_FINAL_REF_A_TO_DARTSORT_CORRESPONDENCE_ONLY"
+  },
+  "independent_script_sha256": "293840b489a427ff49fa4fada210e767debc5eade250dd9dd41fed2067637ece",
+  "intentional_script_exit": 1,
+  "production_outcome_inspected": false
+}

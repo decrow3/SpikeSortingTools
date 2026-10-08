@@ -1,0 +1,14 @@
+{
+  "schema": "d3-v3-postrun-oracle-v2-independent-review-provenance-v1",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_v3_postrun_oracle_h1_20261007_v2",
+  "reviewed_manifest_sha256": "d1bc141c59385f21c8642fa72901d49ac8f067d2791a5b4d0e384d3bdd551d34",
+  "reviewed_complete_sha256": "0e657bb4eac9c2a30a731fc055201a78e1e9824a3f632b4d0840ecc6e1b42501",
+  "oracle_source_sha256": "14275b4171da1281adf83da758093c6bb2249454989c2e302691f6bf154269c7",
+  "oracle_tests_sha256": "48c4aed1fb2dd284a7489b75ba1d3bd85c496560d000e766c880387db9adec4a",
+  "blocked_v1_review_manifest_sha256": "8a68c8cec143de76b35b4bfd8b6fa8247162b019a29ff1e0af9b21a4650ee9e9",
+  "executable_derivative_manifest_sha256": "10cdbcd20afdd665840496fa3549b1e5119b4c21f8e32ffb519e03ea49b0dee7",
+  "technical_review_manifest_sha256": "7874adc42c7aadf9da6bd93be0bb4d635ed7458874ab27c98a49195c3387e3fe",
+  "review_scope": "three v2 repair boundaries only",
+  "future_production_namespace_inspected": false,
+  "production_execution_performed": false
+}

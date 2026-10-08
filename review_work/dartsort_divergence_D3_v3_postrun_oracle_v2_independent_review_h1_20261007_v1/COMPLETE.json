@@ -1,0 +1,13 @@
+{
+  "schema": "immutable-packet-complete-v1",
+  "status": "COMPLETE_BLOCKED_REPAIR_INCOMPLETE",
+  "completed_local": "2026-10-07T23:27:30-07:00",
+  "manifest_path": "MANIFEST.json",
+  "manifest_sha256": "8d0647588300e93f4e35c10ca89991798394ba6bc1e22c011333f47290a351d2",
+  "reviewed_manifest_sha256": "d1bc141c59385f21c8642fa72901d49ac8f067d2791a5b4d0e384d3bdd551d34",
+  "verdict": "BLOCKED_REPAIR_INCOMPLETE",
+  "production_outcome_inspected": false,
+  "raw_voltage_bytes_read": 0,
+  "gpu_work": false,
+  "rf_or_holdout_access": false
+}
