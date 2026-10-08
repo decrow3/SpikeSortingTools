@@ -1,0 +1,6 @@
+{
+  "complete": true,
+  "manifest_sha256": "518307b8f5b412d4c973472919dce8415ef0f285c68db70479f5c88610325f18",
+  "packet": "candidate3_whole_stage_restart_actual_path_independent_review_h1_20261008_v1",
+  "verdict": "GO_SCOPED_WHOLE_STAGE_RESTART_FALLBACK"
+}

@@ -1,0 +1,9 @@
+{
+  "files": {
+    "CHECKS.json": "ea5f65af375eaed4edda6e289a8186602d540d5ac0ce8f94612a32f853e16a08",
+    "PROVENANCE.json": "5a8db94b44b16abf7cf70fdb42b63ee2063da0015ac973c17cdbf5a423cd0e5d",
+    "REPORT.md": "12e08e588abd34c0e6b864362c6c5426b2f09400fd6637f6417b34ea4fea4b36"
+  },
+  "packet": "candidate3_whole_stage_restart_actual_path_independent_review_h1_20261008_v1",
+  "verdict": "GO_SCOPED_WHOLE_STAGE_RESTART_FALLBACK"
+}

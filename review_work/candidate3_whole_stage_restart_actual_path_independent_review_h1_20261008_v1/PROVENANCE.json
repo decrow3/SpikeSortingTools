@@ -1,0 +1,24 @@
+{
+  "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+  "host": "huklaban1",
+  "independent_invocation": "NUMBA_CACHE_DIR=/tmp/candidate3-stage-restart-review-numba /home/huklab/Documents/DARTsort/.venv/bin/python -m testing.candidate3_stage_restart_actual_path_fixture <fresh-output>",
+  "reviewed_commit": "6cdfc1456134a99b3cb95291292ed2f28cd9c07d",
+  "reviewed_packets": {
+    "candidate3_whole_stage_restart_actual_path_h1_20261008_v1": "2deb486ccffa440262e024e22fc131beecb445098e9a1e547a3d70dd932e52bc",
+    "candidate3_whole_stage_restart_actual_path_h1_20261008_v2": "ad5ae1d0eef0977d25109c2030d67e972238a8de54202b246b7a9661dd9d7cdf"
+  },
+  "reviewed_sources": {
+    "DARTsort/src/dartsort/peel/peel_base.py": "ac357ade5b6f23b690a403e297a2260ea93c2a1b35df13ee7798d8fc8591a2d4",
+    "DARTsort/src/dartsort/util/peel_util.py": "be33c5047abec177c117b1e494d38efff993bcc2393f561d75214274fb8aa6ba",
+    "testing/candidate3_stage_restart_actual_path_fixture.py": "2333d10f5c255582c874cf5791e7bcc584e078f936bfe41cee4c91cae4072772",
+    "testing/candidate3_stage_restart_fallback.py": "a3505e271b7adc237a7416524bba6b28d9117e13cad42c659b0fea06de79d1d",
+    "testing/test_candidate3_stage_restart_fallback.py": "8efc8016545040896fd6748b5872060e9ea603d5437d1bdfa2e3011b5373fc4a"
+  },
+  "scope_exclusions": [
+    "real voltage or H5 scientific input",
+    "RF or holdout",
+    "D3 work or outcome",
+    "sort launch",
+    "GPU work"
+  ]
+}
