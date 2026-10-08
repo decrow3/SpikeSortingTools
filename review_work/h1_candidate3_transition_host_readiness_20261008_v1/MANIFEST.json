@@ -1,0 +1,18 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "ABANDON_H1_FOR_TRANSITION_USE_H5_SUPERVISED_LATER",
+  "members": {
+    "OBSERVATIONS.json": {
+      "size": 2855,
+      "sha256": "eb982de26db2c2f29a59fcb3d65171a46ad29bb137d4ab25b53adacb62695f68"
+    },
+    "PROVENANCE.json": {
+      "size": 887,
+      "sha256": "0128e591a2f2bb51b54a47a52e4488edec730311853238a891cfb14844a49a63"
+    },
+    "RECOMMENDATION.md": {
+      "size": 2956,
+      "sha256": "cc572f5db1d59a48ef991e44bd6316a55aec4064af23c78379ed8b43fc324664"
+    }
+  }
+}

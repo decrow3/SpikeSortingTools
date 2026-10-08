@@ -1,0 +1,68 @@
+{
+  "schema": "h1-candidate3-transition-host-readiness-observations-v1",
+  "snapshot_at": "2026-10-08T03:37:00-07:00",
+  "host": "huklaban1",
+  "load_average": [52.31, 52.49, 52.88],
+  "uninterruptible": {
+    "processes": 26,
+    "threads": 52,
+    "vmstat_blocked_processes": 36,
+    "vmstat_samples": [
+      {"blocked": 36, "block_in_kib_s": 0, "block_out_kib_s": 0, "io_wait_percent": 79},
+      {"blocked": 36, "block_in_kib_s": 0, "block_out_kib_s": 112, "io_wait_percent": 77}
+    ]
+  },
+  "primary_blocker": {
+    "threads": 35,
+    "wait_channel": "folio_wait_bit_common",
+    "process_family": "SpikeGLX_ext_ref_2026.py plus bracketed Python workers",
+    "processes": 20,
+    "started": "2026-04-23T03:45:21-07:00",
+    "elapsed_at_snapshot": "167d23h52m",
+    "open_remote_input": "/mnt/NPX/Luke/20250730/Luke0730_V2V1_g0/Luke0730_V2V1_g0_imec1/Luke0730_V2V1_g0_t0.imec1.ap.bin",
+    "cgroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/app-gnome-code-8446.scope",
+    "scope_started": "2026-04-02T13:26:19-07:00",
+    "scope_tasks": 1173,
+    "scope_memory_bytes": 14633709568
+  },
+  "full_filesystem_searches": {
+    "blocked_ioq_threads": 10,
+    "wait_channel": "fuse_lock_inode",
+    "commands": "bfs searches rooted at / for Luke, imec1, intake, gaborium, py-spy, node, probeinterface and other names",
+    "oldest_started": "2026-08-29T21:05:29-07:00",
+    "representative_started": "2026-09-18T10:48:50-07:00",
+    "representative_elapsed": "19d16h48m",
+    "representative_io_bytes": {
+      "pid_52559_read_bytes": 640000,
+      "pid_55624_read_bytes": 9131008,
+      "pid_70694_read_bytes": 0
+    },
+    "interpretation": "still causative for ten blocked threads and must not be repeated, but not the root or largest blocker because the 35 Python waiters predate these searches by about five months"
+  },
+  "sync_waiters": {
+    "threads": 6,
+    "oldest_started": "2026-05-09T10:45:52-07:00",
+    "mnt_specific": {
+      "pid": 2412827,
+      "started": "2026-10-04T03:56:29-07:00",
+      "command": "sync -f /mnt/NPX/Luke/DARTsort_motion_experiments/en_f_fixed_event_candidate_g_production_wiring_delta_review_20261004_v1_1_h1",
+      "wait_channel": "sync_inodes_sb"
+    }
+  },
+  "affected_mount": {
+    "target": "/mnt",
+    "source": "//10.44.239.58/data",
+    "filesystem": "cifs",
+    "server_port": "10.44.239.58:445",
+    "socket_state": "ESTABLISHED",
+    "session_reconnects": 21,
+    "share_reconnects": 24,
+    "failed_reads": 34,
+    "failed_writes": 618,
+    "local_open_files": 4,
+    "server_open_files": 0,
+    "outstanding_mids": 0
+  },
+  "local_device_activity": "two-second /proc/diskstats delta showed only small root-device writes and no activity commensurate with 77-79% I/O wait; the wait is associated with remote/FUSE/CIFS kernel paths, not sustained local throughput",
+  "mutations": []
+}

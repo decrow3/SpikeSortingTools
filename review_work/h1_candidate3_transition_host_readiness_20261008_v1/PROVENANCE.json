@@ -1,0 +1,24 @@
+{
+  "schema": "h1-candidate3-transition-host-readiness-provenance-v1",
+  "created_at": "2026-10-08T03:42:00-07:00",
+  "host": "huklaban1",
+  "mode": "read_only_host_inspection",
+  "sources": [
+    "ps -eLo state,pid,ppid,lwp,user,lstart,etime,wchan,comm,args",
+    "ps -eo state,pid,ppid,user,lstart,etime,wchan,comm,args",
+    "/proc/<pid>/{cmdline,cwd,cgroup,io,fd}",
+    "systemctl --user status/show app-gnome-code-8446.scope",
+    "vmstat 1 3 and vmstat 1 5",
+    "/proc/fs/cifs/Stats",
+    "/proc/self/mountstats",
+    "ss -ntp filtered to port 445",
+    "two-second /proc/diskstats before/after",
+    "findmnt and df"
+  ],
+  "inspection_window": [
+    "2026-10-08T03:35:23-07:00",
+    "2026-10-08T03:37:00-07:00"
+  ],
+  "scope": "candidate3 transition host-readiness decision only",
+  "excluded": "process/service/mount mutation, H5 contact, voltage, GPU, sort, RF and holdout"
+}
