@@ -1,0 +1,35 @@
+{
+  "schema": "refractory-clock-independent-fixture-v1",
+  "method": "direct arithmetic from exact census clocks; no author fixture executed",
+  "historical_modeled_bin_width_s": 0.00025,
+  "historical_modeled_40_bin_support_s": 0.01,
+  "bin_samples": 7,
+  "bins": 40,
+  "probes": {
+    "imec0": {
+      "sampling_frequency_hz": 29999.835983263598,
+      "sample_bin_width_s": 0.0002333346090260354,
+      "sample_40_bin_support_s": 0.009333384361041416,
+      "modeled_excess_relative_to_observed": 0.07142271368798572,
+      "first_four_sample_derived_centers_s": [0.0001166673045130177, 0.0003500019135390531, 0.0005833365225650885, 0.0008166711315911239],
+      "first_eligible_center_index_for_strict_gt_0p5ms": 2
+    },
+    "imec1": {
+      "sampling_frequency_hz": 29999.759166666667,
+      "sample_bin_width_s": 0.00023333520649651882,
+      "sample_40_bin_support_s": 0.009333408259860752,
+      "modeled_excess_relative_to_observed": 0.0714199702380953,
+      "first_four_sample_derived_centers_s": [0.00011666760324825941, 0.0003500028097447782, 0.000583338016241297, 0.0008166732227378159],
+      "first_eligible_center_index_for_strict_gt_0p5ms": 2
+    }
+  },
+  "boundary_semantics_from_source": {
+    "lag_bin": "d // 7",
+    "included_lags": "0 <= d < 280 samples",
+    "bin_intervals": "[7*k, 7*(k+1)) samples",
+    "same_block_required": true,
+    "same_boolean_state_class_required_for_q0_displaced": true,
+    "same_field_segment_required": false,
+    "zero_lag_possible": true
+  }
+}

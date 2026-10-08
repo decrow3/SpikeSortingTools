@@ -1,0 +1,33 @@
+{
+  "schema": "independent-review-provenance-v1",
+  "reviewer_identity": "/root/review_refractory_impact",
+  "host": "huklaban1-Precision-5820-Tower",
+  "cwd": "/home/huklab/Documents/RyanSorting/SpikeSortingTools",
+  "observed_start": "2026-10-07T21:07:39-07:00",
+  "observed_finish": "2026-10-07T21:12:09-07:00",
+  "reviewed_snapshot_manifest_sha256": "337d9da7419843617482c10434927b50c335ede6787803e8b0c2f8117fbf8059",
+  "reviewed_snapshot_complete_sha256": "60b27ec71f4f09fc3006253e9246fa2b74f0c62704ba803dc33dca5f8dc10c6e",
+  "primary_hashes": {
+    "available_evaluator": "a31f1349854eff0e4c732063993be37e8cf53de5d206628f66d68a65ff7f341e",
+    "census_contract": "e90ad62778b5fa9422102c2f0d9ffeefa0c710a38ceba68d6d79ad9553bf5ea3",
+    "census_source": "dc33e5d4d536998cfcd74a8d317b979577ab982c20c339e158b32925f74388ac",
+    "availability_ledger": "ba7b811a0d736a664c15264c21e72df6015d5928d165ffa1999ee2be92c6f0f9",
+    "selection_source": "f919f14cdfb960a0bfbddf47a7364d4e0bf35d0772a1aeb96ef7a2b46c7b3319",
+    "panel_source": "90a24e67a85538958675e42cbc785655ea2c42599208ad5e0ae5da56e85a34ed",
+    "d0_decision": "8caeda2c50ff50680448b6a2791408308c1441d834e5dfd3430665c47ccb3d4e",
+    "d1_contract": "83679fbadbca340eba0b4949d7be41eb288425d9284fd3215a4bf4dfb18e483a",
+    "d1_repair_contract": "24728da556324ee78f371e1fe0197ff5a4648d9a5808bf9770e90d0824f2e1b5",
+    "d2_contract": "6cdb54829765857fbf4bc61b37850603c5f16a503e086988cab14d833881e696",
+    "post_snapshot_d3_contract": "9ae4633880f1c79975afca4c37367b1603dc0c51d08771a4b2528c868a8ff8b5",
+    "earlier_r1_rejection_review": "22c665adf04f559e42200967793806b3ee8c76944618a62e12b4facfb54734e9",
+    "supplemental_source_recovery_ledger": "fdccf32f1a7f4f6b94f40342474578652a63bff6557e15314a709ef77ad3d9b8"
+  },
+  "operations": {
+    "raw_voltage_reads": 0,
+    "waveform_array_reads": 0,
+    "rf_holdout_access": 0,
+    "sorts_started": 0,
+    "corrected_scientific_outcomes": 0,
+    "author_files_edited": 0
+  }
+}

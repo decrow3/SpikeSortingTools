@@ -1,0 +1,8 @@
+{
+  "schema": "immutable-review-packet-complete-v1",
+  "status": "complete",
+  "completed_at": "2026-10-07T21:12:09-07:00",
+  "verdict": "REPAIR_REQUIRED",
+  "manifest_sha256": "da12dea81713994b39ab4f33567b75c1dea4b9abc8684b1a419fcd8a333c64ce",
+  "reviewed_snapshot_manifest_sha256": "337d9da7419843617482c10434927b50c335ede6787803e8b0c2f8117fbf8059"
+}

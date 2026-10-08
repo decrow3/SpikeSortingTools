@@ -1,0 +1,37 @@
+{
+  "schema": "refractory-impact-map-v2-provenance-v1",
+  "author": "H1",
+  "repair_scope": "independent-review blocking deltas only",
+  "predecessor": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/refractory_interval_defect_impact_map_h1_20261007_v1",
+    "manifest_sha256": "337d9da7419843617482c10434927b50c335ede6787803e8b0c2f8117fbf8059",
+    "complete_sha256": "60b27ec71f4f09fc3006253e9246fa2b74f0c62704ba803dc33dca5f8dc10c6e"
+  },
+  "independent_review": {
+    "reviewer": "/root/review_refractory_impact",
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/refractory_interval_defect_impact_map_review_20261007_v1_child",
+    "manifest_sha256": "da12dea81713994b39ab4f33567b75c1dea4b9abc8684b1a419fcd8a333c64ce",
+    "complete_sha256": "eed75cb2f0a24d64a5b7e584c960e1d9fc0d28959981a082a5d4be46bc7e80be",
+    "verdict": "REPAIR_REQUIRED"
+  },
+  "delta_evidence": {
+    "d1_repaired_contract_sha256": "24728da556324ee78f371e1fe0197ff5a4648d9a5808bf9770e90d0824f2e1b5",
+    "d2_contract_sha256": "6cdb54829765857fbf4bc61b37850603c5f16a503e086988cab14d833881e696",
+    "d3_v1_contract_sha256": "9ae4633880f1c79975afca4c37367b1603dc0c51d08771a4b2528c868a8ff8b5",
+    "r1c_source_recovery_ledger_sha256": "fdccf32f1a7f4f6b94f40342474578652a63bff6557e15314a709ef77ad3d9b8",
+    "sample_clock_fixture_spec_sha256": "5141cb6f8f58b5fe74bbf3c22bc6081307054d11e502ad0da0a61b50a733ac98",
+    "sample_clock_fixture_expected_sha256": "aeec9c32fcb2928369ddbb4d03585400b35a005d326651f51206a8232f249c2b"
+  },
+  "routing": {
+    "d3_current_review_owner": "H5 native child",
+    "h1_role": "fallback only on coordinator-recorded capability/result failure",
+    "d3_v2_independent_review_duplicated_by_h1": false
+  },
+  "operations": {
+    "raw_voltage_reads": 0,
+    "waveform_array_reads": 0,
+    "rf_holdout_access": 0,
+    "sorts_started": 0,
+    "corrected_outcomes_computed": 0
+  }
+}

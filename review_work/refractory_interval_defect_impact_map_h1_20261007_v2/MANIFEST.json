@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-packet-manifest-v1",
+  "files": {
+    "CORRECTION.md": {"sha256": "464640a481acbf18f248d3c46b5dce62ee4c84af57ff4ed00e3b761c94044ef2", "size_bytes": 2626},
+    "IMPACT_MAP.csv": {"sha256": "cbf44a93adcb1d8bca16df3c8895cfb88c48d8cf1fa96a36e30cbe0e62345aa8", "size_bytes": 4956},
+    "PROVENANCE.json": {"sha256": "c877bbc113c94c61406db7a7677dd94037024f83fca3225a3d9380d33aca3139", "size_bytes": 1894},
+    "RECALCULATION_PLAN.md": {"sha256": "4936ce97b860aba469125c9f1ef9c79e5abf9f0fc1bffa661867e328c4c605c0", "size_bytes": 3069},
+    "VERDICT.json": {"sha256": "126298eeb683e8f282142f438d5124dedd37dc90d9a1c3ae43acfac8bf9ffc85", "size_bytes": 868}
+  }
+}

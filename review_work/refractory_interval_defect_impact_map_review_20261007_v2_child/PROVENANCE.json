@@ -1,0 +1,27 @@
+{
+  "schema": "independent-delta-review-provenance-v1",
+  "reviewer_identity": "/root/review_refractory_impact",
+  "host": "huklaban1-Precision-5820-Tower",
+  "cwd": "/home/huklab/Documents/RyanSorting/SpikeSortingTools",
+  "observed_start": "2026-10-07T21:15:34-07:00",
+  "observed_finish": "2026-10-07T21:16:26-07:00",
+  "reviewed_snapshot_manifest_sha256": "3bfb285271ac7f5991c48a48c995383710612648f44786bfe954f1f7bc009555",
+  "reviewed_snapshot_complete_sha256": "15e23b28e8e01b80c82b6ddd6a7baf93cbddbd4c16f888ae03af0b32b7ca9c6e",
+  "predecessor_review_manifest_sha256": "da12dea81713994b39ab4f33567b75c1dea4b9abc8684b1a419fcd8a333c64ce",
+  "review_mode": "delta_only",
+  "excluded": [
+    "accepted core re-review",
+    "H5 child current D3 review",
+    "production launch",
+    "corrected outcomes"
+  ],
+  "operations": {
+    "raw_voltage_reads": 0,
+    "waveform_array_reads": 0,
+    "rf_holdout_access": 0,
+    "sorts_started": 0,
+    "production_launches": 0,
+    "corrected_outcomes_computed": 0,
+    "author_files_edited": 0
+  }
+}

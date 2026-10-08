@@ -1,0 +1,21 @@
+{
+  "schema": "immutable-review-packet-manifest-v1",
+  "files": {
+    "INDEPENDENT_FIXTURE.json": {
+      "size_bytes": 1503,
+      "sha256": "2e2ee3b7b8bbb69b589a7bd71a2644ffc40457854e845a3662278f476dc40033"
+    },
+    "PROVENANCE.json": {
+      "size_bytes": 1979,
+      "sha256": "37271e3b0fdd9cb861b3a38d9a4ef9ee4699d051391e5f4ee461e89dc74b1b96"
+    },
+    "REVIEW.json": {
+      "size_bytes": 1288,
+      "sha256": "4da702d4f93bf7641c684fbe39a10c2da85b72aaaacbb921fe3261f2ea4cd4b7"
+    },
+    "REVIEW.md": {
+      "size_bytes": 12082,
+      "sha256": "5af3b52deb33dfda729dae6b24026c803231ac3f58b8d04b2b0aceb77a6ec5b6"
+    }
+  }
+}

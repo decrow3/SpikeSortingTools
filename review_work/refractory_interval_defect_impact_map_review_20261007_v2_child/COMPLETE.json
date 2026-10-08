@@ -1,0 +1,8 @@
+{
+  "schema": "immutable-review-packet-complete-v1",
+  "status": "complete",
+  "completed_at": "2026-10-07T21:16:26-07:00",
+  "verdict": "GO",
+  "manifest_sha256": "17b1ea06fea685b5caf9e925747d31fe56a6dd231d7568fa77341927c7a5153d",
+  "reviewed_snapshot_manifest_sha256": "3bfb285271ac7f5991c48a48c995383710612648f44786bfe954f1f7bc009555"
+}

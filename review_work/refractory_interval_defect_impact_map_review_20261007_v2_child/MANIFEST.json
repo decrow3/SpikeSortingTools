@@ -1,0 +1,17 @@
+{
+  "schema": "immutable-review-packet-manifest-v1",
+  "files": {
+    "DELTA_REVIEW.md": {
+      "size_bytes": 4877,
+      "sha256": "fbd53b3c66b876d48218cf579e7d0ad3e347ded031310152d036bb0507441b93"
+    },
+    "PROVENANCE.json": {
+      "size_bytes": 1042,
+      "sha256": "c38ac1892bd09b70146ffca76a5f513d2236e2ce3f7e20081ea75337706f3d5c"
+    },
+    "VERDICT.json": {
+      "size_bytes": 799,
+      "sha256": "fcc4426cd15376f23a42724a9d4699a970ddd003ce74a41f6abaee23c4252645"
+    }
+  }
+}

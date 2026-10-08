@@ -1,0 +1,17 @@
+{
+  "schema": "refractory-interval-defect-impact-map-h1-v2",
+  "status": "REPAIRED_PENDING_INDEPENDENT_DELTA_ACCEPTANCE",
+  "supersedes_for_routing": "/mnt/NPX/Luke/DARTsort_motion_experiments/refractory_interval_defect_impact_map_h1_20261007_v1",
+  "predecessor_manifest_sha256": "337d9da7419843617482c10434927b50c335ede6787803e8b0c2f8117fbf8059",
+  "independent_review_manifest_sha256": "da12dea81713994b39ab4f33567b75c1dea4b9abc8684b1a419fcd8a333c64ce",
+  "repairs": {
+    "d0_d1_d2_mechanics_vs_membership_split": true,
+    "historical_no_segment_gate_frozen": true,
+    "historical_zero_lag_inclusion_frozen": true,
+    "exact_source_or_reconstructed_qualification_required": true,
+    "d3_v1_affected_anchor_hold_recorded": true
+  },
+  "production_started": false,
+  "corrected_outcomes_computed": false,
+  "next_gate": "independent reviewer delta acceptance"
+}

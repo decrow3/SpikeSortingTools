@@ -1,0 +1,41 @@
+{
+  "schema": "r1c-sample-clock-known-answer-v1",
+  "status": "DRAFT_PREOUTCOME_FIXTURE",
+  "counter": {
+    "bin_samples": 7,
+    "bins": 40,
+    "max_lag_exclusive_samples": 280,
+    "boundary_lags_samples": [0, 1, 6, 7, 13, 14, 20, 21, 278, 279, 280],
+    "expected_nonzero_bins": {"0": 3, "1": 2, "2": 2, "3": 1, "39": 2},
+    "excluded_lags_samples": [280]
+  },
+  "confidence_case": {
+    "observed_counts": "forty zeros",
+    "spike_count": 3500,
+    "contamination_grid_start": 0.005,
+    "contamination_grid_stop_inclusive": 0.345,
+    "contamination_grid_step": 0.005,
+    "confidence_threshold_strictly_greater_than": 0.9,
+    "pass_maximum_minimum_contamination": 0.10,
+    "probes": {
+      "imec0": {
+        "sampling_frequency_hz": 29999.835983263598,
+        "exposure_s": 10473.5537279367,
+        "first_eligible_bin_index": 2,
+        "nominal_minimum_contamination": 0.10,
+        "sample_minimum_contamination": 0.11,
+        "nominal_confidence_at_0p10_final_bin": 0.9035976907026476,
+        "sample_confidence_at_0p10_final_bin": 0.8873296203604679
+      },
+      "imec1": {
+        "sampling_frequency_hz": 29999.759166666667,
+        "exposure_s": 10473.553879363088,
+        "first_eligible_bin_index": 2,
+        "nominal_minimum_contamination": 0.10,
+        "sample_minimum_contamination": 0.11,
+        "nominal_confidence_at_0p10_final_bin": 0.9035976874422771,
+        "sample_confidence_at_0p10_final_bin": 0.8873302466827586
+      }
+    }
+  }
+}

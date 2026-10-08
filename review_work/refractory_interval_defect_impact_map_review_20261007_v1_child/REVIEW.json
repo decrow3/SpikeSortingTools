@@ -1,0 +1,22 @@
+{
+  "schema": "independent-refractory-impact-map-review-v1",
+  "verdict": "REPAIR_REQUIRED",
+  "completed_at": "2026-10-07T21:12:09-07:00",
+  "reviewed_snapshot": "/mnt/NPX/Luke/DARTsort_motion_experiments/refractory_interval_defect_impact_map_h1_20261007_v1",
+  "reviewed_manifest_sha256": "337d9da7419843617482c10434927b50c335ede6787803e8b0c2f8117fbf8059",
+  "reviewed_complete_sha256": "60b27ec71f4f09fc3006253e9246fa2b74f0c62704ba803dc33dca5f8dc10c6e",
+  "blocking_repairs": [
+    "split unaffected D0/D1/D2 mechanics from affected-upstream D1/D2 frozen panel anchor membership",
+    "freeze historical ACG pair inclusion exactly: same block and Boolean state class, no field-segment gate, explicit zero-lag handling",
+    "retain exact R1c source absence as a correction-contract prerequisite or label/review a reconstructed implementation"
+  ],
+  "accepted_core": [
+    "7-sample observed support versus nominal 0.25-ms model edges in available source",
+    "R1 point/bootstrap P/K and verdict impact",
+    "separate direct 9-29-sample guardrail unaffected by this defect",
+    "published summaries lack observed lag sufficient statistics",
+    "spike-time-only traversal is cheapest adequate correction"
+  ],
+  "corrected_outcomes_computed": false,
+  "production_started": false
+}
