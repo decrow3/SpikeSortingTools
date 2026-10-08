@@ -1,0 +1,6 @@
+{
+  "schema": "immutable-evidence-complete-v1",
+  "completed_at": "2026-10-08T01:47:42-07:00",
+  "status": "PASS_SCOPED_HOST_STORAGE_FEASIBILITY_WITH_PLACEMENT_REBIND_REQUIRED",
+  "manifest_sha256": "4c29453529f9665a3d4e0007d5badcefb469e3a1c7dde7561ceff41a0637afe0"
+}

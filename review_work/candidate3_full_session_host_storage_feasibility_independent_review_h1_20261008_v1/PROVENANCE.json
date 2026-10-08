@@ -1,0 +1,23 @@
+{
+  "schema": "candidate3-full-session-host-storage-feasibility-independent-review-provenance-v1",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_full_session_host_storage_feasibility_h1_20261008_v1",
+  "reviewed_manifest_sha256": "fcfa3167f03ae0c084740537fab09cb2a366229b44330eb840c6bd3537e4dd40",
+  "reviewed_complete_sha256": "acdc0301c7a1357e5586841b61b4f23a0a42ebb8592327d92e6f69cb256607f9",
+  "input_bindings_sha256": "7c045a88be1819d5411534867ee717ceadf76661c3bb3ba176dd525ed5c4e3b1",
+  "arm_a_complete_sha256": "4f49d6d4959ab54bd78338564c4d3caa88b3203fbe75685ce8f1d46dc4aea499",
+  "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+  "source_sha256": {
+    "dartsort_main_py": "e4c03417c1256384c4f8fbf0250560003bd795b7274932ef1e49dcde217bd249",
+    "dartsort_main_util_py": "2846a319c19c25b3cad81ab991057c0868b87d760b66f20e8d2bb3db8ffa3bcc",
+    "dartsort_preprocess_util_py": "566ce1ab60af12585978bcd7e3192cb2ca4cc220ab5e41895140c00bdbc06674",
+    "installed_kilosort_io_py": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd"
+  },
+  "h5_stale_readiness_receipt_sha256": "a06d125f65888c92cb1111b38b89904029c9b9c8ccd62ed0543cf355a8b6eb9f",
+  "voltage_payload_read": false,
+  "transfer_performed": false,
+  "benchmark_performed": false,
+  "materialization_performed": false,
+  "service_launched": false,
+  "sort_launched": false,
+  "h5_contacted": false
+}
