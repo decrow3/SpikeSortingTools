@@ -1,0 +1,38 @@
+{
+  "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+  "exact_a_inputs": {
+    "input_bindings_sha256": "7c045a88be1819d5411534867ee717ceadf76661c3bb3ba176dd525ed5c4e3b1",
+    "readme_sha256": "fad78a3236c2f757824777a57a87d751290ee96204e8e91454bc4d88efbf4502"
+  },
+  "host": "huklaban1",
+  "abandoned_unsealed_predecessor": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_e2e_stage_capability_independent_review_h1_20261008_v1",
+  "reviewed_commit": "697d2bcf38087e6b2ba9ec8116c969b63a63debb",
+  "reviewed_current_source_sha256": "e627b1aaba5355a6a156aab908bd6bc4e19f82cfffbb359ffcaf1ee1ef67d32e",
+  "reviewed_executed_source_recovery": {
+    "complete_sha256": "11602c0bcf06e9cdff5064e562d799f4b0e3578b167d7aedbf883c40caea9364",
+    "manifest_sha256": "747618557284507285754a868e44f124811d15554a9c94a108ed5cf84dd0d2ff",
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_e2e_executed_source_recovery_h1_20261008_v1",
+    "recovered_source_sha256": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a"
+  },
+  "reviewed_provenance_correction": {
+    "complete_sha256": "abf39aa132e6a6bf5a4336e03d7daf0cfbc7b40fbd0c453deaa3232c32693d65",
+    "manifest_sha256": "4d7aed65488a56517307c41b976eb5136950035e3e7a3e018da41c65d672ae45",
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_e2e_v3_provenance_correction_h1_20261008_v1r1"
+  },
+  "reviewed_packet": {
+    "complete_sha256": "03a99e7caacd36dd3344561af97b85bfcf0b5874b4a60ec69f995d0dffb0d3d4",
+    "manifest_sha256": "31114d69be1871d5f0ca44078c34c5bef69e527a9d558188a748dde8cf58fb45",
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_e2e_stage_capability_h1_20261008_v3"
+  },
+  "retained_scratch": {
+    "inputs": "/tmp/candidate3_mini_e2e_20261008_v2/inputs",
+    "ordinary_run": "/tmp/candidate3_mini_e2e_20261008_v3/runs/ordinary"
+  },
+  "scope_exclusions": [
+    "real voltage",
+    "transition DARTsort run",
+    "RF or holdout",
+    "D3 work or outcome",
+    "new sorter launch"
+  ]
+}

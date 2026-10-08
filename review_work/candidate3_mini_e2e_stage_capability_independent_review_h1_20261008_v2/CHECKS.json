@@ -1,0 +1,60 @@
+{
+  "clock": {
+    "duration_seconds": 9.900054125818931,
+    "last_sample_seconds": 9.900020792303355,
+    "sampling_frequency": 29999.835983263598,
+    "v1_fixed_support_excludes_last_sample": true,
+    "v2_v3_duration_support_covers_last_sample": true
+  },
+  "counts": {
+    "detection_rows": 47624,
+    "final_negative_rows": 4,
+    "final_nonnegative_units": 11,
+    "final_rows": 2297,
+    "matching_negative_rows": 0,
+    "matching_nonnegative_labels": 18,
+    "matching_rows": 2297,
+    "matching_used_template_indices": 95
+  },
+  "exact_detection_to_matching_multiset": {
+    "added": 1263,
+    "matched": 1034,
+    "removed": 46590,
+    "row_count_identities_hold": true
+  },
+  "ordering": {
+    "detection_adjacent_time_inversions": 5,
+    "detection_times_sorted": false,
+    "final_adjacent_time_inversions": 2,
+    "final_times_sorted": false,
+    "final_times_changed_from_matching_rows": 79,
+    "matching_adjacent_time_inversions": 1,
+    "matching_times_sorted": false
+  },
+  "packet": {
+    "accounting_json_rerun_byte_identical": true,
+    "accounting_npz_rerun_byte_identical": true,
+    "complete_sha256": "03a99e7caacd36dd3344561af97b85bfcf0b5874b4a60ec69f995d0dffb0d3d4",
+    "complete_written_last": true,
+    "manifest_members_valid": 6,
+    "manifest_sha256": "31114d69be1871d5f0ca44078c34c5bef69e527a9d558188a748dde8cf58fb45"
+  },
+  "provenance": {
+    "authoritative_correction_complete_sha256": "abf39aa132e6a6bf5a4336e03d7daf0cfbc7b40fbd0c453deaa3232c32693d65",
+    "authoritative_correction_manifest_sha256": "4d7aed65488a56517307c41b976eb5136950035e3e7a3e018da41c65d672ae45",
+    "authoritative_correction_members_valid": 2,
+    "commit_697d2bc_source_sha256": "e627b1aaba5355a6a156aab908bd6bc4e19f82cfffbb359ffcaf1ee1ef67d32e",
+    "exact_executed_wrapper_snapshot_available": true,
+    "executed_source_recovery_complete_sha256": "11602c0bcf06e9cdff5064e562d799f4b0e3578b167d7aedbf883c40caea9364",
+    "executed_source_recovery_manifest_sha256": "747618557284507285754a868e44f124811d15554a9c94a108ed5cf84dd0d2ff",
+    "executed_source_recovery_members_valid": 3,
+    "prepare_and_run_arm_equal_committed_source": true,
+    "prelaunch_executed_source_sha256": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a",
+    "resolved_config_and_native_outputs_available": true
+  },
+  "resource": {
+    "ordinary_scratch_bytes": 128223957,
+    "transition_run_directory_absent": true
+  },
+  "verdict": "PARTIAL_GO_NATIVE_OUTPUT_CAPABILITY_WITH_CONFIG_AND_LAUNCH_CAVEATS"
+}

@@ -1,0 +1,6 @@
+{
+  "complete": true,
+  "manifest_sha256": "3e3aa9b27637c67b92bc49880dff167e9078802406d7a2990c6a9d92ad6e8a48",
+  "packet": "candidate3_mini_e2e_stage_capability_independent_review_h1_20261008_v2",
+  "verdict": "PARTIAL_GO_NATIVE_OUTPUT_CAPABILITY_WITH_CONFIG_AND_LAUNCH_CAVEATS"
+}

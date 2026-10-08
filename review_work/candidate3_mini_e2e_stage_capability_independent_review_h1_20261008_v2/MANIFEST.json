@@ -1,0 +1,10 @@
+{
+  "files": {
+    "CHECKS.json": "be35f6eed1db7463f33577fb44c006f09afa1610ddac638ffc41d21197013741",
+    "PROVENANCE.json": "0797bddc8b27addeb27bd04d27a46a4782e0476466ce76c73cf9c7581c6ef52d",
+    "RECOMPUTE.md": "b92b2df8de296ed9f5e106f110044228796624b29c69ad653e041ed9e3c4c957",
+    "REPORT.md": "cb29471390ff77395850a0cec8caab916fa8f91b2944844413a1133ab39a4193"
+  },
+  "packet": "candidate3_mini_e2e_stage_capability_independent_review_h1_20261008_v2",
+  "verdict": "PARTIAL_GO_NATIVE_OUTPUT_CAPABILITY_WITH_CONFIG_AND_LAUNCH_CAVEATS"
+}
