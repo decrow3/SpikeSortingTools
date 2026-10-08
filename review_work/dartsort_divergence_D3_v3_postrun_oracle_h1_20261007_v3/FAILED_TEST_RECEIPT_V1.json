@@ -1,0 +1,8 @@
+{
+  "schema": "d3-v3-postrun-oracle-v2-failed-test-receipt-v1",
+  "status": "PRESERVED_FIXTURE_DEFECT",
+  "result": "2 failed, 9 passed",
+  "failure": "positive fixture spaced events by 10 samples but declared only one neighbour within the inclusive +/-15-sample window",
+  "repair": "space matched synthetic events by 100 samples so the declared singleton neighbour lists are exact",
+  "production_outcome_inspected": false
+}

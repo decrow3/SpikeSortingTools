@@ -1,0 +1,17 @@
+{
+  "schema": "immutable-packet-manifest-v1",
+  "created_local": "2026-10-07T23:29:42-07:00",
+  "packet": "dartsort_divergence_D3_v3_postrun_oracle_h1_20261007_v3",
+  "source_bound_before_future_outcome_visibility": true,
+  "supersedes_rejected_v1_and_v2": true,
+  "members": [
+    {"path": "FAILED_TEST_RECEIPT_V0.json", "bytes": 571, "sha256": "a745a2d2448b5a33e820b6f610ad27b4b2a4e5b6e6cd31463ad34404f48a30b4"},
+    {"path": "FAILED_TEST_RECEIPT_V1.json", "bytes": 427, "sha256": "efda41527768da4da63195f124d919ef5e3e1f89796a3ff46eb60771a5ab1c84"},
+    {"path": "FROZEN_CONTRACT.md", "bytes": 6668, "sha256": "cd0721575e29397cb0f1d37ce6a05073e5c007ee1d5fc50741e9ba1f4ae2518f"},
+    {"path": "ORACLE_REPORT.md", "bytes": 5038, "sha256": "0014cd0968dbba12711145708b33c954f7e45360183cbbfccc48ceb89e60f955"},
+    {"path": "SOURCE_BINDINGS.json", "bytes": 3078, "sha256": "844a4f8060ff2e9e6a43bba68f5e72b8447af2cdccf82c124543be80082e7610"},
+    {"path": "TEST_RECEIPT.json", "bytes": 1160, "sha256": "9c31a59b01c6b8ed07c0cae77fe4295b95c3d4202a4a8c371ff0be3fe93527bb"},
+    {"path": "postrun_oracle.py", "bytes": 21722, "sha256": "c1cd254605b2547c779486fe6465c6ac7751f287cb452e0385e95074dbc142af"},
+    {"path": "test_postrun_oracle.py", "bytes": 13516, "sha256": "a858440824c19ee93114b6ecd197645dda2983f462ff3bf7ddacce4afb7e7da1"}
+  ]
+}

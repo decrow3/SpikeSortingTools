@@ -1,0 +1,9 @@
+{
+  "schema": "d3-v3-postrun-oracle-failed-test-receipt-v0",
+  "status": "PRESERVED_FIXTURE_DEFECT",
+  "command": "pytest -q -p no:cacheprovider test_postrun_oracle.py && python -m py_compile postrun_oracle.py test_postrun_oracle.py",
+  "result": "2 failed, 6 passed",
+  "failure": "positive fixture ranking claimed 25 exclusive matches while pair summary and relation serialized 2",
+  "repair": "increase synthetic pair relation and summary to 25 reciprocal matches; production source and frozen interpretation were unchanged",
+  "production_outcome_inspected": false
+}

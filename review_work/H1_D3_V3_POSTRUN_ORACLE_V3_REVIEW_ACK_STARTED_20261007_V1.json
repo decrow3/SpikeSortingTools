@@ -1,0 +1,16 @@
+{
+  "schema": "hub-coordinator-status-v1",
+  "host": "huklaban1",
+  "owner": "H1",
+  "status": "D3_V3_POSTRUN_ORACLE_V3_SEALED_INDEPENDENT_REVIEW_STARTED",
+  "observed_local": "2026-10-07T23:30:00-07:00",
+  "packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_v3_postrun_oracle_h1_20261007_v3",
+  "manifest_sha256": "d367aa95fac7623bff1e14607bdebf80707ae10ef72cba0db515ec36131e84ed",
+  "complete_sha256": "0a2433a25513b71a36fe63c34deb59e36e5f3c212a290fe7ca87da784b517742",
+  "tests": "13 passed in 0.27s",
+  "independent_reviewer": "/root/review_d3_postrun_oracle",
+  "review_scope": "two v2 blockers plus all prior counterexamples and positive baseline",
+  "future_production_namespace_inspected": false,
+  "next": "await bounded independent verdict, then seal completion and immediately start coordinator-queued candidate-3 readiness",
+  "idle": false
+}
