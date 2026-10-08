@@ -1,0 +1,19 @@
+{
+  "schema": "h1-candidate3-transition-host-readiness-independent-recheck-v1",
+  "checked_at": "2026-10-08T03:42:04-07:00",
+  "mode": "read_only_host_namespace",
+  "d_state_threads": 52,
+  "folio_wait_python_threads": 35,
+  "bfs_fuse_ioq_threads": 10,
+  "sync_threads": 6,
+  "vmstat_samples": [
+    {"blocked": 36, "io_wait_percent": 77, "block_in_kib_s": 0, "block_out_kib_s": 0},
+    {"blocked": 36, "io_wait_percent": 77, "block_in_kib_s": 0, "block_out_kib_s": 16},
+    {"blocked": 36, "io_wait_percent": 78, "block_in_kib_s": 0, "block_out_kib_s": 204},
+    {"blocked": 36, "io_wait_percent": 77, "block_in_kib_s": 0, "block_out_kib_s": 0}
+  ],
+  "mount": {"target": "/mnt", "source": "//10.44.239.58/data", "filesystem": "cifs"},
+  "cifs": {"session_reconnects": 21, "share_reconnects": 24, "failed_reads": 34, "failed_writes": 618, "outstanding_mids": 0},
+  "note": "Sandboxed ps was not used for host attribution; an approved read-only host-namespace ps census reproduced the packet counts.",
+  "mutations": []
+}

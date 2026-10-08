@@ -1,0 +1,12 @@
+{
+  "schema": "h1-candidate3-transition-host-readiness-independent-review-provenance-v1",
+  "created_at": "2026-10-08T03:42:04-07:00",
+  "reviewer_host": "huklaban1",
+  "author_packet": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/review_work/h1_candidate3_transition_host_readiness_20261008_v1",
+  "shared_copy": "/mnt/NPX/Luke/DARTsort_motion_experiments/h1_candidate3_transition_host_readiness_20261008_v1",
+  "author_commit": "f92d9d7",
+  "author_manifest_sha256": "caafac6bc3a258437aed3f8b1e913ce8e84b9a5bae2607ec145841777caf8680",
+  "author_complete_sha256": "f062c8a8c23e45562a78f09bc59c9d7c19c7604206ed0fc9e3849ac30649c46e",
+  "review_scope": "read-only implementation-first host-readiness attribution and gate review",
+  "excluded": "launch, kill, renice, mount, service, H5 contact, voltage, GPU, sort, RF and holdout operations"
+}

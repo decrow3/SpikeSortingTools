@@ -1,0 +1,23 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "created_at": "2026-10-08T03:42:04-07:00",
+  "status": "PASS_SCOPED_OPERATIONAL_RECOMMENDATION_WITH_REENTRY_PROBE_FREEZE_REQUIRED",
+  "members": {
+    "CHECKS.json": {
+      "size": 1156,
+      "sha256": "e4970887b8d24155cf01317b79c0a0581c68dc865f13cea3cdb72d992302b8c1"
+    },
+    "CURRENT_RECHECK.json": {
+      "size": 1022,
+      "sha256": "2e1b66085a5c7d56a2c7279d8cf02c4b4fd204beea1e8bd3fe914ca8d6e6ba4c"
+    },
+    "PROVENANCE.json": {
+      "size": 851,
+      "sha256": "3f84a8bd308b0cac896da83fe9715a3abe790e4f670ee8d36c02d29883af2fff"
+    },
+    "REVIEW.md": {
+      "size": 5091,
+      "sha256": "0f84a33cf3a89005c1cf859b853045dc91e0e7d740263cae2abd76a06b2d5763"
+    }
+  }
+}

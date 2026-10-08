@@ -1,0 +1,19 @@
+{
+  "schema": "h1-candidate3-transition-host-readiness-independent-review-checks-v1",
+  "reviewed_manifest_sha256": "caafac6bc3a258437aed3f8b1e913ce8e84b9a5bae2607ec145841777caf8680",
+  "reviewed_complete_sha256": "f062c8a8c23e45562a78f09bc59c9d7c19c7604206ed0fc9e3849ac30649c46e",
+  "checks": {
+    "seal_and_shared_copy": "PASS",
+    "current_host_reproduction": "PASS_52_D_THREADS_36_BLOCKED_77_TO_78_PERCENT_IOWAIT",
+    "old_python_family_dominant_measured_contributor": "PASS_35_OF_52_D_THREADS",
+    "whole_root_bfs_contributor_not_sole_cause": "PASS_10_OF_52_AND_FIVE_MONTHS_NEWER",
+    "remote_wait_not_sustained_local_throughput": "PASS_SCOPED",
+    "abandon_h1_for_current_transition": "SUPPORTED",
+    "h5_current_readiness": "NOT_ESTABLISHED_AND_NOT_CLAIMED",
+    "reentry_two_snapshot_process_and_vmstat_gates": "DEFENSIBLE_CONSERVATIVE",
+    "reentry_no_search_or_blocked_sync_gate": "DEFENSIBLE",
+    "reentry_metadata_probe": "REQUIRES_EXACT_PROBE_AND_TIMEOUT_FREEZE_BEFORE_USE",
+    "managed_launch_prestart_rerun": "REQUIRED_AND_DEFENSIBLE"
+  },
+  "verdict": "PASS_SCOPED_OPERATIONAL_RECOMMENDATION_WITH_REENTRY_PROBE_FREEZE_REQUIRED"
+}

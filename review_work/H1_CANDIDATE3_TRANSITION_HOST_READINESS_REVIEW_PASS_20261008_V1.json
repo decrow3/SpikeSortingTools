@@ -1,0 +1,23 @@
+{
+  "schema": "coordination-handoff-v1",
+  "host": "huklaban1",
+  "task_key": "h1_candidate3_transition_host_readiness_independent_review",
+  "reported_at": "2026-10-08T03:43:00-07:00",
+  "terminal_state": "PASS_SCOPED_OPERATIONAL_RECOMMENDATION_WITH_REENTRY_PROBE_FREEZE_REQUIRED",
+  "author_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/h1_candidate3_transition_host_readiness_20261008_v1",
+    "manifest_sha256": "caafac6bc3a258437aed3f8b1e913ce8e84b9a5bae2607ec145841777caf8680",
+    "complete_sha256": "f062c8a8c23e45562a78f09bc59c9d7c19c7604206ed0fc9e3849ac30649c46e"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/h1_candidate3_transition_host_readiness_independent_review_20261008_v1",
+    "manifest_sha256": "2c6d1f541377fbbb765f9ae86e1e37e16478c706e0723932808d15c607170fa2",
+    "complete_sha256": "29d4ff2d272af40966ee0a5a811757a42f8922c8195b1f8139fc99f8461dfc58"
+  },
+  "decision": "Do not launch the candidate3 transition on H1 or passively poll. Use the already reviewed H5 supervised path only later under its own current gates and coordinator priority.",
+  "attribution": "April Python remote-page waiters are the oldest and dominant measured contributor at 35/52 D-state threads; whole-root bfs contributes 10/52 and sync contributes six processes. bfs is material but neither original nor sole cause.",
+  "independent_recheck": "52 D-state threads; 35 folio-wait Python, 10 bfs FUSE ioq, six sync; vmstat remains b=36 and 77-78% I/O wait.",
+  "reentry_qualification": "Freeze an exact nonrecursive approved metadata probe, numeric timeout, repetition/placement and fail-closed receipt before using that gate; all other two-snapshot, vmstat, process-cleanliness and fresh managed-prestart gates are defensible and conjunctive.",
+  "mutations": "none",
+  "reviewer_next_state": "checked in with HubMultiCoordinater; no H1 or H5 execution launched"
+}
