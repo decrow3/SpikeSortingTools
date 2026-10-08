@@ -1,0 +1,22 @@
+{
+  "schema": "candidate3-h5-full-session-placement-readiness-spec-independent-review-provenance-v1",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_full_session_placement_readiness_spec_h1_20261008_v1",
+  "reviewed_manifest_sha256": "43c670308750c00f9d45e2167267196dd494b74798dd0c883e6c6609aff38f19",
+  "reviewed_complete_sha256": "d51ebe4f9881764408fc7326bbf34afb2de105cb2eeda2242fa724a453084609",
+  "active_plan_sha256": "c26d63dfe9ae94312485d57ec99f1a3c4d7d089806b84485099d4afb4f12554f",
+  "checked_predecessor_sha256": {
+    "host_storage_manifest": "fcfa3167f03ae0c084740537fab09cb2a366229b44330eb840c6bd3537e4dd40",
+    "host_storage_review_manifest": "4c29453529f9665a3d4e0007d5badcefb469e3a1c7dde7561ceff41a0637afe0",
+    "active_path_manifest": "03ac17f855805d004936dc548325efd2aa7bf834f4312caf3ce44aed171d04aa",
+    "readiness_inventory_manifest": "0370b607b3240fb4da6b31ba1defe4907e6956a47539c9f22e6efe6f74074f7e",
+    "whole_stage_restart_manifest": "ad5ae1d0eef0977d25109c2030d67e972238a8de54202b246b7a9661dd9d7cdf",
+    "whole_stage_restart_review_manifest": "518307b8f5b412d4c973472919dce8415ef0f285c68db70479f5c88610325f18"
+  },
+  "h5_contacted": false,
+  "voltage_payload_read_or_hashed": false,
+  "transfer_performed": false,
+  "materialization_performed": false,
+  "service_installed_or_launched": false,
+  "sort_launched": false,
+  "rf_or_holdout_accessed": false
+}

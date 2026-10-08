@@ -1,0 +1,26 @@
+{
+  "schema": "candidate3-h5-full-session-placement-readiness-spec-independent-checks-v1",
+  "verdict": "BLOCK_CHECKLIST_REPAIR_REQUIRED_KILL_BOUNDARY_AND_STORAGE_ACCOUNTING",
+  "packet_seal_valid": true,
+  "complete_after_manifest_local_birth": true,
+  "complete_copied_last_shared_birth": true,
+  "predecessor_bindings_match": true,
+  "accepted_input_transcription_match": true,
+  "source_hashes_match": true,
+  "fresh_check_count": 12,
+  "fresh_check_ids_unique": true,
+  "storage_arithmetic": {
+    "aggregate_run_write_cap_bytes": 482618717184,
+    "emergency_free_reserve_bytes": 120000000000,
+    "prestart_free_bytes_minimum": 602618717184,
+    "sum_exact": true,
+    "interpretation": "conservative placement safeguard, not expected consumption or a completion guarantee"
+  },
+  "scope_not_current_readiness": true,
+  "scope_not_launch_authorization": true,
+  "blocking_repairs": [
+    "require an installed-entrypoint managed kill/timeout boundary fixture proving partial preservation, no reopen/promotion, distinct fresh namespace, unchanged bindings and baseline-equal whole-stage recomputation",
+    "freeze exact storage accounting/cadence/breach semantics and make any additional full-recording copy or materialization an unambiguous stop"
+  ],
+  "author_packet_modified": false
+}

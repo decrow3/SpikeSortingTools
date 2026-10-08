@@ -1,0 +1,19 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "created_at": "2026-10-08T02:04:43-07:00",
+  "status": "BLOCK_CHECKLIST_REPAIR_REQUIRED_KILL_BOUNDARY_AND_STORAGE_ACCOUNTING",
+  "members": {
+    "CHECKS.json": {
+      "size": 1296,
+      "sha256": "f9bbe3eb05854dd38a96e0c4b854d822bdc94ea9fe1f61f64bec7835b5da5d1a"
+    },
+    "PROVENANCE.json": {
+      "size": 1418,
+      "sha256": "0cacde8fc056aa5b667474d1d715786302b2f37e4f0c5a54dae06105161e54a0"
+    },
+    "REVIEW.md": {
+      "size": 8919,
+      "sha256": "b78d923cb9cb498acb29469d08dcdc6bb7c40c885059eaf7ae952d4943105ecc"
+    }
+  }
+}

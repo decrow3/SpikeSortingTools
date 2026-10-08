@@ -1,0 +1,6 @@
+{
+  "schema": "immutable-evidence-complete-v1",
+  "completed_at": "2026-10-08T02:04:57-07:00",
+  "status": "BLOCK_CHECKLIST_REPAIR_REQUIRED_KILL_BOUNDARY_AND_STORAGE_ACCOUNTING",
+  "manifest_sha256": "d3da3c463fc18c5b55cdf5157e3023a65fcccf2ec991951488099971cf1565cb"
+}
