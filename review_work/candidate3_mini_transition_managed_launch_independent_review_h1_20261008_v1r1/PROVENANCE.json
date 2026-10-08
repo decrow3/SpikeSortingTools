@@ -1,0 +1,28 @@
+{
+  "host": "huklaban1",
+  "seal_repair": {
+    "authoritative": true,
+    "predecessor": "candidate3_mini_transition_managed_launch_independent_review_h1_20261008_v1",
+    "predecessor_issue": "shared publication chronology was not payload-before-MANIFEST-before-COMPLETE"
+  },
+  "review_scope": "Candidate-3 synthetic mini transition managed-launch v2 implementation and non-sort fixtures only",
+  "reviewed_commit": "5f38be1",
+  "reviewed_runner_sha256": "92879fe4c6655e2cf4ee5cc33b1907817a3382c599d890cada3a8fe76e73efdc",
+  "reviewed_producer_sha256": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a",
+  "reviewed_reporter_sha256": "e627b1aaba5355a6a156aab908bd6bc4e19f82cfffbb359ffcaf1ee1ef67d32e",
+  "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+  "dartsort_worktree_observed_clean": true,
+  "commands": [
+    "pytest -q testing/test_candidate3_mini_transition_managed.py",
+    "PYTHONPATH=. /home/huklab/Documents/DARTsort/.venv/bin/python review_work/candidate3_mini_transition_managed_launch_independent_review_h1_20261008_v1r1/adversarial_checks.py",
+    "frozen reporter summarize against a temporary split-root symlink fixture",
+    "systemctl --user show candidate3-mini-transition-v4.service"
+  ],
+  "excluded": [
+    "service launch",
+    "new sort",
+    "real voltage",
+    "RF or holdout",
+    "D3 outcome"
+  ]
+}
