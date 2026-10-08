@@ -1,0 +1,19 @@
+{
+  "schema": "h1_candidate3_h5_real_equality_contract_ack_started_v1",
+  "created_at": "2026-10-08T02:36:30-07:00",
+  "agent": "H1",
+  "recipient": "HubMultiCoordinater",
+  "task": "candidate3_h5_real_ordinary_transition_wrapper_equality_contract",
+  "status": "ACK_STARTED",
+  "decision": "freeze an execution-ready H5 contract and portable runner before any H5 value inspection",
+  "bindings": {
+    "lazy_wrapper_commit": "aea7431c4026fa74e36ad01139d9e596900a1d25",
+    "accepted_input_bindings_sha256": "7c045a88be1819d5411534867ee717ceadf76661c3bb3ba176dd525ed5c4e3b1",
+    "accepted_binary_recorded_sha256": "672938e942d105af6b1a3f7f1bddf206939535e0e4b57bc01153472a1ccb8b69",
+    "sampling_frequency_hz": 29999.835983263598,
+    "channels": 384
+  },
+  "scope": "existing accepted metadata/source plus local synthetic runner fixtures only",
+  "exclusions": "no H5 contact, voltage read/hash, transfer/materialization, real equality, service/GPU/sort/RF/holdout/full-session launch",
+  "execution_state": "contract and runner preparation only"
+}
