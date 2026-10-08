@@ -1,0 +1,12 @@
+{
+  "schema": "dartsort-divergence-d3-h1-fallback-release-complete-v1",
+  "status": "GO_EXACT_D3_PRODUCTION_EXECUTION",
+  "completed_at": "2026-10-07T21:23:58-07:00",
+  "manifest_sha256": "44876744836db23a01576812ad10d0b55064ec51902ea417687533c0d42d3c45",
+  "release_sha256": "edd155483e31d3dd0ef49adf573e6243e7440af77300a80c252a7cbaf598fa12",
+  "accepted_contract_sha256": "81ac32ec196aea9336f8883eca5cdfd868fde5c1a91011ec6c252a93b45dbfa1",
+  "accepted_runner_sha256": "fc304240486f48f2791159256f1320d51a37ea08fd03175387256e35b3ca5a23",
+  "production_execution_authorized": true,
+  "production_started_by_h1": false,
+  "successor": "H5 data-local execution owner"
+}

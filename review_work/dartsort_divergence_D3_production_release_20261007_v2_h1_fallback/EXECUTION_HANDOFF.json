@@ -1,0 +1,20 @@
+{
+  "schema": "dartsort-divergence-d3-execution-handoff-v1",
+  "task_id": "dartsort_divergence_D3_production_execution_v2",
+  "recipient": "H5 data-local execution owner",
+  "contract_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_production_contract_h5_20261007_v2",
+  "contract_sha256": "81ac32ec196aea9336f8883eca5cdfd868fde5c1a91011ec6c252a93b45dbfa1",
+  "runner_sha256": "fc304240486f48f2791159256f1320d51a37ea08fd03175387256e35b3ca5a23",
+  "release_relative_path": "RELEASE.json",
+  "required_before_launch": [
+    "copy or reference the immutable H1 RELEASE.json by exact path and SHA-256",
+    "refresh service/process/output/input/resource reconciliation",
+    "confirm output namespace remains absent",
+    "launch exactly once under the frozen managed service",
+    "return ACK_STARTED with service/PID/output/start/ETA evidence"
+  ],
+  "interpretation_scope": "historical_panel_only",
+  "automatic_retry": false,
+  "h1_launch_authorized": false,
+  "handoff_status": "READY_AWAITING_H5_ACK_STARTED"
+}

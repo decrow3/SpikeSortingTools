@@ -1,0 +1,10 @@
+{
+  "schema": "dartsort-divergence-d3-h1-fallback-release-manifest-v1",
+  "members": {
+    "EXECUTION_HANDOFF.json": {"bytes": 1040, "sha256": "9729d6892cd8397edbf722f173e2bf15503824402e22e575d45b359452a9f8ef"},
+    "PROVENANCE.json": {"bytes": 1475, "sha256": "79eca815c447fc1f4e5a893a8a7b2d4132af28664dfb3d15f2998b7eba66eecd"},
+    "RELEASE.json": {"bytes": 1756, "sha256": "edd155483e31d3dd0ef49adf573e6243e7440af77300a80c252a7cbaf598fa12"},
+    "REVIEW.md": {"bytes": 4897, "sha256": "ce8943388d3ec31f322656b6f0ad1e5d536839178f5affab0dcf797051dc1acb"},
+    "VERDICT.json": {"bytes": 783, "sha256": "bd1000326e2f936ab8c74c29d1e0cd490aee6842ef4edf9e1accac1650d3455b"}
+  }
+}

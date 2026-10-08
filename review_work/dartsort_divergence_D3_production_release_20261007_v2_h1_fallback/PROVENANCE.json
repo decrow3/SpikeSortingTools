@@ -1,0 +1,30 @@
+{
+  "schema": "dartsort-divergence-d3-h1-fallback-provenance-v1",
+  "reviewer": "H1 /root",
+  "host": "huklaban1-Precision-5820-Tower",
+  "started_at": "2026-10-07T21:23:05-07:00",
+  "released_at": "2026-10-07T21:23:58-07:00",
+  "review_route": "recorded FALLBACK_ONLY activated after H5 child technical GO could not create a trusted-authorization release",
+  "policy": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/PROJECT_AGENTS_POLICY_20261007.md",
+    "sha256": "5682687cf07dbf2f0d70b404040eef3a6c1526d5a42e9844728784f5fbbd7604"
+  },
+  "technical_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_production_contract_review_20261007_v2_h5_reviewer",
+    "manifest_sha256": "bf7a8e0ae1210a9908a2219c7d005f91cb78de43111256445bffe082ac6bf9ab",
+    "complete_sha256": "b23d04e2778b53c70b88ef6017c30b3a1678ad6393f5211ac254690351fdc077",
+    "technical_outcome": "GO_IF_DIRECT_TRUSTED_USER_AUTHORIZATION_IS_ACCEPTED"
+  },
+  "selection_qualification": {
+    "impact_map_manifest_sha256": "3bfb285271ac7f5991c48a48c995383710612648f44786bfe954f1f7bc009555",
+    "impact_review_manifest_sha256": "17b1ea06fea685b5caf9e925747d31fe56a6dd231d7568fa77341927c7a5153d",
+    "applied_scope": "historical_panel_only"
+  },
+  "operations": {
+    "production_started": false,
+    "production_arrays_opened_by_h1": false,
+    "raw_voltage_reads": 0,
+    "gpu_work": false,
+    "rf_holdout_access": false
+  }
+}
