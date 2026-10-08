@@ -1,0 +1,230 @@
+{
+  "all_passed": true,
+  "cases": [
+    {
+      "actual": {
+        "edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6000000000000001,
+          0.8,
+          1.0
+        ],
+        "first_low": 8.0,
+        "high": [
+          6,
+          4,
+          2
+        ],
+        "high_start": 2,
+        "hist": [
+          10,
+          8,
+          6,
+          4,
+          2
+        ],
+        "maximum": 1.0,
+        "occupied_top": 4,
+        "passed": true,
+        "peak_index": 0,
+        "retained_count": 30,
+        "tail_mean": 4.0,
+        "tail_std": 1.632993161855452,
+        "undefined_reason": null,
+        "value": 2.449489742783178
+      },
+      "expected_hist": [
+        10,
+        8,
+        6,
+        4,
+        2
+      ],
+      "expected_pass": true,
+      "expected_value": 2.449489742783178,
+      "name": "manual_finite_pass",
+      "ok": true
+    },
+    {
+      "actual": {
+        "edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6000000000000001,
+          0.8,
+          1.0
+        ],
+        "first_low": 18.0,
+        "high": [
+          2,
+          1,
+          2
+        ],
+        "high_start": 2,
+        "hist": [
+          20,
+          18,
+          2,
+          1,
+          2
+        ],
+        "maximum": 1.0,
+        "occupied_top": 4,
+        "passed": false,
+        "peak_index": 0,
+        "retained_count": 43,
+        "tail_mean": 1.6666666666666667,
+        "tail_std": 0.4714045207910317,
+        "undefined_reason": null,
+        "value": 34.648232278140824
+      },
+      "expected_hist": [
+        20,
+        18,
+        2,
+        1,
+        2
+      ],
+      "expected_pass": false,
+      "expected_value": 34.648232278140824,
+      "name": "manual_finite_fail",
+      "ok": true
+    },
+    {
+      "actual": {
+        "passed": false,
+        "undefined_reason": "empty_after_finite_filter",
+        "value": null
+      },
+      "expected_undefined_reason": "empty_after_finite_filter",
+      "name": "empty",
+      "ok": true
+    },
+    {
+      "actual": {
+        "passed": false,
+        "undefined_reason": "negative_retained_value",
+        "value": null
+      },
+      "expected_undefined_reason": "negative_retained_value",
+      "name": "negative",
+      "ok": true
+    },
+    {
+      "actual": {
+        "edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6000000000000001,
+          0.8,
+          1.0
+        ],
+        "high": [
+          2,
+          2,
+          2
+        ],
+        "high_start": 2,
+        "hist": [
+          10,
+          8,
+          2,
+          2,
+          2
+        ],
+        "maximum": 1.0,
+        "occupied_top": 4,
+        "passed": false,
+        "peak_index": 0,
+        "retained_count": 24,
+        "undefined_reason": "zero_or_nonfinite_tail_std",
+        "value": null
+      },
+      "expected_undefined_reason": "zero_or_nonfinite_tail_std",
+      "name": "zero_tail_variance",
+      "ok": true
+    },
+    {
+      "actual_pass": false,
+      "expected_pass": false,
+      "input_scalar": 5.0,
+      "name": "strict_threshold_exactly_five",
+      "ok": true
+    },
+    {
+      "core": {
+        "edges": [
+          0.0,
+          0.2,
+          0.4,
+          0.6000000000000001,
+          0.8,
+          1.0
+        ],
+        "first_low": 8.0,
+        "high": [
+          6,
+          4,
+          2
+        ],
+        "high_start": 2,
+        "hist": [
+          10,
+          8,
+          6,
+          4,
+          2
+        ],
+        "maximum": 1.0,
+        "occupied_top": 4,
+        "passed": true,
+        "peak_index": 0,
+        "retained_count": 30,
+        "tail_mean": 4.0,
+        "tail_std": 1.632993161855452,
+        "undefined_reason": null,
+        "value": 2.449489742783178
+      },
+      "expected": "histogram or definedness changes because every edge is rescaled to the new maximum",
+      "name": "dynamic_max_outlier_changes_construction",
+      "ok": true,
+      "with_outlier": {
+        "edges": [
+          0.0,
+          2.0,
+          4.0,
+          6.0,
+          8.0,
+          10.0
+        ],
+        "high": [
+          1
+        ],
+        "high_start": 1,
+        "hist": [
+          30,
+          0,
+          0,
+          0,
+          1
+        ],
+        "maximum": 10.0,
+        "occupied_top": 1,
+        "passed": false,
+        "peak_index": 0,
+        "retained_count": 31,
+        "undefined_reason": "zero_or_nonfinite_tail_std",
+        "value": null
+      }
+    }
+  ],
+  "n_edges": 6,
+  "n_histogram_bins": 5,
+  "numpy_std_ddof": 0,
+  "production_helper_imported": false,
+  "schema": "noise-cutoff-independent-fixture-receipt-v1"
+}

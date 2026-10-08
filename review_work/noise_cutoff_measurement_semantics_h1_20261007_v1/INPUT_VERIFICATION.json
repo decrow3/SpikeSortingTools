@@ -1,0 +1,89 @@
+{
+  "all_integrity_checks_pass": true,
+  "audit_packet": {
+    "complete_binds_manifest": true,
+    "complete_manifest_sha256": "7c669a036277a7658d9a1d2380873dfe3a52e2febf21df8c772012e5cea233f5",
+    "manifest_sha256": "7c669a036277a7658d9a1d2380873dfe3a52e2febf21df8c772012e5cea233f5",
+    "member_count": 16,
+    "member_failures": []
+  },
+  "census_packet": {
+    "complete_binds_manifest": true,
+    "complete_manifest_sha256": "022ad0e1c558a283a97cabe7f27aaa318701bc228197ea7819ae75bcae2f1028",
+    "manifest_sha256": "022ad0e1c558a283a97cabe7f27aaa318701bc228197ea7819ae75bcae2f1028",
+    "member_count": 16,
+    "member_failures": []
+  },
+  "census_scalar_check": {
+    "arm_A_minus_REF_failure_gap": {
+      "imec0": 0.13902753895123054,
+      "imec1": 0.08877198750616477
+    },
+    "cross_arm_identity_assumed": false,
+    "duplicate_probe_arm_unit_keys": 0,
+    "in_domain_groups": {
+      "imec0/A": {
+        "finite_fail": 434,
+        "finite_fail_prevalence_all_units": 0.664624808575804,
+        "finite_pass": 195,
+        "undefined": 24,
+        "units": 653
+      },
+      "imec0/REF": {
+        "finite_fail": 308,
+        "finite_fail_prevalence_all_units": 0.5255972696245734,
+        "finite_pass": 273,
+        "undefined": 5,
+        "units": 586
+      },
+      "imec1/A": {
+        "finite_fail": 401,
+        "finite_fail_prevalence_all_units": 0.7251356238698011,
+        "finite_pass": 135,
+        "undefined": 17,
+        "units": 553
+      },
+      "imec1/REF": {
+        "finite_fail": 287,
+        "finite_fail_prevalence_all_units": 0.6363636363636364,
+        "finite_pass": 159,
+        "undefined": 5,
+        "units": 451
+      }
+    },
+    "rows": 2766,
+    "saved_full_pass_mismatches": 0
+  },
+  "new_h5_output": false,
+  "raw_voltage_bytes_read": 0,
+  "saved_data_check": {
+    "all_amplitude_distributions_unavailable": true,
+    "amplitude_distribution_rows": [
+      {
+        "arm": "A",
+        "column_available": "False",
+        "note": "not saved in per-unit table; only derived cutoff is present",
+        "probe": "imec0"
+      },
+      {
+        "arm": "REF",
+        "column_available": "False",
+        "note": "not saved in per-unit table; only derived cutoff is present",
+        "probe": "imec0"
+      },
+      {
+        "arm": "A",
+        "column_available": "False",
+        "note": "not saved in per-unit table; only derived cutoff is present",
+        "probe": "imec1"
+      },
+      {
+        "arm": "REF",
+        "column_available": "False",
+        "note": "not saved in per-unit table; only derived cutoff is present",
+        "probe": "imec1"
+      }
+    ]
+  },
+  "schema": "noise-cutoff-input-verification-v1"
+}

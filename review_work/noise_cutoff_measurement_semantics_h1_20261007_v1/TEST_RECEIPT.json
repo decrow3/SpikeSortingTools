@@ -1,0 +1,17 @@
+{
+  "schema": "noise-cutoff-measurement-semantics-test-receipt-v1",
+  "python": "3.11.9",
+  "numpy": "1.26.4",
+  "commands": [
+    "python review_work/noise_cutoff_measurement_semantics_h1_20261007_v1/independent_fixture.py",
+    "python review_work/noise_cutoff_measurement_semantics_h1_20261007_v1/verify_inputs.py",
+    "python -m py_compile review_work/noise_cutoff_measurement_semantics_h1_20261007_v1/independent_fixture.py review_work/noise_cutoff_measurement_semantics_h1_20261007_v1/verify_inputs.py"
+  ],
+  "fixture_cases": 7,
+  "fixture_all_passed": true,
+  "input_integrity_all_passed": true,
+  "py_compile_passed": true,
+  "raw_voltage_bytes_read": 0,
+  "new_h5_output": false,
+  "rf_or_holdout_access": false
+}

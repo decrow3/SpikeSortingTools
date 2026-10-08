@@ -1,0 +1,15 @@
+artifact_or_field,grain,available,what_it_can_validate,what_it_cannot_validate,verdict
+noise_cutoff,unit/full subset,yes,"saved scalar status and margin to threshold","histogram construction; invalid-input filtering; bin occupancy; tail mean/std",insufficient_for_construction
+noise_cutoff_pass,unit/full subset,yes,"downstream strict-threshold consistency against saved scalar","source construction or amplitude completeness",insufficient_for_construction
+q0_noise_cutoff,unit/q0 subset,yes,"saved state-subset scalar status","state-subset histogram construction; common amplitude support",insufficient_for_construction
+displaced_noise_cutoff,unit/displaced subset,yes,"saved state-subset scalar status","state-subset histogram construction; common amplitude support",insufficient_for_construction
+num_spikes,unit/full subset,yes,"unit count stratum and association checks","finite retained amplitude count; histogram occupancy",partial
+q0_spikes,unit/q0 subset,yes,"downstream >=100 state eligibility and count association","finite retained amplitude count; histogram occupancy",partial
+displaced_spikes,unit/displaced subset,yes,"downstream >=100 state eligibility and count association","finite retained amplitude count; histogram occupancy",partial
+amplitude_distribution,unit/subset,no,none,"direct reconstruction and alternative fixed-support checks",missing
+histogram_counts_and_edges,unit/subset,no,none,"exact scalar reconstruction and bin-support audit",missing
+finite_negative_and_max_diagnostics,unit/subset,no,none,"invalid-input reason and retained denominator",missing
+peak_tail_first_low_diagnostics,unit/subset,no,none,"branch/undefined-reason verification and count-dependence attribution",missing
+in_memory_bootstrap_amp_hist,unit/block/state,no,"corroborating source shows this existed during evaluation","published packet does not retain it; cannot audit executed values",missing
+exact_executed_evaluator_bytes,run,no,"would bind semantics to accepted execution","nearby source cannot prove exact accepted behavior",missing
+corroborating_evaluator_snapshot,run,yes,"plausible measurement DAG and fixture target","exact executed semantics",corroborating_only

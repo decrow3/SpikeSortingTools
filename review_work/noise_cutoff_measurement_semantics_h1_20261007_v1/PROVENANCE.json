@@ -1,0 +1,33 @@
+{
+  "schema": "noise-cutoff-measurement-semantics-provenance-v1",
+  "owner": "H1",
+  "host": "huklaban1",
+  "recommendation": "NON_DECISIVE",
+  "frozen_contract_sha256": "6e5ab489da048d376fd204794cbedc55dc17bf345a8aa89e2ea54f353e34037d",
+  "input_packets": {
+    "noise_cutoff_interpretation_audit_h1_20261007_v1": "7c669a036277a7658d9a1d2380873dfe3a52e2febf21df8c772012e5cea233f5",
+    "post_sort_structure_census_h5_20261007_v1": "022ad0e1c558a283a97cabe7f27aaa318701bc228197ea7819ae75bcae2f1028"
+  },
+  "declared_accepted_evaluator": {
+    "commit": "ba21bc97ad177ba5f2a1b79fb69d37f4f3eac3ad",
+    "sha256": "415f29d7f26102606143d0bd4fbb8ed9a136199a6642e664d50c2a6716b7c423",
+    "exact_bytes_located": false,
+    "configured_remote_fetch_result": "not our ref"
+  },
+  "corroborating_snapshot": {
+    "sha256": "a31f1349854eff0e4c732063993be37e8cf53de5d206628f66d68a65ff7f341e",
+    "substituted_for_exact_source": false
+  },
+  "fixture_source_sha256": "58740e9b8ae252713199aa28b3d460ed65e81a5533e150c2ed21ecca9492a48e",
+  "fixture_receipt_sha256": "a4cf5da932ba77719630733b511ad09bfcc0df4faf8cc04e70e56667a5d0df7e",
+  "verification_source_sha256": "c607714346e318a51a11a2eb17f9b408353adfc76bb69a70dc56eef574682fb9",
+  "input_verification_sha256": "d7500c8f48e7da77ac8bfc8953f5f96579e5af4510673f9f648d9754cb81fe63",
+  "constraints": {
+    "raw_voltage_bytes_read": 0,
+    "recording_reads": 0,
+    "new_h5_output": false,
+    "sort_started": false,
+    "rf_or_holdout_access": false,
+    "waveform_experiment": false
+  }
+}

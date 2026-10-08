@@ -1,0 +1,13 @@
+{
+  "schema": "immutable-packet-complete-v1",
+  "status": "COMPLETE_NON_DECISIVE",
+  "completed_local": "2026-10-07T22:40:33-07:00",
+  "recommendation": "NON_DECISIVE",
+  "manifest_path": "MANIFEST.json",
+  "manifest_sha256": "e1fc1f66fbffc95d39d4d7501deb0ef117b4d8cbccf705f50ec611541861edae",
+  "raw_voltage_bytes_read": 0,
+  "recording_reads": 0,
+  "new_h5_output": false,
+  "rf_or_holdout_access": false,
+  "sort_started": false
+}

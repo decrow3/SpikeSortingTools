@@ -1,0 +1,18 @@
+{
+  "schema": "immutable-packet-manifest-v1",
+  "created_local": "2026-10-07T22:40:33-07:00",
+  "packet": "noise_cutoff_measurement_semantics_h1_20261007_v1",
+  "members": [
+    {"path": "FIXTURE_RECEIPT.json", "bytes": 4653, "sha256": "a4cf5da932ba77719630733b511ad09bfcc0df4faf8cc04e70e56667a5d0df7e"},
+    {"path": "FROZEN_CONTRACT.md", "bytes": 5187, "sha256": "6e5ab489da048d376fd204794cbedc55dc17bf345a8aa89e2ea54f353e34037d"},
+    {"path": "INPUT_VERIFICATION.json", "bytes": 2685, "sha256": "d7500c8f48e7da77ac8bfc8953f5f96579e5af4510673f9f648d9754cb81fe63"},
+    {"path": "MEASUREMENT_DAG.md", "bytes": 3523, "sha256": "4b7914f53241fed19ca9e4e286896c314fc7584e88abbc1fb025ec55298f5817"},
+    {"path": "PROVENANCE.json", "bytes": 1526, "sha256": "7ed780f2eafe4cebb6cb85e660bb292a1522062f8662dd7fe360f9ac571d5be6"},
+    {"path": "RECOMMENDATION.md", "bytes": 5892, "sha256": "5fa72aadbc209ad3b6ff37e9c5fc39657cbf41703205c5d337099c3fece32d77"},
+    {"path": "SAVED_DATA_SUFFICIENCY.csv", "bytes": 2180, "sha256": "2b5e41825c9dffec120eab2822dc4e409233e1d12dc5aec6d2ac3e55b3b41df3"},
+    {"path": "SOURCE_LEDGER.csv", "bytes": 1036, "sha256": "5838c4a113809274d4559281cc5e127422fc0562acca23db34d18fd0275dea34"},
+    {"path": "TEST_RECEIPT.json", "bytes": 725, "sha256": "d6591e4a530a88ccf35e6c1cfebed0a573f7ca03a581d53174ce88bb3dc6035d"},
+    {"path": "independent_fixture.py", "bytes": 6106, "sha256": "58740e9b8ae252713199aa28b3d460ed65e81a5533e150c2ed21ecca9492a48e"},
+    {"path": "verify_inputs.py", "bytes": 5572, "sha256": "c607714346e318a51a11a2eb17f9b408353adfc76bb69a70dc56eef574682fb9"}
+  ]
+}
