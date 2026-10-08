@@ -1,0 +1,15 @@
+{
+  "host": "huklaban1",
+  "subject_contract_sha256": "db34b9b91cb3581e7592a5bb5f65651a0a34da187db50263d63786f64bde339a",
+  "subject_invocation_id": "5d18727d83bb4b378ce2f3c2967f4da1",
+  "corrects_review_manifest_sha256": "c85374eb3553f266fbf70b2ea71b52a5883b3af05c9bf0d19050043b35c92bac",
+  "corrects_review_complete_sha256": "97d9dc9533eaed8d402e22e145aeafc8c8a861b2a54b5f69f330bf56416b1e0a",
+  "source_evidence_hashes": {
+    "evidence/FINAL_STATUS.json": "090517f649200fedd481082f0ea7e38ff4236a36dafaf1d5bc46fef704d149c4",
+    "evidence/MANAGER_FINAL.json": "0e65fd887cf018571104a4efeea2d345a3b52163d212d320f5a7270a5cab4eb0",
+    "evidence/OUTER_LAUNCH.json": "0b1f63f46c7af367f49b03b589656cf145d5b3a69a62fce6f8e2c451dce66827",
+    "evidence/PRELAUNCH.json": "37a64ce440c7dd29a85c783d538d229d77b4913d3f88674bdfe11b5f1e039207"
+  },
+  "scope": "read-only live and terminal resource/failure review; no retry, no outcome interpretation",
+  "excluded": ["new launch", "scientific outcome", "real voltage", "RF/holdout", "D3 outcome"]
+}

@@ -1,0 +1,6 @@
+{
+  "complete": true,
+  "manifest_sha256": "05d09078f5d5f93ebfe6abc97932ea3b64fd84c40de145b015a03d4382a569c4",
+  "packet": "candidate3_mini_transition_v6_cpu_enforcement_failure_independent_review_h1_20261008_v1",
+  "verdict": "FAILED_RESOURCE_ENFORCEMENT_NO_RETRY"
+}

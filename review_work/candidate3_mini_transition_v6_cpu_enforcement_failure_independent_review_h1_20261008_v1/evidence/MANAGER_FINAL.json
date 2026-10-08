@@ -1,0 +1,23 @@
+{
+  "exit_code": "exited",
+  "exit_status": "241",
+  "final_status_present": true,
+  "finished_at": "2026-10-08T08:26:11.917027+00:00",
+  "manager": {
+    "ActiveState": "deactivating",
+    "CPUUsageNSec": "11925223335000",
+    "ExecMainCode": "1",
+    "ExecMainExitTimestamp": "Thu 2026-10-08 01:26:11 PDT",
+    "ExecMainStartTimestamp": "Thu 2026-10-08 01:14:51 PDT",
+    "ExecMainStatus": "241",
+    "InvocationID": "5d18727d83bb4b378ce2f3c2967f4da1",
+    "LoadState": "loaded",
+    "MainPID": "0",
+    "MemoryCurrent": "95911936",
+    "NRestarts": "0",
+    "Result": "exit-code",
+    "SubState": "stop-post"
+  },
+  "service_result": "exit-code",
+  "state": "manager_final"
+}

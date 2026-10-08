@@ -1,0 +1,33 @@
+{
+  "cgroup_live_observation_before_stop": {
+    "app_slice_subtree_control": "memory pids",
+    "control_group": "/user.slice/user-1000.slice/user@1000.service/app.slice/candidate3-mini-transition-v6.service",
+    "cpu_max_exists": false,
+    "cpu_stat_usage_usec": 11292821820,
+    "pids_current": 63,
+    "systemctl_cpu_quota_per_sec_usec": "8s",
+    "systemctl_status_cpu": "3h 6min 26.765s",
+    "systemctl_status_elapsed": "10min"
+  },
+  "derived_terminal_cpu_accounting": {
+    "approx_elapsed_seconds_prelaunch_to_final": 680.249636,
+    "average_cpu_cores": 17.53067779223332,
+    "configured_max_cpu_seconds_at_8_cores": 5441.997088,
+    "observed_cpu_seconds": 11925.237187,
+    "observed_over_configured_factor": 2.191334724029165
+  },
+  "terminal": {
+    "active_state": "failed",
+    "exec_main_exit_timestamp": "Thu 2026-10-08 01:26:11 PDT",
+    "exec_main_start_timestamp": "Thu 2026-10-08 01:14:51 PDT",
+    "exec_main_status": 241,
+    "final_stage": "transition",
+    "final_state": "failed",
+    "invocation_id": "5d18727d83bb4b378ce2f3c2967f4da1",
+    "manager_cpu_usage_nsec": 11925223335000,
+    "nrestarts": 0,
+    "result": "exit-code",
+    "transition_returncode": -15
+  },
+  "verdict": "FAILED_RESOURCE_ENFORCEMENT_NO_RETRY"
+}
