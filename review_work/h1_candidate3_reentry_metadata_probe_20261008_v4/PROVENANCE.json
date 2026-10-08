@@ -1,0 +1,18 @@
+{
+  "schema": "h1-candidate3-reentry-metadata-probe-provenance-v4",
+  "created_at": "2026-10-08T04:01:00-07:00",
+  "host": "huklaban1",
+  "branch": "codex/motionqc-phase1",
+  "v1_commit": "ac78a0e",
+  "v1_independent_review_manifest_sha256": "9c9142db34fb7fba6f54973d9d2009eb27bb9710e535dd5549e8a4762c1b223f",
+  "v2_commit": "45401a0",
+  "v3_commit": "7d49afb",
+  "v3_independent_finding": "NO_GO_CONCURRENT_INVOCATIONS_CAN_SPAWN_DUPLICATE_WORKERS",
+  "v4_contract_sha256": "80d4e2944b2a81654c1f66441434092a1927db3e30eeb1fa92094d3ef71f4676",
+  "v4_runner_sha256": "64c4ef0cb7a19e44cf31409c4757ac84b66cb4a69a41fe21ecd72f591055d165",
+  "v4_tests_sha256": "ebf12b0a042a8fa03f07bb05d2311680ac7d7b5f6495def02aff7979620c547c",
+  "v4_delta": "Install and preserve an atomic source/contract/snapshot-bound attempt claim before any placement check or worker spawn; bind receipt to claim; add sequential and simultaneous ownership fixtures.",
+  "live_runner_executed": false,
+  "new_live_mount_lookup": false,
+  "mutations": "local v4 source, contract, tests and compact packet files only; no process/service/mount/H5/voltage/recording/sort mutation"
+}

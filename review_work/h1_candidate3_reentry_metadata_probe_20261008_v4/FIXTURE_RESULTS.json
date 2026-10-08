@@ -1,0 +1,14 @@
+{
+  "schema": "h1-candidate3-reentry-metadata-probe-fixture-results-v4",
+  "run_at": "2026-10-08T04:01:00-07:00",
+  "command": "pytest -q testing/test_h1_candidate3_reentry_metadata_probe_v4.py",
+  "result": "16 passed in 0.16s",
+  "exit_code": 0,
+  "live_runner_executed": false,
+  "new_v4_coverage": [
+    "permanent atomic claim prevents a second sequential attempt owner",
+    "two simultaneous claim attempts yield exactly one owner and one blocked result"
+  ],
+  "retained_coverage": "All exact metadata, negative, timeout/reap, placement/binding, and no-overwrite fixtures remain passing.",
+  "limitation": "Local fixtures do not establish live mount recovery, future syscall interruptibility, or host readiness."
+}
