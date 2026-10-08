@@ -1,0 +1,75 @@
+{
+  "schema": "corrected-common-support-correspondence-independent-review-v1",
+  "reviewer": "H1",
+  "reviewed_at": "2026-10-07T18:56:07-07:00",
+  "verdict": "GO_DESCRIPTIVE_COMMON_SUPPORT_WITH_SCOPE_LIMITS",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/motion_diagnosis_saved_correspondence_common_support_repair_h5_20261007_v2",
+  "identities": {
+    "publication_manifest_sha256": "1772634b8d5b90d278efc7c6a12ee9ac585e1fe83412a73b0a9d9f9882ac82c0",
+    "publication_complete_sha256": "692a9b9637bd3e1d06a0e20ed771ae55399c3edebdabe1be578b39652e9e7f91",
+    "result_manifest_sha256": "5972d47773ab668e67b8b32194f5b5d027b3eec669ab15da15ae248e042a698c",
+    "result_complete_sha256": "d9f7250efc97ca0baf7f1c165bb0446bc2e68b34aada6d56564bbd93ff5dcf1e",
+    "contract_sha256": "350b8ec1a695f757d49c19789551a0ed356d2014f399f770c2d56c4204480463",
+    "executed_source_sha256": "3e40224aaed11429725c1c081ed68b5cbd3debf9c7c518128345b2e860ff0728"
+  },
+  "integrity": {
+    "publication_members_verified": 22,
+    "result_members_verified": 9,
+    "manifest_failures": 0,
+    "mode_rows": 2280,
+    "excess_rows": 1140,
+    "opportunity_rows": 1140,
+    "partner_rows": 18586,
+    "duplicate_primary_keys": 0,
+    "denominator_mismatches": 0,
+    "arithmetic_closure_failures": 0,
+    "partner_closure_failures": 0
+  },
+  "independent_fixture": {
+    "published_tests": "5 passed in 2.85s",
+    "brute_force_randomized_cases": 500,
+    "brute_force_failures": 0
+  },
+  "headline": {
+    "imec0": {
+      "above_all_four_nulls": 121,
+      "evaluable_unit_states": 124
+    },
+    "imec1": {
+      "above_all_four_nulls": 110,
+      "evaluable_unit_states": 115
+    }
+  },
+  "weighted_A_candidate_coverage": {
+    "imec0": {
+      "observed_by_shift_ms": {"-100": 0.45312830354383854, "-50": 0.42893154390599403, "50": 0.42752045193216137, "100": 0.4510450208786972},
+      "null_by_shift_ms": {"-100": 0.07118848970785152, "-50": 0.07197545844513185, "50": 0.07230133367836941, "100": 0.07185502744910648}
+    },
+    "imec1": {
+      "observed_by_shift_ms": {"-100": 0.8404813876587666, "-50": 0.8297190671629919, "50": 0.8281751070630307, "100": 0.8383449690632961},
+      "null_by_shift_ms": {"-100": 0.16855950627132818, "-50": 0.16937630577031168, "50": 0.16983798130626976, "100": 0.16870484950754944}
+    }
+  },
+  "intended_delta_check": {
+    "common_input_paths_with_equal_hashes": 105,
+    "common_input_hash_mismatches": 0,
+    "selected_units_equal": true,
+    "sampling_rates_equal": true,
+    "field_audits_equal": true,
+    "null_shifts_equal": true,
+    "full_REF_denominators_equal": true
+  },
+  "correction": {
+    "superseded_review": "motion_diagnosis_saved_correspondence_repair_final_review_20261007_v1_h1",
+    "superseded_claim": "historical result used a valid same-support chance control",
+    "replacement": "historical result is arithmetic only; this corrected common-support v2 packet is the reviewed chance-comparable descriptive result"
+  },
+  "limitations": [
+    "four fixed shifts are descriptive controls, not a sampled null distribution or significance test",
+    "selected cohort and evaluable unit-state fractions are not whole-sort prevalence",
+    "full saved-array recomputation was not performed on H1",
+    "exact field-loader dependency is hash-bound but absent from the publication"
+  ],
+  "can_establish": "Corrected descriptive candidate correspondence above each of four fixed comparable-opportunity temporal controls for nearly all evaluable selected unit-state groups.",
+  "cannot_establish": "Biological identity or purity, recovered spikes, true extras or bad merges, whole-sort prevalence, causal mechanism, intervention benefit, sorting superiority, statistical significance, RF, or holdout performance."
+}

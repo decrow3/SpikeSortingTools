@@ -1,0 +1,7 @@
+{
+  "schema": "immutable-review-complete-v1",
+  "status": "complete",
+  "completed_at": "2026-10-07T18:56:07-07:00",
+  "manifest_sha256": "9e7e4e00986f50b8c3be486115bf64ed1f94cfbf69c7f915e81ff6ffe95a0f58",
+  "verdict": "GO_DESCRIPTIVE_COMMON_SUPPORT_WITH_SCOPE_LIMITS"
+}

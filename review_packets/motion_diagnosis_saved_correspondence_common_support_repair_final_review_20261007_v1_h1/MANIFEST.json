@@ -1,0 +1,15 @@
+{
+  "schema": "immutable-review-manifest-v1",
+  "created_at": "2026-10-07T18:56:07-07:00",
+  "packet": "motion_diagnosis_saved_correspondence_common_support_repair_final_review_20261007_v1_h1",
+  "files": {
+    "FINAL_REVIEW.md": {
+      "sha256": "c31053ef0687ecb06f460a2a0eaeb921892f9ad6362017297e85759737e808dc",
+      "size_bytes": 8602
+    },
+    "VERDICT.json": {
+      "sha256": "16a655cef8e267962ead42f729e61ee8f9107577b0eeb1e7e54a6ff83bfcb355",
+      "size_bytes": 3769
+    }
+  }
+}
