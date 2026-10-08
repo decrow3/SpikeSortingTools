@@ -1,0 +1,19 @@
+{
+  "schema": "h1-candidate3-reentry-metadata-probe-fixture-results-v1",
+  "run_at": "2026-10-08T03:46:00-07:00",
+  "command": "pytest -q testing/test_h1_candidate3_reentry_metadata_probe.py",
+  "result": "8 passed in 0.10s",
+  "exit_code": 0,
+  "live_runner_executed": false,
+  "coverage": [
+    "exact local packet metadata passes without opening member content",
+    "extra member fails closed",
+    "wrong member size fails closed",
+    "symlink member fails closed",
+    "bounded worker success exits and is reaped",
+    "bounded worker timeout is killed and reaped",
+    "receipt is written atomically",
+    "probe function contains no member-content read call"
+  ],
+  "limitation": "Local fixtures validate implementation behavior but do not establish live mount recovery, kernel interruptibility of a future blocked syscall, or H1 launch readiness."
+}
