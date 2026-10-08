@@ -1,0 +1,6 @@
+{
+  "complete": false,
+  "packet": "candidate3_mini_e2e_stage_capability_h1_20261008_v1",
+  "manifest_sha256": "071399d8c2a1cd4be455346bc8f56d0df15d3509474d17d1d37eff6bd4ccfe88",
+  "verdict": "FAILED_PRESERVED_MOTION_CELL_TAIL_UNCOVERED"
+}

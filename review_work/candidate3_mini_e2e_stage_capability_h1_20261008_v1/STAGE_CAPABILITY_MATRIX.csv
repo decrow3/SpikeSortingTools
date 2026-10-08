@@ -1,0 +1,11 @@
+arm,stage,operational_definition,status,evidence,limitation
+exact_A,input,manifest-bound accepted remapped int16 recording,saved,INPUT_BINDINGS.json and accepted H5 binary hash,H5-local
+exact_A,detection,pre-extraction threshold/candidate event bank,unavailable,A metadata README explicitly calls bank unavailable,cannot attribute earliest divergence
+exact_A,matching,per-candidate template scores/accepted matches before final export,unavailable,no bound matching intermediate found,final spike_times does not reconstruct candidates
+exact_A,assignment,event-to-template label before refinement,qualified_replay_only,final spike_templates.npy is saved,final export cannot prove pre-refinement membership
+exact_A,refinement,construction memberships and label transforms to final clusters,unavailable,only final spike_clusters/templates/ops bound,no saved membership transitions
+candidate3,input,ExactLatticeRemap plus Kilosort prewhitening float boundary,unavailable,pending this frozen mini execution,synthetic capability only
+candidate3,detection,initial peeling event HDF5 and reload,unavailable,pending this frozen mini execution,no agreement with A implied
+candidate3,matching,matching HDF5 with template lineage and reload,unavailable,pending this frozen mini execution,availability depends on native mini run
+candidate3,assignment,event-aligned template/label arrays,unavailable,pending this frozen mini execution,must preserve noise/ambiguous labels
+candidate3,refinement,saved intermediate label snapshots and final lineage,unavailable,pending this frozen mini execution,must report unavailable stages honestly

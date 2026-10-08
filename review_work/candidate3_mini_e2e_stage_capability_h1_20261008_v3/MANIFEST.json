@@ -1,0 +1,11 @@
+{
+  "packet": "candidate3_mini_e2e_stage_capability_h1_20261008_v3",
+  "files": {
+    "ACCOUNTING.json": "82a66a284c01358d9f5d700cd8ed6d9382725d2542abef63ecfa43c3a0fc20f8",
+    "ACCOUNTING.npz": "18264b0c2653b72b7c0402f00ed5e6061e26eb1288b77590524ed04e768c82eb",
+    "FROZEN_CONTRACT.md": "8a5b434a7f3ae2494306ba6ad59bb7aa7352706602cdebfea55262da88d1e438",
+    "PROVENANCE.json": "6de3d4a29554f4b583b9d778c39e4ab0ddfa66a7a86f8c19a870dc7750a6272c",
+    "REPORT.md": "089acd72c4fde162eb1a83a26f7f1475223f504fd6731a732fde362c5b02fbc6",
+    "STAGE_CAPABILITY_MATRIX.csv": "7c674872cfb5932a1f646a28e5907e94d7b16a7adf96b2f56dd9b88bc3f89978"
+  }
+}

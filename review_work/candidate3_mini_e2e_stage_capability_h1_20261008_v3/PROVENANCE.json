@@ -1,0 +1,23 @@
+{
+  "packet": "candidate3_mini_e2e_stage_capability_h1_20261008_v3",
+  "host": "huklaban1",
+  "active_plan_sha256": "c26d63dfe9ae94312485d57ec99f1a3c4d7d089806b84485099d4afb4f12554f",
+  "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+  "ordinary_input_sha256": "290221b1b91e5a5110ee845c5e42d044b6f2d7b3eb85564554d9c3cd624d3523",
+  "transition_input_sha256": "dc78516734e154e45bec8f29f8f757bff904bbd32938fe0a2e0d1767f41a46f2",
+  "truth_sha256": "0525b9838e98b07e210876a12f957573996fce5a11c21ce05bf49bdb8a3a9dc9",
+  "input_receipt_sha256": "5f4dd3354c0257449cef69493c5b669a6390b7283080316c9445df2a77622fa3",
+  "adapter_source_sha256": "0125394629af7bffc6d46a5c26903efd65cd244f30000ae45d3cfa8324abea3a",
+  "kilosort_io_source_sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+  "ordinary_scratch": "/tmp/candidate3_mini_e2e_20261008_v3/runs/ordinary",
+  "ordinary_scratch_bytes": 128223957,
+  "input_scratch_bytes": 57085352,
+  "transition_run": "not started: ordinary exceeded frozen 120 MB bound",
+  "predecessors": {
+    "v1": "failed preserved: motion cell tail uncovered",
+    "v2": "failed preserved: threshold config with default subtraction dispatch"
+  },
+  "accepted_voltage_read": false,
+  "gpu_used": false,
+  "rf_or_holdout_access": false
+}

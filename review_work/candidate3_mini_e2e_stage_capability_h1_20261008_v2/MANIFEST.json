@@ -1,0 +1,9 @@
+{
+  "packet": "candidate3_mini_e2e_stage_capability_h1_20261008_v2",
+  "status": "FAILED_PRESERVED",
+  "files": {
+    "FAILED.md": "58dd5e457041ec1d0ab99b692d155762ddefccff64feeadd41c849c07d66850c",
+    "FROZEN_CONTRACT.md": "51b2948102e2b1e57ce8a6c6dc7e9df6e03fdb139e523df30eb74efbaf6a1fa3",
+    "STAGE_CAPABILITY_MATRIX.csv": "892fd129d3697384a167026522466ed19a8069c69de3dd0c51959de3009126f6"
+  }
+}

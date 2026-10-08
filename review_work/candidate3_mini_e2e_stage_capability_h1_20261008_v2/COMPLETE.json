@@ -1,0 +1,6 @@
+{
+  "complete": false,
+  "packet": "candidate3_mini_e2e_stage_capability_h1_20261008_v2",
+  "manifest_sha256": "50c101dfbfeb833e559327fc9c431d179d6cf96f8883a755242fc4ce6d0bd51a",
+  "verdict": "FAILED_PRESERVED_DETECTION_TYPE_DISPATCH"
+}

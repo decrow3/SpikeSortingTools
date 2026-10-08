@@ -1,0 +1,41 @@
+{
+  "schema": "hub-coordinator-status-v1",
+  "host": "huklaban1",
+  "owner": "H1",
+  "task_id": "candidate3_mini_e2e_stage_capability_h1_20261008_v3",
+  "status": "ORDINARY_V3_RUNNING_DO_NOT_INTERRUPT",
+  "observed_local": "2026-10-08T00:15:22-07:00",
+  "whole_stage_restart_author": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_whole_stage_restart_actual_path_h1_20261008_v2",
+    "manifest_sha256": "ad5ae1d0eef0977d25109c2030d67e972238a8de54202b246b7a9661dd9d7cdf",
+    "complete_sha256": "041e54efa34ec91451a98517a89332289ffd4c0dad14ca9143e97904109627ab",
+    "verdict": "GO_WHOLE_STAGE_RESTART_FALLBACK"
+  },
+  "whole_stage_restart_review": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_whole_stage_restart_actual_path_independent_review_h1_20261008_v1",
+    "manifest_sha256": "518307b8f5b412d4c973472919dce8415ef0f285c68db70479f5c88610325f18",
+    "complete_sha256": "fcbae063f28efcb194cd8e2c598a1b148c90b04e40a826dc85c2aad2e5e98be5",
+    "verdict": "GO_SCOPED_WHOLE_STAGE_RESTART_FALLBACK"
+  },
+  "ordinary_v3": {
+    "tool_session_id": 24075,
+    "contract": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/review_work/candidate3_mini_e2e_stage_capability_h1_20261008_v3/FROZEN_CONTRACT.md",
+    "contract_sha256": "8a5b434a7f3ae2494306ba6ad59bb7aa7352706602cdebfea55262da88d1e438",
+    "source": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/candidate3_mini_e2e_stage_capability.py",
+    "source_sha256": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a",
+    "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+    "input_receipt": "/tmp/candidate3_mini_e2e_20261008_v2/inputs/INPUT_RECEIPT.json",
+    "input_receipt_sha256": "5f4dd3354c0257449cef69493c5b669a6390b7283080316c9445df2a77622fa3",
+    "ordinary_input_sha256": "290221b1b91e5a5110ee845c5e42d044b6f2d7b3eb85564554d9c3cd624d3523",
+    "truth_sha256": "0525b9838e98b07e210876a12f957573996fce5a11c21ce05bf49bdb8a3a9dc9",
+    "output": "/tmp/candidate3_mini_e2e_20261008_v3/runs/ordinary",
+    "observed_progress": "threshold.h5, initial_labels.npy, refined0_0_pcmerge__labels.npy present; downstream native stage still running",
+    "wall_stop": "45 minutes from launch",
+    "latest_expected_completion_local": "2026-10-08T00:55:30-07:00",
+    "voltage": "synthetic only; no accepted voltage",
+    "gpu": "not used"
+  },
+  "active_plan_sha256": "c26d63dfe9ae94312485d57ec99f1a3c4d7d089806b84485099d4afb4f12554f",
+  "d3": "DEFERRED",
+  "idle": false
+}

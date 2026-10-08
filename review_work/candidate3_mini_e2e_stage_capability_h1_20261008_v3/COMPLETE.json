@@ -1,0 +1,6 @@
+{
+  "complete": true,
+  "packet": "candidate3_mini_e2e_stage_capability_h1_20261008_v3",
+  "manifest_sha256": "31114d69be1871d5f0ca44078c34c5bef69e527a9d558188a748dde8cf58fb45",
+  "verdict": "PARTIAL_GO_ORDINARY_END_TO_END_TRANSITION_STOPPED_RESOURCE_BOUND"
+}

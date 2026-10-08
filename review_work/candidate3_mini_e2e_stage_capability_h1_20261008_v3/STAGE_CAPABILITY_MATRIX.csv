@@ -1,0 +1,11 @@
+arm,stage,operational_definition,status,evidence,limitation
+exact_A,input,manifest-bound accepted remapped int16 recording,saved,INPUT_BINDINGS.json and accepted H5 binary hash,H5-local
+exact_A,detection,pre-extraction threshold/candidate event bank,unavailable,A metadata README explicitly calls bank unavailable,cannot attribute earliest divergence
+exact_A,matching,per-candidate template scores/accepted matches before final export,unavailable,no bound matching intermediate found,final spike_times does not reconstruct candidates
+exact_A,assignment,event-to-template label before refinement,qualified_replay_only,final spike_templates.npy is saved,final export cannot prove pre-refinement membership
+exact_A,refinement,construction memberships and label transforms to final clusters,unavailable,only final spike_clusters/templates/ops bound,no saved membership transitions
+candidate3,input,ExactLatticeRemap plus Kilosort prewhitening float boundary,qualified_replay_only,v2 input receipt plus source and full hashes; raw synthetic arrays remain scratch,synthetic capability only
+candidate3,detection,initial peeling event HDF5 and reload,qualified_replay_only,threshold.h5 exists in retained scratch; compact all-event time/channel/initial-label snapshot and schema saved,large HDF5 not published and no agreement with A implied
+candidate3,matching,matching HDF5 with template lineage and reload,qualified_replay_only,matching1.h5 exists in retained scratch; compact all-event scores/scalings/templates/GMM/time snapshot and schema saved,large HDF5 not published
+candidate3,assignment,event-aligned template/label arrays,saved,ACCOUNTING.npz stores every ordinary-arm matching template/label row and exact mapping status,synthetic ordinary arm only
+candidate3,refinement,saved intermediate label snapshots and final lineage,saved,ACCOUNTING.npz stores all ordinary-arm label snapshots and final rows; ACCOUNTING.json stores counts,transition arm unavailable by resource stop
