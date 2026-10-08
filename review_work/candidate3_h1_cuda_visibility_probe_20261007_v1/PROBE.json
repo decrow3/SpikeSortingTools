@@ -1,0 +1,60 @@
+{
+  "schema": "candidate3-h1-cuda-visibility-probe-v1",
+  "observed_local": "2026-10-07T23:50:00-07:00",
+  "commands": [
+    "lspci -nn | rg -i 'nvidia|vga|3d'",
+    "find /dev -maxdepth 1 -name 'nvidia*' -printf '%p %m %u %g\\n' | sort",
+    "cat /proc/driver/nvidia/version",
+    "lsmod | rg '^nvidia'",
+    "cat /sys/module/nvidia/version",
+    "inspect CUDA_VISIBLE_DEVICES",
+    "nvidia-smi --query-gpu=index,pci.bus_id,name,driver_version,memory.total,memory.used --format=csv,noheader",
+    "NUMBA_CACHE_DIR=/tmp/candidate3_numba_cache /home/huklab/Documents/DARTsort/.venv/bin/python: torch build, availability, count, cuda.init"
+  ],
+  "hardware": {
+    "pci_present": true,
+    "pci_device": "0000:65:00.0 NVIDIA GA102GL RTX A5000 [10de:2231]",
+    "audio_function": "0000:65:00.1 NVIDIA GA102 High Definition Audio [10de:1aef]"
+  },
+  "kernel_driver": {
+    "loaded": true,
+    "version": "550.163.01",
+    "modules": ["nvidia", "nvidia_modeset", "nvidia_drm", "nvidia_uvm"]
+  },
+  "task_device_visibility": {
+    "dev_nvidia_nodes": [],
+    "cuda_visible_devices": "unset",
+    "nvidia_smi_exit_code": 9,
+    "nvidia_smi_result": "cannot communicate with NVIDIA driver",
+    "interpretation": "physical hardware and host kernel modules exist, but NVIDIA device nodes are absent from the actual task environment; this is device exposure/visibility, not evidence of missing hardware or an uninstalled host driver"
+  },
+  "actual_dartsort_environment": {
+    "python": "/home/huklab/Documents/DARTsort/.venv/bin/python",
+    "python_version": "3.12.4",
+    "torch_version": "2.6.0+cu124",
+    "torch_cuda_build": "12.4",
+    "cuda_is_available": false,
+    "cuda_device_count": 0,
+    "cuda_init_error": "RuntimeError: No CUDA GPUs are available"
+  },
+  "storage": {
+    "h1_root_available_bytes": 488683565056,
+    "shared_available_bytes": 59214935457792,
+    "ref_input_bytes": 241309358592,
+    "prewhitening_float32_materialization_bytes_if_used": 482618717184,
+    "historical_full_dartsort_output_bytes_approx": 111669149696
+  },
+  "runtime_reference": {
+    "historical_full_sort_total_seconds_local_merge_bias": 19203.72625522688,
+    "historical_full_sort_total_seconds_shared_recovery": 43563.603341845796,
+    "planning_range": "about 6-14 hours for sorting after input preparation, to be replaced by current-host operational timing; not a launch promise"
+  },
+  "prospective_host": {
+    "h1_full_run_ready": false,
+    "preferred_alternative": "H5 after candidate 2 and after current GPU/storage/environment checks",
+    "large_input_movement_required_if_h5": false,
+    "reason": "the accepted 241,309,358,592-byte Arm-A binary and authoritative materialization manifest are already H5-local",
+    "large_input_movement_performed": false,
+    "concurrency": "do not overlap a full candidate-3 sort with candidate 2 or another full GPU sort"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "packet": "candidate3_h1_actual_runtime_storage_probe_20261007_v1",
+  "files": {
+    "FROZEN_CONTRACT.md": "11d2f70f9347b090411c1a9a59dad9a71402deec1dabd1c06db0d2a31975e2cb",
+    "PROVENANCE.json": "8317dd3938f8a3643822c45715b1404fb98165a78e124fde5be4aee2626585fd",
+    "REPORT.md": "57ca762557113c6a96f3e95c5d0b1647f64f216b76105cb47607c4d99e3220bb",
+    "RESULT.json": "351afc7140e6a06f8710cffc879b690d8babb83aec08514b1ac585489472536b"
+  }
+}

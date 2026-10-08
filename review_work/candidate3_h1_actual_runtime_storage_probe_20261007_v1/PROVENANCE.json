@@ -1,0 +1,12 @@
+{
+  "packet": "candidate3_h1_actual_runtime_storage_probe_20261007_v1",
+  "host": "huklaban1",
+  "observed_utc": "2026-10-08T06:53:30Z",
+  "execution_context": "approved actual host context, contrasted with task sandbox",
+  "authorization": "user standing authorization plus platform-reviewed escalations",
+  "mutations": "one ephemeral four-byte GPU allocation; packet files only",
+  "large_data_read": false,
+  "large_data_written": false,
+  "service_changed": false,
+  "driver_or_device_changed": false
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "hub-coordinator-status-v1",
+  "host": "huklaban1",
+  "owner": "H1",
+  "task_id": "candidate3_h1_sequence_20261007",
+  "status": "CUDA_PROBE_COMPLETE_PREPARE_H1_BIND_FULL_RUN_TO_H5_AFTER_CANDIDATE2",
+  "observed_local": "2026-10-07T23:50:00-07:00",
+  "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h1_cuda_visibility_probe_20261007_v1",
+  "manifest_sha256": "c0ac340c7acc78ac233cf5d607da658e17b3683f7553120047ba1800e8172a24",
+  "complete_sha256": "bfe8c3de9085aa1ee35395327cda9726205f265648ef627b458d1957ad9d3d7f",
+  "probe_result": "RTX A5000 PCI hardware present and NVIDIA 550.163.01 kernel modules loaded, but actual task environment has no /dev/nvidia nodes; nvidia-smi exits 9; DARTsort torch CUDA build sees zero devices and init fails",
+  "host_plan": "continue CPU preparation on H1; bind prospective full run to H5 only after candidate 2 and refreshed DARTsort/GPU/storage/service checks",
+  "input_movement": "none planned: accepted 241309358592-byte Arm-A binary already H5-local; no files moved",
+  "runtime_storage_reference": "historical full DARTsort sort 19204-43564 s (5.3-12.1 h); plan 6-14 h pending current timing; about 120 GB output headroom, plus 482.6 GB only if float32 boundary is materialized",
+  "concurrency": "no concurrent candidate-2 and candidate-3 full GPU sorts promised or authorized",
+  "d3": "DEFERRED per HubPlanner; no further D3 repair/review started",
+  "next": "finish checkpoint fixture review and transaction design; bind exact H5 Arm-A materialization and adapter for later real snippet equality",
+  "idle": false
+}

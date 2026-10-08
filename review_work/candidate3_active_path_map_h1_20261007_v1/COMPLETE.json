@@ -1,0 +1,6 @@
+{
+  "complete": true,
+  "packet": "candidate3_active_path_map_h1_20261007_v1",
+  "manifest_sha256": "03ac17f855805d004936dc548325efd2aa7bf834f4312caf3ce44aed171d04aa",
+  "verdict": "ACTIVE_PATH_MAPPED_HOST_CHOICE_PENDING_INPUT_STORAGE"
+}

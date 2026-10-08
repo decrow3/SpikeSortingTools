@@ -1,0 +1,9 @@
+{
+  "schema": "immutable-packet-manifest-v1",
+  "created_local": "2026-10-07T23:49:15-07:00",
+  "packet": "candidate3_h1_cuda_visibility_probe_20261007_v1",
+  "members": [
+    {"path": "PROBE.json", "bytes": 2871, "sha256": "2916b8f5ef91756246709bae23f3422a2da6a5532464cb17704b8135d754aee6"},
+    {"path": "REPORT.md", "bytes": 2604, "sha256": "cf7683739ac9d08ae2ef3162e701530c38224ed5549c089bbf2ae37c12eddc5d"}
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "hub-coordinator-status-v1",
+  "host": "huklaban1",
+  "owner": "H1",
+  "task_id": "candidate3_h1_sequence_20261007",
+  "status": "ACTIVE_PATH_MAPPED_H1_GPU_GO_HOST_CHOICE_PENDING_INPUT_STORAGE",
+  "observed_utc": "2026-10-08T06:53:30Z",
+  "correction": "The earlier H1_CANDIDATE3_CUDA_PROBE_H5_HOST_PLAN receipt described only the task sandbox and incorrectly made H5 the default. Approved actual-context evidence shows H1 CUDA works; H5 is fallback pending input/storage/I/O selection.",
+  "active_path_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_active_path_map_h1_20261007_v1",
+  "active_path_manifest_sha256": "03ac17f855805d004936dc548325efd2aa7bf834f4312caf3ce44aed171d04aa",
+  "active_path_complete_sha256": "4040633ba5f7741e7b2018ab427fffb3a362e6bbd88c7050e09cdcf6f3683e77",
+  "actual_runtime_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h1_actual_runtime_storage_probe_20261007_v1",
+  "actual_runtime_manifest_sha256": "e4313b1954a14fae100de4f9da0cb65c706c829140120949514cb0ae135050a0",
+  "actual_runtime_complete_sha256": "db3bacbe47762e873f03ef2912bf763e3fc557f6f125385117e7e28f56721691",
+  "runtime_result": "Exact DARTsort venv (Python 3.12.4, Torch 2.6.0+cu124, CUDA 12.4, editable commit edcfe1b5) allocated 4 bytes on H1 RTX A5000; 22,560 MiB free at query. Sandbox zero-device result is preserved as environment-specific.",
+  "input_storage": "H1 sees the 241,309,358,592-byte REF over read-only CIFS but not the accepted H5 Arm-A materialization. H1 Data has 184,387,878,912 bytes free and root 488,675,999,744; neither fits projected 120 GB output plus 482,618,717,184-byte full float32 materialization. Avoid materialization or bind approved storage; throughput not measured.",
+  "current_jobs": "No running Candidate-3 or sorting service/process identified in approved actual service/process view; GPU had desktop clients and one unresolved 876 MiB process.",
+  "checkpoint_fixture_review": {
+    "verdict": "GO_SCOPED_FIXTURE_CONCLUSIONS",
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_checkpoint_boundary_fixtures_independent_review_h1_20261007_v1",
+    "manifest_sha256": "51aa28f087b6ea5a9e106378bae22c40cdce6e707521ec0a520db59166a0f8b7",
+    "complete_sha256": "1eb6c1d738672ca0024f80f9c19609173858be241764eb2af576cf5b732cd692"
+  },
+  "policy_ack": {
+    "coordination_agents_sha256": "b9c67db3c91c7fe83517e60cfdab327c4be7fa0579f38aabde00532ae19f1de2",
+    "divergence_plan_sha256": "a096d176e491323dc14592f70c57f7f6b12b00a60ccbab038545920977a10e08",
+    "incremental_consolidation": "acknowledged; no code movement or repo-wide cleanup performed"
+  },
+  "d3": "DEFERRED; no further work started",
+  "next": "finish focused checkpoint transaction design/repair review, then freeze the cheapest real snippet only after host input/storage route is selected",
+  "idle": false
+}

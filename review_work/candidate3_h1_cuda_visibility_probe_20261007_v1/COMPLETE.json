@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-packet-complete-v1",
+  "status": "COMPLETE_H1_DEVICE_VISIBILITY_UNAVAILABLE_H5_ALTERNATIVE",
+  "completed_local": "2026-10-07T23:49:26-07:00",
+  "manifest_path": "MANIFEST.json",
+  "manifest_sha256": "c0ac340c7acc78ac233cf5d607da658e17b3683f7553120047ba1800e8172a24",
+  "hardware_or_driver_mutation": false,
+  "large_input_movement": false,
+  "sort_launched": false
+}

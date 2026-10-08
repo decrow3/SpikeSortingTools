@@ -1,0 +1,8 @@
+{
+  "packet": "candidate3_active_path_map_h1_20261007_v1",
+  "files": {
+    "ACTIVE_PATH_MAP.md": "ce67881284900e01be083eac2288e4e6c2566335f42bb8ae287d231752f5a49f",
+    "FROZEN_SCOPE.md": "1bb684870cf150dc64f7a6ae266a1e1d473b6ae8babb49f28f82fdaa40b8488d",
+    "PROVENANCE.json": "e984a91edd44585e22bc12328433f43f4a11469e7dfc0d33d5a5a6a3f47d6f67"
+  }
+}

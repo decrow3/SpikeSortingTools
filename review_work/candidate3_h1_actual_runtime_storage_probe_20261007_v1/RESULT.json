@@ -1,0 +1,54 @@
+{
+  "verdict": "H1_GPU_RUNTIME_GO_STORAGE_AND_INPUT_ROUTE_UNRESOLVED",
+  "observed_utc": "2026-10-08T06:53:30Z",
+  "actual_runtime": {
+    "python": "/home/huklab/Documents/DARTsort/.venv/bin/python",
+    "python_sha256": "c7c1a234ed39ceef4bde5ee8d29db37f55b0f7de6339b82eff5812944ccb74da",
+    "python_version": "3.12.4",
+    "dartsort_import": "/home/huklab/Documents/DARTsort/src/dartsort/__init__.py",
+    "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+    "uv_lock_sha256": "68f3fa53642043313bc9a4e56b7fc35dbd27af81030e436ffdba82de683f5034",
+    "spikeinterface": "0.104.8",
+    "torch": "2.6.0+cu124",
+    "torch_cuda": "12.4"
+  },
+  "cuda": {
+    "available": true,
+    "device_count": 1,
+    "device_name": "NVIDIA RTX A5000",
+    "device_uuid": "GPU-8bbad931-c28e-e231-97ac-706258881575",
+    "driver": "550.163.01",
+    "memory_total_mib": 24564,
+    "memory_free_mib_at_query": 22560,
+    "tiny_allocation_device": "cuda:0",
+    "tiny_allocation_bytes": 4
+  },
+  "environment_comparison": {
+    "task_sandbox": "no /dev/nvidia* exposure; torch.cuda.is_available() false; nvidia-smi exit 9",
+    "approved_actual_context": "/dev/nvidia0, /dev/nvidiactl, /dev/nvidia-uvm and renderD128 visible; torch allocation succeeded; nvidia-smi exit 0",
+    "interpretation": "the earlier failure is a task-sandbox device-exposure limitation and does not show that the H1 host lacks a usable GPU"
+  },
+  "input_locality": {
+    "h1_ref_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+    "h1_ref_size_bytes": 241309358592,
+    "h1_ref_access": "readable regular file over read-only CIFS",
+    "accepted_h5_arm_a_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/recording/traces_cached_seg0.raw",
+    "accepted_h5_arm_a_visible_on_h1": false,
+    "consequence": "H1 can see the REF source but not the accepted H5 materialization; a real H1 snippet must bind an approved on-the-fly reconstruction/streaming adapter or an explicitly authorized input route"
+  },
+  "storage": {
+    "h1_local_root_available_bytes": 488675999744,
+    "h1_data_volume_available_bytes": 184387878912,
+    "shared_mnt_available_bytes": 59214955175936,
+    "shared_mnt_mount_mode": "read-only on H1",
+    "projected_full_output_bytes_minimum": 120000000000,
+    "projected_full_float32_materialization_bytes": 482618717184,
+    "assessment": "H1 Data can fit the projected output alone only narrowly and cannot fit output plus full float32 materialization; root also cannot fit their combined 602.6 GB. Full materialization must be avoided or a separately approved capacious writable target must be bound. No throughput benchmark was run."
+  },
+  "job_state": {
+    "candidate3_service_found": false,
+    "candidate3_process_found": false,
+    "active_compute_gpu_processes": "no identified DARTsort/Kilosort process; nvidia-smi showed desktop processes and one unresolved 876 MiB process",
+    "note": "installed historical DARTsort/Luke services exist, mostly exited or failed; the focused running-service list contained no sorting service"
+  }
+}

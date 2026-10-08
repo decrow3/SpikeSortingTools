@@ -1,0 +1,18 @@
+{
+  "packet": "candidate3_active_path_map_h1_20261007_v1",
+  "created_utc": "2026-10-07T00:00:00Z",
+  "host": "huklaban1",
+  "repo": "/home/huklab/Documents/RyanSorting/SpikeSortingTools",
+  "dartsort_checkout": "/home/huklab/Documents/DARTsort",
+  "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+  "source_packets": [
+    "candidate3_readiness_inventory_h1_20261007_v1",
+    "candidate3_readiness_inventory_independent_review_h1_20261007_v1",
+    "candidate3_checkpoint_boundary_fixtures_h1_20261007_v1",
+    "candidate3_checkpoint_boundary_fixtures_independent_review_h1_20261007_v1",
+    "candidate3_h1_cuda_visibility_probe_20261007_v1"
+  ],
+  "policy_sha256": "b9c67db3c91c7fe83517e60cfdab327c4be7fa0579f38aabde00532ae19f1de2",
+  "plan_sha256": "a096d176e491323dc14592f70c57f7f6b12b00a60ccbab038545920977a10e08",
+  "mutations": "documentation only; no voltage read, sort, service installation, or core source edit"
+}

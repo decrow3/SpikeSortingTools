@@ -1,0 +1,6 @@
+{
+  "complete": true,
+  "packet": "candidate3_h1_actual_runtime_storage_probe_20261007_v1",
+  "manifest_sha256": "e4313b1954a14fae100de4f9da0cb65c706c829140120949514cb0ae135050a0",
+  "verdict": "H1_GPU_RUNTIME_GO_STORAGE_AND_INPUT_ROUTE_UNRESOLVED"
+}

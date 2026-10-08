@@ -1,0 +1,22 @@
+{
+  "schema": "hub-coordinator-status-v1",
+  "host": "huklaban1",
+  "owner": "H1",
+  "task_id": "candidate3_h1_sequence_20261007",
+  "status": "INVENTORY_REVIEW_ACCEPTS_NOT_READY_FIXTURE_REVIEW_STARTED",
+  "observed_local": "2026-10-07T23:47:00-07:00",
+  "inventory_review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_readiness_inventory_independent_review_h1_20261007_v1",
+  "inventory_review_manifest_sha256": "a3011e203c8392cdb75513a88883823a9bd56876183019baacaeaa1dcf1a72e2",
+  "inventory_review_complete_sha256": "66c0357abdb6a7e2dde6959a95270f19fd97f3881e54c2c48d597dca0999970b",
+  "inventory_review_verdict": "CORE_NOT_READY_VERDICT_ACCEPTED_BINDING_REPAIR_REQUIRED",
+  "binding_repairs_for_real_snippet_contract": {
+    "authoritative_h5_input_bindings_sha256": "7c045a88be1819d5411534867ee717ceadf76661c3bb3ba176dd525ed5c4e3b1",
+    "arm_a_h5_binary_path": "/media/huklaban5/Data/en_rounded_field_ks129_20260929_v1/arm_a_v1/full/recording/traces_cached_seg0.raw",
+    "arm_a_binary_sha256": "672938e942d105af6b1a3f7f1bddf206939535e0e4b57bc01153472a1ccb8b69",
+    "arm_a_materialization_manifest_sha256": "ef2071c9ead186689b804f0df52ff9eb5a25cf1f4bdd610ae14e6c81cab834b2",
+    "exact_lattice_adapter_sha256": "0125394629af7bffc6d46a5c26903efd65cd244f30000ae45d3cfa8324abea3a"
+  },
+  "fixture_review": "ACK_STARTED by /root/review_d3_postrun_oracle for packet MANIFEST 96f9b81f... COMPLETE c4af65ec...",
+  "next": "finish focused fixture review; retain H1 not-ready; prepare transaction repair and bind exact H5 materialization/adapter for later real snippet equality",
+  "idle": false
+}
