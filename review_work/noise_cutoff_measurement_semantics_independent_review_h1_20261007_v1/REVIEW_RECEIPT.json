@@ -1,0 +1,94 @@
+{
+  "all_scientific_checks_passed": true,
+  "availability": {
+    "all_unavailable": true,
+    "rows": 4
+  },
+  "corroborating_source_sha256": "a31f1349854eff0e4c732063993be37e8cf53de5d206628f66d68a65ff7f341e",
+  "exact_accepted_git_object_available": false,
+  "exact_accepted_git_probe_stderr": "fatal: Not a valid object name ba21bc97ad177ba5f2a1b79fb69d37f4f3eac3ad^{commit}",
+  "fixture_receipt": {
+    "all_passed": true,
+    "checks": {
+      "manual_fail_hist": true,
+      "manual_fail_value": true,
+      "manual_pass_hist": true,
+      "manual_pass_value": true,
+      "outlier_changes_hist": true,
+      "strict_five_fails": true,
+      "undefined_branches": true
+    }
+  },
+  "input_packets": {
+    "audit": {
+      "complete_binds_manifest": true,
+      "manifest_sha256": "7c669a036277a7658d9a1d2380873dfe3a52e2febf21df8c772012e5cea233f5",
+      "member_count": 16,
+      "member_failures": [],
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_interpretation_audit_h1_20261007_v1"
+    },
+    "census": {
+      "complete_binds_manifest": true,
+      "manifest_sha256": "022ad0e1c558a283a97cabe7f27aaa318701bc228197ea7819ae75bcae2f1028",
+      "member_count": 16,
+      "member_failures": [],
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/post_sort_structure_census_h5_20261007_v1"
+    }
+  },
+  "packet_integrity": {
+    "complete_binds_manifest": true,
+    "complete_declared_manifest_sha256": "e1fc1f66fbffc95d39d4d7501deb0ef117b4d8cbccf705f50ec611541861edae",
+    "complete_mtime_after_manifest": false,
+    "complete_mtime_ns": 1791438083542658900,
+    "complete_sha256": "616e6fac5fd7131256d4be6e35db85047eb727d167b70257dead24f2078f176c",
+    "manifest_mtime_ns": 1791438083543089800,
+    "manifest_sha256": "e1fc1f66fbffc95d39d4d7501deb0ef117b4d8cbccf705f50ec611541861edae",
+    "member_count": 11,
+    "member_failures": [],
+    "missing_files": [],
+    "unexpected_files": []
+  },
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_h1_20261007_v1",
+  "scalar_table": {
+    "duplicate_keys": 0,
+    "gaps": {
+      "imec0": 0.13902753895123054,
+      "imec1": 0.08877198750616477
+    },
+    "groups": {
+      "imec0/A": {
+        "finite_fail": 434,
+        "finite_fail_prevalence_all_units": 0.664624808575804,
+        "finite_pass": 195,
+        "undefined": 24,
+        "units": 653
+      },
+      "imec0/REF": {
+        "finite_fail": 308,
+        "finite_fail_prevalence_all_units": 0.5255972696245734,
+        "finite_pass": 273,
+        "undefined": 5,
+        "units": 586
+      },
+      "imec1/A": {
+        "finite_fail": 401,
+        "finite_fail_prevalence_all_units": 0.7251356238698011,
+        "finite_pass": 135,
+        "undefined": 17,
+        "units": 553
+      },
+      "imec1/REF": {
+        "finite_fail": 287,
+        "finite_fail_prevalence_all_units": 0.6363636363636364,
+        "finite_pass": 159,
+        "undefined": 5,
+        "units": 451
+      }
+    },
+    "pass_mismatches": 0,
+    "row_count": 2766
+  },
+  "schema": "noise-cutoff-semantics-independent-review-receipt-v1",
+  "scientific_verdict": "ACCEPT_NON_DECISIVE",
+  "seal_protocol_verdict": "CAVEAT_COMPLETE_MTIME_PRECEDES_MANIFEST"
+}

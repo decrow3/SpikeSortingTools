@@ -1,0 +1,32 @@
+{
+  "created_local": "2026-10-07T22:49:24.531710-07:00",
+  "members": [
+    {
+      "bytes": 737,
+      "path": "PROVENANCE.json",
+      "sha256": "db567524092478c635109304cafb7d1bdda50840291d5e7ca55117ecb6d67768"
+    },
+    {
+      "bytes": 3224,
+      "path": "REVIEW_RECEIPT.json",
+      "sha256": "5c3da6916ed4bc95b477210762e59449434bf830ba4b83453b1f3b5d56083ed4"
+    },
+    {
+      "bytes": 7457,
+      "path": "REVIEW_REPORT.md",
+      "sha256": "aee56a4d47021cba5db7ec7b6248cdbef17aa41040475aa496d11521ccf61243"
+    },
+    {
+      "bytes": 9212,
+      "path": "review_packet.py",
+      "sha256": "b8b3cb6c3361029eeede098cbac7ccd54ab1ec120f74b39e6853b3d1b55f9c31"
+    },
+    {
+      "bytes": 2516,
+      "path": "SEAL_PACKET.py",
+      "sha256": "e6022a88991209aef2ca5a256ad7d9798aa3e86b0cab92a2947ee01befb834b1"
+    }
+  ],
+  "packet": "noise_cutoff_measurement_semantics_independent_review_h1_20261007_v1",
+  "schema": "immutable-packet-manifest-v1"
+}

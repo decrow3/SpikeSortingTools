@@ -1,0 +1,13 @@
+{
+  "completed_local": "2026-10-07T22:49:24.532888-07:00",
+  "manifest_path": "MANIFEST.json",
+  "manifest_sha256": "33ee13bfc88e523135fc41081d19d6b44277e9f86bca6e2b9e165f7db295cec7",
+  "new_h5_output": false,
+  "parameter_sweep": false,
+  "production_launch": false,
+  "raw_voltage_or_waveform_read": false,
+  "rf_or_holdout_access": false,
+  "schema": "immutable-packet-complete-v1",
+  "sort_started": false,
+  "status": "COMPLETE_REVIEW_ACCEPT_NON_DECISIVE_WITH_CAVEAT"
+}
