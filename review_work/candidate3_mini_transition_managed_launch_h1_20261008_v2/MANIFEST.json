@@ -1,0 +1,12 @@
+{
+  "packet": "candidate3_mini_transition_managed_launch_h1_20261008_v2",
+  "verdict": "FROZEN_AWAITING_INDEPENDENT_REVIEW_DO_NOT_START",
+  "files": {
+    "LAUNCH_REQUEST.json": "c2b8a54eea5382e14e0bec3987fce574a865860bd2f7ed7976e1ca2972059e8b",
+    "REPORT.md": "53f96a79c59b935ce323d52c0ba718b1cb341e442d7459a14ba8bd09bb8b47f4",
+    "RUN_CONTRACT.json": "f8c2f23f011b5f467e75ab80bd5a1da9b9c4abd6522ee3767dd63acc645cea13",
+    "source/candidate3_mini_transition_managed.py": "92879fe4c6655e2cf4ee5cc33b1907817a3382c599d890cada3a8fe76e73efdc",
+    "source/producer.py": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a",
+    "source/reporter.py": "e627b1aaba5355a6a156aab908bd6bc4e19f82cfffbb359ffcaf1ee1ef67d32e"
+  }
+}

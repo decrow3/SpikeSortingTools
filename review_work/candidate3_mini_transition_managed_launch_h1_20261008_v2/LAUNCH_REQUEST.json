@@ -1,0 +1,42 @@
+{
+  "schema": "candidate3-mini-transition-systemd-launch-v2",
+  "state": "FROZEN_NOT_LAUNCHED_AWAITING_REVIEW",
+  "unit": "candidate3-mini-transition-v4.service",
+  "run_contract_sha256": "f8c2f23f011b5f467e75ab80bd5a1da9b9c4abd6522ee3767dd63acc645cea13",
+  "argv": [
+    "/usr/bin/systemd-run",
+    "--user",
+    "--unit=candidate3-mini-transition-v4",
+    "--property=Type=exec",
+    "--property=Restart=no",
+    "--property=RuntimeMaxSec=2700",
+    "--property=MemoryMax=16G",
+    "--property=CPUQuota=800%",
+    "--property=TasksMax=128",
+    "--property=KillMode=control-group",
+    "--property=TimeoutStopSec=30",
+    "--property=ExecStopPost=/home/huklab/Documents/DARTsort/.venv/bin/python /mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v2/source/candidate3_mini_transition_managed.py finalize /mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v2/RUN_CONTRACT.json f8c2f23f011b5f467e75ab80bd5a1da9b9c4abd6522ee3767dd63acc645cea13",
+    "/home/huklab/Documents/DARTsort/.venv/bin/python",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v2/source/candidate3_mini_transition_managed.py",
+    "run",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v2/RUN_CONTRACT.json",
+    "f8c2f23f011b5f467e75ab80bd5a1da9b9c4abd6522ee3767dd63acc645cea13"
+  ],
+  "manager_state_check": [
+    "/usr/bin/systemctl",
+    "--user",
+    "show",
+    "candidate3-mini-transition-v4.service",
+    "--property=LoadState,ActiveState,SubState,MainPID,ExecMainStatus,ExecMainCode,Result,NRestarts,ExecMainStartTimestamp,ExecMainExitTimestamp,MemoryCurrent,CPUUsageNSec"
+  ],
+  "prestart_requirements": [
+    "independent v2 GO packet bound",
+    "unit LoadState=not-found and inactive/dead",
+    "attempt root and both external preflight receipts absent including symlinks",
+    "packet MANIFEST and COMPLETE valid with COMPLETE last",
+    "RUN_CONTRACT hash exact",
+    "at least 2 GiB free on /tmp"
+  ],
+  "automatic_retry": false,
+  "launched": false
+}

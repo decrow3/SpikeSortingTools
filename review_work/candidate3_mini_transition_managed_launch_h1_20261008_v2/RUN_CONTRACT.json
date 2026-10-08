@@ -1,0 +1,63 @@
+{
+  "schema": "candidate3-mini-transition-managed-v2",
+  "status": "FROZEN_AWAITING_INDEPENDENT_REVIEW_DO_NOT_START",
+  "packet_hashes": {
+    "source/candidate3_mini_transition_managed.py": "92879fe4c6655e2cf4ee5cc33b1907817a3382c599d890cada3a8fe76e73efdc",
+    "source/producer.py": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a",
+    "source/reporter.py": "e627b1aaba5355a6a156aab908bd6bc4e19f82cfffbb359ffcaf1ee1ef67d32e"
+  },
+  "input_hashes": {
+    "transition_prewhitening": {
+      "path": "/tmp/candidate3_mini_e2e_20261008_v2/inputs/transition_prewhitening.npy",
+      "sha256": "dc78516734e154e45bec8f29f8f757bff904bbd32938fe0a2e0d1767f41a46f2"
+    },
+    "input_receipt": {
+      "path": "/tmp/candidate3_mini_e2e_20261008_v2/inputs/INPUT_RECEIPT.json",
+      "sha256": "5f4dd3354c0257449cef69493c5b669a6390b7283080316c9445df2a77622fa3"
+    },
+    "ordinary_resolved_config": {
+      "path": "/tmp/candidate3_mini_e2e_20261008_v3/runs/ordinary/_dartsort_internal_config.json",
+      "sha256": "70ef3ebd40ddd826111fb1181481e3c11273f2fb2281014fadc8ad27f083a610"
+    },
+    "ordinary_timing": {
+      "path": "/tmp/candidate3_mini_e2e_20261008_v3/runs/ordinary/timing.json",
+      "sha256": "89564d2f03c1e7a00c707d6db0c3984acb81b4b3f9966d32f2351bc9275ad5ed"
+    },
+    "ordinary_final_sorting": {
+      "path": "/tmp/candidate3_mini_e2e_20261008_v3/runs/ordinary/dartsort_sorting.npz",
+      "sha256": "623051e789435de15b59e2daf1cdedc3a095534ed32af4962c67bbcec78fcb8a"
+    }
+  },
+  "dartsort_repo": "/home/huklab/Documents/DARTsort",
+  "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+  "cwd": "/home/huklab/Documents/RyanSorting/SpikeSortingTools",
+  "attempt_parent": "/tmp",
+  "attempt_root": "/tmp/candidate3_mini_e2e_20261008_v4",
+  "preflight_failure_receipt": "/tmp/candidate3_mini_e2e_20261008_v4_PRELAUNCH_FAILURE.json",
+  "preflight_manager_receipt": "/tmp/candidate3_mini_e2e_20261008_v4_MANAGER_FINAL.json",
+  "ordinary_root": "/tmp/candidate3_mini_e2e_20261008_v3/runs/ordinary",
+  "baseline_bytes": 185309309,
+  "cap_bytes": 536870912,
+  "minimum_free_bytes": 2147483648,
+  "transition_command": [
+    "/home/huklab/Documents/DARTsort/.venv/bin/python",
+    "{packet}/source/producer.py",
+    "run",
+    "/tmp/candidate3_mini_e2e_20261008_v2/inputs",
+    "{transition}",
+    "transition"
+  ],
+  "report_command": [
+    "/home/huklab/Documents/DARTsort/.venv/bin/python",
+    "{packet}/source/reporter.py",
+    "summarize",
+    "/tmp/candidate3_mini_e2e_20261008_v2/inputs",
+    "{combined}",
+    "{report}/ACCOUNTING.json"
+  ],
+  "monitor_interval_seconds": 2,
+  "restart": "none; preserve failure and investigate before a whole-arm retry in a new namespace",
+  "real_voltage_read": false,
+  "rf_or_holdout_access": false,
+  "active_plan_sha256": "c26d63dfe9ae94312485d57ec99f1a3c4d7d089806b84485099d4afb4f12554f"
+}
