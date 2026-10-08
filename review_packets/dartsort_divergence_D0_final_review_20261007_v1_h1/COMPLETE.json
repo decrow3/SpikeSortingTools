@@ -1,0 +1,15 @@
+{
+  "schema": "immutable-compact-packet-complete-v1",
+  "packet": "dartsort_divergence_D0_final_review_20261007_v1_h1",
+  "completed_at": "2026-10-07T19:53:00-07:00",
+  "host": "huklaban1",
+  "status": "COMPLETE",
+  "manifest": {
+    "path": "MANIFEST.json",
+    "bytes": 577,
+    "sha256": "d81d79ac7c2267efa59a73b545c79050efdfb34d76b3ad6bde7f627b6d92f8a4"
+  },
+  "decision": "ACCEPT_COMPARISON_1_WITH_REQUIRED_CAPABILITY_CORRECTIONS",
+  "successor": "HubMultiCoordinater freezes corrected comparison-1 saved-output diagnostic contract",
+  "complete": true
+}

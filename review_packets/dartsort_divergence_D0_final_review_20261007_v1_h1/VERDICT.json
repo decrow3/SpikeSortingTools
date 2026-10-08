@@ -1,0 +1,26 @@
+{
+  "schema": "dartsort-divergence-d0-h1-focused-review-v1",
+  "status": "ACCEPT_COMPARISON_1_WITH_REQUIRED_CAPABILITY_CORRECTIONS",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D0_h5_20261007_v1",
+  "reviewed_manifest_sha256": "d3ac54f8e1fa56536405dde9db138a9bee69655c2835ac749189880c7db67c64",
+  "reviewed_complete_sha256": "b7364341a3494c42536a91334c8bed364305b9db9258983df412ddbe64456376",
+  "selected_comparison_accepted": "cmp1_full_session_em_dartsort_vs_kilosort_ref_a",
+  "comparison_1_cheapest_nonduplicative": true,
+  "comparison_2_generic_repeat_supported": false,
+  "comparison_2_authoritative_status": "VALIDATED_INCONCLUSIVE_NO_PROGRESSION",
+  "required_corrections": [
+    "matching1 labels are matching-stage memberships, not final labels; bind parent row, matching label, and final label separately",
+    "matching-stage replay is possible but unqualified; exact downstream final-label replay is unavailable from saved artifacts alone",
+    "bind exact REF and A Kilosort executable/package and curator source before checkpoint attribution",
+    "treat the 3-6 preselected neighborhoods as diagnostic rather than cross-sorter representative"
+  ],
+  "execution": "REVIEW_ONLY_NO_VOLTAGE_NO_SORT_NO_REPLAY_NO_EVENT_TRAVERSAL",
+  "can_establish": "comparison 1 is the least duplicative bounded saved-output diagnostic among the two D0 choices",
+  "cannot_establish": [
+    "biological identity",
+    "purity",
+    "sorter-only causality",
+    "cross-sorter stage equivalence",
+    "exact final-label replay feasibility from saved artifacts alone"
+  ]
+}
