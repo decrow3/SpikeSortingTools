@@ -1,0 +1,9 @@
+{
+  "files": {
+    "CHECKS.json": "82e392e7c981539682325c133154b24ea8efac9ed4f32df60f29835c34dca0d1",
+    "PROVENANCE.json": "1f39f4e60b9e2e74b19232e2bfb158bdd0b80401e0e6a3b1f27eaaa780c6ea1a",
+    "REPORT.md": "d83dc1b97cbb1787ad025520a011109778f18d435e5ca7d5e4973555071ac889"
+  },
+  "packet": "candidate3_mini_transition_managed_launch_v4_independent_review_h1_20261008_v1",
+  "verdict": "GO_EXACT_V4_ONE_SYNTHETIC_TRANSITION_LAUNCH"
+}

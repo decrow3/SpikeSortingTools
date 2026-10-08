@@ -1,0 +1,12 @@
+{
+  "host": "huklaban1",
+  "scope": "final four-item changed-boundary review only; accepted v3 tree/baseline gates reused",
+  "runner_sha256": "9b3a0dcda9135943386a3576c55f1d0899389243d46e00ee5f556df8326e6e84",
+  "producer_sha256": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a",
+  "reporter_sha256": "e627b1aaba5355a6a156aab908bd6bc4e19f82cfffbb359ffcaf1ee1ef67d32e",
+  "test_source_sha256": "2cb526bfffc47cdd67eb41c9491427fef78e71905904bc71c433b5bd220fc8dd",
+  "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+  "author_commit_status": "frozen shared packet authoritative; matching workspace runner/test changes were uncommitted during review",
+  "service_state_at_review": "candidate3-mini-transition-v6.service not-found/inactive/dead; no timestamps",
+  "excluded": ["service launch", "transition sort", "real voltage", "RF/holdout", "D3 outcome"]
+}

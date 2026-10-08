@@ -1,0 +1,36 @@
+{
+  "accepted_reuse": {
+    "v3_complete_tree_baseline_clean_gate": true,
+    "v3_review_complete_sha256": "cb5d5428a666aac2e53a3440746cb76c7269478929a60f44381731756f8efe0e",
+    "v3_review_manifest_sha256": "f34a0f0be1712507a53da0838d633013378bd63a3de4b89c24bb46f7458317c7"
+  },
+  "changed_boundaries": {
+    "actual_manager_context_and_limits_fail_closed": true,
+    "outer_atomic_launch_result_receipt": true,
+    "timestamped_terminal_snapshot": true,
+    "tree_revalidation_before_and_after_reporter": true
+  },
+  "full_preflight": {
+    "baseline_bytes": 185292925,
+    "dartsort_clean": true,
+    "input_bytes": 57081256,
+    "ordinary_bytes": 128211669,
+    "passed": true
+  },
+  "required_postrun_acceptance": [
+    "OUTER_LAUNCH state started and returncode 0, or a reconciled launching receipt with matching accepted InvocationID",
+    "PRELAUNCH contains matching contract, exact manager properties, InvocationID, and preflight hashes/counts",
+    "FINAL_STATUS state complete with successful before_report_preflight and after_report_preflight",
+    "MANAGER_FINAL has systemd success exit tuple, timestamp, final_status_present true, and a successful terminal property snapshot",
+    "ACCOUNTING JSON and NPZ exist under the fresh v6 attempt and remain within the frozen cap",
+    "no automatic retry; investigate any mismatch or failure in a new namespace"
+  ],
+  "subject": {
+    "complete_sha256": "4d8e4ca6f4e3d2bb96ed24e482ac9e81e3bc84629da8ac8d0b0864dea4dbbb88",
+    "manifest_members_valid": 6,
+    "manifest_sha256": "ac55b926edc2534f34120e1a6be0e71a4b0c4c8f60bb1ccb49bd082343c3d153",
+    "run_contract_sha256": "db34b9b91cb3581e7592a5bb5f65651a0a34da187db50263d63786f64bde339a"
+  },
+  "tests": "7 passed in 2.13 seconds",
+  "verdict": "GO_EXACT_V4_ONE_SYNTHETIC_TRANSITION_LAUNCH"
+}
