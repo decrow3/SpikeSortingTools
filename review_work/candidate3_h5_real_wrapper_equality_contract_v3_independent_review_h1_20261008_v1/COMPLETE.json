@@ -1,0 +1,7 @@
+{
+  "schema": "candidate3-h5-real-wrapper-equality-focused-review-complete-v1",
+  "status": "GO_EXECUTION_READY",
+  "manifest_sha256": "89f88b2148ecd6e801419b35e38846e6c609e0bb7e11fbefcc61baf1da42da8c",
+  "reviewed_contract_sha256": "6cb5c29b806b63021bf9edef87535718f24efc9ff27842d9e4e34c3e06e56037",
+  "reviewed_runner_sha256": "0bed993b8718f29591b92884e88b65f2bf8a6780cce49490b869ba82823f1f7e"
+}

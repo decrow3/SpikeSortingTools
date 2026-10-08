@@ -1,0 +1,18 @@
+{
+  "schema": "candidate3-h5-real-wrapper-equality-v3-independent-review-checks-v1",
+  "reviewed_contract_sha256": "6cb5c29b806b63021bf9edef87535718f24efc9ff27842d9e4e34c3e06e56037",
+  "reviewed_runner_sha256": "0bed993b8718f29591b92884e88b65f2bf8a6780cce49490b869ba82823f1f7e",
+  "checks": {
+    "author_packet_seal": "PASS",
+    "committed_contract_and_runner_identity": "PASS",
+    "absolute_interpreter_repository_runner_contract_site_output_paths": "PASS",
+    "exact_real_mode_path_enforcement_before_output": "PASS",
+    "dispatch_semantic_invocation_and_receipt_path_binding": "PASS",
+    "resource_receipt_independent_execution_output_topology_binding": "PASS",
+    "fresh_exact_output": "PASS",
+    "outer_receipt_exact_path_and_terminal_semantics": "PASS_CONTRACT_REQUIREMENT_PENDING_LATER_H5_RECEIPT",
+    "v3_full_shape_synthetic_fixture": "PASS_9_OF_9_EXACT",
+    "current_h5_state_or_external_enforcement": "NOT_TESTED_AND_REQUIRED_AT_LATER_PRESTART"
+  },
+  "verdict": "GO_EXECUTION_READY"
+}

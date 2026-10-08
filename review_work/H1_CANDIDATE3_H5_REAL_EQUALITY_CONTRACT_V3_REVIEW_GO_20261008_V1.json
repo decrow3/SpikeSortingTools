@@ -1,0 +1,27 @@
+{
+  "schema": "coordination-handoff-v1",
+  "host": "huklaban1",
+  "task_key": "candidate3_h5_real_wrapper_equality_contract_v3_independent_review",
+  "reported_at": "2026-10-08T03:05:15-07:00",
+  "terminal_state": "GO_EXECUTION_READY_EXACT_V3_CONTRACT_LATER_H5_GATES_REQUIRED",
+  "reviewed_author_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_real_wrapper_equality_contract_h1_20261008_v3",
+    "manifest_sha256": "0dadacfd850286456345d3b9d447fb1bc38a94da171c889347a2a3e914c032f3",
+    "complete_sha256": "eb42b4446d4818b25d8abbfadfc7096d83503bcb0fd54707e7fd94c61fc3c438",
+    "contract_sha256": "6cb5c29b806b63021bf9edef87535718f24efc9ff27842d9e4e34c3e06e56037",
+    "runner_sha256": "0bed993b8718f29591b92884e88b65f2bf8a6780cce49490b869ba82823f1f7e"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_real_wrapper_equality_contract_v3_independent_review_h1_20261008_v1",
+    "manifest_sha256": "89f88b2148ecd6e801419b35e38846e6c609e0bb7e11fbefcc61baf1da42da8c",
+    "complete_sha256": "90d300a714554acaf2cd50011a6d899c3b3f3336dcef58410a4d93497ee536a5",
+    "complete_schema": "candidate3-h5-real-wrapper-equality-focused-review-complete-v1",
+    "complete_status": "GO_EXECUTION_READY"
+  },
+  "decision": "The exact v3 contract and runner close the v2 invocation/output-topology blocker. They are eligible for a later exact managed H5 prestart and coordinator dispatch only after every frozen receipt, freshness, resource and dedup gate passes.",
+  "current_execution_state": "No H5 resource receipt or coordinator dispatch was reviewed or created here; no H5 readiness or launch is implied.",
+  "invalidation": "Any path, hash, semantic argument, receipt, manager/resource, output freshness or outer-receipt mismatch invalidates GO and must fail closed; no retry is authorized by this review.",
+  "excluded_actions": "No H5 contact, recorded voltage read/hash, transfer/materialization, service/GPU/sort/RF/holdout/full launch was performed.",
+  "execution_owner": "/root",
+  "reviewer_next_state": "checked in with HubMultiCoordinater; available for bounded follow-up and not launching execution"
+}

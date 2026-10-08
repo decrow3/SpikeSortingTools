@@ -1,0 +1,15 @@
+{
+  "schema": "candidate3-h5-real-wrapper-equality-v3-independent-review-provenance-v1",
+  "created_at": "2026-10-08T03:03:48-07:00",
+  "reviewer_host": "huklaban1",
+  "author_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_real_wrapper_equality_contract_h1_20261008_v3",
+  "author_manifest_sha256": "0dadacfd850286456345d3b9d447fb1bc38a94da171c889347a2a3e914c032f3",
+  "author_complete_sha256": "eb42b4446d4818b25d8abbfadfc7096d83503bcb0fd54707e7fd94c61fc3c438",
+  "reviewed_contract_sha256": "6cb5c29b806b63021bf9edef87535718f24efc9ff27842d9e4e34c3e06e56037",
+  "reviewed_runner_sha256": "0bed993b8718f29591b92884e88b65f2bf8a6780cce49490b869ba82823f1f7e",
+  "v2_no_go_manifest_sha256": "0851c6142bdff132a21a1538f97556e166910978f8446c1c32ab572f5b8d9cd0",
+  "v2_no_go_complete_sha256": "9ddbbecb9a6011fb9e2b7b0a31421bf1717913898b4791496e7a2f7c1ffd3426",
+  "repository_commit_at_review": "0d93b21f27d4adea6ace222fc03d84a47740ca64",
+  "scope": "implementation-first delta review of the v3 release-path and output-topology repair",
+  "excluded": "H5 contact, recorded voltage read/hash, transfer/materialization, service/GPU/sort/RF/holdout/full launch"
+}

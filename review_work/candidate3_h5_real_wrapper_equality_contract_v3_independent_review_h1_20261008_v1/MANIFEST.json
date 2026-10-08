@@ -1,0 +1,19 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "created_at": "2026-10-08T03:04:29-07:00",
+  "status": "GO_EXECUTION_READY",
+  "members": {
+    "CHECKS.json": {
+      "size": 1007,
+      "sha256": "1fd8bdfa7123552ee40929edf5a591d761cfab342c45ac3779db44463da9e8e1"
+    },
+    "PROVENANCE.json": {
+      "size": 1171,
+      "sha256": "1d96c34accfadf22a57280af5292ca90adbdccbeedbd46bd52160a7cd214d819"
+    },
+    "REVIEW.md": {
+      "size": 5117,
+      "sha256": "512c0616b8a9a066a5b6d8ce73af71919a858251d706fcbb5c045df95127da42"
+    }
+  }
+}
