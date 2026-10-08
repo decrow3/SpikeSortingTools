@@ -1,0 +1,10 @@
+{
+  "schema": "candidate3-h5-equality-result-evaluator-test-results-v3",
+  "executed_at": "2026-10-08T03:36:00-07:00",
+  "command": "pytest -q testing/test_candidate3_h5_equality_result_evaluator_v3.py",
+  "passed": 12,
+  "failed": 0,
+  "v2_reviewer_regressions": 2,
+  "recorded_voltage_bytes": 0,
+  "h5_contacted": false
+}

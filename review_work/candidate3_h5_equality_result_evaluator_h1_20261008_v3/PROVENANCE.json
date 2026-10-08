@@ -1,0 +1,11 @@
+{
+  "schema": "candidate3-h5-equality-result-evaluator-provenance-v3",
+  "created_at": "2026-10-08T03:37:00-07:00",
+  "repository_commit": "5219d5f",
+  "evaluator_sha256": "7af98e2b2652dd6fcb9ee657d82f4db2e98a8bc19b161ea14513c522c058027c",
+  "contract_sha256": "f9a70c6885f994ec1654b2a4cfe456b1f53fcde1de630c17cec9e27aa30416a5",
+  "control_tests_sha256": "9a81313ce1b603bec383cc298006e0d314af891961f274c323b5628faef1e806",
+  "accepted_v3_contract_sha256": "6cb5c29b806b63021bf9edef87535718f24efc9ff27842d9e4e34c3e06e56037",
+  "scope": "v2 deterministic-category repair using sealed v3 synthetic JSON copies only",
+  "excluded": "real H5 results/contact, voltage, services, GPU, sorts, RF and holdout"
+}

@@ -1,0 +1,6 @@
+{
+  "evaluator_contract_sha256": "f9a70c6885f994ec1654b2a4cfe456b1f53fcde1de630c17cec9e27aa30416a5",
+  "evaluator_sha256": "7af98e2b2652dd6fcb9ee657d82f4db2e98a8bc19b161ea14513c522c058027c",
+  "input_complete_sha256": "effc8024c32ed35bd3adebdb4c0448d7b206682e484e19aa8eb98bb17397c8d5",
+  "input_packet": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/review_work/candidate3_h5_real_wrapper_equality_contract_h1_20261008_v3/self_test_success"
+}

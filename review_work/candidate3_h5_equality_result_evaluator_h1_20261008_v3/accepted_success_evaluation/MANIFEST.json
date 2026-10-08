@@ -1,0 +1,14 @@
+{
+  "members": {
+    "PROVENANCE.json": {
+      "sha256": "04f6af1ba68d2799a6e38321deed0bf3f040e5c56566ab95a6b814184c0ec384",
+      "size": 451
+    },
+    "VERDICT.json": {
+      "sha256": "e75b32264087ce73c62235c8105c24d0d088f0ddc56aee6d847c139e770dc2b3",
+      "size": 266
+    }
+  },
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "PASS_SYNTHETIC_FIXTURE_ONLY_NO_H5_DECISION"
+}

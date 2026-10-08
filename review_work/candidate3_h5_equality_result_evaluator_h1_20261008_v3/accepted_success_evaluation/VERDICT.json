@@ -1,0 +1,8 @@
+{
+  "category": "PASS_SYNTHETIC_FIXTURE_ONLY_NO_H5_DECISION",
+  "coordinator_decision": "evaluator plumbing is valid; await a sealed real H5 packet",
+  "reasons": [
+    "all frozen checks passed"
+  ],
+  "scope": "candidate3 equality v3 packet interpretation only"
+}
