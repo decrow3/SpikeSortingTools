@@ -1,0 +1,6 @@
+{
+  "complete": true,
+  "packet": "candidate3_whole_stage_restart_actual_path_h1_20261008_v2",
+  "manifest_sha256": "ad5ae1d0eef0977d25109c2030d67e972238a8de54202b246b7a9661dd9d7cdf",
+  "verdict": "GO_WHOLE_STAGE_RESTART_FALLBACK"
+}

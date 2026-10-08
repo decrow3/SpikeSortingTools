@@ -1,0 +1,6 @@
+{
+  "complete": false,
+  "packet": "candidate3_whole_stage_restart_actual_path_h1_20261008_v1",
+  "manifest_sha256": "2deb486ccffa440262e024e22fc131beecb445098e9a1e547a3d70dd932e52bc",
+  "verdict": "FAILED_PRESERVED_PATH_NORMALIZATION_DEFECT"
+}

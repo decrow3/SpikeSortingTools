@@ -1,0 +1,14 @@
+{
+  "attempt_id": "baseline",
+  "input_bindings": {
+    "chunk_starts": [
+      0,
+      100,
+      200
+    ],
+    "recording_sha256": "a0ee989ed2a0a2e3626520afa4032e06144865c8c8f6357293c9f4cd2069eaf2",
+    "source": "dartsort.util.peel_util.run_peeler"
+  },
+  "resume_policy": "fresh_whole_stage_only",
+  "status": "running"
+}

@@ -1,0 +1,15 @@
+{
+  "packet": "candidate3_whole_stage_restart_actual_path_h1_20261008_v1",
+  "status": "FAILED_PRESERVED",
+  "files": {
+    "EXPECTED.json": "fb9292332231a1c45b00cc51425d4073d14c004f6c2553fdc77c9fe6aca442be",
+    "FAILED.md": "ea61a0f5fbbfcea2fa44dd4f7a37b59d2372ab1e15059fa91953877e98b708b3",
+    "FROZEN_CONTRACT.md": "9757fa096e0dff93c151a8f06cbee6225cf6c74c72b952cb8144c39777a07158",
+    "execution/attempts/injected.failed/ATTEMPT.json": "fb930dc37ed60d4ee6292bc4749e4fe06d399528d56a8d28a2d3339477d687b2",
+    "execution/attempts/injected.failed/FAILED.json": "bff6b5af06a086f4421189b71c838ac2b859a08376233488d3e230574ea5f566",
+    "execution/attempts/injected.failed/events.h5": "c69af987b58669dd9b058dda3922e45389416a2e6d5d498f7fb3d20f46324dad",
+    "execution/attempts/restart.failed/ATTEMPT.json": "8c47a33b63105c849ae019cb7a304dc4083e96eaace2a7aef8d946ad552594e4",
+    "execution/attempts/restart.failed/FAILED.json": "e7bd7b2c0bf57790a53205bec3a2f555314c9cb6a392db49c34a810f69ba1efd",
+    "execution/attempts/restart.failed/events.h5": "66865c7d4affdc06f66139098e5e8c7bad1f9c8a8685dbe770edd49273910c6e"
+  }
+}

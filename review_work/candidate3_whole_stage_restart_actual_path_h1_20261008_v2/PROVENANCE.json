@@ -1,0 +1,24 @@
+{
+  "packet": "candidate3_whole_stage_restart_actual_path_h1_20261008_v2",
+  "host": "huklaban1",
+  "active_plan_sha256": "c26d63dfe9ae94312485d57ec99f1a3c4d7d089806b84485099d4afb4f12554f",
+  "spike_sorting_tools_parent_commit": "042b88a7982ff02fb990ed292010f4fa226b3b78",
+  "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+  "sources": {
+    "testing/candidate3_stage_restart_fallback.py": "a3505e271b7adc237a7416524bba6b28d9117e13cad42c6593b0fea06de79d1d",
+    "testing/candidate3_stage_restart_actual_path_fixture.py": "2333d10f5c255582c874cf5791e7bcc584e078f936bfe41cee4c91cae4072772",
+    "testing/test_candidate3_stage_restart_fallback.py": "8efc8016545040896fd6748b5872060e9ea603d5437d1bdfa2e3011b5373fc4a",
+    "DARTsort/src/dartsort/peel/peel_base.py": "ac357ade5b6f23b690a403e297a2260ea93c2a1b35df13ee7798d8fc8591a2d4",
+    "DARTsort/src/dartsort/util/peel_util.py": "be33c5047abec177c117b1e494d38efff993bcc2393f561d75214274fb8aa6ba"
+  },
+  "environment": {
+    "python": "/home/huklab/Documents/DARTsort/.venv/bin/python",
+    "python_version": "3.12.4",
+    "spikeinterface": "0.104.8",
+    "torch": "2.6.0+cu124",
+    "device": "cpu"
+  },
+  "predecessor_failed_packet": "candidate3_whole_stage_restart_actual_path_h1_20261008_v1",
+  "predecessor_failure": "relative versus absolute containment-path mismatch",
+  "v2_only_change": "resolve attempt root before containment comparison"
+}

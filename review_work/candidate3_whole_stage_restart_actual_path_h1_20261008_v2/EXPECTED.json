@@ -1,0 +1,9 @@
+{
+  "channels": [0, 1, 0, 1, 0, 1],
+  "chunk_starts_samples": [0, 100, 200],
+  "construction_memberships": [1000, 1001, 1010, 1011, 1020, 1021],
+  "event_count": 6,
+  "source_rows": [0, 1, 2, 3, 4, 5],
+  "template_indices": [100, 101, 110, 111, 120, 121],
+  "times_samples": [10, 20, 110, 120, 210, 220]
+}

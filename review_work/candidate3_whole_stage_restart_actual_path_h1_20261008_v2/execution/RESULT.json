@@ -1,0 +1,40 @@
+{
+  "failed_attempt_preserved": true,
+  "failed_state": {
+    "dataset_lengths": {
+      "channels": 4,
+      "construction_memberships": 4,
+      "source_rows": 4,
+      "template_indices": 4,
+      "times_samples": 4
+    },
+    "last_chunk_index": 1,
+    "last_chunk_start": 100
+  },
+  "failure_observed": true,
+  "input_bindings_unchanged": true,
+  "no_gaps_or_duplicates": true,
+  "restart_equals_baseline": {
+    "channels": true,
+    "construction_memberships": true,
+    "source_rows": true,
+    "template_indices": true,
+    "times_samples": true,
+    "times_seconds": true
+  },
+  "restart_validation": {
+    "dataset_exact": {
+      "channels": true,
+      "construction_memberships": true,
+      "source_rows": true,
+      "template_indices": true,
+      "times_samples": true
+    },
+    "event_rows": 6,
+    "last_chunk_index": 2,
+    "last_chunk_start": 200,
+    "source_rows_unique": 6,
+    "valid": true
+  },
+  "verdict": "GO_WHOLE_STAGE_RESTART_FALLBACK"
+}
