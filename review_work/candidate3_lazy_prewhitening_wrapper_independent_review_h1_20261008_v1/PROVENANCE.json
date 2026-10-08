@@ -1,0 +1,21 @@
+{
+  "schema": "candidate3-lazy-prewhitening-wrapper-independent-review-provenance-v1",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_lazy_prewhitening_wrapper_h1_20261008_v1",
+  "reviewed_manifest_sha256": "c1c74ee649925a9cac8708247ae99f63748d9ec7a2c8e3836d75fb2990440ba6",
+  "reviewed_complete_sha256": "4d960c8f71b60db8e2e3af97eb2a2321ea8b1b31044c40849e157d64439e137b",
+  "source_commit": "aea7431c4026fa74e36ad01139d9e596900a1d25",
+  "independent_rerun": {
+    "command": "NUMBA_CACHE_DIR=/tmp/candidate3_lazy_wrapper_review_numba environments/rescue-production/.venv/bin/python -m pytest -q testing/test_candidate3_lazy_prewhitening_si.py testing/test_lattice_remap_si.py",
+    "tests": 22,
+    "passed": 22,
+    "seconds": 10.67
+  },
+  "actions": {
+    "h5_contacted": false,
+    "voltage_payload_read_or_hashed": false,
+    "materialization_or_transfer": false,
+    "service_gpu_or_sort_run": false,
+    "rf_or_holdout_accessed": false,
+    "full_session_run": false
+  }
+}

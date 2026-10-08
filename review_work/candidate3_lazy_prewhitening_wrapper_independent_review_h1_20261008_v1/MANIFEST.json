@@ -1,0 +1,23 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "created_at": "2026-10-08T02:27:05-07:00",
+  "status": "GO_SCOPED_SYNTHETIC_LAZY_WRAPPER_CAPABILITY_REAL_H5_EQUALITY_REQUIRED",
+  "members": {
+    "KNOWN_ANSWER_RESULT.json": {
+      "size": 1032,
+      "sha256": "bc8e56ae1f5d216272cbfa3f5afad15be36a7b2e964db48191ed5d66a17863ec"
+    },
+    "PROVENANCE.json": {
+      "size": 1008,
+      "sha256": "da49816106ca877bfa40db275493a8e94ad274602dadb412b59a6ba4101a0157"
+    },
+    "REVIEW.md": {
+      "size": 7998,
+      "sha256": "176edbc77a3d05867050a53d41a254b37444c3894d13cb0087b12728e402b70d"
+    },
+    "independent_known_answer.py": {
+      "size": 3746,
+      "sha256": "4f2b2cc536f8ca6bb57753383320a091372fbf292eb3dbaaee5625ddff056555"
+    }
+  }
+}

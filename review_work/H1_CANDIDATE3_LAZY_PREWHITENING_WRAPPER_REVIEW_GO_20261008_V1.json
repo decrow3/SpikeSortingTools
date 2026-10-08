@@ -1,0 +1,37 @@
+{
+  "schema": "coordination-handoff-v1",
+  "host": "huklaban1",
+  "task_key": "candidate3_lazy_prewhitening_wrapper_independent_review",
+  "reported_at": "2026-10-08T02:27:42-07:00",
+  "terminal_state": "GO_SCOPED_SYNTHETIC_LAZY_WRAPPER_CAPABILITY_REAL_H5_EQUALITY_REQUIRED",
+  "reviewed_author_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_lazy_prewhitening_wrapper_h1_20261008_v1",
+    "manifest_sha256": "c1c74ee649925a9cac8708247ae99f63748d9ec7a2c8e3836d75fb2990440ba6",
+    "complete_sha256": "4d960c8f71b60db8e2e3af97eb2a2321ea8b1b31044c40849e157d64439e137b",
+    "source_commit": "aea7431c4026fa74e36ad01139d9e596900a1d25"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_lazy_prewhitening_wrapper_independent_review_h1_20261008_v1",
+    "manifest_sha256": "5a549eea27855358a4bebcc2e04bdc5697c46bc5c72cab09bae7bc42e3e18966",
+    "complete_sha256": "946f261d77f449e0a9855a88d28bb3746daabd8a71c630491913648bcd87c962"
+  },
+  "independent_evidence": {
+    "pytest": "22/22 passed in 10.67 seconds",
+    "known_answer_sha256": "bc8e56ae1f5d216272cbfa3f5afad15be36a7b2e964db48191ed5d66a17863ec",
+    "known_answer": "manual expected path avoids BinaryFiltered.filter, matches exactly, and observes FFT NT=53 for a 53-sample request"
+  },
+  "decision": "Accept synthetic request-context lazy adapter capability and exact DARTsort none/no-copy/no-workdir traversal only.",
+  "qualifications": [
+    "installed-helper equality does not independently validate the scientific correctness of Kilosort filtering",
+    "the preliminary 10-rule text is preserved, but its first-run pre-outcome timing is author-reported; the strengthened contract commit predates the final run and is explicitly not called preregistered",
+    "real H5 imports and predeclared ordinary/transition padded-window equality remain hard gates"
+  ],
+  "scope_preserved": {
+    "h5_contacted": false,
+    "voltage_payload_read_or_hashed": false,
+    "materialization_or_transfer": false,
+    "service_gpu_sort_or_full_session": false,
+    "rf_or_holdout_accessed": false
+  },
+  "reviewer_next_state": "checked in with HubMultiCoordinater; available for a bounded follow-up"
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "candidate3-lazy-prewhitening-independent-known-answer-v1",
+  "status": "PASS",
+  "environment": "environments/rescue-production/.venv/bin/python; CPU",
+  "checks": {
+    "array_equal_manual_known_answer": true,
+    "fft_nt_exact_request_length": true,
+    "observed_fft_nt": [53],
+    "requested_samples": 53,
+    "dtype_float32": true,
+    "selected_ids_equal": true,
+    "selected_geometry_equal": true,
+    "nonzero_clock_equal": true,
+    "shape_equal_53_by_3": true
+  },
+  "expected_path": "explicit uint16 signed conversion, parent-channel vector scale and shift, reordered channel selection, sign inversion, per-channel temporal centering, lower-median CAR, request-length FFT high-pass and fftshift",
+  "expected_uses_binaryfiltered_filter": false,
+  "qualification": "The expected path uses the source-bound lower-level Kilosort high-pass constructor but does not call BinaryFiltered.filter; this checks wrapper/order integration independently, not the scientific correctness of Kilosort's filter design."
+}
