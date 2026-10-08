@@ -1,0 +1,34 @@
+{
+  "schema": "h1_candidate3_h5_placement_readiness_spec_complete_v1",
+  "created_at": "2026-10-08T02:10:40-07:00",
+  "agent": "H1",
+  "recipient": "HubMultiCoordinater",
+  "task": "candidate3_h5_preferred_full_session_placement_readiness_handoff_spec",
+  "status": "COMPLETE_REVIEWED_SPECIFICATION_ONLY_H5_NOT_READY_NO_LAUNCH",
+  "author_v1_preserved_blocked": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_full_session_placement_readiness_spec_h1_20261008_v1",
+    "manifest_sha256": "43c670308750c00f9d45e2167267196dd494b74798dd0c883e6c6609aff38f19",
+    "complete_sha256": "d51ebe4f9881764408fc7326bbf34afb2de105cb2eeda2242fa724a453084609",
+    "review_verdict": "BLOCK_CHECKLIST_REPAIR_REQUIRED_KILL_BOUNDARY_AND_STORAGE_ACCOUNTING"
+  },
+  "author_v2": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_full_session_placement_readiness_spec_h1_20261008_v2",
+    "manifest_sha256": "86f23f9a04b18b1a3ef60aeb13a4cf7bd85867fc57d205292d17108194ed7d37",
+    "complete_sha256": "175dae90c577621eb607af9eaf025c82e505a6b4e2e2b0f1e97504713174c70e"
+  },
+  "independent_v2_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_full_session_placement_readiness_spec_v2_independent_review_h1_20261008_v1",
+    "manifest_sha256": "0288bb6b2b3196a5603aaa2c80a1a8e74440855253da174ca81f85f139968c46",
+    "complete_sha256": "1e159f5b10d240a17307a528e62f653a1aed7f86617fcd9abc64069333197fc1",
+    "verdict": "GO_REPAIRED_CHECKLIST_SPECIFICATION_ONLY_H5_NOT_READY_NO_LAUNCH"
+  },
+  "completion": "ready-to-run H5 placement/prestart checklist is frozen; execution of its gates, wrapper/config closure and any full-session launch remain separate work",
+  "current_blockers": [
+    "H5 lazy wrapper and real ordinary/transition equality are not complete",
+    "full effective config and H5 runtime bindings are not frozen",
+    "exact current H5 run root/capacity/memory/oomd/GPU/manager state is unverified",
+    "managed kill/timeout and storage-monitor fixtures are specified but not executed"
+  ],
+  "execution_state": "no H5 contact, voltage read/hash, transfer, materialization, service/fixture execution, launch or sort occurred",
+  "request": "Acknowledge terminal handoff and assign the next authorized ready task, or record a concrete blocker and absolute next-check time."
+}
