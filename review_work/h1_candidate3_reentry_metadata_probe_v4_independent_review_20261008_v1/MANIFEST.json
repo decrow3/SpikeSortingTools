@@ -1,0 +1,9 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "INDEPENDENT_REVIEW_GO_IMPLEMENTATION_READY_METADATA_GATE_ONLY",
+  "members": {
+    "CHECKS.json": {"size": 1247, "sha256": "e621f560363ca05e7cf2b7f7627be84d1bb8599a19ca0ffcd61d87f9df6ee1ab"},
+    "PROVENANCE.json": {"size": 943, "sha256": "4a54779e57da04eb5ec592bcab450597da0b4905e7fbeb27d25c0fabc6a761e5"},
+    "REVIEW.md": {"size": 4874, "sha256": "998ab45c69f9279cb1ae261bf6ec0d0f18be0a880e963f334bec878fca03f7a9"}
+  }
+}

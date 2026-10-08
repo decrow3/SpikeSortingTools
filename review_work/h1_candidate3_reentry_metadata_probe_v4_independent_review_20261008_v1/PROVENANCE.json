@@ -1,0 +1,19 @@
+{
+  "schema": "h1-candidate3-reentry-metadata-probe-v4-independent-review-provenance-v1",
+  "created_utc": "2026-10-08T10:58:28Z",
+  "reviewer_task": "/root/review_candidate3_host_storage",
+  "repository": "/home/huklab/Documents/RyanSorting/SpikeSortingTools",
+  "author_packet_local": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/review_work/h1_candidate3_reentry_metadata_probe_20261008_v4",
+  "author_packet_shared": "/mnt/NPX/Luke/DARTsort_motion_experiments/h1_candidate3_reentry_metadata_probe_20261008_v4",
+  "author_commit": "49d273c232a5d8af2d9605c8f00e91d27dd775c4",
+  "test_command": "pytest -q testing/test_h1_candidate3_reentry_metadata_probe_v4.py",
+  "test_result": "16 passed in 0.12s",
+  "restrictions_observed": [
+    "no live runner",
+    "no new live mount probe",
+    "no process, service, or mount mutation",
+    "no H5 contact",
+    "no voltage or recording access",
+    "no sort, RF, or holdout access"
+  ]
+}

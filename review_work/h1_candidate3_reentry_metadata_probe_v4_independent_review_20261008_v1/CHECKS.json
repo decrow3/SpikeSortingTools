@@ -1,0 +1,23 @@
+{
+  "schema": "h1-candidate3-reentry-metadata-probe-v4-independent-review-checks-v1",
+  "reviewed_manifest_sha256": "ec20d7df77b10d83a604f90812d8a750a9e48835c5f06b05f91cc7238ed862ea",
+  "reviewed_complete_sha256": "10ff4736b9c5ff9f73548f9d5583f4e4a6cc91b1eb21f8e4e8da0537c94908a9",
+  "reviewed_contract_sha256": "80d4e2944b2a81654c1f66441434092a1927db3e30eeb1fa92094d3ef71f4676",
+  "reviewed_runner_sha256": "64c4ef0cb7a19e44cf31409c4757ac84b66cb4a69a41fe21ecd72f591055d165",
+  "checks": {
+    "packet_seal_complete_last_and_shared_copy": "PASS",
+    "committed_source_contract_test_identity": "PASS",
+    "exact_nonrecursive_no_content_operation": "PASS",
+    "five_second_timeout_and_contracted_reap": "PASS",
+    "timeout_kill_race": "PASS",
+    "snapshot1_pass_binding_and_600_second_gap": "PASS",
+    "atomic_no_overwrite_receipt_publication": "PASS",
+    "atomic_permanent_prespawn_attempt_claim": "PASS_REPAIRED_FROM_V3",
+    "claim_bound_into_terminal_receipts": "PASS",
+    "simultaneous_claim_attempts": "PASS_EXACTLY_ONE_OWNER",
+    "fixtures": "PASS_16_OF_16",
+    "external_placement_preconditions": "NOT_OBSERVED_REMAIN_CONJUNCTIVE",
+    "live_runner": "NOT_EXECUTED"
+  },
+  "verdict": "GO_IMPLEMENTATION_READY_METADATA_GATE_ONLY"
+}

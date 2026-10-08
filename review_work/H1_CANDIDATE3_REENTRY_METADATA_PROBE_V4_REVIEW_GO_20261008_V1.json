@@ -1,0 +1,22 @@
+{
+  "schema": "coordination-handoff-v1",
+  "host": "huklaban1",
+  "task_key": "h1_candidate3_reentry_metadata_probe_v4_full_independent_review",
+  "reported_at": "2026-10-08T03:59:59-07:00",
+  "terminal_state": "GO_IMPLEMENTATION_READY_METADATA_GATE_ONLY",
+  "author_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/h1_candidate3_reentry_metadata_probe_20261008_v4",
+    "manifest_sha256": "ec20d7df77b10d83a604f90812d8a750a9e48835c5f06b05f91cc7238ed862ea",
+    "complete_sha256": "10ff4736b9c5ff9f73548f9d5583f4e4a6cc91b1eb21f8e4e8da0537c94908a9"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/h1_candidate3_reentry_metadata_probe_v4_independent_review_20261008_v1",
+    "manifest_sha256": "b9d51aa8ef9bfcebbff93347ef8d1ea3b2b0e4f2cb09a2a0347d6774b8dc1a29",
+    "complete_sha256": "32306d2694df8c31fd42a513bd9f8fe4bc078f2b9563a8087082dc0262f4022a"
+  },
+  "passing_scope": "Full source confirms exact no-content metadata operation, source-bound snapshot-1 PASS plus >=600-second completed-time gap, bounded timeout/reap, atomic no-overwrite final receipts, and a permanent atomic pre-spawn claim admitting exactly one owner; 16/16 fixtures pass.",
+  "remaining_gates": "External remediation, D-state, vmstat, whole-root-search/blocked-sync placement conditions remain conjunctive and unobserved. Both live snapshots and all other H1 re-entry gates remain outstanding.",
+  "decision": "V4 may be considered for separately authorized coordinator-controlled execution only after every external placement precondition passes. This review is not current H1 readiness or launch authorization.",
+  "execution_state": "No live runner/mount probe or process/service/mount/H5/voltage/recording/sort/RF/holdout action occurred.",
+  "reviewer_next_state": "checked in with HubMultiCoordinater"
+}
