@@ -1,0 +1,77 @@
+{
+  "schema": "noise-cutoff-interpretation-audit-results-v1",
+  "status": "COMPLETE_SCOPED_DESCRIPTIVE",
+  "primary_population": "in_scoring_domain units, separate by probe and arm",
+  "headline": {
+    "imec0": {
+      "A": {"units": 653, "finite_fail": 434, "undefined": 24, "failure_prevalence": 0.664624808575804, "undefined_prevalence": 0.036753445635528334},
+      "REF": {"units": 586, "finite_fail": 308, "undefined": 5, "failure_prevalence": 0.5255972696245734, "undefined_prevalence": 0.008532423208191127},
+      "A_minus_REF_failure_gap": 0.13902753895123054,
+      "finite_only_failure_gap": 0.15986361982109673
+    },
+    "imec1": {
+      "A": {"units": 553, "finite_fail": 401, "undefined": 17, "failure_prevalence": 0.7251356238698011, "undefined_prevalence": 0.03074141048824593},
+      "REF": {"units": 451, "finite_fail": 287, "undefined": 5, "failure_prevalence": 0.6363636363636364, "undefined_prevalence": 0.011086474501108648},
+      "A_minus_REF_failure_gap": 0.08877198750616477,
+      "finite_only_failure_gap": 0.10463657051067526
+    }
+  },
+  "frozen_explanations": {
+    "low_spike_counts": {
+      "supported_as_primary": false,
+      "evidence": "count-stratum standardization changes the imec0 gap from 0.1390 to 0.1465 and imec1 from 0.0888 to 0.1411; excluding units below 1000 spikes leaves gaps of 0.1234 and 0.0577",
+      "interpretation": "low counts concentrate undefined values, but finite failures concentrate in higher-count units and the arm gap is not removed"
+    },
+    "q_state_composition": {
+      "supported_as_primary": false,
+      "evidence": "q-activity standardization leaves gaps of 0.1310 (imec0) and 0.1120 (imec1), with 100% common-stratum coverage"
+    },
+    "mixed_q_units": {
+      "gap_persists": true,
+      "imec0_A_minus_REF_gap": 0.18905439553132064,
+      "imec1_A_minus_REF_gap": 0.17591741948655126,
+      "interpretation": "the gap is not a displaced-only compositional artifact"
+    },
+    "displaced_only_units": {
+      "supported_as_primary": false,
+      "imec0_A_minus_REF_gap": 0.13753930136621648,
+      "imec1_A_minus_REF_gap": 0.07486136775572825,
+      "interpretation": "a same-sign gap exists, but q standardization does not reduce the headline gap and mixed-q gaps are larger"
+    },
+    "ordinary_interior_units": {
+      "gap_persists": true,
+      "imec0_A_minus_REF_gap": 0.15543426039609243,
+      "imec1_A_minus_REF_gap": 0.08927298137531736,
+      "interpretation": "the gap is not confined to scoring-domain edges"
+    },
+    "both_q0_and_displaced_failure": {
+      "common_in_both_arms": true,
+      "imec0_state_eligible_fraction": {"A": 0.4511627906976744, "REF": 0.38516746411483255},
+      "imec1_state_eligible_fraction": {"A": 0.6005291005291006, "REF": 0.5993975903614458},
+      "supported_as_primary_arm_gap_explanation": false,
+      "interpretation": "persistent subset failures are common, but the A-REF difference is modest on imec0 and nearly zero on imec1; subset-histogram values are not motion-effect estimates"
+    }
+  },
+  "measurement_fitness": {
+    "full_noise_cutoff_nonfinite_rows_all_domains": 62,
+    "q0_noise_cutoff_nonfinite_rows_all_domains": 375,
+    "displaced_noise_cutoff_nonfinite_rows_all_domains": 189,
+    "amplitude_distribution_saved": false,
+    "exact_executed_evaluator_bytes_available_on_h1_shared": false,
+    "comparable_claim": "saved pass/fail fields use a common named cutoff and threshold within this census",
+    "not_comparable_claim": "full, q0, and displaced numeric cutoffs are not paired effect estimates because their histograms use different event subsets and subset-dependent support"
+  },
+  "recommendation": {
+    "decision": "do not attribute the noise-cutoff gap to low counts, displaced-only composition, q-state mix, or depth-edge mix on the available tables",
+    "cheapest_repair": "publish the exact executed evaluator snapshot and emit compact per-unit full/q0/displaced histogram sufficient statistics and estimator diagnostics (finite event count, binning/range, peak, occupied-tail count, high-tail count/mean/std, first-low count, cutoff margin, undefined reason)",
+    "next_diagnostic": "recompute the frozen cutoff from those compact sufficient statistics and separate estimator instability/undefined reasons from genuine low-amplitude truncation before considering raw-voltage or waveform work",
+    "new_sort_or_raw_voltage_needed": false
+  },
+  "limits": [
+    "descriptive unit populations, not matched biological identities",
+    "no causal arm or sorter-stage attribution",
+    "no claim that noise cutoff proves physical amplitude completeness",
+    "no inference from state-specific cutoff differences to motion effects",
+    "exact field assignment and evaluator version remain provenance-qualified until the exact executed source bytes are published"
+  ]
+}

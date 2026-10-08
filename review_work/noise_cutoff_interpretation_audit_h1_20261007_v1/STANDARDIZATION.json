@@ -1,0 +1,204 @@
+[
+  {
+    "absolute_gap_reduction_fraction": -0.05385931548623879,
+    "arms": {
+      "A": {
+        "raw_failure_prevalence": 0.664624808575804,
+        "raw_undefined_prevalence": 0.036753445635528334,
+        "standardized_failure_prevalence": 0.6673561901713407,
+        "standardized_undefined_prevalence": 0.03546572153793967
+      },
+      "REF": {
+        "raw_failure_prevalence": 0.5255972696245734,
+        "raw_undefined_prevalence": 0.008532423208191127,
+        "standardized_failure_prevalence": 0.5208407231384605,
+        "standardized_undefined_prevalence": 0.008503070037678036
+      }
+    },
+    "common_strata": [
+      "0_to_99",
+      "100_to_999",
+      "1000_to_9999",
+      "ge_10000"
+    ],
+    "common_support_coverage": 1.0,
+    "factor": "spike_count_stratum",
+    "meets_frozen_primary_composition_rule": false,
+    "pooled_weights": {
+      "0_to_99": 0.01937046004842615,
+      "1000_to_9999": 0.3309120258272801,
+      "100_to_999": 0.2655367231638418,
+      "ge_10000": 0.384180790960452
+    },
+    "probe": "imec0",
+    "raw_arm_gap_A_minus_REF": 0.13902753895123054,
+    "standardized_arm_gap_A_minus_REF": 0.1465154670328802
+  },
+  {
+    "absolute_gap_reduction_fraction": 0.057880862087049234,
+    "arms": {
+      "A": {
+        "raw_failure_prevalence": 0.664624808575804,
+        "raw_undefined_prevalence": 0.036753445635528334,
+        "standardized_failure_prevalence": 0.6500157588254556,
+        "standardized_undefined_prevalence": 0.03281754745997562
+      },
+      "REF": {
+        "raw_failure_prevalence": 0.5255972696245734,
+        "raw_undefined_prevalence": 0.008532423208191127,
+        "standardized_failure_prevalence": 0.5190352536825631,
+        "standardized_undefined_prevalence": 0.007473375255807235
+      }
+    },
+    "common_strata": [
+      "displaced_only_q0_fraction_lt_0.10",
+      "q0_dominant_displaced_fraction_lt_0.10",
+      "mixed"
+    ],
+    "common_support_coverage": 1.0,
+    "factor": "q_activity_stratum",
+    "meets_frozen_primary_composition_rule": false,
+    "pooled_weights": {
+      "displaced_only_q0_fraction_lt_0.10": 0.21307506053268765,
+      "mixed": 0.5682001614205004,
+      "q0_dominant_displaced_fraction_lt_0.10": 0.21872477804681195
+    },
+    "probe": "imec0",
+    "raw_arm_gap_A_minus_REF": 0.13902753895123054,
+    "standardized_arm_gap_A_minus_REF": 0.1309805051428925
+  },
+  {
+    "absolute_gap_reduction_fraction": 0.017192269034826513,
+    "arms": {
+      "A": {
+        "raw_failure_prevalence": 0.664624808575804,
+        "raw_undefined_prevalence": 0.036753445635528334,
+        "standardized_failure_prevalence": 0.6641931133456557,
+        "standardized_undefined_prevalence": 0.03627644305610408
+      },
+      "REF": {
+        "raw_failure_prevalence": 0.5255972696245734,
+        "raw_undefined_prevalence": 0.008532423208191127,
+        "standardized_failure_prevalence": 0.5275557732473245,
+        "standardized_undefined_prevalence": 0.008492867000597626
+      }
+    },
+    "common_strata": [
+      "inside_lt_100_um",
+      "inside_100_to_lt_200_um",
+      "inside_ge_200_um"
+    ],
+    "common_support_coverage": 1.0,
+    "factor": "depth_stratum",
+    "meets_frozen_primary_composition_rule": false,
+    "pooled_weights": {
+      "inside_100_to_lt_200_um": 0.05972558514931396,
+      "inside_ge_200_um": 0.8845843422114609,
+      "inside_lt_100_um": 0.05569007263922518
+    },
+    "probe": "imec0",
+    "raw_arm_gap_A_minus_REF": 0.13902753895123054,
+    "standardized_arm_gap_A_minus_REF": 0.13663734009833117
+  },
+  {
+    "absolute_gap_reduction_fraction": -0.5898205259956011,
+    "arms": {
+      "A": {
+        "raw_failure_prevalence": 0.7251356238698011,
+        "raw_undefined_prevalence": 0.03074141048824593,
+        "standardized_failure_prevalence": 0.7404885588463388,
+        "standardized_undefined_prevalence": 0.027872172614523835
+      },
+      "REF": {
+        "raw_failure_prevalence": 0.6363636363636364,
+        "raw_undefined_prevalence": 0.011086474501108648,
+        "standardized_failure_prevalence": 0.599357030975613,
+        "standardized_undefined_prevalence": 0.012099039738481969
+      }
+    },
+    "common_strata": [
+      "0_to_99",
+      "100_to_999",
+      "1000_to_9999",
+      "ge_10000"
+    ],
+    "common_support_coverage": 1.0,
+    "factor": "spike_count_stratum",
+    "meets_frozen_primary_composition_rule": false,
+    "pooled_weights": {
+      "0_to_99": 0.029880478087649404,
+      "1000_to_9999": 0.23904382470119523,
+      "100_to_999": 0.24402390438247012,
+      "ge_10000": 0.48705179282868527
+    },
+    "probe": "imec1",
+    "raw_arm_gap_A_minus_REF": 0.08877198750616477,
+    "standardized_arm_gap_A_minus_REF": 0.1411315278707258
+  },
+  {
+    "absolute_gap_reduction_fraction": -0.2613999871557071,
+    "arms": {
+      "A": {
+        "raw_failure_prevalence": 0.7251356238698011,
+        "raw_undefined_prevalence": 0.03074141048824593,
+        "standardized_failure_prevalence": 0.7326755099661431,
+        "standardized_undefined_prevalence": 0.026662695808883002
+      },
+      "REF": {
+        "raw_failure_prevalence": 0.6363636363636364,
+        "raw_undefined_prevalence": 0.011086474501108648,
+        "standardized_failure_prevalence": 0.6206985260660802,
+        "standardized_undefined_prevalence": 0.013025019550138585
+      }
+    },
+    "common_strata": [
+      "displaced_only_q0_fraction_lt_0.10",
+      "q0_dominant_displaced_fraction_lt_0.10",
+      "mixed"
+    ],
+    "common_support_coverage": 1.0,
+    "factor": "q_activity_stratum",
+    "meets_frozen_primary_composition_rule": false,
+    "pooled_weights": {
+      "displaced_only_q0_fraction_lt_0.10": 0.16334661354581673,
+      "mixed": 0.5607569721115537,
+      "q0_dominant_displaced_fraction_lt_0.10": 0.27589641434262946
+    },
+    "probe": "imec1",
+    "raw_arm_gap_A_minus_REF": 0.08877198750616477,
+    "standardized_arm_gap_A_minus_REF": 0.11197698390006283
+  },
+  {
+    "absolute_gap_reduction_fraction": -0.01407038787871695,
+    "arms": {
+      "A": {
+        "raw_failure_prevalence": 0.7251356238698011,
+        "raw_undefined_prevalence": 0.03074141048824593,
+        "standardized_failure_prevalence": 0.7248138921143299,
+        "standardized_undefined_prevalence": 0.030778504866970736
+      },
+      "REF": {
+        "raw_failure_prevalence": 0.6363636363636364,
+        "raw_undefined_prevalence": 0.011086474501108648,
+        "standardized_failure_prevalence": 0.6347928483111888,
+        "standardized_undefined_prevalence": 0.011122618280194872
+      }
+    },
+    "common_strata": [
+      "inside_lt_100_um",
+      "inside_100_to_lt_200_um",
+      "inside_ge_200_um"
+    ],
+    "common_support_coverage": 1.0,
+    "factor": "depth_stratum",
+    "meets_frozen_primary_composition_rule": false,
+    "pooled_weights": {
+      "inside_100_to_lt_200_um": 0.07569721115537849,
+      "inside_ge_200_um": 0.8386454183266933,
+      "inside_lt_100_um": 0.08565737051792828
+    },
+    "probe": "imec1",
+    "raw_arm_gap_A_minus_REF": 0.08877198750616477,
+    "standardized_arm_gap_A_minus_REF": 0.09002104380314113
+  }
+]

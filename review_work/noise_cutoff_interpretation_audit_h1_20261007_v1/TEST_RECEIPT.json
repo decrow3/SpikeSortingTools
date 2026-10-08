@@ -1,0 +1,10 @@
+{
+  "schema": "noise-cutoff-interpretation-audit-test-receipt-v1",
+  "command": "pytest -q review_work/noise_cutoff_interpretation_audit_h1_20261007_v1/test_run_audit.py",
+  "result": "3 passed in 0.26s",
+  "coverage": [
+    "undefined/pass/fail threshold boundary",
+    "pure composition gap removed by standardization",
+    "within-stratum gap retained by standardization"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "noise-cutoff-interpretation-audit-provenance-v1",
+  "created_local": "2026-10-07T22:14:53-07:00",
+  "host": "huklaban1",
+  "owner": "H1",
+  "contract_frozen_before_category_aggregation": true,
+  "analysis_source": "run_audit.py",
+  "input": "/mnt/NPX/Luke/DARTsort_motion_experiments/post_sort_structure_census_h5_20261007_v1/CENSUS_UNITS.csv",
+  "input_sha256": "7d74b41e37ac4d5606decbc7caf5efd0ac8cf5ad3d9cda86ac6bfff2c38cccc7",
+  "resources": {
+    "raw_voltage_bytes_read": 0,
+    "bulk_arrays_read_or_moved": 0,
+    "gpu_used": false,
+    "sort_or_fit_run": false,
+    "rf_or_holdout_access": false,
+    "new_h5_output_requested": false
+  },
+  "interpretation_scope": "existing compact saved per-unit QC table only"
+}

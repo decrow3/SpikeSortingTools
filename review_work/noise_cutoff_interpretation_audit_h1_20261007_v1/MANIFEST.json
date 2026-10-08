@@ -1,0 +1,23 @@
+{
+  "schema": "immutable-packet-manifest-v1",
+  "created_local": "2026-10-07T22:19:47-07:00",
+  "packet": "noise_cutoff_interpretation_audit_h1_20261007_v1",
+  "members": [
+    {"path": "AUDIT_REPORT.md", "bytes": 7426, "sha256": "addaa978ae24da3cf4ca1be6564792b433fe22773b03d1495dae3d7a273e7f67"},
+    {"path": "DATA_QUALITY.json", "bytes": 2055, "sha256": "539fa3186c559fdb67510e1002d1f2064a244d670cab512dd39968ae16823e31"},
+    {"path": "FROZEN_CONTRACT.md", "bytes": 7021, "sha256": "a48071358e96ab8cde0927b9e8933fabcadb9758ed48524b6e090965e6f825f6"},
+    {"path": "HEADLINE.csv", "bytes": 780, "sha256": "3ed39324bc7240c8857865accf4599c9fdd3f626428bf400a2112fe2b285dbb8"},
+    {"path": "INTERPRETATION_RULE_RESULTS.json", "bytes": 665, "sha256": "96eeaf4199e1b31b99e50656d1d7f0d8d394c7e9a851fbe92d9b85ef38e4fe69"},
+    {"path": "PROVENANCE.json", "bytes": 738, "sha256": "42c2acf69692d773c914b3d33ac68135093e18fccb6cc5a8d45310c07740662c"},
+    {"path": "RESULTS.json", "bytes": 4840, "sha256": "b83abae5f1c5e5737b9ff512b6477eea8465c5000191cef1873f8ffa61be0a2a"},
+    {"path": "SENSITIVITY.csv", "bytes": 868, "sha256": "3c16b2f6cc4a1962125773e39881a096de829fa526ade5d5f020ca8a922cf69b"},
+    {"path": "SOURCE_VERIFICATION.json", "bytes": 1972, "sha256": "ef83406506f4970a6840987845d648e6fcee1f05157497fafe1ab9733dd3f856"},
+    {"path": "STANDARDIZATION.json", "bytes": 7079, "sha256": "abb34b138a6e8e8e454e15c88f0cf64b0006be8ecf5ee442ecb5eb21aae6ffe2"},
+    {"path": "STATE_PERSISTENCE.csv", "bytes": 2100, "sha256": "489106fe2ae598afe547684f28d3dff7efe5bb3439ba2a9c6bb222423fc48702"},
+    {"path": "STATUS_PROFILE.csv", "bytes": 904, "sha256": "7272f5bd0fe74032705fe9d0db18d9ac9a80d885e213972052857cae088e4c4f"},
+    {"path": "STRATIFIED_COUNTS.csv", "bytes": 6713, "sha256": "04f248556588766eadb129d25b3f45c9f72cec844bc0f4203c1a7e1bdfedf531"},
+    {"path": "TEST_RECEIPT.json", "bytes": 381, "sha256": "faa3c8f8a8ada640269e916ff2981b73c2699c5650956ac2a7055d7db547e918"},
+    {"path": "run_audit.py", "bytes": 15155, "sha256": "907339448592545b6fc7b8324e548ae0502ad11422ec3e637923140de7f92533"},
+    {"path": "test_run_audit.py", "bytes": 1704, "sha256": "2568d54a29d47cd76fe002cf15d5ccd31fb4b19334cc5919ca8dcd32c1575be6"}
+  ]
+}

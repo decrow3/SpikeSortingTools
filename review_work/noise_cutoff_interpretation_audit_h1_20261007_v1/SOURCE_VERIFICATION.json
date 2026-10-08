@@ -1,0 +1,35 @@
+{
+  "schema": "noise-cutoff-interpretation-audit-source-verification-v1",
+  "census_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/post_sort_structure_census_h5_20261007_v1",
+    "manifest_sha256": "022ad0e1c558a283a97cabe7f27aaa318701bc228197ea7819ae75bcae2f1028",
+    "complete_sha256": "db6c9ea4f4f0c9f3841cc3bb351947b1aaf04979f7c0ef8257f01bd634ad3d43",
+    "manifest_members_checked": 16,
+    "member_hash_or_size_failures": 0,
+    "complete_binds_manifest": true
+  },
+  "consumed_members": {
+    "CENSUS_UNITS.csv": "7d74b41e37ac4d5606decbc7caf5efd0ac8cf5ad3d9cda86ac6bfff2c38cccc7",
+    "CONTRACT.json": "e90ad62778b5fa9422102c2f0d9ffeefa0c710a38ceba68d6d79ad9553bf5ea3",
+    "SOURCE.py": "dc33e5d4d536998cfcd74a8d317b979577ab982c20c339e158b32925f74388ac",
+    "AVAILABILITY_LEDGER.csv": "ba7b811a0d736a664c15264c21e72df6015d5928d165ffa1999ee2be92c6f0f9"
+  },
+  "underlying_input_bindings_from_contract": {
+    "imec0_per_unit_REF": "6a15dbfa3041c4ebdf26c6c43e63fcfa290b688eb8d9fd656b63012e519693c7",
+    "imec0_per_unit_A": "f92e866b636bf0630a9a7ad74f9133d8474514541ce43807c57eae601261b3ee",
+    "imec1_per_unit_REF": "6b5d3405a775f43e068aafc3734d9a570f6baa9082e417b824d06c06917e5057",
+    "imec1_per_unit_A": "8ef1bcedd90a6d9559c4e81b991b0d1708a0eea0275b181157b374dc58230f0f"
+  },
+  "executed_evaluator": {
+    "declared_commit": "ba21bc97ad177ba5f2a1b79fb69d37f4f3eac3ad",
+    "declared_sha256": "415f29d7f26102606143d0bd4fbb8ed9a136199a6642e664d50c2a6716b7c423",
+    "exact_bytes_located": false,
+    "nearby_nonbinding_snapshot_sha256": "a31f1349854eff0e4c732063993be37e8cf53de5d206628f66d68a65ff7f341e",
+    "nearby_snapshot_substituted": false
+  },
+  "independent_review": {
+    "path": "review_packets/post_sort_structure_final_review_20261007_v1_h1",
+    "manifest_sha256": "6da6d3da2a6c6fac9b6d570e2c8772cb7c6bfbc2baa3306497c993398ca26759",
+    "complete_sha256": "8ba7624321de95962576e4316419156531e14ed240ec9e7a5ab2d4d91ee878e8"
+  }
+}

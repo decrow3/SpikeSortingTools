@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-packet-complete-v1",
+  "status": "COMPLETE_SCOPED_DESCRIPTIVE",
+  "completed_local": "2026-10-07T22:20:07-07:00",
+  "manifest_path": "MANIFEST.json",
+  "manifest_sha256": "7c669a036277a7658d9a1d2380873dfe3a52e2febf21df8c772012e5cea233f5",
+  "raw_voltage_bytes_read": 0,
+  "rf_or_holdout_access": false,
+  "new_h5_output_requested": false
+}

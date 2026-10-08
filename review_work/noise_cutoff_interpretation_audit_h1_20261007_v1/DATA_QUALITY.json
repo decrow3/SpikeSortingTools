@@ -1,0 +1,96 @@
+{
+  "arm_values": [
+    "A",
+    "REF"
+  ],
+  "boolean_domain_violations": {
+    "displaced_noise_cutoff_pass": 0,
+    "in_scoring_domain": 0,
+    "noise_cutoff_pass": 0,
+    "q0_noise_cutoff_pass": 0
+  },
+  "clock_and_exposure_distinct_values_by_probe": {
+    "imec0": {
+      "displaced_exposure_s": [
+        1907.5
+      ],
+      "duration_s": [
+        10473.5537279367
+      ],
+      "q0_exposure_s": [
+        8566.0537279367
+      ],
+      "sampling_frequency_hz": [
+        29999.8359832636
+      ]
+    },
+    "imec1": {
+      "displaced_exposure_s": [
+        1816.25
+      ],
+      "duration_s": [
+        10473.553879363088
+      ],
+      "q0_exposure_s": [
+        8657.303879363088
+      ],
+      "sampling_frequency_hz": [
+        29999.759166666667
+      ]
+    }
+  },
+  "columns": 72,
+  "cross_arm_numeric_unit_id_overlaps_not_identity": {
+    "imec0": 710,
+    "imec1": 552
+  },
+  "displaced_noise_nonfinite": 189,
+  "duplicate_probe_arm_unit_keys": 0,
+  "full_noise_nonfinite": 62,
+  "missing_required_columns": [],
+  "noise_missingness_by_probe_arm": {
+    "imec0/A": {
+      "displaced": 56,
+      "full": 30,
+      "q0": 165
+    },
+    "imec0/REF": {
+      "displaced": 46,
+      "full": 7,
+      "q0": 58
+    },
+    "imec1/A": {
+      "displaced": 47,
+      "full": 20,
+      "q0": 122
+    },
+    "imec1/REF": {
+      "displaced": 40,
+      "full": 5,
+      "q0": 30
+    }
+  },
+  "probe_values": [
+    "imec0",
+    "imec1"
+  ],
+  "q0_noise_nonfinite": 375,
+  "q_fraction_sum_max_abs_error": 2.220446049250313e-16,
+  "rows": 2766,
+  "rows_by_probe_arm": {
+    "imec0/A": 818,
+    "imec0/REF": 710,
+    "imec1/A": 686,
+    "imec1/REF": 552
+  },
+  "saved_count_stratum_mismatches": 0,
+  "saved_depth_stratum_mismatches": 0,
+  "saved_displaced_pass_mismatches": 0,
+  "saved_full_pass_mismatches": 0,
+  "saved_full_status_mismatches": 0,
+  "saved_q0_pass_mismatches": 0,
+  "saved_q_activity_stratum_mismatches": 0,
+  "source_sha256_matches": true,
+  "state_count_sum_mismatches": 0,
+  "unit_id_repeated_rows_if_probe_arm_ignored": 2658
+}
