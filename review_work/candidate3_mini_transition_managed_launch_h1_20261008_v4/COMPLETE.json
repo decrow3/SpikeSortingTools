@@ -1,0 +1,6 @@
+{
+  "packet": "candidate3_mini_transition_managed_launch_h1_20261008_v4",
+  "status": "complete",
+  "verdict": "FROZEN_AWAITING_CHANGED_BOUNDARY_REVIEW_DO_NOT_START",
+  "manifest_sha256": "ac55b926edc2534f34120e1a6be0e71a4b0c4c8f60bb1ccb49bd082343c3d153"
+}

@@ -8,6 +8,7 @@ import pytest
 
 from testing.candidate3_mini_transition_managed import (
     finalize,
+    launch,
     run_child,
     sha256,
     tree_file_bytes,
@@ -45,9 +46,13 @@ def contract_fixture(tmp_path: Path) -> tuple[Path, dict]:
         "attempt_root": str(tmp_path / "attempt"),
         "preflight_failure_receipt": str(tmp_path / "failure.json"),
         "preflight_manager_receipt": str(tmp_path / "manager.json"),
+        "outer_launch_receipt": str(tmp_path / "outer.json"),
         "ordinary_root": str(ordinary),
         "baseline_bytes": input_path.stat().st_size + ordinary_file.stat().st_size,
         "minimum_free_bytes": 1,
+        "service_unit": "candidate3-nonexistent-test.service",
+        "manager_properties": {},
+        "systemd_argv": [sys.executable, "-c", "raise SystemExit(9)"],
     }
     path = packet / "RUN_CONTRACT.json"
     path.write_text(json.dumps(contract))
@@ -119,7 +124,25 @@ def test_finalize_writes_separate_manager_receipt(tmp_path, monkeypatch):
     monkeypatch.setenv("SERVICE_RESULT", "exit-code")
     monkeypatch.setenv("EXIT_CODE", "exited")
     monkeypatch.setenv("EXIT_STATUS", "7")
+    monkeypatch.setattr(
+        "testing.candidate3_mini_transition_managed.service_properties",
+        lambda unit, names: {"LoadState": "loaded"},
+    )
     assert finalize(path, digest) == 0
     saved = json.loads(Path(contract["preflight_manager_receipt"]).read_text())
     assert saved["service_result"] == "exit-code"
     assert saved["exit_status"] == "7"
+
+
+def test_outer_launcher_persists_systemd_failure(tmp_path, monkeypatch):
+    path, contract = contract_fixture(tmp_path)
+    digest = sha256(path)
+    monkeypatch.setattr(
+        "testing.candidate3_mini_transition_managed.service_properties",
+        lambda unit, names: {"LoadState": "not-found", "ActiveState": "inactive", "SubState": "dead"},
+    )
+    assert launch(path, digest) == 9
+    saved = json.loads(Path(contract["outer_launch_receipt"]).read_text())
+    assert saved["state"] == "launch_failed"
+    assert saved["returncode"] == 9
+    assert saved["started_at"] and saved["finished_at"]

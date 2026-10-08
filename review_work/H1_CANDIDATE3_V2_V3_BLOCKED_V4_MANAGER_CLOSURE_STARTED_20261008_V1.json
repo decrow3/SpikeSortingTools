@@ -1,0 +1,40 @@
+{
+  "schema": "hub-coordinator-status-v1",
+  "host": "huklaban1",
+  "owner": "H1",
+  "task_id": "candidate3_missing_transition_launch_closure",
+  "status": "TWO_REVIEW_CYCLES_BLOCKED_V4_MINIMAL_MANAGER_CLOSURE_STARTED",
+  "v2_review": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_independent_review_h1_20261008_v1r1",
+    "manifest_sha256": "d7b4ebe9bac59c199fae51ff2751fe41ca599fb926f1cb285d4b745b9608d7b3",
+    "complete_sha256": "5091f39311a0dadb019bff6127cf9a7e82a71c7f1c6da77dcb3fc99c1b5d9414",
+    "verdict": "BLOCKED_PENDING_PREFLIGHT_BINDING_AND_LAUNCH_RECEIPT_REPAIR",
+    "defective_shared_predecessor": "preserved and non-authoritative due seal chronology"
+  },
+  "v3_author": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v3",
+    "manifest_sha256": "19d0fad9a6796c59549c8ee23f2e8e03f5be1d4a3b4a4f2ca47d44035d3450e9",
+    "complete_sha256": "2d1ee71dc29f577bdcd9fa813f7589b877ea11827487d0be5361cb769b31b1ef",
+    "run_contract_sha256": "c5d4b4c2adc4c16481c3a15fb86520e0eb5d4a68e2331f6729c6a2fdf1f53afa"
+  },
+  "v3_review": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_v3_independent_review_h1_20261008_v1",
+    "manifest_sha256": "f34a0f0be1712507a53da0838d633013378bd63a3de4b89c24bb46f7458317c7",
+    "complete_sha256": "cb5d5428a666aac2e53a3440746cb76c7269478929a60f44381731756f8efe0e",
+    "verdict": "BLOCKED_PENDING_LAUNCH_RECEIPT_AND_CONSUMPTION_REVALIDATION"
+  },
+  "closed_in_v3": "complete four-file input and 22-file ordinary membership/size/hash binding, recomputed 185292925-byte baseline, clean DARTsort worktree gate",
+  "remaining_blockers": [
+    "durable outer systemd-run acceptance/failure receipt plus timestamped terminal manager property snapshot",
+    "repeat full input/ordinary manifest verification immediately before and after reporter consumption"
+  ],
+  "v4_progress": "minimal launcher mode writes atomic outer receipt before systemd-run and final result afterward; main verifies expected cgroup/unit/resource properties and timestamps receipts; finalizer captures timestamp/full manager snapshot; full trees reverified before and after reporter; seven tests pass",
+  "service": "v5 not-found and never launched; v4 will use a fresh unit/output namespace after review",
+  "transition_launched": false,
+  "real_voltage_read": false,
+  "rf_or_holdout_access": false,
+  "d3": "DEFERRED",
+  "next": "freeze one minimal v4 packet, focused review, exact prestart; no transition launch before bound GO",
+  "idle": false,
+  "active_plan_sha256": "c26d63dfe9ae94312485d57ec99f1a3c4d7d089806b84485099d4afb4f12554f"
+}

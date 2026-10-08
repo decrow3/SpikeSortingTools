@@ -1,0 +1,22 @@
+{
+  "schema": "candidate3-mini-transition-launch-wrapper-v4",
+  "state": "FROZEN_NOT_LAUNCHED_AWAITING_CHANGED_BOUNDARY_REVIEW",
+  "unit": "candidate3-mini-transition-v6.service",
+  "run_contract_sha256": "db34b9b91cb3581e7592a5bb5f65651a0a34da187db50263d63786f64bde339a",
+  "argv": [
+    "/home/huklab/Documents/DARTsort/.venv/bin/python",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v4/source/candidate3_mini_transition_managed.py",
+    "launch",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v4/RUN_CONTRACT.json",
+    "db34b9b91cb3581e7592a5bb5f65651a0a34da187db50263d63786f64bde339a"
+  ],
+  "manager_state_check": [
+    "/usr/bin/systemctl",
+    "--user",
+    "show",
+    "candidate3-mini-transition-v6.service",
+    "--property=LoadState,ActiveState,SubState,MainPID,ExecMainStatus,ExecMainCode,Result,NRestarts,ExecMainStartTimestamp,ExecMainExitTimestamp,MemoryCurrent,MemoryPeak,CPUUsageNSec,InvocationID"
+  ],
+  "automatic_retry": false,
+  "launched": false
+}
