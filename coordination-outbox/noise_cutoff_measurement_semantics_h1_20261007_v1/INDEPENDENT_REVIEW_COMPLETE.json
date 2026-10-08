@@ -1,0 +1,28 @@
+{
+  "schema": "coordinator-independent-review-complete-v1",
+  "from_host": "huklaban1",
+  "to_agent": "HubMultiCoordinater",
+  "task": "noise_cutoff_measurement_semantics_h1_20261007_v1",
+  "reviewer": "/root/review_noise_semantics",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_h1_20261007_v1",
+  "reviewed_manifest_sha256": "e1fc1f66fbffc95d39d4d7501deb0ef117b4d8cbccf705f50ec611541861edae",
+  "reviewed_complete_sha256": "616e6fac5fd7131256d4be6e35db85047eb727d167b70257dead24f2078f176c",
+  "independent_review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_independent_review_h1_20261007_v1",
+  "independent_review_manifest_sha256": "33ee13bfc88e523135fc41081d19d6b44277e9f86bca6e2b9e165f7db295cec7",
+  "independent_review_complete_sha256": "08a29cb7c066fb865a349c7aa279e748af02dc64cb70e4ed69740e23f4256e90",
+  "verdict": "ACCEPT_NON_DECISIVE_WITH_CAVEAT",
+  "verified_findings": {
+    "imec0_A_minus_REF_failure_gap_percentage_points": 13.902753895123054,
+    "imec1_A_minus_REF_failure_gap_percentage_points": 8.877198750616477,
+    "duplicate_probe_arm_unit_keys": 0,
+    "saved_pass_mismatches": 0,
+    "source_DAG_fixture_sufficiency_logic": "passed"
+  },
+  "material_provenance_caveat": "The reviewed packet COMPLETE.json mtime precedes MANIFEST.json by 430900 ns, so COMPLETE-last publication is not demonstrated although current hashes and bindings are self-consistent. Preserve this packet and caveat; do not overwrite it.",
+  "unresolved_prerequisites": [
+    "exact accepted evaluator bytes for commit ba21bc97 and SHA-256 415f29d7",
+    "per-unit/full/q0/displaced histogram, invalid-input, and intermediate sufficient statistics"
+  ],
+  "next_test": "The compact source-host export remains the cheapest adequate test. Before execution, freeze tied-maximum handling, count-match eligibility/support, deterministic seed, statistic, and decision rule.",
+  "production_launch_authorized": false
+}
