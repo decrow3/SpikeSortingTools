@@ -1,0 +1,11 @@
+{
+  "files": {
+    "ADVERSARIAL_RESULTS.json": "48e77a12f0da9b6b0d13ba049820241e23048a999c82aa17b86f7a557098a0ce",
+    "CHECKS.json": "006efc5a5e0e16e8d355c8ce6429d8293f06eb5444c86ccb6b051cb846205b95",
+    "PROVENANCE.json": "4de19d83d18dcc8b2595fde7d5699940a50f4f11a966891d74553546560ce21a",
+    "REPORT.md": "62bee9a2034932f66aacd07a5f3e94125207b85edec75a56c5b4c3c4286fae28",
+    "adversarial_checks.py": "aad9adbab1cb0796d541098025fb0a2ab4a8a20976aa37c3ffd1712c72272227"
+  },
+  "packet": "candidate3_mini_transition_managed_launch_independent_review_h1_20261008_v1",
+  "verdict": "BLOCKED_PENDING_PREFLIGHT_BINDING_AND_LAUNCH_RECEIPT_REPAIR"
+}

@@ -1,0 +1,49 @@
+{
+  "baseline": {
+    "contract_bytes": 185309309,
+    "current_input_bytes": 57081256,
+    "current_ordinary_bytes": 128211669,
+    "current_sum_bytes": 185292925,
+    "difference_bytes": 16384,
+    "note": "The runner trusts the contract scalar and does not recompute it. The observed difference is itself evidence that the scalar is not a current exact tree total."
+  },
+  "blockers": [
+    "report-consumed truth and retained ordinary artifacts are not all hash-bound and adversarial changes pass preflight",
+    "fixed baseline_bytes is not recomputed from the exact launch-time retained/input inventory",
+    "editable DARTsort checkout is checked for HEAD only, not dirty state",
+    "outer systemd-run failure and full timestamped manager-terminal properties have no durable executable receipt"
+  ],
+  "current_state": {
+    "attempt_root_absent": true,
+    "external_manager_receipt_absent": true,
+    "external_prelaunch_failure_absent": true,
+    "service_active_state": "inactive",
+    "service_load_state": "not-found",
+    "service_sub_state": "dead"
+  },
+  "dependencies": {
+    "mini_review_complete_sha256": "dd33c8d59845be8409ae0a26b151f66b61e681ef709930a0621a0cd5a0cb87af",
+    "mini_review_manifest_sha256": "3e3aa9b27637c67b92bc49880dff167e9078802406d7a2990c6a9d92ad6e8a48",
+    "source_recovery_complete_sha256": "11602c0bcf06e9cdff5064e562d799f4b0e3578b167d7aedbf883c40caea9364",
+    "source_recovery_manifest_sha256": "747618557284507285754a868e44f124811d15554a9c94a108ed5cf84dd0d2ff",
+    "v1_review_complete_sha256": "edbedf4cf56112a0e41d9ea72e658563da8b5c33c625df00056c39fe97a9995c",
+    "v1_review_manifest_sha256": "dbce6ec08ea471c235836a544a4efef8f2c835a82b9d6f691d88c5992b44166a"
+  },
+  "passed": [
+    "all six author payload members match MANIFEST and payload-before-MANIFEST-before-COMPLETE ordering",
+    "immutable shared runner producer and reporter paths match RUN_CONTRACT hashes",
+    "freshness and nonsymlink rejection for named paths",
+    "named stale input hash rejection",
+    "storage-cap child termination and in-root cache design",
+    "ExecStopPost finalizer records SERVICE_RESULT EXIT_CODE EXIT_STATUS",
+    "split-root reporter traverses and emits both compact outputs",
+    "transition/report failure is not promoted to success"
+  ],
+  "subject": {
+    "complete_sha256": "558b10ecc7320bbbcf5195266676ebc9520fec447f92e2aab56dcda3a8897da5",
+    "manifest_members_valid": 6,
+    "manifest_sha256": "149a2d3bfb5d4963658c56e7c5675737d952640ceb1059aaf878f942b7d0fe34",
+    "run_contract_sha256": "f8c2f23f011b5f467e75ab80bd5a1da9b9c4abd6522ee3767dd63acc645cea13"
+  },
+  "verdict": "BLOCKED_PENDING_PREFLIGHT_BINDING_AND_LAUNCH_RECEIPT_REPAIR"
+}

@@ -1,0 +1,6 @@
+{
+  "complete": true,
+  "manifest_sha256": "02df2d0c6d951bb56ecc6f67b2a41f32f9c2c8e554512c62dcf106e12864317e",
+  "packet": "candidate3_mini_transition_managed_launch_independent_review_h1_20261008_v1",
+  "verdict": "BLOCKED_PENDING_PREFLIGHT_BINDING_AND_LAUNCH_RECEIPT_REPAIR"
+}

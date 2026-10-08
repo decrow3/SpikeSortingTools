@@ -1,0 +1,17 @@
+{
+  "bound_hash_change_rejected": true,
+  "cap_fixture": "passed: child terminated on 10-byte cap after writing 1000 bytes",
+  "finalizer_has_timestamp": false,
+  "finalizer_records_terminal_tuple": true,
+  "focused_author_tests": "5 passed in 2.07 seconds",
+  "split_root_reporter": {
+    "accounting_json_bytes": 159003,
+    "accounting_json_sha256": "1bdadcb832d1541362d8d5c37f2022d3cabe7d6744204ef7683d16177ec11f01",
+    "accounting_npz_bytes": 1361143,
+    "accounting_npz_sha256": "216a0dd1bd11b1b0661201e1113d55d5c289e2f2c273e42f292a0a30cc54f8c5",
+    "fixture": "retained ordinary synthetic output linked as both arms for plumbing only",
+    "passed": true
+  },
+  "unbound_input_change_accepted": true,
+  "unbound_ordinary_change_accepted": true
+}
