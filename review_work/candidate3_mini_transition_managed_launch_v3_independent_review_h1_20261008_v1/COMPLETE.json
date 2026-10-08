@@ -1,0 +1,6 @@
+{
+  "complete": true,
+  "manifest_sha256": "f34a0f0be1712507a53da0838d633013378bd63a3de4b89c24bb46f7458317c7",
+  "packet": "candidate3_mini_transition_managed_launch_v3_independent_review_h1_20261008_v1",
+  "verdict": "BLOCKED_PENDING_LAUNCH_RECEIPT_AND_CONSUMPTION_REVALIDATION"
+}

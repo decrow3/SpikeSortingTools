@@ -1,0 +1,9 @@
+{
+  "files": {
+    "CHECKS.json": "cd6585776a9074e3d321c8fcc2327b4dd8c94241c3ee975e1c0771099fe7d162",
+    "PROVENANCE.json": "599a01e670df53796d277afc5bf5e6dd44268d1978f8de1373340a8ad3612756",
+    "REPORT.md": "c1264c435f0a88778f80976ff51d90efbb26538ee0d4a819e2360d811b4ecc4b"
+  },
+  "packet": "candidate3_mini_transition_managed_launch_v3_independent_review_h1_20261008_v1",
+  "verdict": "BLOCKED_PENDING_LAUNCH_RECEIPT_AND_CONSUMPTION_REVALIDATION"
+}

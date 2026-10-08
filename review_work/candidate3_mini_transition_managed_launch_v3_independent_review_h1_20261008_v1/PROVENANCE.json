@@ -1,0 +1,11 @@
+{
+  "host": "huklaban1",
+  "scope": "focused independent v3 launch-closure review; no launch or science run",
+  "reviewed_commit": "d633ef1",
+  "runner_sha256": "8eeeb1f2fe3a1143735177f746a7817542dae8ff58ab037c26b0d3615cad146b",
+  "producer_sha256": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a",
+  "reporter_sha256": "e627b1aaba5355a6a156aab908bd6bc4e19f82cfffbb359ffcaf1ee1ef67d32e",
+  "v2_review_manifest_sha256": "d7b4ebe9bac59c199fae51ff2751fe41ca599fb926f1cb285d4b745b9608d7b3",
+  "v2_review_complete_sha256": "5091f39311a0dadb019bff6127cf9a7e82a71c7f1c6da77dcb3fc99c1b5d9414",
+  "excluded": ["systemd launch", "transition sort", "real voltage", "RF/holdout", "D3 outcome"]
+}
