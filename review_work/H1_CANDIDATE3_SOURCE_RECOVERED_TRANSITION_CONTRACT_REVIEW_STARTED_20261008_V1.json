@@ -1,0 +1,39 @@
+{
+  "schema": "hub-coordinator-status-v1",
+  "host": "huklaban1",
+  "owner": "H1",
+  "task_id": "candidate3_missing_transition_resource_amendment",
+  "status": "EXACT_SOURCE_RECOVERED_ORDINARY_REUSE_ELIGIBLE_TRANSITION_CONTRACT_REVIEW_STARTED",
+  "source_recovery": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_e2e_executed_source_recovery_h1_20261008_v1",
+    "manifest_sha256": "747618557284507285754a868e44f124811d15554a9c94a108ed5cf84dd0d2ff",
+    "complete_sha256": "11602c0bcf06e9cdff5064e562d799f4b0e3578b167d7aedbf883c40caea9364",
+    "source_sha256": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a",
+    "verdict": "RECOVERED_EXACT_EXECUTED_SOURCE_REUSE_ELIGIBLE_WITH_CONFIG_CAVEATS"
+  },
+  "mini_independent_review": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_e2e_stage_capability_independent_review_h1_20261008_v2",
+    "manifest_sha256": "3e3aa9b27637c67b92bc49880dff167e9078802406d7a2990c6a9d92ad6e8a48",
+    "complete_sha256": "dd33c8d59845be8409ae0a26b151f66b61e681ef709930a0621a0cd5a0cb87af",
+    "verdict": "PARTIAL_GO_NATIVE_OUTPUT_CAPABILITY_WITH_CONFIG_AND_LAUNCH_CAVEATS"
+  },
+  "ordinary_reuse": "eligible for the same synthetic mini comparison; no readiness, benefit, identity, purity, or causal claim",
+  "transition_contract": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_resource_contract_h1_20261008_v1",
+    "manifest_sha256": "847eee86d2dc461b1a6fd88ceb229d8f78440ae90faaf416035eb08e57bb134c",
+    "complete_sha256": "fb48e3fe9e54432de3f04675da74982ebb15bb1d9eecc983129ba0288842bfd2",
+    "status": "FROZEN_AWAITING_INDEPENDENT_REVIEW_DO_NOT_START",
+    "total_cap_bytes": 536870912,
+    "runtime_max_seconds": 2700,
+    "memory_max_bytes": 17179869184,
+    "fresh_output": "/tmp/candidate3_mini_e2e_20261008_v4/runs/transition"
+  },
+  "review": "independent contract/launch review assigned and acknowledged; no transition launched",
+  "commit": "50e5760",
+  "real_voltage_read": false,
+  "rf_or_holdout_access": false,
+  "d3": "DEFERRED",
+  "next": "consume independent contract verdict; launch only on GO with exact preflight and managed service, otherwise preserve and repair in a new namespace",
+  "idle": false,
+  "active_plan_sha256": "c26d63dfe9ae94312485d57ec99f1a3c4d7d089806b84485099d4afb4f12554f"
+}
