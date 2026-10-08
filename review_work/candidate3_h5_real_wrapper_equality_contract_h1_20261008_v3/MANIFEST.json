@@ -1,0 +1,16 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "V3_RELEASE_JOIN_REPAIR_READY_FOR_REVIEW_REAL_EXECUTION_DISABLED",
+  "members": {
+    "CONTRACT.json": {"size": 12326, "sha256": "6cb5c29b806b63021bf9edef87535718f24efc9ff27842d9e4e34c3e06e56037"},
+    "CORRECTION.md": {"size": 1877, "sha256": "dc28f56cfa1def05d22a10ffc56ec4a29ab76f8a8b898c8a40ca887c82132015"},
+    "PROVENANCE.json": {"size": 821, "sha256": "2233863ffd111256509825ef0fc65ea873c0819303367dca74b800050ec5f2e4"},
+    "RUNNER.py": {"size": 27449, "sha256": "0bed993b8718f29591b92884e88b65f2bf8a6780cce49490b869ba82823f1f7e"},
+    "self_test_success/COMPLETE.json": {"size": 178, "sha256": "effc8024c32ed35bd3adebdb4c0448d7b206682e484e19aa8eb98bb17397c8d5"},
+    "self_test_success/CONTRACT_COPY.json": {"size": 12326, "sha256": "6cb5c29b806b63021bf9edef87535718f24efc9ff27842d9e4e34c3e06e56037"},
+    "self_test_success/INTERPRETATION_FREEZE.json": {"size": 1991, "sha256": "c69c0277c350cc03cfdf36976b9fb2c65f080faa417c9cde56b05a37424fece6"},
+    "self_test_success/MANIFEST.json": {"size": 659, "sha256": "c11c2ceb85277ce8eb0a2113e5929b877e4e48fc1417a047c5f9c7ad1c347449"},
+    "self_test_success/PROVENANCE.json": {"size": 1896, "sha256": "62b7ddbf91758e39a13d91dcc75123a09b3c626ee412936f1b84d08b34b9aacc"},
+    "self_test_success/RESULT.json": {"size": 5558, "sha256": "f5b2fbdc63fc5cd7ba577c56de4671383de9d0ef91489d2acbc21737392105a0"}
+  }
+}
