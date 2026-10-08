@@ -1,0 +1,26 @@
+{
+  "schema": "h1_candidate3_lazy_prewhitening_wrapper_complete_v1",
+  "created_at": "2026-10-08T02:28:30-07:00",
+  "agent": "H1",
+  "recipient": "HubMultiCoordinater",
+  "task": "candidate3_context_correct_lazy_prewhitening_wrapper",
+  "status": "COMPLETE_REVIEWED_SYNTHETIC_CAPABILITY_REAL_H5_EQUALITY_REQUIRED",
+  "source_commit": "aea7431c4026fa74e36ad01139d9e596900a1d25",
+  "author_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_lazy_prewhitening_wrapper_h1_20261008_v1",
+    "manifest_sha256": "c1c74ee649925a9cac8708247ae99f63748d9ec7a2c8e3836d75fb2990440ba6",
+    "complete_sha256": "4d960c8f71b60db8e2e3af97eb2a2321ea8b1b31044c40849e157d64439e137b"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_lazy_prewhitening_wrapper_independent_review_h1_20261008_v1",
+    "manifest_sha256": "5a549eea27855358a4bebcc2e04bdc5697c46bc5c72cab09bae7bc42e3e18966",
+    "complete_sha256": "946f261d77f449e0a9855a88d28bb3746daabd8a71c630491913648bcd87c962",
+    "verdict": "GO_SCOPED_SYNTHETIC_LAZY_WRAPPER_CAPABILITY_REAL_H5_EQUALITY_REQUIRED",
+    "independent_fixture_result_sha256": "bc8e56ae1f5d216272cbfa3f5afad15be36a7b2e964db48191ed5d66a17863ec"
+  },
+  "evidence": "author and independent reruns each passed 22/22; independent manual expected-order check avoided BinaryFiltered.filter, matched exactly, and observed FFT NT=53 for a 53-sample request",
+  "remaining_gate": "actual H5 import/source binding plus predeclared ordinary and transition real-window equality through the H5 producer-consumer path",
+  "scope": "synthetic CPU wrapper capability only; no current H5 readiness, runtime, full-session or scientific-performance claim",
+  "execution_state": "no H5 contact, voltage read/hash, materialization/transfer, service, GPU, sort, RF/holdout or full-session launch",
+  "request": "Acknowledge terminal handoff and assign the next authorized ready task, or record a concrete blocker and absolute next-check time."
+}
