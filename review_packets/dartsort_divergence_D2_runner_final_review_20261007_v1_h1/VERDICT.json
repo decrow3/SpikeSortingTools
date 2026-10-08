@@ -1,0 +1,30 @@
+{
+  "schema": "dartsort-divergence-d2-h1-final-review-v1",
+  "status": "GO_TO_FREEZE_SEPARATE_PRODUCTION_CONTRACT_WITH_GATES",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D2_runner_preparation_h5_20261007_v1",
+  "reviewed_manifest_sha256": "ed86629295c0c33509959455e62281bd7f4bdd5b273483d178182916f86fb000",
+  "reviewed_complete_sha256": "fa884dab92679debe920b630dca3795ba642e29927a4a5a46d663884625b6198",
+  "reviewed_contract_sha256": "6cdb54829765857fbf4bc61b37850603c5f16a503e086988cab14d833881e696",
+  "provisional_manifest_sha256": "416b0520385189c068497ed789eafd87d0d0458b8c50397abe1ce1e8d6a3f495",
+  "direct_tests": "5 passed",
+  "managed_success_exit_status": 0,
+  "managed_expected_failure_exit_status": 2,
+  "managed_expected_failure_only_failure_json": true,
+  "repaired_boundaries": [
+    "pre-parse literal contract hash authentication",
+    "immutable packet-relative fixture path and hash binding",
+    "no-write refusal for every pre-existing output namespace"
+  ],
+  "production_execution_authorized_by_review": false,
+  "required_next_owner": "HubMultiCoordinater freezes a separate bounded production contract",
+  "execution": "SYNTHETIC_REVIEW_ONLY_NO_PRODUCTION_ARRAYS_NO_VOLTAGE_NO_REPLAY_NO_SORT_NO_RF_HOLDOUT",
+  "can_establish": "synthetic runner fail-closed behavior and readiness for a separate production contract freeze",
+  "cannot_establish": [
+    "production resource sufficiency",
+    "real event divergence",
+    "exact historical REF executable semantics",
+    "biological identity or purity",
+    "sorter-only causality",
+    "production benefit"
+  ]
+}
