@@ -1,0 +1,6 @@
+{
+  "schema": "immutable-evidence-complete-v1",
+  "completed_at": "2026-10-08T03:51:02-07:00",
+  "status": "NO_GO_REPAIR_PLACEMENT_RECEIPT_AND_TIMEOUT_RACE_ENFORCEMENT",
+  "manifest_sha256": "9c9142db34fb7fba6f54973d9d2009eb27bb9710e535dd5549e8a4762c1b223f"
+}

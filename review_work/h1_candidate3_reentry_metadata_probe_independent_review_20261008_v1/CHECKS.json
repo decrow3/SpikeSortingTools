@@ -1,0 +1,21 @@
+{
+  "schema": "h1-candidate3-reentry-metadata-probe-independent-review-checks-v1",
+  "reviewed_contract_sha256": "0ee4e95e055d7f478c3128f2f3f775a056fbcec77d31f464f8887db4f8c02ed1",
+  "reviewed_runner_sha256": "356c8427009d1ceaac12d3fba64df21c3891ee3c30ad07d386a48c0a639e8f89",
+  "checks": {
+    "packet_seal_and_shared_copy": "PASS",
+    "exact_target_members_and_sizes": "PASS",
+    "single_enumeration_no_recursion_no_content_reads": "PASS",
+    "five_second_worker_aggregate": "PASS_SCOPED_TO_WORKER_START_THROUGH_EXIT",
+    "timeout_and_unreaped_worker_fail_closed": "PASS_NORMAL_PATH_KILL_RACE_UNHANDLED",
+    "snapshot_count_distinct_paths": "PASS",
+    "snapshot2_requires_snapshot1_pass_and_600_seconds": "FAIL_NOT_ENFORCED",
+    "local_receipt_storage": "PASS",
+    "atomic_no_overwrite_receipt": "FAIL_CHECK_THEN_REPLACE_RACE",
+    "source_contract_binding": "PASS",
+    "fixtures": "PASS_8_OF_8_GAPS_NOT_COVERED",
+    "pre_freeze_stat_disclosure": "PASS_NOT_A_READINESS_RESULT",
+    "live_runner": "NOT_EXECUTED"
+  },
+  "verdict": "NO_GO_REPAIR_PLACEMENT_RECEIPT_AND_TIMEOUT_RACE_ENFORCEMENT"
+}

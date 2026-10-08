@@ -1,0 +1,22 @@
+{
+  "schema": "coordination-handoff-v1",
+  "host": "huklaban1",
+  "task_key": "h1_candidate3_reentry_metadata_probe_v1_independent_review",
+  "reported_at": "2026-10-08T03:51:30-07:00",
+  "terminal_state": "NO_GO_REPAIR_PLACEMENT_RECEIPT_AND_TIMEOUT_RACE_ENFORCEMENT",
+  "author_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/h1_candidate3_reentry_metadata_probe_20261008_v1",
+    "manifest_sha256": "54791a9105f8bd97e0607c88a695642bf2ec3cbb29d09e9441b5811f50490b34",
+    "complete_sha256": "59f710727ef64d7cacbdaaaa4e0b9a992163bd4ea7c94062f8ac5012054e7252"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/h1_candidate3_reentry_metadata_probe_independent_review_20261008_v1",
+    "manifest_sha256": "9c9142db34fb7fba6f54973d9d2009eb27bb9710e535dd5549e8a4762c1b223f",
+    "complete_sha256": "f83137ddc1ef04a71d924d25f94db8d02a177572c50c79bdbec69da95e7a58d9"
+  },
+  "passing_scope": "Exact target/members, one nonrecursive enumeration, five no-follow stats, zero member-content reads, source/contract hashes, normal timeout/reap behavior, local receipt path and 8/8 fixtures pass. Pre-freeze stat is disclosed and is not a readiness result.",
+  "blockers": "Snapshot 2 does not require an exact PASS snapshot-1 predecessor or >=600-second completion gap; check-then-os.replace can overwrite a raced receipt; timeout kill ProcessLookupError can escape without receipt and post_timeout_reap_seconds is not consumed.",
+  "decision": "Do not execute v1 live. Preserve it and review a distinct repair before any post-remediation probe.",
+  "execution_state": "Live runner and mount probe were not executed; no process/service/mount/H5/voltage/recording/sort operation was performed.",
+  "reviewer_next_state": "checked in with HubMultiCoordinater; available for focused v2 review"
+}

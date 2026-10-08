@@ -1,0 +1,19 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "created_at": "2026-10-08T03:50:49-07:00",
+  "status": "NO_GO_REPAIR_PLACEMENT_RECEIPT_AND_TIMEOUT_RACE_ENFORCEMENT",
+  "members": {
+    "CHECKS.json": {
+      "size": 1106,
+      "sha256": "40ee257562ff2c29f47e9fee9a2d9acee362e80dda343d628af77b2bd65acb4f"
+    },
+    "PROVENANCE.json": {
+      "size": 888,
+      "sha256": "53e5bd89da8da5df9d409b4be04a8f2a0d154ca6a673e7e8aefe0c2b36c291f6"
+    },
+    "REVIEW.md": {
+      "size": 6070,
+      "sha256": "a43384b9353b1174132f8cab5854e3ef32724f4bef4d7b1845c1869c2736a7c8"
+    }
+  }
+}
