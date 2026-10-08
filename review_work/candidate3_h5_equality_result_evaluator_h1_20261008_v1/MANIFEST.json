@@ -1,0 +1,16 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "READY_FOR_FOCUSED_REVIEW_NO_REAL_H5_INSPECTION",
+  "members": {
+    "CONTRACT.json": {"size": 4003, "sha256": "302d29fba22761dd968fa4f976656503cb6cfe1048235c73a8fd07d951efc0ae"},
+    "CONTROL_TESTS.py": {"size": 3670, "sha256": "b32888a34a8fc28271250c05799f043bc824cc97501d45b7e5bb261e18330676"},
+    "EVALUATOR.py": {"size": 11425, "sha256": "b2afc87ebcedb868f8a5804254a27fde251aada55e40dff615e08266420d3c64"},
+    "PROVENANCE.json": {"size": 876, "sha256": "7797658ba34f7e3ec9864074848c7203158b199082461c7aac076b7c36d02f64"},
+    "REVIEW_REQUEST.md": {"size": 1676, "sha256": "c28968f761c594a1e857c6cb982d47294e9fab225d79307e3f2ca13755cedef6"},
+    "TEST_RESULTS.json": {"size": 565, "sha256": "f68c043fdb988d1797145716e469212a4c8bb5339d7a08ec8cdaf77c18f7c2e0"},
+    "accepted_success_evaluation/COMPLETE.json": {"size": 196, "sha256": "f14b32626315b7e1e4de1d7c751909fe32cd45116e4771fc09ff48ed0a95cdae"},
+    "accepted_success_evaluation/MANIFEST.json": {"size": 391, "sha256": "1e0244e73c5d301ddc54976b00da34d80aa993cc600326261b719da10fefcad4"},
+    "accepted_success_evaluation/PROVENANCE.json": {"size": 451, "sha256": "63781a4a96da5c4489785e4a2b09cfcd83a6ba9addb2568938b35d96ed21e3f2"},
+    "accepted_success_evaluation/VERDICT.json": {"size": 266, "sha256": "e75b32264087ce73c62235c8105c24d0d088f0ddc56aee6d847c139e770dc2b3"}
+  }
+}

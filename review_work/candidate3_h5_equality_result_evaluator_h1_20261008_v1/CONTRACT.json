@@ -1,0 +1,56 @@
+{
+  "schema": "candidate3-h5-equality-result-evaluator-contract-v1",
+  "frozen_at": "2026-10-08T03:18:00-07:00",
+  "decision": "translate one sealed candidate3 equality v3 runner packet into the minimum coordinator action without reinterpreting or recomputing voltage",
+  "accepted_execution_contract_sha256": "6cb5c29b806b63021bf9edef87535718f24efc9ff27842d9e4e34c3e06e56037",
+  "accepted_runner_sha256": "0bed993b8718f29591b92884e88b65f2bf8a6780cce49490b869ba82823f1f7e",
+  "accepted_source_hashes": {
+    "wrapper": "b7f06da5685d3b8af0c7bd18e7ccfeb3af7db8fe3b22b1fa6a619908f43bb690",
+    "kilosort_io": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+    "dartsort_main": "e4c03417c1256384c4f8fbf0250560003bd795b7274932ef1e49dcde217bd249",
+    "dartsort_main_util": "2846a319c19c25b3cad81ab991057c0868b87d760b66f20e8d2bb3db8ffa3bcc",
+    "dartsort_preprocess_util": "566ce1ab60af12585978bcd7e3192cb2ca4cc220ab5e41895140c00bdbc06674"
+  },
+  "statistics": {
+    "primary": "all nine request rows must have exact expected arm/request/frame/shape, float32, finite=true, mismatch_count=0, max_abs_error=0.0, first_mismatch_index=null and identical lazy/eager SHA-256",
+    "tolerance": {"rtol": 0.0, "atol": 0.0, "max_abs_error": 0.0},
+    "positive_control": "exactly ordinary and transition rows; each mismatch_count>0 and finite max_abs_error>0.0",
+    "dartsort_boundary": "exactly two rows with copy_flag=false, both same-object flags true and work_dir=null",
+    "resources": "cached_input_bytes=645116928; real binary_read_bytes=645116928, synthetic=0; wall<=1800 s; temporary<=2147483648 B"
+  },
+  "verdict_priority": [
+    "REJECT_SEAL_OR_SCHEMA_STOP",
+    "UPSTREAM_HANDLED_FAILURE_STOP",
+    "REJECT_PROVENANCE_STOP",
+    "REJECT_RESOURCE_OR_BOUNDS_STOP",
+    "REJECT_PRIMARY_MISMATCH_STOP",
+    "REJECT_POSITIVE_CONTROL_NONINFORMATIVE_STOP",
+    "REJECT_DARTSORT_BOUNDARY_STOP",
+    "PASS_SYNTHETIC_FIXTURE_ONLY_NO_H5_DECISION",
+    "PASS_REAL_EQUALITY_ADVANCE_TO_FROZEN_NEXT_GATE"
+  ],
+  "decisions": {
+    "REJECT_SEAL_OR_SCHEMA_STOP": "quarantine packet; request provenance repair only; do not retry equality",
+    "UPSTREAM_HANDLED_FAILURE_STOP": "preserve runner failure and diagnose under coordinator direction; no automatic retry",
+    "REJECT_PROVENANCE_STOP": "stop; exact reviewed implementation was not established",
+    "REJECT_RESOURCE_OR_BOUNDS_STOP": "stop; preserve resource violation and do not interpret equality",
+    "REJECT_PRIMARY_MISMATCH_STOP": "wrapper real-equality gate failed; do not advance candidate3",
+    "REJECT_POSITIVE_CONTROL_NONINFORMATIVE_STOP": "fixture is noninformative; do not accept equality",
+    "REJECT_DARTSORT_BOUNDARY_STOP": "lazy no-copy integration gate failed; do not advance candidate3",
+    "PASS_SYNTHETIC_FIXTURE_ONLY_NO_H5_DECISION": "evaluator plumbing is valid; await a sealed real H5 packet",
+    "PASS_REAL_EQUALITY_ADVANCE_TO_FROZEN_NEXT_GATE": "real equality gate passed; coordinator may consider only the already-frozen next candidate3 step"
+  },
+  "handled_failure_semantics": "a valid sealed FAILURE packet is evidence of execution failure, never equality failure or pass; preserve and stop without automatic retry",
+  "controls": {
+    "positive": "accepted sealed v3 synthetic success must classify PASS_SYNTHETIC_FIXTURE_ONLY_NO_H5_DECISION",
+    "negative": [
+      "tampered COMPLETE or member hash -> REJECT_SEAL_OR_SCHEMA_STOP",
+      "valid sealed FAILURE -> UPSTREAM_HANDLED_FAILURE_STOP",
+      "valid sealed primary mismatch -> REJECT_PRIMARY_MISMATCH_STOP",
+      "valid sealed zero positive-control difference -> REJECT_POSITIVE_CONTROL_NONINFORMATIVE_STOP",
+      "valid sealed resource excess -> REJECT_RESOURCE_OR_BOUNDS_STOP"
+    ]
+  },
+  "scope": "compact sealed JSON packets only; no raw/prewhitened arrays, real H5 inspection, voltage, launch, sort, RF or holdout",
+  "output": "fresh compact directory with VERDICT.json, PROVENANCE.json, MANIFEST.json and COMPLETE.json written last"
+}

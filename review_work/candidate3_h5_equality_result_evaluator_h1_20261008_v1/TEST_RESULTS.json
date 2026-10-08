@@ -1,0 +1,17 @@
+{
+  "schema": "candidate3-h5-equality-result-evaluator-test-results-v1",
+  "executed_at": "2026-10-08T03:21:00-07:00",
+  "command": "pytest -q testing/test_candidate3_h5_equality_result_evaluator.py",
+  "passed": 6,
+  "failed": 0,
+  "categories_observed": [
+    "PASS_SYNTHETIC_FIXTURE_ONLY_NO_H5_DECISION",
+    "REJECT_SEAL_OR_SCHEMA_STOP",
+    "UPSTREAM_HANDLED_FAILURE_STOP",
+    "REJECT_PRIMARY_MISMATCH_STOP",
+    "REJECT_POSITIVE_CONTROL_NONINFORMATIVE_STOP",
+    "REJECT_RESOURCE_OR_BOUNDS_STOP"
+  ],
+  "recorded_voltage_bytes": 0,
+  "h5_contacted": false
+}
