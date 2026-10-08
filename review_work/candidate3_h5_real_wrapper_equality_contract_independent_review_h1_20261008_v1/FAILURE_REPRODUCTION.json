@@ -1,0 +1,22 @@
+{
+  "schema": "candidate3-h5-real-wrapper-equality-packet-runner-reproduction-v1",
+  "status": "FAILED_PRESERVED_NO_RETRY",
+  "mode": "local synthetic self-test; no H5 or recorded voltage access",
+  "runner": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_real_wrapper_equality_contract_h1_20261008_v1/RUNNER.py",
+  "runner_sha256": "c3904ee88043699c8ac1e270ec8f2c0b4f693a71d7fc73622b2b0a0d35356628",
+  "contract_sha256": "2eeae1524c27d95e19f93dcdf8f9e2e0bb954e639ecb0d459c2fdd4da08c6afd",
+  "interpreter": "/home/huklab/Documents/DARTsort/.venv/bin/python",
+  "extra_kilosort_site": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages",
+  "numba_cache_dir_supplied": false,
+  "failure_type": "RuntimeError",
+  "failure_message": "cannot cache function '_find_duplicated_spikes_keep_last_iterative': no locator available for file '/home/huklab/Documents/DARTsort/.venv/lib/python3.12/site-packages/spikeinterface/curation/curation_tools.py'",
+  "failure_wall_seconds": 6.307017682120204,
+  "output": "/tmp/candidate3_h5_equality_review_packet_runner_selftest",
+  "failure_manifest_sha256": "16e407c9690701bfe60abfb9bfdfc4bf1d177d29ce311bdaa2b19a81e1d7778d",
+  "failure_complete_sha256": "6cf9d6be07eab6c5597ba99c9a6398d1167798df5d02cb2634000e9a2d9a8e40",
+  "complete_binds_manifest": true,
+  "complete_written_after_manifest_in_code_order": true,
+  "arrays_created": false,
+  "binary_read_bytes": 0,
+  "retry_performed": false
+}

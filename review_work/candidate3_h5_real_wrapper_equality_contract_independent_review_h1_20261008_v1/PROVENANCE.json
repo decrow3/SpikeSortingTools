@@ -1,0 +1,19 @@
+{
+  "schema": "candidate3-h5-real-wrapper-equality-contract-independent-review-provenance-v1",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_real_wrapper_equality_contract_h1_20261008_v1",
+  "reviewed_manifest_sha256": "b3e84dbaa8ef83ce2d387824fdca1f739fc98854761d91489e5fae9709ac7f9b",
+  "reviewed_complete_sha256": "670176d8cb69783b7da74f4791eaeb00291c9bc5ee9881ae3676494984d9c998",
+  "contract_sha256": "2eeae1524c27d95e19f93dcdf8f9e2e0bb954e639ecb0d459c2fdd4da08c6afd",
+  "runner_sha256": "c3904ee88043699c8ac1e270ec8f2c0b4f693a71d7fc73622b2b0a0d35356628",
+  "repository_commit": "cfef3ea",
+  "wrapper_commit": "aea7431c4026fa74e36ad01139d9e596900a1d25",
+  "actions": {
+    "h5_contacted": false,
+    "voltage_payload_read_or_hashed": false,
+    "materialization_or_transfer": false,
+    "service_gpu_sort_or_full_launch": false,
+    "rf_or_holdout_accessed": false,
+    "local_synthetic_packet_runner_attempts": 1,
+    "retry_performed": false
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "coordination-handoff-v1",
+  "host": "huklaban1",
+  "task_key": "candidate3_h5_real_wrapper_equality_contract_independent_review",
+  "reported_at": "2026-10-08T02:50:25-07:00",
+  "terminal_state": "NO_GO_EXECUTION_READINESS_REPAIR_LAUNCH_BINDINGS_AND_RESOURCE_ENFORCEMENT",
+  "reviewed_author_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_real_wrapper_equality_contract_h1_20261008_v1",
+    "manifest_sha256": "b3e84dbaa8ef83ce2d387824fdca1f739fc98854761d91489e5fae9709ac7f9b",
+    "complete_sha256": "670176d8cb69783b7da74f4791eaeb00291c9bc5ee9881ae3676494984d9c998",
+    "contract_sha256": "2eeae1524c27d95e19f93dcdf8f9e2e0bb954e639ecb0d459c2fdd4da08c6afd",
+    "runner_sha256": "c3904ee88043699c8ac1e270ec8f2c0b4f693a71d7fc73622b2b0a0d35356628"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_real_wrapper_equality_contract_independent_review_h1_20261008_v1",
+    "manifest_sha256": "3bf7158d17e89e39accfb2379b94df0e2ae70df870d6ede299677bf852539dba",
+    "complete_sha256": "eeca0ac3b8f8ca1c02ca8879eba4842684b43f0033c6d0512b9ec561858be8db"
+  },
+  "passing_scope": "Window arithmetic, transition-relative coordinates, eager-versus-lazy comparison semantics, H5 producer/consumer import composition, one-copy sequential bounded reads, positive control, numeric-output exclusion, and handled-failure COMPLETE-last behavior are internally coherent.",
+  "preserved_environment_failure": {
+    "scope": "local synthetic self-test only; no voltage was opened or hashed",
+    "cause": "Numba cache locator failure because required NUMBA_CACHE_DIR was not frozen",
+    "failure_manifest_sha256": "16e407c9690701bfe60abfb9bfdfc4bf1d177d29ce311bdaa2b19a81e1d7778d",
+    "failure_complete_sha256": "6cf9d6be07eab6c5597ba99c9a6398d1167798df5d02cb2634000e9a2d9a8e40",
+    "retry_performed": false
+  },
+  "minimal_repair": [
+    "Bind the exact runner hash, contract hash, command, interpreter, repository root, extra Kilosort site, environment including NUMBA_CACHE_DIR, output namespace, and focused-review identity in the release artifact and enforce them in the runner.",
+    "Replace caller-substitutable GO-prefix review acceptance with a specific review schema, exact accepted status, and manifest/COMPLETE bindings.",
+    "Enforce memory, wall time, temporary-storage and persistent-output bounds externally with a persistent manager/monitor and terminal receipt; make pre-output failures observable.",
+    "Recheck the persistent cap after every terminal file and emit exactly one terminal RESULT-or-FAILURE state."
+  ],
+  "execution_state": "No H5 contact, voltage read/hash, transfer, materialization, service, GPU job, sort, RF/holdout access, or full launch was performed.",
+  "decision": "Do not dispatch v1. Preserve it unchanged and repair under a distinct v2 namespace.",
+  "execution_owner": "/root",
+  "reviewer_next_state": "checked in with HubMultiCoordinater; available for bounded follow-up and not launching execution"
+}

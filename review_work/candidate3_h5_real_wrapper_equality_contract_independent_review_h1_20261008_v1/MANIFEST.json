@@ -1,0 +1,23 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "created_at": "2026-10-08T02:49:06-07:00",
+  "status": "NO_GO_EXECUTION_READINESS_REPAIR_LAUNCH_BINDINGS_AND_RESOURCE_ENFORCEMENT",
+  "members": {
+    "CHECKS.json": {
+      "size": 911,
+      "sha256": "b1d1e1717112132c83ec97a9fd6dceab4350b125aa10d1d7030aec033195f65a"
+    },
+    "FAILURE_REPRODUCTION.json": {
+      "size": 1507,
+      "sha256": "44a456bcb87208b493cc192108d3f5cba985d149b0546c8a8e5921abc731931c"
+    },
+    "PROVENANCE.json": {
+      "size": 987,
+      "sha256": "e596c2b4bb5fead2500d0bb8919ed6ae721d99bb39014907280f035e68a49ee1"
+    },
+    "REVIEW.md": {
+      "size": 10397,
+      "sha256": "f8fe911fd0c346be8ad32cc8b5c0b2e95ddeca57eb1bf71c1f8050bbd4373d4c"
+    }
+  }
+}

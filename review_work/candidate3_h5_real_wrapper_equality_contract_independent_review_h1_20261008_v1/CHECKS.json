@@ -1,0 +1,21 @@
+{
+  "schema": "candidate3-h5-real-wrapper-equality-contract-independent-checks-v1",
+  "verdict": "NO_GO_EXECUTION_READINESS_REPAIR_LAUNCH_BINDINGS_AND_RESOURCE_ENFORCEMENT",
+  "packet_seal_valid": true,
+  "window_arithmetic_exact": true,
+  "transition_boundaries_inside_extra_request": true,
+  "binary_read_bound_exact": true,
+  "sequential_one_read_per_window_source_supported": true,
+  "eager_lazy_semantics_match_reviewed_boundary": true,
+  "positive_control_valid": true,
+  "no_numeric_array_output": true,
+  "handled_failure_complete_last": true,
+  "exact_packet_runner_default_environment_passes": false,
+  "runner_hash_release_bound": false,
+  "h5_import_paths_enforced": false,
+  "focused_review_hash_dispatch_bound": false,
+  "memory_wall_temporary_caps_effectively_enforced": false,
+  "final_persistent_output_cap_enforced": false,
+  "h5_contacted": false,
+  "voltage_payload_read_or_hashed": false
+}
