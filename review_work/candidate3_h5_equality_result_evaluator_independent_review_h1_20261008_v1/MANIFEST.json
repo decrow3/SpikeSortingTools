@@ -1,0 +1,27 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "created_at": "2026-10-08T03:20:46-07:00",
+  "status": "NO_GO_REPAIR_FAIL_OPEN_SCHEMA_AND_REAL_PROVENANCE_VALIDATION",
+  "members": {
+    "ADVERSARIAL_RESULTS.json": {
+      "size": 1250,
+      "sha256": "434c7dfa951e01cc37ac852b19692d057dd46a5cc76406a4fa02511e2c126933"
+    },
+    "CHECKS.json": {
+      "size": 970,
+      "sha256": "eca16d32f661496d99d7151bd8af00818c56ed0c7a4632d02339c3b2d5eacaee"
+    },
+    "PROVENANCE.json": {
+      "size": 1166,
+      "sha256": "ab899dac4e4b0df680d637cf666e312ec5dc843432b43ee3716ebbac6b97ac64"
+    },
+    "REVIEW.md": {
+      "size": 6748,
+      "sha256": "110afd9871e85dae78e8ede0c433a3305ec1dcefd68750ffe2e9d390d6cc2dbf"
+    },
+    "independent_adversarial.py": {
+      "size": 4041,
+      "sha256": "0b62007bc3ecd2861b1407f7cded842b4e8df0cb9d920d4ec0379b90e3c045a2"
+    }
+  }
+}

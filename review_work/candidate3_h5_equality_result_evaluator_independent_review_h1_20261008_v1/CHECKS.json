@@ -1,0 +1,20 @@
+{
+  "schema": "candidate3-h5-equality-result-evaluator-independent-review-checks-v1",
+  "reviewed_evaluator_sha256": "b2afc87ebcedb868f8a5804254a27fde251aada55e40dff615e08266420d3c64",
+  "reviewed_contract_sha256": "302d29fba22761dd968fa4f976656503cb6cfe1048235c73a8fd07d951efc0ae",
+  "checks": {
+    "packet_seal_and_complete": "PASS",
+    "deterministic_category_priority": "PASS",
+    "request_frame_shape_reconstruction": "PASS",
+    "zero_tolerance_scalar_checks": "PASS",
+    "output_digest_presence_and_syntax": "FAIL_OPEN",
+    "positive_controls": "PASS",
+    "dartsort_boundary": "PASS",
+    "resource_counters": "PASS_SCOPED",
+    "exact_real_provenance_and_release_reconstruction": "FAIL_OPEN",
+    "handled_failure_status_semantics": "FAIL_OPEN_SCHEMA_PRIORITY",
+    "stock_controls": "PASS_6_OF_6",
+    "independent_adversarial_controls": "FAIL_3_OF_3_EXPECTED_REJECTIONS"
+  },
+  "verdict": "NO_GO_REPAIR_FAIL_OPEN_SCHEMA_AND_REAL_PROVENANCE_VALIDATION"
+}

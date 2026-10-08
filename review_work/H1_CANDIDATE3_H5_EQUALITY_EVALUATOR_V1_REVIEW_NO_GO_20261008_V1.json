@@ -1,0 +1,30 @@
+{
+  "schema": "coordination-handoff-v1",
+  "host": "huklaban1",
+  "task_key": "candidate3_h5_equality_result_evaluator_v1_independent_review",
+  "reported_at": "2026-10-08T03:21:30-07:00",
+  "terminal_state": "NO_GO_REPAIR_FAIL_OPEN_SCHEMA_AND_REAL_PROVENANCE_VALIDATION",
+  "reviewed_author_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_equality_result_evaluator_h1_20261008_v1",
+    "manifest_sha256": "64325df582aa5845d6cc73e0cc7bb3b3f3514bcc9610eb6d81a26668700ce669",
+    "complete_sha256": "0773a040a7a8b848163ba23db52d89c533f6f051569ed54b020d06a9a035246f",
+    "evaluator_sha256": "b2afc87ebcedb868f8a5804254a27fde251aada55e40dff615e08266420d3c64",
+    "contract_sha256": "302d29fba22761dd968fa4f976656503cb6cfe1048235c73a8fd07d951efc0ae"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_equality_result_evaluator_independent_review_h1_20261008_v1",
+    "manifest_sha256": "68d3018a129976a588039b53d5586ca0bcaa5acaa9e8b5262fd0114649a05d9d",
+    "complete_sha256": "550e3a4ceb439911ba4324c93397802e8ebcae6d805529308b5753426e19a79b"
+  },
+  "stock_controls": "6/6 pass",
+  "blocking_adversarial_results": [
+    "Both output digests absent and resealed classified PASS_SYNTHETIC_FIXTURE_ONLY_NO_H5_DECISION.",
+    "Incomplete real argv plus three non-SHA receipt strings and resealed classified PASS_REAL_EQUALITY_ADVANCE_TO_FROZEN_NEXT_GATE.",
+    "FAILURE with PASS_REAL_EQUALITY manifest/COMPLETE and nonfrozen failure status classified UPSTREAM_HANDLED_FAILURE_STOP instead of seal/schema rejection."
+  ],
+  "minimal_repair": "Require present 64-lowercase-hex output and release digests; reconstruct exact v3 real argv and cross-check release paths/hashes; reconcile MANIFEST/COMPLETE/terminal status and frozen FAILURE schema/status before handled-failure classification; add the three adversarial controls.",
+  "coordinator_action": "Do not use evaluator v1 on a real result. Preserve it unchanged and review a distinct repaired evaluator before consuming any H5 outcome.",
+  "execution_state": "No real H5 outcome/contact, voltage, service/GPU/sort/RF/holdout or execution framework was accessed.",
+  "execution_owner": "/root",
+  "reviewer_next_state": "checked in with HubMultiCoordinater; available for focused repair review"
+}

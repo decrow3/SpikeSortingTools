@@ -1,0 +1,28 @@
+{
+  "schema": "candidate3-h5-equality-result-evaluator-independent-adversarial-results-v1",
+  "input_scope": "mutated temporary copies of the sealed v3 synthetic success packet only",
+  "stock_controls": {
+    "command": "pytest -q testing/test_candidate3_h5_equality_result_evaluator.py",
+    "passed": 6,
+    "failed": 0
+  },
+  "adversarial": {
+    "missing_both_output_digests": {
+      "observed": "PASS_SYNTHETIC_FIXTURE_ONLY_NO_H5_DECISION",
+      "expected": "REJECT_SEAL_OR_SCHEMA_STOP or REJECT_PRIMARY_MISMATCH_STOP",
+      "defect": "row.get('lazy_sha256') and row.get('eager_sha256') are both None and therefore compare equal"
+    },
+    "incomplete_real_release_provenance": {
+      "observed": "PASS_REAL_EQUALITY_ADVANCE_TO_FROZEN_NEXT_GATE",
+      "expected": "REJECT_PROVENANCE_STOP",
+      "defect": "four unordered argv tokens and three nonempty non-SHA receipt strings satisfy the real provenance gate"
+    },
+    "inconsistent_failure_status": {
+      "observed": "UPSTREAM_HANDLED_FAILURE_STOP",
+      "expected": "REJECT_SEAL_OR_SCHEMA_STOP",
+      "defect": "FAILURE returns before manifest/COMPLETE/terminal status and frozen failure status are reconciled"
+    }
+  },
+  "recorded_voltage_bytes": 0,
+  "h5_contacted": false
+}

@@ -1,0 +1,6 @@
+{
+  "schema": "immutable-evidence-complete-v1",
+  "completed_at": "2026-10-08T03:21:07-07:00",
+  "status": "NO_GO_REPAIR_FAIL_OPEN_SCHEMA_AND_REAL_PROVENANCE_VALIDATION",
+  "manifest_sha256": "68d3018a129976a588039b53d5586ca0bcaa5acaa9e8b5262fd0114649a05d9d"
+}
