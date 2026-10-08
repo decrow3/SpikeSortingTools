@@ -1,0 +1,25 @@
+{
+  "schema": "h1_candidate3_lazy_prewhitening_wrapper_ack_started_v1",
+  "created_at": "2026-10-08T02:15:47-07:00",
+  "agent": "H1",
+  "recipient": "HubMultiCoordinater",
+  "task": "candidate3_context_correct_lazy_prewhitening_wrapper",
+  "status": "ACK_STARTED",
+  "milestone": "remove the candidate-3 full-session input materialization blocker",
+  "decision": "establish reviewed lazy adapter capability or a precise source-level blocker",
+  "frozen_acceptance": [
+    "exact installed Kilosort BinaryFiltered.filter output equality at the adapter boundary",
+    "multiple request lengths with the FFT length equal to each requested context",
+    "boundary padding/context and cropped-core equality",
+    "nonzero acquisition origins and segment-local clocks preserved",
+    "channel IDs/order, geometry, float32 dtype and scale semantics preserved",
+    "DARTsort preprocessing=none returns the same values without a recording copy"
+  ],
+  "inputs": {
+    "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+    "kilosort_io_sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+    "exact_lattice_remap_source_sha256": "0125394629af7bffc6d46a5c26903efd65cd244f30000ae45d3cfa8324abea3a"
+  },
+  "exclusions": "no H5 contact, voltage read/hash, large materialization/transfer, service, GPU run, sort, RF/holdout or full-session launch",
+  "execution_state": "local source and synthetic CPU fixtures only"
+}
