@@ -1,0 +1,52 @@
+{
+  "schema": "candidate3-lazy-prewhitening-wrapper-contract-v1",
+  "frozen_at": "2026-10-08T02:18:00-07:00",
+  "milestone": "candidate-3 full-session input readiness",
+  "decision": "accept the lazy wrapper capability or retain a precise source-level blocker",
+  "implementation_boundary": "SpikeInterface time-by-channel recording request to installed Kilosort 4.0.27 BinaryFiltered.filter output immediately before whitening",
+  "source_bindings": {
+    "kilosort_io_sha256": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+    "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+    "dartsort_preprocess_util_sha256": "566ce1ab60af12585978bcd7e3192cb2ca4cc220ab5e41895140c00bdbc06674",
+    "exact_lattice_remap_source_sha256": "0125394629af7bffc6d46a5c26903efd65cd244f30000ae45d3cfa8324abea3a"
+  },
+  "frozen_semantics": {
+    "request_context": "filter exactly the parent interval requested by the consumer; do not invent, trim or reuse context",
+    "fft_length": "installed BinaryFiltered.filter receives NT equal to that exact requested interval length",
+    "operation_order": [
+      "parent raw read",
+      "uint16 signed conversion when applicable",
+      "Kilosort scale",
+      "Kilosort shift",
+      "channel map/order",
+      "optional sign inversion",
+      "per-channel temporal centering",
+      "global lower-median CAR",
+      "installed 300 Hz FFT high-pass",
+      "disabled artifact gate",
+      "no whitening"
+    ],
+    "output": "time-by-selected-channel float32, original selected channel IDs/order/geometry and segment clock",
+    "dartsort": "preprocessing=none must return the wrapper unchanged and preserve exact trace values; copy_recording_to_tmpdir=no and work_in_tmpdir=false remain run-contract requirements"
+  },
+  "acceptance": [
+    "exact array equality to an eager installed-BinaryFiltered reference for request lengths 63, 64, 127 and 256",
+    "exact padded-request equality and exact cropped-core equality to the same eager padded request",
+    "positive control shows filtering the core without padding is not silently treated as padded-core equivalence",
+    "nonzero segment origins and multiple segment clocks are unchanged",
+    "selected/reordered channel IDs and geometry are unchanged",
+    "explicit nonunit scale and shift match eager reference",
+    "wrapper construction performs zero parent reads and each request reads only its exact interval",
+    "integer and uint16 inputs produce float32 outputs with Kilosort signed/scale semantics",
+    "a separate exact DARTsort interpreter consumer proves preprocessing=none returns the same object and exact values",
+    "invalid empty requests, duplicate/unknown channels and nonfinite scale/shift fail closed"
+  ],
+  "tolerance": {
+    "rtol": 0.0,
+    "atol": 0.0,
+    "reason": "both paths invoke the same frozen installed Kilosort filter on identical float32 tensors"
+  },
+  "stop_condition": "stop after immutable synthetic capability evidence and focused review; no real voltage or H5 execution",
+  "exclusions": "no H5 contact, voltage read/hash, materialization/transfer, service, GPU, sort, RF/holdout or full-session launch"
+}
+

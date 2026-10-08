@@ -1,0 +1,19 @@
+{
+  "schema": "candidate3-lazy-prewhitening-wrapper-validation-v1",
+  "validated_at": "2026-10-08T02:23:05-07:00",
+  "status": "PASS_SYNTHETIC_CAPABILITY_ONLY",
+  "checks": {
+    "committed_source_hashes_match": true,
+    "external_source_hashes_match": true,
+    "contract_json_valid": true,
+    "preliminary_contract_exactly_reconstructed": true,
+    "strengthened_contract_disclosed_as_redesign": true,
+    "junit_tests_22": true,
+    "junit_failures_0": true,
+    "junit_errors_0": true,
+    "junit_skips_0": true,
+    "dartsort_no_preprocessing_no_copy_boundary_passed": true,
+    "actions_all_within_synthetic_cpu_scope": true
+  },
+  "qualification": "local validation is not independent review; real H5 wrapper imports and ordinary/transition equality remain blocked"
+}

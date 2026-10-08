@@ -1,0 +1,15 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "created_at": "2026-10-08T02:23:20-07:00",
+  "status": "GO_SYNTHETIC_LAZY_WRAPPER_CAPABILITY_REAL_H5_EQUALITY_STILL_REQUIRED",
+  "members": {
+    "FREEZE_CORRECTION.md": {"size": 808, "sha256": "17954a5a80e44302e18315decdf395d83e3c64e967097252645bd017823a3c3d"},
+    "FROZEN_CONTRACT.md": {"size": 899, "sha256": "3d9d27407605b9be1393d20f8207d18950856fbc9b03d704233cb525751f6577"},
+    "PRELIMINARY_CONTRACT_SUPERSEDED.json": {"size": 3174, "sha256": "cf225a8257c1a05985c0fae64874703c81131578d9758d8df0f100e94557409d"},
+    "PYTEST.xml": {"size": 3380, "sha256": "d7d5e97590bb0c679134ffa4dc047830f4316d0f146e514a95cc7e30272cd737"},
+    "REPORT.md": {"size": 2615, "sha256": "3ca94bc2f860db02c8a7726884bd2ec4567582462b3207e2c93e76e9468e5b55"},
+    "RESULT.json": {"size": 2276, "sha256": "047307675df9f54814ee3f2cf9cf2c3e40c72a405300361d2835b023be22604a"},
+    "SOURCE_BINDINGS.json": {"size": 2018, "sha256": "65bf7ad6460c71b56c0972715c8324f079d434be9b042cb668c918af0f86f05e"},
+    "VALIDATION.json": {"size": 777, "sha256": "988ad8b67c2883084bc8bbe6ecaa3908cffc2d53323ccc0db8b1a1fcec76acde"}
+  }
+}

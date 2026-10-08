@@ -1,0 +1,53 @@
+{
+  "schema": "candidate3-lazy-prewhitening-wrapper-result-v1",
+  "completed_at": "2026-10-08T02:22:02-07:00",
+  "verdict": "GO_SYNTHETIC_LAZY_WRAPPER_CAPABILITY_REAL_H5_EQUALITY_STILL_REQUIRED",
+  "source_commit": "aea7431c4026fa74e36ad01139d9e596900a1d25",
+  "pytest": {
+    "tests": 22,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 10.521,
+    "direct_wrapper_tests": 10,
+    "existing_lattice_regression_tests": 12
+  },
+  "producer_environment": {
+    "python": "3.12.4",
+    "numpy": "1.26.4",
+    "torch": "2.6.0+cu124",
+    "spikeinterface": "0.102.1",
+    "kilosort": "4.0.27",
+    "device": "cpu"
+  },
+  "consumer_environment": {
+    "python": "3.12.4",
+    "spikeinterface": "0.104.8",
+    "torch": "2.6.0+cu124",
+    "dartsort_import": "/home/huklab/Documents/DARTsort/src/dartsort/__init__.py",
+    "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851"
+  },
+  "accepted_checks": [
+    "four exact request lengths",
+    "padded full request and cropped-core equality",
+    "unpadded-core non-equivalence positive control",
+    "selected/reordered channels and geometry",
+    "nonzero and multi-segment clocks",
+    "nonunit scale and shift",
+    "uint16 signed conversion",
+    "zero reads at construction and exact interval-only parent read",
+    "DARTsort none/no-copy/no-workdir same-object boundary",
+    "invalid inputs fail closed"
+  ],
+  "validation_history": "A manual DARTsort environment version probe without NUMBA_CACHE_DIR failed at import because the installed SpikeInterface Numba cache had no locator. The frozen test and corrected probe set NUMBA_CACHE_DIR=/tmp/candidate3_lazy_wrapper_numba and passed. This is an environment invocation requirement, not a wrapper-output failure.",
+  "actions": {
+    "h5_contacted": false,
+    "voltage_read_or_hashed": false,
+    "materialization_or_transfer": false,
+    "service_or_gpu_run": false,
+    "sort_or_full_session_launch": false,
+    "rf_or_holdout_access": false
+  },
+  "can_establish": "synthetic lazy request-context Kilosort boundary capability and DARTsort no-preprocessing/no-copy traversal",
+  "cannot_establish": "real Arm-A sample equality, H5 environment compatibility, throughput, resource sufficiency, full-session completion or scientific performance"
+}
