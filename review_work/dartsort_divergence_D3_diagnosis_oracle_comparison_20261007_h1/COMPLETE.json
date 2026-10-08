@@ -1,0 +1,8 @@
+{
+  "schema": "immutable-packet-complete-v1",
+  "status": "ACCEPT_DIAGNOSIS_REPAIR_REQUIRED_NO_RETRY",
+  "completed_local": "2026-10-07T22:23:09-07:00",
+  "manifest_path": "MANIFEST.json",
+  "manifest_sha256": "5267bacaf694cf98214ad55d0cae3b9a722ea3a2ed7b1aaee7062c47daf7bddc",
+  "production_retry_authorized": false
+}

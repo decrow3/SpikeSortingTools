@@ -1,0 +1,16 @@
+{
+  "schema": "dartsort-divergence-d3-diagnosis-oracle-comparison-v1",
+  "status": "ACCEPT_DIAGNOSIS_REPAIR_REQUIRED_NO_RETRY",
+  "oracle_prediction_confirmed": true,
+  "exact_delta_counts": {"0": 21804714, "1": 17849},
+  "rows": 21822563,
+  "changed_source_groups": {"6": 9706, "586": 2684, "754": 4775, "755": 684},
+  "source_relation": "final_time = matching_time - template_pair_shift",
+  "implied_changed_group_template_pair_shift_samples": -1,
+  "h5_time_shifts_is_postmatching_delta": false,
+  "current_eligible_final_trains_unsorted": 0,
+  "v3_must_still_validate_or_stably_sort_each_train": true,
+  "constant_group_delta_is_standalone_ancestry_proof": false,
+  "science_outcome_available": false,
+  "production_retry_authorized": false
+}

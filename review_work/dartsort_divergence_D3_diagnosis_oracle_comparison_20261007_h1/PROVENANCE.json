@@ -1,0 +1,18 @@
+{
+  "schema": "dartsort-divergence-d3-diagnosis-oracle-comparison-provenance-v1",
+  "created_local": "2026-10-07T22:22:49-07:00",
+  "host": "huklaban1",
+  "reviewer": "H1",
+  "oracle_manifest_sha256": "57b6acea805908b8fef988ef4047897f8942e9244080571d91e468cb05b673f9",
+  "diagnosis_manifest_sha256": "ae33b15f1cd35412f5acbd271c7761a6f5d51cb8d959332cd8c2be6502d1d38e",
+  "diagnosis_complete_sha256": "f6692ce436b870ec709cca099dc9248daf2ec2733c4188c3db9b548bf450c7c8",
+  "independent_review_manifest_sha256": "fceea1b3545e936447f60e95acc27f2b5feadcf90ed829349f9a08b19d3acbd9",
+  "independent_review_complete_sha256": "4e2cb24a7ff85ce748ef2e0ddcafc42ebc38bfd94b356c326207c25b0bedc942",
+  "direct_production_array_access_on_h1": false,
+  "resources": {
+    "raw_voltage_bytes_read": 0,
+    "gpu_used": false,
+    "sort_fit_replay_rf_holdout": false,
+    "production_retry": false
+  }
+}

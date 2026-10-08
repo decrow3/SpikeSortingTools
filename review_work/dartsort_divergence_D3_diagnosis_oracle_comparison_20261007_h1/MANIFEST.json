@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-packet-manifest-v1",
+  "created_local": "2026-10-07T22:22:59-07:00",
+  "packet": "dartsort_divergence_D3_diagnosis_oracle_comparison_20261007_h1",
+  "members": [
+    {"path": "ORACLE_COMPARISON.md", "bytes": 6873, "sha256": "659e0a570da1e1c38ab9909b77d23873a104178b476927c6504957ed2a32ad42"},
+    {"path": "PROVENANCE.json", "bytes": 882, "sha256": "f0c7e83acbca063f8b4f230a5e7cc475134ddac4afa9d1cfd6f9afb094d980f1"},
+    {"path": "VERDICT.json", "bytes": 747, "sha256": "471b8160767c5b2ef2813dcddcf4cc1b72431c89938e5a2da5cccced8b5a4e88"}
+  ]
+}
