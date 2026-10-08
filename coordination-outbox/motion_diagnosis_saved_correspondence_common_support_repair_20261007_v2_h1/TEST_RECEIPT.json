@@ -1,0 +1,14 @@
+{
+  "schema": "corrected-correspondence-h1-cache-isolation-fixture-receipt-v2",
+  "status": "PASS",
+  "result": "5 passed in 2.78s",
+  "fixture_cache": "fresh mktemp directory used only by pytest and removed after inspection",
+  "fixture_cache_populated": true,
+  "source_sha256": "3e40224aaed11429725c1c081ed68b5cbd3debf9c7c518128345b2e860ff0728",
+  "test_source_sha256": "153eaf361f216dfec5a03fa8b37ace44710ea81ec8ba2d0f4f3d16f1405073d3",
+  "cache_isolation_preflight_sha256": "0265d391dceee01c9117f1ea8901a0490389c42b466473019ba6187992733094",
+  "h1_local_exact_interpreter_source_path_preflight": "PASS; exact H1 interpreter and byte-identical source path, populated fixture cache, distinct empty execution cache, import-only stub dependency; execution cache remained empty after --help",
+  "scientific_source_changed_from_v1": false,
+  "real_saved_arrays_opened": false,
+  "h5_exact_interpreter_path_preflight": "required before managed execution; cannot be run on H1 because /home/huklaban5 and the hash-bound H5 dependency tree are not mounted"
+}

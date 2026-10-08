@@ -1,0 +1,74 @@
+{
+  "schema": "corrected-correspondence-data-local-execution-handoff-v2-cache-isolated",
+  "task_key": "corrected_matcher_h1_cache_isolation_v2",
+  "owner": "H5 exact data-local runner",
+  "status": "READY_AFTER_PACKET_HASH_VERIFICATION",
+  "contract_sha256": "350b8ec1a695f757d49c19789551a0ed356d2014f399f770c2d56c4204480463",
+  "source_sha256": "3e40224aaed11429725c1c081ed68b5cbd3debf9c7c518128345b2e860ff0728",
+  "test_source_sha256": "153eaf361f216dfec5a03fa8b37ace44710ea81ec8ba2d0f4f3d16f1405073d3",
+  "preflight_sha256": "0265d391dceee01c9117f1ea8901a0490389c42b466473019ba6187992733094",
+  "runner_root": "/tmp/motion_diagnosis_saved_correspondence_common_support_repair_h1_runner_20261007_v2",
+  "python": "/home/huklaban5/anaconda3/bin/python",
+  "pythonpath": "/tmp/motion_diagnosis_m1_repair_20261007",
+  "fixture_cache": "/tmp/corrected_correspondence_numba_fixture_h5_20261007_v2",
+  "execution_cache": "/tmp/corrected_correspondence_numba_execution_h5_20261007_v2",
+  "freshness_preconditions": [
+    "runner_root absent before byte-identical packet copy",
+    "fixture_cache absent before fixture test",
+    "execution_cache absent before preflight",
+    "output /media/huklaban5/Data/motion_diagnosis_saved_correspondence_common_support_repair_h5_20261007_v2 absent",
+    "v1 failure packet and v1 output/cache left unchanged"
+  ],
+  "fixture_argv": [
+    "/home/huklaban5/anaconda3/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "/tmp/motion_diagnosis_saved_correspondence_common_support_repair_h1_runner_20261007_v2/tests/test_corrected_correspondence.py"
+  ],
+  "fixture_environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "NUMBA_CACHE_DIR": "/tmp/corrected_correspondence_numba_fixture_h5_20261007_v2"
+  },
+  "preflight_argv": [
+    "/home/huklaban5/anaconda3/bin/python",
+    "/tmp/motion_diagnosis_saved_correspondence_common_support_repair_h1_runner_20261007_v2/tests/cache_isolation_preflight.py",
+    "--python",
+    "/home/huklaban5/anaconda3/bin/python",
+    "--source",
+    "/tmp/motion_diagnosis_saved_correspondence_common_support_repair_h1_runner_20261007_v2/source/corrected_correspondence.py",
+    "--fixture-cache",
+    "/tmp/corrected_correspondence_numba_fixture_h5_20261007_v2",
+    "--execution-cache",
+    "/tmp/corrected_correspondence_numba_execution_h5_20261007_v2",
+    "--pythonpath",
+    "/tmp/motion_diagnosis_m1_repair_20261007",
+    "--receipt",
+    "/tmp/motion_diagnosis_saved_correspondence_common_support_repair_h1_runner_20261007_v2/CACHE_ISOLATION_PREFLIGHT.json"
+  ],
+  "service_unit": "motion-diagnosis-common-support-repair-h5-20261007-v2.service",
+  "service_environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "NUMBA_CACHE_DIR": "/tmp/corrected_correspondence_numba_execution_h5_20261007_v2",
+    "PYTHONPATH": "/tmp/motion_diagnosis_m1_repair_20261007"
+  },
+  "service_argv": [
+    "/home/huklaban5/anaconda3/bin/python",
+    "/tmp/motion_diagnosis_saved_correspondence_common_support_repair_h1_runner_20261007_v2/source/corrected_correspondence.py",
+    "--selection",
+    "/media/huklaban5/Data/motion_diagnosis_m1_selection_h5_20261007_v1/SELECTION.json",
+    "--contract",
+    "/tmp/motion_diagnosis_saved_correspondence_common_support_repair_h1_runner_20261007_v2/CONTRACT.json",
+    "--contract-sha256",
+    "350b8ec1a695f757d49c19789551a0ed356d2014f399f770c2d56c4204480463",
+    "--output",
+    "/media/huklaban5/Data/motion_diagnosis_saved_correspondence_common_support_repair_h5_20261007_v2"
+  ],
+  "runtime_max_seconds": 5400,
+  "timeout_stop_seconds": 60,
+  "required_persistence": "user systemd service; persist unit definition/show status, launch request, exact env/argv, PID, stdout/stderr and final exit status",
+  "successor_after_complete": "H1 independent changed-boundary/result review",
+  "publication": "/mnt/NPX/Luke/DARTsort_motion_experiments/motion_diagnosis_saved_correspondence_common_support_repair_h5_20261007_v2"
+}

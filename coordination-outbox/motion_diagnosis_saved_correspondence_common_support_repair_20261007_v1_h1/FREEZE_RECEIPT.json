@@ -1,0 +1,22 @@
+{
+  "schema": "corrected-correspondence-h1-freeze-receipt-v1",
+  "status": "READY_FOR_HASH_BOUND_DATA_LOCAL_EXECUTION",
+  "created_date_local": "2026-10-07",
+  "contract_sha256": "a13a4fc5dff58559633b0b78b07e10d53b27bd5a7eadd9ccc5e9f755395535af",
+  "source_sha256": "3e40224aaed11429725c1c081ed68b5cbd3debf9c7c518128345b2e860ff0728",
+  "test_source_sha256": "153eaf361f216dfec5a03fa8b37ace44710ea81ec8ba2d0f4f3d16f1405073d3",
+  "fixture_result": "5 passed in 2.74s",
+  "audit_sha256": "e388135e26c6c374b1c82286e24f284677805ebce5dc81f0fd2df16da4d06821",
+  "stage_register_sha256_at_freeze": "e61eca44124f73810e7b556d5fb54bfded1e4790bb7da6bc2d32459c3a45b3e3",
+  "real_saved_arrays_opened": false,
+  "visibility": {
+    "h1_media_paths": "not visible",
+    "hostname_command": "ssh -o BatchMode=yes -o ConnectTimeout=8 huklaban5 <read-only stat>",
+    "hostname_error": "ssh: Could not resolve hostname huklaban5: Temporary failure in name resolution",
+    "configured_address_command": "ssh -o BatchMode=yes -o ConnectTimeout=8 192.168.195.206 <read-only stat>",
+    "configured_address_error": "declan@192.168.195.206: Permission denied (publickey,password)",
+    "retry_policy": "do not repeat; use data-local execution handoff"
+  },
+  "output_namespace": "/media/huklaban5/Data/motion_diagnosis_saved_correspondence_common_support_repair_h5_20261007_v1",
+  "publication_namespace": "/mnt/NPX/Luke/DARTsort_motion_experiments/motion_diagnosis_saved_correspondence_common_support_repair_h5_20261007_v1"
+}

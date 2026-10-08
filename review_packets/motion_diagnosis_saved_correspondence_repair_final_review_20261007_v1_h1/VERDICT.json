@@ -1,0 +1,97 @@
+{
+  "schema": "motion-diagnosis-saved-correspondence-independent-review-v1",
+  "verdict": "GO_OUTCOME_SCOPED_WITH_EVIDENCE_CORRECTIONS",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/motion_diagnosis_saved_correspondence_repair_h5_20261007_v2",
+  "reviewed_identities": {
+    "publication_manifest_sha256": "755b270a6bbfc704239515bb853d1f4e085d829772e0e72c724dc1af9a6ae0b0",
+    "publication_complete_sha256": "22b15e81a09d5a7f51fac0e054e4dea943d5f93bedc2e71b6a2fba0361f91cf4",
+    "result_manifest_sha256": "6bc4c0af55ecbeff2165a69444ef7814c1dd279985177025955737cee2b3e3bf",
+    "executed_source_sha256": "1d5eb39118eeb7bd9a0b035726a688ec78e6d834ae5b716e2706c52ae04f2842",
+    "frozen_contract_sha256": "644668be7bb5590539c5b96cd66e77662e439a4e891ae5b8a72e1571e4b71d2a"
+  },
+  "integrity": {
+    "publication_members_verified": 15,
+    "result_members_verified": 7,
+    "manifest_failures": 0,
+    "compact_rows": {
+      "PER_UNIT_STATE_MODE.csv": 2280,
+      "NULL_EXCESS.csv": 1140,
+      "PARTNER_EDGES.csv": 16806
+    },
+    "duplicate_primary_keys": 0,
+    "partner_closure_failures": 0,
+    "excess_closure_failures": 0
+  },
+  "independent_recompute": {
+    "imec0": {
+      "all_four_null_excess": "120/122",
+      "all_four_null_excess_fraction": 0.9836065573770492,
+      "pooled_observed_A_coverage_by_shift_ms": {
+        "-100": 0.5209419926956479,
+        "-50": 0.45253125487562496,
+        "50": 0.45253125487562496,
+        "100": 0.5209419926956479
+      },
+      "pooled_null_A_coverage_by_shift_ms": {
+        "-100": 0.07100018670942952,
+        "-50": 0.06988610540168366,
+        "50": 0.06989831566237273,
+        "100": 0.07080126264432901
+      }
+    },
+    "imec1": {
+      "all_four_null_excess": "106/113",
+      "all_four_null_excess_fraction": 0.9380530973451328,
+      "pooled_observed_A_coverage_by_shift_ms": {
+        "-100": 0.8635308996453346,
+        "-50": 0.8399095078442689,
+        "50": 0.8399095078442689,
+        "100": 0.8635308996453346
+      },
+      "pooled_null_A_coverage_by_shift_ms": {
+        "-100": 0.16740759512433612,
+        "-50": 0.1672606958291663,
+        "50": 0.1674567474810667,
+        "100": 0.16702627297645245
+      }
+    }
+  },
+  "implementation_findings": {
+    "coordinate_frame": "PASS: Arm A saved positions remain in the corrected frame; REF y is mapped as saved_y - q(original_REF_time). The sign agrees with the inspected SpikeInterface inverse-motion convention.",
+    "clock_and_crop": "PASS for the bound full-session inputs: AP-frame sample origin is zero; each probe uses its actual sampling frequency; no crop offset is introduced.",
+    "temporal_gate": "PASS: search bounds include exactly +/-15 samples.",
+    "spatial_gate": "PASS: inclusive Euclidean x/y distance <=40 um; bound geometry hash is checked and nearest distinct site is 25.612497329711914 um.",
+    "null_support": "PASS: +/-50 and +/-100 ms shifts use real-rate rounded samples; observed and null use the same per-shift segment trimming; original REF time retains state, segment, displacement and position; shifted clocks cannot wrap or cross gaps.",
+    "collision_and_ambiguity": "PASS: all admissible neighbors are retained; no unique assignment is claimed; multi-candidate fractions, distinct partners and full partner edges are persisted.",
+    "interpretation": "PASS: the packet does not relabel candidate correspondence as biological identity, recovered spikes, true extras, purity or sorting superiority."
+  },
+  "evidence_corrections": [
+    {
+      "severity": "nonblocking_for_primary_outcome",
+      "finding": "The published fixture source has five test functions, not the claimed six, and all fixtures are in-memory synthetic arrays; no actual file-backed loader fixture is present.",
+      "effect": "The production loader was inspected and the compact output closes, but fixture-based validation of file loading cannot be claimed."
+    },
+    {
+      "severity": "nonblocking_for_primary_outcome",
+      "finding": "The reported median distinct REF partners [10, 11] is not an unqualified median over all published observed rows. It is reproduced only under a narrower support convention (for example eligible +/-50 ms rows); that convention is not named in REVIEW_STATUS.json.",
+      "effect": "Do not cite the secondary medians without stating the row/support filter. The primary all-four-null counts and pooled coverage are unaffected."
+    },
+    {
+      "severity": "provenance_label_correction",
+      "finding": "REVIEW_STATUS.json inside the producer packet names an H1 independent reviewer before this independent review packet existed.",
+      "effect": "Treat the producer file as H5's scoped review summary; this packet is the authoritative H1 independent result review."
+    }
+  ],
+  "can_establish": "For the frozen selected cohort and full-session saved outputs, common-frame all-neighbor temporal/spatial candidate correspondence is descriptively above the four same-support temporal nulls in nearly all evaluable unit-state groups on both probes.",
+  "cannot_establish": [
+    "biological identity or purity",
+    "recovered spikes or true extras",
+    "bad merge versus repeated detection",
+    "whole-sort prevalence",
+    "causality or intervention benefit",
+    "sorting superiority",
+    "unsupported-row or whitening mechanism",
+    "RF or holdout performance",
+    "file-backed loader fixture coverage"
+  ]
+}

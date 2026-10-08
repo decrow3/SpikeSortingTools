@@ -1,0 +1,13 @@
+{
+  "schema": "preprocessing-order-replay-independent-review-manifest-v1",
+  "files": {
+    "FINAL_REVIEW.md": {
+      "size_bytes": 3406,
+      "sha256": "8abc1d3c3c815310fca6b78fecfc6fb48546fb66a0dd5b1ef8bf07b8cf02afbb"
+    },
+    "VERDICT.json": {
+      "size_bytes": 5699,
+      "sha256": "83f02891c12a7f6ff30dfbec11b796aa935414799658e8471b2b45efaf1ec82d"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "schema": "motion-diagnosis-saved-correspondence-independent-review-complete-v1",
+  "status": "complete",
+  "verdict": "GO_OUTCOME_SCOPED_WITH_EVIDENCE_CORRECTIONS",
+  "manifest_sha256": "c1b890467648e0c0f5b94aad6a949cc5e3dbb148cd884cfec82b2c78dd160f7a"
+}

@@ -1,0 +1,99 @@
+{
+  "schema": "preprocessing-order-replay-independent-review-v1",
+  "verdict": "GO_SCOPED_RESULT_ACCEPTED_TRADEOFF_NO_M3_ACTIVATION",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/preprocessing_order_replay_compact_h5_20261007_v1",
+  "reviewed_identities": {
+    "compact_manifest_sha256": "8e7c321f4512f3a529fc5bee154581bda0a6c3c8d43ab8e484e3ac1fc2d23d55",
+    "compact_complete_sha256": "cd838c89fe8b171a0c11eef1446ef3ea3764afcde31c3b019603e9245440f869",
+    "executed_source_sha256": "e399a04cab3bca23a8795dd167847bcf5a575829db0b45fc8cbec690b7696643",
+    "frozen_contract_sha256": "fbbde975bb956f88a5520486a0953e9f8db62f085fdfa0a4ede3e579b63107eb",
+    "summary_sha256": "331cdbab8cd169dbb0d4d00eead657c0350d284b6b4b0ef7784d1a13ed9ddc5d",
+    "window_metrics_sha256": "5280331f9aa7751bdc4c95fc441a2aa3c2c50d9bcba1bacdaeeecf490624a83a",
+    "pair_metrics_sha256": "a6609e9a3e2a7c2bd5d6868a1742a845d612e0c95e1726b21531c9beacad8021",
+    "switch_metrics_sha256": "c7f98aba14d7b6fb6d56fb76efa3233e2144ce5650bc7a172d30c9c22c57d3b8"
+  },
+  "integrity": {
+    "manifest_members_verified": 15,
+    "manifest_failures": 0,
+    "window_rows": 60,
+    "pair_rows": 48,
+    "switch_rows": 40,
+    "duplicate_metric_keys": 0,
+    "support_count_closure_failures": 0,
+    "nonfinite_required_metrics": 0,
+    "figures_inspected": 2
+  },
+  "implementation": {
+    "five_views": {
+      "static_reference": "saved W_REF F(X), native frame",
+      "current_A": "saved W_A F(PX), target frame",
+      "mask_only_fixed_WA": "W_A S F(PX), target frame",
+      "preW_remap_WREF": "W_REF P F(X), target frame",
+      "postW_remap_WREF": "P W_REF F(X), target frame"
+    },
+    "orientation": "PASS: on-disk/metric arrays are time x channel and whitening applies output[t,o] = sum_i W[o,i] input[t,i].",
+    "mapping": "PASS: target row j reads the exact same-column source site at y_j + q; -1 is unsupported and zero-filled; frozen mappings are checked against bound geometry.",
+    "noncommuting_fixture": "PASS: zero and +/-40 um mappings, a within-window state change, no wraparound, nontrivial W/P noncommutation (max absolute difference 69), and exact post-W unsupported zeros.",
+    "saved_stage_reuse": "PASS from producer preflight: all 24 saved REF/A whitened windows reproduce from bound prewhitening stages and W matrices with zero reported difference.",
+    "units_and_frames": "PASS: every plotted view is labelled as whitened internal units; static is native frame and the other four are target frame; no physical-uV or new-detection claim is made.",
+    "october_3_hook_scope": "PASS: the result implements a new post-W partial permutation and does not relabel the historical mask-before-W hook as post-W."
+  },
+  "independent_recompute": {
+    "postW_unsupported_exact_zero": "12/12 windows",
+    "q0_full_window_identity_controls": "5/5 exact; imec1_03 excluded because it contains a q0-to-+40 boundary",
+    "canonical_switches": [
+      {
+        "window_id": "imec0_04_displaced_to_q0_switch",
+        "boundary_sample": 750,
+        "common_channels": 380,
+        "current_A_jump_rms": 4.996485623429675,
+        "postW_jump_rms": 1.347740133904795,
+        "reduction_fraction": 0.7302623813055861
+      },
+      {
+        "window_id": "imec1_04_displaced_to_q0_switch",
+        "boundary_sample": 750,
+        "common_channels": 380,
+        "current_A_jump_rms": 5.486496087148762,
+        "postW_jump_rms": 1.3815342947254146,
+        "reduction_fraction": 0.7481936972558065
+      }
+    ],
+    "stable_displaced_event_guardrail": {
+      "result": "FAIL_4_OF_4",
+      "denominator_values_per_window": 2013,
+      "cosine_range": [0.4791997598114731, 0.632702098143667],
+      "gain_range": [0.16401758372984937, 0.27633152704839453],
+      "normalized_residual_range": [0.7743952834338557, 0.8777058677009212],
+      "frozen_thresholds": {
+        "minimum_cosine": 0.95,
+        "gain_range": [0.75, 1.25],
+        "maximum_normalized_residual": 0.35
+      }
+    },
+    "criteria": {
+      "postW_unsupported_exact_zero": true,
+      "canonical_switch_reduction": true,
+      "q0_control_guardrail": true,
+      "stable_displaced_event_guardrail": false
+    }
+  },
+  "correction_history": {
+    "repaired_error": "The failed predecessor incorrectly admitted imec1_03, which switches q0 to +40 inside the event interval, into the q0 guardrail.",
+    "repair_verified_in_source": "The corrected contract freezes exactly five full-window q0 identities, preflight requires an exact denominator match, and decision logic admits only pseudoboundary windows.",
+    "thresholds_or_arms_changed": false,
+    "predecessor_preservation_evidence": "Paths and manifest/COMPLETE hashes are recorded in CONTRACT.json and CORRECTION.json, but the H5-local failed packet is not mounted on H1."
+  },
+  "decision": "Accept TRADEOFF_NO_M3_ACTIVATION. The post-W representation reduces the selected switch discontinuity and enforces unsupported zeros, but it fails every frozen stable-displaced representation guardrail. Do not prepare or activate M3 from this candidate; return the scientific fork to HubPlanner.",
+  "can_establish": "On the 12 frozen saved-stage windows, the implemented post-W remap has the stated representation tradeoff under the published denominators and thresholds.",
+  "cannot_establish": [
+    "biological waveform loss",
+    "identity or purity",
+    "recovered spikes, true extras, or bad merges",
+    "sorting harm or benefit",
+    "mechanism or causality",
+    "whole-sort prevalence or generalization",
+    "ordinary displaced-window safety beyond the frozen examples",
+    "independent byte verification of H5-local VIEWS.h5 or the failed predecessor"
+  ]
+}

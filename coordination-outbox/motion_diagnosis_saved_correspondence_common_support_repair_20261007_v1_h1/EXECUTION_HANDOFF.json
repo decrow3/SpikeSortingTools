@@ -1,0 +1,27 @@
+{
+  "schema": "corrected-correspondence-data-local-execution-handoff-v1",
+  "owner": "H5 data-local executor",
+  "author": "H1 sole implementation/result writer",
+  "status": "READY_FOR_HASH_BOUND_DATA_LOCAL_EXECUTION",
+  "reason_for_handoff": "H1 does not mount /media/huklaban5 and configured SSH reaches H5 but authentication is unavailable.",
+  "required_action": "Copy this sealed packet to a fresh H5-local path, preserve bytes, run the tests, calculate CONTRACT.json SHA256, and execute source/corrected_correspondence.py once under a transient or installed user systemd service with RuntimeMaxSec=5400 and TimeoutStopSec=60.",
+  "required_environment": {
+    "python": "/home/huklaban5/anaconda3/bin/python",
+    "PYTHONPATH": "/tmp/motion_diagnosis_m1_repair_20261007",
+    "NUMBA_CACHE_DIR": "fresh H5-local cache outside the output namespace"
+  },
+  "argv_template": [
+    "/home/huklaban5/anaconda3/bin/python",
+    "source/corrected_correspondence.py",
+    "--selection",
+    "/media/huklaban5/Data/motion_diagnosis_m1_selection_h5_20261007_v1/SELECTION.json",
+    "--contract",
+    "CONTRACT.json",
+    "--contract-sha256",
+    "a13a4fc5dff58559633b0b78b07e10d53b27bd5a7eadd9ccc5e9f755395535af",
+    "--output",
+    "/media/huklaban5/Data/motion_diagnosis_saved_correspondence_common_support_repair_h5_20261007_v1"
+  ],
+  "publication": "Publish compact result files plus executed source/contract/test/service receipts; exclude copied event arrays and caches; verify hashes and write publication COMPLETE.json last.",
+  "no_serial_gate": "Execution may proceed after exact local hash/absence/resource checks; H1 review occurs after execution."
+}

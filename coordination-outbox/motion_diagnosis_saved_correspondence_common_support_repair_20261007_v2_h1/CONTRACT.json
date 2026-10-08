@@ -1,0 +1,139 @@
+{
+  "schema": "motion-diagnosis-saved-correspondence-common-support-repair-contract-v2-cache-isolated-launch",
+  "status": "FROZEN_BEFORE_CORRECTED_SAVED_OUTCOMES",
+  "milestone": "M1 measurement repair",
+  "decision": "Determine whether the frozen selected-cohort saved-event correspondence exceeds four comparable-opportunity temporal nulls after repairing observation/null support.",
+  "cheapest_adequate_test": "Reuse the exact prior selected A/REF saved arrays and field; change only support/denominator construction and rerun the all-neighbour statistic.",
+  "completion_condition": "Two probes; 30 selected A units; four nulls; observation/null opportunity equality; A and REF denominators; fixtures; compact rows; immutable seal; focused independent changed-boundary review.",
+  "predecessor_failure": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/motion_diagnosis_saved_correspondence_common_support_repair_h5_20261007_v1_FAILURE",
+    "manifest_sha256": "77a50197e1cfe5b3edc87eff15c00e5e518054ad20482253c302bd7201ee98e8",
+    "complete_sha256": "f67471e9484b61276f8c295ebe267825b5861febc0b57915e0e800e9e871ecb8",
+    "terminal_state": "FAILED_CLOSED_PRE_ARRAY_FIXTURE_CACHE_IMPORT",
+    "scientific_outcomes_emitted": false,
+    "preservation": "immutable; never overwrite or retry the v1 namespace"
+  },
+  "historical_packet_preserved": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/motion_diagnosis_saved_correspondence_repair_h5_20261007_v2",
+    "publication_manifest_sha256": "755b270a6bbfc704239515bb853d1f4e085d829772e0e72c724dc1af9a6ae0b0",
+    "publication_complete_sha256": "22b15e81a09d5a7f51fac0e054e4dea943d5f93bedc2e71b6a2fba0361f91cf4",
+    "result_manifest_sha256": "6bc4c0af55ecbeff2165a69444ef7814c1dd279985177025955737cee2b3e3bf",
+    "status": "historical_arithmetic_not_comparable_chance_evidence"
+  },
+  "documents": {
+    "broad_audit": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/BROAD_IMPLEMENTATION_AUDIT_REPORT_20261007.md",
+      "sha256": "e388135e26c6c374b1c82286e24f284677805ebce5dc81f0fd2df16da4d06821",
+      "runtime_verify": true
+    },
+    "stage_register_at_freeze": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/STAGE_REGISTER.md",
+      "sha256": "e61eca44124f73810e7b556d5fb54bfded1e4790bb7da6bc2d32459c3a45b3e3",
+      "runtime_verify": false,
+      "reason": "append-only coordination document may advance after this contract; this hash records the reviewed freeze context"
+    }
+  },
+  "inputs": {
+    "selection_path": "/media/huklaban5/Data/motion_diagnosis_m1_selection_h5_20261007_v1/SELECTION.json",
+    "selection_sha256": "5e14be52634d69dd31d7cbf81dd8a5677e48b9127738b2fb4109ce6f164a9cbe",
+    "geometry_sha256": "0469ca92fb739a0cfd2f1613262d3a2d75af1098385385d7462ee6e3fd038d75",
+    "saved_arrays": [
+      "spike_times.npy",
+      "spike_clusters.npy",
+      "spike_positions.npy"
+    ],
+    "field_and_sort_packets": "resolved from the hash-bound selection and each packet's effective_config/manifest"
+  },
+  "implementation": {
+    "source": "source/corrected_correspondence.py",
+    "source_sha256": "3e40224aaed11429725c1c081ed68b5cbd3debf9c7c518128345b2e860ff0728",
+    "source_base_commit": "c23ea81",
+    "test_source": "tests/test_corrected_correspondence.py",
+    "test_source_sha256": "153eaf361f216dfec5a03fa8b37ace44710ea81ec8ba2d0f4f3d16f1405073d3",
+    "cache_isolation_preflight": "tests/cache_isolation_preflight.py",
+    "cache_isolation_preflight_sha256": "0265d391dceee01c9117f1ea8901a0490389c42b466473019ba6187992733094",
+    "cache_isolation_rule": "Fixture tests use a fresh fixture-only NUMBA_CACHE_DIR. The managed execution uses a distinct, fresh, empty execution-only NUMBA_CACHE_DIR. The exact service interpreter and exact source path must pass the preflight before launch. No cache directory from v1 may be reused.",
+    "dependencies": [
+      {
+        "path": "/tmp/motion_diagnosis_m1_repair_20261007/testing/full_session_r1_evaluation.py",
+        "sha256": "415f29d7f26102606143d0bd4fbb8ed9a136199a6642e664d50c2a6716b7c423"
+      },
+      {
+        "path": "/tmp/motion_diagnosis_m1_repair_20261007/testing/en_tier1_panel.py",
+        "sha256": "8b48b795439e39242862868c9367e83c8e148031fe850df6332f5f22b541bef1"
+      }
+    ],
+    "negative_cluster_fix": "clusters < 0 never index the lookup",
+    "execution_binding": "CLI requires this contract's exact SHA256, source SHA256, dependency hashes, input hashes and exact output path",
+    "scientific_delta_from_v1": "none; source and fixture-test hashes are byte-identical to v1; only contract namespace and launch/cache isolation change"
+  },
+  "measurement": {
+    "temporal_radius_samples_inclusive": 15,
+    "spatial_radius_um_inclusive": 40,
+    "null_ms": [-100, -50, 50, 100],
+    "shift_rounding": "int(np.rint(ms * actual_saved_ops_fs / 1000))",
+    "common_A_support": "For comparison shift s, both inclusive query windows A+/-15 and A-s+/-15 must remain in the same original state segment.",
+    "REF_opportunity": "Full finite-position REF population in the original state; identical denominator for observation and its null.",
+    "REF_coordinate": "x unchanged; y_common=saved_y-q(original_REF_time)",
+    "REF_state": "original event state and segment; never reassigned from shifted clock",
+    "observed_match": "REF clock unshifted on the common A support",
+    "null_match": "REF matching clock shifted by s only; original REF position/state retained",
+    "statistic": "all admissible neighbours; no greedy/unique assignment and no candidate cap",
+    "primary": "per unit/state observed A candidate coverage minus each null A candidate coverage",
+    "secondary": [
+      "REF candidate coverage with identical full-original-state denominator",
+      "candidate-edge excess",
+      "multi-candidate fraction",
+      "distinct partners and top-partner concentration"
+    ],
+    "headline": "number of evaluable unit/state groups with positive A-coverage and candidate-edge excess against all four nulls; descriptive only"
+  },
+  "fixtures": {
+    "required": [
+      "stationary dense both shift signs through the production matcher",
+      "stationary sparse both shift signs through the production matcher",
+      "short segment with no common support",
+      "inclusive temporal-radius boundaries",
+      "inclusive 40-um and collision/all-neighbour case",
+      "actual-rate +/-50/100-ms rounding",
+      "negative cluster labels cannot alias a selected unit"
+    ],
+    "acceptance": "Observation/null A opportunity must be identical; dense stationary coverage and sparse stationary edge counts must match for both signs."
+  },
+  "interpretation": {
+    "can_establish": "Corrected descriptive candidate correspondence relative to four comparable-opportunity temporal nulls for the frozen selected cohort.",
+    "cannot_establish": [
+      "biological identity or purity",
+      "recovered spikes, true extras or bad merges",
+      "whole-sort prevalence",
+      "causality, mechanism or sorting superiority",
+      "RF or holdout performance"
+    ],
+    "prior_partners": "candidate leads only until this corrected result and independent review"
+  },
+  "resources": {
+    "execution": "one managed CPU process on H5; no lifetime dependence on chat or interactive shell; exact interpreter /home/huklaban5/anaconda3/bin/python",
+    "fixture_numba_cache": "/tmp/corrected_correspondence_numba_fixture_h5_20261007_v2 (fresh, tests only)",
+    "execution_numba_cache": "/tmp/corrected_correspondence_numba_execution_h5_20261007_v2 (fresh and empty before exact-path preflight and service)",
+    "memory": "mmap full REF arrays, selected A arrays, and one unit/mode two-pass edge set; target below 4 GiB RSS",
+    "runtime_max_seconds": 5400,
+    "timeout_stop_seconds": 60,
+    "output": "compact CSV/JSON only; target below 100 MiB",
+    "recording_reads": 0,
+    "gpu": false,
+    "sort": false,
+    "retries": 0
+  },
+  "stop_conditions": [
+    "any bound hash or seal mismatch",
+    "fixture or observation/null opportunity-equality failure",
+    "candidate count/fill disagreement",
+    "array shape, clock, state, geometry or finiteness failure",
+    "fresh output namespace unavailable",
+    "90-minute managed runtime limit",
+    "unexpected voltage, GPU, RF, holdout, detector or sorter access"
+  ],
+  "output": "/media/huklaban5/Data/motion_diagnosis_saved_correspondence_common_support_repair_h5_20261007_v2",
+  "publication": "/mnt/NPX/Luke/DARTsort_motion_experiments/motion_diagnosis_saved_correspondence_common_support_repair_h5_20261007_v2",
+  "preservation": "Never overwrite old or failed packets; COMPLETE.json written last."
+}

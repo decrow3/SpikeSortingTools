@@ -1,0 +1,7 @@
+{
+  "schema": "corrected-correspondence-h1-implementation-complete-v1",
+  "status": "READY_FOR_HASH_BOUND_DATA_LOCAL_EXECUTION",
+  "manifest_sha256": "29024f7ee929ad58ba70b594ce927a79fdfb00c8bffc1151d2df9fd5ba2b8573",
+  "contract_sha256": "a13a4fc5dff58559633b0b78b07e10d53b27bd5a7eadd9ccc5e9f755395535af",
+  "source_sha256": "3e40224aaed11429725c1c081ed68b5cbd3debf9c7c518128345b2e860ff0728"
+}

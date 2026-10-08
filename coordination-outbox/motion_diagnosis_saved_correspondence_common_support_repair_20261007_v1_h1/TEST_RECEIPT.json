@@ -1,0 +1,17 @@
+{
+  "schema": "corrected-correspondence-h1-fixture-receipt-v1",
+  "status": "PASS",
+  "command": "PYTHONDONTWRITEBYTECODE=1 NUMBA_CACHE_DIR=/tmp/corrected_correspondence_numba_cache pytest -q -p no:cacheprovider coordination-outbox/motion_diagnosis_saved_correspondence_common_support_repair_20261007_v1_h1/tests/test_corrected_correspondence.py",
+  "result": "5 passed in 2.74s",
+  "source_sha256": "3e40224aaed11429725c1c081ed68b5cbd3debf9c7c518128345b2e860ff0728",
+  "test_source_sha256": "153eaf361f216dfec5a03fa8b37ace44710ea81ec8ba2d0f4f3d16f1405073d3",
+  "coverage": [
+    "production-path dense stationary equality for both shift signs",
+    "production-path sparse stationary equality for both shift signs",
+    "short-segment zero common support",
+    "inclusive temporal boundary and spatial/collision behavior",
+    "actual-rate shift rounding",
+    "negative-label non-aliasing"
+  ],
+  "real_saved_arrays_opened": false
+}

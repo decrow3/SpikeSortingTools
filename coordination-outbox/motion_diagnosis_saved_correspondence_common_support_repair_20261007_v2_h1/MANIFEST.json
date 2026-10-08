@@ -1,0 +1,13 @@
+{
+  "schema": "corrected-correspondence-cache-isolated-execution-packet-manifest-v2",
+  "created_at": "2026-10-07T18:30:58-07:00",
+  "files": {
+    "CONTRACT.json": {"sha256": "350b8ec1a695f757d49c19789551a0ed356d2014f399f770c2d56c4204480463", "size_bytes": 8731},
+    "EXECUTION_HANDOFF.json": {"sha256": "20246a95d6092d144ff04504aaeaa9233f4237a446e14c909c3206bd24e7ff30", "size_bytes": 3953},
+    "README.md": {"sha256": "f08b99c3452858056848328be4d7949ddbce9fec97e7cda5e99b3fdf306f152c", "size_bytes": 2426},
+    "TEST_RECEIPT.json": {"sha256": "4cba286ae03b4dee3176e133f0af955753f0f2af870d628ecbd220490ac3fb7d", "size_bytes": 1054},
+    "source/corrected_correspondence.py": {"sha256": "3e40224aaed11429725c1c081ed68b5cbd3debf9c7c518128345b2e860ff0728", "size_bytes": 29054},
+    "tests/cache_isolation_preflight.py": {"sha256": "0265d391dceee01c9117f1ea8901a0490389c42b466473019ba6187992733094", "size_bytes": 3497},
+    "tests/test_corrected_correspondence.py": {"sha256": "153eaf361f216dfec5a03fa8b37ace44710ea81ec8ba2d0f4f3d16f1405073d3", "size_bytes": 2288}
+  }
+}

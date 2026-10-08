@@ -1,0 +1,15 @@
+{
+  "schema": "immutable-review-manifest-v1",
+  "created_at": "2026-10-07T18:25:52-07:00",
+  "packet": "post_sort_structure_final_review_20261007_v1_h1",
+  "files": {
+    "FINAL_REVIEW.md": {
+      "sha256": "7bfcc65b1f67a4ee382eaa051d39c4797522c4f7134a598f79c87cfacabd792e",
+      "size_bytes": 9764
+    },
+    "VERDICT.json": {
+      "sha256": "f365c61edcd82780a878ea5102bce1f1d67554f3bc6abf672e9b1137df5764e2",
+      "size_bytes": 1945
+    }
+  }
+}

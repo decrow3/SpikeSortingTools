@@ -1,0 +1,10 @@
+{
+  "schema": "corrected-correspondence-cache-isolated-execution-packet-complete-v2",
+  "status": "complete_ready_for_h5_exact_execution",
+  "completed_at": "2026-10-07T18:30:58-07:00",
+  "manifest_sha256": "5aa823cbef5f2f1dd474b8c54882b0ad78057009aec5f9567d56ef93bf881027",
+  "contract_sha256": "350b8ec1a695f757d49c19789551a0ed356d2014f399f770c2d56c4204480463",
+  "source_sha256": "3e40224aaed11429725c1c081ed68b5cbd3debf9c7c518128345b2e860ff0728",
+  "scientific_source_changed_from_v1": false,
+  "successor_owner": "H5 exact data-local runner"
+}

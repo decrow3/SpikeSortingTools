@@ -1,0 +1,13 @@
+{
+  "schema": "motion-diagnosis-saved-correspondence-independent-review-manifest-v1",
+  "files": {
+    "FINAL_REVIEW.md": {
+      "size_bytes": 3230,
+      "sha256": "b8b2fcb9f8afaec7047b9a505daf6de22f2b28a8f510e8a7505acbd67cac6fdc"
+    },
+    "VERDICT.json": {
+      "size_bytes": 5423,
+      "sha256": "1e4b8084d4e6b657406209aee58de89974906a22034ddd63d36920f935d18358"
+    }
+  }
+}

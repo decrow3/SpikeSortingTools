@@ -1,0 +1,36 @@
+{
+  "schema": "post-sort-structure-independent-review-v1",
+  "reviewer": "H1",
+  "reviewed_at": "2026-10-07T18:25:52-07:00",
+  "verdict": "ACCEPT_SCOPED_WITH_NONBLOCKING_CORRECTIONS",
+  "load_bearing_failures": [],
+  "corrections": [
+    {
+      "severity": "P2_PROVENANCE",
+      "finding": "The exact executed field-loader dependency SHA256 415f29d7... is runtime-bound but not published for independent source inspection.",
+      "scope": "qualify state-specific and state-preserving-null claims until the exact source snapshot is supplied"
+    },
+    {
+      "severity": "P2_PROVENANCE",
+      "finding": "Producer input-packet helpers bind MANIFEST/COMPLETE but do not hash every consumed member.",
+      "scope": "current outputs close to independently verified shared selection/census; repair future consumers"
+    },
+    {
+      "severity": "P3_FIGURE",
+      "finding": "The census strict-pattern subplot says both probes pooled but contains only the first probe group.",
+      "scope": "caption/figure correction only; tables unaffected"
+    },
+    {
+      "severity": "P3_INTERPRETATION",
+      "finding": "With 20 null draws, all 75 p<=0.05 values are the minimum 1/21.",
+      "scope": "descriptive evidence only; not a calibrated significance claim"
+    }
+  ],
+  "reviewed_manifests": {
+    "census": "022ad0e1c558a283a97cabe7f27aaa318701bc228197ea7819ae75bcae2f1028",
+    "selection": "93d5fc82430ec526c9f50224471f4fa4a8375082736ee1c00ea4324dc8eea877",
+    "panel": "db6eed1e5ca4c3a6df222c1b5676e99819bcfbdd689dfea6ee23e2ee327ac9c4"
+  },
+  "can_establish": "Internally coherent saved-table prevalence, deterministic enriched panel selection, and bounded descriptive unit/pair structure.",
+  "cannot_establish": "Biological identity or purity, duplicate frequency, merge safety, causal stage, arm superiority, population prevalence from the enriched panel, or exact state/null semantics without the missing dependency snapshot."
+}
