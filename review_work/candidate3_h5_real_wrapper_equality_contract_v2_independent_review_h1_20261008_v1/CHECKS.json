@@ -1,0 +1,20 @@
+{
+  "schema": "candidate3-h5-real-wrapper-equality-v2-independent-review-checks-v1",
+  "reviewed_contract_sha256": "432b6aebab7469fc1f71350625feec9f50c56dcd105bf5034d89faf7a1507110",
+  "reviewed_runner_sha256": "3db928375cbcd75e9f79f1ab593978ef0af736f5ea3adbc0b9a0e46853c217fc",
+  "checks": {
+    "author_packet_seal": "PASS",
+    "contract_and_runner_match_committed_source": "PASS",
+    "runner_contract_source_path_import_bindings": "PASS_EXCEPT_RUNNER_EXECUTION_PATH_NOT_BOUND",
+    "owned_tmpdir_and_numba_cache": "PASS",
+    "focused_review_binding": "PASS",
+    "dispatch_and_resource_hash_join": "PASS",
+    "external_manager_and_outer_receipt_requirement": "PASS_CONDITIONAL_LATER_INPUT",
+    "active_internal_guards": "PASS_SCOPED",
+    "success_and_negative_fixtures": "PASS",
+    "independent_full_shape_self_test": "PASS_9_OF_9_EXACT",
+    "exact_prebound_invocation_and_output_topology": "FAIL",
+    "current_h5_readiness": "NOT_TESTED_AND_NOT_CLAIMED"
+  },
+  "verdict": "NO_GO_REPAIR_EXACT_INVOCATION_AND_OUTPUT_BINDING"
+}

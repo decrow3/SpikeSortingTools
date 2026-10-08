@@ -1,0 +1,23 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "created_at": "2026-10-08T03:00:33-07:00",
+  "status": "NO_GO_REPAIR_EXACT_INVOCATION_AND_OUTPUT_BINDING",
+  "members": {
+    "CHECKS.json": {
+      "size": 1038,
+      "sha256": "b65cf3b3fd83a62b5dcee3162ac2ce626aae444e95b13677300bf3d35df0c63f"
+    },
+    "INDEPENDENT_FIXTURE.json": {
+      "size": 1209,
+      "sha256": "c84211ffe80c8da847c60491a69cd5f4248a3f03a09a3be11d0f40c73b9b1364"
+    },
+    "PROVENANCE.json": {
+      "size": 1163,
+      "sha256": "6ad87667f70047435fc15e91e3be4e4905a8450186ab39769c462d32a621dd5e"
+    },
+    "REVIEW.md": {
+      "size": 7445,
+      "sha256": "f03c03273b273812c330f54cda70e1fc2a2402ffe8f9a0337d205eebf878ed35"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "candidate3-h5-real-wrapper-equality-v2-independent-fixture-v1",
+  "mode": "local_synthetic_self_test",
+  "command_runner": "testing/candidate3_h5_real_wrapper_equality_v2.py",
+  "contract_sha256": "432b6aebab7469fc1f71350625feec9f50c56dcd105bf5034d89faf7a1507110",
+  "runner_sha256": "3db928375cbcd75e9f79f1ab593978ef0af736f5ea3adbc0b9a0e46853c217fc",
+  "caller_numba_cache_dir_supplied": false,
+  "exit_status": 0,
+  "verdict": "PASS_SYNTHETIC_SELF_TEST",
+  "request_comparisons": 9,
+  "exact_comparisons_passed": 9,
+  "ordinary_positive_control_mismatch_count": 115195591,
+  "transition_positive_control_mismatch_count": 115195436,
+  "binary_read_bytes": 0,
+  "cached_synthetic_input_bytes": 645116928,
+  "temporary_bytes_final": 5001,
+  "result_sha256": "97b7285679416a32b34f60c340395f126a24a4d837dd1f489b8b9e99fe29aa4b",
+  "manifest_sha256": "f73d2863e0c28a3dd9e297e2334b0960aa76b7859fc4a8a89ef39dacd2949a66",
+  "complete_sha256": "1b53eb497337bf8abad93deba557036a192d1c3b7189bcc74388bc2d4173d22d",
+  "terminal_members": ["RESULT.json"],
+  "temporary_root_removed": true,
+  "excluded": "H5 contact, recorded voltage read/hash, service, GPU, sort, RF, holdout, and full-session execution"
+}

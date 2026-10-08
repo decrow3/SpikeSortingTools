@@ -1,0 +1,6 @@
+{
+  "schema": "immutable-evidence-complete-v1",
+  "completed_at": "2026-10-08T03:00:44-07:00",
+  "status": "NO_GO_REPAIR_EXACT_INVOCATION_AND_OUTPUT_BINDING",
+  "manifest_sha256": "0851c6142bdff132a21a1538f97556e166910978f8446c1c32ab572f5b8d9cd0"
+}

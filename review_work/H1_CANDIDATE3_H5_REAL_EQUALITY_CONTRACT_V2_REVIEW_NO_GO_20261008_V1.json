@@ -1,0 +1,26 @@
+{
+  "schema": "coordination-handoff-v1",
+  "host": "huklaban1",
+  "task_key": "candidate3_h5_real_wrapper_equality_contract_v2_independent_review",
+  "reported_at": "2026-10-08T03:01:10-07:00",
+  "terminal_state": "NO_GO_REPAIR_EXACT_INVOCATION_AND_OUTPUT_BINDING",
+  "reviewed_author_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_real_wrapper_equality_contract_h1_20261008_v2",
+    "manifest_sha256": "d3cda8d18062cd0ec1c60d45533a631f15f58996046df0c56f07054c15d9e724",
+    "complete_sha256": "da4550bf427bfa38186dfd5bcc6e6a373709483c0fb0b441bce15682e4a47496",
+    "contract_sha256": "432b6aebab7469fc1f71350625feec9f50c56dcd105bf5034d89faf7a1507110",
+    "runner_sha256": "3db928375cbcd75e9f79f1ab593978ef0af736f5ea3adbc0b9a0e46853c217fc"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_real_wrapper_equality_contract_v2_independent_review_h1_20261008_v1",
+    "manifest_sha256": "0851c6142bdff132a21a1538f97556e166910978f8446c1c32ab572f5b8d9cd0",
+    "complete_sha256": "9ddbbecb9a6011fb9e2b7b0a31421bf1717913898b4791496e7a2f7c1ffd3426"
+  },
+  "passing_delta": "V2 repairs runner/contract/source bindings, runner-owned cache environment, focused-review and dispatch/resource hash joins, active internal guards, outer failure-receipt requirement and handled exactly-one terminal sealing. Independent full-shape synthetic rerun passed 9/9 exact comparisons with both positive controls and zero voltage bytes.",
+  "remaining_blocker": "Dispatch/resource schemas do not pre-bind exact runner execution path, canonical argv, fresh output path or externally enforced output/temp topology; runner accepts any fresh output path, so it cannot establish that selected output is inside the topology covered by the resource receipt. Post-hoc outer argv is evidence, not preauthorization.",
+  "minimal_repair": "Bind and enforce exact runner path plus canonical invocation/output/environment policy in dispatch; bind the same resolved output and managed topology in the resource receipt; preserve outer receipt semantics. No scientific or resource-magnitude change is requested.",
+  "execution_state": "No H5 contact, voltage read/hash, transfer/materialization, service, GPU job, sort, RF/holdout, or full launch was performed.",
+  "decision": "Do not dispatch v2. Preserve it unchanged and repair the remaining release join under a distinct version.",
+  "execution_owner": "/root",
+  "reviewer_next_state": "checked in with HubMultiCoordinater; available for focused repair review and not launching execution"
+}
