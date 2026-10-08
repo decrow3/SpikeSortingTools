@@ -1,0 +1,12 @@
+{
+  "schema": "immutable-packet-complete-v1",
+  "status": "COMPLETE_INDEPENDENT_SEAL_REVIEW_GO",
+  "completed_local": "2026-10-07T23:02:00-07:00",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2r1",
+  "review_scope": "seal_and_provenance_boundary_only",
+  "verdict": "GO",
+  "scientific_verdict": "NON_DECISIVE_UNCHANGED",
+  "manifest_path": "MANIFEST.json",
+  "manifest_sha256": "23de10fef75613502b63104314547def6bf0e42c886ddfa4fb5eeff96213dcfc",
+  "production_launch": false
+}

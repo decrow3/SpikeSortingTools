@@ -1,0 +1,9 @@
+{
+  "schema": "immutable-packet-manifest-v1",
+  "created_local": "2026-10-07T23:01:30-07:00",
+  "packet": "noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2r1_independent_review_v1",
+  "members": [
+    {"path": "FILESYSTEM_RECEIPT.json", "bytes": 4083, "sha256": "530c884d0289f0727d16e85d8886ff5484cdd95b5b2a793f34ec8065c3e11538"},
+    {"path": "REVIEW_REPORT.md", "bytes": 2407, "sha256": "16bc564cfe9bc9d19bde1e8b813b37d8e21c2ce6b0575fdad1761b136f360e42"}
+  ]
+}

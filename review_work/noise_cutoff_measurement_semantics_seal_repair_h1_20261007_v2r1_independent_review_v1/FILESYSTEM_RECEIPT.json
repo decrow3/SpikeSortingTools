@@ -1,0 +1,52 @@
+{
+  "schema": "independent-seal-filesystem-receipt-v1",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2r1",
+  "review_scope": "seal_and_provenance_boundary_only",
+  "verdict": "GO",
+  "scientific_outcome_reinspection": false,
+  "scientific_verdict_carried_forward": "NON_DECISIVE",
+  "expected_files": [
+    "BOUNDARY_RECEIPT.json",
+    "COMPLETE.json",
+    "FROZEN_CONTRACT.md",
+    "MANIFEST.json",
+    "PROVENANCE.json",
+    "SCIENTIFIC_VERDICT.md"
+  ],
+  "observed_files": [
+    "BOUNDARY_RECEIPT.json",
+    "COMPLETE.json",
+    "FROZEN_CONTRACT.md",
+    "MANIFEST.json",
+    "PROVENANCE.json",
+    "SCIENTIFIC_VERDICT.md"
+  ],
+  "missing_files": [],
+  "unexpected_files": [],
+  "members": [
+    {"path": "BOUNDARY_RECEIPT.json", "bytes": 496, "sha256": "4187da2cfca94e5ce0668e4fee3cd8c8f2e1bc74e353cd77e1cb14a8c9f40c52", "mtime_ns": 1791439129368493900},
+    {"path": "FROZEN_CONTRACT.md", "bytes": 1855, "sha256": "355f34bbda975c60ef826dc5b7832aa3fda666a5519801ee2c596ddf5ef4d032", "mtime_ns": 1791439129368393400},
+    {"path": "PROVENANCE.json", "bytes": 1427, "sha256": "a397286adfc86ed4279d232451d4bdea726e962c86c00a6a4cb255862a799d7c", "mtime_ns": 1791439129368228900},
+    {"path": "SCIENTIFIC_VERDICT.md", "bytes": 395, "sha256": "a09d02461ef5b9e7912ea433fd43782d8e1e36c4305e6f50eab4c9c0635c5887", "mtime_ns": 1791439129367707300}
+  ],
+  "manifest": {"path": "MANIFEST.json", "bytes": 710, "sha256": "e33a1a8bec2f950486cb518a0df0fd5cb3ebad7fd7019af2b328ba212e22ad00", "mtime_ns": 1791439145495762300},
+  "complete": {"path": "COMPLETE.json", "bytes": 442, "sha256": "8858d510694f604867b12ad2bd96b96d714974cf65880ab9ee4e1a635937251e", "mtime_ns": 1791439162647697800, "bound_manifest_sha256": "e33a1a8bec2f950486cb518a0df0fd5cb3ebad7fd7019af2b328ba212e22ad00"},
+  "ordering": {
+    "latest_member_mtime_ns": 1791439129368493900,
+    "manifest_minus_latest_member_ns": 16127268400,
+    "complete_minus_manifest_ns": 17151935500,
+    "strict_manifest_after_every_member": true,
+    "strict_complete_after_manifest": true,
+    "strict_complete_after_every_member": true
+  },
+  "references": [
+    {"role": "original_v1_manifest", "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_h1_20261007_v1/MANIFEST.json", "sha256": "e1fc1f66fbffc95d39d4d7501deb0ef117b4d8cbccf705f50ec611541861edae", "match": true},
+    {"role": "original_v1_complete", "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_h1_20261007_v1/COMPLETE.json", "sha256": "616e6fac5fd7131256d4be6e35db85047eb727d167b70257dead24f2078f176c", "match": true},
+    {"role": "accepted_review_manifest", "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_independent_review_h1_20261007_v1/MANIFEST.json", "sha256": "33ee13bfc88e523135fc41081d19d6b44277e9f86bca6e2b9e165f7db295cec7", "match": true},
+    {"role": "accepted_review_complete", "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_independent_review_h1_20261007_v1/COMPLETE.json", "sha256": "08a29cb7c066fb865a349c7aa279e748af02dc64cb70e4ed69740e23f4256e90", "match": true},
+    {"role": "preserved_failed_v2_manifest", "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2/MANIFEST.json", "sha256": "871f725ea0f1370b15b6427746d73f4cd1e0339955d0c8fa3719c264a0817596", "match": true},
+    {"role": "preserved_failed_v2_complete", "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2/COMPLETE.json", "sha256": "41a7bb94ba5e22279cfaf3200c032804d4540fa5e8812543a58abc8d79afde4a", "match": true},
+    {"role": "source_host_preparation_contract", "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/NOISE_CUTOFF_SUFFICIENT_STATS_SOURCE_PREP_CONTRACT_20261007_V1.json", "sha256": "c95d1c3ab2578fa1585d32d8c7ff060e9304c9d8569274c5ea40e40b7dac1fb3", "match": true}
+  ],
+  "all_checks_pass": true
+}

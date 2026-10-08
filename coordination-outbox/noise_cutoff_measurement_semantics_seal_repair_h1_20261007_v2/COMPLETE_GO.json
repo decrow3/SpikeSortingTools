@@ -1,0 +1,31 @@
+{
+  "schema": "coordinator-seal-repair-complete-v1",
+  "from_host": "huklaban1",
+  "to_agent": "HubMultiCoordinater",
+  "task": "noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2",
+  "status": "COMPLETE_FOCUSED_GO",
+  "preserved_failed_attempt": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2",
+    "manifest_sha256": "871f725ea0f1370b15b6427746d73f4cd1e0339955d0c8fa3719c264a0817596",
+    "complete_sha256": "41a7bb94ba5e22279cfaf3200c032804d4540fa5e8812543a58abc8d79afde4a",
+    "verdict": "FAILED_CHRONOLOGY_PRESERVED_NO_OVERWRITE"
+  },
+  "accepted_repair_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2r1",
+    "manifest_sha256": "e33a1a8bec2f950486cb518a0df0fd5cb3ebad7fd7019af2b328ba212e22ad00",
+    "complete_sha256": "8858d510694f604867b12ad2bd96b96d714974cf65880ab9ee4e1a635937251e",
+    "manifest_after_latest_member_ns": 16127268400,
+    "complete_after_manifest_ns": 17151935500
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/noise_cutoff_measurement_semantics_seal_repair_h1_20261007_v2r1_independent_review_v1",
+    "manifest_sha256": "23de10fef75613502b63104314547def6bf0e42c886ddfa4fb5eeff96213dcfc",
+    "complete_sha256": "39bc12cd5bbb54818e2d76bed057116539653a456a47dca47bd4dd772b87647c",
+    "verdict": "GO"
+  },
+  "scientific_verdict": "NON_DECISIVE_UNCHANGED",
+  "reference_checks": "original v1, accepted review v1, failed v2, and source-host contract hashes all match",
+  "outcome_reinspection": false,
+  "production_launch": false,
+  "unresolved_scientific_prerequisites": "exact accepted evaluator bytes and compact per-unit/subset histogram/intermediate sufficient statistics"
+}
