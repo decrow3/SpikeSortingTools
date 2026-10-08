@@ -1,0 +1,29 @@
+{
+  "schema": "dartsort-divergence-d1-repair-h1-final-review-v1",
+  "status": "GO_TO_FREEZE_BOUNDED_EXECUTION_CONTRACT_WITH_GATES",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D1_adapter_repair_h5_20261007_v2",
+  "reviewed_manifest_sha256": "c32b16fc8398424283b74ff85a4ee51496213df812c6417e5e9b971fbf504091",
+  "reviewed_complete_sha256": "4dd4dbd9dba3774cf14fb042fb73deb18cea26476b58d29cb77cc9515ed75c9c",
+  "provisional_manifest_sha256": "b4b9897c222e4d0871d6f99540b724ec0e269025f3c0e14ba43c3231c8b380c2",
+  "executable_dependencies_changed_after_provisional_review": false,
+  "final_fixture_rerun": "17 passed",
+  "final_independent_cases": 507,
+  "preserved_unchanged_matcher_audit_cases": 176400,
+  "production_execution_authorized_by_review": false,
+  "required_execution_contract_gates": [
+    "bind candidate thresholds to 100 events, 25 matches, and 0.01 retention or derive metadata from effective values",
+    "empirically validate REF original and curated internal ancestry without claiming unavailable historical executable bytes",
+    "require exact full-row DARTsort final-to-H5 time equality before consuming matching features",
+    "freeze resources, chunking, outputs, four anchors, pair separation, and no transitive or depth gate"
+  ],
+  "execution": "REVIEW_ONLY_NO_PRODUCTION_ARRAY_TRAVERSAL_NO_VOLTAGE_NO_REPLAY_NO_SORT_NO_RF_HOLDOUT",
+  "can_establish": "repaired adapter synthetic correctness and readiness to freeze a separately bounded execution contract",
+  "cannot_establish": [
+    "real event divergence",
+    "unique ancestry inside duplicate keys",
+    "exact historical REF executable semantics",
+    "biological identity or purity",
+    "sorter-only causality",
+    "production benefit"
+  ]
+}
