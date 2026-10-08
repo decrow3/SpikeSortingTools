@@ -1,0 +1,24 @@
+{
+  "acceptance": {
+    "atol": 0.0,
+    "channels_geometry": "channel IDs/order and geometry equal the hash-bound 384x2 input",
+    "clock": "local sample zero equals padded_global_start/fs and global request times equal global_frame/fs",
+    "dartsort": "preprocessing=none, copy_recording_to_tmpdir=no and work_in_tmpdir=false return the identical lazy recording object with copy_flag=false and work_dir=null",
+    "positive_control": "filtering the 299998-frame central interval alone must differ from cropping frames [60000,359998) from the 419998-frame padded filter; report mismatch count/max error without treating it as a primary failure",
+    "primary": "for every request, lazy and eager arrays have identical shape [length,384], float32 dtype, finite mask, values and SHA-256",
+    "required_max_abs_error": 0.0,
+    "required_mismatch_count": 0,
+    "rtol": 0.0,
+    "verdict_fail": "any primary mismatch, nonfinite output, identity/import/resource breach or missing positive-control difference",
+    "verdict_pass": "all primary comparisons and metadata/import/resource guards pass and the positive control differs"
+  },
+  "contract_sha256": "2eeae1524c27d95e19f93dcdf8f9e2e0bb954e639ecb0d459c2fdd4da08c6afd",
+  "decision": "does the reviewed lazy adapter reproduce the accepted eager Kilosort immediate-prewhitening construction exactly on one ordinary and one state-transition padded Arm-A window on H5?",
+  "mismatch_interpretation": {
+    "positive_control_difference": "expected proof that FFT request context matters; not a voltage-quality or motion result",
+    "positive_control_no_difference": "fixture noninformative; fail closed",
+    "primary_mismatch": "wrapper/producer/import/request-context incompatibility; stop, preserve exact request and first mismatch coordinates, do not tune tolerance or launch a sort",
+    "scope": "neither pass nor failure measures sorting benefit, biological identity, purity or full-session performance"
+  },
+  "mode": "self_test"
+}

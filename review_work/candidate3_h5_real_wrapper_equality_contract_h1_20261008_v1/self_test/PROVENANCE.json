@@ -1,0 +1,22 @@
+{
+  "kilosort_version": "4.0.27",
+  "mode": "self_test",
+  "paths": {
+    "dartsort_main": "/home/huklab/Documents/DARTsort/src/dartsort/main.py",
+    "dartsort_main_util": "/home/huklab/Documents/DARTsort/src/dartsort/util/main_util.py",
+    "dartsort_preprocess_util": "/home/huklab/Documents/DARTsort/src/dartsort/util/preprocess_util.py",
+    "kilosort_io": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/environments/rescue-production/.venv/lib/python3.12/site-packages/kilosort/io.py",
+    "wrapper": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/npx_preprocessing/motion/kilosort_prewhitening_si.py"
+  },
+  "python": "/home/huklab/Documents/DARTsort/.venv/bin/python",
+  "python_version": "3.12.4",
+  "release": null,
+  "runner_sha256": "c3904ee88043699c8ac1e270ec8f2c0b4f693a71d7fc73622b2b0a0d35356628",
+  "sha256": {
+    "dartsort_main": "e4c03417c1256384c4f8fbf0250560003bd795b7274932ef1e49dcde217bd249",
+    "dartsort_main_util": "2846a319c19c25b3cad81ab991057c0868b87d760b66f20e8d2bb3db8ffa3bcc",
+    "dartsort_preprocess_util": "566ce1ab60af12585978bcd7e3192cb2ca4cc220ab5e41895140c00bdbc06674",
+    "kilosort_io": "767b76a07647122b45048ba12cdaf49185f87f3fa33334081d4af099825414bd",
+    "wrapper": "b7f06da5685d3b8af0c7bd18e7ccfeb3af7db8fe3b22b1fa6a619908f43bb690"
+  }
+}

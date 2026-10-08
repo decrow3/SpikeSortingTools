@@ -1,0 +1,22 @@
+{
+  "members": {
+    "CONTRACT_COPY.json": {
+      "sha256": "2eeae1524c27d95e19f93dcdf8f9e2e0bb954e639ecb0d459c2fdd4da08c6afd",
+      "size": 9456
+    },
+    "INTERPRETATION_FREEZE.json": {
+      "sha256": "3f059ccaa52fe7e1b7437e3c921f3eb0a1c6262902a40f0fba18028415cd4253",
+      "size": 1991
+    },
+    "PROVENANCE.json": {
+      "sha256": "a7d446f1cef34ba46af23e53d5cc5b6d132bcd6c10f5e16cbf794287ca411931",
+      "size": 1299
+    },
+    "RESULT.json": {
+      "sha256": "bc57753d3c3c54011580a2cf61bb187dd8e3d16fdd5071ad0fbc2fbfb244e808",
+      "size": 5525
+    }
+  },
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "PASS_SYNTHETIC_SELF_TEST"
+}

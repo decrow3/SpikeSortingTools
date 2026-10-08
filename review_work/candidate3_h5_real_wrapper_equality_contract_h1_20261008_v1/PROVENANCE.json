@@ -1,0 +1,14 @@
+{
+  "schema": "candidate3-h5-real-wrapper-equality-contract-provenance-v1",
+  "created_at": "2026-10-08T02:43:27-07:00",
+  "author_host": "huklaban1",
+  "repository_commit": "cfef3ea",
+  "wrapper_commit": "aea7431c4026fa74e36ad01139d9e596900a1d25",
+  "contract_sha256": "2eeae1524c27d95e19f93dcdf8f9e2e0bb954e639ecb0d459c2fdd4da08c6afd",
+  "runner_sha256": "c3904ee88043699c8ac1e270ec8f2c0b4f693a71d7fc73622b2b0a0d35356628",
+  "self_test_complete_sha256": "b32d2f51e1d173526467f02c1999aad3d306e02e2e85a1029ce72a6fb20ce77f",
+  "self_test_manifest_sha256": "4591a8870428317421504685277cb2b497ecab68677e42bcb9a39151967c162d",
+  "self_test_verdict": "PASS_SYNTHETIC_SELF_TEST",
+  "scope": "metadata/source review and local synthetic full-shape runner validation only",
+  "excluded": "H5 contact, recorded-voltage access, real equality, service, GPU, sort, RF, holdout, full-session launch"
+}
