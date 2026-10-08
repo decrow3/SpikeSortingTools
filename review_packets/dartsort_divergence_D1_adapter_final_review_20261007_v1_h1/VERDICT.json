@@ -1,0 +1,26 @@
+{
+  "schema": "dartsort-divergence-d1-h1-focused-review-v1",
+  "status": "REPAIR_REQUIRED_EXECUTION_DISABLED",
+  "reviewed_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D1_adapter_h5_20261007_v1",
+  "reviewed_manifest_sha256": "3db81680caa5810206b853c44a615a32b8a8fee942fc0199cc2bfcbe0eb790a2",
+  "reviewed_complete_sha256": "83e92b2e691f1d92215647116d214796c47b43a62695c74ef575445bac6059bf",
+  "fixture_rerun": "10 passed",
+  "independent_matcher_cases": 176400,
+  "required_repairs": [
+    "bind exact Kilosort executable, wrapper, settings, and curator provenance separately for A and REF",
+    "implement ambiguity-preserving curated-to-original mapping with unique, ambiguous, and unmatched outcomes",
+    "emit event-level pair and stage relations with explicit DARTsort parent-row, matching-label, and final-label fields",
+    "freeze the DARTsort candidate universe, ranking, tie handling, and multiple-candidate reporting rule"
+  ],
+  "production_execution_authorized_by_review": false,
+  "execution": "REVIEW_ONLY_NO_PRODUCTION_ARRAY_TRAVERSAL_NO_VOLTAGE_NO_REPLAY_NO_SORT_NO_RF_HOLDOUT",
+  "can_establish": "synthetic correctness of implemented internal-array validators and aggregate pairwise counter",
+  "cannot_establish": [
+    "production diagnostic readiness",
+    "exact REF executable semantics",
+    "unique curated parentage for duplicate keys",
+    "earliest real divergence",
+    "biological identity or purity",
+    "sorter-only causality"
+  ]
+}

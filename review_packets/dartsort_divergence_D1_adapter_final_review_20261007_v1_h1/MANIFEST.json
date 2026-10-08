@@ -1,0 +1,19 @@
+{
+  "schema": "immutable-compact-packet-manifest-v1",
+  "packet": "dartsort_divergence_D1_adapter_final_review_20261007_v1_h1",
+  "created_at": "2026-10-07T20:31:00-07:00",
+  "host": "huklaban1",
+  "status": "REPAIR_REQUIRED_EXECUTION_DISABLED",
+  "members": [
+    {
+      "path": "FINAL_REVIEW.md",
+      "bytes": 7087,
+      "sha256": "a4f60e1a426c71ad8817a88e4ce3bbf1311a06351acd0e2858ad795436044f68"
+    },
+    {
+      "path": "VERDICT.json",
+      "bytes": 1496,
+      "sha256": "76154d39655e203a6e23495534000b9c8edc9573f3a17f9c4d8ac5f71dd525a7"
+    }
+  ]
+}

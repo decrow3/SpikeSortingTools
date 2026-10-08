@@ -1,0 +1,15 @@
+{
+  "schema": "immutable-compact-packet-complete-v1",
+  "packet": "dartsort_divergence_D1_adapter_final_review_20261007_v1_h1",
+  "completed_at": "2026-10-07T20:32:00-07:00",
+  "host": "huklaban1",
+  "status": "COMPLETE",
+  "manifest": {
+    "path": "MANIFEST.json",
+    "bytes": 563,
+    "sha256": "2e0b6ae37d2338fddec805f3b93e5acc9d9332997eee3e0f8cdbf696cc966723"
+  },
+  "decision": "REPAIR_REQUIRED_EXECUTION_DISABLED",
+  "successor": "H5 repairs D1 provenance, parent mapping, and event-level schemas; HubMultiCoordinater keeps execution disabled",
+  "complete": true
+}
