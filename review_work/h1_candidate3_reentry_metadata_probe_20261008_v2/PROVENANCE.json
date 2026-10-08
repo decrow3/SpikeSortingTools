@@ -1,0 +1,18 @@
+{
+  "schema": "h1-candidate3-reentry-metadata-probe-provenance-v2",
+  "created_at": "2026-10-08T03:52:00-07:00",
+  "host": "huklaban1",
+  "branch": "codex/motionqc-phase1",
+  "v1_commit": "ac78a0e",
+  "v1_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/h1_candidate3_reentry_metadata_probe_20261008_v1",
+  "v1_manifest_sha256": "54791a9105f8bd97e0607c88a695642bf2ec3cbb29d09e9441b5811f50490b34",
+  "v1_complete_sha256": "59f710727ef64d7cacbdaaaa4e0b9a992163bd4ea7c94062f8ac5012054e7252",
+  "v1_preserved_verdict": "NO_GO_SNAPSHOT_ORDER_AND_GAP_NOT_ENFORCED_BY_RUNNER",
+  "v2_contract_sha256": "d30c3d935e684339fba14847d3c6d4052acb92f9994c1929646eddc611df2f97",
+  "v2_runner_sha256": "ee1fb3378b4eb3973afe050ce39db27be5640a5f3afc43c0ea9d9a797fa03cf3",
+  "v2_tests_sha256": "c8d71fad17d0f3838f59e67607214ce00c039c3fe8150222c5bb56ae9512a5ba",
+  "v2_delta": "Enforce a bound snapshot_1 PASS receipt and >=600-second completed-time gap before snapshot_2 can touch the live target; preserve a fail-closed local receipt on precondition failure; consume the contracted reap bound; tolerate the timeout kill race.",
+  "live_runner_executed": false,
+  "disclosed_pre_freeze_stat": "The one v1 pre-freeze exact-member stat remains the only live metadata construction lookup and is not a readiness result; v2 added no live mount lookup.",
+  "mutations": "local v2 source, contract, tests and compact packet files only; no process/service/mount/H5/voltage/recording/sort mutation"
+}

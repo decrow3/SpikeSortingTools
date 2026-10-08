@@ -1,0 +1,18 @@
+{
+  "schema": "h1-candidate3-reentry-metadata-probe-fixture-results-v2",
+  "run_at": "2026-10-08T03:52:00-07:00",
+  "command": "pytest -q testing/test_h1_candidate3_reentry_metadata_probe_v2.py",
+  "result": "13 passed in 0.10s",
+  "exit_code": 0,
+  "live_runner_executed": false,
+  "new_v2_coverage": [
+    "snapshot_2 accepts only a schema-, status-, snapshot-, contract-, and runner-bound snapshot_1 PASS receipt after 600 seconds",
+    "snapshot_2 rejects a non-PASS predecessor",
+    "snapshot_2 rejects a wrong contract binding",
+    "snapshot_2 rejects a wrong runner binding",
+    "snapshot_2 rejects an early predecessor completion time",
+    "timeout kill handles the process-exit race and consumes the contracted post-timeout reap bound"
+  ],
+  "retained_v1_coverage": "Eight exact-metadata, negative, timeout, receipt and no-content-read fixtures remain passing.",
+  "limitation": "Local fixtures do not establish live mount recovery, kernel interruptibility of a future blocked syscall, or H1 launch readiness."
+}

@@ -1,0 +1,65 @@
+{
+  "schema": "h1-candidate3-reentry-metadata-probe-contract-v2",
+  "status": "FROZEN_LOCAL_REVIEW_ONLY_LIVE_EXECUTION_NOT_AUTHORIZED_BY_THIS_CONTRACT",
+  "milestone": "Define the final metadata-only gate required before H1 can be reconsidered for the candidate3 transition.",
+  "decision_changed": "A two-snapshot PASS may satisfy only the metadata responsiveness component of H1 re-entry; it never authorizes a launch and cannot replace any other conjunctive gate.",
+  "cheapest_adequate_test": "One nonrecursive directory enumeration and five no-follow metadata stats of an existing compact immutable packet at each post-remediation snapshot.",
+  "completion_condition": "Source-bound contract, local positive/negative/timeout fixtures, immutable review packet, and independent implementation review; no live execution of the runner during preparation.",
+  "runner": "testing/h1_candidate3_reentry_metadata_probe_v2.py",
+  "runner_sha256": "ee1fb3378b4eb3973afe050ce39db27be5640a5f3afc43c0ea9d9a797fa03cf3",
+  "live_target": "/mnt/NPX/Luke/DARTsort_motion_experiments/h1_candidate3_transition_host_readiness_20261008_v1",
+  "permitted_live_operation": "Open only live_target as a directory; fstat the directory; enumerate its immediate names exactly once; lstat each expected member with follow_symlinks=false; compare type and byte size; close the directory. Do not recurse, glob, hash, open, or read member-file content.",
+  "expected_members_bytes": {
+    "COMPLETE.json": 203,
+    "MANIFEST.json": 541,
+    "OBSERVATIONS.json": 2855,
+    "PROVENANCE.json": 887,
+    "RECOMMENDATION.md": 2956
+  },
+  "timeout_seconds": 5.0,
+  "post_timeout_reap_seconds": 1.0,
+  "minimum_snapshot_gap_seconds": 600,
+  "snapshots": [
+    "snapshot_1",
+    "snapshot_2"
+  ],
+  "placement": {
+    "preconditions": [
+      "Separately authorized host-administrator remediation has completed.",
+      "At this snapshot, no project-relevant D-state task on /mnt is present.",
+      "At this snapshot, three consecutive one-second vmstat samples each show b=0 and iowait<10%.",
+      "No whole-root search or blocked sync survives."
+    ],
+    "snapshot_1": "Run exactly once immediately after all snapshot-1 preconditions pass.",
+    "snapshot_2": "Run exactly once no earlier than 600 seconds after a source-and-contract-bound snapshot_1 PASS receipt completed, only after all snapshot-2 preconditions independently pass. The runner enforces the predecessor binding and numeric gap before touching the live target.",
+    "after_both_pass": "Run the candidate3 managed-launch resource/dedup prestart from scratch. A probe PASS does not waive or pre-answer that prestart."
+  },
+  "receipt_paths": {
+    "snapshot_1": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/outputs/h1_candidate3_reentry_metadata_probe_20261008_v2/snapshot_1/RECEIPT.json",
+    "snapshot_2": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/outputs/h1_candidate3_reentry_metadata_probe_20261008_v2/snapshot_2/RECEIPT.json"
+  },
+  "receipt_policy": "Receipts are written atomically to local storage and never to /mnt. Existing receipts are never overwritten. Timeout, worker error, malformed worker output, contract/source hash mismatch, unexpected member/type/size, receipt-write failure, or an unreaped worker all fail closed. Preserve every failure and do not retry without a new coordinator decision.",
+  "outcome_interpretation": {
+    "PASS_METADATA_GATE": "This one snapshot's exact metadata operation completed inside five seconds, returned the expected immutable directory metadata, and the worker was reaped. This establishes only this snapshot's metadata-gate component.",
+    "BLOCKED_TIMEOUT": "The metadata gate failed. H1 remains unavailable. If the worker is unreaped, report its PID for administrator handling; do not issue another probe.",
+    "BLOCKED_METADATA_OPERATION": "The metadata gate failed due to an operation, schema, membership, type, size, or worker-output error. H1 remains unavailable; do not retry automatically.",
+    "BLOCKED_RECEIPT_WRITE": "The attempt is unusable because durable local provenance was not preserved. H1 remains unavailable; do not retry automatically."
+  },
+  "resource_bounds": {
+    "live_attempts": "At most one worker per declared snapshot and at most two total after remediation.",
+    "concurrency": 1,
+    "recursive_entries": 0,
+    "member_content_bytes_read": 0,
+    "expected_directory_entries": 5,
+    "cpu_gpu": "No GPU; one short Python parent and one worker only.",
+    "stop_condition": "Stop immediately on any non-PASS result, timeout, unreaped worker, missing precondition, existing receipt, or unexpected state."
+  },
+  "explicit_exclusions": [
+    "No execution of this runner or repeated probe against the currently blocked live mount during contract preparation or review. The author performed one disclosed pre-freeze, nonrecursive exact-member stat to bind the five expected types and sizes; it completed in 0.2 seconds and is not a re-entry result.",
+    "No recording or voltage file access.",
+    "No recursive traversal, whole-root search, content read, hash, transfer, service, GPU, sort, process mutation, mount mutation, H5 contact, RF, or holdout access.",
+    "No launch authorization and no claim of current H5 readiness."
+  ],
+  "supersedes": "v1 is preserved as NO_GO_SNAPSHOT_ORDER_AND_GAP_NOT_ENFORCED_BY_RUNNER.",
+  "frozen_interpretation": "Both metadata snapshots must PASS alongside every other conjunctive re-entry gate before H1 is merely eligible for a fresh managed prestart. Any failure leaves H1 unavailable; passing does not prove scientific validity, storage throughput, recording readability, or launch safety."
+}

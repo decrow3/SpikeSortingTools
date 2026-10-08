@@ -1,0 +1,12 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "FROZEN_V2_LOCAL_FIXTURES_PASS_LIVE_EXECUTION_DISABLED",
+  "members": {
+    "CONTRACT.json": {"size": 5703, "sha256": "d30c3d935e684339fba14847d3c6d4052acb92f9994c1929646eddc611df2f97"},
+    "FIXTURE_RESULTS.json": {"size": 1027, "sha256": "ce5f3357a75da1eec94608f938af58f8693be3640bc154ce1799a70414318648"},
+    "PROVENANCE.json": {"size": 1474, "sha256": "f9cede074f522f260c13c806a84973bbd9b06f1227b8a9ec40973f7b0ab7ab3d"},
+    "REVIEW_REQUEST.md": {"size": 1960, "sha256": "5b353d1867fc5d1bc0de8b773db0efcf7661bf84a77be648f04cda4d8bb915d9"},
+    "RUNNER.py": {"size": 11752, "sha256": "ee1fb3378b4eb3973afe050ce39db27be5640a5f3afc43c0ea9d9a797fa03cf3"},
+    "TESTS.py": {"size": 4882, "sha256": "c8d71fad17d0f3838f59e67607214ce00c039c3fe8150222c5bb56ae9512a5ba"}
+  }
+}
