@@ -56,17 +56,17 @@ Updated: 2026-10-07T21:17:06-07:00
 - Invalidation: source recovery reveals materially different R1c tensor/block semantics.
 - Safe checkpoint: after schema closure tests, before integration with any real packet.
 
-## Conditional fallback only: divergence production-contract review
+## Completed fallback: divergence production-contract review/release
 
-- Priority: P0 only if fallback is activated; this is not the normal conditional successor and is not ready.
+- Status: activated after the H5 child returned technical acceptance but could not create a trusted-authorization release; completed by H1 without launching production.
 - Routing amendment: H5's native child reviewer owns the normal production-contract review. H1 must not duplicate that review.
-- Activation condition: H5 native child capability is unavailable, times out, or fails to return a source-bound artifact, and the coordinator records that concrete blocker and fallback dispatch.
-- Milestone / decision after activation only: GO / REPAIR_REQUIRED for the separately frozen D3/production contract; no production launch by H1.
+- Activation evidence: coordinator recorded the H5-child authorization-only failure and dispatched H1 fallback against exact D3 v2.
+- Result: `GO_EXACT_D3_PRODUCTION_EXECUTION` for exact contract `81ac32ec...` and runner `fc304240...`, scoped `historical_panel_only`; no production launch by H1.
 - Exact inputs: awaited immutable H5 production-contract packet plus H1 checklist and interpretation rules committed at `a696eea82730e02aaff2d6068cfad2f68775acde`.
 - Prerequisites: recorded coordinator fallback dispatch plus immutable contract, source/config snapshots, fixtures, managed-runner bindings, explicit resources and stop condition.
-- Output: separate immutable H1 review packet and completion notification.
+- Output: `/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_production_release_20261007_v2_h1_fallback`, MANIFEST `44876744836db23a01576812ad10d0b55064ec51902ea417687533c0d42d3c45`, COMPLETE `3f5a6589779c9508def7a9d19857510015cc28a35c63d86d61e4afed50f00a34`, RELEASE `edd155483e31d3dd0ef49adf573e6243e7440af77300a80c252a7cbaf598fa12`.
 - Recipient: H5 production owner and coordinator.
 - Invalidation: changed contract/source/config hash, unresolved fixture failure, or altered scientific acceptance rule.
-- Safe checkpoint: preempt current ready task after its current evidence ledger/checkpoint is durable, but only after fallback activation is recorded.
+- Successor: H5 data-local execution owner after refreshed prelaunch reconciliation; awaiting `ACK_STARTED` or concrete blocker.
 
-No ordinary conditional successor and no second fallback are queued.
+No additional conditional successor or fallback is queued.
