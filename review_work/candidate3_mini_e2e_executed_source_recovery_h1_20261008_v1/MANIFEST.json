@@ -1,0 +1,8 @@
+{
+  "packet": "candidate3_mini_e2e_executed_source_recovery_h1_20261008_v1",
+  "files": {
+    "RECEIPT.json": "579090abfcc766139ca502a917f8a6586b798e38cf33ec9ca785b0a222194123",
+    "RECOVERY.md": "94b8e83ca654d20d0a588c1f849309f74c12cb28198389794c8b7a8c0e678ee4",
+    "source/candidate3_mini_e2e_stage_capability.py": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a"
+  }
+}

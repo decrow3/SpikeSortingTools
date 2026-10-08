@@ -1,0 +1,6 @@
+{
+  "packet": "candidate3_mini_e2e_v3_provenance_correction_h1_20261008_v1",
+  "status": "complete",
+  "verdict": "SCOPED_RESULT_PRESERVED_WRAPPER_BYTE_IDENTITY_UNRESOLVED",
+  "manifest_sha256": "08a785e51d50b0a22ec639344a226f9c735ff331c1cc5ab0bd9524856b90f658"
+}

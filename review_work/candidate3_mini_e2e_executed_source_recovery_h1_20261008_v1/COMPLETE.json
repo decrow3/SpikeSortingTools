@@ -1,0 +1,6 @@
+{
+  "packet": "candidate3_mini_e2e_executed_source_recovery_h1_20261008_v1",
+  "status": "complete",
+  "verdict": "RECOVERED_EXACT_EXECUTED_SOURCE_REUSE_ELIGIBLE_WITH_CONFIG_CAVEATS",
+  "manifest_sha256": "747618557284507285754a868e44f124811d15554a9c94a108ed5cf84dd0d2ff"
+}

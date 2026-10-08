@@ -1,0 +1,30 @@
+{
+  "schema": "candidate3-mini-executed-source-recovery-v1",
+  "packet": "candidate3_mini_e2e_executed_source_recovery_h1_20261008_v1",
+  "host": "huklaban1",
+  "verdict": "RECOVERED_EXACT_EXECUTED_SOURCE_REUSE_ELIGIBLE_WITH_CONFIG_CAVEATS",
+  "recovered_source": "source/candidate3_mini_e2e_stage_capability.py",
+  "recovered_source_bytes": 9468,
+  "recovered_source_sha256": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a",
+  "prelaunch_recorded_source_sha256": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a",
+  "hash_match": true,
+  "session_source": "/home/huklab/.codex/sessions/2026/09/30/rollout-2026-09-30T21-42-17-01a0f5c5-3548-7c00-8962-a26b74896e93.jsonl",
+  "prelaunch_source_patch_timestamps_utc": [
+    "2026-10-08T07:08:04.513Z",
+    "2026-10-08T07:08:29.846Z",
+    "2026-10-08T07:09:40.449Z"
+  ],
+  "launch_timestamp_utc": "2026-10-08T07:10:20.340Z",
+  "first_postrun_source_patch_timestamp_utc": "2026-10-08T07:25:36.021Z",
+  "first_committed_result_commit": "697d2bcf38087e6b2ba9ec8116c969b63a63debb",
+  "first_committed_source_sha256": "e627b1aaba5355a6a156aab908bd6bc4e19f82cfffbb359ffcaf1ee1ef67d32e",
+  "producer_functions_byte_identical_to_commit": [
+    "prepare",
+    "run_arm"
+  ],
+  "postrun_only_changed_function": "summarize",
+  "ordinary_reuse": "eligible for the same synthetic mini comparison, subject to resolved-config and independent-review caveats",
+  "active_plan_sha256": "c26d63dfe9ae94312485d57ec99f1a3c4d7d089806b84485099d4afb4f12554f",
+  "real_voltage_read": false,
+  "rf_or_holdout_access": false
+}

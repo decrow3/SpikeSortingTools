@@ -1,0 +1,56 @@
+{
+  "schema": "candidate3-mini-transition-systemd-launch-v1",
+  "state": "FROZEN_NOT_LAUNCHED_AWAITING_REVIEW",
+  "prelaunch_create_only": [
+    "/tmp/candidate3_mini_e2e_20261008_v4/job"
+  ],
+  "must_be_absent": [
+    "/tmp/candidate3_mini_e2e_20261008_v4/job/managed_receipt.json",
+    "/tmp/candidate3_mini_e2e_20261008_v4/runs/transition"
+  ],
+  "hash_preflight": {
+    "/home/huklab/Documents/DARTsort/.venv/bin/python": "c7c1a234ed39ceef4bde5ee8d29db37f55b0f7de6339b82eff5812944ccb74da",
+    "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/managed_job.py": "5867440e5495c7a1689892810d14d18a5f856572d2f89a3d628a0742375d5d3f",
+    "/home/huklab/Documents/RyanSorting/SpikeSortingTools/review_work/candidate3_mini_e2e_executed_source_recovery_h1_20261008_v1/source/candidate3_mini_e2e_stage_capability.py": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a",
+    "/tmp/candidate3_mini_e2e_20261008_v2/inputs/transition_prewhitening.npy": "dc78516734e154e45bec8f29f8f757bff904bbd32938fe0a2e0d1767f41a46f2",
+    "/tmp/candidate3_mini_e2e_20261008_v2/inputs/INPUT_RECEIPT.json": "5f4dd3354c0257449cef69493c5b669a6390b7283080316c9445df2a77622fa3"
+  },
+  "argv": [
+    "/usr/bin/systemd-run",
+    "--user",
+    "--unit=candidate3-mini-transition-v4",
+    "--property=Type=exec",
+    "--property=Restart=no",
+    "--property=RuntimeMaxSec=2700",
+    "--property=MemoryMax=16G",
+    "--property=CPUQuota=800%",
+    "--property=TasksMax=128",
+    "--property=KillMode=control-group",
+    "--property=TimeoutStopSec=30",
+    "--property=StandardOutput=append:/tmp/candidate3_mini_e2e_20261008_v4/job/stdout.log",
+    "--property=StandardError=append:/tmp/candidate3_mini_e2e_20261008_v4/job/stderr.log",
+    "--setenv=NUMBA_CACHE_DIR=/tmp/candidate3-mini-transition-v4-numba",
+    "/home/huklab/Documents/DARTsort/.venv/bin/python",
+    "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/managed_job.py",
+    "--receipt",
+    "/tmp/candidate3_mini_e2e_20261008_v4/job/managed_receipt.json",
+    "--cwd",
+    "/home/huklab/Documents/RyanSorting/SpikeSortingTools",
+    "--",
+    "/home/huklab/Documents/DARTsort/.venv/bin/python",
+    "/home/huklab/Documents/RyanSorting/SpikeSortingTools/review_work/candidate3_mini_e2e_executed_source_recovery_h1_20261008_v1/source/candidate3_mini_e2e_stage_capability.py",
+    "run",
+    "/tmp/candidate3_mini_e2e_20261008_v2/inputs",
+    "/tmp/candidate3_mini_e2e_20261008_v4/runs/transition",
+    "transition"
+  ],
+  "manager_state_check": [
+    "/usr/bin/systemctl",
+    "--user",
+    "show",
+    "candidate3-mini-transition-v4.service",
+    "--property=ActiveState,SubState,MainPID,ExecMainStatus,ExecMainStartTimestamp,ExecMainExitTimestamp,MemoryCurrent,CPUUsageNSec"
+  ],
+  "automatic_retry": false,
+  "launched": false
+}

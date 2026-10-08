@@ -1,0 +1,34 @@
+{
+  "schema": "hub-coordinator-status-v1",
+  "host": "huklaban1",
+  "owner": "H1",
+  "task_id": "candidate3_real_snippet_missing_links_h1_20261008_v1",
+  "status": "METADATA_ONLY_DRAFT_READY_NOT_EXECUTION_CONTRACT",
+  "commit": "583c8b0",
+  "draft": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/review_work/candidate3_real_snippet_missing_links_h1_20261008_v1/READINESS_DRAFT.md",
+  "draft_sha256": "6991df9eab1b9e78c486cf7ad6be5cc3d7f9d1b9d5c382a7bf2d858487efebec",
+  "windows": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/review_work/candidate3_real_snippet_missing_links_h1_20261008_v1/WINDOWS.json",
+  "windows_sha256": "2b8b8a89986febd8da0db3ef0274f4f27755eb370a187e960a0cff490bab08f1",
+  "provisional_windows": {
+    "ordinary_central_frames": [194998934, 195298932],
+    "ordinary_padded_frames": [194938934, 195358932],
+    "transition_central_frames": [217491311, 217791309],
+    "transition_padded_frames": [217431311, 217851309]
+  },
+  "exact_missing_links": [
+    "host/input route selection",
+    "writable target >=3 GiB",
+    "bounded H1 CIFS throughput if H1 selected",
+    "same-managed-service CUDA proof",
+    "accepted-H5 adapter equality on both padded windows",
+    "actual Candidate-3 effective config and full-vs-subsampled detection choice",
+    "production hardening of attempt IDs and symlink containment",
+    "frozen byte/wall/GPU/event caps"
+  ],
+  "earliest_A_divergence": "unavailable from historical A; prospective KS instrumentation needed if required",
+  "voltage_read": false,
+  "sort_launched": false,
+  "active_plan_sha256": "c26d63dfe9ae94312485d57ec99f1a3c4d7d089806b84485099d4afb4f12554f",
+  "mini_v3_review": "running",
+  "idle": false
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "candidate3-mini-e2e-provenance-correction-v1r1",
+  "packet": "candidate3_mini_e2e_v3_provenance_correction_h1_20261008_v1r1",
+  "host": "huklaban1",
+  "status": "SCOPED_RESULT_PRESERVED_WRAPPER_BYTE_IDENTITY_UNRESOLVED",
+  "seal_repair_of": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_e2e_v3_provenance_correction_h1_20261008_v1",
+  "predecessor_manifest_sha256": "08a785e51d50b0a22ec639344a226f9c735ff331c1cc5ab0bd9524856b90f658",
+  "predecessor_complete_sha256": "790b2caff52a8f61cb48706a9ebe519a394eaf76e48de6d6b0a1d17dda330942",
+  "corrects_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_e2e_stage_capability_h1_20261008_v3",
+  "corrected_packet_manifest_sha256": "31114d69be1871d5f0ca44078c34c5bef69e527a9d558188a748dde8cf58fb45",
+  "corrected_packet_complete_sha256": "03a99e7caacd36dd3344561af97b85bfcf0b5874b4a60ec69f995d0dffb0d3d4",
+  "prelaunch_receipt_sha256": "d86b348c3874fcaadd23dad6ceaf11a338c7ed9d3d985c153ebfc5112da4171f",
+  "executed_source_sha256_recorded_prelaunch": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a",
+  "executed_source_snapshot_retained": false,
+  "first_committed_result_commit": "697d2bcf38087e6b2ba9ec8116c969b63a63debb",
+  "first_committed_source_sha256": "e627b1aaba5355a6a156aab908bd6bc4e19f82cfffbb359ffcaf1ee1ef67d32e",
+  "source_hashes_equal": false,
+  "ordinary_native_artifacts": {
+    "resolved_config_sha256": "70ef3ebd40ddd826111fb1181481e3c11273f2fb2281014fadc8ad27f083a610",
+    "timing_sha256": "89564d2f03c1e7a00c707d6db0c3984acb81b4b3f9966d32f2351bc9275ad5ed",
+    "final_sorting_sha256": "623051e789435de15b59e2daf1cdedc3a095534ed32af4962c67bbcec78fcb8a",
+    "compact_accounting_json_sha256": "82a66a284c01358d9f5d700cd8ed6d9382725d2542abef63ecfa43c3a0fc20f8",
+    "compact_accounting_npz_sha256": "18264b0c2653b72b7c0402f00ed5e6061e26eb1288b77590524ed04e768c82eb"
+  },
+  "active_plan_sha256": "c26d63dfe9ae94312485d57ec99f1a3c4d7d089806b84485099d4afb4f12554f",
+  "real_voltage_read": false,
+  "rf_or_holdout_access": false,
+  "required_future_control": "retain and hash an exact prelaunch executed-source snapshot"
+}

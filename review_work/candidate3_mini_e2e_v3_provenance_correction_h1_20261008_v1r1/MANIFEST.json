@@ -1,0 +1,7 @@
+{
+  "packet": "candidate3_mini_e2e_v3_provenance_correction_h1_20261008_v1r1",
+  "files": {
+    "PROVENANCE_SUPPLEMENT.json": "8e4ce60ce3ca1b39eb433c7b9a3136a9f5af160ec82921b8b221ecce9ac5c834",
+    "SEAL_REPAIR.md": "bac28cac49560ac594feeab9ac1e98325644a7403fa3e660bfb7d63a7f7f1ba7"
+  }
+}
