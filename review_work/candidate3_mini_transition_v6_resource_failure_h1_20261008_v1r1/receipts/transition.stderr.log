@@ -1,0 +1,8 @@
+/home/huklab/Documents/DARTsort/src/dartsort/util/preprocess_util.py:142: DSPreprocessingWarning: preprocessing was configured to 'none', but recording values reach |180.87| with std dev 18.80, so the recording looks like it was not preprocessed. Did you want to set the preprocessing flag?
+  warn_about_preprocessing(rec=rec, strategy=strategy)
+/home/huklab/Documents/DARTsort/src/dartsort/main.py:144: RuntimeWarning: Recording standard deviation 18.80 was not in the generous expected range [0.1, 10.0]. You may want to check that your data has been preprocessed, including standardization (see the `preprocessing` flag in the config for some presets). If it seems right, then you may need to shrink the chunk_length_samples parameters in the configuration if you experience memory issues.
+  check_recording(recording, copy_flag=copy_rec_flag)
+/home/huklab/Documents/DARTsort/src/dartsort/main.py:144: RuntimeWarning: Your (preprocessed) recording is not saved on disk in time-major format, so reading data could be slow. You could set the config flag copy_recording_to_tmpdir to keep it in a scratch folder while dartsort runs, or cache it long-term with its .save() method.
+  check_recording(recording, copy_flag=copy_rec_flag)
+/home/huklab/Documents/DARTsort/.venv/lib/python3.12/site-packages/numba/np/ufunc/parallel.py:373: NumbaWarning: The TBB threading layer requires TBB version 2021 update 6 or later i.e., TBB_INTERFACE_VERSION >= 12060. Found TBB_INTERFACE_VERSION = 12050. The TBB threading layer is disabled.
+  warnings.warn(problem)

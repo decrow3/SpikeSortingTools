@@ -1,0 +1,15 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "created_at": "2026-10-08T01:28:00-07:00",
+  "status": "FAILED_STOPPED_RESOURCE_CONTRACT_NOT_ENFORCED",
+  "members": {
+    "EVIDENCE.json": {"size": 3194, "sha256": "1b3d3a4bab917098f8e3e2540c8d659493049132aa7fbd68a68a4cf90f564279"},
+    "REPORT.md": {"size": 2698, "sha256": "2e646867ee52aaa5e073a67c29eca425a0a14880eb7b0f331e0691772e30e19e"},
+    "receipts/FINAL_STATUS.json": {"size": 141, "sha256": "090517f649200fedd481082f0ea7e38ff4236a36dafaf1d5bc46fef704d149c4"},
+    "receipts/MANAGER_FINAL.json": {"size": 679, "sha256": "0e65fd887cf018571104a4efeea2d345a3b52163d212d320f5a7270a5cab4eb0"},
+    "receipts/OUTER_LAUNCH.json": {"size": 1738, "sha256": "0b1f63f46c7af367f49b03b589656cf145d5b3a69a62fce6f8e2c451dce66827"},
+    "receipts/PRELAUNCH.json": {"size": 2005, "sha256": "37a64ce440c7dd29a85c783d538d229d77b4913d3f88674bdfe11b5f1e039207"},
+    "receipts/_dartsort_internal_config.json": {"size": 40432, "sha256": "70ef3ebd40ddd826111fb1181481e3c11273f2fb2281014fadc8ad27f083a610"},
+    "receipts/transition.stderr.log": {"size": 1551, "sha256": "a5b7a64dd334dfefd6d645da18ddeacfbfd19c909239ba0853e6ee0118b8ccc3"}
+  }
+}

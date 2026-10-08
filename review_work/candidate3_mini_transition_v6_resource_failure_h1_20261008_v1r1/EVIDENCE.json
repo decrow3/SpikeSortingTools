@@ -1,0 +1,73 @@
+{
+  "schema": "candidate3-mini-transition-resource-failure-v1",
+  "status": "FAILED_STOPPED_RESOURCE_CONTRACT_NOT_ENFORCED",
+  "unit": "candidate3-mini-transition-v6.service",
+  "invocation_id": "5d18727d83bb4b378ce2f3c2967f4da1",
+  "contract_sha256": "db34b9b91cb3581e7592a5bb5f65651a0a34da187db50263d63786f64bde339a",
+  "active_plan_sha256": "c26d63dfe9ae94312485d57ec99f1a3c4d7d089806b84485099d4afb4f12554f",
+  "observed_at": "2026-10-08T01:26:23-07:00",
+  "start_timestamp": "Thu 2026-10-08 01:14:51 PDT",
+  "exit_timestamp": "Thu 2026-10-08 01:26:11 PDT",
+  "stop_initiated_after_independent_finding": true,
+  "resource_finding": {
+    "requested_cpu_quota": "800%",
+    "systemd_CPUQuotaPerSecUSec": "8s",
+    "control_group": "/user.slice/user-1000.slice/user@1000.service/app.slice/candidate3-mini-transition-v6.service",
+    "leaf_cpu_max": "MISSING",
+    "parent_cgroup_subtree_control": "memory pids",
+    "leaf_memory_max": "17179869184",
+    "leaf_pids_max": "128",
+    "terminal_CPUUsageNSec": 11925237187000,
+    "elapsed_wall_seconds_from_manager_timestamps": 680,
+    "average_cores_over_elapsed_wall": 17.537113510294116,
+    "maximum_cpu_seconds_if_8_core_quota_were_enforced": 5440,
+    "observed_cpu_seconds": 11925.237187,
+    "conclusion": "The requested and reported systemd CPU quota was not delegated to or enforced by the kernel cgroup. Observed CPU use exceeded the intended eight-core bound."
+  },
+  "terminal_manager_state": {
+    "ActiveState": "failed",
+    "SubState": "failed",
+    "Result": "exit-code",
+    "ExecMainCode": 1,
+    "ExecMainStatus": 241,
+    "MainPID": 0,
+    "NRestarts": 0
+  },
+  "worker_terminal_state": {
+    "state": "failed",
+    "stage": "transition",
+    "returncode": -15,
+    "reason": null
+  },
+  "partial_attempt": {
+    "root": "/tmp/candidate3_mini_e2e_20261008_v6",
+    "file_count": 12,
+    "owned_file_bytes": 22597206,
+    "native_files_present": [
+      "_dartsort_internal_config.json",
+      "threshold.h5",
+      "motion.pkl",
+      "initial_labels.npy",
+      "refined0_0_pcmerge__labels.npy",
+      "refined0_1_tmm_tmm00em_labels.npy",
+      "threshold_models/featurization_pipeline.pt"
+    ],
+    "dartsort_sorting_present": false,
+    "matching1_present": false,
+    "accounting_json_present": false,
+    "accounting_npz_present": false,
+    "scientific_result_usable": false
+  },
+  "receipt_sha256": {
+    "OUTER_LAUNCH.json": "0b1f63f46c7af367f49b03b589656cf145d5b3a69a62fce6f8e2c451dce66827",
+    "PRELAUNCH.json": "37a64ce440c7dd29a85c783d538d229d77b4913d3f88674bdfe11b5f1e039207",
+    "FINAL_STATUS.json": "090517f649200fedd481082f0ea7e38ff4236a36dafaf1d5bc46fef704d149c4",
+    "MANAGER_FINAL.json": "0e65fd887cf018571104a4efeea2d345a3b52163d212d320f5a7270a5cab4eb0",
+    "transition.stderr.log": "a5b7a64dd334dfefd6d645da18ddeacfbfd19c909239ba0853e6ee0118b8ccc3"
+  },
+  "disposition": {
+    "retry_authorized": false,
+    "custom_launch_repair_chain": "STOP",
+    "required_before_any_future_run": "Use an existing reviewed launcher or supervised bounded execution and verify the delegated CPU controller plus the leaf cpu.max value, or freeze an explicit unbounded-CPU resource condition before launch."
+  }
+}

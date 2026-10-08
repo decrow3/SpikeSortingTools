@@ -1,0 +1,51 @@
+{
+  "baseline_bytes": 185292925,
+  "cap_bytes": 536870912,
+  "contract": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v4/RUN_CONTRACT.json",
+  "manager": {
+    "ActiveState": "active",
+    "CPUQuotaPerSecUSec": "8s",
+    "InvocationID": "5d18727d83bb4b378ce2f3c2967f4da1",
+    "KillMode": "control-group",
+    "MainPID": "1593071",
+    "MemoryMax": "17179869184",
+    "Restart": "no",
+    "RuntimeMaxUSec": "45min",
+    "SubState": "running",
+    "TasksMax": "128",
+    "TimeoutStopUSec": "30s",
+    "Type": "exec"
+  },
+  "preflight": {
+    "baseline_bytes": 185292925,
+    "dartsort_clean": true,
+    "dartsort_commit": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+    "free_bytes": 488447127552,
+    "hashes": {
+      "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v4/source/candidate3_mini_transition_managed.py": "9b3a0dcda9135943386a3576c55f1d0899389243d46e00ee5f556df8326e6e84",
+      "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v4/source/producer.py": "5d55bb1e0257afbb87b60d9d0d9dd5fcb4290a49ce2f67f8656969929e18801a",
+      "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v4/source/reporter.py": "e627b1aaba5355a6a156aab908bd6bc4e19f82cfffbb359ffcaf1ee1ef67d32e"
+    },
+    "input_bytes": 57081256,
+    "ordinary_bytes": 128211669
+  },
+  "report_command": [
+    "/home/huklab/Documents/DARTsort/.venv/bin/python",
+    "{packet}/source/reporter.py",
+    "summarize",
+    "/tmp/candidate3_mini_e2e_20261008_v2/inputs",
+    "{combined}",
+    "{report}/ACCOUNTING.json"
+  ],
+  "started_at": "2026-10-08T08:14:51.553454+00:00",
+  "state": "running",
+  "transition_command": [
+    "/home/huklab/Documents/DARTsort/.venv/bin/python",
+    "{packet}/source/producer.py",
+    "run",
+    "/tmp/candidate3_mini_e2e_20261008_v2/inputs",
+    "{transition}",
+    "transition"
+  ],
+  "wrapper_pid": 1593071
+}

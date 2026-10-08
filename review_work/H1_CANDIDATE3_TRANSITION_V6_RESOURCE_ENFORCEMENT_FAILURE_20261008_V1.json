@@ -1,0 +1,43 @@
+{
+  "schema": "coordination-handoff-v1",
+  "host": "huklaban1",
+  "task_key": "candidate3_mini_transition_v6",
+  "reported_at": "2026-10-08T01:31:00-07:00",
+  "terminal_state": "FAILED_RESOURCE_ENFORCEMENT_NO_RETRY",
+  "service": {
+    "unit": "candidate3-mini-transition-v6.service",
+    "invocation_id": "5d18727d83bb4b378ce2f3c2967f4da1",
+    "active_state": "failed",
+    "sub_state": "failed",
+    "result": "exit-code",
+    "exec_main_status": 241,
+    "n_restarts": 0,
+    "stopped_at": "2026-10-08T01:26:11-07:00"
+  },
+  "reason": "Requested CPUQuota=800% was not kernel-enforced: leaf cpu.max was absent, parent app.slice delegated only memory and pids, and the attempt used 11925.237 CPU-seconds over about 680 wall-seconds (17.54 average cores).",
+  "worker_final": {
+    "state": "failed",
+    "stage": "transition",
+    "returncode": -15,
+    "accounting_present": false,
+    "scientific_result_usable": false
+  },
+  "author_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_v6_resource_failure_h1_20261008_v1r1",
+    "manifest_sha256": "63b038bfe88011a9310fbac6b40cd5b2afc392b04c4c1d6978dfbaa82db95485",
+    "complete_sha256": "4ed0b22a58ff59876b591363da4b5bb5908e01760297b05fa7f595bc0b3b90b1"
+  },
+  "superseded_publication": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_v6_resource_failure_h1_20261008_v1",
+    "reason": "cp -a publication did not demonstrate COMPLETE-last chronology; preserved, not overwritten"
+  },
+  "independent_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_v6_cpu_enforcement_failure_independent_review_h1_20261008_v1",
+    "manifest_sha256": "05d09078f5d5f93ebfe6abc97932ea3b64fd84c40de145b015a03d4382a569c4",
+    "complete_sha256": "999a47c6f5a2150e6e90b6bee1f9b26c445c55cd36203201762e9a490aec9184",
+    "verdict": "FAILED_RESOURCE_ENFORCEMENT_NO_RETRY"
+  },
+  "disposition": "Stop the custom-launch repair chain. Do not retry. A future required transition demonstration must use an existing reviewed launcher or supervised bounded execution and verify actual cgroup controller delegation/cpu.max, or explicitly freeze CPU as an unbounded resource condition.",
+  "successor_owner_requested": "HubMultiCoordinater",
+  "successor_request": "Acknowledge this terminal failure and assign the next bounded in-scope task; H1 will not go idle."
+}
