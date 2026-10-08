@@ -12,6 +12,7 @@ from testing.candidate3_mini_transition_managed import (
     sha256,
     tree_file_bytes,
     verify_preflight,
+    verify_tree,
 )
 
 
@@ -20,14 +21,22 @@ def contract_fixture(tmp_path: Path) -> tuple[Path, dict]:
     packet.mkdir()
     runner = packet / "runner.py"
     runner.write_text("pass\n")
-    input_path = tmp_path / "input.npy"
+    inputs = tmp_path / "inputs"
+    inputs.mkdir()
+    input_path = inputs / "input.npy"
     input_path.write_bytes(b"input")
     ordinary = tmp_path / "ordinary"
     ordinary.mkdir()
+    ordinary_file = ordinary / "threshold.h5"
+    ordinary_file.write_bytes(b"ordinary")
     contract = {
         "schema": "candidate3-mini-transition-managed-v2",
         "packet_hashes": {"runner.py": sha256(runner)},
-        "input_hashes": {"transition": {"path": str(input_path), "sha256": sha256(input_path)}},
+        "input_root": str(inputs),
+        "tree_manifests": {
+            "inputs": {"input.npy": {"size": input_path.stat().st_size, "sha256": sha256(input_path)}},
+            "ordinary": {"threshold.h5": {"size": ordinary_file.stat().st_size, "sha256": sha256(ordinary_file)}},
+        },
         "dartsort_repo": "/home/huklab/Documents/DARTsort",
         "dartsort_commit": subprocess.check_output(
             ["git", "-C", "/home/huklab/Documents/DARTsort", "rev-parse", "HEAD"], text=True
@@ -37,6 +46,7 @@ def contract_fixture(tmp_path: Path) -> tuple[Path, dict]:
         "preflight_failure_receipt": str(tmp_path / "failure.json"),
         "preflight_manager_receipt": str(tmp_path / "manager.json"),
         "ordinary_root": str(ordinary),
+        "baseline_bytes": input_path.stat().st_size + ordinary_file.stat().st_size,
         "minimum_free_bytes": 1,
     }
     path = packet / "RUN_CONTRACT.json"
@@ -67,6 +77,22 @@ def test_tree_bytes_excludes_symlink_target(tmp_path):
     outside.write_bytes(b"x" * 100)
     (root / "link").symlink_to(outside)
     assert tree_file_bytes(root) == 5
+
+
+def test_verify_tree_rejects_unbound_and_changed_files(tmp_path):
+    root = tmp_path / "tree"
+    root.mkdir()
+    bound = root / "bound"
+    bound.write_bytes(b"abc")
+    manifest = {"bound": {"size": 3, "sha256": sha256(bound)}}
+    assert verify_tree(root, manifest, "fixture") == 3
+    (root / "extra").write_bytes(b"x")
+    with pytest.raises(RuntimeError, match="membership mismatch"):
+        verify_tree(root, manifest, "fixture")
+    (root / "extra").unlink()
+    bound.write_bytes(b"abd")
+    with pytest.raises(RuntimeError, match="binding mismatch"):
+        verify_tree(root, manifest, "fixture")
 
 
 def test_run_child_enforces_storage_cap(tmp_path):

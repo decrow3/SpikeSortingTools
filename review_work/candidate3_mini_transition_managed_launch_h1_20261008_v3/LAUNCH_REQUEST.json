@@ -1,0 +1,34 @@
+{
+  "schema": "candidate3-mini-transition-systemd-launch-v3",
+  "state": "FROZEN_NOT_LAUNCHED_AWAITING_REVIEW",
+  "unit": "candidate3-mini-transition-v5.service",
+  "run_contract_sha256": "c5d4b4c2adc4c16481c3a15fb86520e0eb5d4a68e2331f6729c6a2fdf1f53afa",
+  "argv": [
+    "/usr/bin/systemd-run",
+    "--user",
+    "--unit=candidate3-mini-transition-v5",
+    "--property=Type=exec",
+    "--property=Restart=no",
+    "--property=RuntimeMaxSec=2700",
+    "--property=MemoryMax=16G",
+    "--property=CPUQuota=800%",
+    "--property=TasksMax=128",
+    "--property=KillMode=control-group",
+    "--property=TimeoutStopSec=30",
+    "--property=ExecStopPost=/home/huklab/Documents/DARTsort/.venv/bin/python /mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v3/source/candidate3_mini_transition_managed.py finalize /mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v3/RUN_CONTRACT.json c5d4b4c2adc4c16481c3a15fb86520e0eb5d4a68e2331f6729c6a2fdf1f53afa",
+    "/home/huklab/Documents/DARTsort/.venv/bin/python",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v3/source/candidate3_mini_transition_managed.py",
+    "run",
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_mini_transition_managed_launch_h1_20261008_v3/RUN_CONTRACT.json",
+    "c5d4b4c2adc4c16481c3a15fb86520e0eb5d4a68e2331f6729c6a2fdf1f53afa"
+  ],
+  "manager_state_check": [
+    "/usr/bin/systemctl",
+    "--user",
+    "show",
+    "candidate3-mini-transition-v5.service",
+    "--property=LoadState,ActiveState,SubState,MainPID,ExecMainStatus,ExecMainCode,Result,NRestarts,ExecMainStartTimestamp,ExecMainExitTimestamp,MemoryCurrent,CPUUsageNSec"
+  ],
+  "automatic_retry": false,
+  "launched": false
+}
