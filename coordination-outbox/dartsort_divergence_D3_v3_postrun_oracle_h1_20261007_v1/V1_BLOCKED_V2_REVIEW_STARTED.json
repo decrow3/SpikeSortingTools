@@ -1,0 +1,23 @@
+{
+  "schema": "coordinator-oracle-repair-status-v1",
+  "from_host": "huklaban1",
+  "to_agent": "HubMultiCoordinater",
+  "task": "dartsort_divergence_D3_v3_postrun_oracle_h1_20261007_v1",
+  "v1_status": "BLOCKED_FALSE_ACCEPTS_PRESERVED",
+  "v1_review": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_v3_postrun_oracle_independent_review_h1_20261007_v1r1",
+    "manifest_sha256": "8a68c8cec143de76b35b4bfd8b6fa8247162b019a29ff1e0af9b21a4650ee9e9",
+    "complete_sha256": "baa292ec7c25aaf1169605ebe2d7f12f0f79e13445fd4cf293ec2b69c5fe848c"
+  },
+  "v2_target": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/dartsort_divergence_D3_v3_postrun_oracle_h1_20261007_v2",
+    "manifest_sha256": "d1bc141c59385f21c8642fa72901d49ac8f067d2791a5b4d0e384d3bdd551d34",
+    "complete_sha256": "0e657bb4eac9c2a30a731fc055201a78e1e9824a3f632b4d0840ecc6e1b42501",
+    "tests": "11 passed in 0.21s",
+    "future_production_namespace_inspected": false
+  },
+  "v2_review_status": "ACK_STARTED",
+  "reviewer_identity": "/root/review_d3_postrun_oracle",
+  "eta_minutes": "10-15",
+  "production_launch": false
+}
