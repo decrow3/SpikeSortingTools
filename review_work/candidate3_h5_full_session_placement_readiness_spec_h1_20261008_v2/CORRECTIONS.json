@@ -1,0 +1,48 @@
+{
+  "schema": "candidate3-h5-full-session-placement-readiness-corrections-v2",
+  "created_at": "2026-10-08T02:05:08-07:00",
+  "status": "REPAIR_SPECIFICATION_COMPLETE_H5_NOT_CURRENTLY_PROVEN_READY",
+  "parent": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_full_session_placement_readiness_spec_h1_20261008_v1",
+    "manifest_sha256": "43c670308750c00f9d45e2167267196dd494b74798dd0c883e6c6609aff38f19",
+    "complete_sha256": "d51ebe4f9881764408fc7326bbf34afb2de105cb2eeda2242fa724a453084609"
+  },
+  "replacement_semantics": "Apply exactly these JSON-pointer replacements to the immutable v1 READINESS_SPEC.json. No other v1 field changes.",
+  "replacements": [
+    {
+      "json_pointer": "/storage_envelope/monitor_stop_conditions/2",
+      "old": "writes escape persistent_run_root or resolve to a different filesystem",
+      "new": "any write role, linked file or live open-unlinked file resolves outside persistent_run_root or onto a filesystem other than the bound run filesystem"
+    },
+    {
+      "json_pointer": "/storage_envelope/monitor_stop_conditions/3",
+      "old": "a second full-recording materialization appears",
+      "new": "any additional full-recording copy or materialization is created or held open by the managed process group"
+    },
+    {
+      "json_pointer": "/fresh_h5_checks/5",
+      "old_id": "H5-06-storage",
+      "new": {
+        "id": "H5-06-storage",
+        "pass": "Fresh statvfs on the bound run filesystem reports at least 602618717184 available bytes before any attempt creation. A manager-external monitor starts before the science child; samples before attempt creation, every 60 seconds while any process in the managed cgroup lives, at every stage transition, before any stage promotion, and in the terminal finalizer; and writes atomic timestamped receipts. For the bound filesystem it records available_bytes=f_bavail*f_frsize. It walks persistent_run_root without crossing filesystems, rejects symlinks/mount escapes, deduplicates regular files by (st_dev,st_ino), and records both linked_allocated_bytes=sum(st_blocks*512) and linked_apparent_bytes=sum(st_size). It enumerates every live managed-cgroup PID and /proc/PID/fd, fstats descriptors, deduplicates by (st_dev,st_ino), and adds allocated and apparent bytes for open-unlinked regular files not already counted. Both total_allocated_bytes=linked_allocated_bytes+open_unlinked_allocated_bytes and total_apparent_bytes=linked_apparent_bytes+open_unlinked_apparent_bytes must remain <=482618717184; available_bytes must remain >=120000000000. Any extra full-recording copy/materialization is an immediate breach even if sparse or below the byte cap. A cheap fixture must exercise linked, sparse and open-unlinked files plus each threshold/escape branch before launch.",
+        "fail": "The external monitor stops the whole managed cgroup, preserves the attempt plus last and terminal accounting receipts, records the exact metric/threshold/path breach, performs no deletion or automatic retry, and blocks launch if the prestart fixture or any effective monitor binding is absent. A separately reviewed smaller evidence-based envelope may supersede these numbers; no ad hoc waiver is allowed."
+      }
+    },
+    {
+      "json_pointer": "/fresh_h5_checks/10",
+      "old_id": "H5-11-checkpoint",
+      "new": {
+        "id": "H5-11-checkpoint",
+        "pass": "Through the exact installed production interpreter, runner, wrapper and managed-service/finalizer path, a bounded synthetic actual-entrypoint fixture triggers both a manager timeout and an external control-group kill during a nonzero peel-stage append. Each case must retain the original partial HDF5 and manager receipts under failure_retention, publish no stage COMPLETE or promoted stage, and make the runner refuse to reopen or stock-resume that partial namespace. A separately named fresh attempt must use byte-identical frozen input/source/effective-config/chunk-schedule hashes, recompute the whole peel stage, preserve the failed original unchanged, and complete with event/lineage arrays and committed HDF5 byte-identical to an independent clean baseline. The receipt binds unit/cgroup membership, kill cause/time, old and new attempt IDs/paths, all hashes and zero automatic restarts.",
+        "fail": "Block launch. Preserve every failed fixture namespace and terminal receipt; do not tune/retry the fixture in place or describe caught-exception evidence as manager-kill durability."
+      }
+    }
+  ],
+  "effective_storage_numbers": {
+    "aggregate_run_write_cap_bytes": 482618717184,
+    "emergency_free_reserve_bytes": 120000000000,
+    "prestart_free_bytes_minimum": 602618717184
+  },
+  "effective_release_rule": "All v1 gates, with H5-06 and H5-11 replaced exactly above, must pass against one immutable run contract immediately before exactly one coordinator-dispatched launch. This repair packet does not authorize or start the run."
+}
+

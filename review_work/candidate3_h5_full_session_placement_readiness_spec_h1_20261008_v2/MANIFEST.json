@@ -1,0 +1,12 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "created_at": "2026-10-08T02:06:46-07:00",
+  "status": "REPAIRED_CHECKLIST_FROZEN_H5_STILL_NOT_CURRENTLY_READY",
+  "members": {
+    "CORRECTIONS.json": {"size": 4952, "sha256": "8ed41276caa0b3dd3c2a97873d402a2c3d5fef80d562cbeafe9ced79ebcf7b88"},
+    "FROZEN_SCOPE.md": {"size": 981, "sha256": "2f5bcebd471bccd27a88a68f35d172fd92892622500c563fc2c4eeefe20876fd"},
+    "PROVENANCE.json": {"size": 1143, "sha256": "693e7a52db8311d198f7b8faa244a3f091c85a688261f8618894c32749baaf1e"},
+    "REPAIR_REPORT.md": {"size": 2455, "sha256": "9f96be3d1e71676e16ecbf38167b7a8ea13efcbf8fcd21d2a323dd88f8ee052b"},
+    "VALIDATION.json": {"size": 676, "sha256": "05d2808ee10c4fc207fccd57f653f3b4293e56aac8f8304a2fd6ef94f12a14bb"}
+  }
+}
