@@ -1,0 +1,25 @@
+{
+  "schema": "h1_candidate3_h5_real_equality_contract_v2_review_requested_v1",
+  "created_at": "2026-10-08T02:58:00-07:00",
+  "agent": "H1",
+  "recipient": "HubMultiCoordinater",
+  "task": "candidate3_h5_real_ordinary_transition_wrapper_equality_contract_v2",
+  "status": "V2_REPAIR_PUBLISHED_INDEPENDENT_REVIEW_RUNNING_REAL_EXECUTION_DISABLED",
+  "superseded_claim": "v1 execution readiness",
+  "preserved_v1_review_manifest_sha256": "3bf7158d17e89e39accfb2379b94df0e2ae70df870d6ede299677bf852539dba",
+  "preserved_v1_review_complete_sha256": "eeca0ac3b8f8ca1c02ca8879eba4842684b43f0033c6d0512b9ec561858be8db",
+  "v2_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/candidate3_h5_real_wrapper_equality_contract_h1_20261008_v2",
+  "v2_manifest_sha256": "d3cda8d18062cd0ec1c60d45533a631f15f58996046df0c56f07054c15d9e724",
+  "v2_complete_sha256": "da4550bf427bfa38186dfd5bcc6e6a373709483c0fb0b441bce15682e4a47496",
+  "v2_contract_sha256": "432b6aebab7469fc1f71350625feec9f50c56dcd105bf5034d89faf7a1507110",
+  "v2_runner_sha256": "3db928375cbcd75e9f79f1ab593978ef0af736f5ea3adbc0b9a0e46853c217fc",
+  "commits": ["6c5fc39", "348899f"],
+  "repair_summary": "exact source/environment/release/resource bindings; owned Numba/TMPDIR; active internal limits; mandatory external managed-resource plus outer receipt; projected sealed size; exactly one RESULT-or-FAILURE",
+  "fixtures": {
+    "success": "PASS_SYNTHETIC_SELF_TEST_9_OF_9_EXACT_NO_CALLER_CACHE_ENV",
+    "negative": "SOURCE_HASH_MISMATCH_FAILED_AND_SEALED_EXACTLY_ONE_FAILURE"
+  },
+  "review_owner": "/root/review_candidate3_host_storage",
+  "next_decision": "independent delta review; no H5 dispatch unless exact GO receipt and later coordinator dispatch satisfy the frozen release schema",
+  "exclusions_honored": "no H5 contact, recorded voltage read/hash, transfer/materialization, service/GPU/sort/RF/holdout/full-session launch"
+}
