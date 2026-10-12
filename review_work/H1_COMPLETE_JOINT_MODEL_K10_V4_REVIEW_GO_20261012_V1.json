@@ -1,0 +1,32 @@
+{
+  "schema": "h1-joint-model-k10-v4-completion-v1",
+  "status": "COMPLETE_GO_SYNTHETIC_DECISION_PLUMBING",
+  "created_at": "2026-10-12T14:44:16-07:00",
+  "host": "huklaban1",
+  "branch": "codex/motionqc-phase1",
+  "repair_commit": "ebcb8f44c58f6f5f556cd3a420472714fddf5bfe",
+  "packet_commit": "a911116",
+  "independent_review_commit": "011928b47a00ff7fb588e47fa9701b3e43240b84",
+  "author_packet": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_k10_evaluator_h1_20261012_v4",
+    "manifest_sha256": "07a3a7ae44012f12d6878e6b2001c9f87673301244134ba3730246cff5083893",
+    "complete_sha256": "0a5c14f98737ecc45212fd42f6ad96a9be215bef64cefd733acd41373d338775"
+  },
+  "independent_review": {
+    "verdict": "GO_SYNTHETIC_DECISION_PLUMBING",
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_k10_evaluator_h1_20261012_v4_independent_rereview_20261012_v1",
+    "manifest_sha256": "23ef30ec3f97ed596b1ef25cfc9309856454ffdc2678fd652ecdc281dd00730c",
+    "complete_sha256": "083afe0d708881b59c78fb5b129cc306b147e8c89e31433a1827068040191b51",
+    "tests": {
+      "author": "35 passed",
+      "preserved_v3_adversarial_rebound_to_v4": "45 passed",
+      "focused_guard": "6 passed"
+    }
+  },
+  "scope": {
+    "can_establish": "the final known synthetic holdout-boundary blocker is repaired without changing previously reviewed matching, accounting, endpoint or decision behavior",
+    "cannot_establish": "K9 validity, arm benefit, equivalence, superiority, biological identity/purity, CI validity, power, runtime scale or medium/full-run readiness"
+  },
+  "next": "K9/common-checkpoint work awaits the exact recording identity resolution in H1_CHECKIN_K10_V4_REREVIEW_AND_K9_BINDING_20261012_V1.json; no medium run launched.",
+  "request": "HubMultiCoordinater: acknowledge K10 v4 GO and resolve the K9 exact-input binding or provide the next prioritized assignment."
+}
