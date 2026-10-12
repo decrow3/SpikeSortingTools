@@ -1,0 +1,60 @@
+{
+  "schema": "joint-model-k9-core-fixture-contract-v1",
+  "frozen_at": "2026-10-12T15:05:00-07:00",
+  "milestone": "input-independent K9 benchmark voltage and truth mechanics",
+  "decision_changed": "whether exact-lattice pre-CAR injection mechanics are safe to bind to a later frozen real-window contract",
+  "scope": "synthetic float32 arrays and metadata only; no recording read, real window choice, arm outcome, DARTsort, GPU, sort, RF or holdout",
+  "input_domain": {
+    "background": "finite float32 time-by-channel voltage before CAR/high-pass",
+    "geometry": "finite unique physical x/y sites",
+    "templates": "finite float32 sample-by-full-probe-channel arrays with zero temporal edge guards",
+    "motion": "integer multiples of 40 um only",
+    "event_clock": "window-local int64 samples plus explicit session origin"
+  },
+  "frames": {
+    "tissue": "voltage placement uses base_shift_um + true_state_um",
+    "probe": "voltage placement uses base_shift_um and is independent of true_state_um",
+    "supplied_state_um": "metadata only for field-error scoring; it never changes injected voltage"
+  },
+  "event_roles": [
+    "moving_neural",
+    "decoy_member",
+    "field_error_neural",
+    "probe_fixed_localized",
+    "probe_fixed_broad",
+    "probe_fixed_sparse",
+    "switch_fixture",
+    "designed_overlap"
+  ],
+  "safety": {
+    "stored_int16_injection": false,
+    "clipping": false,
+    "time_or_channel_truncation": false,
+    "duplicate_event_id": false,
+    "in_place_background_mutation": false,
+    "sub_lattice_motion": false
+  },
+  "known_answer_fixture": {
+    "sampling_frequency_hz": 30000.0,
+    "session_start_frame": 900000,
+    "geometry": "two columns, 40 um same-column pitch, 12 sites",
+    "states_um": [0, 40, -40],
+    "events": "tissue and probe events, complementary-state decoy pair, plus/minus-one-sample switch events, exact collision and lattice-valued supplied-state error",
+    "checks": [
+      "background bytes are unchanged outside event supports",
+      "tissue peak moves by exact same-column lattice state while probe peak stays fixed",
+      "supplied-state error changes truth metadata but not voltage bytes",
+      "decoy state gates are complementary and both biological identities remain separate",
+      "designed overlap adds linearly and retains both membership rows",
+      "switch ownership is half-open at the boundary",
+      "every truth row records local and session sample, true and supplied state, frame, placement and collision group",
+      "invalid dtype, complex/bool/object clocks, non-lattice shifts, unknown templates, duplicate IDs and boundary crossings fail closed"
+    ]
+  },
+  "acceptance": {
+    "author_tests": "all pass",
+    "focused_independent_review": "required before reuse in a real-window K9 contract",
+    "claim": "mechanics-qualified synthetic core only"
+  },
+  "completion_condition": "immutable source/test packet plus focused independent GO; real input binding remains a separate prerequisite"
+}
