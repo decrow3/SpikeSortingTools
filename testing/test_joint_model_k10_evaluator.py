@@ -343,6 +343,25 @@ def test_selection_aware_report_fails_closed_on_wrong_holdout_arm_or_zero_units(
         selection_aware_arm_report(development, holdout, arm_config())
 
 
+def test_selection_aware_report_rejects_extra_nonselected_holdout_summary():
+    development = {"N1": {"recovery": 0.8}, "N2": {"recovery": 0.7}}
+    holdout = {
+        "candidate_arm": "N1",
+        "baseline_arm": "N0",
+        "endpoints": {
+            "recovery": {"estimate": 0.0, "ci_low": -0.1, "ci_high": 0.1, "n_units": 1},
+            "duplicates": {"estimate": 0.0, "ci_low": -0.1, "ci_high": 0.1, "n_units": 1},
+        },
+        "non_selected_candidate_holdout": {
+            "candidate_arm": "N2",
+            "baseline_arm": "N0",
+            "endpoints": {},
+        },
+    }
+    with pytest.raises(ValueError, match="exactly one selected-arm-versus-baseline summary"):
+        selection_aware_arm_report(development, holdout, arm_config())
+
+
 @pytest.mark.parametrize("bad_value", [True, "0.8", 1 + 0j, np.inf])
 def test_selection_aware_report_rejects_non_real_development_scalars(bad_value):
     development = {"N1": {"recovery": bad_value}, "N2": {"recovery": 0.8}}

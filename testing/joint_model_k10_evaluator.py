@@ -533,6 +533,11 @@ def selection_aware_arm_report(
     else:
         selected = min(candidates, key=lambda arm: (development_values[arm], arm))
 
+    required_holdout_keys = {"candidate_arm", "baseline_arm", "endpoints"}
+    if not isinstance(selected_holdout, Mapping) or set(selected_holdout) != required_holdout_keys:
+        raise ValueError(
+            "holdout must contain exactly one selected-arm-versus-baseline summary"
+        )
     if selected_holdout.get("candidate_arm") != selected:
         raise ValueError("holdout candidate_arm must equal the development-selected arm")
     if selected_holdout.get("baseline_arm") != baseline:
