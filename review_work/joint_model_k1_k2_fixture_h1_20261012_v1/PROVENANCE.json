@@ -1,0 +1,21 @@
+{
+  "schema": "joint-model-k1-k2-fixture-provenance-v1",
+  "created_at": "2026-10-12T14:12:27-07:00",
+  "host": "huklaban1",
+  "branch": "codex/motionqc-phase1",
+  "source_commit": "160ba61",
+  "dispatch_key": "JOINT-MODEL-CODE-AHEAD-H1-20261012-V1",
+  "task_card_sha256": "17035db3715c285ac734c3f5a5b4362cb3d075243466c2edb72e077f17e8d72c",
+  "method_v4_sha256": "ff816cdaf5699934873c827eed007767db17eaf661ebe84b578877c79354e380",
+  "review_v3_sha256": "641f1c75f278cd1c49791ac4a57599098576efcf2f9e6bfa5b1adfa04affefa5",
+  "dartsort_worktree": "/home/huklab/Documents/DARTsort-joint-model-d40c516e",
+  "dartsort_commit": "d40c516e47451e688dd4484813b562fa5fc0b4ef",
+  "dartsort_tree": "f2c80b47c9d190aac128f89a3d10010464d19840",
+  "uv_lock_sha256": "68f3fa53642043313bc9a4e56b7fc35dbd27af81030e436ffdba82de683f5034",
+  "reader_sha256": "e36d3066c794a3caec99f0d647104aa30b8aa91d902fc16ea8700778fbe5115c",
+  "interpreter": "/home/huklab/Documents/DARTsort/.venv/bin/python",
+  "python": "3.12.4",
+  "torch": "2.6.0+cu124",
+  "gpu_available": false,
+  "scope": "synthetic CPU fixtures only; no recording, real K1 output, sorter, RF, holdout, motion, C4 edit, package install or service"
+}

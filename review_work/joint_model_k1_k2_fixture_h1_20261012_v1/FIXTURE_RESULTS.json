@@ -1,0 +1,10 @@
+{
+  "schema": "joint-model-k1-k2-fixture-results-v1",
+  "run_at": "2026-10-12T14:11:54-07:00",
+  "command": "NUMBA_CACHE_DIR=<writable> PYTHONPATH=<d40c516e/src>:<SpikeSortingTools> /home/huklab/Documents/DARTsort/.venv/bin/python -m pytest -q testing/test_joint_model_k1_k2.py",
+  "result": "17 passed in 1.23s",
+  "exit_code": 0,
+  "real_recording_opened": false,
+  "real_k1_output_inspected": false,
+  "sort_or_gpu_started": false
+}
