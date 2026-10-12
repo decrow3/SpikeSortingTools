@@ -1,0 +1,39 @@
+{
+  "schema": "joint-model-k7-frame-score-independent-review-results-v1",
+  "contract_commit": "7a8b62ccca84b0a799b10d5d07c17d7fc4665815",
+  "implementation_commit": "94d6db4f566ed8a32949f4f3d9485db2ecb6f8ec",
+  "reviewed_commit": "945e36bdc8db1e8fc88e97218d379d3edef6bb32",
+  "reviewed_packet": "review_work/joint_model_k7_frame_score_h1_20261012_v1",
+  "reviewed_contract_sha256": "c387a2e3d53300d084ab8e43817ddebadc651cc31183abba5048f54a01135fe9",
+  "reviewed_manifest_sha256": "069285e181d58921546f4b6982599e2e330d9d9cc8c4e1bcfaa46d972626e3b9",
+  "reviewed_complete_sha256": "1f422b62b47915a2fcefcce90099f2b44dcf71d214ad37cce27523be33ba092a",
+  "reviewed_implementation_sha256": "31eb07550815c741cfde0097319bf23516e5c022a7f9ae09d90a6214d55ab841",
+  "verdict": "NO_GO_PENDING_SCORE_SUPPORT_AND_NUMERIC_GUARDS",
+  "author_suite": {
+    "command": "pytest -q testing/test_joint_model_k7_frame_score.py",
+    "result": "26 passed in 0.10s",
+    "exit_code": 0
+  },
+  "adversarial_suite": {
+    "command": "pytest -q review_work/joint_model_k7_frame_score_h1_20261012_v1_independent_review_20261012_v1/ADVERSARIAL_TESTS.py",
+    "result": "27 passed, 6 failed in 0.16s",
+    "exit_code": 1,
+    "defects": [
+      "contractual 80-um and 50-event support floors can be weakened by caller arguments",
+      "the held-out informative-state cutoff is incorrectly reused as the training-separation requirement",
+      "np.ptp on valid extreme int64 lattice states overflows and causes false training abstention",
+      "positive finite residual extremes can create an infinite score through direct division before log",
+      "invalid residuals on noncontributing held-out states bypass validation"
+    ]
+  },
+  "passing_subset": {
+    "command": "pytest -q ADVERSARIAL_TESTS.py -k 'not contract_80um and not contract_50_event and not training_80um and not extreme_int64 and not positive_finite and not all_residual_rows'",
+    "result": "27 passed, 6 deselected in 0.11s",
+    "exit_code": 0
+  },
+  "local_shared_source_hash_chain_verified": true,
+  "template_learning_detection_whitening_or_calibration_used": false,
+  "real_units_recording_voltage_or_arm_output_accessed": false,
+  "dartsort_gpu_sort_rf_holdout_or_c4_used": false
+}
+
