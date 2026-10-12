@@ -1,0 +1,13 @@
+{
+  "schema": "joint-model-k7-frame-score-provenance-v2",
+  "created_at": "2026-10-12T15:14:38-07:00",
+  "host": "huklaban1",
+  "branch": "codex/motionqc-phase1",
+  "orders_sha256": "b5f0a619c367e639fa418640dd7777bb08c5959721de8ba79c621ecf240f6f86",
+  "contract_commit": "7a8b62c",
+  "repair_commit": "fc3a83d",
+  "v1_no_go_review_commit": "2aa5569760036a9a0e9afe0029be537bb61b9ca8",
+  "v1_no_go_complete_sha256": "3b1a9953e416a97eaaf4869143f430c37ec71c520702faa782e7a67ca046681f",
+  "repair": "enforce frozen support floors, decouple training and held-out thresholds, avoid int64 and residual-ratio overflow, validate every held row",
+  "scope": "synthetic saved residuals/states/blocks/candidate IDs only; no template learning, matched-filter detection, whitening, calibration, real unit classification, recording, voltage, GPU, sort, RF, holdout or C4 edit"
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "FROZEN_K7_FRAME_SCORE_FIXTURE_V2_READY_FOR_INDEPENDENT_REREVIEW",
+  "members": {
+    "ADVERSARIAL_TESTS.py": {"size": 7473, "sha256": "f5df68c016ce94e9bb0864f954b7ffc0562bc3b6d880ecba22066398c122d52c"},
+    "CONTRACT.json": {"size": 2580, "sha256": "c387a2e3d53300d084ab8e43817ddebadc651cc31183abba5048f54a01135fe9"},
+    "FIXTURE_RESULTS.json": {"size": 634, "sha256": "a6ed43b78c668e0b721571996939afbbf891bb36667bc4a68679963545ec748a"},
+    "IMPLEMENTATION.py": {"size": 9083, "sha256": "e3675fc15d54ce2745b3903a13ed2f8637c9558c51a1fdcb19000a4aafabcfe2"},
+    "PROVENANCE.json": {"size": 863, "sha256": "70058068afdcd1ad1e615a40c4f392223e4db86799b447734f1878d698c373ba"},
+    "REVIEW_REQUEST.md": {"size": 1385, "sha256": "c1741642ad00a6ea3e8755b1baf1824b10a87084cd84afd0d04babf1440c8c8b"},
+    "TESTS.py": {"size": 9045, "sha256": "3843380a1cb936f0bbefe5eabb6a8fcc5089406c1742d0cf40577d6c4a9bf76f"}
+  }
+}
