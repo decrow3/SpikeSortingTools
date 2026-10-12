@@ -1,0 +1,25 @@
+{
+  "schema": "joint-model-code-ahead-worker-completion-v1",
+  "created_at": "2026-10-12T13:58:49-07:00",
+  "host": "huklaban1",
+  "dispatch_key": "JOINT-MODEL-CODE-AHEAD-H1-20261012-V1",
+  "component": "K10 saved-output evaluator",
+  "status": "COMPLETE_INDEPENDENT_REVIEW_GO_FIXTURE_QUALIFIED",
+  "author_commit": "0132bb1845e93cb68cc7a53b390bfb17f4da8512",
+  "review_commit": "9f11e4c3e7c9e83c433542b822d859faae974241",
+  "v1_preserved_nogo_complete_sha256": "e4a24268c9df2f91fc2b4a8dc9c0e21bc9da91970ce5853bc5294c2598f74fd4",
+  "v2_author_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_k10_evaluator_h1_20261012_v2",
+  "v2_author_complete_sha256": "35f221651097e32889ca0cdae44c636ced1fa3e79658a2eab188860fd6f71932",
+  "v2_review_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_k10_evaluator_h1_20261012_v2_independent_rereview_20261012_v1",
+  "v2_review_manifest_sha256": "778e0a55554ee5f9f3956d7e0a35b5d100f0c42168066d52e6fd03f19e6b60a2",
+  "v2_review_complete_sha256": "a5230f0436d1d0b1b12419afc40493eaaf5cc7b3dd7cd836836f51e966ce14ae",
+  "tests": {
+    "author": "20 passed",
+    "preserved_v1_adversarial_rebound_to_v2": "11 passed",
+    "additional_bounds": "7 passed"
+  },
+  "correction": "The frozen v2 author packet's PRIOR_ADVERSARIAL_TESTS.py hard-codes the v1 packet, so direct execution reproduces v1's expected 10-pass/1-fail result rather than the author metadata's claimed v2 replay. The independent rereview packet preserves the explicit evaluator-only rebinding harness that establishes 11/11 against frozen v2. Do not treat the bundled prior test file alone as reproducible v2 replay evidence.",
+  "scope": "GO establishes synthetic saved-output evaluator plumbing and the exact session-bound guard repair only.",
+  "cannot_establish": "K9 benchmark validity, real-arm benefit, biological identity/purity, scale/runtime readiness, or medium/full-run authorization.",
+  "dartsort_source_state": "K1/K2 and other DARTsort-bound work remain ACK_BLOCKED pending exact d40c516e git bundle and e36d3066 reader snapshot; stale edcfe1b5 not used."
+}
