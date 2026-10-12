@@ -1,0 +1,18 @@
+{
+  "schema": "joint-model-k10-evaluator-fixture-results-v1",
+  "run_at": "2026-10-12T13:42:55-07:00",
+  "command": "pytest -q testing/test_joint_model_k10_evaluator.py",
+  "result": "19 passed in 0.13s",
+  "exit_code": 0,
+  "real_joint_model_arm_outputs_inspected": false,
+  "dartsort_imported": false,
+  "coverage": [
+    "maximum-cardinality two-gate matching against a brute-force oracle",
+    "exclusive per-cluster scoring without event-key or pooled-river matching",
+    "inclusive +/-15 sample and explicit per-event placement gates",
+    "split, merge, many-to-one, decoy false-merge and shifted-null controls",
+    "overlap detection, assignment, frame, amplitude and residual endpoints kept separate",
+    "session-clock and input fail-closed guards",
+    "complete create-only result publication"
+  ]
+}

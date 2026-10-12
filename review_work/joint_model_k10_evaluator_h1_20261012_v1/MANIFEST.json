@@ -1,0 +1,12 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "FROZEN_K10_FIXTURES_PASS_READY_FOR_INDEPENDENT_REVIEW",
+  "members": {
+    "CONTRACT.json": {"size": 3907, "sha256": "425eeb48e1ea4bfef4e6f7ceb315c4a53c4a8becc7d477759350be5ba405dd05"},
+    "EVALUATOR.py": {"size": 20270, "sha256": "2d19bdb08a964d2b21d4224b11a7b22e71fd45232738ba7a39dc3c206d87dd9b"},
+    "FIXTURE_RESULTS.json": {"size": 815, "sha256": "b21dcad78e4bd3c8fb024cd6ac19b31f97d4db8fba7711b6acc0ab6da40b00c7"},
+    "PROVENANCE.json": {"size": 1456, "sha256": "360e614c8f26f4faa5035cc009360e53840f5cc77f2291a8c367e53d3cc57ecd"},
+    "REVIEW_REQUEST.md": {"size": 1737, "sha256": "c8cafe39f5a6ea8407fcfa74dcdf0b86e798cdb46c7b531e25c17a0d55de8763"},
+    "TESTS.py": {"size": 9295, "sha256": "d92429a6ea7eb5e2f8e1d3e40b2bf2f0033c234fefaf3bb27075dcc62ea5a368"}
+  }
+}
