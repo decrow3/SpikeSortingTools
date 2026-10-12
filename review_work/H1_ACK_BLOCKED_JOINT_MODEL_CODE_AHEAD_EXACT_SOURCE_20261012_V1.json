@@ -1,0 +1,43 @@
+{
+  "schema": "joint-model-code-ahead-h1-ack-v1",
+  "created_at": "2026-10-12T13:35:20-07:00",
+  "host": "huklaban1",
+  "recipient": "HubMultiCoordinater",
+  "dispatch": "JOINT-MODEL-CODE-AHEAD-H1-20261012-V1",
+  "status": "ACK_BLOCKED_EXACT_SOURCE_OBJECTS_UNAVAILABLE_ON_H1",
+  "bundle_verification": {
+    "dispatch_sha256": "c9525462cf2eceb9a0af685d3b342495fe68a8f31a1caa5cbca8210abaa581cc",
+    "task_card_sha256": "17035db3715c285ac734c3f5a5b4362cb3d075243466c2edb72e077f17e8d72c",
+    "sha256sums": "6_of_6_OK",
+    "method_review_rank1_read": true
+  },
+  "fresh_h1_readiness": {
+    "checked_at": "2026-10-12T13:33:34-07:00",
+    "load_1m_5m_15m": [0.28, 0.20, 0.11],
+    "d_state_threads": 0,
+    "vmstat_blocked": 0,
+    "vmstat_iowait_percent": 0,
+    "memory_available_gib": 181,
+    "root_persistent_disk_available_gib": 482,
+    "gpu": "NVIDIA driver unavailable; initial K1/K2 CPU fixtures remain possible once source is bound"
+  },
+  "blocking_evidence": {
+    "h1_dartsort_checkout": "/home/huklab/Documents/DARTsort",
+    "h1_checkout_head": "edcfe1b51d672b4136eb13cc78c0875da804b851",
+    "required_commit": "d40c516e47451e688dd4484813b562fa5fc0b4ef",
+    "required_commit_available_after_fetch_all": false,
+    "fetch_all_result": "configured upstream and origin fetched successfully; required object still absent",
+    "exact_object_fetch_result": "origin rejected d40c516e47451e688dd4484813b562fa5fc0b4ef as not our ref",
+    "required_reader_sha256": "e36d3066c794a3caec99f0d647104aa30b8aa91d902fc16ea8700778fbe5115c",
+    "required_reader_available_on_h1_or_in_dispatch_bundle": false
+  },
+  "readiness_prerequisite": {
+    "owner": "H5_or_HubMultiCoordinater",
+    "required_action": "Publish a compact verified git bundle or named remote branch containing commit d40c516e47451e688dd4484813b562fa5fc0b4ef and its reachable prerequisites, plus the exact reader prospective_a_prewhitening_si.py with SHA-256 e36d3066c794a3caec99f0d647104aa30b8aa91d902fc16ea8700778fbe5115c, to approved shared project storage.",
+    "acceptance": "H1 imports the bundle into /home/huklab/Documents/DARTsort, verifies the full commit and tree, creates a new persistent /home worktree at that detached commit, verifies clean status and environment import, and hashes the reader before ACK_STARTED.",
+    "alternative": "Push the exact commit to a named origin branch and publish the exact reader snapshot and hashes. Do not send only a source diff or the seven-file C4 closure because the task requires a full worktree and no-effect baseline."
+  },
+  "execution_state": "No worktree created; no DARTsort code imported or edited; no component implementation, fixture, voltage read, service, GPU, sort, RF or holdout action started.",
+  "scope": "This is a readiness block, not a project hold. H1 host I/O readiness has recovered. C4 remains H5 priority and untouched.",
+  "next_check": "Immediately after a verified source bundle/branch and exact reader snapshot are published and coordinator points H1 to them."
+}
