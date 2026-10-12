@@ -1,0 +1,28 @@
+{
+  "schema": "joint-model-code-ahead-worker-start-v1",
+  "created_at": "2026-10-12T14:08:49-07:00",
+  "host": "huklaban1",
+  "dispatch_key": "JOINT-MODEL-CODE-AHEAD-H1-20261012-V1",
+  "status": "ACK_STARTED_K1_K2_EXACT_BASELINE",
+  "components": ["K1 CAR side-channel reader and frozen pulse detector", "K2 pulse-sorter lag"],
+  "baseline_bundle": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/joint_model_code_ahead_20261012_v1/h5_baseline_bundle_20261012_v1/dartsort_d40c516e_full_ancestry.bundle",
+  "baseline_bundle_sha256": "3e46490a6beb25717fbca372da028242e6312259b7e30ad294110b6dfe73a3c5",
+  "bundle_verification": "git bundle verify OK_COMPLETE_HISTORY; exported branch resolves exactly to d40c516e47451e688dd4484813b562fa5fc0b4ef",
+  "reader_sha256": "e36d3066c794a3caec99f0d647104aa30b8aa91d902fc16ea8700778fbe5115c",
+  "worktree": "/home/huklab/Documents/DARTsort-joint-model-d40c516e",
+  "worktree_commit": "d40c516e47451e688dd4484813b562fa5fc0b4ef",
+  "worktree_tree": "f2c80b47c9d190aac128f89a3d10010464d19840",
+  "worktree_clean": true,
+  "uv_lock_sha256": "68f3fa53642043313bc9a4e56b7fc35dbd27af81030e436ffdba82de683f5034",
+  "environment": {
+    "interpreter": "/home/huklab/Documents/DARTsort/.venv/bin/python",
+    "python": "3.12.4",
+    "torch": "2.6.0+cu124",
+    "dartsort_import_path": "/home/huklab/Documents/DARTsort-joint-model-d40c516e/src/dartsort/__init__.py",
+    "numba_cache_requirement": "set NUMBA_CACHE_DIR to a writable task directory",
+    "gpu_available": false,
+    "gpu_blocker": "NVIDIA driver unavailable; CPU implementation and fixtures proceed, GPU-required work remains blocked"
+  },
+  "resources": {"ram_available_gib": 181, "persistent_disk_available_gib": 482},
+  "scope": "implementation, synthetic fixtures, bounded reader-equivalence and lag preparation only; no sort, RF, holdout, motion re-estimation, C4 edit, package install or upgrade"
+}
