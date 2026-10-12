@@ -1,0 +1,45 @@
+{
+  "schema": "joint-model-k7-frame-score-fixture-contract-v1",
+  "frozen_at": "2026-10-12T15:00:00-07:00",
+  "milestone": "K7 input-independent frame-score and abstention oracle",
+  "decision_changed": "whether K7 scoring/group-rule fixtures are ready for later template-learning integration",
+  "scope": "synthetic saved residuals, states, blocks and candidate IDs only; not template learning, matched-filter detection, whitening, threshold calibration or real classification",
+  "candidate_union": {
+    "members": "stable union of unit events and held-out stationary-template matched-filter detections",
+    "duplicate_id_policy": "one row per event ID; conflicting sample/state/block metadata fail closed",
+    "selection_prohibition": "residuals and labels cannot affect union membership"
+  },
+  "eligibility": {
+    "training": "at least two states separated by at least 80 um",
+    "held_out": "only states with absolute displacement at least 80 um",
+    "minimum_events_per_contributing_state": 50,
+    "single_state_training": "UNDETERMINED"
+  },
+  "score": {
+    "per_event": "log(residual_probe / residual_tissue)",
+    "unit": "median of per-state medians",
+    "residuals": "finite and strictly positive",
+    "state_balance": "each eligible state contributes one median regardless of event count"
+  },
+  "labels": {
+    "thresholds": "explicit external calibration inputs; no default and no reuse of C4-2 plus/minus 0.2",
+    "negative_score": "probe-fixed",
+    "positive_score": "tissue-fixed",
+    "between_thresholds_or_ineligible": "undetermined",
+    "operational_default": "undetermined remains tissue-fixed without changing its reported label"
+  },
+  "group_rule": {
+    "linking_only": "unvalidated linked fragments remain separate and are flagged probe_fixed_candidate_group",
+    "promotion_evidence": "member-level per-unit probe-fixed result or independently supplied known-pulse coincidence pass",
+    "no_group_label_propagation": "evidence for one member cannot silently relabel every member"
+  },
+  "known_answers": [
+    "unequal state counts do not reweight the median-of-state-medians score",
+    "single-state training abstains even with extreme residual preference",
+    "matched-filter-only events remain in the candidate union",
+    "conflicting duplicate event metadata fail closed",
+    "mixed linked group retains member-level labels and abstentions"
+  ],
+  "acceptance": "author tests plus focused independent synthetic review",
+  "claim_limit": "fixture oracle only; real frame-test validity and N3/N4 readiness remain unestablished"
+}
