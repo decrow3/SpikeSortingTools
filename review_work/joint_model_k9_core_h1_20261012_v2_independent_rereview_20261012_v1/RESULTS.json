@@ -1,0 +1,47 @@
+{
+  "schema": "joint-model-k9-core-independent-rereview-results-v1",
+  "contract_commit": "86f6a7a9a300b68a9d1fe870b54abf72793c0a28",
+  "repair_commit": "ab403e6dd9bd10b8e1f799ecf281870d328bef66",
+  "reviewed_commit": "7786d93b381578bf39ed48c9ca893982dc8f4ca2",
+  "reviewed_packet": "review_work/joint_model_k9_core_h1_20261012_v2",
+  "reviewed_manifest_sha256": "f4f59b1bea804e3957bbffb95bc0971522603ba6b2ac432471e0098d3e463dfb",
+  "reviewed_complete_sha256": "d45187e922fe955ef255d92fe0df39f1cc7186e9b0c6a3b610e2e984aade6e15",
+  "reviewed_implementation_sha256": "5c9077148d6371426c1973ae8932914d556067215fa2f78122cf49d2e313e77e",
+  "prior_no_go_commit": "1aae00ee6d388125f7e99eda326b1778c9d6c437",
+  "prior_no_go_complete_sha256": "df2621f0e71e3f4eb57311efeedb1871825ce759bfc13175f53d6790a31168da",
+  "verdict": "GO_SYNTHETIC_MECHANICS_ONLY",
+  "delta_review": {
+    "implementation_changes": [
+      "reject geometry whose uncast dtype is not real numeric or is boolean",
+      "int64-validate the derived session_sample before writing truth rows"
+    ],
+    "contract_byte_identical": true,
+    "preserved_adversarial_suite_byte_identical": true,
+    "working_tree_sources_match_frozen_packet": true
+  },
+  "focused_author_suite": {
+    "command": "pytest -q testing/test_joint_model_k9_benchmark.py",
+    "result": "19 passed in 0.11s",
+    "exit_code": 0
+  },
+  "combined_author_helper_suite": {
+    "command": "pytest -q testing/test_joint_model_k9_benchmark.py testing/test_luke_au_cpu_preparation.py testing/test_luke_injected_ground_truth_benchmark.py",
+    "result": "38 passed in 0.20s",
+    "exit_code": 0
+  },
+  "preserved_adversarial_replay": {
+    "command": "pytest -q review_work/joint_model_k9_core_h1_20261012_v2_independent_rereview_20261012_v1/PRIOR_ADVERSARIAL_REPLAY_V2.py",
+    "result": "22 passed in 0.12s",
+    "exit_code": 0,
+    "interpretation": "all 19 formerly passing cases remain green and the three preserved v1 failures now pass"
+  },
+  "independent_guard_controls": {
+    "command": "pytest -q review_work/joint_model_k9_core_h1_20261012_v2_independent_rereview_20261012_v1/GUARD_TESTS.py",
+    "result": "9 passed in 0.11s",
+    "exit_code": 0
+  },
+  "local_shared_source_hash_chain_verified": true,
+  "real_input_window_voltage_or_arm_output_accessed": false,
+  "dartsort_h5_gpu_service_sort_rf_holdout_or_c4_used": false
+}
+

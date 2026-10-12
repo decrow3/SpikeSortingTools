@@ -1,0 +1,11 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "GO_SYNTHETIC_MECHANICS_ONLY",
+  "members": {
+    "GUARD_TESTS.py": {"size": 1623, "sha256": "1edb82ef76295b74d65ed3eb3c89cb8a674bc1af2a58503df73dee0adf48c340"},
+    "PRIOR_ADVERSARIAL_REPLAY_V2.py": {"size": 1184, "sha256": "640d9070b74f93df79d9ef60e86f93edd753ee0caa10e3ca5ca3927e9c81d4ef"},
+    "PROVENANCE.json": {"size": 833, "sha256": "5c6ae2f374e6232b421d260e760485f72ef9b21bc91c2201073a0cac2ea914b6"},
+    "RESULTS.json": {"size": 2366, "sha256": "a55c048a32377f40675883bec962e2dd6bc66e27bdc0b531af8fa3f96c17481c"},
+    "REVIEW.md": {"size": 3198, "sha256": "37e21621d6243018be38435a06538d922a23ef11e64f918379601d2db24d4cf4"}
+  }
+}
