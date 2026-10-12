@@ -1,0 +1,41 @@
+{
+  "schema": "joint-model-k10-evaluator-v3-independent-review-results-v1",
+  "contract_commit": "b56c4a1b22b99c26f3b2085f6d43a787bea46b6b",
+  "implementation_commit": "1648a9b1b84bd86d78e2a52735e039402e0bbe17",
+  "reviewed_commit": "af3968a4477e144be7b840f87d343bfae101d3aa",
+  "reviewed_packet": "review_work/joint_model_k10_evaluator_h1_20261012_v3",
+  "reviewed_manifest_sha256": "7e0f5cb84252efcfc3dd2664e07661a52c488b398476b43cdf62a1c67e752e9f",
+  "reviewed_complete_sha256": "09edc740e4c0ef915625cc92a75068f9d9daa5ce282d5518ea2ff35f492708e7",
+  "reviewed_evaluator_sha256": "d9b3cacf594e6a39ae6a1dc975bf227cc42e66e530dda1e0a89b413dc0742fde",
+  "verdict": "NO_GO_PENDING_EXACTLY_ONE_HOLDOUT_SUMMARY_GUARD",
+  "author_suite": {
+    "command": "pytest -q testing/test_joint_model_k10_evaluator.py",
+    "result": "34 passed in 0.14s",
+    "exit_code": 0
+  },
+  "initial_adversarial_run": {
+    "result": "43 passed, 2 failed in 0.23s",
+    "fixture_correction": "one synthetic null shift wrapped onto the compact fixture span; moved review-only shifts away from that span"
+  },
+  "corrected_adversarial_run": {
+    "command": "pytest -q review_work/joint_model_k10_evaluator_h1_20261012_v3_independent_review_20261012_v1/ADVERSARIAL_TESTS.py",
+    "result": "44 passed, 1 failed in 0.24s",
+    "exit_code": 1,
+    "failed_fixture": "test_nonselected_holdout_summary_is_rejected_not_silently_ignored"
+  },
+  "passing_subset": {
+    "command": "pytest -q review_work/joint_model_k10_evaluator_h1_20261012_v3_independent_review_20261012_v1/ADVERSARIAL_TESTS.py -k 'not nonselected_holdout_summary'",
+    "result": "44 passed, 1 deselected in 0.19s",
+    "exit_code": 0
+  },
+  "defect": {
+    "location": "EVALUATOR.py:536-542",
+    "observed": "extra top-level non-selected candidate holdout summary is accepted and ignored",
+    "contract_impact": "holdout input is not constrained to exactly one selected-arm-versus-baseline summary",
+    "exact_repair": "require selected_holdout mapping keys to equal candidate_arm, baseline_arm, and endpoints before reading values"
+  },
+  "local_shared_source_hash_chain_verified": true,
+  "real_or_k9_outputs_inspected": false,
+  "recording_voltage_dartsort_h5_gpu_service_sort_rf_or_holdout_used": false
+}
+

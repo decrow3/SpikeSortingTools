@@ -1,0 +1,5 @@
+{
+  "manifest_sha256": "cbbec6a20db3dbaa795ae2dff21b97fff4b4d0534d19e37cee0eb8262373cd6c",
+  "schema": "immutable-evidence-complete-v1",
+  "status": "NO_GO_PENDING_EXACTLY_ONE_HOLDOUT_SUMMARY_GUARD"
+}
