@@ -1,0 +1,40 @@
+{
+  "schema": "joint-model-k9-core-independent-review-results-v1",
+  "contract_commit": "86f6a7a",
+  "implementation_commit": "3947bed76fc0fbfd1f37a221bcd22bac75d2e9be",
+  "reviewed_commit": "6614c1f",
+  "reviewed_packet": "review_work/joint_model_k9_core_h1_20261012_v1",
+  "reviewed_manifest_sha256": "1657f713821cb49e92629f61062ce0b173a9272ade77ae875608d06a326cb219",
+  "reviewed_complete_sha256": "c63e2f2dfc7934fa5c6c0a3d7c4ae79c419e044e802385b505524ee99ac21cb5",
+  "reviewed_implementation_sha256": "33c50a0082e300309be3cbbca59b9db4a6b3ff1488045a861feb3b39f5ae8721",
+  "verdict": "NO_GO_PENDING_GEOMETRY_DTYPE_AND_DERIVED_CLOCK_GUARDS",
+  "focused_author_suite": {
+    "command": "pytest -q testing/test_joint_model_k9_benchmark.py",
+    "result": "16 passed in 0.10s",
+    "exit_code": 0
+  },
+  "combined_author_helper_suite": {
+    "command": "pytest -q testing/test_joint_model_k9_benchmark.py testing/test_luke_au_cpu_preparation.py testing/test_luke_injected_ground_truth_benchmark.py",
+    "result": "35 passed in 0.13s",
+    "exit_code": 0
+  },
+  "adversarial_suite": {
+    "command": "pytest -q review_work/joint_model_k9_core_h1_20261012_v1_independent_review_20261012_v1/ADVERSARIAL_TESTS.py",
+    "result": "19 passed, 3 failed in 0.16s",
+    "exit_code": 1,
+    "defects": [
+      "derived session_sample can exceed int64",
+      "complex geometry is accepted after imaginary components are discarded",
+      "numeric-string geometry is accepted by coercion"
+    ]
+  },
+  "passing_subset": {
+    "command": "pytest -q review_work/joint_model_k9_core_h1_20261012_v1_independent_review_20261012_v1/ADVERSARIAL_TESTS.py -k 'not derived_session_clock and not geometry_rejects_ambiguous'",
+    "result": "19 passed, 3 deselected in 0.11s",
+    "exit_code": 0
+  },
+  "local_shared_source_hash_chain_verified": true,
+  "real_recording_window_voltage_or_arm_output_accessed": false,
+  "dartsort_h5_gpu_service_sort_rf_holdout_or_c4_used": false
+}
+

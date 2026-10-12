@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "NO_GO_PENDING_GEOMETRY_DTYPE_AND_DERIVED_CLOCK_GUARDS",
+  "members": {
+    "ADVERSARIAL_TESTS.py": {"size": 10479, "sha256": "2d2216712cb3a49d2632972d7c8443e57f0fb7c1976e71cb56366cf69e5f5b9c"},
+    "PROVENANCE.json": {"size": 788, "sha256": "f3c8e8e67969c4f020d222d8fb2a0cb2ad6a674ddf550a1d787c9b1827d177dd"},
+    "RESULTS.json": {"size": 1958, "sha256": "f02329c2c5c90b4f6c3edb86928f90aade9be102477f2442dd6def9fae93e83b"},
+    "REVIEW.md": {"size": 4869, "sha256": "4a4a4bfb81ebe2398a1c4a21c348998bef5121e253cd275498b7d97d1fc4bbf5"}
+  }
+}
