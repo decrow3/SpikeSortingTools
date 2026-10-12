@@ -1,0 +1,37 @@
+{
+  "schema": "joint-model-n0-n1-contract-validator-independent-review-results-v1",
+  "contract_commit": "6f857ee1e681c1c60743cef23de1ae276ad8c826",
+  "implementation_commit": "89cf8bc84952eeb2f649d638113a8054efd0bee8",
+  "reviewed_commit": "da7cb178b542ca96b04f44ace69de7745f3e00a4",
+  "reviewed_packet": "review_work/joint_model_n0_n1_contract_validator_h1_20261012_v1",
+  "reviewed_manifest_sha256": "5a80655082ecdc5cbf27b63deb7765c55f4a0559890dc6fcf3be2184d8220466",
+  "reviewed_complete_sha256": "96c9f427650eaeeaca6e4729ed18c646af02e0e2a5ef4b6b33d939c348368b31",
+  "reviewed_implementation_sha256": "8c8799bc7ccfc68b94baf856c48805886a47760a90af74cfd917a7aedcdba837",
+  "verdict": "NO_GO_PENDING_EXACT_BINDING_AND_LIFECYCLE_GUARDS",
+  "author_suite": {
+    "command": "pytest -q testing/test_joint_model_n0_n1_contract.py",
+    "result": "20 passed in 0.09s",
+    "exit_code": 0
+  },
+  "adversarial_suite": {
+    "command": "pytest -q review_work/joint_model_n0_n1_contract_validator_h1_20261012_v1_independent_review_20261012_v1/ADVERSARIAL_TESTS.py",
+    "result": "29 passed, 15 failed, 1 warning in 0.18s",
+    "exit_code": 1,
+    "defect_families": [
+      "schema cannot bind explicit session clock, half-open convention, common-event identity, or one shared N0 checkpoint per window",
+      "evaluator hashes are syntax-checked but not pinned to reviewed K10 v4",
+      "case variants of placeholders are accepted",
+      "an empty numpy array evades the exact empty other_deltas list requirement",
+      "unmanaged launch descriptions and arbitrary stop text satisfy lifecycle fields",
+      "raw-string output comparison accepts lexical aliases, ancestor nesting, and input-path reuse"
+    ]
+  },
+  "passing_subset": {
+    "result": "29 passed, 15 deselected in 0.10s",
+    "exit_code": 0
+  },
+  "local_shared_source_manifest_members_and_hash_chains_verified": true,
+  "referenced_bytes_or_real_data_accessed": false,
+  "production_gpu_service_sort_rf_holdout_or_c4_used": false
+}
+

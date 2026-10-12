@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "NO_GO_PENDING_EXACT_BINDING_AND_LIFECYCLE_GUARDS",
+  "members": {
+    "ADVERSARIAL_TESTS.py": {"size": 8703, "sha256": "3cac0329b7f93f86697e40645a118bebcf60a4e82187f240486b319d41d38f36"},
+    "PROVENANCE.json": {"size": 980, "sha256": "cc6fd271191fac1bc5996823b94a5a24d20f67c46f974bb13ee900e9beb13afd"},
+    "RESULTS.json": {"size": 1996, "sha256": "6a2a1b9decf8bbee93f3e3b3dd970603211967644a9faf1b97cea026701ee369"},
+    "REVIEW.md": {"size": 5216, "sha256": "175bd6c567fa0110a83793b3a013f41220f9913c81a40632d12d64f34bb1467f"}
+  }
+}
