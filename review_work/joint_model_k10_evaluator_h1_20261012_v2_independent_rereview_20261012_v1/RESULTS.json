@@ -1,0 +1,38 @@
+{
+  "schema": "joint-model-k10-evaluator-v2-independent-rereview-results-v1",
+  "reviewed_commit": "0132bb1845e93cb68cc7a53b390bfb17f4da8512",
+  "reviewed_packet": "review_work/joint_model_k10_evaluator_h1_20261012_v2",
+  "reviewed_manifest_sha256": "1016568afdb00df6a1030967a717c087c43f238accedc4c1996d83d125d9e621",
+  "reviewed_complete_sha256": "35f221651097e32889ca0cdae44c636ced1fa3e79658a2eab188860fd6f71932",
+  "reviewed_evaluator_sha256": "65f0996afb5ea56b7b3e211fcd82bda0eff1e46b77b65373a511a7544138678f",
+  "preserved_v1_nogo_complete_sha256": "4fe3f65a5fe334eca48ba82a7a59b951c756a88a9412f43fbb6d14ca73ee3ff3",
+  "verdict": "GO_FIXTURE_QUALIFIED_SAVED_OUTPUT_EVALUATOR",
+  "author_packet_replay_provenance_correction": {
+    "finding": "PRIOR_ADVERSARIAL_TESTS.py hard-codes the v1 packet, so the bundled 11/11-against-v2 receipt is not reproducible from the frozen file",
+    "direct_frozen_command": "pytest -q review_work/joint_model_k10_evaluator_h1_20261012_v2/PRIOR_ADVERSARIAL_TESTS.py",
+    "direct_frozen_result": "10 passed, 1 failed in 0.20s; failure is preserved v1 bounds guard",
+    "resolution": "review-owned harness rebinds only the preserved test module evaluator global to frozen v2"
+  },
+  "author_suite": {
+    "command": "pytest -q testing/test_joint_model_k10_evaluator.py",
+    "result": "20 passed in 0.12s",
+    "exit_code": 0
+  },
+  "prior_adversarial_replay_v2": {
+    "command": "pytest -q review_work/joint_model_k10_evaluator_h1_20261012_v2_independent_rereview_20261012_v1/PRIOR_ADVERSARIAL_REPLAY_V2.py",
+    "result": "11 passed in 0.17s",
+    "exit_code": 0
+  },
+  "additional_bounds_suite": {
+    "command": "pytest -q review_work/joint_model_k10_evaluator_h1_20261012_v2_independent_rereview_20261012_v1/BOUNDS_ADVERSARIAL_TESTS.py",
+    "result": "7 passed in 0.08s",
+    "exit_code": 0
+  },
+  "v1_nogo_preserved": true,
+  "v1_v2_contracts_byte_identical": true,
+  "repair_scope": "exact-integer session bounds guard plus author regression only",
+  "v1_v2_local_and_shared_hash_chains_verified": true,
+  "real_joint_model_arm_outputs_or_k9_arrays_inspected": false,
+  "recording_voltage_dartsort_h5_gpu_service_sort_rf_or_holdout_used": false
+}
+

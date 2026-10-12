@@ -1,0 +1,5 @@
+{
+  "manifest_sha256": "778e0a55554ee5f9f3956d7e0a35b5d100f0c42168066d52e6fd03f19e6b60a2",
+  "schema": "immutable-evidence-complete-v1",
+  "status": "GO_FIXTURE_QUALIFIED_SAVED_OUTPUT_EVALUATOR_WITH_REPLAY_PROVENANCE_CORRECTION"
+}

@@ -1,0 +1,11 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "GO_FIXTURE_QUALIFIED_SAVED_OUTPUT_EVALUATOR_WITH_REPLAY_PROVENANCE_CORRECTION",
+  "members": {
+    "BOUNDS_ADVERSARIAL_TESTS.py": {"size": 3001, "sha256": "b75849754f344dd42c7c5a0526debf4d0723c9e89ebab981f3c44cf18318f4c5"},
+    "PRIOR_ADVERSARIAL_REPLAY_V2.py": {"size": 1186, "sha256": "3300b9cff4cca08b3e99cd46cf838da15de29f6b98a0d05f6a13a3b4bf77a5f6"},
+    "PROVENANCE.json": {"size": 1050, "sha256": "032a6cd3fbd1b3b3b0c94daacd45a24ffc997647fa1fc7a044448c6385869828"},
+    "RESULTS.json": {"size": 2195, "sha256": "58b9079272ffbbd472522a7f6acdc7f87c81ba3c6e66ffbb023c879f241f972a"},
+    "REVIEW.md": {"size": 4339, "sha256": "7d0d922762d9d8f77d96abdbf145958c1747e77e8eac36bb926b6f93a37a43b5"}
+  }
+}
