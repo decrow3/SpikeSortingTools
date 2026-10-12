@@ -1,0 +1,20 @@
+{
+  "schema": "joint-model-code-ahead-worker-checkin-v1",
+  "created_at": "2026-10-12T13:53:37-07:00",
+  "host": "huklaban1",
+  "dispatch_key": "JOINT-MODEL-CODE-AHEAD-H1-20261012-V1",
+  "component": "K10 saved-output evaluator",
+  "status": "ACK_STARTED_K10_V2_FOCUSED_INDEPENDENT_REREVIEW_PENDING",
+  "v1_review_verdict": "NO_GO_PENDING_EXACT_INTEGER_SESSION_BOUNDS_GUARD",
+  "v1_review_complete_sha256": "4fe3f65a5fe334eca48ba82a7a59b951c756a88a9412f43fbb6d14ca73ee3ff3",
+  "v2_repair": "session_bounds_samples now fail closed unless both values are exact integer acquisition samples; fractional-bounds regression added",
+  "v2_author_tests": "20 passed in 0.13s",
+  "v2_prior_adversarial_replay": "11 passed in 0.18s",
+  "v2_shared_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_k10_evaluator_h1_20261012_v2",
+  "v2_manifest_sha256": "1016568afdb00df6a1030967a717c087c43f238accedc4c1996d83d125d9e621",
+  "v2_complete_sha256": "35f221651097e32889ca0cdae44c636ced1fa3e79658a2eab188860fd6f71932",
+  "v2_commit": "0132bb1845e93cb68cc7a53b390bfb17f4da8512",
+  "independent_rereview": "running",
+  "dartsort_source_state": "K1/K2 and other DARTsort-bound work remain ACK_BLOCKED pending exact d40c516e git bundle and e36d3066 reader snapshot; stale edcfe1b5 not used",
+  "excluded_access": "no real arm output, K9 arrays, recording, voltage, DARTsort import, H5, GPU, service, sort, RF or holdout accessed"
+}
