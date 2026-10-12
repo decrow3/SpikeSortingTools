@@ -1,0 +1,32 @@
+{
+  "schema": "h1-final-coordinator-checkin-v1",
+  "status": "COMMITTED_PUSHED_COORDINATOR_RECEIPTS_PUBLISHED_AWAITING_K9_INPUT_BINDING",
+  "created_at": "2026-10-12T15:45:07-07:00",
+  "owner": "H1",
+  "host": "huklaban1",
+  "thread_id": "01a0f5c5-3548-7c00-8962-a26b74896e93",
+  "coordinator_thread": "01a0f6aa-07be-7af1-bb86-a67ed23eca72",
+  "source_head_before_receipt": "6e91fbd8fd8d78e5dd55b63eb2605addb1eb4c3a",
+  "git": {
+    "remote": "origin",
+    "branch": "codex/motionqc-phase1",
+    "push": "d68fb24..6e91fbd succeeded",
+    "large_tracked_artifacts_at_or_above_1000000_bytes": 0,
+    "obvious_private_key_or_common_token_signatures": 0
+  },
+  "completed": {
+    "k7": "GO_SYNTHETIC_SCORE_ORACLE_ONLY",
+    "n0_n1_validator": "GO_METADATA_VALIDATOR_ONLY",
+    "detailed_receipt": "H1_COMPLETE_OFFLINE_JOINT_MODEL_K7_N0N1_VALIDATOR_GO_20261012_V1.json"
+  },
+  "blocked": {
+    "k9_real_input_binding": "no H5 reply observed after H1_TO_H5_K9_INPUT_BINDING_REQUEST_20261012_V1.json",
+    "medium_n0_n1_launch": "not released; exact input, K3/conditional C4 repair and fresh live host preflight remain prerequisites"
+  },
+  "execution_state": {
+    "recording_or_voltage_read_for_joint_model": false,
+    "gpu_or_sort_started": false,
+    "rf_or_holdout_accessed": false,
+    "c4_checkout_edited": false
+  }
+}
