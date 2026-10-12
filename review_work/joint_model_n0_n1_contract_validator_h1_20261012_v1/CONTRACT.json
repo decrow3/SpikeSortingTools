@@ -1,0 +1,28 @@
+{
+  "schema": "joint-model-n0-n1-contract-validator-fixture-v1",
+  "frozen_at": "2026-10-12T15:10:00-07:00",
+  "milestone": "fail-closed validator for the eventual bounded N0-N1 run contract",
+  "decision_changed": "whether a proposed contract is structurally complete enough for implementation review and live resource preflight",
+  "scope": "contract metadata only; no recording reads, hashes of large binaries, arm outcomes, launch, GPU allocation, sort, RF/holdout or C4 edits",
+  "required_bindings": [
+    "exact d40c516e DARTsort source plus patch/import/environment hashes",
+    "one exact recording identity and content receipt",
+    "session clock, sampling rate, channels, geometry and padding",
+    "fixed motion-field path/hash/clock/sign and explicit half-open state bounds",
+    "common cohort/events and one shared N0 checkpoint per window",
+    "arms exactly N0 and N1 with segment ownership as the only intended delta",
+    "K10 v4 evaluator/review hashes and practical endpoint criteria",
+    "runtime, memory, disk, GPU and managed-service bounds",
+    "distinct create-only outputs, stop conditions and immutable failure preservation"
+  ],
+  "negative_fixtures": [
+    "placeholder or malformed hashes",
+    "overlapping or out-of-window state intervals",
+    "different recording/checkpoint/cohort/config between arms",
+    "unlisted arm delta",
+    "missing practical loss bound or inconclusive-as-equivalence language",
+    "unbounded runtime/resource/output lifecycle"
+  ],
+  "acceptance": "author fixtures plus focused independent review before use on a real contract",
+  "claim_limit": "metadata completeness only; validation does not prove referenced bytes, code behavior, resource readiness or scientific validity"
+}

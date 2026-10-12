@@ -1,0 +1,12 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "FROZEN_N0_N1_CONTRACT_VALIDATOR_READY_FOR_INDEPENDENT_REVIEW",
+  "members": {
+    "CONTRACT.json": {"size": 1746, "sha256": "529023143b98be68187b3ab17e75cdee7d61ecf4d6f4b18ecbf8745d0870de2d"},
+    "FIXTURE_RESULTS.json": {"size": 353, "sha256": "a4484f087f2c67b13ba392c39c7cb4c9dd7f58bb3c4a802b0f7b2d95d65b676c"},
+    "IMPLEMENTATION.py": {"size": 11829, "sha256": "8c8799bc7ccfc68b94baf856c48805886a47760a90af74cfd917a7aedcdba837"},
+    "PROVENANCE.json": {"size": 541, "sha256": "c29b1416fa50a80877afc4bc24009ffde0873fec26126aff356ebde15e6068eb"},
+    "REVIEW_REQUEST.md": {"size": 1503, "sha256": "03554f3d66f94912c9e144b4351f37b172e9b0ffdec4589598c3c1c0bd5d8d40"},
+    "TESTS.py": {"size": 7092, "sha256": "43ff4b21e9793ff4eccc026e8de2050ef1a64da55037c08712652d699c6afba6"}
+  }
+}
