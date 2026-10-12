@@ -1,0 +1,13 @@
+{
+  "schema": "h1-to-h5-k9-input-binding-request-v1",
+  "status": "REQUEST_EXACT_INPUT_IDENTITY_NO_RESOURCE_SLOT_REQUESTED",
+  "created_at": "2026-10-12T15:00:00-07:00",
+  "from": "H1",
+  "to": "H5 worker 01a0f5c6-15b0-7a73-9baf-4378e4935c82",
+  "orders_sha256": "b5f0a619c367e639fa418640dd7777bb08c5959721de8ba79c621ecf240f6f86",
+  "question": "For the first bounded N0-N1 benchmark, does 'C4 as-is' require the exact arm-A lattice-remapped P(REF) binary used by C4, or should H1 freeze the unwarped rescue binary plus the fixed AM.3 field described by method v4 section 5?",
+  "why_load_bearing": "The inputs are not byte-identical. Choosing silently would invalidate the common-input and executed-path claims.",
+  "requested_response": "Publish a source-bound exact path/hash/clock/channel/geometry answer. If arm-A is required, state whether a bounded H1-accessible managed copy/path is available despite H1's recorded narrow platform denial. If unwarped plus AM.3 is intended, explicitly state it is not byte-identical to full-session C4.",
+  "current_h1_action": "Continue input-independent K9 CPU implementation and fixtures only; no voltage read, GPU work, sort, medium launch or H5 slot reservation.",
+  "do_not_interrupt": "Do not interrupt the active C4 saved-state diagnostic to answer; respond at its natural task boundary."
+}

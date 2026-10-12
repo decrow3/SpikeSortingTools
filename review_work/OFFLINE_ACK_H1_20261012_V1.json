@@ -1,0 +1,57 @@
+{
+  "schema": "hub-offline-standing-orders-h1-ack-v1",
+  "status": "ACK_ORDERS_VERIFIED_CONTINUING_CURRENT_REMOTE_TURN",
+  "created_at": "2026-10-12T15:00:00-07:00",
+  "owner": "H1",
+  "host": "huklaban1",
+  "thread_id": "01a0f5c5-3548-7c00-8962-a26b74896e93",
+  "orders": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/HUB_OFFLINE_STANDING_ORDERS_20261012_V1.txt",
+    "sha256": "b5f0a619c367e639fa418640dd7777bb08c5959721de8ba79c621ecf240f6f86",
+    "locally_readable": true
+  },
+  "current_task": {
+    "name": "K9 common benchmark plus frozen bounded N0-N1 contract preparation",
+    "state": "CPU preparation active; K10 v4 independently GO and complete",
+    "k10_review_commit": "011928b47a00ff7fb588e47fa9701b3e43240b84",
+    "k10_review_complete_sha256": "083afe0d708881b59c78fb5b129cc306b147e8c89e31433a1827068040191b51"
+  },
+  "two_useful_ready_tasks": [
+    {
+      "priority": 1,
+      "task": "K9 input-independent exact-lattice injection, decoy, switch/overlap schedule and known-answer CPU fixtures",
+      "completion": "frozen source snapshot and focused independent synthetic review"
+    },
+    {
+      "priority": 2,
+      "task": "K7 frame-test CPU fixture preparation using held-out symmetric candidate unions and single-state abstention",
+      "completion": "frozen fixture contract/source and focused independent review"
+    }
+  ],
+  "ownership": {
+    "H1": "K9, K10, bounded N0-N1 contract; existing K1/K2, K7, K11 scope",
+    "H5": "sole H5 CPU/RAM/GPU/I/O slot arbiter and C4/K3/K4/K6 owner",
+    "one_writer_per_component": true
+  },
+  "known_blockers": [
+    "Exact K9/N0-N1 recording identity is unresolved: C4 as-is arm-A exact-lattice P(REF) versus unwarped rescue input plus fixed AM.3 are not byte-identical.",
+    "H1 narrow arm-A recording-access platform denial remains unresolved.",
+    "Actual GPU readiness failed: nvidia-smi cannot communicate with the NVIDIA driver; no admin/driver repair will be attempted."
+  ],
+  "continuation": {
+    "current_remote_agent_turn_active": true,
+    "managed_job_survival_available_for_reviewed_jobs": true,
+    "verified_new_agent_turn_wake_after_hub_offline": false,
+    "honest_capability": "No verified new-turn wake mechanism independent of Hub desktop. This active turn will continue CPU work; shared receipts persist. No new daemon or platform will be installed.",
+    "next_absolute_check": "2026-10-12T15:20:00-07:00",
+    "check_mechanism": "within this active turn, inspect shared H5 receipts and actual local process/GPU state; this does not prove wake after the turn ends"
+  },
+  "execution_state": {
+    "medium_n0_n1_launched": false,
+    "gpu_work_started": false,
+    "sort_started": false,
+    "rf_or_holdout_accessed": false,
+    "c4_checkout_edited": false
+  },
+  "request_to_h5": "At the next natural boundary, record the exact intended N0/N1 input identity and whether a bounded H1-accessible arm-A input can be supplied; otherwise explicitly bind unwarped rescue plus AM.3 and label non-byte-identity to C4. No slot requested yet."
+}
