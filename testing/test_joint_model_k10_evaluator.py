@@ -6,6 +6,7 @@ import pytest
 from testing.joint_model_k10_evaluator import (
     evaluate_saved_outputs,
     maximum_cardinality_pairs,
+    selection_aware_arm_report,
     write_json_create_only,
 )
 
@@ -197,6 +198,9 @@ def test_frame_recall_retention_and_false_probe_rate():
     [
         (truth([100, 101], [1, 1], event_ids=["x", "x"]), output([], []), config(), "unique"),
         ({**truth([100], [1]), "sample_index": np.array([100.5])}, output([], []), config(), "integer"),
+        ({**truth([100], [1]), "sample_index": np.array([100 + 0j])}, output([], []), config(), "integer"),
+        ({**truth([100], [1]), "sample_index": np.array([True])}, output([], []), config(), "integer"),
+        ({**truth([100], [1]), "sample_index": np.array([100], dtype=object)}, output([], []), config(), "integer"),
         (truth([100], [1]), output([], []), config(time_tolerance_samples=14), "frozen"),
         (truth([100], [1]), output([], []), config(null_shifts_samples=[]), "required"),
         (truth([100], [1]), output([], []), config(session_bounds_samples=[0.75, 100_000.75]), "integer"),
@@ -227,6 +231,130 @@ def test_background_and_cost_are_passed_through_without_imputation():
     )
     assert result["background"]["candidate_real_units"] == 11
     assert result["cost"]["peak_memory_bytes"] == 1000
+
+
+def test_global_event_credit_counts_cross_cluster_duplicate_without_hiding_split():
+    samples = np.arange(100, 2100, 100)
+    t = truth(samples, np.ones(samples.size, dtype=int))
+    o = output(
+        np.concatenate([samples, samples]),
+        [10] * samples.size + [11] * samples.size,
+    )
+    result = evaluate_saved_outputs(t, o, config())
+    row = result["units"][0]
+    credit = result["global_event_credit"]
+    assert row["split"] is True
+    assert row["gross_per_cluster_tp"] == 40
+    assert row["pooled_output_unique_tp"] == 20
+    assert row["cross_cluster_duplicate_credit_count"] == 20
+    assert credit["unique_tp"] == 20
+    assert credit["gross_pairwise_tp_not_recovery"] == 40
+    assert credit["cross_cluster_duplicate_credit_count"] == 20
+    assert len(set(credit["matched_truth_row_indices"])) == 20
+    assert len(set(credit["matched_output_row_indices"])) == 20
+
+
+def test_global_event_credit_separates_cross_unit_competition():
+    t = truth([100, 100], [1, 2], placements=[0, 0])
+    o = output([100], [7], placements=[0])
+    result = evaluate_saved_outputs(t, o, config())
+    credit = result["global_event_credit"]
+    assert credit["gross_pairwise_tp_not_recovery"] == 2
+    assert credit["per_unit_pooled_tp"] == 2
+    assert credit["unique_tp"] == 1
+    assert credit["cross_cluster_duplicate_credit_count"] == 0
+    assert credit["cross_unit_competing_credit_count"] == 1
+
+
+def arm_config():
+    return {
+        "baseline_arm": "N0",
+        "candidate_arms": ["N1", "N2"],
+        "selection_primary_endpoint": "recovery",
+        "selection_direction": "higher",
+        "endpoint_rules": {
+            "recovery": {"direction": "higher", "practical_loss_margin": 0.10},
+            "duplicates": {"direction": "lower", "practical_loss_margin": 0.20},
+        },
+    }
+
+
+def test_selection_aware_report_accepts_one_unit_and_claims_only_noninferiority():
+    report = selection_aware_arm_report(
+        {"N1": {"recovery": 0.7}, "N2": {"recovery": 0.8}},
+        {
+            "candidate_arm": "N2",
+            "baseline_arm": "N0",
+            "endpoints": {
+                "recovery": {"estimate": 0.02, "ci_low": -0.10, "ci_high": 0.20, "n_units": 1},
+                "duplicates": {"estimate": 0.05, "ci_low": -0.10, "ci_high": 0.20, "n_units": 1},
+            },
+        },
+        arm_config(),
+    )
+    assert report["selected_arm"] == "N2"
+    assert report["overall_decision"] == "PASS_NONINFERIOR"
+    assert report["minimum_unit_floor"] is None
+    assert report["equivalence_claim"] is False
+    assert report["superiority_claim"] is False
+
+
+@pytest.mark.parametrize(
+    "ci,expected",
+    [
+        ((-0.10, 0.0, 0.1), "PASS_NONINFERIOR"),
+        ((-0.20, -0.15, -0.10), "INCONCLUSIVE"),
+        ((-0.30, -0.25, -0.20), "FAIL_PRACTICAL_LOSS"),
+    ],
+)
+def test_higher_better_margin_decisions_do_not_call_inconclusive_equivalent(ci, expected):
+    low, estimate, high = ci
+    cfg = arm_config()
+    cfg["endpoint_rules"] = {
+        "recovery": {"direction": "higher", "practical_loss_margin": 0.10}
+    }
+    report = selection_aware_arm_report(
+        {"N1": {"recovery": 1.0}, "N2": {"recovery": 0.0}},
+        {
+            "candidate_arm": "N1", "baseline_arm": "N0",
+            "endpoints": {"recovery": {"estimate": estimate, "ci_low": low, "ci_high": high, "n_units": 2}},
+        },
+        cfg,
+    )
+    assert report["endpoints"]["recovery"]["decision"] == expected
+    assert report["overall_decision"] == expected
+    assert report["inconclusive_is_equivalence"] is False
+
+
+def test_selection_aware_report_fails_closed_on_wrong_holdout_arm_or_zero_units():
+    development = {"N1": {"recovery": 0.7}, "N2": {"recovery": 0.8}}
+    holdout = {
+        "candidate_arm": "N1", "baseline_arm": "N0",
+        "endpoints": {
+            "recovery": {"estimate": 0.0, "ci_low": -0.1, "ci_high": 0.1, "n_units": 1},
+            "duplicates": {"estimate": 0.0, "ci_low": -0.1, "ci_high": 0.1, "n_units": 1},
+        },
+    }
+    with pytest.raises(ValueError, match="selected arm"):
+        selection_aware_arm_report(development, holdout, arm_config())
+    holdout["candidate_arm"] = "N2"
+    holdout["endpoints"]["recovery"]["n_units"] = 0
+    with pytest.raises(ValueError, match="positive"):
+        selection_aware_arm_report(development, holdout, arm_config())
+
+
+@pytest.mark.parametrize("bad_value", [True, "0.8", 1 + 0j, np.inf])
+def test_selection_aware_report_rejects_non_real_development_scalars(bad_value):
+    development = {"N1": {"recovery": bad_value}, "N2": {"recovery": 0.8}}
+    holdout = {
+        "candidate_arm": "N2", "baseline_arm": "N0",
+        "endpoints": {
+            "recovery": {"estimate": 0.0, "ci_low": -0.1, "ci_high": 0.1, "n_units": 1},
+            "duplicates": {"estimate": 0.0, "ci_low": -0.1, "ci_high": 0.1, "n_units": 1},
+        },
+    }
+    with pytest.raises(ValueError, match="finite real scalar"):
+        selection_aware_arm_report(development, holdout, arm_config())
 
 
 def test_result_write_is_complete_and_never_overwrites(tmp_path):

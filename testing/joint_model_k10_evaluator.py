@@ -19,7 +19,7 @@ from typing import Any, Mapping, Sequence
 import numpy as np
 
 
-SCHEMA = "joint-model-k10-evaluator-result-v1"
+SCHEMA = "joint-model-k10-evaluator-result-v3"
 VALID_FRAMES = {"tissue", "probe"}
 
 
@@ -42,9 +42,23 @@ def _as_1d(name: str, value: Any, length: int | None = None) -> np.ndarray:
 
 def _integer_samples(name: str, value: Any, length: int | None = None) -> np.ndarray:
     array = _as_1d(name, value, length)
-    if not np.issubdtype(array.dtype, np.integer):
+    if np.issubdtype(array.dtype, np.bool_):
+        raise ValueError(f"{name} must contain exact integer samples")
+    if np.issubdtype(array.dtype, np.integer):
+        if array.size and (
+            np.any(array < np.iinfo(np.int64).min)
+            or np.any(array > np.iinfo(np.int64).max)
+        ):
+            raise ValueError(f"{name} exceeds the int64 sample domain")
+    elif np.issubdtype(array.dtype, np.floating):
         if not np.isfinite(array).all() or not np.equal(array, np.rint(array)).all():
             raise ValueError(f"{name} must contain exact integer samples")
+        if array.size and (
+            np.any(array < -(2.0**63)) or np.any(array >= 2.0**63)
+        ):
+            raise ValueError(f"{name} exceeds the int64 sample domain")
+    else:
+        raise ValueError(f"{name} must contain exact integer samples")
     return array.astype(np.int64, copy=False)
 
 
@@ -298,6 +312,13 @@ def evaluate_saved_outputs(
             assigned_frame = _cluster_frame(
                 output["assigned_frame"][cluster_rows[best]], best
             )
+        pooled_ti, pooled_oi = maximum_cardinality_pairs(
+            ts, tz,
+            output["sample_index"], output["placement_um"],
+            time_tolerance_samples=config["time_tolerance_samples"],
+            spatial_tolerance_um=config["spatial_tolerance_um"],
+        )
+        gross_cluster_tp = sum(score["tp"] for score in cluster_scores.values())
         per_unit.append({
             "truth_unit_id": unit,
             "truth_event_count": int(trows.size),
@@ -307,7 +328,34 @@ def evaluate_saved_outputs(
             "best_score": cluster_scores.get(best),
             "capturing_clusters": qualifying,
             "split": len(qualifying) > 1,
+            "pooled_output_unique_tp": int(pooled_ti.size),
+            "pooled_output_matched_truth_row_indices": trows[pooled_ti].tolist(),
+            "pooled_output_matched_output_row_indices": pooled_oi.tolist(),
+            "gross_per_cluster_tp": int(gross_cluster_tp),
+            "cross_cluster_duplicate_credit_count": int(
+                gross_cluster_tp - pooled_ti.size
+            ),
         })
+
+    global_ti, global_oi = maximum_cardinality_pairs(
+        truth["sample_index"], truth["placement_um"],
+        output["sample_index"], output["placement_um"],
+        time_tolerance_samples=config["time_tolerance_samples"],
+        spatial_tolerance_um=config["spatial_tolerance_um"],
+    )
+    credited_by_unit = {
+        int(unit): int(np.sum(truth["unit_id"][global_ti] == unit)) for unit in units
+    }
+    credited_by_cluster = {
+        int(cluster): int(np.sum(output["cluster_id"][global_oi] == cluster))
+        for cluster in clusters
+    }
+    gross_pairwise_tp = sum(score["tp"] for score in pair_cache.values())
+    per_unit_pooled_tp = sum(row["pooled_output_unique_tp"] for row in per_unit)
+    cross_cluster_duplicate_credit_count = sum(
+        row["cross_cluster_duplicate_credit_count"] for row in per_unit
+    )
+    cross_unit_competing_credit_count = int(per_unit_pooled_tp - global_ti.size)
 
     unit_by_id = {row["truth_unit_id"]: row for row in per_unit}
     many_to_one: dict[int, list[int]] = {}
@@ -381,6 +429,22 @@ def evaluate_saved_outputs(
             {"cluster_id": cluster, "truth_unit_ids": unit_ids}
             for cluster, unit_ids in sorted(many_to_one.items()) if len(unit_ids) > 1
         ],
+        "global_event_credit": {
+            "truth_event_count": int(truth["sample_index"].size),
+            "output_event_count": int(output["sample_index"].size),
+            "unique_tp": int(global_ti.size),
+            "unique_recall": fraction(int(global_ti.size), int(truth["sample_index"].size)),
+            "gross_pairwise_tp_not_recovery": int(gross_pairwise_tp),
+            "per_unit_pooled_tp": int(per_unit_pooled_tp),
+            "cross_cluster_duplicate_credit_count": int(
+                cross_cluster_duplicate_credit_count
+            ),
+            "cross_unit_competing_credit_count": cross_unit_competing_credit_count,
+            "matched_truth_row_indices": global_ti.tolist(),
+            "matched_output_row_indices": global_oi.tolist(),
+            "credited_by_truth_unit": credited_by_unit,
+            "credited_by_output_cluster": credited_by_cluster,
+        },
         "frames": {
             "probe_fixed_recall": fraction(
                 sum(row["assigned_frame"] == "probe" for row in probe_units), len(probe_units)
@@ -409,6 +473,153 @@ def evaluate_saved_outputs(
         "scope": "saved-output fixture/evaluation only; no biological identity or arm-benefit claim",
     }
     return result
+
+
+def _finite_real_scalar(name: str, value: Any) -> float:
+    array = np.asarray(value)
+    if (
+        array.ndim != 0
+        or np.issubdtype(array.dtype, np.bool_)
+        or not (
+            np.issubdtype(array.dtype, np.integer)
+            or np.issubdtype(array.dtype, np.floating)
+        )
+    ):
+        raise ValueError(f"{name} must be a finite real scalar")
+    result = float(array)
+    if not np.isfinite(result):
+        raise ValueError(f"{name} must be a finite real scalar")
+    return result
+
+
+def selection_aware_arm_report(
+    development: Mapping[str, Mapping[str, Any]],
+    selected_holdout: Mapping[str, Any],
+    config: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Select on development only, then judge one selected arm on held-out CIs."""
+    baseline = config.get("baseline_arm")
+    candidates = config.get("candidate_arms")
+    primary = config.get("selection_primary_endpoint")
+    selection_direction = config.get("selection_direction")
+    rules = config.get("endpoint_rules")
+    if not isinstance(baseline, str) or not baseline:
+        raise ValueError("baseline_arm must be a nonempty string")
+    if (
+        not isinstance(candidates, Sequence)
+        or isinstance(candidates, (str, bytes))
+        or not candidates
+        or any(not isinstance(arm, str) or not arm for arm in candidates)
+        or len(set(candidates)) != len(candidates)
+        or baseline in candidates
+    ):
+        raise ValueError("candidate_arms must be unique nonempty strings excluding baseline")
+    if not isinstance(primary, str) or not primary:
+        raise ValueError("selection_primary_endpoint must be a nonempty string")
+    if selection_direction not in {"higher", "lower"}:
+        raise ValueError("selection_direction must be higher or lower")
+    if not isinstance(rules, Mapping) or not rules:
+        raise ValueError("endpoint_rules must be a nonempty mapping")
+
+    development_values: dict[str, float] = {}
+    for arm in candidates:
+        if arm not in development or primary not in development[arm]:
+            raise ValueError("every candidate requires the development primary endpoint")
+        development_values[arm] = _finite_real_scalar(
+            "development primary endpoint", development[arm][primary]
+        )
+    if selection_direction == "higher":
+        selected = min(candidates, key=lambda arm: (-development_values[arm], arm))
+    else:
+        selected = min(candidates, key=lambda arm: (development_values[arm], arm))
+
+    if selected_holdout.get("candidate_arm") != selected:
+        raise ValueError("holdout candidate_arm must equal the development-selected arm")
+    if selected_holdout.get("baseline_arm") != baseline:
+        raise ValueError("holdout baseline_arm differs from the frozen baseline")
+    endpoint_values = selected_holdout.get("endpoints")
+    if not isinstance(endpoint_values, Mapping) or set(endpoint_values) != set(rules):
+        raise ValueError("holdout endpoints must exactly match endpoint_rules")
+
+    endpoint_results: dict[str, dict[str, Any]] = {}
+    for endpoint in sorted(rules):
+        rule = rules[endpoint]
+        value = endpoint_values[endpoint]
+        if not isinstance(rule, Mapping) or rule.get("direction") not in {"higher", "lower"}:
+            raise ValueError(f"endpoint rule {endpoint} has invalid direction")
+        try:
+            margin = _finite_real_scalar(
+                f"endpoint rule {endpoint} practical loss margin",
+                rule.get("practical_loss_margin"),
+            )
+        except ValueError as exc:
+            raise ValueError(f"endpoint rule {endpoint} has invalid practical loss margin") from exc
+        if margin < 0:
+            raise ValueError(f"endpoint rule {endpoint} has invalid practical loss margin")
+        if not isinstance(value, Mapping):
+            raise ValueError(f"holdout endpoint {endpoint} must be a mapping")
+        try:
+            estimate = _finite_real_scalar(f"holdout {endpoint} estimate", value["estimate"])
+            ci_low = _finite_real_scalar(f"holdout {endpoint} ci_low", value["ci_low"])
+            ci_high = _finite_real_scalar(f"holdout {endpoint} ci_high", value["ci_high"])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError(f"holdout endpoint {endpoint} lacks numeric CI fields") from exc
+        if not ci_low <= estimate <= ci_high:
+            raise ValueError(f"holdout endpoint {endpoint} has an invalid confidence interval")
+        n_units_array = _integer_samples(f"holdout.{endpoint}.n_units", [value.get("n_units")], 1)
+        n_units = int(n_units_array[0])
+        if n_units <= 0:
+            raise ValueError(f"holdout endpoint {endpoint} n_units must be positive")
+        direction = rule["direction"]
+        if direction == "higher":
+            if ci_low >= -margin:
+                decision = "PASS_NONINFERIOR"
+            elif ci_high < -margin:
+                decision = "FAIL_PRACTICAL_LOSS"
+            else:
+                decision = "INCONCLUSIVE"
+        else:
+            if ci_high <= margin:
+                decision = "PASS_NONINFERIOR"
+            elif ci_low > margin:
+                decision = "FAIL_PRACTICAL_LOSS"
+            else:
+                decision = "INCONCLUSIVE"
+        endpoint_results[endpoint] = {
+            "direction": direction,
+            "practical_loss_margin": margin,
+            "effect_convention": "candidate_minus_baseline",
+            "estimate": estimate,
+            "ci_low": ci_low,
+            "ci_high": ci_high,
+            "n_units": n_units,
+            "decision": decision,
+        }
+
+    decisions = [row["decision"] for row in endpoint_results.values()]
+    if "FAIL_PRACTICAL_LOSS" in decisions:
+        overall = "FAIL_PRACTICAL_LOSS"
+    elif all(decision == "PASS_NONINFERIOR" for decision in decisions):
+        overall = "PASS_NONINFERIOR"
+    else:
+        overall = "INCONCLUSIVE"
+    return {
+        "schema": "joint-model-k10-selection-aware-arm-report-v1",
+        "selection_source": "development_only",
+        "baseline_arm": baseline,
+        "candidate_arms": list(candidates),
+        "selection_primary_endpoint": primary,
+        "selection_direction": selection_direction,
+        "development_primary_values": development_values,
+        "selected_arm": selected,
+        "holdout_scope": "selected_arm_vs_baseline_only",
+        "endpoints": endpoint_results,
+        "overall_decision": overall,
+        "equivalence_claim": False,
+        "superiority_claim": False,
+        "inconclusive_is_equivalence": False,
+        "minimum_unit_floor": None,
+    }
 
 
 def _load_npz(path: Path, prefix: str) -> dict[str, np.ndarray]:
