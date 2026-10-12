@@ -196,3 +196,25 @@ def test_spatial_support_truncation_and_wrong_dtypes_fail_closed():
             np.zeros((300, 12), np.float32), geometry(), {"t1": template().astype(np.float64)},
             [event("x", 100)], sampling_frequency_hz=FS, session_start_frame=SESSION_START,
         )
+
+
+@pytest.mark.parametrize(
+    "bad_geometry",
+    [geometry().astype(np.complex128) + 1j, geometry().astype(str)],
+)
+def test_complex_and_string_geometry_fail_closed(bad_geometry):
+    with pytest.raises(ValueError, match="real numeric"):
+        inject_k9_precar(
+            np.zeros((300, 12), np.float32), bad_geometry, {"t1": template()},
+            [event("x", 100)], sampling_frequency_hz=FS,
+            session_start_frame=SESSION_START,
+        )
+
+
+def test_derived_session_clock_overflow_fails_closed():
+    with pytest.raises(ValueError, match="session_sample.*int64"):
+        inject_k9_precar(
+            np.zeros((300, 12), np.float32), geometry(), {"t1": template()},
+            [event("x", 100)], sampling_frequency_hz=FS,
+            session_start_frame=np.iinfo(np.int64).max,
+        )

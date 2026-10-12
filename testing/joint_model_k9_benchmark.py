@@ -157,9 +157,16 @@ def inject_k9_precar(
         raise TypeError("background must be a nonempty time-by-channel float32 array")
     if not np.all(np.isfinite(background)):
         raise ValueError("background contains non-finite voltage")
-    geometry = np.asarray(geometry_um, dtype=np.float64)
-    if geometry.shape != (background.shape[1], 2) or not np.all(np.isfinite(geometry)):
-        raise ValueError("geometry must be finite and match the background channels")
+    geometry_raw = np.asarray(geometry_um)
+    if (
+        geometry_raw.shape != (background.shape[1], 2)
+        or geometry_raw.dtype.kind not in "iuf"
+        or geometry_raw.dtype.kind == "b"
+    ):
+        raise ValueError("geometry must be a real numeric array matching the background channels")
+    geometry = geometry_raw.astype(np.float64, copy=False)
+    if not np.all(np.isfinite(geometry)):
+        raise ValueError("geometry must be finite")
     if len({tuple(row) for row in geometry}) != len(geometry):
         raise ValueError("geometry contains duplicate physical sites")
     if not np.isfinite(sampling_frequency_hz) or sampling_frequency_hz <= 0:
@@ -221,7 +228,7 @@ def inject_k9_precar(
             "role": event.role,
             "frame": event.frame,
             "local_sample": sample,
-            "session_sample": session_origin + sample,
+            "session_sample": _int64_scalar("session_sample", session_origin + sample),
             "time_s_local": sample / float(sampling_frequency_hz),
             "base_shift_um": base,
             "true_state_um": true_state,
