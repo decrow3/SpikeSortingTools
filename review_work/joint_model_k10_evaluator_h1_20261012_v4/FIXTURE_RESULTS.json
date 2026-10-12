@@ -1,0 +1,12 @@
+{
+  "schema": "joint-model-k10-evaluator-fixture-results-v4",
+  "run_at": "2026-10-12T14:37:00-07:00",
+  "command": "pytest -q testing/test_joint_model_k10_evaluator.py",
+  "result": "35 passed in 0.14s",
+  "exit_code": 0,
+  "preserved_v3_failure": "extra non-selected candidate holdout summary must raise ValueError",
+  "repair_scope": "one fail-closed exact top-level holdout key-set guard plus the preserved regression fixture",
+  "real_joint_model_arm_outputs_inspected": false,
+  "k9_inspected": false,
+  "dartsort_or_recording_accessed": false
+}

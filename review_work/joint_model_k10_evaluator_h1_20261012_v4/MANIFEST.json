@@ -1,0 +1,13 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "FROZEN_K10_V4_EXACT_HOLDOUT_GUARD_READY_FOR_REREVIEW",
+  "members": {
+    "CONTRACT.json": {"size": 4853, "sha256": "5aaa0b133d7621f9131a1c7dfeac0230c8bd6842789907c7a22b9044fb4b8436"},
+    "EVALUATOR.py": {"size": 30477, "sha256": "c47d834bd9446a0f7be28d34863b2019c1b140cff7abbdcba091e64d5e8f17e3"},
+    "FIXTURE_RESULTS.json": {"size": 552, "sha256": "2f3724bf18ae008c403955d01d5ab317f6bb4841228bb5852da1b279525ca672"},
+    "PRESERVED_V3_ADVERSARIAL_TESTS.py": {"size": 15891, "sha256": "e9a091700ecd0d0b0b4c3b9c14c1cef541ae0c39bc64e6b2d8a267b7623c6231"},
+    "PROVENANCE.json": {"size": 791, "sha256": "bd207c840337ee13e59c4c331cd3ff895898ff013bd75ca56fab36555208f6e7"},
+    "REVIEW_REQUEST.md": {"size": 1299, "sha256": "5fd1381cfdef43b368b59b032f1736bf89ee6a6b990aa216813a64a3b7a57ba4"},
+    "TESTS.py": {"size": 15515, "sha256": "4240f1f0cf22617d6db787b6f958d22fe03aa52720255c61fe046b66dc9a8b33"}
+  }
+}

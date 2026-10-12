@@ -1,0 +1,72 @@
+{
+  "schema": "joint-model-k10-evaluator-contract-v3",
+  "status": "FROZEN_BEFORE_V3_IMPLEMENTATION_OR_ANY_REAL_ARM_OUTPUT",
+  "supersedes_for_future_use": "joint-model-k10-evaluator-contract-v1",
+  "history": {
+    "v1_v2_scope": "per-unit/per-cluster evaluator and exact session-bound repair remain preserved evidence",
+    "planner_amendment": "global duplicate-event credit across clusters; practical loss margins; held-out and selection-aware best-arm reporting; no ten-unit floor; inconclusive is not equivalence"
+  },
+  "milestone": "Make K10 decision-safe before K9 or any real joint-model arm output is inspected.",
+  "decision_changed": "Whether saved arm outputs can be scored without reusing truth/output events across clusters or turning selected-development uncertainty into an equivalence claim.",
+  "input_domain": "synthetic saved arrays and synthetic arm summaries only; no recording, voltage, sorter, DARTsort, K9 or real arm output",
+  "matching_unchanged": {
+    "per_truth_unit_per_output_cluster": true,
+    "algorithm": "deterministic maximum-cardinality bipartite matching over inclusive +/-15 sample and required per-event placement gates",
+    "exact_key_forbidden": true,
+    "pooled_spike_river_for_best_cluster_forbidden": true,
+    "split_merge_many_to_one_and_shifted_nulls_retained": true
+  },
+  "global_event_credit": {
+    "all_truth_all_output": "one deterministic maximum-cardinality match over every truth event and every output event; each row can receive at most one global credit",
+    "per_unit_across_clusters": "one pooled-output match for each truth unit",
+    "cross_cluster_duplicate_credit_count": "sum of that unit's independent per-cluster TP minus its pooled-output TP",
+    "cross_unit_competing_credit_count": "sum of per-unit pooled-output TP minus all-truth/all-output global TP",
+    "gross_pairwise_tp": "sum over all truth-unit/output-cluster comparisons, reported but never interpreted as recovered event count",
+    "receipts": "global matched truth/output row indices, credited counts by truth unit and output cluster, unique recall, and both duplicate/competition counts"
+  },
+  "selection_aware_arm_report": {
+    "development_only_selection": "select one candidate arm using one named development primary endpoint and frozen direction; deterministic arm-name tie break",
+    "holdout_input": "exactly one selected-arm-versus-baseline summary; non-selected candidate holdout summaries are rejected",
+    "effect_convention": "candidate minus baseline",
+    "required_per_endpoint_fields": ["estimate", "ci_low", "ci_high", "n_units"],
+    "n_units": "any positive integer is reported; there is no ten-unit floor and small support is not hidden",
+    "higher_is_better": {
+      "pass_noninferiority": "ci_low >= -practical_loss_margin",
+      "fail_practical_loss": "ci_high < -practical_loss_margin",
+      "otherwise": "INCONCLUSIVE"
+    },
+    "lower_is_better": {
+      "pass_noninferiority": "ci_high <= practical_loss_margin",
+      "fail_practical_loss": "ci_low > practical_loss_margin",
+      "otherwise": "INCONCLUSIVE"
+    },
+    "overall": "FAIL if any required endpoint fails; PASS only if all pass; otherwise INCONCLUSIVE",
+    "interpretation": "PASS is one-sided non-inferiority within frozen practical loss margins, not equivalence or superiority; INCONCLUSIVE is never counted as a tie or equivalence"
+  },
+  "acceptance": [
+    "global matcher agrees with an independent brute-force oracle and never credits a truth or output row twice",
+    "a duplicated spike split across clusters has two gross per-cluster TP but one global event credit and one cross-cluster duplicate credit",
+    "split/merge/many-to-one and chance-null outputs remain unchanged",
+    "development selection cannot read holdout values and holdout arm identity must equal the selected arm",
+    "higher/lower endpoint margin boundaries and all PASS/FAIL/INCONCLUSIVE combinations pass known answers",
+    "n_units 1 is accepted and reported; n_units 0/noninteger fails closed",
+    "no result overwrite and all previous exact-clock guards remain green",
+    "frozen implementation receives focused independent review before any real arm output"
+  ],
+  "resources": {
+    "cpu_threads_max": 8,
+    "gpu": false,
+    "wall_seconds_stop": 300,
+    "temporary_bytes_stop": 10485760,
+    "persistent_output_bytes_stop": 10485760
+  },
+  "exclusions": [
+    "no recording or voltage access",
+    "no K9 or real arm output inspection",
+    "no sorter, GPU, RF, holdout dataset, motion re-estimation, package change, C4 edit or service"
+  ],
+  "scope": {
+    "can_establish": "synthetic arithmetic, global credit and selection-aware decision plumbing",
+    "cannot_establish": "benchmark validity, arm benefit, equivalence, superiority, biological identity/purity, power, or medium/full-run readiness"
+  }
+}

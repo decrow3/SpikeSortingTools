@@ -1,0 +1,12 @@
+{
+  "schema": "joint-model-k10-evaluator-provenance-v4",
+  "created_at": "2026-10-12T14:38:38-07:00",
+  "host": "huklaban1",
+  "branch": "codex/motionqc-phase1",
+  "contract_commit": "b56c4a1b22b99c26f3b2085f6d43a787bea46b6b",
+  "implementation_commit": "ebcb8f44c58f6f5f556cd3a420472714fddf5bfe",
+  "v3_no_go_review_commit": "3cb5a27fae8d737c39c20adc392e9bbab54f764f",
+  "v3_no_go_complete_sha256": "2b7cbb6eceb52b6d67e2b47cc473e83b995cddc07642517debeaeaf0bf27d754",
+  "repair": "require selected_holdout to be a mapping with exactly candidate_arm, baseline_arm, and endpoints before reading any holdout values",
+  "scope": "synthetic saved arrays and arm summaries only; no K9, real arm output, recording, voltage, DARTsort, GPU, sorter, RF, holdout dataset, motion, C4 edit or service"
+}
