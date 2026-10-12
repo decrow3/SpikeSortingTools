@@ -1,0 +1,26 @@
+{
+  "schema": "joint-model-code-ahead-planner-amendment-disposition-v1",
+  "created_at": "2026-10-12T14:25:03-07:00",
+  "host": "huklaban1",
+  "dispatch_key": "JOINT-MODEL-CODE-AHEAD-H1-20261012-V1",
+  "status": "ACK_ACCEPT_AMENDMENTS_K1K2_SYNTHETIC_V2_GO_REAL_VALIDATION_PENDING",
+  "planner_review_reference": "Hub relay of work/candidate4-20261012/JOINT_MODEL_CODE_AHEAD_PLANNER_REVIEW_20261012.txt; source file not visible on H1 at acknowledgment",
+  "disposition": {
+    "K1": "ACCEPT. Preserve fixture packets; before real execution freeze a new contract binding exact C4 FFT reader, sign, units, sample origin, timing/lag, detector tie/refractory. Treat 120-170/s as a sanity prediction only and prohibit threshold tuning to achieve it.",
+    "K7": "ACCEPT. Future contract will separate calibration from final donors/seeds/blocks and require symmetric held-out matched-filter union from frozen training templates.",
+    "K10": "ACCEPT. Existing fixture-qualified v2 is historical and not medium-ready. New contract/implementation must add global duplicate-event credit accounting across clusters while retaining split/merge, plus practical loss margins and held-out/selection-aware best-arm reporting; no ten-unit floor and no inconclusive-as-equivalence.",
+    "K5_template_learning": "ACCEPT. Future fitting fixture will include synchronous neural injections during fitting with withheld donors/blocks and member-level inclusion/abstention plus a mixed artifact/neural decoy; no group-wide license from one probe-fixed member.",
+    "vertical_slice": "ACCEPT. K7/N3/N4, local refit and non-0804 bundles will not block otherwise-ready N0/N1 solely through an all-K1-K11 clause; an explicit dependency amendment will precede any launch.",
+    "gpu": "ACCEPT. H1 GPU driver is currently unavailable. Before any medium GPU launch require an actual import/allocation proof in the launch context or a named nonconflicting host; no host-remediation project is implied."
+  },
+  "k1_k2_v2_review": {
+    "verdict": "GO_SYNTHETIC_FIXTURE_QUALIFIED",
+    "commit": "0910cfb63257d5b77211b36baee9e7cd9502cba2",
+    "shared_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_k1_k2_fixture_h1_rereview_20261012_v2",
+    "manifest_sha256": "3c044cff95b9631d8adb94bf5b4b7c19871a899926f4e60bfe59df9ddecab163",
+    "complete_sha256": "98a16d2f6fb536951df0577c07b162156b8c2a36b1c35396bac8bae1a425fb94",
+    "tests": {"author": 21, "prior_independent_rebound": 12, "fresh_rereview": 25}
+  },
+  "next": "freeze amended K1 real-validation contract and resolve the exact six C4-0 capture-window bindings; in parallel amend K10 before any real arm output is inspected",
+  "remaining_blocker": "exact frame/path/provenance bindings for the card's six C4-0 capture windows are not present in the H5 baseline handoff or visible shared artifacts; they will not be invented"
+}
