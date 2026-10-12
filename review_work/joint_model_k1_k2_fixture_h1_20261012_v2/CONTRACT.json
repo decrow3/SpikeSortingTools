@@ -1,0 +1,56 @@
+{
+  "schema": "joint-model-k1-k2-fixture-contract-v1",
+  "status": "FROZEN_BEFORE_FIXTURE_EXECUTION_OR_REAL_K1_OUTPUT",
+  "milestone": "Implement and independently review K1/K2 before bounded real-reader validation.",
+  "decision_changed": "Whether the exact C4 reader can expose its removed CAR median without altering sorter traces, and whether pulse-to-sorter lag can be frozen without candidate-unit labels.",
+  "inputs": {
+    "dartsort_commit": "d40c516e47451e688dd4484813b562fa5fc0b4ef",
+    "reader_sha256": "e36d3066c794a3caec99f0d647104aa30b8aa91d902fc16ea8700778fbe5115c",
+    "domain": "synthetic bounded int16 binaries and integer session-clock event arrays only"
+  },
+  "k1": {
+    "trace_path": "same channel map, sign inversion, per-native-batch temporal centering, lower median CAR, reader FFT high-pass, padding/core crop, whole-batch artifact zeroing, then channel subset",
+    "side_channel": "the exact lower median removed before CAR, passed through the same FFT high-pass and core crop; zeroed whenever the reader whole-batch artifact rule zeroes traces",
+    "equality": "post-CAR float32 traces must be bitwise equal to the unmodified exact reader",
+    "detector": {
+      "threshold_uv_strictly_below": -120.0,
+      "refractory_ms": 3.0,
+      "alignment": "strict-left/non-strict-right local minimum; deepest-first refractory suppression with earlier-sample tie break",
+      "sample_conversion": "floor(milliseconds * sampling_frequency / 1000 + 0.5)"
+    }
+  },
+  "k2": {
+    "clock": "integer acquisition samples with a nonempty clock identity",
+    "detections": "all detections whose channel ID is 251 or 252; cluster/unit labels are neither accepted nor used",
+    "ccg_lag": "detection_sample - pulse_sample",
+    "search_half_width_ms_inclusive": 1.5,
+    "peak_tie_break": "maximum count, then minimum absolute lag, then smaller signed lag",
+    "width": "contiguous full width at count >= ceil(peak_count/2), reported as inclusive lag bounds and number of sample bins",
+    "interpretation": "descriptive frozen lag and width only; no positive-control pass threshold is inferred"
+  },
+  "acceptance": [
+    "exact equality across ordinary, join, first/final padding, channel subset, sign, no-filter and artifact-zero fixtures",
+    "side channel matches an independently constructed known answer",
+    "detector threshold, local-minimum alignment, refractory and tie behavior pass known answers",
+    "K2 CCG peak/width, channel filter, lag convention, clock and noninteger guards pass known answers",
+    "frozen source and results receive same-host independent review"
+  ],
+  "resources": {
+    "cpu_threads_max": 8,
+    "gpu": false,
+    "wall_seconds_stop": 300,
+    "temporary_binary_bytes_stop": 10485760,
+    "persistent_output_bytes_stop": 10485760
+  },
+  "outputs": "compact source, tests and JSON receipts only; create-only immutable evidence packet",
+  "stop_conditions": [
+    "source/hash/commit mismatch",
+    "any trace mismatch, nonfinite value, shape, clock or known-answer mismatch",
+    "resource stop reached",
+    "recording, sort, RF, holdout, motion, C4, package or service access"
+  ],
+  "scope": {
+    "can_establish": "K1/K2 construction and arithmetic on synthetic fixtures bound to the exact reader source",
+    "cannot_establish": "real-window equality, 0804 pulse rate, the real lag, sorting benefit, biological identity/purity, or run readiness"
+  }
+}

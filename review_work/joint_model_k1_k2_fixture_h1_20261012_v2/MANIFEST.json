@@ -1,0 +1,14 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "FROZEN_K1_K2_V2_CLOCK_REPAIR_READY_FOR_REREVIEW",
+  "members": {
+    "CONTRACT.json": {"size": 3422, "sha256": "5bf7800cbf90001e18c24fba87459bfc5307c579775d4ea19de10cb40ae5e6a7"},
+    "EXACT_READER.py": {"size": 14242, "sha256": "e36d3066c794a3caec99f0d647104aa30b8aa91d902fc16ea8700778fbe5115c"},
+    "FIXTURE_RESULTS.json": {"size": 588, "sha256": "0fef2d0032df1b4bb54780c96d47249451c785356c9533a2645f43e5c1300a1f"},
+    "IMPLEMENTATION.py": {"size": 12436, "sha256": "b6f8b696eba884047a24f9ca20e0058a2f30055a53a0e70775db2d900e87f31f"},
+    "PRIOR_INDEPENDENT_TESTS.py": {"size": 8950, "sha256": "1a4325aa23d09fa76c0c9dd031415181831c8940c44ad937627634829a4f4a74"},
+    "PROVENANCE.json": {"size": 1111, "sha256": "6adf98b478b25740acc9a6884bff0c7ffaa12b2f010f3d60c54b6b6238410f57"},
+    "REVIEW_REQUEST.md": {"size": 1396, "sha256": "d724fd6d8569fbb732f749fb6f1e966520b0183faacd46723bf0dda767338f94"},
+    "TESTS.py": {"size": 6870, "sha256": "6c54c31edb539b1ddb3376edbefdb708508b0ca27bc1af75d068a42419654da9"}
+  }
+}

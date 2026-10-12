@@ -1,0 +1,11 @@
+{
+  "schema": "joint-model-k1-k2-fixture-results-v2",
+  "run_at": "2026-10-12T14:20:18-07:00",
+  "command": "exact DARTsort venv pytest on author tests plus v1 reviewer tests rebound by one explicit packet-path change to frozen v2",
+  "result": "33 passed in 1.25s (21 author plus 12 prior independent)",
+  "exit_code": 0,
+  "repair": "integer clock arrays accept only non-boolean integer or real floating dtypes, require exact integral finite values, and fail closed outside int64",
+  "real_recording_opened": false,
+  "real_k1_output_inspected": false,
+  "sort_or_gpu_started": false
+}
