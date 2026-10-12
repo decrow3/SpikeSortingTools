@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "INDEPENDENT_REREVIEW_GO_SYNTHETIC_FIXTURE_QUALIFIED",
+  "members": {
+    "INDEPENDENT_REREVIEW_TESTS.py": {"size": 5070, "sha256": "4015c12281d82acb718f6574a1a72980c7e0108146595e4fc152619ccdb905ee"},
+    "PROVENANCE.json": {"size": 1528, "sha256": "a44d85b6f88394bf3cb770dbff46de9030a3f5c113c40826a60c032442da7803"},
+    "RESULTS.json": {"size": 897, "sha256": "bb248474461625114b89a7f3b184ee107d8d38c422ebf2da9423119356cd2293"},
+    "REVIEW.md": {"size": 2905, "sha256": "9f3dd10d8fc823d5ec4e68b01b563e3f8e62728337d5ecf2ee14f2917157d89d"}
+  }
+}

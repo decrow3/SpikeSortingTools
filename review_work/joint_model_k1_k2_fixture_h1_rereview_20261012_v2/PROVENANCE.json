@@ -1,0 +1,23 @@
+{
+  "schema": "joint-model-k1-k2-independent-rereview-provenance-v2",
+  "created_at": "2026-10-12T14:23:32-07:00",
+  "host": "huklaban1",
+  "branch": "codex/motionqc-phase1",
+  "reviewed_packet_commit": "1ac0a4b5174f928c262cf3c84ad365c952e6c10b",
+  "repair_commit": "d73a9ff566fb7ef79bbbb23a4074f096021d7d49",
+  "author_packet": "review_work/joint_model_k1_k2_fixture_h1_20261012_v2",
+  "author_manifest_sha256": "5b1e310de28809a8760183b35ef814200878db26c784c84c0ede769cdb46bab8",
+  "author_complete_sha256": "75c304d1d2bae8f098cb74236eb52f8de470ad0782ad37b3b0985c3b25209353",
+  "preserved_v1_author_complete_sha256": "3ebeeee07ce30abf3797c6cd5a50e748e3909e805336900fddf06ea393f7a746",
+  "preserved_v1_review_complete_sha256": "35d23d5c6451dbeb257e293326229f1498d156a6b5b2f45801439b47460421e4",
+  "v2_implementation_sha256": "b6f8b696eba884047a24f9ca20e0058a2f30055a53a0e70775db2d900e87f31f",
+  "exact_reader_sha256": "e36d3066c794a3caec99f0d647104aa30b8aa91d902fc16ea8700778fbe5115c",
+  "dartsort_worktree": "/home/huklab/Documents/DARTsort-joint-model-d40c516e",
+  "dartsort_commit": "d40c516e47451e688dd4484813b562fa5fc0b4ef",
+  "dartsort_tree": "f2c80b47c9d190aac128f89a3d10010464d19840",
+  "uv_lock_sha256": "68f3fa53642043313bc9a4e56b7fc35dbd27af81030e436ffdba82de683f5034",
+  "interpreter": "/home/huklab/Documents/DARTsort/.venv/bin/python",
+  "python": "3.12.4",
+  "torch": "2.6.0+cu124",
+  "scope": "synthetic CPU fixtures only; no recording, real K1 output, K9 output, H5, GPU, service, sort, RF or holdout access"
+}
