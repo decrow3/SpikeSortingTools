@@ -9,7 +9,7 @@
   "orders_sha256": "b5f0a619c367e639fa418640dd7777bb08c5959721de8ba79c621ecf240f6f86",
   "repository": {
     "branch": "codex/motionqc-phase1",
-    "head": "cee8174d65dc4a1e516f81631fb0cd8e9cf77984",
+    "source_head_before_receipt": "cee8174d65dc4a1e516f81631fb0cd8e9cf77984",
     "worktree_clean": true
   },
   "k9": {
