@@ -1,0 +1,36 @@
+{
+  "schema": "joint-model-n0-n1-contract-validator-independent-rereview-results-v1",
+  "contract_commit": "a1c78c122d9403c2aace61e93430f9dab7e8c50c",
+  "contract_timestamp_correction_commit": "ad9206f1b41a6a176c4b37e4f2f7f420310dd1d9",
+  "repair_commit": "160a2866b5120e82e95fa8c857a70cf038c4ac59",
+  "compatibility_commit": "66e1788a8afa4728546455aaddf84fdcf2bea51a",
+  "reviewed_commit": "8e06b122463ebeaa9178c7c7f404123139bfcf78",
+  "reviewed_packet": "review_work/joint_model_n0_n1_contract_validator_h1_20261012_v3",
+  "reviewed_manifest_sha256": "2b0a20f4cd632be669c539fab6e970df48a58739ee41a89e9ba77ecd07261c21",
+  "reviewed_complete_sha256": "b0ba209aa383fee392679f72284446f3f7928e638480e373966eb839c6431f56",
+  "reviewed_implementation_sha256": "0fc63eba0cc560c313e180e086a4b7f728be5f4a122ff276d04afc62c34df734",
+  "v1_no_go_commit": "1a59c341c3b61813cbaffdc35915b89ed2e687e2",
+  "v1_no_go_complete_sha256": "2be9d4fa1380b8cca8c47d46865b5e65895bae39fb1236f326f0d22e500ae183",
+  "v2_no_go_commit": "e1e461dc2b8ac09272a8738a51d78055ff25035a",
+  "v2_no_go_complete_sha256": "4e10d71c6e8268009adc95b97eda26b907f9794adc5fa855458a6e1032251732",
+  "verdict": "GO_METADATA_VALIDATOR_ONLY",
+  "repair_delta_exact": true,
+  "author_suite": {"result": "43 passed in 0.14s", "exit_code": 0},
+  "packet_combined_suite": {"result": "101 passed in 0.20s", "exit_code": 0},
+  "semantic_v1_replay": {"result": "44 passed in 0.14s", "exit_code": 0},
+  "v2_control_replay": {
+    "result": "14 passed in 0.10s",
+    "former_failures": "4 passed, 10 deselected in 0.08s",
+    "former_passes": "10 passed, 4 deselected in 0.09s",
+    "exit_code": 0
+  },
+  "independent_boundary_controls": {
+    "result": "17 passed in 0.09s",
+    "service_255_bytes": "accepted",
+    "service_256_bytes": "rejected",
+    "nul_paths": "rejected for recording, motion, N0, and N1"
+  },
+  "local_shared_source_manifest_members_and_hash_chains_verified": true,
+  "referenced_bytes_or_real_data_accessed": false,
+  "production_gpu_service_sort_rf_holdout_or_c4_used": false
+}

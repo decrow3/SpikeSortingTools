@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "GO_METADATA_VALIDATOR_ONLY",
+  "members": {
+    "BOUNDARY_CONTROLS.py": {"size": 2674, "sha256": "fcdcda618dc44b87e5a27879fcf2be35d1d456311b30f1e7136b410293f2ba36"},
+    "PROVENANCE.json": {"size": 955, "sha256": "5e7fe9210d06e96a8e1eb47cacf9e52a2c8cdb7066fb74c93b2d06e446873999"},
+    "RESULTS.json": {"size": 2044, "sha256": "e7bc5fa85c21706391b588c78ff45856485385472b6880b2e9a5360b9242a8a4"},
+    "REVIEW.md": {"size": 3216, "sha256": "fe759df1c1a5067f5c86944c70291c25a5d45137a99e18bc163b2f75320be0bd"}
+  }
+}
