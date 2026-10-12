@@ -161,6 +161,10 @@ def test_k2_ccg_uses_all_focus_detections_and_reports_peak_width():
     "pulses,detections,channels,clock,match",
     [
         ([100.5], [101], [251], "clock", "integer"),
+        (np.array([100 + 0j]), [101], [251], "clock", "integer"),
+        (np.array([True]), [101], [251], "clock", "integer"),
+        (np.array([100], dtype=object), [101], [251], "clock", "integer"),
+        (np.array([2**63], dtype=np.uint64), [101], [251], "clock", "int64"),
         ([100], [101.5], [251], "clock", "integer"),
         ([100], [101], [251.5], "clock", "integer"),
         ([100], [101], [251], "", "clock_identity"),

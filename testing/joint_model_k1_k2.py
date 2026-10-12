@@ -193,9 +193,23 @@ def _integer_1d(name: str, values: Any, length: int | None = None) -> np.ndarray
     array = np.asarray(values)
     if array.ndim != 1 or (length is not None and array.size != length):
         raise ValueError(f"{name} must be a one-dimensional companion array")
-    if not np.issubdtype(array.dtype, np.integer):
+    if np.issubdtype(array.dtype, np.bool_):
+        raise ValueError(f"{name} must contain exact integer values")
+    if np.issubdtype(array.dtype, np.integer):
+        if array.size and (
+            np.any(array < np.iinfo(np.int64).min)
+            or np.any(array > np.iinfo(np.int64).max)
+        ):
+            raise ValueError(f"{name} values exceed the int64 sample domain")
+    elif np.issubdtype(array.dtype, np.floating):
         if not np.isfinite(array).all() or not np.equal(array, np.rint(array)).all():
             raise ValueError(f"{name} must contain exact integer values")
+        if array.size and (
+            np.any(array < -(2.0**63)) or np.any(array >= 2.0**63)
+        ):
+            raise ValueError(f"{name} values exceed the int64 sample domain")
+    else:
+        raise ValueError(f"{name} must contain exact integer values")
     return array.astype(np.int64, copy=False)
 
 
