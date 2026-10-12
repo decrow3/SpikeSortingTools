@@ -1,0 +1,63 @@
+{
+  "schema": "joint-model-minimal-dependency-amendment-disposition-v1",
+  "created_at": "2026-10-12T14:29:55-07:00",
+  "host": "huklaban1",
+  "dispatch_key": "JOINT-MODEL-CODE-AHEAD-H1-20261012-V1",
+  "amendment_key": "MINIMAL-DEPENDENCY-AMENDMENT-JOINT-N0-N1-20261012-V1",
+  "status": "ACK_ACCEPT_MINIMAL_N0_N1_PREREQUISITES",
+  "superseded_clause": "all K1-K11 reviewed before any successor comparison",
+  "scope": "first useful bounded N0-N1 comparison only; arm definitions may not silently change",
+  "minimal_prerequisites": [
+    {
+      "id": 1,
+      "owner": "H5 plus focused reviewer",
+      "requirement": "exact isolated executed source, patch, imports and effective configuration for the changed N0-N1 comparison boundary",
+      "concrete_failure_prevented": "running a stale, wrong or unreviewed matching implementation"
+    },
+    {
+      "id": 2,
+      "owner": "H1 K9",
+      "requirement": "bound recording/context/time/channel/motion inputs and one common cohort/checkpoint for both arms",
+      "concrete_failure_prevented": "incomparable arms or injection/preprocessing drift"
+    },
+    {
+      "id": 3,
+      "owner": "H5 K3/K4 plus focused reviewer",
+      "requirement": "correct state, interval bounds, seam ownership and residual semantics exercised by independent fixtures",
+      "concrete_failure_prevented": "wrong-state matches, duplicate credit, seam loss or loss of genuine overlaps"
+    },
+    {
+      "id": 4,
+      "owner": "H1 K10",
+      "requirement": "exclusive matching plus global duplicate-event credit, retained controls, frozen practical loss margins and selection-aware interpretation",
+      "concrete_failure_prevented": "inflated recovery or inconclusive results mislabeled equivalence"
+    },
+    {
+      "id": 5,
+      "owner": "H1 with exact H5 implementation bindings",
+      "requirement": "create-only frozen bounded N0-N1 comparison contract before any outcome",
+      "concrete_failure_prevented": "post-hoc arm, cohort, endpoint or decision-rule selection"
+    },
+    {
+      "id": 6,
+      "owner": "launch host",
+      "requirement": "fresh actual GPU import/allocation, runtime and memory readiness plus no conflicting or duplicate run",
+      "concrete_failure_prevented": "failed, interfering or duplicated execution"
+    }
+  ],
+  "not_n0_n1_prerequisites_by_number_alone": [
+    "K1/K2 pulse side-channel, detector and lag",
+    "K5 pulse template learning",
+    "K7 frame assignment and N3/N4",
+    "conditional local refit",
+    "non-0804 snippet bundles"
+  ],
+  "conditional_reentry": "An optional component becomes blocking only if the frozen exact N0-N1 path or claim consumes it; the dependency and concrete failure must be recorded before launch.",
+  "current_h1_state": {
+    "K10_v3": "contract frozen at commit b56c4a1; implementation fixture suite currently 34 passed; independent review not yet complete",
+    "K9": "minimal N0-N1 benchmark contract/builder remains required and will exclude pulse/frame claims unless explicitly rebound",
+    "K1_K2": "GO_SYNTHETIC_FIXTURE_QUALIFIED but real pulse validation is optional for N0-N1 and remains separately pending exact six-window bindings",
+    "gpu": "unavailable on H1 due NVIDIA driver; medium launch requires a fresh proof on a named nonconflicting host"
+  },
+  "advance_rule": "On these six prerequisites GO and an available nonconflicting slot, advance under existing authorization without another generic planner or human gate."
+}
