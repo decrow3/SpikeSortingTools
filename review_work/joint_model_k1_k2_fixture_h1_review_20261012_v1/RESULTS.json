@@ -1,0 +1,23 @@
+{
+  "schema": "joint-model-k1-k2-independent-review-results-v1",
+  "reviewed_at": "2026-10-12T14:16:50-07:00",
+  "verdict": "NO_GO",
+  "author_suite": {
+    "command": "NUMBA_CACHE_DIR=<writable> PYTHONPATH=<d40c516e/src>:<SpikeSortingTools> /home/huklab/Documents/DARTsort/.venv/bin/python -m pytest -q testing/test_joint_model_k1_k2.py",
+    "result": "17 passed in 1.17s",
+    "exit_code": 0
+  },
+  "independent_suite": {
+    "command": "NUMBA_CACHE_DIR=<writable> PYTHONPATH=<d40c516e/src>:<SpikeSortingTools> /home/huklab/Documents/DARTsort/.venv/bin/python -m pytest -q review_work/joint_model_k1_k2_fixture_h1_review_20261012_v1/INDEPENDENT_TESTS.py",
+    "result": "11 passed, 1 failed, 1 warning in 1.14s",
+    "exit_code": 1,
+    "preserved_failure": "test_k2_rejects_complex_clock_values_instead_of_silently_casting"
+  },
+  "finding": "_integer_1d accepts complex values with zero imaginary part and silently casts them to int64",
+  "repair": "Require non-integer inputs to have a real floating dtype before finite/integral-value validation; reject complex, boolean, object and string dtypes before casting.",
+  "real_recording_opened": false,
+  "real_k1_output_inspected": false,
+  "k9_output_inspected": false,
+  "sort_rf_holdout_or_gpu_started": false
+}
+

@@ -1,0 +1,20 @@
+{
+  "schema": "joint-model-k1-k2-independent-review-provenance-v1",
+  "created_at": "2026-10-12T14:16:50-07:00",
+  "host": "huklaban1",
+  "branch": "codex/motionqc-phase1",
+  "reviewed_commit": "de0056aa7970716989c724aefdfaa7f7033b69eb",
+  "author_packet": "review_work/joint_model_k1_k2_fixture_h1_20261012_v1",
+  "author_manifest_sha256": "f2ed48efe38e3006c59d9f60c5594d024a371df38068acba2e4e1a41aa5e14f5",
+  "author_implementation_sha256": "ee5e84bb91889ffc2392c3fdcc30110dd5fc6283e3cf59c3079b1736799b8502",
+  "author_tests_sha256": "dac6a4daa594e95a7257fd91386d6bed92191e380e513213a045d65914748c6c",
+  "exact_reader_sha256": "e36d3066c794a3caec99f0d647104aa30b8aa91d902fc16ea8700778fbe5115c",
+  "dartsort_worktree": "/home/huklab/Documents/DARTsort-joint-model-d40c516e",
+  "dartsort_commit": "d40c516e47451e688dd4484813b562fa5fc0b4ef",
+  "dartsort_tree": "f2c80b47c9d190aac128f89a3d10010464d19840",
+  "uv_lock_sha256": "68f3fa53642043313bc9a4e56b7fc35dbd27af81030e436ffdba82de683f5034",
+  "interpreter": "/home/huklab/Documents/DARTsort/.venv/bin/python",
+  "python": "3.12.4",
+  "torch": "2.6.0+cu124",
+  "scope": "synthetic CPU fixtures only; no recording, real K1 output, K9 output, H5, GPU, service, sort, RF or holdout access"
+}

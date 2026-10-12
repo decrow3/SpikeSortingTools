@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "INDEPENDENT_REVIEW_NO_GO_PRESERVED",
+  "members": {
+    "INDEPENDENT_TESTS.py": {"size": 8950, "sha256": "db3ab79552fe57d68945eae18a0f6128f05c461542efd568ce129d989b36b597"},
+    "PROVENANCE.json": {"size": 1239, "sha256": "ea66402c945c50149e01ce7416d6e8cdf34a5d6a35cad948097626bc79be0313"},
+    "RESULTS.json": {"size": 1269, "sha256": "b2a6b7f8e9088fc82e65dab540b63a09ae69b593e93d45348de7e3e8bc6463ea"},
+    "REVIEW.md": {"size": 3540, "sha256": "1930222e6ba06baa3a87fa5513732f7141623d105d0bf1d991a5f2a8bc07f604"}
+  }
+}
