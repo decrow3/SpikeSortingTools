@@ -1,0 +1,48 @@
+{
+  "schema": "h1-joint-model-k10-v4-k9-binding-checkin-v1",
+  "status": "K10_V4_REREVIEW_ACTIVE_K9_EXACT_RECORDING_BINDING_NEEDS_COORDINATOR_RESOLUTION",
+  "created_at": "2026-10-12T14:41:00-07:00",
+  "host": "huklaban1",
+  "branch": "codex/motionqc-phase1",
+  "coordinator_thread": "01a0f6aa-07be-7af1-bb86-a67ed23eca72",
+  "k10": {
+    "v3_independent_verdict": "NO_GO_PENDING_EXACTLY_ONE_HOLDOUT_SUMMARY_GUARD",
+    "v3_review_commit": "3cb5a27fae8d737c39c20adc392e9bbab54f764f",
+    "repair_commit": "ebcb8f44c58f6f5f556cd3a420472714fddf5bfe",
+    "repair": "exact top-level selected_holdout key-set guard",
+    "author_tests": "35 passed",
+    "v4_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_k10_evaluator_h1_20261012_v4",
+    "v4_manifest_sha256": "07a3a7ae44012f12d6878e6b2001c9f87673301244134ba3730246cff5083893",
+    "v4_complete_sha256": "0a5c14f98737ecc45212fd42f6ad96a9be215bef64cefd733acd41373d338775",
+    "rereview": "active with the prior independent reviewer"
+  },
+  "k9_audit": {
+    "sealed_d2b2_donors_verified": {
+      "templates_sha256": "998e4dbd067cd3529fe0c18038173f62c57a79e57b2b2ef7b7ced5c348695d24",
+      "manifest_sha256": "43da816a7c52f8c8995c0f608548bc93501cae75a46dbbb0320f0b5dc905d319"
+    },
+    "w2_25_donor_design_found": "testing/outputs/dh_hybrid_truth_contract_20260928/HYBRID_MANIFEST.json",
+    "am3_field_found": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_am3_imec0_field_request_20260929_v1/payload/luke0804_imec0_two_layer_motion.npz",
+      "sha256": "4c769125020aad3263bf6eaa1889cdaa7eccbf19dcf0aa3a068b185221fadb9f",
+      "clock": "AP frame zero",
+      "sign": "corrected = observed - displacement"
+    },
+    "unresolved_load_bearing_binding": "Minimal N0/N1 says C4 as-is, while the current C4 receipt identifies arm-A exact-lattice remapped P(REF) as its waveform source. H1 has a documented narrow platform denial for arm-A recording access. The method proposal separately describes real displaced unwarped imec0 windows with a fixed field. Do not silently choose between these non-byte-identical inputs.",
+    "needed_coordinator_decision": "Bind the first N0/N1 benchmark to the exact C4 arm-A input and supply an H1-accessible bounded copy/approved managed path, or explicitly freeze unwarped rescue input plus AM.3 field as the intended N0/N1 benchmark input and state that this is not byte-identical to full-session C4."
+  },
+  "execution": {
+    "medium_comparison_launched": false,
+    "recording_voltage_read_for_k9": false,
+    "gpu_used": false,
+    "sort_started": false,
+    "rf_or_holdout_accessed": false
+  },
+  "implementation_checks": {
+    "done": "read executed K10 source and frozen v3 review; verified donor hashes, W2 manifest, AM.3 payload hash/clock/sign, minimal amendment and C4 waveform-source receipt",
+    "not_done": "no window selection, benchmark build, common checkpoint, real arm outputs, GPU readiness or run contract until exact recording identity is resolved",
+    "can_establish": "K10 has one repaired synthetic boundary under rereview; reusable donor and field provenance exist",
+    "cannot_establish": "K9/common-input readiness or N0/N1 scientific comparability"
+  },
+  "request": "HubMultiCoordinater: resolve the exact recording identity/path above and return the next prioritized instruction; H1 will continue K10 rereview meanwhile."
+}
