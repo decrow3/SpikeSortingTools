@@ -1,0 +1,28 @@
+{
+  "schema": "joint-model-n0-n1-contract-validator-fixture-v2",
+  "frozen_at": "2026-10-12T15:28:00-07:00",
+  "milestone": "exact repair of the v1 N0-N1 metadata-contract validator NO_GO",
+  "decision_changed": "whether the repaired metadata validator is complete enough for later implementation review and live resource preflight",
+  "scope": "contract metadata only; no referenced-byte reads, recording voltage, arm outcomes, launch, GPU allocation, sort, RF/holdout or C4 edits",
+  "preserved_v1_no_go": {
+    "review_commit": "1a59c341c3b61813cbaffdc35915b89ed2e687e2",
+    "review_complete_sha256": "2be9d4fa1380b8cca8c47d46865b5e65895bae39fb1236f326f0d22e500ae183",
+    "verdict": "NO_GO_PENDING_EXACT_BINDING_AND_LIFECYCLE_GUARDS"
+  },
+  "schema_v2_repairs": [
+    "bind a session_clock mapping with clock_id and integer origin_frame; every window and the motion field reference that clock_id",
+    "bind interval_bounds exactly to half_open and add a distinct common_events_sha256",
+    "replace the global checkpoint with checkpoints_by_window whose exact key set equals all window IDs and whose normalized hashes match across arms",
+    "pin evaluator implementation and review COMPLETE hashes to the independently reviewed K10 v4 artifacts",
+    "case-fold and strip placeholder checks and require other_deltas to be an actual empty list",
+    "bind managed execution to manager systemd_user, a resolved simple .service unit, and launcher_disconnect_verified true",
+    "require the exact stop-condition ID set runtime_limit, memory_limit, disk_free_gate, first_unreconciled_invariant and managed_service_failure",
+    "require canonical absolute paths without dot or dot-dot aliases; keep arm outputs disjoint and non-ancestral to each other and recording/motion inputs"
+  ],
+  "pinned_k10": {
+    "implementation_sha256": "c47d834bd9446a0f7be28d34863b2019c1b140cff7abbdcba091e64d5e8f17e3",
+    "review_complete_sha256": "083afe0d708881b59c78fb5b129cc306b147e8c89e31433a1827068040191b51"
+  },
+  "acceptance": "all preserved v1 adversarial cases rebound to schema v2, all 15 former failures repaired, author regressions, and focused independent rereview",
+  "claim_limit": "metadata completeness only; validation does not prove referenced bytes, code behavior, resource readiness or scientific validity and never releases execution"
+}
