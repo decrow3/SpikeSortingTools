@@ -1,0 +1,16 @@
+{
+  "schema": "joint-model-k9-core-provenance-v1",
+  "created_at": "2026-10-12T14:54:47-07:00",
+  "host": "huklaban1",
+  "branch": "codex/motionqc-phase1",
+  "orders_sha256": "b5f0a619c367e639fa418640dd7777bb08c5959721de8ba79c621ecf240f6f86",
+  "contract_commit": "86f6a7a",
+  "implementation_commit": "3947bed76fc0fbfd1f37a221bcd22bac75d2e9be",
+  "exact_dartsort_baseline": "d40c516e47451e688dd4484813b562fa5fc0b4ef",
+  "reused_helpers": [
+    "testing.luke_au_cpu_preparation.exact_same_column_map",
+    "testing.luke_au_cpu_preparation.exact_remap",
+    "testing.luke_injected_ground_truth_benchmark.validate_template"
+  ],
+  "scope": "synthetic float32 arrays and metadata only; no recording read, real window, arm output, DARTsort execution, GPU, sort, RF, holdout, C4 edit or service"
+}

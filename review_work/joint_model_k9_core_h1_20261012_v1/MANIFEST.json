@@ -1,0 +1,12 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "FROZEN_K9_SYNTHETIC_CORE_READY_FOR_INDEPENDENT_REVIEW",
+  "members": {
+    "CONTRACT.json": {"size": 3000, "sha256": "64d4faa6801251468df9482f0422c098af6a78b5c644cfce983b8a98da2935a9"},
+    "FIXTURE_RESULTS.json": {"size": 575, "sha256": "f48551195a99dac569ba625f38e80a11642e6f29cf03d734495392cafc2677ae"},
+    "IMPLEMENTATION.py": {"size": 11369, "sha256": "33c50a0082e300309be3cbbca59b9db4a6b3ff1488045a861feb3b39f5ae8721"},
+    "PROVENANCE.json": {"size": 793, "sha256": "db309193b0e2d082c425529fd5a2f4e0b199758643fac866f5a6ed839e9a341f"},
+    "REVIEW_REQUEST.md": {"size": 1649, "sha256": "e3d4e25b392b92f9b44ea4e17eae2c30e708ca0a69ca30e58f4793039afb8db4"},
+    "TESTS.py": {"size": 7631, "sha256": "4195e1281cac04a67e08abe8fc10c36869eb83696477bed2d76ff2e07bb01e02"}
+  }
+}

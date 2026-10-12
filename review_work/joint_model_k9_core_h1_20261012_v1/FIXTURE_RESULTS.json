@@ -1,0 +1,12 @@
+{
+  "schema": "joint-model-k9-core-fixture-results-v1",
+  "run_at": "2026-10-12T14:53:00-07:00",
+  "focused_command": "pytest -q testing/test_joint_model_k9_benchmark.py",
+  "focused_result": "16 passed in 0.12s",
+  "combined_command": "pytest -q testing/test_joint_model_k9_benchmark.py testing/test_luke_au_cpu_preparation.py testing/test_luke_injected_ground_truth_benchmark.py",
+  "combined_result": "35 passed in 0.14s",
+  "exit_code": 0,
+  "recording_or_voltage_accessed": false,
+  "real_window_or_arm_output_inspected": false,
+  "gpu_sort_rf_or_holdout_used": false
+}
