@@ -61,7 +61,7 @@ def _absolute_path(name: str, value: Any) -> str:
 def _canonical_path(name: str, value: Any) -> PurePath:
     path = _absolute_path(name, value)
     if "\0" in path:
-        raise ValueError(f"{name} must not contain NUL")
+        raise ValueError(f"path {name} must not contain NUL")
     parsed = PurePath(path)
     if ".." in parsed.parts or str(parsed) != path:
         raise ValueError(f"{name} must be a canonical absolute path without aliases")
