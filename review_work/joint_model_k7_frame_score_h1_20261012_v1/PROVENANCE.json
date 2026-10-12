@@ -1,0 +1,11 @@
+{
+  "schema": "joint-model-k7-frame-score-provenance-v1",
+  "created_at": "2026-10-12T14:59:45-07:00",
+  "host": "huklaban1",
+  "branch": "codex/motionqc-phase1",
+  "orders_sha256": "b5f0a619c367e639fa418640dd7777bb08c5959721de8ba79c621ecf240f6f86",
+  "contract_commit": "7a8b62c",
+  "implementation_commit": "94d6db4",
+  "exact_dartsort_baseline": "d40c516e47451e688dd4484813b562fa5fc0b4ef",
+  "scope": "synthetic saved residuals/states/blocks/candidate IDs only; no template learning, matched-filter detection, whitening, calibration, real unit classification, recording, voltage, GPU, sort, RF, holdout or C4 edit"
+}

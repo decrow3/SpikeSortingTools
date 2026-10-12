@@ -1,0 +1,12 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "FROZEN_K7_FRAME_SCORE_FIXTURE_READY_FOR_INDEPENDENT_REVIEW",
+  "members": {
+    "CONTRACT.json": {"size": 2580, "sha256": "c387a2e3d53300d084ab8e43817ddebadc651cc31183abba5048f54a01135fe9"},
+    "FIXTURE_RESULTS.json": {"size": 354, "sha256": "63fdfd6e8afba9d399855e9119a6fd5b1e6510ba74abf4bf24ef7502b704a6f7"},
+    "IMPLEMENTATION.py": {"size": 8455, "sha256": "31eb07550815c741cfde0097319bf23516e5c022a7f9ae09d90a6214d55ab841"},
+    "PROVENANCE.json": {"size": 620, "sha256": "29c551ab2b48cc0a5546184077b0ab05a452e988cc9573018f2d9bd24f6133c4"},
+    "REVIEW_REQUEST.md": {"size": 1657, "sha256": "4c4d41f47ca15a90abe346371b592961a4f52b7a692debef3281b59f30f69151"},
+    "TESTS.py": {"size": 6193, "sha256": "16ad2576eea0a48aa27117b75643cfc95905a248a912bb41031d0841073a310e"}
+  }
+}
