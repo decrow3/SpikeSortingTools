@@ -266,7 +266,7 @@ def validate_n0_n1_contract(document: Mapping[str, Any]) -> dict[str, Any]:
     if resources["gpu_required"] is not True:
         raise ValueError("medium N0/N1 contract must require an actual GPU preflight")
     if resources["manager"] != "systemd_user":
-        raise ValueError("resource manager must be exactly systemd_user")
+        raise ValueError("managed service manager must be exactly systemd_user")
     service_unit = _string("resources.service_unit", resources["service_unit"])
     if not service_unit.endswith(".service") or "/" in service_unit or service_unit.strip() != service_unit:
         raise ValueError("managed service unit must be a simple resolved .service name")
