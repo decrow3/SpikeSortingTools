@@ -1,0 +1,12 @@
+{
+  "schema": "joint-model-k9-core-provenance-v2",
+  "created_at": "2026-10-12T15:02:53-07:00",
+  "host": "huklaban1",
+  "branch": "codex/motionqc-phase1",
+  "contract_commit": "86f6a7a",
+  "repair_commit": "ab403e6",
+  "v1_no_go_review_commit": "1aae00ee6d388125f7e99eda326b1778c9d6c437",
+  "v1_no_go_complete_sha256": "df2621f0e71e3f4eb57311efeedb1871825ce759bfc13175f53d6790a31168da",
+  "repair": "validate uncast geometry dtype as real numeric nonboolean and int64-validate derived session_sample",
+  "scope": "synthetic float32 arrays and metadata only; no real input/window/voltage/DARTsort/GPU/sort/RF/holdout/C4"
+}

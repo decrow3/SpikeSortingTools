@@ -1,0 +1,15 @@
+{
+  "schema": "joint-model-k9-core-fixture-results-v2",
+  "run_at": "2026-10-12T15:02:00-07:00",
+  "focused_result": "19 passed",
+  "combined_command": "pytest -q testing/test_joint_model_k9_benchmark.py testing/test_luke_au_cpu_preparation.py testing/test_luke_injected_ground_truth_benchmark.py",
+  "combined_result": "38 passed in 0.14s",
+  "exit_code": 0,
+  "preserved_failures": [
+    "derived session_sample positive overflow",
+    "complex geometry",
+    "numeric-string geometry"
+  ],
+  "real_input_or_voltage_accessed": false,
+  "gpu_sort_rf_or_holdout_used": false
+}
