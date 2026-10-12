@@ -1,0 +1,19 @@
+{
+  "schema": "joint-model-k10-evaluator-fixture-results-v3",
+  "run_at": "2026-10-12T14:29:20-07:00",
+  "command": "pytest -q testing/test_joint_model_k10_evaluator.py",
+  "result": "34 passed in 0.16s",
+  "exit_code": 0,
+  "coverage_delta": [
+    "all-truth/all-output and per-unit pooled global event credit",
+    "cross-cluster duplicate credit separated from cross-unit competition",
+    "split retained when duplicate global credit is removed",
+    "development-only deterministic arm selection",
+    "higher/lower practical loss margins with PASS/FAIL/INCONCLUSIVE",
+    "one-unit support accepted and reported; no equivalence or superiority claim",
+    "complex, boolean and object sample clocks fail closed"
+  ],
+  "real_joint_model_arm_outputs_inspected": false,
+  "k9_inspected": false,
+  "dartsort_or_recording_accessed": false
+}

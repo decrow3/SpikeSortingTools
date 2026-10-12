@@ -1,0 +1,12 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "FROZEN_K10_V3_GLOBAL_CREDIT_READY_FOR_INDEPENDENT_REVIEW",
+  "members": {
+    "CONTRACT.json": {"size": 4853, "sha256": "5aaa0b133d7621f9131a1c7dfeac0230c8bd6842789907c7a22b9044fb4b8436"},
+    "EVALUATOR.py": {"size": 30182, "sha256": "d9b3cacf594e6a39ae6a1dc975bf227cc42e66e530dda1e0a89b413dc0742fde"},
+    "FIXTURE_RESULTS.json": {"size": 842, "sha256": "1918b3cb455349a95fa68677b11126174d425976888ef9b72016e7eeeb10c90d"},
+    "PROVENANCE.json": {"size": 854, "sha256": "af3426877e36bcd1aa52494e8aaf19cd22c5bde585100c070cdad183a12e62a6"},
+    "REVIEW_REQUEST.md": {"size": 1759, "sha256": "3509260ace649942ef12d75190d7bf42073d2424526db27e1e80ede889ec92c9"},
+    "TESTS.py": {"size": 14752, "sha256": "a96690b7e6b9638f77af7e30de5cb32a978dfbe4fd7fa4fcda8b5be0ee3f2b77"}
+  }
+}

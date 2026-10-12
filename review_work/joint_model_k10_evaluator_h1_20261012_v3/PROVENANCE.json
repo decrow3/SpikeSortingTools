@@ -1,0 +1,14 @@
+{
+  "schema": "joint-model-k10-evaluator-provenance-v3",
+  "created_at": "2026-10-12T14:30:58-07:00",
+  "host": "huklaban1",
+  "branch": "codex/motionqc-phase1",
+  "contract_commit": "b56c4a1",
+  "implementation_commit": "1648a9b",
+  "dispatch_key": "JOINT-MODEL-CODE-AHEAD-H1-20261012-V1",
+  "minimal_amendment_key": "MINIMAL-DEPENDENCY-AMENDMENT-JOINT-N0-N1-20261012-V1",
+  "task_card_sha256": "17035db3715c285ac734c3f5a5b4362cb3d075243466c2edb72e077f17e8d72c",
+  "historical_v2_complete_sha256": "35f221651097e32889ca0cdae44c636ced1fa3e79658a2eab188860fd6f71932",
+  "historical_v2_review_complete_sha256": "a5230f0436d1d0b1b12419afc40493eaaf5cc7b3dd7cd836836f51e966ce14ae",
+  "scope": "synthetic saved arrays and arm summaries only; no K9, real arm output, recording, voltage, DARTsort, GPU, sorter, RF, holdout dataset, motion, C4 edit or service"
+}
