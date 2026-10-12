@@ -1,0 +1,34 @@
+{
+  "schema": "joint-model-k10-evaluator-v4-independent-rereview-results-v1",
+  "repair_commit": "ebcb8f44c58f6f5f556cd3a420472714fddf5bfe",
+  "reviewed_commit": "a911116",
+  "reviewed_packet": "review_work/joint_model_k10_evaluator_h1_20261012_v4",
+  "reviewed_manifest_sha256": "07a3a7ae44012f12d6878e6b2001c9f87673301244134ba3730246cff5083893",
+  "reviewed_complete_sha256": "0a5c14f98737ecc45212fd42f6ad96a9be215bef64cefd733acd41373d338775",
+  "reviewed_evaluator_sha256": "c47d834bd9446a0f7be28d34863b2019c1b140cff7abbdcba091e64d5e8f17e3",
+  "preserved_v3_nogo_review_commit": "3cb5a27fae8d737c39c20adc392e9bbab54f764f",
+  "preserved_v3_nogo_complete_sha256": "2b7cbb6eceb52b6d67e2b47cc473e83b995cddc07642517debeaeaf0bf27d754",
+  "verdict": "GO_SYNTHETIC_DECISION_PLUMBING",
+  "author_suite": {
+    "command": "pytest -q testing/test_joint_model_k10_evaluator.py",
+    "result": "35 passed in 0.15s",
+    "exit_code": 0
+  },
+  "prior_adversarial_replay_v4": {
+    "command": "pytest -q review_work/joint_model_k10_evaluator_h1_20261012_v4_independent_rereview_20261012_v1/PRIOR_ADVERSARIAL_REPLAY_V4.py",
+    "result": "45 passed in 0.19s",
+    "exit_code": 0,
+    "preserved_v3_failure_now_passes": true,
+    "prior_passing_fixtures_unchanged": 44
+  },
+  "focused_guard_suite": {
+    "command": "pytest -q review_work/joint_model_k10_evaluator_h1_20261012_v4_independent_rereview_20261012_v1/GUARD_TESTS.py",
+    "result": "6 passed in 0.08s",
+    "exit_code": 0
+  },
+  "repair_scope": "exact top-level selected_holdout key-set guard plus author regression only",
+  "v4_and_v3_nogo_local_shared_hash_chains_verified": true,
+  "real_or_k9_outputs_inspected": false,
+  "recording_voltage_dartsort_h5_gpu_service_sort_rf_or_holdout_used": false
+}
+
