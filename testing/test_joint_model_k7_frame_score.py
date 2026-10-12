@@ -157,3 +157,73 @@ def test_support_parameters_require_exact_integers(bad):
             probe_fixed_max_score=-0.5, tissue_fixed_min_score=0.5,
             informative_abs_state_um=bad,
         )
+
+
+@pytest.mark.parametrize(
+    "kwargs,match",
+    [
+        ({"informative_abs_state_um": 40}, "at least 80"),
+        ({"minimum_events_per_state": 1}, "at least 50"),
+    ],
+)
+def test_contractual_support_floors_cannot_be_weakened(kwargs, match):
+    with pytest.raises(ValueError, match=match):
+        score_frame_residuals(
+            np.asarray([0, -80], np.int64), residual_rows(-80, 50, -1),
+            probe_fixed_max_score=-0.5, tissue_fixed_min_score=0.5,
+            **kwargs,
+        )
+
+
+def test_held_cutoff_does_not_raise_training_separation_requirement():
+    result = score_frame_residuals(
+        np.asarray([0, -80], np.int64), residual_rows(-160, 50, -1),
+        probe_fixed_max_score=-0.5, tissue_fixed_min_score=0.5,
+        informative_abs_state_um=160,
+    )
+    assert result["reported_label"] == "probe_fixed"
+    assert result["training_min_separation_um"] == 80
+
+
+def test_training_separation_uses_non_overflowing_python_integers():
+    low = (np.iinfo(np.int64).min // 40 + 1) * 40
+    high = (np.iinfo(np.int64).max // 40) * 40
+    result = score_frame_residuals(
+        np.asarray([low, high], np.int64), residual_rows(-80, 50, -1),
+        probe_fixed_max_score=-0.5, tissue_fixed_min_score=0.5,
+    )
+    assert result["reported_label"] == "probe_fixed"
+    assert result["training_max_separation_um"] == int(high) - int(low)
+
+
+def test_extreme_finite_residual_ratio_is_scored_without_division_overflow():
+    rows = [
+        {
+            "state_um": -80,
+            "residual_probe": np.finfo(float).max,
+            "residual_tissue": np.finfo(float).tiny,
+        }
+        for _ in range(50)
+    ]
+    result = score_frame_residuals(
+        np.asarray([0, -80], np.int64), rows,
+        probe_fixed_max_score=-0.5, tissue_fixed_min_score=0.5,
+    )
+    assert np.isfinite(result["score"])
+    assert result["reported_label"] == "tissue_fixed"
+
+
+@pytest.mark.parametrize(
+    "row,match",
+    [
+        ({"state_um": 0, "residual_tissue": 1.0}, "lacks residual"),
+        ({"state_um": 0, "residual_probe": np.nan, "residual_tissue": 1.0}, "finite real"),
+        ({"state_um": 0, "residual_probe": 0.0, "residual_tissue": 1.0}, "strictly positive"),
+    ],
+)
+def test_noncontributing_rows_still_require_valid_residuals(row, match):
+    with pytest.raises(ValueError, match=match):
+        score_frame_residuals(
+            np.asarray([0, -80], np.int64), [row],
+            probe_fixed_max_score=-0.5, tissue_fixed_min_score=0.5,
+        )

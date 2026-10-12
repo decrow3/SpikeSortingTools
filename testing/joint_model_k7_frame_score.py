@@ -15,6 +15,9 @@ import numpy as np
 
 SCHEMA = "joint-model-k7-frame-score-v1"
 LATTICE_UM = 40
+TRAINING_MIN_SEPARATION_UM = 80
+HELD_MIN_INFORMATIVE_UM = 80
+MIN_EVENTS_PER_STATE = 50
 
 
 def _integer(name: str, value: Any) -> int:
@@ -92,18 +95,27 @@ def score_frame_residuals(
         raise ValueError("training states must lie on the exact 40-um lattice")
     informative_abs_state_um = _integer("informative_abs_state_um", informative_abs_state_um)
     minimum_events_per_state = _integer("minimum_events_per_state", minimum_events_per_state)
-    if informative_abs_state_um < 0:
-        raise ValueError("informative state threshold must be nonnegative")
-    if minimum_events_per_state <= 0:
-        raise ValueError("minimum events per state must be positive")
+    if informative_abs_state_um < HELD_MIN_INFORMATIVE_UM:
+        raise ValueError(
+            f"informative state threshold must be at least {HELD_MIN_INFORMATIVE_UM} um"
+        )
+    if minimum_events_per_state < MIN_EVENTS_PER_STATE:
+        raise ValueError(
+            f"minimum events per state must be at least {MIN_EVENTS_PER_STATE}"
+        )
     probe_threshold = _finite_real("probe_fixed_max_score", probe_fixed_max_score)
     tissue_threshold = _finite_real("tissue_fixed_min_score", tissue_fixed_min_score)
     if not probe_threshold < tissue_threshold:
         raise ValueError("probe threshold must be below tissue threshold")
 
     train_unique = np.unique(train64)
-    training_separation = int(np.ptp(train_unique)) if train_unique.size else 0
-    training_eligible = bool(train_unique.size >= 2 and training_separation >= informative_abs_state_um)
+    training_separation = (
+        int(train_unique[-1]) - int(train_unique[0]) if train_unique.size else 0
+    )
+    training_eligible = bool(
+        train_unique.size >= 2
+        and training_separation >= TRAINING_MIN_SEPARATION_UM
+    )
 
     scores_by_state: dict[int, list[float]] = {}
     for row in held_out_rows:
@@ -112,15 +124,18 @@ def score_frame_residuals(
         state = _integer("held-out state_um", row.get("state_um"))
         if state % LATTICE_UM:
             raise ValueError("held-out state must lie on the exact 40-um lattice")
-        if abs(state) < informative_abs_state_um:
-            continue
         if "residual_probe" not in row or "residual_tissue" not in row:
             raise ValueError("held-out row lacks residual fields")
         probe = _finite_real("residual_probe", row["residual_probe"])
         tissue = _finite_real("residual_tissue", row["residual_tissue"])
         if probe <= 0 or tissue <= 0:
             raise ValueError("held-out residuals must be finite and strictly positive")
-        scores_by_state.setdefault(state, []).append(float(np.log(probe / tissue)))
+        event_score = float(np.log(probe) - np.log(tissue))
+        if not np.isfinite(event_score):
+            raise ValueError("held-out residual log ratio must be finite")
+        if abs(state) < informative_abs_state_um:
+            continue
+        scores_by_state.setdefault(state, []).append(event_score)
 
     state_counts = {state: len(values) for state, values in sorted(scores_by_state.items())}
     contributing = {
@@ -149,6 +164,9 @@ def score_frame_residuals(
         "reason": reason,
         "training_states_um": train_unique.tolist(),
         "training_max_separation_um": training_separation,
+        "training_min_separation_um": TRAINING_MIN_SEPARATION_UM,
+        "held_min_informative_um": informative_abs_state_um,
+        "minimum_events_per_state": minimum_events_per_state,
         "state_event_counts": state_counts,
         "contributing_state_medians": contributing,
         "probe_fixed_max_score": probe_threshold,
