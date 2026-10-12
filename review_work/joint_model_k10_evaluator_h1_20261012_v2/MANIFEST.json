@@ -1,0 +1,13 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "FROZEN_K10_V2_EXACT_BOUNDS_REPAIR_READY_FOR_INDEPENDENT_REREVIEW",
+  "members": {
+    "CONTRACT.json": {"size": 3907, "sha256": "425eeb48e1ea4bfef4e6f7ceb315c4a53c4a8becc7d477759350be5ba405dd05"},
+    "EVALUATOR.py": {"size": 20349, "sha256": "65f0996afb5ea56b7b3e211fcd82bda0eff1e46b77b65373a511a7544138678f"},
+    "FIXTURE_RESULTS.json": {"size": 519, "sha256": "fa76fd4310155f43d2b09d74e31b7a004bb2f7246f66741e1ed7840dc67a281e"},
+    "PRIOR_ADVERSARIAL_TESTS.py": {"size": 9146, "sha256": "878c68be1c6b691c1e6ba03826e8a82473925765116cdfcfe4881e2a696da7c4"},
+    "PROVENANCE.json": {"size": 1287, "sha256": "690d5f1656faea86db9c6c958c302bf1723d95510fb311c61b09d75eb3c2660e"},
+    "REVIEW_REQUEST.md": {"size": 1326, "sha256": "a10c3c3a5a60727d1e98b712e7a25cc0e43fe913c6e8988703a8e975e3c930b2"},
+    "TESTS.py": {"size": 9402, "sha256": "9e22283898ad85d35084a990c88488499431cab3225ab8c505fc3a64551e394d"}
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "schema": "joint-model-k10-evaluator-contract-v1",
+  "status": "FROZEN_BEFORE_ANY_JOINT_MODEL_ARM_OUTPUT",
+  "milestone": "Provide a reviewed saved-output evaluator before any joint-model arm runs.",
+  "decision_changed": "Whether K9 benchmark outputs can be scored without exact-key, pooled-river, clock, placement, split, merge, or overlap-accounting errors.",
+  "cheapest_adequate_test": "Synthetic saved-array known answers with adversarial timing, spatial, split, merge, decoy, overlap, clock and null cases.",
+  "completion_condition": "All known-answer fixtures pass, an immutable source/contract snapshot is independently reviewed, and no scientific arm output has been inspected.",
+  "input_domain": "saved arrays only; no recording, voltage, sorter, DARTsort or GPU access",
+  "time_clock": {
+    "unit": "integer acquisition samples",
+    "session_clock_required": true,
+    "crop_local_times_forbidden_without_exact_declared_origin_conversion": true,
+    "intervals": "half-open"
+  },
+  "matching": {
+    "scope": "each truth unit against each output cluster independently",
+    "algorithm": "deterministic maximum-cardinality bipartite matching over pairs passing both gates",
+    "time_tolerance_samples_inclusive": 15,
+    "spatial_gate": "required explicit spatial_tolerance_um in each evaluation specification; compares truth per-event placement with output per-event placement",
+    "exact_event_key_matching_forbidden": true,
+    "pooled_spike_river_matching_forbidden": true,
+    "best_cluster_order": ["accuracy_desc", "tp_desc", "fp_asc", "cluster_id_asc"]
+  },
+  "chance_controls": {
+    "method": "explicit pre-frozen circular session-clock shifts, same matching statistic and spatial support",
+    "shifts_required": true,
+    "above_chance_rule": "observed matched count strictly exceeds the maximum shifted-null matched count",
+    "capture_fraction_strictly_greater_than": 0.05
+  },
+  "required_truth_fields": [
+    "event_id",
+    "unit_id",
+    "sample_index",
+    "placement_um",
+    "frame",
+    "amplitude",
+    "is_overlap",
+    "decoy_group"
+  ],
+  "required_output_fields": [
+    "sample_index",
+    "cluster_id",
+    "placement_um",
+    "assigned_frame",
+    "amplitude"
+  ],
+  "reported_endpoints": {
+    "recovery": "per-truth-unit TP/FP/FN, accuracy and best output cluster",
+    "split": "number and identities of output clusters with >5% capture and observed matches above every frozen shifted null",
+    "many_to_one": "truth units sharing one best output cluster, separately reported",
+    "merge": "best cluster captures another truth unit above the same capture and null rules",
+    "overlap": "detection, best-cluster assignment, frame assignment, amplitude error and supplied residual-energy change reported separately",
+    "frames": "probe-fixed recall, tissue-fixed retention, false probe-fixed rate and decoy false-merge rate",
+    "background": "caller-supplied baseline/candidate real-unit counts and amplitude summaries, never imputed",
+    "cost": "caller-supplied runtime and peak-memory receipts, never inferred"
+  },
+  "fail_closed": [
+    "noninteger or out-of-domain times",
+    "duplicate truth event_id",
+    "missing/nonfinite placement or amplitude",
+    "unknown frame label",
+    "missing spatial tolerance or null shifts",
+    "unsorted arrays are normalized stably and their original order is retained in match receipts",
+    "no result file overwrite"
+  ],
+  "interpretation": "Fixture PASS establishes evaluator plumbing and arithmetic only. It cannot establish benchmark validity, arm benefit, biological identity, purity, H1 readiness, or authorization to launch a medium arm.",
+  "exclusions": [
+    "no full-session run",
+    "no RF or holdout access",
+    "no motion re-estimation",
+    "no package upgrade",
+    "no C4 edit or execution",
+    "no real joint-model comparison output inspection before independent review"
+  ]
+}

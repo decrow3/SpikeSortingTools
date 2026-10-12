@@ -1,0 +1,18 @@
+{
+  "schema": "joint-model-k10-evaluator-provenance-v2",
+  "created_at": "2026-10-12T13:51:54-07:00",
+  "host": "huklaban1",
+  "branch": "codex/motionqc-phase1",
+  "dispatch": "JOINT-MODEL-CODE-AHEAD-H1-20261012-V1",
+  "task_card_sha256": "17035db3715c285ac734c3f5a5b4362cb3d075243466c2edb72e077f17e8d72c",
+  "method_v4_sha256": "ff816cdaf5699934873c827eed007767db17eaf661ebe84b578877c79354e380",
+  "review_v3_sha256": "641f1c75f278cd1c49791ac4a57599098576efcf2f9e6bfa5b1adfa04affefa5",
+  "rank1_result_sha256": "7de8953a5d4e06805b94aadd6691e199e917630bf115fc0865cd03cee7c4bcb4",
+  "supersedes_author_packet": "joint_model_k10_evaluator_h1_20261012_v1",
+  "preserved_nogo_review_complete_sha256": "4fe3f65a5fe334eca48ba82a7a59b951c756a88a9412f43fbb6d14ca73ee3ff3",
+  "repair_scope": "exact-integer session bounds guard plus author regression; no matcher or endpoint change",
+  "contract_sha256": "425eeb48e1ea4bfef4e6f7ceb315c4a53c4a8becc7d477759350be5ba405dd05",
+  "evaluator_sha256": "65f0996afb5ea56b7b3e211fcd82bda0eff1e46b77b65373a511a7544138678f",
+  "tests_sha256": "9e22283898ad85d35084a990c88488499431cab3225ab8c505fc3a64551e394d",
+  "execution_scope": "saved synthetic arrays only; no DARTsort, voltage, recording, GPU, sort, RF, holdout, C4 or joint-model arm output access"
+}

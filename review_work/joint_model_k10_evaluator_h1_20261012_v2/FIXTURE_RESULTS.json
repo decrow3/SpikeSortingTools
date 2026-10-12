@@ -1,0 +1,11 @@
+{
+  "schema": "joint-model-k10-evaluator-fixture-results-v2",
+  "run_at": "2026-10-12T13:51:54-07:00",
+  "author_command": "pytest -q testing/test_joint_model_k10_evaluator.py",
+  "author_result": "20 passed in 0.13s",
+  "prior_adversarial_replay": "11 passed in 0.18s against repaired evaluator snapshot",
+  "exit_code": 0,
+  "repair": "session_bounds_samples validated as exactly two integer acquisition samples before normalization",
+  "real_joint_model_arm_outputs_inspected": false,
+  "dartsort_imported": false
+}

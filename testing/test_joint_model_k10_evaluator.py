@@ -199,6 +199,7 @@ def test_frame_recall_retention_and_false_probe_rate():
         ({**truth([100], [1]), "sample_index": np.array([100.5])}, output([], []), config(), "integer"),
         (truth([100], [1]), output([], []), config(time_tolerance_samples=14), "frozen"),
         (truth([100], [1]), output([], []), config(null_shifts_samples=[]), "required"),
+        (truth([100], [1]), output([], []), config(session_bounds_samples=[0.75, 100_000.75]), "integer"),
         (truth([100_000], [1]), output([], []), config(), "outside"),
         (truth([100], [1]), output([], []), config(clock_frame="crop_local_samples"), "clock_frame"),
     ],

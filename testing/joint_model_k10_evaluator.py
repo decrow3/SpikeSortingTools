@@ -106,7 +106,8 @@ def validate_inputs(
     bounds = config.get("session_bounds_samples")
     if not isinstance(bounds, Sequence) or len(bounds) != 2:
         raise ValueError("session_bounds_samples must be a two-element half-open interval")
-    lo, hi = map(int, bounds)
+    exact_bounds = _integer_samples("session_bounds_samples", bounds, 2)
+    lo, hi = map(int, exact_bounds)
     if lo >= hi:
         raise ValueError("invalid session bounds")
     for namespace, samples in (
