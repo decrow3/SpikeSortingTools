@@ -269,6 +269,35 @@ def test_stop_conditions_are_exact_enumerated_ids():
         validate_n0_n1_contract(contract)
 
 
+def test_nul_containing_paths_fail_closed():
+    for section in ("recording", "motion_field"):
+        contract = valid_contract()
+        contract["input"][section]["path"] += "\0suffix"
+        with pytest.raises(ValueError, match="NUL"):
+            validate_n0_n1_contract(contract)
+    contract = valid_contract()
+    contract["outputs"]["N0"] += "\0suffix"
+    with pytest.raises(ValueError, match="NUL"):
+        validate_n0_n1_contract(contract)
+
+
+@pytest.mark.parametrize(
+    "unit",
+    ["bad unit.service", ".service", "bad\0unit.service", f"{'a' * 248}.service"],
+)
+def test_service_unit_uses_bounded_simple_systemd_name_grammar(unit):
+    contract = valid_contract()
+    contract["resources"]["service_unit"] = unit
+    with pytest.raises(ValueError, match="service unit"):
+        validate_n0_n1_contract(contract)
+
+
+def test_service_unit_accepts_255_byte_simple_name_boundary():
+    contract = valid_contract()
+    contract["resources"]["service_unit"] = f"{'a' * 247}.service"
+    assert validate_n0_n1_contract(contract)["status"] == "STRUCTURALLY_VALID_METADATA_ONLY"
+
+
 @pytest.mark.parametrize(
     "n0,n1",
     [

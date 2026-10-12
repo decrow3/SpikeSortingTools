@@ -4,12 +4,13 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from pathlib import PurePath
+import re
 from typing import Any
 
 import numpy as np
 
 
-SCHEMA = "joint-model-n0-n1-run-contract-v2"
+SCHEMA = "joint-model-n0-n1-run-contract-v3"
 EXACT_DARTSORT_COMMIT = "d40c516e47451e688dd4484813b562fa5fc0b4ef"
 K10_IMPLEMENTATION_SHA256 = "c47d834bd9446a0f7be28d34863b2019c1b140cff7abbdcba091e64d5e8f17e3"
 K10_REVIEW_COMPLETE_SHA256 = "083afe0d708881b59c78fb5b129cc306b147e8c89e31433a1827068040191b51"
@@ -59,6 +60,8 @@ def _absolute_path(name: str, value: Any) -> str:
 
 def _canonical_path(name: str, value: Any) -> PurePath:
     path = _absolute_path(name, value)
+    if "\0" in path:
+        raise ValueError(f"{name} must not contain NUL")
     parsed = PurePath(path)
     if ".." in parsed.parts or str(parsed) != path:
         raise ValueError(f"{name} must be a canonical absolute path without aliases")
@@ -268,7 +271,10 @@ def validate_n0_n1_contract(document: Mapping[str, Any]) -> dict[str, Any]:
     if resources["manager"] != "systemd_user":
         raise ValueError("managed service manager must be exactly systemd_user")
     service_unit = _string("resources.service_unit", resources["service_unit"])
-    if not service_unit.endswith(".service") or "/" in service_unit or service_unit.strip() != service_unit:
+    if (
+        re.fullmatch(r"[A-Za-z0-9:_.@-]+\.service", service_unit) is None
+        or len(service_unit.encode("ascii")) > 255
+    ):
         raise ValueError("managed service unit must be a simple resolved .service name")
     if resources["launcher_disconnect_verified"] is not True:
         raise ValueError("managed service must have a launcher-disconnection verification receipt")
