@@ -1,0 +1,17 @@
+{
+  "schema": "joint-model-n0-n1-contract-validator-results-v3",
+  "run_at": "2026-10-12T15:37:27-07:00",
+  "author_command": "pytest -q testing/test_joint_model_n0_n1_contract.py",
+  "author_result": "43 passed in 0.12s",
+  "author_exit_code": 0,
+  "packet_commands": [
+    "pytest -q review_work/joint_model_n0_n1_contract_validator_h1_20261012_v3/TESTS.py",
+    "pytest -q review_work/joint_model_n0_n1_contract_validator_h1_20261012_v3/PRIOR_ADVERSARIAL_REPLAY_V3.py",
+    "pytest -q review_work/joint_model_n0_n1_contract_validator_h1_20261012_v3/V2_REREVIEW_CONTROLS_V3.py"
+  ],
+  "packet_result": "101 passed; 43 author, 44 semantic v1 replay, 14 v2 rereview controls",
+  "packet_exit_code": 0,
+  "referenced_bytes_opened": false,
+  "recording_or_voltage_accessed": false,
+  "gpu_launch_sort_rf_or_holdout_used": false
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "joint-model-n0-n1-contract-validator-fixture-v3",
+  "frozen_at": "2026-10-12T15:36:24-07:00",
+  "timestamp_correction": "original draft mistakenly recorded 15:39; substantive contract was committed at this Git commit time before implementation",
+  "milestone": "exact two-guard repair of the v2 N0-N1 metadata-validator NO_GO",
+  "decision_changed": "whether the repaired metadata validator is ready as a structural gate for later live preflight",
+  "scope": "contract metadata only; no referenced-byte reads, recording voltage, arm outcomes, launch, GPU allocation, sort, RF/holdout or C4 edits",
+  "preserved_v2_no_go": {
+    "review_commit": "e1e461dc2b8ac09272a8738a51d78055ff25035a",
+    "review_complete_sha256": "4e10d71c6e8268009adc95b97eda26b907f9794adc5fa855458a6e1032251732",
+    "verdict": "NO_GO_PENDING_PATH_AND_SERVICE_NAME_GUARDS"
+  },
+  "exact_repairs": [
+    "reject NUL in every canonical recording, motion-field and output path before PurePath construction",
+    "full-match service_unit against conservative ASCII simple-unit grammar [A-Za-z0-9:_.@-]+ followed by .service, require a nonempty stem, and enforce the 255-byte systemd unit-name limit"
+  ],
+  "acceptance": "four former failing boundary cases, ten prior passing v2 controls, semantic v1 replay 44, author suite 37 and packet-local combined suite 81 pass under focused independent rereview",
+  "claim_limit": "metadata completeness only; validation does not prove referenced bytes, code behavior, resource readiness or scientific validity and never releases execution"
+}

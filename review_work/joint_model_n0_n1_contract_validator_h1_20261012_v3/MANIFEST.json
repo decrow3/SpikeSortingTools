@@ -1,0 +1,14 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "FROZEN_N0_N1_CONTRACT_VALIDATOR_V3_READY_FOR_INDEPENDENT_REREVIEW",
+  "members": {
+    "CONTRACT.json": {"size": 1569, "sha256": "7f5d3d7a82497999b98db3d8c9481315cf43246067e86fc8db1c4c18975271e5"},
+    "FIXTURE_RESULTS.json": {"size": 828, "sha256": "9e9226a484e33759772109d4a45a0de060886f38d29999b4a3288b3cf1ff83f8"},
+    "IMPLEMENTATION.py": {"size": 15624, "sha256": "0fc63eba0cc560c313e180e086a4b7f728be5f4a122ff276d04afc62c34df734"},
+    "PRIOR_ADVERSARIAL_REPLAY_V3.py": {"size": 8805, "sha256": "817c9dca8b58c5a5cfdb3571b65fd9f99f438a92c3942609d1d1d25ca8343bbb"},
+    "PROVENANCE.json": {"size": 830, "sha256": "2e99ad190d4d5f32f9056e664ab7bce435441471e5b798663eb28747214f7186"},
+    "REVIEW_REQUEST.md": {"size": 1410, "sha256": "123e14c01c74611370d01b6f5f7a7f3a33f478337a8aad7a345b9b7e5080acb9"},
+    "TESTS.py": {"size": 12476, "sha256": "2e86d21548a6a2b0cbaeb5ff608e904b40d71d169bd11389f5d2948cca2e0243"},
+    "V2_REREVIEW_CONTROLS_V3.py": {"size": 5932, "sha256": "43a8838aae43dc9d3320596ca9b8b041784f56df8fe51920f96c45c888826c41"}
+  }
+}
