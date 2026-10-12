@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "NO_GO_PENDING_EXACT_INTEGER_SESSION_BOUNDS_GUARD",
+  "members": {
+    "ADVERSARIAL_TESTS.py": {"size": 9146, "sha256": "878c68be1c6b691c1e6ba03826e8a82473925765116cdfcfe4881e2a696da7c4"},
+    "PROVENANCE.json": {"size": 884, "sha256": "04ee496a5b37637188442c51b8d7eb5703791a15d48db74e406d932a3d9a3196"},
+    "RESULTS.json": {"size": 1969, "sha256": "743195ee7e9ee0868618aaff0b8de44951b96a76dd9bff80c1a4dc203f9fe049"},
+    "REVIEW.md": {"size": 4558, "sha256": "5f506d9248aaba01813f1433925ca338b140d95f1d6515aa859d90e2531ee455"}
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "joint-model-k10-evaluator-independent-review-results-v1",
+  "reviewed_commit": "2cf2faf9a1bdfd68d388d80e0f03e4b974047d23",
+  "reviewed_packet": "review_work/joint_model_k10_evaluator_h1_20261012_v1",
+  "reviewed_packet_manifest_sha256": "d8a1e00da25d248f24d7c5ceca9e2546f56de4f0c190119a7aa141450864a548",
+  "reviewed_packet_complete_sha256": "e4a24268c9df2f91fc2b4a8dc9c0e21bc9da91970ce5853bc5294c2598f74fd4",
+  "reviewed_evaluator_sha256": "2d19bdb08a964d2b21d4224b11a7b22e71fd45232738ba7a39dc3c206d87dd9b",
+  "verdict": "NO_GO_PENDING_EXACT_INTEGER_SESSION_BOUNDS_GUARD",
+  "author_suite": {
+    "command": "pytest -q testing/test_joint_model_k10_evaluator.py",
+    "result": "19 passed in 0.12s",
+    "exit_code": 0
+  },
+  "adversarial_suite": {
+    "command": "pytest -q review_work/joint_model_k10_evaluator_h1_20261012_v1_independent_review_20261012_v1/ADVERSARIAL_TESTS.py",
+    "result": "10 passed, 1 failed in 0.20s",
+    "exit_code": 1,
+    "failed_fixture": "test_noninteger_session_bounds_fail_closed_instead_of_being_truncated"
+  },
+  "adversarial_passing_subset": {
+    "command": "pytest -q review_work/joint_model_k10_evaluator_h1_20261012_v1_independent_review_20261012_v1/ADVERSARIAL_TESTS.py -k 'not noninteger_session_bounds'",
+    "result": "10 passed, 1 deselected in 0.16s",
+    "exit_code": 0
+  },
+  "defect": {
+    "location": "EVALUATOR.py:106-110",
+    "observed": "fractional session_bounds_samples are silently truncated by map(int, bounds)",
+    "impact": "declared half-open clock domain and circular shifted-null support can be silently changed",
+    "exact_repair": "validate the two bounds with _integer_samples before conversion, then retain lo < hi and half-open domain checks"
+  },
+  "source_and_shared_packet_hashes_match": true,
+  "real_joint_model_arm_outputs_inspected": false,
+  "recording_or_voltage_accessed": false,
+  "dartsort_imported_or_edited": false,
+  "services_gpu_sorts_rf_or_holdout_used": false
+}
+
