@@ -1,0 +1,18 @@
+{
+  "schema": "joint-model-n0-n1-contract-validator-independent-rereview-provenance-v1",
+  "created_at": "2026-10-12T15:32:47-07:00",
+  "host": "huklaban1-Precision-5820-Tower",
+  "branch": "codex/motionqc-phase1",
+  "reviewer_scope": "offline metadata-only implementation-first rereview of frozen N0/N1 validator v2",
+  "source_commit": "194dd77886fd542d5cf1b0cf877d9d779e68e7d1",
+  "source_packet": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/review_work/joint_model_n0_n1_contract_validator_h1_20261012_v2",
+  "shared_source_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/joint_model_n0_n1_contract_validator_h1_20261012_v2",
+  "exclusions_honored": [
+    "no referenced-byte, recording, voltage, or arm-output access",
+    "no production action or DARTsort import/edit",
+    "no GPU allocation, service launch, sort, RF, or held-out access",
+    "no C4 action",
+    "no author-file modification"
+  ]
+}
+

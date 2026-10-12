@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "NO_GO_PENDING_PATH_AND_SERVICE_NAME_GUARDS",
+  "members": {
+    "REREVIEW_CONTROLS.py": {"size": 5993, "sha256": "4cf99eaa42c1e40c803bf56616a3bd8add15e1b7552b7fb717351021b08e24db"},
+    "PROVENANCE.json": {"size": 955, "sha256": "f00163eafe9aabb0efff4538a626f314b09e3df6901616553be12b7514f3726e"},
+    "RESULTS.json": {"size": 1890, "sha256": "79ffdd15a2bdab9215c83476f32b7d620768b9e9854417773431a4aa7e0cc465"},
+    "REVIEW.md": {"size": 4141, "sha256": "df37046386ea0bab54cbaa16bbf94393394ec01a8ad647ae1c279aa18323ca84"}
+  }
+}

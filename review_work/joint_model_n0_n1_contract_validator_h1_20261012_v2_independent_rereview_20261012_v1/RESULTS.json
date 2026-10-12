@@ -1,0 +1,35 @@
+{
+  "schema": "joint-model-n0-n1-contract-validator-independent-rereview-results-v1",
+  "contract_commit": "befd01658d11deafe45d5953e24f43c60e5d7998",
+  "repair_commit": "0fac090b2dc1f1f22c91aee37a4ab17d5d537863",
+  "compatibility_commit": "464ed8910a576181cd584e080a4120f3af01ce08",
+  "reviewed_commit": "194dd77886fd542d5cf1b0cf877d9d779e68e7d1",
+  "reviewed_packet": "review_work/joint_model_n0_n1_contract_validator_h1_20261012_v2",
+  "reviewed_manifest_sha256": "ec9fb52cd73d018fc9f5cc4b9eae0a474d932ed62488b110151d13fa1a00e629",
+  "reviewed_complete_sha256": "2667d2074620422e5a3775e0cd695fc2eed33f41fdf8714eec3ef69f2176fbf5",
+  "reviewed_implementation_sha256": "ab6c0435188e534acd67033c1285e4aa919cee93c62cb1c8289f9ad5b40ee3d4",
+  "prior_no_go_commit": "1a59c341c3b61813cbaffdc35915b89ed2e687e2",
+  "prior_no_go_complete_sha256": "2be9d4fa1380b8cca8c47d46865b5e65895bae39fb1236f326f0d22e500ae183",
+  "verdict": "NO_GO_PENDING_PATH_AND_SERVICE_NAME_GUARDS",
+  "requested_repair_delta_exact": true,
+  "author_suite": {"result": "37 passed in 0.13s", "exit_code": 0},
+  "packet_combined_suite": {"result": "81 passed in 0.18s", "exit_code": 0},
+  "semantic_v1_replay": {
+    "result": "44 passed in 0.14s",
+    "former_failures": "15 passed, 29 deselected in 0.10s",
+    "former_passes": "29 passed, 15 deselected in 0.11s",
+    "exit_code": 0
+  },
+  "independent_controls": {
+    "result": "10 passed, 4 failed in 0.11s",
+    "passing_subset": "10 passed, 4 deselected in 0.09s",
+    "defects": [
+      "NUL-containing recording, motion, and output paths pass canonical-path validation",
+      "service units with whitespace, an empty stem, or NUL pass the simple .service-name check"
+    ]
+  },
+  "local_shared_source_manifest_members_and_hash_chains_verified": true,
+  "referenced_bytes_or_real_data_accessed": false,
+  "production_gpu_service_sort_rf_holdout_or_c4_used": false
+}
+
