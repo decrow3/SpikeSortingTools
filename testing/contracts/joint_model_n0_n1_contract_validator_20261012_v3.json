@@ -1,6 +1,7 @@
 {
   "schema": "joint-model-n0-n1-contract-validator-fixture-v3",
-  "frozen_at": "2026-10-12T15:39:00-07:00",
+  "frozen_at": "2026-10-12T15:36:24-07:00",
+  "timestamp_correction": "original draft mistakenly recorded 15:39; substantive contract was committed at this Git commit time before implementation",
   "milestone": "exact two-guard repair of the v2 N0-N1 metadata-validator NO_GO",
   "decision_changed": "whether the repaired metadata validator is ready as a structural gate for later live preflight",
   "scope": "contract metadata only; no referenced-byte reads, recording voltage, arm outcomes, launch, GPU allocation, sort, RF/holdout or C4 edits",
