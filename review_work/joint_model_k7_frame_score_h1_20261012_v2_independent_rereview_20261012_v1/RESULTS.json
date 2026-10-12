@@ -1,0 +1,41 @@
+{
+  "schema": "joint-model-k7-frame-score-independent-rereview-results-v1",
+  "contract_commit": "7a8b62ccca84b0a799b10d5d07c17d7fc4665815",
+  "repair_commit": "fc3a83d2e8418d7053e7e2d0a77ae7b92bba9ef2",
+  "reviewed_commit": "db27b5ec5b66c1c185353b8d73384799c25c23d1",
+  "reviewed_packet": "review_work/joint_model_k7_frame_score_h1_20261012_v2",
+  "reviewed_manifest_sha256": "ce899b44a437ce6604c11ce9eff913545e5cc6209e912c74ddf59498da776f1d",
+  "reviewed_complete_sha256": "4d2b460d2477c27f76cd1904e43ed066785534be35ed8ccd54f29cc357e2e0da",
+  "reviewed_implementation_sha256": "e3675fc15d54ce2745b3903a13ed2f8637c9558c51a1fdcb19000a4aafabcfe2",
+  "prior_no_go_commit": "2aa5569760036a9a0e9afe0029be537bb61b9ca8",
+  "prior_no_go_complete_sha256": "3b1a9953e416a97eaaf4869143f430c37ec71c520702faa782e7a67ca046681f",
+  "verdict": "GO_SYNTHETIC_SCORE_ORACLE_ONLY",
+  "repair_delta_exact": true,
+  "focused_author_suite": {
+    "command": "pytest -q testing/test_joint_model_k7_frame_score.py",
+    "result": "34 passed in 0.14s",
+    "exit_code": 0
+  },
+  "combined_frozen_suite": {
+    "command": "pytest -q review_work/joint_model_k7_frame_score_h1_20261012_v2/TESTS.py review_work/joint_model_k7_frame_score_h1_20261012_v2/ADVERSARIAL_TESTS.py",
+    "result": "67 passed in 0.15s",
+    "exit_code": 0
+  },
+  "immutable_v1_adversarial_replay": {
+    "command": "pytest -q review_work/joint_model_k7_frame_score_h1_20261012_v2_independent_rereview_20261012_v1/PRIOR_ADVERSARIAL_REPLAY_V2.py",
+    "result": "33 passed in 0.14s",
+    "exact_prior_failures": "6 passed, 27 deselected in 0.13s",
+    "prior_passing_cases": "27 passed, 6 deselected in 0.18s",
+    "exit_code": 0
+  },
+  "independent_controls": {
+    "command": "pytest -q review_work/joint_model_k7_frame_score_h1_20261012_v2_independent_rereview_20261012_v1/REREVIEW_CONTROLS.py",
+    "result": "6 passed in 0.10s",
+    "exit_code": 0
+  },
+  "local_shared_manifest_members_and_hash_chains_verified": true,
+  "template_learning_detection_whitening_or_calibration_used": false,
+  "real_units_recording_voltage_or_arm_output_accessed": false,
+  "dartsort_gpu_sort_rf_holdout_or_c4_used": false
+}
+

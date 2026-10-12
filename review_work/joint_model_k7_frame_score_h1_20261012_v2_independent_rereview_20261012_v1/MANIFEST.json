@@ -1,0 +1,11 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "GO_SYNTHETIC_SCORE_ORACLE_ONLY",
+  "members": {
+    "PRIOR_ADVERSARIAL_REPLAY_V2.py": {"size": 1113, "sha256": "ac1b162bacce4f1e15815237ca892a11728698386c6faf3da9548edac8520cc5"},
+    "REREVIEW_CONTROLS.py": {"size": 1843, "sha256": "04240ee072072c344c2e076f3dee4b59ea768bf73f703fd4fb8b696bffc7d38c"},
+    "PROVENANCE.json": {"size": 1125, "sha256": "d7c468a6f256305655105475d5c7d739002056e485444e0f2d79f7aef8b20d76"},
+    "RESULTS.json": {"size": 2156, "sha256": "7392ee53275b8d0550fffe5921e0fad4d8910476904e71bd7254f2bd1e39450c"},
+    "REVIEW.md": {"size": 3203, "sha256": "c84db29957d4c1368ad1b57c6b37992caa0f187f81ba4ae3d83d29264cba3587"}
+  }
+}
