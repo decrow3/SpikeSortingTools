@@ -1,0 +1,55 @@
+{
+  "schema": "h1-a1-assignment-ack-started-v1",
+  "status": "ACK_STARTED_FOUR_MINIMAL_ADDITIONS_IMPLEMENTED_FOCUSED_FIXTURES_PASS",
+  "created_at": "2026-10-12T21:41:00-07:00",
+  "owner": "H1 current thread 01a0f5c5-3548-7c00-8962-a26b74896e93",
+  "host": "huklaban1",
+  "authority": {
+    "direct_close_handoff_instruction": true,
+    "shared_mnt_communications_authorized": true,
+    "raw_and_numeric_waveform_transfer_if_needed_authorized": true,
+    "current_route": "H5 execution beside retained artifacts remains cheaper and requires no numeric transfer"
+  },
+  "current_additions": {
+    "times_labels_adapter": {
+      "source_sha256": "450a9c83f29c0cda96a89aa1606a34ebb5d295b98df22e0a3fa6f2d5d4e5e635",
+      "config_sha256": "cf09035f92716bc22c44fbbf420775373356d612759cfe5b123c106d883f89bb",
+      "commit": "f9449eb",
+      "test": "PASS"
+    },
+    "donor_selector": {
+      "source_sha256": "efc9f0a15f6d6e8244f85fe6d3d274908f2c6715d60ea0259aefb14617d0f4ec",
+      "config_sha256": "7d6f9e9b88ade6a80e102cd08aaae5443d48a7e51a05a2a592b0d04b1e2fc9a8",
+      "commit": "2ea5ee8",
+      "test": "PASS"
+    },
+    "reader_injection_function": {
+      "source_sha256": "c2d034afb67df6fb9ce458591cf7f7943917dd40ff2dd8bf3c42aaf36c34b124",
+      "config_sha256": "3afabfaa916c279dd69f25e92897390e9272b711a59a558d5f95906978016ac1",
+      "commit": null,
+      "test": "PASS"
+    },
+    "thin_chunk_starts_entry": {
+      "source_sha256": "4be79644b6f249c8c7347676dce28ffac2026ffed758bc9ce8934f7a0dc26431",
+      "config_sha256": "aedc094559231e3c58798fb606ded832b981f196f3d81211d9c2cd460fbe1724",
+      "commit": null,
+      "test": "PASS"
+    },
+    "combined_test_command": "pytest -q testing/test_joint_model_chunk_starts_entry.py testing/test_joint_model_reader_injection.py testing/test_joint_model_donor_selector.py testing/test_joint_model_matching1_adapter.py",
+    "combined_test_result": "4 passed in 1.20s"
+  },
+  "execution_status": {
+    "h1_sort_or_arm_started": false,
+    "new_service_started": false,
+    "duplicate_job_started": false,
+    "c4_changed_or_interrupted": false,
+    "recording_or_voltage_read": false
+  },
+  "scientific_validity": {
+    "can_establish": "each minimal function satisfies its synthetic known-answer contract",
+    "cannot_establish": "production runner binding, actual donor ledger, P1/P2/I2 correctness, equivalence or benefit"
+  },
+  "exact_remaining_blocker": "H5 must inspect its SHA-bound run_restored_c4.py and bind the exact reviewed callable to the thin entry's c4_continuation_runner boundary; H1 intentionally did not invent a CLI or callable name",
+  "next": "combined A4 boundary/moving/fixed/overlap fixture, then commit/source packet and H5 focused boundary review",
+  "target": "2026-10-13T02:00:00-07:00"
+}
