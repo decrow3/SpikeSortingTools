@@ -1,0 +1,59 @@
+{
+  "schema": "joint-model-k9-real-input-binding-observed-v1",
+  "observed_at": "2026-10-12T19:29:09-07:00",
+  "host": "huklaban1",
+  "status": "BASE_INPUT_BOUND_WINDOWS_PENDING",
+  "recording": {
+    "path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+    "stat_bytes": 241309358592,
+    "h1_inode_nonidentity_diagnostic": 9028751,
+    "raw_bytes_read": false,
+    "raw_sha256_recomputed": false,
+    "sealed_binary_sha256": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+    "sealed_recording_content_sha256": "2d6fac755db3182841bf121d822754f963ebada3bcb8cd9e96e0b63e6f9b7372"
+  },
+  "verified_small_dependencies": {
+    "manifest_sha256": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67",
+    "ops_sha256": "6b3be364e403020f60c560592d60b4f4e628cb4bfe639a9fc5605a42ff35f0af",
+    "channel_positions_sha256": "0469ca92fb739a0cfd2f1613262d3a2d75af1098385385d7462ee6e3fd038d75",
+    "motion_npz_sha256": "4c769125020aad3263bf6eaa1889cdaa7eccbf19dcf0aa3a068b185221fadb9f",
+    "reader_source_sha256": "e36d3066c794a3caec99f0d647104aa30b8aa91d902fc16ea8700778fbe5115c"
+  },
+  "verified_manifest_fields": {
+    "stream_id": "imec0.ap",
+    "num_samples": 314204894,
+    "num_channels": 384,
+    "sampling_frequency_hz": 29999.835983263598,
+    "dtype": "int16",
+    "selected_start_frame": 0,
+    "selected_end_frame": 314204894,
+    "gain_uv_per_count": 2.34375,
+    "external_filter": null,
+    "external_reference": null,
+    "external_voltage_motion_correction": false,
+    "graph": [
+      "neuropixels_phase_correction_if_present",
+      "samplewise_bilateral_blanking_500uv",
+      "bad_channel_interpolation"
+    ]
+  },
+  "reader_trace": {
+    "channel_map_applied_at_line": 179,
+    "car_applied_at_lines": [184, 185],
+    "highpass_applied_at_lines": [186, 188],
+    "artifact_gate_at_lines": [192, 195],
+    "source": "testing/prospective_a_prewhitening_si_e36d3066.py"
+  },
+  "binding": {
+    "common_input": "conditioned REF bytes through exact C4 lazy reader plus internal AM.3",
+    "excluded": "C3 arm-A remapped voltage",
+    "one_fitted_model_per_window_shared_by_all_arms": true,
+    "arm_refits": 0
+  },
+  "unresolved": [
+    "exact six C4-0 session-frame window bindings",
+    "per-window output namespaces and resource bounds",
+    "focused independent review of this binding",
+    "K10 real saved-output exercise"
+  ]
+}

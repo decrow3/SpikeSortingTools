@@ -1,0 +1,7 @@
+{
+  "schema": "immutable-contract-source-v1",
+  "path": "testing/contracts/joint_model_k9_real_input_binding_20261012_v1.json",
+  "sha256": "01930648fa078931eac67a7fdf52a27ce96e4d4f9fa5bb633e5297e25811d56f",
+  "frozen_commit": "99de2419a9467db5b13d86176ca0dfc9b901a057",
+  "frozen_before_verification": true
+}

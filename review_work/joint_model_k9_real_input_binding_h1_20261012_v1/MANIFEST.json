@@ -1,0 +1,10 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "BASE_INPUT_BOUND_WINDOWS_PENDING_REVIEW",
+  "members": {
+    "CONTRACT_SOURCE.json": {"size": 310, "sha256": "154376865e8e71b835b03481021d677fa9bdb3586a4778a661def9428f62dd06"},
+    "OBSERVED.json": {"size": 2440, "sha256": "930567de2616a25ea10a816c0d1f1cf226752a0a74a90958931c8b27b5a6b5e3"},
+    "PROVENANCE.json": {"size": 697, "sha256": "5800e11ecb95a08a1a844004b70ddc3c07418b6042c07851e6c24709c404de99"},
+    "REVIEW_REQUEST.md": {"size": 1330, "sha256": "650690c62952a946b40d13a9966b1a802f0d589390a79019e123c75038fac741"}
+  }
+}
