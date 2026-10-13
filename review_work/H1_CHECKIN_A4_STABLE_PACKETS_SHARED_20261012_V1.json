@@ -1,0 +1,60 @@
+{
+  "schema": "h1-a1-assignment-ack-started-v1",
+  "status": "A4_STABLE_PACKETS_SHARED_AND_BRANCH_PUSHED_H5_BINDING_REVIEW_READY",
+  "created_at": "2026-10-12T22:29:00-07:00",
+  "owner": "H1 current thread 01a0f5c5-3548-7c00-8962-a26b74896e93",
+  "host": "huklaban1",
+  "timing": {
+    "implementation_started_before_2200": true,
+    "first_adapter_commit": "f9449eb",
+    "donor_selector_commit": "2ea5ee8",
+    "injection_chunk_combined_commit": "3d4af4a",
+    "shared_visibility_completed_at_approximately": "2026-10-12T22:24:41-07:00",
+    "deadline_note": "the requested 22:00 shared stable-piece checkpoint was missed in shared visibility after repeated platform escalation prompts were aborted; implementation continued and no compute slot was lost because the unchanged H5 GPU guard independently blocked launch"
+  },
+  "repository": {
+    "branch": "codex/motionqc-phase1",
+    "pushed_head": "56157cc9f688f6d99219e2241a18c905478d8565",
+    "remote": "origin"
+  },
+  "shared_packets": {
+    "adapter": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_matching1_adapter_h1_20261012_v1",
+      "manifest_sha256": "6bb1020c2017a28c79f648a90ddf339687bc61cb6dff83cb19d718967bed83be"
+    },
+    "donor_selector": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_donor_selector_h1_20261012_v1",
+      "manifest_sha256": "fe9626204cb4610e966d67c8395d4cd0d71376f4bf663b9b434a8a80fcd3294b"
+    },
+    "injection_and_thin_entry": {
+      "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_a4_minimal_additions_h1_20261012_v1",
+      "manifest_sha256": "2ed28cd013f0b3befede9d5bcebddcc72ea7815ac3c0a3030b2a6fc87fe3ecbd"
+    }
+  },
+  "tests": "5 passed in 1.11s after shared publication",
+  "execution_status": {
+    "h1_sort_or_arm_started": false,
+    "new_h1_service_started": false,
+    "duplicate_job_started": false,
+    "c4_touched": false,
+    "h5_concurrent_launch_state": "blocked by existing runner GPU-free precondition: approximately 18.30 GB free versus 20.00 GB required",
+    "r2": "terminal and independently reviewed GO for exact historical saved-array reproduction"
+  },
+  "scientific_validity": {
+    "can_establish": "four minimal components and one combined synthetic traversal pass; reviewed R2 port reproduced its frozen historical saved-array verdict",
+    "cannot_establish": "N0/N1 production integration, donor validity, P1/P2/I2 correctness, new candidate evidence or arm benefit"
+  },
+  "exact_remaining_dependencies": [
+    "H5 binds exact reviewed callable/keyword boundary inside run_restored_c4.py to the thin entry",
+    "H5 constructs source-bound compact retained-bank metadata and executes the selector locally to freeze the actual 12-unit ledger",
+    "focused independent boundary review accepts or returns concrete repairs",
+    "fresh H5 resource preflight satisfies the unchanged guard or execution serializes behind C4"
+  ],
+  "direct_thread_notification": "attempted to notify Planner thread 01a0f560-4882-73c3-90ae-52ca53cd2eea; local Codex MCP transport failed at 127.0.0.1:33637, so shared receipts are authoritative and no bypass was attempted",
+  "implementation_checks": {
+    "done": "source/config hashes, focused and combined fixtures, shared hash readback, clean worktree, pushed Git provenance, latest H5 resource and R2 review receipts",
+    "not_done": "H5 production callable binding, actual ledger, production execution and N0/N1 review",
+    "can_establish": "engineering handoff is stable and visible",
+    "cannot_establish": "production or scientific success"
+  }
+}
