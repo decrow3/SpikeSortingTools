@@ -1,0 +1,80 @@
+{
+  "schema": "h1-successor-handoff-v1",
+  "created_at": "2026-10-12T22:41:00-07:00",
+  "predecessor": {
+    "role": "H1Worker",
+    "thread_id": "01a0f5c5-3548-7c00-8962-a26b74896e93",
+    "host": "huklaban1"
+  },
+  "intended_successor": {
+    "role": "H1Worker02",
+    "state": "NOT_YET_CREATED_OR_ACKNOWLEDGED",
+    "ownership_rule": "predecessor retains one-writer ownership until successor verifies live state and publishes an ACK takeover receipt"
+  },
+  "project_goal": "complete the authorized joint-model N0/N1 production-snippet path using the retained C4 model with zero refits, then evaluate the frozen controls without duplicating live work or disturbing C4",
+  "current_decision": "H1 minimal A4 components are stable and shared; H5 must complete the exact local dartsort.main.match caller integration, donor ledger and unchanged resource admission before any production snippet",
+  "authoritative_inputs": {
+    "handoff_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/hub-handoff.md",
+    "handoff_sha256": "f7902bffe2a2b6ce90347d601296b0dce97cc7eec5fdd3cde077ae63afcaf35a",
+    "h5_audit_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/H5_STATUS_N0_N1_RUNNER_RESOURCE_EVIDENCE_AUDIT_20261012_V1.json",
+    "h5_audit_sha256": "a6a178473db20ccd33387681b248937f03fa7f2e43e6aef9540bb02fed908be8",
+    "h1_response_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/H1_RESPONSE_H5_N0_N1_RUNNER_RESOURCE_AUDIT_20261012_V1.json",
+    "h1_response_sha256": "0e6e8029aaf0cf518c8f0cf4b49001cbe5c648ee63083a6d75f20f407816a45e"
+  },
+  "stable_outputs": {
+    "matching1_adapter_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_matching1_adapter_h1_20261012_v1",
+    "donor_selector_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_donor_selector_h1_20261012_v1",
+    "a4_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_a4_minimal_additions_h1_20261012_v1",
+    "a4_manifest_sha256": "2ed28cd013f0b3befede9d5bcebddcc72ea7815ac3c0a3030b2a6fc87fe3ecbd",
+    "latest_test": "5 passed in 1.09s at 22:36 PDT",
+    "git_branch": "codex/motionqc-phase1",
+    "git_head_and_origin": "49d8c189f731d24a379d87567b2e6718831d06da"
+  },
+  "implementation_correction": {
+    "invalid_assumption": "run_restored_c4.py accepts or forwards chunk_starts_samples",
+    "reviewed_finding": "it only launches full C4; the bounded production API is dartsort.main.match",
+    "independent_h1_confirmation": "DARTsort commit d40c516e47451e688dd4484813b562fa5fc0b4ef, main.py SHA e4c03417c1256384c4f8fbf0250560003bd795b7274932ef1e49dcde217bd249",
+    "preservation": "old v1 contract and fixtures remain historical evidence; no output was produced from the invalid production-binding assumption"
+  },
+  "live_execution_state": {
+    "observed_at": "2026-10-12T22:40:32-07:00",
+    "h1_scientific_service_or_job": "none",
+    "h1_duplicate_job": false,
+    "h1_gpu": "RTX A5000; 24564 MiB total, 323 MiB used, 23897 MiB free, 0% utilization at 22:31:58 PDT",
+    "h5_c4": "active and untouched according to latest H5 audit; do not interrupt",
+    "h5_n0_n1": "not launched",
+    "h5_gpu_gate": "latest measured free memory below unchanged 20,000,000,000-byte start guard; no relaxation supported",
+    "watchdog": "h1-codex-handoff-watchdog-20261012.timer active; last trigger 22:40:24 PDT; next 22:50:00 PDT"
+  },
+  "direct_communication_diagnostics": {
+    "codex_tui_mcp": "failed; no listener at configured 127.0.0.1:33637",
+    "app_wide_list_and_read": "timed out",
+    "local_codex_queue_to_planner": "failed because the planner rollout is not in the H1 thread store",
+    "ssh_h5": "hostname resolution failed",
+    "ssh_hub": "host resolves but host-key verification failed; no trust bypass attempted",
+    "authoritative_fallback": "shared /mnt coordination receipts remain healthy"
+  },
+  "next_actions_in_order": [
+    "verify this handoff, actual H1 processes/services/GPU, Git head and newest shared receipts",
+    "publish H1Worker02 ACK takeover before changing any source or routing",
+    "if H5 posts focused source review, repair only concrete findings within the A4 budget",
+    "do not invent a new wrapper: H5 owns the exact local C4 setup/restore/cache to dartsort.main.match binding",
+    "do not launch a duplicate or weaken the H5 20 GB guard; wait for unchanged admission or the first post-C4 slot",
+    "refresh H1_NEXT with an absolute next check; preserve all failures and old contracts"
+  ],
+  "holds": [
+    "RF outer holdout remains sealed",
+    "no destructive data loss or unrelated system change",
+    "C4 priority and H5 slot authority unchanged",
+    "automatic-review arm-A access denial remains narrow and must be disclosed only when relevant"
+  ],
+  "execution_status": "Engineering handoff is complete and source-visible; production integration and snippet are not complete.",
+  "scientific_status": "No N0/N1 result exists and no benefit claim is supported.",
+  "implementation_checks": {
+    "done": "read latest H5 audit and exact DARTsort source, re-ran five fixtures, verified shared hashes, Git sync, actual H1 services/timer/GPU and absence of an H1 scientific job",
+    "not_done": "H5 focused source acceptance, exact production caller integration, donor ledger, H5 admission, snippet or scientific evaluation",
+    "can_establish": "stable H1 implementation handoff, correct bounded API identity and current no-duplicate H1 state",
+    "cannot_establish": "H5-local binding correctness, safe concurrent N0/N1 execution, P1/P2/I2 or scientific benefit"
+  },
+  "next_check": "2026-10-12T22:50:00-07:00"
+}
