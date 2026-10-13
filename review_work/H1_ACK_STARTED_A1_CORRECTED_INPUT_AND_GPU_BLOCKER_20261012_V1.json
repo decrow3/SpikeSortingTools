@@ -1,0 +1,64 @@
+{
+  "schema": "h1-a1-assignment-ack-started-v1",
+  "status": "ACK_STARTED_CPU_QUEUE_H1_GPU_ALLOCATION_BLOCKED_H5_SLOT_ARBITRATION_REQUIRED",
+  "created_at": "2026-10-12T19:21:57-07:00",
+  "owner": "H1",
+  "host": "huklaban1",
+  "thread_id": "01a0f5c5-3548-7c00-8962-a26b74896e93",
+  "governing_artifacts": {
+    "hub_handoff_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/hub-handoff.md",
+    "hub_handoff_sha256_at_read": "58200c3aa2bc8ffeae7697d2d5e461ddbd7600c699a0255eba1377a7fc65ac33",
+    "a1_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/JOINT_MODEL_CODE_AHEAD_TASK_CARD_20261012_AMENDMENT_A1_ADAPTIVE_LADDER.md",
+    "a1_sha256": "39c3bd4725953dec8a6b27df38930e0e8c1f94e5b50f99cb9fa2d687819a1f10",
+    "input_correction_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/H5_TO_H1_N0_N1_C4_INPUT_BINDING_CORRECTION_20261012_V1.json",
+    "input_correction_sha256": "32066d89301cdb0f354ca0059814a11da45f6fd24dc62051bccda68cecd1c578",
+    "assignment_pointer_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/H5_TO_H1_A1_ASSIGNMENT_POINTER_20261012_V1.json",
+    "assignment_pointer_sha256": "d007a33424b590c24ba164b985376710d372a752ae05a9318c1053f5f0271b61"
+  },
+  "corrected_k9_binding_ack": {
+    "recording": "conditioned unwarped REF binary from sealed manifest",
+    "reader": "C4 candidate-3 lazy preprocessing/prewhitening reader",
+    "motion": "fixed rounded AM.3 supplied internally as si_motion",
+    "excluded": "C3 arm-A lattice-remapped P(REF); narrow historical access denial remains and is not bypassed",
+    "arms": "N0/N1/N1+N2 must share identical input, reader, motion, detection, clustering and one fitted model per window with zero refit"
+  },
+  "reconciliation": {
+    "repository_clean_at_start": true,
+    "duplicate_local_joint_or_sort_processes_found": 0,
+    "active_local_joint_or_sort_user_services_found": 0,
+    "new_service_or_daemon_installed": false,
+    "c4_priority_or_h5_slot_authority_changed": false
+  },
+  "connectivity": {
+    "h1_worker_model_service": "ACTIVE_TURN_CONNECTED_SHARED_READBACK_AND_TOOL_EXECUTION_SUCCEEDED",
+    "prior_expired_app_delivery": "resolved by direct user-authorized recovery in this turn",
+    "separate_project_model_service_declared_by_a1": false,
+    "durable_new_turn_wake_after_this_turn_verified": false
+  },
+  "gpu_allocation_check": {
+    "host": "huklaban1",
+    "nvidia_smi": "FAILED_CANNOT_COMMUNICATE_WITH_NVIDIA_DRIVER",
+    "cuda_environment": "/home/huklab/anaconda3/envs/spikeinterface; torch 2.6.0+cu124; CUDA build 12.4",
+    "torch_cuda_available": false,
+    "torch_device_count": 0,
+    "allocation_attempt": "torch.empty(1, device=cuda)",
+    "allocation_result": "FAILED_RuntimeError_No_CUDA_GPUs_are_available",
+    "p4_host": "huklaban5_requested_candidate_pending_H5_slot_arbitration; not secured",
+    "p4_contract_freeze_released": false
+  },
+  "started_queue": [
+    "freeze corrected K9 metadata binding and exact missing-byte/access conditions",
+    "reconcile P1 reader-equivalence and no-effect entry-point dependencies without duplicating completed work",
+    "prepare real saved-output K10 exercise contract before inspecting outcome",
+    "track H5-owned P2/K3 and retained-fit restore review as external prerequisites"
+  ],
+  "execution_state": {
+    "recording_or_voltage_read": false,
+    "gpu_work_or_sort_started": false,
+    "p1_or_p3_production_run_started": false,
+    "p4_contract_frozen_or_arms_launched": false,
+    "rf_or_holdout_accessed": false,
+    "c4_edited_or_interrupted": false
+  },
+  "next_evidence": "corrected K9 binding packet plus exact P1/K10 dependency ledger; H5 GPU-slot disposition remains external"
+}
