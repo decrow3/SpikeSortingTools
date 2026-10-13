@@ -1,0 +1,78 @@
+{
+  "schema": "h1-a1-assignment-ack-started-v1",
+  "status": "ACK_A2_A3_A4_RECONCILED_SUBWINDOWS_REVIEWABLE_NO_ARM_LAUNCH",
+  "created_at": "2026-10-12T20:10:59-07:00",
+  "owner": "H1",
+  "host": "huklaban1",
+  "governing_artifacts": {
+    "hub_handoff_sha256_at_latest_read": "0f4a3595be6af2596d9e2eb34d8c65ca8c7789c8ac56d545cdda1a35b8af0053",
+    "A2_sha256": "1aef831b3097e2befb0f7945c2e6c536fea482eac9c4e04ec149a6904272d6a2",
+    "A3_sha256": "8757ddf8f1e5590d578136c2941f390170208cc2ba267122d0ecde24e3b6f891",
+    "A4_sha256": "61e7d41cd891a9fcde4767823174261a31b6c62aecf1a504a435b587a1ec8771",
+    "current_agents_sha256": "f504365c7e8f35c8ace24b2b1f41cf1b0e5b256a816dc3f9b35af86288d74f9b",
+    "assignment_sha256": "812b671d1d9941c0a2de9fa4a756d00364b26026064c3cd1b31b2f2ce0e98345",
+    "current_stage_register_sha256": "75324f73e063d6f1580385fbb35890c74d421ad159853c5e99fc3e080292c488"
+  },
+  "reconciliation": {
+    "duplicate_h1_joint_or_sort_processes_found": 0,
+    "duplicate_h1_joint_or_sort_services_found": 0,
+    "evaluator_preservation_reused_not_duplicated": true,
+    "evaluator_preservation_receipt_sha256": "284b6a5f3f70bda3b16d1cff3f16b66af729340897441161120a0139b8787ec5",
+    "evaluator_bundle_sha256": "2b101f78d9bcf7919d191ab14fe9722e96925384ffe9b737ada873ea36a4bd68",
+    "evaluator_sha256": "4d3e807bcf3b18e03a4a8cad16f02bd6930c17135f4f161a85675b16cc8a812c",
+    "h5_k3d": "stopped before voltage read on actual-native-settings scope gap; H5 owns K3E decision and has moved to K5",
+    "c4_priority_or_h5_slot_authority_changed": false
+  },
+  "measured_h1_resources": {
+    "observed_available_ram_bytes": 194890211328,
+    "gpu": "NVIDIA RTX A5000",
+    "gpu_total_mib": 24564,
+    "gpu_free_mib": 23897,
+    "gpu_compute_processes": 1,
+    "gpu_compute_process_note": "gnome-remote-desktop-daemon only, 205 MiB",
+    "p4_concurrency_released": false,
+    "reason": "exact restored-bank per-process RAM/GPU and contention remain unmeasured"
+  },
+  "subwindow_task_statement": {
+    "existing_code_called": "en_rounded_field.py rounded_rigid_field at SHA-256 823e788da0095012dd345085bb4667f246efc7f4170a5a811c91082769156e00 plus the frozen AM.3 field and C4 30000-sample grid",
+    "smallest_missing_capability": "one A4-permitted field-only script selecting the deterministic 300-chunk span inside each frozen parent window",
+    "scientific_decision_enabled": "which high and medium session-clock chunks may enter P4 preparation; no arm outcome is read or decided"
+  },
+  "subwindow_result": {
+    "source_commit": "a4852f3",
+    "result_path": "testing/outputs/joint_model_a2_field_subwindows_20261012_v2/RESULT.json",
+    "result_sha256": "038b0d509ca442c5d06a011b781ca83c66d36df2a0d3c5f19d4a66da5f191dc7",
+    "source_sha256": "c7b2fe7b1cdf905e1e40c1dfef68c7c2222f17e9fe408e669a2ac7e5e860bcda",
+    "known_answer": "1 passed in 0.08s",
+    "high_half_open_samples": [249090000, 258090000],
+    "high_switches": 284,
+    "medium_half_open_samples": [57810000, 66810000],
+    "medium_switches": 279,
+    "chunks_each": 300,
+    "review_state": "REVIEWABLE_NOT_ACCEPTED",
+    "preserved_failure": "attempt 1 NameError retained; pre-A4 successful v1 retained and explicitly superseded, never overwritten"
+  },
+  "execution_state": {
+    "recording_or_voltage_read": false,
+    "sort_or_arm_started": false,
+    "new_service_or_daemon_installed": false,
+    "rf_or_holdout_accessed": false,
+    "c4_edited_or_interrupted": false
+  },
+  "implementation_checks": {
+    "done": [
+      "read and hash-verified A2, A3, A4, current AGENTS copy, evaluator preservation and current stage register",
+      "reconciled H1 processes, GPU and RAM outside the sandbox",
+      "froze the field-only rule before selection and preserved the failed first attempt",
+      "corrected post-A4 source to call the existing rounded-field helper and consolidated to one known-answer test"
+    ],
+    "not_done": [
+      "independent review of selected intervals",
+      "retained model/template transfer and donor selection",
+      "injection, adapter, thin chunk entry, P1-P4 arms or scoring"
+    ],
+    "can_establish": "H1 consumed the current instructions and produced a bounded field-only subwindow result for review",
+    "cannot_establish": "P4 readiness, donor validity, equivalence, arm benefit or concurrency count"
+  },
+  "next_evidence": "focused subwindow review, then A4-permitted donor selector once the retained bank/templates are available on H1"
+}

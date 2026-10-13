@@ -1,0 +1,8 @@
+{
+  "schema": "immutable-evidence-manifest-v1",
+  "status": "FIELD_ONLY_SUBWINDOWS_REVIEWABLE",
+  "members": {
+    "RESULT.json": {"size": 13463, "sha256": "038b0d509ca442c5d06a011b781ca83c66d36df2a0d3c5f19d4a66da5f191dc7"},
+    "REVIEW_REQUEST.md": {"size": 1565, "sha256": "2378dc35fc525312ad0df155c07ce141bc51c8c0198439bd4bc065456b49db41"}
+  }
+}
