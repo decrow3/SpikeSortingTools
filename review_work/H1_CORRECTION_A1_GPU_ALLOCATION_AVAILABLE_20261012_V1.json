@@ -1,0 +1,61 @@
+{
+  "schema": "h1-a1-gpu-allocation-correction-v1",
+  "status": "CORRECTION_H1_GPU_ALLOCATION_SUCCEEDED_P4_HOST_NAMED_HUKLABAN1",
+  "created_at": "2026-10-12T19:24:26-07:00",
+  "owner": "H1",
+  "host": "huklaban1",
+  "corrects": {
+    "receipt": "H1_ACK_STARTED_A1_CORRECTED_INPUT_AND_GPU_BLOCKER_20261012_V1.json",
+    "receipt_commit": "76d65a899452285b0af1d544f1910a0b23f249bf",
+    "incorrect_scope": "sandboxed GPU visibility was reported as host GPU unavailability",
+    "preservation": "the earlier receipt remains immutable as evidence of the sandbox-only check"
+  },
+  "governing_artifacts": {
+    "a1_sha256": "39c3bd4725953dec8a6b27df38930e0e8c1f94e5b50f99cb9fa2d687819a1f10",
+    "input_correction_sha256": "32066d89301cdb0f354ca0059814a11da45f6fd24dc62051bccda68cecd1c578"
+  },
+  "actual_outside_sandbox_check": {
+    "nvidia_smi": {
+      "gpu_index": 0,
+      "name": "NVIDIA RTX A5000",
+      "memory_total_mib": 24564,
+      "memory_free_mib": 23897,
+      "compute_mode": "Default"
+    },
+    "python": "/home/huklab/anaconda3/envs/spikeinterface/bin/python",
+    "torch": "2.6.0+cu124",
+    "cuda_build": "12.4",
+    "cuda_available": true,
+    "device_count": 1,
+    "allocation": {
+      "bytes": 4194304,
+      "device": "cuda:0",
+      "fill_value": 3.25,
+      "sum": 3407872.0,
+      "synchronize_succeeded": true,
+      "post_cache_memory_allocated": 0
+    }
+  },
+  "p4_host_disposition": {
+    "named_host": "huklaban1",
+    "gpu_allocation_gate": "PASS",
+    "slot_conflict_observed": false,
+    "p4_contract_freeze_released": false,
+    "remaining_gates": [
+      "corrected K9 real-window binding and benchmark contract",
+      "P1-P3 reviewed passes",
+      "H5-owned K3/P2 repair and focused GO",
+      "one fitted model per window restored identically with zero refit",
+      "real saved-output K10 exercise and frozen interpretation",
+      "fresh resource check immediately before managed launch"
+    ]
+  },
+  "execution_state": {
+    "only_allocation_probe_ran": true,
+    "recording_or_voltage_read": false,
+    "sort_or_arm_started": false,
+    "service_or_daemon_started": false,
+    "rf_or_holdout_accessed": false,
+    "c4_edited_or_interrupted": false
+  }
+}
