@@ -1,0 +1,43 @@
+{
+  "schema": "h1-standing-approvals-ack-v1",
+  "created_at": "2026-10-12T22:55:00-07:00",
+  "host": "huklaban1",
+  "owner": "H1Worker02 thread 01a133c9-308e-7b50-a1b9-544220c36686",
+  "status": "ACK_STANDING_APPROVALS_NO_REDUNDANT_PERMISSION_REQUESTS",
+  "authority": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/AGENTS_20261012_SUCCESSOR_AUTH_14e1127e.md",
+    "sha256": "14e1127eafc652e88011d227d01fa8f5e5904916d89ea715c64f65b4867ed3f0",
+    "acknowledged_sections": [
+      "standing in-scope recording-read and voltage-processing authorization",
+      "standing project-support transfer authorization among the existing hub, H1 and H5 project/shared coordination locations",
+      "standing successor-chat creation, messaging and ownership-transfer authorization",
+      "reuse of valid reviews, checkpoints and standing authorization across successor contexts"
+    ]
+  },
+  "operating_rule": {
+    "continue_without_reasking": "already-authorized in-scope work after its concrete frozen implementation-reviewed contract and applicable load-bearing independent review are satisfied",
+    "changes_not_requiring_renewed_human_approval": "windows, arms, machines/hosts, bounded resources, filenames/revisions/existing project destinations, or successor context alone",
+    "coordination_not_a_human_gate": "planner/coordinator routing and scientific review do not create a new human-consent requirement",
+    "experiment_limits": "agent-selected or contract-specific byte, runtime, window, arm, launch and resource limits remain scoped to that experiment and are not promoted to standing project restrictions",
+    "request_standard": "do not request permission unless a specific unmet platform/tool permission, explicit current hold, narrow unresolved denial, standing exclusion, destructive action, or genuine scope expansion requires it; name why standing authority does not cover the action"
+  },
+  "standing_exclusions_preserved": [
+    "RF and sealed outer-holdout access remains excluded unless separately authorized under its frozen return conditions",
+    "raw-voltage and numeric waveform transfers remain restricted",
+    "explicit current user holds remain binding",
+    "the narrow automatic-review arm-A access denial remains unresolved where relevant",
+    "platform/tool permission checks still apply and rejections will not be bypassed",
+    "standing publication authority does not itself authorize a new spike sort, voltage modification, deletion, scientific parameter change or budget expansion"
+  ],
+  "current_next": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/H1_NEXT_20261012_2252_V1.json",
+    "sha256": "53287b01ff23fdb38425eeb0e6fc63367cb79d14b3a0a512d19cd9d828192cbe",
+    "state": "waiting for a concrete H5 focused binding review or donor-ledger receipt; no ready H1 repair and no duplicate launch"
+  },
+  "implementation_checks": {
+    "done": "read and hash-verified the current successor-authorization policy and its standing authorization, transfer, lifecycle, successor and exclusion language",
+    "not_done": "no new experiment or platform action was proposed, so no action-specific contract or platform permission was evaluated",
+    "can_establish": "H1Worker02 has explicitly incorporated the existing standing approvals and will avoid redundant permission requests",
+    "cannot_establish": "that a future action is covered without checking its exact scope, contract and any platform-enforced permission boundary"
+  }
+}
