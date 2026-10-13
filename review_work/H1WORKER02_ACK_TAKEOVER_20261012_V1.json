@@ -1,0 +1,54 @@
+{
+  "schema": "h1-successor-takeover-ack-v1",
+  "created_at": "2026-10-12T22:46:00-07:00",
+  "role": "H1Worker02",
+  "host": "huklaban1",
+  "thread_id": "01a133c9-308e-7b50-a1b9-544220c36686",
+  "predecessor": {
+    "role": "H1Worker",
+    "thread_id": "01a0f5c5-3548-7c00-8962-a26b74896e93",
+    "handoff_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/H1_SUCCESSOR_HANDOFF_20261012_2241_V1.json",
+    "handoff_sha256": "ec63dad0fdab3a35353ab26ebffa9bfd17cd2a76f1ef12dc1c98f02e2e6641b4"
+  },
+  "status": "TAKEOVER_ACKNOWLEDGED_ONE_WRITER_OWNERSHIP_ACCEPTED",
+  "project_goal": "complete the authorized joint-model N0/N1 production-snippet path using the retained C4 model with zero refits, then evaluate the frozen controls without duplicating live work or disturbing C4",
+  "authoritative_state": {
+    "hub_handoff_sha256": "f7902bffe2a2b6ce90347d601296b0dce97cc7eec5fdd3cde077ae63afcaf35a",
+    "h5_audit_sha256": "a6a178473db20ccd33387681b248937f03fa7f2e43e6aef9540bb02fed908be8",
+    "h1_response_sha256": "0e6e8029aaf0cf518c8f0cf4b49001cbe5c648ee63083a6d75f20f407816a45e",
+    "a4_manifest_sha256": "2ed28cd013f0b3befede9d5bcebddcc72ea7815ac3c0a3030b2a6fc87fe3ecbd",
+    "git_branch": "codex/motionqc-phase1",
+    "git_head_and_origin": "a5b326c02222040cf81fb892bff4f434e9722bd2",
+    "fixture_result": "5 passed in 1.05s at 22:45 PDT"
+  },
+  "live_execution_state": {
+    "observed_at": "2026-10-12T22:45:01-07:00",
+    "h1_scientific_process_or_service": "none",
+    "h1_duplicate_job": false,
+    "h1_gpu": "RTX A5000; 24564 MiB total, 323 MiB used, 23897 MiB free, 0% utilization; desktop process only",
+    "h5_c4": "reported active and untouched in the newest authoritative H5 receipt; not independently visible from H1",
+    "h5_n0_n1": "not launched in the newest authoritative receipt",
+    "watchdog_before_retarget": "active/waiting; last trigger 22:40:24 PDT; next trigger 22:50:00 PDT; targets predecessor thread"
+  },
+  "ownership": {
+    "accepted": "H1 source/config packets and focused repair responsibility",
+    "h5_retains": "exact local C4 setup/restore/cache to dartsort.main.match binding, donor ledger and resource admission",
+    "prohibited": "no duplicate wrapper, launcher, monitor or compute launch; do not interrupt C4 or weaken the H5 20 GB guard"
+  },
+  "holds": [
+    "RF outer holdout remains sealed",
+    "C4 priority and H5 slot authority remain unchanged",
+    "automatic-review arm-A recording access denial remains narrow and unresolved",
+    "preserve failures and historical contracts"
+  ],
+  "execution_status": "H1Worker02 takeover is verified; stable H1 engineering packets exist, but H5 production integration and the N0/N1 snippet are incomplete.",
+  "scientific_status": "No N0/N1 result exists and no scientific benefit claim is supported.",
+  "implementation_checks": {
+    "done": "read the successor handoff, current shared policy/code budget, authoritative H5 audit and H1 response; verified hashes, packet seals, Git sync, five fixtures, actual H1 processes/services/GPU and watchdog target",
+    "not_done": "independent H5 process inspection, H5 focused source acceptance, local donor ledger, production caller integration, resource admission, snippet or scientific evaluation",
+    "can_establish": "verified H1 takeover, stable source visibility, correct bounded API identity and no duplicate H1 work",
+    "cannot_establish": "H5-local binding correctness, C4 liveness beyond its latest receipt, safe concurrent launch, P1/P2/I2 or benefit"
+  },
+  "next_action": "retarget the single existing H1 watchdog to this successor thread, then await and inspect H5 focused review or donor-ledger evidence; repair only concrete A4 findings",
+  "next_check": "2026-10-12T22:50:00-07:00"
+}
