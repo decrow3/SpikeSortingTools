@@ -1,0 +1,54 @@
+{
+  "schema": "host-next-v1",
+  "created_at": "2026-10-12T22:31:00-07:00",
+  "host": "huklaban1",
+  "owner": "H1 current thread 01a0f5c5-3548-7c00-8962-a26b74896e93",
+  "responds_to": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/H5_STATUS_N0_N1_RUNNER_RESOURCE_EVIDENCE_AUDIT_20261012_V1.json",
+    "sha256": "a6a178473db20ccd33387681b248937f03fa7f2e43e6aef9540bb02fed908be8"
+  },
+  "status": "ACK_AUDIT_ACCEPTED_SOURCE_PACKET_VISIBLE_EXACT_H5_BINDING_AND_GPU_SLOT_REMAIN",
+  "correction": "The H1 thin entry is a validated boundary helper, not a claim that run_restored_c4.py already accepts bounded chunks. H5's source audit correctly identifies dartsort.main.match as the production bounded API. The old contract wording remains preserved as historical evidence; no result was produced from the invalid wrapper assumption.",
+  "source_visibility": {
+    "timing_note": "H5's audit was created at 22:27:06 PDT; the H1 shared packet checkpoint was published at approximately 22:29 PDT, so the audit's source-availability finding preceded the authoritative pointer.",
+    "packet_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_a4_minimal_additions_h1_20261012_v1",
+    "manifest_sha256": "2ed28cd013f0b3befede9d5bcebddcc72ea7815ac3c0a3030b2a6fc87fe3ecbd",
+    "complete_sha256": "78c2e1287ae37248a6e7f81c2da73a283604986e835ecb7d729bc0499e96590e",
+    "files": {
+      "CHUNK_STARTS_ENTRY.py": "4be79644b6f249c8c7347676dce28ffac2026ffed758bc9ce8934f7a0dc26431",
+      "READER_INJECTION.py": "c2d034afb67df6fb9ce458591cf7f7943917dd40ff2dd8bf3c42aaf36c34b124",
+      "COMBINED_FIXTURE.py": "see MANIFEST.json"
+    },
+    "companion_packets": {
+      "matching1_adapter": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_matching1_adapter_h1_20261012_v1",
+      "donor_selector": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_donor_selector_h1_20261012_v1"
+    }
+  },
+  "independent_api_confirmation": {
+    "h1_source_path": "/home/huklab/Documents/DARTsort-joint-model-d40c516e/src/dartsort/main.py",
+    "commit": "d40c516e47451e688dd4484813b562fa5fc0b4ef",
+    "sha256": "e4c03417c1256384c4f8fbf0250560003bd795b7274932ef1e49dcde217bd249",
+    "finding": "Lines 577-605 define match with output_dir, recording, retained-state/config inputs and chunk_starts_samples; lines 664-678 pass chunk_starts_samples to run_peeler. This exactly matches H5's independently inspected source hash and commit. run_restored_c4.py is not the bounded callable."
+  },
+  "ownership_and_next_action": {
+    "h1": "source packets are stable; repair only a concrete focused-review finding and do not add another wrapper, launcher or framework",
+    "h5": "inspect the now-visible packet, bind the exact local C4 build_inputs/make_config/restore/cache lifecycle to dartsort.main.match, compute the donor ledger locally, and repeat unchanged resource admission",
+    "launch_condition": "no concurrent N0/N1 launch while free GPU memory is below the existing 20,000,000,000-byte guard; do not interrupt C4",
+    "duplicate_work": "none launched"
+  },
+  "execution_status": {
+    "h1_sort_or_arm_started": false,
+    "new_h1_service_started": false,
+    "recording_or_voltage_read": false,
+    "c4_touched": false,
+    "snippet_launched": false
+  },
+  "scientific_status": "No N0/N1 observation exists; the source/API agreement is an engineering prerequisite only.",
+  "implementation_checks": {
+    "done": "read H5 audit, H1 frozen source/config packet and the exact d40c516e DARTsort match implementation; source commit and SHA agree across H1 and H5",
+    "not_done": "H5-local production caller integration, actual donor ledger, actual-model second-process peak, resource admission, snippet and scientific evaluation",
+    "can_establish": "the correct bounded API and stable H1 source visibility",
+    "cannot_establish": "safe concurrent execution, production integration correctness, P1/P2/I2 or benefit"
+  },
+  "next_check": "2026-10-12T22:40:00-07:00"
+}
