@@ -1,0 +1,58 @@
+{
+  "schema": "joint-model-a2-field-subwindow-selection-contract-v1",
+  "frozen_at": "2026-10-12T19:55:00-07:00",
+  "milestone": "A2 field-only high/medium 300-chunk subwindow selection",
+  "decision_changed": "which two session-clock intervals are eligible for P4 preparation",
+  "governing": {
+    "a2_sha256": "1aef831b3097e2befb0f7945c2e6c536fea482eac9c4e04ec149a6904272d6a2",
+    "a3_sha256": "8757ddf8f1e5590d578136c2941f390170208cc2ba267122d0ecde24e3b6f891",
+    "assignment_sha256": "812b671d1d9941c0a2de9fa4a756d00364b26026064c3cd1b31b2f2ce0e98345"
+  },
+  "inputs": {
+    "window_freeze_sha256": "dcdb76bb151ba02168e53e4499ed4391e65c9ad684afdfe8f4d98cbc53238910",
+    "high_parent_half_open_samples": [217255153, 280095949],
+    "medium_parent_half_open_samples": [14208763, 77049559],
+    "sampling_frequency_hz": 29999.835983263598,
+    "field_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_am3_imec0_field_request_20260929_v1/payload/luke0804_imec0_two_layer_motion.npz",
+    "field_sha256": "4c769125020aad3263bf6eaa1889cdaa7eccbf19dcf0aa3a068b185221fadb9f",
+    "expected_rounded_q_float64_bytes_sha256": "3174326c7354cb33c95039afaf0858bcaee546832ab3b5a5759422828d5c94df"
+  },
+  "selection_rule": {
+    "chunk_grid_origin_session_sample": 0,
+    "chunk_length_samples": 30000,
+    "chunks_per_subwindow": 300,
+    "subwindow_length_samples": 9000000,
+    "nominal_duration": "300 C4 chunks; approximately 300.001640176334 seconds at the exact sampling rate",
+    "candidate_starts": "every 30000-sample session-grid start whose complete 9000000-sample half-open interval lies inside its frozen parent window",
+    "field_rounding": "float64 sign(x)*floor(abs(x)/40+0.5)*40; expected hash must match",
+    "nearest_field_support": "each knot owns the half-open session-sample Voronoi interval between adjacent time-knot midpoints; outer knots extend to recording bounds",
+    "primary": "maximum count of rounded-state changes whose nearest-field boundary sample lies in the candidate half-open interval",
+    "secondary": "maximum number of session samples in the candidate whose nearest rounded state has absolute value at least 80 um",
+    "tertiary": "earliest session-clock start sample",
+    "output": "one create-only JSON with parent and selected half-open bounds, chunk starts, both ranking statistics, exact input hashes and scope"
+  },
+  "resources": {
+    "cpu_threads_max": 1,
+    "gpu": false,
+    "wall_seconds_stop": 60,
+    "persistent_output_bytes_stop": 1048576
+  },
+  "acceptance": [
+    "field and rounded-q hashes match",
+    "each selected interval contains exactly 300 complete C4 chunks and is contained in its parent",
+    "all candidate starts are evaluated under the frozen lexicographic rule",
+    "synthetic positive and tie-break fixtures pass",
+    "no arm, injection, sorter, saved-output outcome, RF or holdout is read"
+  ],
+  "stop_conditions": [
+    "input hash, clock, parent bounds or chunk grid mismatch",
+    "nonuniform or nonmonotone field time knots",
+    "multiple winners remain after the earlier-start tie break",
+    "any request to inspect an arm or injection outcome during selection"
+  ],
+  "scope": {
+    "can_establish": "the deterministic field-only P4 subwindow bounds",
+    "cannot_establish": "reader equivalence, donor validity, arm readiness, scientific benefit or runtime"
+  },
+  "completion_condition": "source/tests frozen after this contract, tests pass, one immutable field-only result packet is published"
+}
