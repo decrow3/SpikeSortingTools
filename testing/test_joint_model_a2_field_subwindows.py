@@ -7,7 +7,7 @@ from testing.joint_model_a2_field_subwindows import (
 )
 
 
-def test_nearest_boundary_and_scores():
+def test_field_only_selector_known_answer():
     times = np.array([0.0, 1.0, 2.0, 3.0])
     boundaries = nearest_boundaries_samples(times, 10.0)
     assert np.array_equal(boundaries, np.array([5, 15, 25]))
@@ -15,8 +15,6 @@ def test_nearest_boundary_and_scores():
     assert score_candidate(0, 20, q, boundaries) == (1, 15)
     assert score_candidate(10, 30, q, boundaries) == (1, 20)
 
-
-def test_primary_then_secondary_then_earliest_tie_break():
     q = np.array([0.0, 80.0, 0.0, 80.0, 0.0])
     boundaries = np.array([10, 20, 30, 40], dtype=np.int64)
     selected = select_subwindow(
@@ -26,8 +24,6 @@ def test_primary_then_secondary_then_earliest_tie_break():
     assert selected["state_switch_count"] == 2
     assert selected["abs_q_at_least_80um_samples"] == 10
 
-
-def test_parent_containment_and_grid():
     q = np.array([0.0, 40.0])
     boundaries = np.array([100], dtype=np.int64)
     selected = select_subwindow(
