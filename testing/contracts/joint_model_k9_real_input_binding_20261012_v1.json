@@ -1,0 +1,71 @@
+{
+  "schema": "joint-model-k9-real-input-binding-contract-v1",
+  "frozen_at": "2026-10-12T19:27:00-07:00",
+  "milestone": "K9 corrected real base-input identity binding",
+  "decision_changed": "whether H1 can stop treating C3 arm-A P(REF) as a possible K9 input and proceed to freeze benchmark windows against the exact C4 reader path",
+  "scope": "metadata and small dependency files only; no raw voltage read or rehash, injection copy, window selection, sorting, GPU arm run, RF/holdout or C4 edit",
+  "governing": {
+    "a1_sha256": "39c3bd4725953dec8a6b27df38930e0e8c1f94e5b50f99cb9fa2d687819a1f10",
+    "h5_input_correction_sha256": "32066d89301cdb0f354ca0059814a11da45f6fd24dc62051bccda68cecd1c578",
+    "k9_synthetic_core_verdict": "GO_SYNTHETIC_MECHANICS_ONLY"
+  },
+  "expected_recording": {
+    "path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/traces_cached_seg0.raw",
+    "binary_sha256_from_sealed_manifest": "152f8d43a9360a95be1e9fc6bd66bce6e0fe0c091836787b37d50941f8682482",
+    "recording_content_sha256_from_sealed_manifest": "2d6fac755db3182841bf121d822754f963ebada3bcb8cd9e96e0b63e6f9b7372",
+    "manifest_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/recording/rescue_recording_manifest.json",
+    "manifest_sha256": "2d15cf9da243a55b06358544f2436f118da2967ec410a7bb7792755351cc9a67",
+    "bytes": 241309358592,
+    "dtype": "int16",
+    "num_samples": 314204894,
+    "num_channels": 384,
+    "sampling_frequency_hz": 29999.835983263598,
+    "session_origin_frame": 0,
+    "session_stop_frame_exclusive": 314204894,
+    "stream_id": "imec0.ap",
+    "gain_uv_per_count": 2.34375
+  },
+  "expected_reader": {
+    "local_snapshot_path": "/home/huklab/Documents/RyanSorting/SpikeSortingTools/testing/prospective_a_prewhitening_si_e36d3066.py",
+    "source_sha256": "e36d3066c794a3caec99f0d647104aa30b8aa91d902fc16ea8700778fbe5115c",
+    "ops_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output/ops.npy",
+    "ops_sha256": "6b3be364e403020f60c560592d60b4f4e628cb4bfe639a9fc5605a42ff35f0af",
+    "channel_positions_path": "/mnt/NPX/Luke/20250804/rescue_pipeline_results_Luke0804_V2V1_g0_imec0/cur/cur_output/channel_positions.npy",
+    "channel_positions_sha256": "0469ca92fb739a0cfd2f1613262d3a2d75af1098385385d7462ee6e3fd038d75",
+    "channel_map_sha256": "2c971325855c811fbc3e60479070e4c7d739b178e0aa047c6b6d2d16599d9e4c",
+    "highpass_filter_sha256": "8c0a2335eb5e16869aaadaa3427459faea841d7c33ce249af7ed485ea8fad7ab",
+    "batch_size_samples": 60000,
+    "padding_samples": 61,
+    "do_car": true,
+    "temporal_centering": true,
+    "artifact_threshold": "positive_infinity"
+  },
+  "expected_motion": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/en_am3_imec0_field_request_20260929_v1/payload/luke0804_imec0_two_layer_motion.npz",
+    "file_sha256": "4c769125020aad3263bf6eaa1889cdaa7eccbf19dcf0aa3a068b185221fadb9f",
+    "rounded_q_sha256": "3174326c7354cb33c95039afaf0858bcaee546832ab3b5a5759422828d5c94df",
+    "clock": "AP session frame zero",
+    "rounding": "40 um half-away",
+    "application": "internal si_motion; never materialized into recording bytes"
+  },
+  "arm_invariants": {
+    "common_input": "conditioned REF bytes through the exact reader with identical internal AM.3",
+    "excluded_input": "C3 arm-A lattice-remapped P(REF)",
+    "checkpoint": "one detection, clustering and fitted model checkpoint per window shared by N0/N1/N1+N2",
+    "refit": "zero in every arm",
+    "injection": "fresh bounded window copy before reader CAR/high-pass; never mutate original"
+  },
+  "acceptance": [
+    "small dependency hashes equal expected values",
+    "recording stat size equals the sealed identity without reading raw bytes",
+    "manifest fields equal expected clock, shape, rate, dtype, stream and gain",
+    "no window, output namespace or launch is inferred by this binding"
+  ],
+  "stop_conditions": [
+    "any dependency hash or manifest identity mismatch",
+    "raw binary path unavailable or size mismatch",
+    "request would require C3 arm-A access or mutate the original",
+    "window or checkpoint selection attempted before its separate frozen contract"
+  ],
+  "completion_condition": "immutable verification receipt and focused implementation-first review; status remains BASE_INPUT_BOUND_WINDOWS_PENDING"
+}
