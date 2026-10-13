@@ -1,0 +1,49 @@
+{
+  "schema": "host-next-v1",
+  "created_at": "2026-10-12T21:28:00-07:00",
+  "host": "huklaban1",
+  "owner": "H1 current thread 01a0f5c5-3548-7c00-8962-a26b74896e93",
+  "completed_task": "scheduled reconciliation plus matching1 times/labels adapter implementation and immutable packet publication",
+  "status": "ADAPTER_REVIEWABLE_REMAINING_ADDITIONS_BLOCKED_ON_EXACT_H5_SOURCE_SIGNATURES",
+  "authority": {
+    "hub_handoff_sha256": "8da1646d07b12fa50742070d70911fa56a24817481bc424bcdd66198998a5c91",
+    "successor_policy_sha256": "14e1127eafc652e88011d227d01fa8f5e5904916d89ea715c64f65b4867ed3f0",
+    "successor_policy_acknowledged": true,
+    "a4_sha256": "61e7d41cd891a9fcde4767823174261a31b6c62aecf1a504a435b587a1ec8771"
+  },
+  "execution_status": {
+    "h1_n0_n1_or_sort_process_found": false,
+    "h1_duplicate_service_or_output_found": false,
+    "h1_snippet_launched": false,
+    "r2_from_live_repocleanup_receipt_at_212146": "managed service running, one writer, zero restarts; not an H1 job",
+    "c4_from_live_repocleanup_receipt_at_212146": "active/running PID 4044337, zero restarts, untouched",
+    "adapter_packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_matching1_adapter_h1_20261012_v1",
+    "adapter_manifest_sha256": "6bb1020c2017a28c79f648a90ddf339687bc61cb6dff83cb19d718967bed83be",
+    "adapter_complete_sha256": "869a17d32628f5b889ed73a22d97cbcd0754839bfd04aa98c60aeeec73338367",
+    "adapter_commit": "f9449eb",
+    "adapter_test": "1 passed in 0.11s",
+    "adapter_review_state": "REVIEWABLE_NOT_ACCEPTED"
+  },
+  "scientific_validity": {
+    "n0_n1_result_exists": false,
+    "r2_result_exists": false,
+    "can_claim": "the adapter's bounded independent-value fixture passed and the route/dependency correction is accepted",
+    "cannot_claim": "real-output round trip, snippet readiness, donor validity, P1/P2/I2 correctness, R2 success, equivalence or arm benefit"
+  },
+  "remaining_source_blocker": {
+    "thin_chunk_entry": "A4 requires calling H5 run_restored_c4.py, but its exact source or callable/CLI signature is not present in H1 or shared storage; only the remote path and SHA are available",
+    "injection_hook": "the exact reader snapshot exists on H1, but the production integration/serialization interface and already-placed I2 waveform-plan schema are not frozen or shared; inventing an interface would risk a second wrapper and violate A4",
+    "donor_selector": "the retained numeric bank stays on H5 as required, but H1 lacks a compact nonnumeric template-metadata schema and frozen isolation-cosine bound needed to write an executable selector without guessing",
+    "smallest_resolution_requested_from_h5": "publish compact reviewed source snapshots or exact signatures for run_restored_c4.py/restore_guard.py/materialize.py, plus the nonnumeric template metadata keys/shapes and frozen isolation bound; no model/template/waveform/raw transfer",
+    "a4_scope_note": "existing code and exact hashes were inspected first; no new launcher, wrapper, monitor, schema, validator, report generator or speculative interface will be added"
+  },
+  "next_action": "H5 focused review of the published adapter may proceed immediately; H1 resumes thin entry and I2 hook/selector as soon as the compact source signatures arrive, while preserving C4/R2 and starting no duplicate",
+  "next_check": "2026-10-12T21:40:00-07:00",
+  "complete_reviewed_handoff_target": "2026-10-13T02:00:00-07:00, conditional on prompt source-signature availability",
+  "implementation_checks": {
+    "done": "latest handoff and receipts hash-read; A4 source budget re-read; repository/shared source inventory and process/output identities checked; adapter fixture and immutable packet hashes verified",
+    "not_done": "host systemd bus was not freshly enumerated from the restricted process namespace; current service state comes from RepoCleanup's 21:21:46 live systemd receipt. Missing H5 runner/injection signatures prevent honest integration implementation.",
+    "can_establish": "no duplicate H1 workload was launched and the adapter is reviewable",
+    "cannot_establish": "managed-service state after 21:21:46, remaining integration behavior, or any scientific outcome"
+  }
+}

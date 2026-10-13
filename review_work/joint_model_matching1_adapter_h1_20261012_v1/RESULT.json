@@ -1,0 +1,38 @@
+{
+  "schema": "h1-a1-assignment-ack-started-v1",
+  "status": "REVIEWABLE_NOT_ACCEPTED",
+  "created_at": "2026-10-12T21:25:00-07:00",
+  "source_commit": "f9449eb",
+  "test_command": "pytest -q testing/test_joint_model_matching1_adapter.py",
+  "test_result": "1 passed in 0.11s",
+  "checks": {
+    "exact_session_sample_round_trip": true,
+    "exact_label_round_trip": true,
+    "row_order_preserved": true,
+    "duplicate_times_preserved": true,
+    "negative_labels_preserved": true,
+    "create_only_replay_rejected": true,
+    "floating_time_dtype_rejected": true,
+    "kilosort_only_fields_fabricated": false
+  },
+  "implementation_checks": {
+    "done": [
+      "traced the persistent fast-loop evaluator to spike_times.npy and spike_clusters.npy consumption",
+      "traced matching1 writer/reader evidence to HDF5 times_samples and labels datasets",
+      "checked the 7 Oct row-binding correction and retained matching-stage rather than final-NPZ semantics",
+      "ran an independent-value known-answer fixture rather than comparing the adapter with itself"
+    ],
+    "not_done": [
+      "round trip on the H5 production matching1 artifact, which does not exist before the snippet runs",
+      "independent source review",
+      "end-to-end fast-loop scoring, because Kilosort-only metrics remain explicitly not applicable"
+    ],
+    "can_establish": "the adapter exactly materializes matching-stage times and labels in the two evaluator filenames without synthesizing unsupported Kilosort fields",
+    "cannot_establish": "real snippet correctness, full evaluator compatibility, P1/P2/I2 correctness, or scientific benefit"
+  },
+  "scope": {
+    "recording_or_voltage_read": false,
+    "sort_or_arm_started": false,
+    "rf_or_holdout_accessed": false
+  }
+}

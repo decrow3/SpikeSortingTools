@@ -1,0 +1,30 @@
+{
+  "schema": "h1-a1-assignment-ack-started-v1",
+  "status": "REVIEWABLE_SOURCE_HASHES_STABLE_H5_CALLABLE_BINDING_PENDING",
+  "created_at": "2026-10-12T21:46:00-07:00",
+  "source_commit": "3d4af4a",
+  "test_command": "pytest -q testing/test_joint_model_a4_combined_fixture.py testing/test_joint_model_chunk_starts_entry.py testing/test_joint_model_reader_injection.py testing/test_joint_model_donor_selector.py testing/test_joint_model_matching1_adapter.py",
+  "test_result": "5 passed in 1.14s",
+  "checks": {
+    "pre_centering_pre_car_injection_contract": true,
+    "start_end_clipping": true,
+    "overlap_summing": true,
+    "source_batch_immutable": true,
+    "thin_runner_called_once": true,
+    "chunk_and_switch_values_forwarded_exactly": true,
+    "create_only_output": true,
+    "combined_switch_boundary": 217637561,
+    "combined_moving_left_and_right": true,
+    "combined_fixed_overlap": true,
+    "combined_matching1_round_trip": true,
+    "recording_or_voltage_read": false,
+    "sort_or_arm_started": false
+  },
+  "exact_blocker": "H5 must bind the exact callable inside SHA-bound run_restored_c4.py to c4_continuation_runner and verify the three forwarded keyword boundaries; H1 did not guess an absent callable or CLI name",
+  "implementation_checks": {
+    "done": "source/config reads, independent-value focused fixtures and combined boundary/moving/fixed/overlap traversal",
+    "not_done": "exact H5 callable binding, actual donor ledger, production snippet and independent review",
+    "can_establish": "the two additions and combined synthetic traversal obey their frozen interfaces",
+    "cannot_establish": "production integration, P1 equality, P2/I2 correctness or arm benefit"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "h1-a1-assignment-ack-started-v1",
+  "status": "FROZEN_BEFORE_INJECTION_FIXTURE",
+  "milestone": "P2 I2 switch-adjacent injected-truth integration",
+  "decision": "whether frozen donor waveforms can be added once on the correct session-clock support before C4 temporal centering and CAR",
+  "existing_code_called": {
+    "reader_path": "testing/prospective_a_prewhitening_si_e36d3066.py",
+    "reader_base_sha256": "e36d3066c794a3caec99f0d647104aa30b8aa91d902fc16ea8700778fbe5115c",
+    "hook_after": "_filter_batch: values = values[self.channel_map], then optional invert_sign",
+    "hook_before": "_filter_batch: temporal_centering and do_car blocks"
+  },
+  "smallest_missing_capability": "one A4-permitted function adding already-placed I1/I2 waveforms to the existing padded float reader batch",
+  "input_contract": {
+    "values": "selected-channel x padded-time floating tensor after optional sign inversion",
+    "padded_start_sample": "session-clock sample corresponding to values[:,0], possibly negative for first-batch padding",
+    "event_samples": "integer session-clock trough samples within the recording",
+    "event_waveforms": "event x selected-channel x waveform-sample floating array already encoding frozen donor amplitude and physical placement/state",
+    "trough_offset_samples": "inclusive waveform index aligned to event_samples"
+  },
+  "frozen_behavior": {
+    "mutation": "return a clone; do not mutate source batch",
+    "overlap": "sum in input event-row order",
+    "boundaries": "clip at padded batch support and physical recording [0,num_samples)",
+    "filtering_or_referencing_inside_hook": false,
+    "binary_copy": false
+  },
+  "completion_condition": "single known-answer fixture passes clipped start/end, overlap, two channels, source immutability and fail-closed shape/time controls",
+  "scope": {
+    "recording_or_voltage_read": false,
+    "sort_or_arm_launch": false,
+    "numeric_transfer_during_fixture": false,
+    "rf_or_holdout_access": false
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "schema": "h1-a1-assignment-ack-started-v1",
+  "status": "MATCHING1_ADAPTER_REVIEWABLE_REMAINING_H1_COMPONENTS_IN_PROGRESS",
+  "created_at": "2026-10-12T21:31:00-07:00",
+  "owner": "H1 current thread 01a0f5c5-3548-7c00-8962-a26b74896e93",
+  "host": "huklaban1",
+  "prior_exact_dependency_reply": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/H1_REPLY_RETAINED_MODEL_ROUTE_EXACT_DEPENDENCY_20261012_V1.json",
+    "sha256": "08618fa3ebca254bb79089774064f9a5546bf5c9d4d8ef37d4cdad01e8935142"
+  },
+  "adapter": {
+    "packet": "/mnt/NPX/Luke/DARTsort_motion_experiments/joint_model_matching1_adapter_h1_20261012_v1",
+    "manifest_sha256": "6bb1020c2017a28c79f648a90ddf339687bc61cb6dff83cb19d718967bed83be",
+    "complete_sha256": "869a17d32628f5b889ed73a22d97cbcd0754839bfd04aa98c60aeeec73338367",
+    "source_path": "ADAPTER.py",
+    "source_sha256": "450a9c83f29c0cda96a89aa1606a34ebb5d295b98df22e0a3fa6f2d5d4e5e635",
+    "config_path": "FROZEN_CONFIG.json",
+    "config_sha256": "cf09035f92716bc22c44fbbf420775373356d612759cfe5b123c106d883f89bb",
+    "known_answer_test_sha256": "7c7b50edeb3126e847a5f92c0b5cf4aaf2cdb2e0d9e170b5620a7bcbfc28e329",
+    "result_sha256": "590f68af4f72f46ad9717c7eb314dcaa151d4e0291a5782e1a8051647f6f6361",
+    "commit": "f9449eb",
+    "test": "1 passed in 0.11s",
+    "review_state": "REVIEWABLE_NOT_ACCEPTED",
+    "semantics": "matching1 HDF5 times_samples and labels only, exact row order, negative labels retained; unsupported Kilosort amplitude/position/KS-label fields are not fabricated"
+  },
+  "remaining_dependencies": {
+    "thin_chunk_starts_entry": "not yet built",
+    "i2_injection_hook": "not yet built",
+    "twelve_donor_selector_and_ledger": "not yet built; must execute beside retained H5 artifacts under the accepted non-transfer route"
+  },
+  "duplicate_launch": false,
+  "execution_state": {
+    "recording_or_voltage_read": false,
+    "sort_or_arm_started": false,
+    "new_experiment_service_started": false,
+    "c4_interrupted_or_modified": false,
+    "rf_or_holdout_accessed": false
+  },
+  "next": {
+    "action": "implement the A4-permitted thin chunk_starts entry by calling the existing H5 C4 continuation runner; no launcher or new framework",
+    "next_check": "2026-10-12T21:40:00-07:00",
+    "complete_handoff_target": "2026-10-13T02:00:00-07:00"
+  },
+  "implementation_checks": {
+    "done": "source/config inspection, exact independent-value fixture, create-only and fail-closed controls",
+    "not_done": "independent source review and real H5 production-output round trip",
+    "can_establish": "bounded two-array adapter behavior",
+    "cannot_establish": "full evaluator applicability, P1/P2/I2 correctness or scientific benefit"
+  }
+}

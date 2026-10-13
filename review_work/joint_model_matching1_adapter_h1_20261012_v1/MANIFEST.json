@@ -1,0 +1,11 @@
+{
+  "schema": "h1-a1-assignment-ack-started-v1",
+  "status": "MANIFEST_FROZEN",
+  "files": {
+    "ADAPTER.py": "450a9c83f29c0cda96a89aa1606a34ebb5d295b98df22e0a3fa6f2d5d4e5e635",
+    "FROZEN_CONFIG.json": "cf09035f92716bc22c44fbbf420775373356d612759cfe5b123c106d883f89bb",
+    "KNOWN_ANSWER_TEST.py": "7c7b50edeb3126e847a5f92c0b5cf4aaf2cdb2e0d9e170b5620a7bcbfc28e329",
+    "RESULT.json": "590f68af4f72f46ad9717c7eb314dcaa151d4e0291a5782e1a8051647f6f6361",
+    "REVIEW_REQUEST.md": "2478000e846730d7e02127dab230b03e8763e2d088e99b424d662f0a1ca1da00"
+  }
+}

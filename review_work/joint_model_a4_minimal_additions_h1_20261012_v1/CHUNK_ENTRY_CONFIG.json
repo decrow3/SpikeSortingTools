@@ -1,0 +1,35 @@
+{
+  "schema": "h1-a1-assignment-ack-started-v1",
+  "status": "FROZEN_BEFORE_THIN_ENTRY_FIXTURE_RUNNER_BINDING_PENDING_H5",
+  "milestone": "P1/P2 N0/N1 production-snippet execution",
+  "decision": "whether exactly the frozen chunks and feature switches enter the existing zero-refit C4 continuation runner without a new launcher or framework",
+  "existing_code_called": {
+    "remote_path": "/media/huklaban5/Data/c4_fitted_state_continuation_h5_20261012_v3_prep/run_restored_c4.py",
+    "sha256": "4bd8d30f0986ea5558f13d5ea13f6449ba3958b18182d4894998e59d025c3f8d",
+    "restore_receipt_sha256": "572e72dc6128994759948f254134315c0b24d3401d0dba043cb1b97c9c03ad52",
+    "fit_calls_allowed": 0
+  },
+  "smallest_missing_capability": "one A4-permitted function that delegates chunk_starts_samples, two feature booleans and a create-only output directory to an already-bound C4 continuation callable",
+  "frozen_snippet": {
+    "chunk_starts_samples": [217620000],
+    "stop_sample_exclusive": 217650000,
+    "switch_sample": 217637561,
+    "n0_feature_switches": {
+      "segment_ownership": false,
+      "pulse_family": false
+    },
+    "n1_feature_switches": {
+      "segment_ownership": true,
+      "pulse_family": false
+    }
+  },
+  "binding_requirement": "H5 must bind the exact reviewed callable inside run_restored_c4.py and show that its keyword boundary consumes these three forwarded values; no CLI or callable name is guessed on H1",
+  "completion_condition": "single known-answer fixture proves one exact delegation and fail-closed existing-output/duplicate-chunk controls; H5 focused boundary review closes the callable binding",
+  "scope": {
+    "new_launcher_or_service": false,
+    "recording_or_voltage_read": false,
+    "sort_or_arm_launch": false,
+    "c4_change": false,
+    "rf_or_holdout_access": false
+  }
+}
