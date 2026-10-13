@@ -1,0 +1,42 @@
+{
+  "schema": "h1-user-standing-authorization-continuity-v1",
+  "status": "DIRECT_USER_RENEWAL_ACKNOWLEDGED",
+  "created_at": "2026-10-12T19:25:39-07:00",
+  "owner": "H1",
+  "host": "huklaban1",
+  "thread_id": "01a0f5c5-3548-7c00-8962-a26b74896e93",
+  "direct_user_instruction": "I want to give you the same broad approvals you had previously so that you can continue this work uninterrupted",
+  "continuity": {
+    "applies_to": [
+      "bounded recording metadata and voltage reads",
+      "waveform capture, diagnostics, preprocessing, referencing, interpolation, motion correction, covariance and whitening",
+      "PCA, basis, template, detection, matching, clustering and sorter training",
+      "snippet, medium-window, long-window and full-development-recording experiments within the project goal",
+      "baseline, candidate, repeatability, ablation and approved positive/negative controls",
+      "saved-output regeneration, evaluation, matching, scorecards and provenance checks",
+      "reviewed managed user services or jobs",
+      "bounded results, logs, receipts, checkpoints and immutable evidence packets",
+      "necessary non-sensitive project-artifact transfers among approved machines and shared storage"
+    ],
+    "operational_rule": "No renewed per-run approval is required merely for a changed recording, crop, window, arm, machine, runtime or bounded resource when the work remains comparable and within the wider spike-sorting goal.",
+    "required_for_consequential_runs": [
+      "concrete frozen contract",
+      "implementation review",
+      "explicit inputs and outputs",
+      "resource bounds or documented resource conditions",
+      "stop condition",
+      "preserved provenance and failures"
+    ]
+  },
+  "unchanged_exclusions": [
+    "platform permission checks are not waived",
+    "no destructive data loss",
+    "no unrelated system changes",
+    "no unrestricted external transfer",
+    "no sealed RF or outer holdout access",
+    "no materially different research outside the project goal",
+    "H5 remains sole H5 slot arbiter and C4 keeps priority"
+  ],
+  "current_a1_application": "Continue K9 corrected binding, P1/P3 preparation and reviewed execution, real saved-output K10 exercise, shared zero-refit checkpoint preparation and eventual managed P4 work when all frozen gates pass.",
+  "source_head_before_receipt": "a959742f20e0134270211827b84e1f4572bb78cf"
+}
