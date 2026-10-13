@@ -2,18 +2,9 @@ import numpy as np
 
 from testing.joint_model_a2_field_subwindows import (
     nearest_boundaries_samples,
-    round_half_away_lattice,
     score_candidate,
     select_subwindow,
 )
-
-
-def test_round_half_away_lattice():
-    values = np.array([-60.0, -20.0, -19.9, 19.9, 20.0, 60.0])
-    assert np.array_equal(
-        round_half_away_lattice(values),
-        np.array([-80.0, -40.0, -0.0, 0.0, 40.0, 80.0]),
-    )
 
 
 def test_nearest_boundary_and_scores():

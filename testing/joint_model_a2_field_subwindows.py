@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -15,6 +16,12 @@ import numpy as np
 
 
 SCHEMA = "joint-model-a2-field-subwindows-result-v1"
+ROUNDED_FIELD_SOURCE = Path(
+    "/mnt/NPX/Luke/DARTsort_motion_experiments/"
+    "en_full_session_part1_arm_a_qc_compare_result_20261004_v1_h5/"
+    "source/en_rounded_field.py"
+)
+ROUNDED_FIELD_SOURCE_SHA256 = "823e788da0095012dd345085bb4667f246efc7f4170a5a811c91082769156e00"
 
 
 def sha256_path(path: Path) -> str:
@@ -25,11 +32,15 @@ def sha256_path(path: Path) -> str:
     return digest.hexdigest()
 
 
-def round_half_away_lattice(values: np.ndarray, pitch_um: float = 40.0) -> np.ndarray:
-    values = np.asarray(values, dtype=np.float64)
-    if values.ndim != 1 or not np.isfinite(values).all():
-        raise ValueError("field values must be a finite one-dimensional array")
-    return np.sign(values) * np.floor(np.abs(values) / pitch_um + 0.5) * pitch_um
+def existing_rounded_rigid_field(values: np.ndarray) -> tuple[np.ndarray, float]:
+    if sha256_path(ROUNDED_FIELD_SOURCE) != ROUNDED_FIELD_SOURCE_SHA256:
+        raise ValueError("existing rounded-field helper hash mismatch")
+    spec = importlib.util.spec_from_file_location("a2_existing_rounded_field", ROUNDED_FIELD_SOURCE)
+    if spec is None or spec.loader is None:
+        raise ValueError("existing rounded-field helper cannot be loaded")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.rounded_rigid_field(values)
 
 
 def nearest_boundaries_samples(time_s: np.ndarray, sampling_frequency_hz: float) -> np.ndarray:
@@ -120,7 +131,9 @@ def evaluate(contract: dict[str, Any]) -> dict[str, Any]:
         displacement = np.asarray(archive["displacement_um"], dtype=np.float64)
     if displacement.shape != (time_s.size, 1):
         raise ValueError("expected the frozen one-depth AM.3 field")
-    rounded_q = round_half_away_lattice(displacement[:, 0])
+    rounded_q, reference_um = existing_rounded_rigid_field(displacement[:, 0])
+    if reference_um != 0.0:
+        raise ValueError("frozen field reference differs from zero")
     rounded_hash = hashlib.sha256(rounded_q.tobytes()).hexdigest()
     if rounded_hash != inputs["expected_rounded_q_float64_bytes_sha256"]:
         raise ValueError("rounded field hash mismatch")
@@ -145,6 +158,9 @@ def evaluate(contract: dict[str, Any]) -> dict[str, Any]:
             "field_path": str(field_path),
             "field_sha256": observed_field_sha,
             "rounded_q_float64_bytes_sha256": rounded_hash,
+            "rounded_field_source": str(ROUNDED_FIELD_SOURCE),
+            "rounded_field_source_sha256": ROUNDED_FIELD_SOURCE_SHA256,
+            "rounded_field_reference_um": reference_um,
             "window_freeze_sha256": inputs["window_freeze_sha256"],
             "sampling_frequency_hz": fs,
         },

@@ -1,0 +1,9 @@
+This first successful result is preserved but is not the authoritative A2
+subwindow result. It was produced before H1 received Amendment A4
+(SHA-256 61e7d41cd891a9fcde4767823174261a31b6c62aecf1a504a435b587a1ec8771)
+and used an equivalent local implementation of the 40 um rounding rule.
+
+A4 requires calling the existing en_rounded_field.py helper. The corrected
+source binds and calls that exact helper at SHA-256
+823e788da0095012dd345085bb4667f246efc7f4170a5a811c91082769156e00 and writes
+to a new v2 output namespace. This v1 result is not overwritten or deleted.
