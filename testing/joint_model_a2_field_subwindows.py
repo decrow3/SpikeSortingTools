@@ -155,7 +155,7 @@ def evaluate(contract: dict[str, Any]) -> dict[str, Any]:
             "subwindow_length_samples": chunk * count,
         },
         "windows": windows,
-        "outcomes_inspected": false,
+        "outcomes_inspected": False,
         "scope": contract["scope"],
     }
 

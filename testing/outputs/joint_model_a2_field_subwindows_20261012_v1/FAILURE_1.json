@@ -1,0 +1,15 @@
+{
+  "schema": "joint-model-a2-field-subwindows-failure-v1",
+  "failed_at": "2026-10-12T20:02:00-07:00",
+  "attempt": 1,
+  "contract_sha256": "904894157fa1d8ed8bd752d6ebd808039c165701f3b5b83ad88d6044ad9b31c9",
+  "source_commit": "b195b07",
+  "source_sha256": "3c497f19c3cd2079505ea4becf9cad282f6b71d0a1521a15e20c639ec7595a13",
+  "command": "python testing/joint_model_a2_field_subwindows.py --contract testing/contracts/joint_model_a2_field_subwindow_selection_20261012_v1.json --output testing/outputs/joint_model_a2_field_subwindows_20261012_v1/RESULT.json",
+  "exit_code": 1,
+  "error": "NameError: name 'false' is not defined",
+  "failure_site": "evaluate result assembly: outcomes_inspected",
+  "output_created": false,
+  "field_hash_and_selection_reached": true,
+  "repair_scope": "replace the JSON spelling false with the Python boolean False; no selection or ranking change"
+}
