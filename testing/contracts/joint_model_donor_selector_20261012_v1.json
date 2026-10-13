@@ -1,0 +1,31 @@
+{
+  "schema": "h1-a1-assignment-ack-started-v1",
+  "status": "FROZEN_BEFORE_SELECTOR_FIXTURE",
+  "milestone": "P2 I2 known-in-bank donor selection",
+  "decision": "which 12 retained-bank units enter switch-adjacent injection before any arm outcome is inspected",
+  "existing_code_called": "H5 computes compact per-template metadata beside the retained C4 bank; no numeric waveform/model transfer",
+  "smallest_missing_capability": "one A4-permitted deterministic selector over source-bound metadata",
+  "metadata_contract": {
+    "unit_ids": "unique integer retained-bank unit IDs",
+    "amplitudes": "finite positive template amplitude statistic, one per unit, with exact statistic name and source hash supplied by H5",
+    "nearest_template_cosines": "maximum cosine to any other retained template on H5's reviewed common support, one per unit",
+    "risk_distance_um": "minimum absolute physical-depth distance to channel 251 or 252 from the bound selected-channel geometry"
+  },
+  "frozen_rule": {
+    "isolation": "nearest_template_cosine strictly less than 0.9",
+    "amplitude_tiers": "eligible templates stably sorted by amplitude then unit ID and split into three ordered array_split thirds",
+    "tier_quota": 4,
+    "near_risk_quota_minimum": 4,
+    "risk_radius_um_inclusive": 200.0,
+    "near_risk_distribution": "one required from each amplitude tier, then the best remaining near-risk candidate globally",
+    "within_tier_priority": "lowest nearest-template cosine, then risk distance, then unit ID"
+  },
+  "completion_condition": "single independent-value known-answer fixture passes; H5 binds exact metadata construction hashes and executes selector locally before outcomes",
+  "scope": {
+    "recording_or_voltage_read": false,
+    "template_waveforms_read_on_h1": false,
+    "numeric_transfer": false,
+    "sort_or_arm_launch": false,
+    "rf_or_holdout_access": false
+  }
+}
