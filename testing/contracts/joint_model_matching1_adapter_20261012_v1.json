@@ -1,0 +1,31 @@
+{
+  "schema": "h1-a1-assignment-ack-started-v1",
+  "status": "FROZEN_BEFORE_ADAPTER_FIXTURE",
+  "milestone": "P1/P2 real-snippet evaluator integration",
+  "decision": "whether matching1 event-rate, unit-count, and short-interval inputs can be consumed without changing row identity or fabricating Kilosort-only fields",
+  "existing_code_called": {
+    "fast_loop_evaluator_sha256": "4d3e807bcf3b18e03a4a8cad16f02bd6930c17135f4f161a85675b16cc8a812c",
+    "matching1_datasets": ["times_samples", "labels"]
+  },
+  "smallest_missing_capability": "one A4-permitted times/labels-only matching1 adapter",
+  "input_semantics": {
+    "clock": "imec0.ap session acquisition samples with origin frame 0",
+    "row_binding": "matching1 times_samples and labels from the same HDF5 rows",
+    "order": "preserve exactly; no sort, filter, relabel, or final-NPZ substitution",
+    "labels": "negative labels remain present"
+  },
+  "output_semantics": {
+    "spike_times.npy": "exact int64 copy of matching1 times_samples",
+    "spike_clusters.npy": "exact int64 copy of matching1 labels",
+    "create_only_directory": true,
+    "kilosort_only_fields": "not applicable and not materialized"
+  },
+  "known_answer": "one saved-arm-shaped HDF5 fixture with duplicate times, a negative label, nonmonotone labels, exact row-order round trip, create-only replay rejection, and floating-time rejection",
+  "completion_condition": "the single known-answer test passes and source/config hashes are published for H5 review",
+  "scope": {
+    "recording_or_voltage_read": false,
+    "sort_or_arm_launch": false,
+    "scientific_outcomes_read": false,
+    "rf_or_holdout_access": false
+  }
+}

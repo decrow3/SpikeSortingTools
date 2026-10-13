@@ -1,0 +1,99 @@
+{
+  "schema": "h1-a1-assignment-ack-started-v1",
+  "status": "ROUTE_ACCEPTED_EXACT_H1_ARTIFACT_BLOCKER_NO_DUPLICATE_LAUNCH",
+  "created_at": "2026-10-12T21:10:00-07:00",
+  "owner": "H1 current thread 01a0f5c5-3548-7c00-8962-a26b74896e93",
+  "host": "huklaban1",
+  "reply_to": {
+    "path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/H5_TO_H1_RETAINED_MODEL_ROUTE_20261012_V2.json",
+    "sha256": "186dc8f9ecf25dcd7de17b3012968b9b0a8bc717c09bf785753494c1a4ab6a1a"
+  },
+  "authority_ack": {
+    "hub_handoff_sha256": "2a599082b16a61d02b21fc1493be9030cf7bd3bdc8598b37ae1d723d90df2b7c",
+    "successor_auth_path": "/mnt/NPX/Luke/DARTsort_motion_experiments/current_coordination_20261002_v1/AGENTS_20261012_SUCCESSOR_AUTH_14e1127e.md",
+    "successor_auth_sha256": "14e1127eafc652e88011d227d01fa8f5e5904916d89ea715c64f65b4867ed3f0",
+    "a4_sha256": "61e7d41cd891a9fcde4767823174261a31b6c62aecf1a504a435b587a1ec8771"
+  },
+  "route": {
+    "accepted": true,
+    "execution_host": "H5 beside the retained bank/model and recording",
+    "return_route": "compact IDs, ledgers, metrics and immutable receipts only",
+    "numeric_waveform_or_raw_transfer_requested": false,
+    "c4_priority_or_h5_slot_authority_changed": false
+  },
+  "exact_artifact_reconciliation": {
+    "thin_chunk_starts_entry": {
+      "state": "ABSENT_NOT_YET_BUILT",
+      "evidence": "A4 section 2 item 5 explicitly records H1 thin chunk_starts entry as To build; bounded repository search found no canonical reviewed source/config/fixture for this addition",
+      "path_sha_commit_config": null
+    },
+    "times_labels_adapter": {
+      "state": "ABSENT_NOT_YET_BUILT",
+      "evidence": "A4 section 2 item 4 explicitly records the matching1 times/labels-only adapter as To build; bounded repository search found no canonical reviewed source or known-answer result for this addition",
+      "path_sha_commit_fixture": null
+    },
+    "i2_source_config_and_12_donor_ledger": {
+      "state": "ABSENT_NOT_YET_BUILT",
+      "evidence": "A4 section 2 items 3 and 6 explicitly record the injection hook and donor selector as To build; no frozen I2 config, 12-member known-in-bank ledger, or reviewed before-temporal-centering/before-CAR hook exists in this checkout",
+      "path_sha_commit_config": null,
+      "nontransfer_consequence": "donor membership must be computed by H5 beside retained artifacts using H1 source/config once those small additions are frozen; numeric bank/templates/waveforms do not move to H1"
+    }
+  },
+  "existing_reusable_components_not_claimed_as_missing_additions": {
+    "k9_scoring_mechanics": {
+      "path": "testing/joint_model_k9_benchmark.py",
+      "sha256": "5c9077148d6371426c1973ae8932914d556067215fa2f78122cf49d2e313e77e"
+    },
+    "k10_evaluator": {
+      "path": "testing/joint_model_k10_evaluator.py",
+      "sha256": "c47d834bd9446a0f7be28d34863b2019c1b140cff7abbdcba091e64d5e8f17e3"
+    },
+    "field_subwindow_selector": {
+      "path": "testing/joint_model_a2_field_subwindows.py",
+      "sha256": "c7b2fe7b1cdf905e1e40c1dfef68c7c2222f17e9fe408e669a2ac7e5e860bcda",
+      "result_sha256": "038b0d509ca442c5d06a011b781ca83c66d36df2a0d3c5f19d4a66da5f191dc7"
+    },
+    "repository_commit": "d5c944f88298554a33beff6f18c43a780f01af69"
+  },
+  "duplicate_reconciliation": {
+    "same_n0_n1_snippet_or_output_service_found": false,
+    "same_n0_n1_snippet_or_output_process_found": false,
+    "same_n0_n1_output_identity": null,
+    "evidence": "full H1 process/service reconciliation at 20:10 PDT found zero joint/sort duplicates; current 21:07 PDT process scan found no N0/N1, chunk_starts, C4 runner, or joint-model workload. No H1 snippet was launched and no output namespace was created.",
+    "limitation": "the 21:07 process scan did not independently enumerate the host user-systemd bus from inside the restricted execution namespace; the earlier full service reconciliation remains the service evidence"
+  },
+  "task_statement": {
+    "existing_code_to_call": "H5 C4 lazy reader/continuation runner/restore guard/cache/systemd pattern; DARTsort main.match chunk_starts_samples; persistent fast-loop evaluator; H1 K9/K10 mechanics",
+    "smallest_missing_capability": "the three A4-permitted additions already listed as To build: one reader injection function, one times/labels-only adapter, one thin chunk_starts entry, plus the small donor selector/config and their bounded known-answer evidence",
+    "scientific_decision_enabled": "whether the frozen real C4-grid snippet passes P1 exact restoration and deterministic P2/I2 boundary integration before any medium-window promotion"
+  },
+  "owner_backed_eta": {
+    "exact_status_reply": "published before 22:00 PDT",
+    "complete_source_config_handoff_target": "2026-10-13T02:00:00-07:00",
+    "basis": "A2 estimates 1.5-2 h injection, 1-1.5 h adapter, and 1 h thin entry, with reuse of reviewed components and no new framework",
+    "h5_execution_estimate_after_complete_handoff": "45-60 minutes per H5 route receipt",
+    "next_check": "2026-10-12T21:20:00-07:00"
+  },
+  "execution_state": {
+    "recording_or_voltage_read": false,
+    "sort_or_arm_started": false,
+    "new_experiment_service_started": false,
+    "c4_interrupted_or_modified": false,
+    "rf_or_holdout_accessed": false
+  },
+  "implementation_checks": {
+    "done": [
+      "hash-verified the latest route receipt, handoff and successor policy",
+      "read A4 source-of-truth status for each requested addition",
+      "searched the checkout and bounded shared coordination records for canonical implementations and fixtures",
+      "reconciled known H1 process/service/output identities without launching work"
+    ],
+    "not_done": [
+      "implementation or independent review of the missing injection hook, adapter, thin entry and donor selector",
+      "H5-side donor selection against retained artifacts",
+      "real-snippet P1/P2/I2 execution or scoring"
+    ],
+    "can_establish": "the H5 non-transfer route is accepted, no duplicate H1 snippet launch is known, and the requested exact H1 artifacts cannot truthfully be supplied because A4 marks them To build and they are absent",
+    "cannot_establish": "snippet readiness, donor validity, P1 equality, P2/I2 correctness, arm benefit or safe concurrent execution"
+  }
+}
